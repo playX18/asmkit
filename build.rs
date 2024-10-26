@@ -29,7 +29,7 @@ fn mv(from: impl AsRef<Path>, to: impl AsRef<Path>) {
     eprintln!("cp {}->{}", from.display(), to.display());
 
     std::fs::copy(&from, to).unwrap();
-    //std::fs::remove_file(from).unwrap();
+    std::fs::remove_file(from).unwrap();
 }
 
 static OUT_DIR: LazyLock<PathBuf> =
@@ -37,11 +37,12 @@ static OUT_DIR: LazyLock<PathBuf> =
 
 fn build_riscv() {
     println!("cargo::rerun-if-changed=meta/parse.py");
-    let args = vec!["meta/parse.py", "-rust", "rv*"];
+    let args = vec!["meta/parse.py", "-rust", "rv64*", "rv_*"];
 
     run("python", &args);
     eprintln!("{}", OUT_DIR.display());
     mv("inst.rs", OUT_DIR.join("inst_rv.rs"));
+    std::fs::remove_file("inst_impl.rs").unwrap();
     println!(
         "cargo::rerun-if-changed={}",
         OUT_DIR.join("inst_rv.rs").display()

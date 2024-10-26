@@ -274,6 +274,7 @@ def create_inst_dict(file_filter, include_pseudo=False, include_pseudo_ops=[]):
     for fil in file_filter:
         file_names += glob.glob(f"{opcodes_dir}/{fil}")
     file_names.sort(reverse=True)
+    print(file_names)
     # first pass if for standard/regular instructions
     logging.debug("Collecting standard instructions first")
     for f in file_names:
@@ -512,7 +513,21 @@ def to_camel_case(text):
         return text
     return s[0] + ''.join(i.capitalize() for i in s[1:])
 
-
+def immediates():
+    immediate_map = dict()
+    for name, _ in arg_lut.items():
+        if "imm" in name: 
+            has_lo_or_hi = False 
+            if "lo" in name or "hi" in name:
+                name = name.replace("lo", "").replace("hi", "")
+                has_lo_or_hi = True
+                name += "lohi"
+            
+            encoder = f"encode_immediate(&{name.upper()}, {name} as _)"
+            typ = f"{"u32" if 'u' in name else "i32"}"
+            immediate_map[name] = (encoder, typ)
+    return immediate_map
+            
 
 def make_encoders(instr_dict):
     """
@@ -528,6 +543,8 @@ def make_encoders(instr_dict):
     ```
     """
     code = ""
+    asm_code = "impl RawRISCVAssembler {\n"
+    imms = immediates()
     for i in instr_dict:
         args: list[str] = instr_dict[i]["variable_fields"]
 
@@ -546,39 +563,27 @@ def make_encoders(instr_dict):
         args_types: list[(str, str, str)] = []
         imm_args: set[str] = set()
         for arg in args: 
+            arg = arg.replace('=', '_eq_').replace(' ', '_')
             if "imm" in arg: 
                 has_lo_hi = False
                 if "lo" in arg or "hi" in arg: 
                     has_lo_hi = True
+                    
                     arg = arg.replace("hi", "").replace("lo", "")
+                    arg += "lohi"
                 if arg in imm_args:
                     continue 
                 imm_args.add(arg)
-                
-                match arg: 
-                    case "bimm12":
-                        args_types.append(('bimm12', 'i32', 'B_TYPE.iter().fold(inst.value, |op, enc| op | enc.encode(bimm12))'))
-                    case "imm12":
-                        if has_lo_hi:
-                            args_types.append(('imm12', 'i32', 'S_TYPE.iter().fold(inst.value, |op, enc| op | enc.encode(imm12))'))
-                        else: 
-                            args_types.append(('imm12', 'i32', 'I_TYPE.iter().fold(inst.value, |op, enc| op | op | enc.encode(imm12))'))
-                    case "jimm20":
-                        args_types.append(('jimm20', 'i32', 'J_TYPE.iter().fold(inst.value, |op, enc| op | enc.encode(jimm20))'))
-                    case "imm20":
-                        args_types.append(('imm20', 'i32', 'U_TYPE.iter().fold(inst.value, |op, enc| op | enc.encode(imm20)'))
-                    case "simm5":
-                        args_types.append(('simm5', 'i32', 'SIMM5[0].encode(imm20) | inst.value'))
-                    case "c_uimm8": 
-                        args_types.append(('c_uimm8', "u32", "C_UIMM8.iter().fold(inst.value, |op, enc| op | enc.encode(c_uimm7 as _))"))
-                    case _: 
-                        args_types.append(('imm', 'u32', 'imm'))
-            elif arg.startswith('R'):
-                args_types.append((arg, 'Reg', f'{arg}.encode()'))
-            elif arg.startswith('V'):
-                args_types.append((arg, 'VReg', f'{arg}.encode()'))
+                encoder, arg_ty = imms[arg]
+                args_types.append((arg, arg_ty, encoder))
+            elif arg.startswith('R') | arg.startswith('r'):
+                args_types.append((arg, 'Reg', f'inst.set_{arg}({arg}.0).value'))
+            elif arg.startswith('V') | arg.startswith('v'):
+                args_types.append((arg.lower(), 'VReg', f'inst.set_{arg.lower()}({arg.lower()}.0).value'))
+            elif "aq" == arg or "rl" == arg: 
+                args_types.append((arg.lower(), "bool", f"inst.set_{arg.lower()}({arg.lower()} as _).value")) 
             else: 
-                args_types.append((arg.lower(), to_camel_case(arg).capitalize(), f'{arg.lower()}.encode()'))
+                args_types.append((arg, "u32", f"inst.set_{arg}({arg} as _).value"))
         typ = False 
         if short:
             typ = 'u16'
@@ -586,15 +591,26 @@ def make_encoders(instr_dict):
             typ = 'u32'
 
         code += f"""
-pub const fn {i.lower()}({", ".join(name.lower() + f": {atyp}" for name, atyp, _ in args_types)}) -> Result<{typ}, AsmError> {{
+pub const fn {i.lower()}({", ".join(name.lower() + f": {atyp}" for name, atyp, _ in args_types)}) -> {typ} {{
     let mut inst = Inst::new(Opcode::{i.upper().replace("_", "")}).encode();
     {"\n    ".join(f"inst.value |= {encoder};" for _, _, encoder in args_types)} 
-    Ok(inst.value as _)
+    inst.value as _
 }}
         """
 
+        asm_code += f"""
+    pub fn {i.lower()}(&mut self, {", ".join(name.lower() + f": {atyp}" for name, atyp, _ in args_types)}) -> Result<(), AsmError> {{
+        let inst = {i.lower()}({", ".join(name.lower() for name, _, _ in args_types)});
 
-    return code
+        self.emit{"_compressed" if typ == "u16" else ""}(inst);
+
+        Ok(())
+    }}
+        """
+
+    asm_code += "}"
+
+    return code, asm_code
 def make_immediates(instr_dict):
     """
     Emit `Immediate` type helpers 
@@ -605,7 +621,7 @@ def make_immediates(instr_dict):
 
 def make_rust(instr_dict):
 
-    encoders = make_encoders(instr_dict)
+    encoders,asm = make_encoders(instr_dict)
     mask_match_str = ""
     for i in instr_dict:
         mask_match_str += f'pub const MATCH_{i.upper().replace(".","_")}: u32 = {(instr_dict[i]["match"])};\n'
@@ -616,6 +632,60 @@ def make_rust(instr_dict):
         mask_match_str += (
             f'pub const CAUSE_{name.upper().replace(" ","_")}: u8 = {hex(num)};\n'
         )
+    short_count = 0
+
+    for i in instr_dict:
+        if i.lower().startswith('c'):
+            short_count += 1
+
+    rv32ext = set()
+    rv64ext = set()
+
+    for i in instr_dict:
+        exts = instr_dict[i]["extension"]
+
+        for ext in exts: 
+            if ext.startswith('rv32'):
+                rv32ext.add(i)
+            elif ext.startswith('rv64'):
+                rv64ext.add(i)
+            else:
+                # append to both lists, we can match these opcodes on both 32-bit and 64-bit ISA
+                rv32ext.add(i)
+                rv64ext.add(i)
+
+    mask_match_str += f"pub static OPCODE32_MATCH: [u32; {len(instr_dict)}] = [\n"
+    for i in instr_dict: 
+        if i in rv32ext:
+            mask_match_str += f"{instr_dict[i]["match"]}, /* {i} */\n"
+        else: 
+            mask_match_str += f"0xffff_ffff,/* {i} */\n"
+    mask_match_str += "];\n"
+
+    mask_match_str += f"pub static OPCODE32_MASK: [u32; {len(instr_dict)}] = [\n"
+    for i in instr_dict: 
+        if i in rv32ext:
+            mask_match_str += f"{instr_dict[i]["mask"]}, /* {i} */\n"
+        else: 
+            mask_match_str += f"0xffff_ffff, /* {i} */\n"
+    mask_match_str += "];\n"
+
+    mask_match_str += f"pub static OPCODE64_MATCH: [u32; {len(instr_dict)}] = [\n"
+    for i in instr_dict: 
+        if i in rv64ext:
+            mask_match_str += f"{instr_dict[i]["match"]}, /* {i} */\n"
+        else: 
+            mask_match_str += f"0xffff_ffff, /* {i} */\n"
+    mask_match_str += "];\n"
+
+    mask_match_str += f"pub static OPCODE64_MASK: [u32; {len(instr_dict)}] = [\n"
+    for i in instr_dict: 
+        if i in rv64ext:
+            mask_match_str += f"{instr_dict[i]["mask"]}, /* {i} */\n"
+        else: 
+            mask_match_str += f"0xffff_ffff, /* {i} */\n"
+    mask_match_str += "];\n"
+
 
     mask_match_str += f"pub static OPCODE_MATCH: [u32; {len(instr_dict)}] = [\n"
     for i in instr_dict:
@@ -627,7 +697,38 @@ def make_rust(instr_dict):
         mask_match_str += f"{instr_dict[i]["mask"]},\n"
     mask_match_str += "];"
 
+    mask_match_str += f"\npub static OPCODE_MASK_COMPRESSED: [u16; {len(instr_dict)}] = [\n"
+    for i in instr_dict:
+        if i.lower().startswith('c'):
+            mask_match_str += f"{int(instr_dict[i]['mask'], 16) & 0xffff},\n"
+        else: 
+            mask_match_str += f"0,\n"
+    mask_match_str += "];\n"
 
+    mask_match_str += f"\npub static OPCODE_MATCH_COMPRESSED: [u16; {len(instr_dict)}] = [\n"
+    for i in instr_dict:
+        if i.lower().startswith('c'):
+            mask_match_str += f"{int(instr_dict[i]['match'], 16) & 0xffff},\n"
+        else: 
+            mask_match_str += f"0,\n"
+    mask_match_str += "];\n"
+
+
+    mask_match_str += f"\npub static ALL_OPCODES: [Opcode; {len(instr_dict)}] = [\n"
+    for i in instr_dict: 
+        mask_match_str += f"Opcode::{i.upper().replace("_", "")},\n"
+    mask_match_str += "];"
+
+    mask_match_str += f"\npub static SHORT_OPCODE: [bool; {len(instr_dict)}] = [\n"
+    for i in instr_dict:
+        mask_match_str += f"{str(i.lower().startswith('c')).lower()},\n"
+    mask_match_str += "];\n"
+
+    mask_match_str += f"pub const SHORT_OPCODES: [Opcode; {short_count}] = [\n"
+    for i in instr_dict:
+        if i.lower().startswith('c'):
+            mask_match_str += f"Opcode::{i.upper().replace("_", "")},\n"
+    mask_match_str += "];\n"
 
     enum_opcode = ""
     enum_opcode += "#[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]\n#[repr(u32)]\n"
@@ -636,7 +737,14 @@ def make_rust(instr_dict):
         enum_opcode += "    "
         enum_opcode += i.upper().replace("_", "")
         enum_opcode += ",\n"
-    enum_opcode += "}"
+    enum_opcode += "    Invalid\n"
+    enum_opcode += "}\n\n"
+
+    enum_opcode += "pub const OPCODE_STR: &[&str] = &[\n"
+    for i in instr_dict:
+        enum_opcode += f"    \"{i.lower().replace("c_", "c.").replace("cm_", "cm.").replace("_", ".")}\",\n"
+    enum_opcode += "    \"<invalid>\"\n"
+    enum_opcode += "];\n"
     inst = """
 #[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]
 pub struct Inst {
@@ -661,6 +769,7 @@ impl Inst {
 
     pub const fn new(op: Opcode) -> Self {
         match op {
+            Opcode::Invalid => unreachable!(),
     """
     for i in instr_dict:
         enc_match = int(instr_dict[i]["match"], 0)
@@ -680,7 +789,7 @@ impl Inst {
         }},\n"""
     inst += "}}\n}\n"
 
-
+    
     arg_str = ""
 
     insn_value = """
@@ -708,7 +817,7 @@ impl Inst {
 
     for i in instr_dict:
         args: list[str] = instr_dict[i]["variable_fields"]
-        
+
         encoding = to_camel_case("_".join(i.replace('=', '_eq_').title() for i in args))
         ops = False
         if encoding in encodings:
@@ -738,6 +847,7 @@ impl Opcode {
     pub fn encoding(self) -> Encoding {
         use Opcode::*;
         match self {
+            Opcode::Invalid => unreachable!(),
 """
     for e in sorted(encodings):
         ops = encodings[e]
@@ -747,8 +857,7 @@ impl Opcode {
             enc += f"  | {op}\n"
         enc += f"  => Encoding::{e},\n"
     enc += "}}}"
-
-
+    
            
     for name, rng in arg_lut.items():
         sanitized_name = name.replace(" ", "_").replace("=", "_eq_")
@@ -761,21 +870,50 @@ impl Opcode {
         arg_str += f"pub const {field}_START: u32 = {begin};\n"
         arg_str += f"pub const {field}_SIZE: u32 = {(end - begin) + 1};\n"
 
+        if "imm" in sanitized_name:
+            sanitized_name += "_raw"
+
         insn_value += f"pub const fn {sanitized_name}(self) -> u32 {{ (self.value >> {field}_START) & ((1 << {field}_SIZE) - 1) }}\n"
         insn_value += f"""
-    pub const fn set_{sanitized_name}(mut self, value: u32) -> Result<Self, AsmError> {{
+    pub const fn set_{sanitized_name}(mut self, value: u32) -> Self {{
         let mask = {field};
         
 
         self.value &= !mask;
         self.value |= (value & ((1 << {field}_SIZE) - 1)) << {field}_START;
-        Ok(self)
+        self
     }}
         """
+
+    imms = immediates()
+
+    for name in imms.keys():
+        encoder,ty = imms[name]
+        sanitized_name = name.replace(" ", "_").replace("=", "_eq_")
+
+
+        insn_value += f"""
+    /// {name}
+    pub const fn {sanitized_name}(self) -> {ty} {{
+        decode_immediate(&{sanitized_name.upper()}, self.value as _) as _
+    }}
+
+    pub const fn set_{sanitized_name}(mut self, {name}: {ty}) -> Self {{
+        self.value |= encode_immediate(&{sanitized_name.upper()}, {name} as _);
+        self
+    }}
+        """
+
     insn_value += "}\n"
 
 
-
+    asm_file = open("inst_impl.rs", "w")
+    asm_file.write(
+        f"""
+        /* Automatically generated by parse_opcodes */
+{asm}
+        """
+    )
     rust_file = open("inst.rs", "w")
     rust_file.write(
         f"""
@@ -811,10 +949,7 @@ if __name__ == "__main__":
             extensions.remove(i)
     print(f"Extensions selected : {extensions}")
 
-    include_pseudo = False
-    if "-go" in sys.argv[1:]:
-        include_pseudo = True
-
+    include_pseudo = True
     instr_dict = create_inst_dict(extensions, include_pseudo)
 
     instr_dict = collections.OrderedDict(sorted(instr_dict.items()))
