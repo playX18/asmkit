@@ -1,3 +1,5 @@
+use crate::{assembler::riscv::generate_imm, encdec::riscv::{auipc, c_j, jalr, ZERO}};
+
 use super::codeholder::ExternalName;
 
 /// Offset in bytes from the beginning of the function.
@@ -107,12 +109,48 @@ pub enum Reloc {
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
 pub enum LabelUse {
     X86JmpRel32,
+    /// 20-bit branch offset (unconditional branches). PC-rel, offset is
+    /// imm << 1. Immediate is 20 signed bits. Use in Jal instructions.
+    RVJal20,
+    /// The unconditional jump instructions all use PC-relative
+    /// addressing to help support position independent code. The JALR
+    /// instruction was defined to enable a two-instruction sequence to
+    /// jump anywhere in a 32-bit absolute address range. A LUI
+    /// instruction can first load rs1 with the upper 20 bits of a
+    /// target address, then JALR can add in the lower bits. Similarly,
+    /// AUIPC then JALR can jump anywhere in a 32-bit pc-relative
+    /// address range.
+    RVPCRel32,
+
+    /// All branch instructions use the B-type instruction format. The
+    /// 12-bit B-immediate encodes signed offsets in multiples of 2, and
+    /// is added to the current pc to give the target address. The
+    /// conditional branch range is ±4 KiB.
+    RVB12,
+
+    /// Equivalent to the `R_RISCV_PCREL_HI20` relocation, Allows setting
+    /// the immediate field of an `auipc` instruction.
+    RVPCRelHi20,
+
+    /// Similar to the `R_RISCV_PCREL_LO12_I` relocation but pointing to
+    /// the final address, instead of the `PCREL_HI20` label. Allows setting
+    /// the immediate field of I Type instructions such as `addi` or `lw`.
+    ///
+    /// Since we currently don't support offsets in labels, this relocation has
+    /// an implicit offset of 4.
+    RVPCRelLo12I,
+
+    /// 11-bit PC-relative jump offset. Equivalent to the `RVC_JUMP` relocation
+    RVCJump,
 }
 
 impl LabelUse {
     pub const fn patch_size(&self) -> usize {
         match self {
             Self::X86JmpRel32 => 4,
+            Self::RVCJump => 2,
+            Self::RVJal20 | Self::RVB12 | Self::RVPCRelHi20 | Self::RVPCRelLo12I => 4,
+            Self::RVPCRel32 => 8,
         }
     }
 
@@ -127,6 +165,69 @@ impl LabelUse {
                 let value = pc_rel.wrapping_add(addend).wrapping_sub(4);
 
                 buffer.copy_from_slice(&value.to_le_bytes());
+            }
+
+            Self::RVJal20 => {
+                let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
+                let offset = pc_rel as u32;
+                let v = ((offset >> 12 & 0b1111_1111) << 12)
+                    | ((offset >> 11 & 0b1) << 20)
+                    | ((offset >> 1 & 0b11_1111_1111) << 21)
+                    | ((offset >> 20 & 0b1) << 31);
+                buffer[0..4].clone_from_slice(&u32::to_le_bytes(insn | v));
+            }
+
+            Self::RVPCRel32 => {
+                let (imm20, imm12) = generate_imm(pc_rel as u64);
+                let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
+                let insn2 = u32::from_le_bytes([buffer[4], buffer[5], buffer[6], buffer[7]]);
+                buffer[0..4].copy_from_slice(&(insn | auipc(ZERO, 0) | imm20).to_le_bytes());
+                buffer[4..8].copy_from_slice(&(insn2 | jalr(ZERO, ZERO, 0) | imm12).to_le_bytes());
+            }
+
+            Self::RVB12 => {
+                let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
+                let offset = pc_rel as u32;
+                let v = ((offset >> 11 & 0b1) << 7)
+                    | ((offset >> 1 & 0b1111) << 8)
+                    | ((offset >> 5 & 0b11_1111) << 25)
+                    | ((offset >> 12 & 0b1) << 31);
+                buffer[0..4].clone_from_slice(&u32::to_le_bytes(insn | v));
+            }
+
+            Self::RVPCRelHi20 => {
+                // See https://github.com/riscv-non-isa/riscv-elf-psabi-doc/blob/master/riscv-elf.adoc#pc-relative-symbol-addresses
+                //
+                // We need to add 0x800 to ensure that we land at the next page as soon as it goes out of range for the
+                // Lo12 relocation. That relocation is signed and has a maximum range of -2048..2047. So when we get an
+                // offset of 2048, we need to land at the next page and subtract instead.
+                let offset = pc_rel;
+                let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
+                let hi20 = offset.wrapping_add(0x800) >> 12;
+                let insn = (insn & 0xffff) | (hi20 << 12);
+                buffer[0..4].copy_from_slice(&insn.to_le_bytes());
+            }
+
+            Self::RVPCRelLo12I => {
+                // `offset` is the offset from the current instruction to the target address.
+                //
+                // However we are trying to compute the offset to the target address from the previous instruction.
+                // The previous instruction should be the one that contains the PCRelHi20 relocation and
+                // stores/references the program counter (`auipc` usually).
+                //
+                // Since we are trying to compute the offset from the previous instruction, we can
+                // represent it as offset = target_address - (current_instruction_address - 4)
+                // which is equivalent to offset = target_address - current_instruction_address + 4.
+                //
+                let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
+                let lo12 = (pc_rel + 4) as u32 & 0xfff;
+                let insn = (insn & 0xffff) | (lo12 << 20);
+                buffer[0..4].copy_from_slice(&insn.to_le_bytes());
+            }
+
+            Self::RVCJump => {
+                debug_assert!(pc_rel & 1 == 1);
+                buffer[0..2].clone_from_slice(&c_j(pc_rel as _).to_le_bytes());
             }
         }
     }

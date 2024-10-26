@@ -271,13 +271,13 @@ cfgenius::define! {
 
 }
 
-fn error_from_errno() -> Error {
+fn error_from_errno() -> AsmError {
     match errno().0 {
-        EACCES | EAGAIN | ENODEV | EPERM => Error::InvalidState,
-        EFBIG | ENOMEM | EOVERFLOW => Error::OutOfMemory,
-        EMFILE | ENFILE => Error::TooManyHandles,
+        EACCES | EAGAIN | ENODEV | EPERM => AsmError::InvalidState,
+        EFBIG | ENOMEM | EOVERFLOW => AsmError::OutOfMemory,
+        EMFILE | ENFILE => AsmError::TooManyHandles,
 
-        _ => Error::InvalidArgument,
+        _ => AsmError::InvalidArgument,
     }
 }
 
@@ -370,7 +370,7 @@ cfgenius::cond! {
         #[allow(clippy::needless_late_init)]
         impl AnonymousMemory {
             #[allow(unused_variables)]
-            fn open(&mut self, prefer_tmp_over_dev_shm: bool) -> Result<(), Error> {
+            fn open(&mut self, prefer_tmp_over_dev_shm: bool) -> Result<(), AsmError> {
                 cfgenius::cond! {
                     if cfg(target_os="linux") {
 
@@ -430,7 +430,7 @@ cfgenius::cond! {
                         let mut bits = self as *const Self as u64 & 0x55555555;
 
                         for _ in 0..retry_count {
-                            bits = bits.wrapping_sub(crate::os::get_tick_count() as u64 * 773703683);
+                            bits = bits.wrapping_sub(super::os::get_tick_count() as u64 * 773703683);
                             bits = ((bits >> 14) ^ (bits << 6)) + INTERNAL_COUNTER.fetch_add(1, Ordering::AcqRel) as u64 + 10619863;
 
                             let use_tmp;
@@ -482,7 +482,7 @@ cfgenius::cond! {
                     }
                 }
 
-                Err(Error::FailedToOpenAnonymousMemory)
+                Err(AsmError::FailedToOpenAnonymousMemory)
             }
 
             fn unlink(&mut self) {
@@ -530,7 +530,7 @@ cfgenius::cond! {
                 }
             }
 
-            fn allocate(&self, size: usize) -> Result<(), Error> {
+            fn allocate(&self, size: usize) -> Result<(), AsmError> {
                 unsafe {
                     if libc::ftruncate(self.fd, size as _) != 0 {
                         return Err(error_from_errno());
@@ -552,7 +552,7 @@ cfgenius::cond! {
 
 cfgenius::cond! {
     if macro(vm_shm_detect) {
-        fn detect_anonymous_memory_strategy() -> Result<AnonymousMemoryStrategy, Error> {
+        fn detect_anonymous_memory_strategy() -> Result<AnonymousMemoryStrategy, AsmError> {
             let mut anon_mem = AnonymousMemory::new();
             let vm_info = info();
 
@@ -579,7 +579,7 @@ cfgenius::cond! {
 cfgenius::cond! {
     if cfg(not(windows)) {
         #[allow(unreachable_code)]
-        pub fn get_anonymous_memory_strategy() -> Result<AnonymousMemoryStrategy, Error> {
+        pub fn get_anonymous_memory_strategy() -> Result<AnonymousMemoryStrategy, AsmError> {
             cfgenius::cond! {
                 if macro(vm_shm_detect) {
                     use core::sync::atomic::AtomicU8;
@@ -715,9 +715,9 @@ fn map_memory(
     memory_flags: MemoryFlags,
     fd: i32,
     offset: libc::off_t,
-) -> Result<*mut u8, Error> {
+) -> Result<*mut u8, AsmError> {
     if size == 0 {
-        return Err(Error::InvalidArgument);
+        return Err(AsmError::InvalidArgument);
     }
 
     let protection = mm_prot_from_memory_flags(memory_flags);
@@ -750,9 +750,9 @@ fn map_memory(
     }
 }
 
-fn unmap_memory(ptr: *mut u8, size: usize) -> Result<(), Error> {
+fn unmap_memory(ptr: *mut u8, size: usize) -> Result<(), AsmError> {
     if size == 0 {
-        return Err(Error::InvalidArgument);
+        return Err(AsmError::InvalidArgument);
     }
 
     unsafe {
@@ -764,15 +764,15 @@ fn unmap_memory(ptr: *mut u8, size: usize) -> Result<(), Error> {
     }
 }
 
-pub fn alloc(size: usize, memory_flags: MemoryFlags) -> Result<*mut u8, Error> {
+pub fn alloc(size: usize, memory_flags: MemoryFlags) -> Result<*mut u8, AsmError> {
     map_memory(size, memory_flags, -1, 0)
 }
 
-pub fn release(ptr: *mut u8, size: usize) -> Result<(), Error> {
+pub fn release(ptr: *mut u8, size: usize) -> Result<(), AsmError> {
     unmap_memory(ptr, size)
 }
 
-pub fn protect(p: *mut u8, size: usize, memory_flags: MemoryFlags) -> Result<(), Error> {
+pub fn protect(p: *mut u8, size: usize, memory_flags: MemoryFlags) -> Result<(), AsmError> {
     let protection = mm_prot_from_memory_flags(memory_flags);
 
     unsafe {
@@ -784,7 +784,7 @@ pub fn protect(p: *mut u8, size: usize, memory_flags: MemoryFlags) -> Result<(),
     }
 }
 
-fn unmap_dual_mapping(dm: &mut DualMapping, size: usize) -> Result<(), Error> {
+fn unmap_dual_mapping(dm: &mut DualMapping, size: usize) -> Result<(), AsmError> {
     let err1 = unmap_memory(dm.rx as _, size);
     let mut err2 = Ok(());
 
@@ -811,14 +811,14 @@ fn unmap_dual_mapping(dm: &mut DualMapping, size: usize) -> Result<(), Error> {
 /// release the memory returned by `alloc_dual_mapping()` as that would fail on Windows.
 ///
 /// Both pointers in `dm` would be set to `null` if the function fails.
-pub fn alloc_dual_mapping(size: usize, memory_flags: MemoryFlags) -> Result<DualMapping, Error> {
+pub fn alloc_dual_mapping(size: usize, memory_flags: MemoryFlags) -> Result<DualMapping, AsmError> {
     let mut dm = DualMapping {
         rx: core::ptr::null_mut(),
         rw: core::ptr::null_mut(),
     };
 
     if size as isize <= 0 {
-        return Err(Error::InvalidArgument);
+        return Err(AsmError::InvalidArgument);
     }
 
     let mut prefer_tmp_over_dev_shm = memory_flags.contains(MemoryFlags::MAPPING_PREFER_TMP);
@@ -865,7 +865,7 @@ pub fn alloc_dual_mapping(size: usize, memory_flags: MemoryFlags) -> Result<Dual
 /// Releases virtual memory mapping previously allocated by [alloc_dual_mapping()](alloc_dual_mapping).
 ///
 /// Both pointers in `dm` would be set to `nullptr` if the function succeeds.
-pub fn release_dual_mapping(dm: &mut DualMapping, size: usize) -> Result<(), Error> {
+pub fn release_dual_mapping(dm: &mut DualMapping, size: usize) -> Result<(), AsmError> {
     unmap_dual_mapping(dm, size)
 }
 
@@ -1096,9 +1096,9 @@ cfgenius::cond! {
             access
         }
 
-        pub fn alloc(size: usize, memory_flags: MemoryFlags) -> Result<*mut u8, Error> {
+        pub fn alloc(size: usize, memory_flags: MemoryFlags) -> Result<*mut u8, AsmError> {
             if size == 0 {
-                return Err(Error::InvalidArgument)
+                return Err(AsmError::InvalidArgument)
             }
 
             unsafe {
@@ -1106,28 +1106,28 @@ cfgenius::cond! {
                 let result = VirtualAlloc(core::ptr::null_mut(), size, MEM_COMMIT | MEM_RESERVE, protect);
 
                 if result.is_null() {
-                    return Err(Error::OutOfMemory)
+                    return Err(AsmError::OutOfMemory)
                 }
 
                 Ok(result as *mut u8)
             }
         }
 
-        pub fn release(ptr: *mut u8, size: usize) -> Result<(), Error> {
+        pub fn release(ptr: *mut u8, size: usize) -> Result<(), AsmError> {
             if size == 0 || ptr.is_null() {
-                return Err(Error::InvalidArgument)
+                return Err(AsmError::InvalidArgument)
             }
 
             unsafe {
                 if VirtualFree(ptr as *mut _, 0, MEM_RELEASE) == 0 {
-                    return Err(Error::InvalidArgument)
+                    return Err(AsmError::InvalidArgument)
                 }
             }
 
             Ok(())
         }
 
-        pub fn protect(p: *mut u8, size: usize, memory_flags: MemoryFlags) -> Result<(), Error> {
+        pub fn protect(p: *mut u8, size: usize, memory_flags: MemoryFlags) -> Result<(), AsmError> {
             let protect_flags = protect_flags_from_memory_flags(memory_flags);
             let mut old_flags = 0;
 
@@ -1136,13 +1136,13 @@ cfgenius::cond! {
                     return Ok(())
                 }
 
-                Err(Error::InvalidArgument)
+                Err(AsmError::InvalidArgument)
             }
         }
 
-        pub fn alloc_dual_mapping(size: usize, memory_flags: MemoryFlags) -> Result<DualMapping, Error> {
+        pub fn alloc_dual_mapping(size: usize, memory_flags: MemoryFlags) -> Result<DualMapping, AsmError> {
             if size == 0 {
-                return Err(Error::InvalidArgument)
+                return Err(AsmError::InvalidArgument)
             }
 
             let mut handle = ScopedHandle::new();
@@ -1158,7 +1158,7 @@ cfgenius::cond! {
                 );
 
                 if handle.value.is_null() {
-                    return Err(Error::OutOfMemory);
+                    return Err(AsmError::OutOfMemory);
                 }
 
                 let mut ptr = [core::ptr::null_mut(), core::ptr::null_mut()];
@@ -1173,7 +1173,7 @@ cfgenius::cond! {
                             UnmapViewOfFile(ptr[0]);
                         }
 
-                        return Err(Error::OutOfMemory);
+                        return Err(AsmError::OutOfMemory);
                     }
                 }
 
@@ -1184,7 +1184,7 @@ cfgenius::cond! {
             }
         }
 
-        pub fn release_dual_mapping(dm: &mut DualMapping, _size: usize) -> Result<(), Error> {
+        pub fn release_dual_mapping(dm: &mut DualMapping, _size: usize) -> Result<(), AsmError> {
             let mut failed = false;
 
             unsafe {
@@ -1197,7 +1197,7 @@ cfgenius::cond! {
                 }
 
                 if failed {
-                    return Err(Error::InvalidArgument);
+                    return Err(AsmError::InvalidArgument);
                 }
 
                 dm.rx = core::ptr::null_mut();

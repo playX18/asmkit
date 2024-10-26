@@ -576,7 +576,7 @@ impl Immediate {
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
-pub struct Reg(u32);
+pub struct Reg(pub u32);
 
 impl Reg {
     pub const fn encode(self) -> u32 {

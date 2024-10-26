@@ -1,4 +1,5 @@
 use crate::assembler::assembler::BaseAssembler;
+use crate::assembler::binemit::{Label, LabelUse};
 use crate::assembler::codeholder::CodeBuffer;
 use crate::encdec::riscv::*;
 use crate::AsmError;
@@ -56,6 +57,27 @@ impl<'a> Assembler<'a> {
             },
         }
     }
+
+
+    pub fn jal(&mut self, rd: Reg, label: Label) -> Result<(), AsmError> {
+        let offset = self.offset();
+        self.buffer.use_label_at_offset(offset, label, LabelUse::RVJal20);
+        self.base.jal(rd, 0)
+    }
+
+    pub fn beq(&mut self, rs1: Reg, rs2: Reg, label: Label) -> Result<(), AsmError> {
+        let offset = self.offset();
+        self.buffer.use_label_at_offset(offset, label, LabelUse::RVB12);
+        self.base.beq(0, rs1, rs2)
+    }
+}
+
+const fn sext<const B: i64>(val: i64) -> i64 {
+    (val << (64 - B)) >> (64 - B)
+}
+
+const fn sext_(val: i64, b: i64) -> i64 {
+    (val << (64 - b)) >> (64 - b)
 }
 
 impl<'a> core::ops::Deref for Assembler<'a> {

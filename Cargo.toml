@@ -9,6 +9,7 @@ libc = "0.2"
 cfgenius = "*"
 intrusive-collections = "0.9"
 errno = "*"
+capstone = "*"
 once_cell = "*"
 [features]
 default = ["riscv", "x86-v1", "x86-v2", "assembler"]

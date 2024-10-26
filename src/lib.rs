@@ -4,7 +4,6 @@ extern crate alloc;
 pub mod assembler;
 
 pub mod encdec;
-pub mod target;
 pub mod util;
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
@@ -12,4 +11,8 @@ pub enum AsmError {
     InvalidOperand,
     InvalidInstruction,
     OutOfMemory,
+    InvalidState,
+    TooManyHandles,
+    InvalidArgument,
+    FailedToOpenAnonymousMemory
 }

@@ -1,6 +1,6 @@
 use crate::encdec::FormatterOutput;
 
-use super::{decode::Instruction, Encoding, Opcode, OPCODE_STR};
+use super::{decode::{Decoder, Instruction}, Encoding, Opcode, OPCODE_STR};
 
 pub struct Formatter {
     abi_names: bool,
@@ -128,7 +128,7 @@ impl Formatter {
                 out.write_str(" ");
                 self.write_reg(out, false, false, inst.value.rs1());
                 let addr =
-                    inst.address as isize + inst.len as isize + inst.value.bimm12lohi() as isize;
+                    inst.address as isize + inst.value.bimm12lohi() as isize;
                 out.write_fmt(format_args!("{:x}", addr));
             }
 
@@ -138,7 +138,7 @@ impl Formatter {
                 out.write_str(", ");
                 self.write_reg(out, false, false, inst.value.rs2());
                 let addr =
-                    inst.address as isize + inst.len as isize + inst.value.bimm12lohi() as isize;
+                    inst.address as isize + inst.value.bimm12lohi() as isize;
                 out.write_fmt(format_args!("{:x}", addr));
             }
 
@@ -146,7 +146,7 @@ impl Formatter {
                 out.write_str(" ");
                 self.write_reg(out, false, false, inst.value.rs2());
                 let addr =
-                    inst.address as isize + inst.len as isize + inst.value.bimm12lohi() as isize;
+                    inst.address as isize + inst.value.bimm12lohi() as isize;
                 out.write_fmt(format_args!("{:x}", addr));
             }
 
@@ -156,14 +156,14 @@ impl Formatter {
                 out.write_str(", ");
                 self.write_reg(out, false, false, inst.value.rs1());
                 let addr =
-                    inst.address as isize + inst.len as isize + inst.value.bimm12lohi() as isize;
+                    inst.address as isize + inst.value.bimm12lohi() as isize;
                 out.write_fmt(format_args!("{:x}", addr));
             }
 
             Encoding::CImm12 => {
                 out.write_str(" ");
                 let addr =
-                    inst.address as isize + inst.len as isize + inst.value.c_imm12() as isize;
+                    inst.address as isize + inst.value.c_imm12() as isize;
                 out.write_fmt(format_args!("{:x}", addr));
             }
 
@@ -258,10 +258,17 @@ impl Formatter {
             }
 
             Encoding::Jimm20 => {
-                let addr = inst.address as i64 + inst.len as i64 + inst.value.jimm20() as i64;
+                out.write_str(" ");
+                let addr = inst.address as i64 + inst.value.jimm20() as i64;
                 out.write_fmt(format_args!("{:x}", addr));
             }
-
+            Encoding::RdJimm20 => {
+                out.write_str(" ");
+                self.write_reg(out, false, false, inst.value.rd());
+                out.write_str(", ");
+                let addr = inst.address as i64 + inst.value.jimm20() as i64;
+                out.write_fmt(format_args!("{:x}", addr));
+            }
             Encoding::MopRT30MopRT2726MopRT2120RdRs1 => {
                 out.write_str(" ");
                 self.write_reg(out, false, false, inst.value.rd());
@@ -729,5 +736,22 @@ impl Formatter {
         out.write_str(" ");
         self.write_reg(out, true, false, inst.value.rd());
         out.write_fmt(format_args!(", {}", c));
+    }
+}
+
+
+pub fn pretty_disassembler<W: FormatterOutput>(out: &mut W, bitness: usize, data: &[u8], address: u64) {
+    let mut decoder = Decoder::new(bitness, data, address);
+    let fmt = Formatter::new();
+
+    let mut inst = Instruction::default();
+
+
+    while decoder.can_decode() {
+        decoder.decode_out(&mut inst);
+
+        out.write_fmt(format_args!("{:016x}: {:08x}  ", inst.address, inst.value.value));
+
+        fmt.format(out, &inst);
     }
 }

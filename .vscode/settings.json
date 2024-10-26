@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "compare": "cpp",
+        "cstdint": "cpp",
+        "netfwd": "cpp"
+    }
+}

@@ -1,6 +1,0 @@
-[submodule "submodules/riscv-opcodes"]
-	path = submodules/riscv-opcodes
-	url = https://github.com/riscv/riscv-opcodes
-[submodule "submodules/fadec"]
-	path = submodules/fadec
-	url = https://github.com/aengelke/fadec
