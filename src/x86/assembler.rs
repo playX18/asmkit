@@ -16,6 +16,7 @@ pub struct Assembler<'a> {
     buffer: &'a mut CodeBuffer,
     flags: u64,
     extra_reg: Reg,
+    last_error: Option<AsmError>,
 }
 
 const RC_RN: u64 = 0x0000000;
@@ -496,6 +497,7 @@ impl<'a> Assembler<'a> {
             buffer: buf,
             extra_reg: Reg::new(),
             flags: 0,
+            last_error: None,
         }
     }
 
@@ -583,7 +585,7 @@ impl<'a> Assembler<'a> {
         self.buffer.label_offset(label)
     }
 
-    fn encode_opcode(&mut self, opc: u64, epfx: u64) -> Result<(), AsmError> {
+    fn encode_opcode(&mut self, opc: u64, epfx: u64) -> bool {
         if opc & OPC_SEG_MSK != 0 {
             self.buffer
                 .put1(((0x65643e362e2600u64 >> (8 * ((opc >> 29) & 7))) & 0xff) as u8);
@@ -635,7 +637,8 @@ impl<'a> Assembler<'a> {
             self.buffer.put1(b3);
         } else if opc & OPC_VEXL0 != 0 {
             if (epfx & (EPFX_REXR4 | EPFX_REXX4 | EPFX_REXB4 | (0x10 << EPFX_VVVV_IDX))) != 0 {
-                return Err(AsmError::InvalidPrefix);
+                self.last_error = Some(AsmError::InvalidPrefix);
+                return true;
             }
 
             let vex3 = (opc & (OPC_REXW | 0x20000)) != 0 || (epfx & (EPFX_REXX | EPFX_REXB)) != 0;
@@ -712,38 +715,41 @@ impl<'a> Assembler<'a> {
         if (opc & 0x8000) != 0 {
             self.buffer.put1(((opc >> 8) & 0xff) as u8);
         }
-
-        Ok(())
+        false
     }
 
-    fn encode_imm(&mut self, imm: Operand, immsz: usize) -> Result<(), AsmError> {
+    fn encode_imm(&mut self, imm: Operand, immsz: usize) -> bool {
         if !op_imm_n(imm, immsz) {
-            return Err(AsmError::InvalidOperand);
+            self.last_error = Some(AsmError::InvalidOperand);
+            return true;
         }
         let imm = imm.as_::<Imm>().value() as u64;
         for i in 0..immsz {
             self.buffer.put1((imm >> 8 * i) as u8);
         }
 
-        Ok(())
+        false
     }
 
-    fn encode_operand(&mut self, opc: u64, mut epfx: u64, op0: Operand) -> Result<(), AsmError> {
+    fn encode_operand(&mut self, opc: u64, mut epfx: u64, op0: Operand) {
         if op0.id() & 0x8 != 0 {
             epfx |= EPFX_REXB;
         }
 
         let has_rex = opc & OPC_REXW != 0 || (epfx & EPFX_REX_MSK) != 0;
         if has_rex & op0.is_reg_type_of(RegType::Gp8Hi) {
-            return Err(AsmError::InvalidOperand);
+            self.last_error = Some(AsmError::InvalidOperand);
+            return;
         }
 
-        self.encode_opcode(opc, epfx)?;
+        let is_err = self.encode_opcode(opc, epfx);
+        if is_err {
+            return;
+        }
         let ix = self.buffer.cur_offset() as usize - 1;
         let byte = self.buffer.data()[ix];
 
         self.buffer.data_mut()[ix] = (byte & 0xf8) | (op0.id() & 0x7) as u8;
-        Ok(())
     }
 
     fn encode_memory(
@@ -753,7 +759,7 @@ impl<'a> Assembler<'a> {
         op0: Operand,
         op1: Operand,
         immsz: usize,
-    ) -> Result<(), AsmError> {
+    ) -> bool {
         if op0.is_reg() && op0.id() & 0x8 != 0 {
             epfx |= EPFX_REXB;
         }
@@ -792,13 +798,15 @@ impl<'a> Assembler<'a> {
 
         let has_rex = opc & (OPC_REXW | OPC_VEXL0 | OPC_EVEXL0) != 0 || (epfx & EPFX_REX_MSK) != 0;
         if has_rex && (op0.is_reg_type_of(RegType::Gp8Hi) || op1.is_reg_type_of(RegType::Gp8Hi)) {
-            return Err(AsmError::InvalidOperand);
+            self.last_error = Some(AsmError::InvalidOperand);
+            return true;
         }
 
         if epfx & (EPFX_EVEX | EPFX_REXB4 | EPFX_REXX4 | EPFX_REXR4 | (0x10 << EPFX_VVVV_IDX)) != 0
         {
             if opc & OPC_EVEXL0 == 0 {
-                return Err(AsmError::InvalidPrefix);
+                self.last_error = Some(AsmError::InvalidPrefix);
+                return true;
             }
         } else if opc & OPC_DOWNGRADE_VEX != 0 {
             // downgrade EVEX to VEX
@@ -810,11 +818,13 @@ impl<'a> Assembler<'a> {
         }
 
         if op0.is_reg() {
-            self.encode_opcode(opc, epfx)?;
+            if self.encode_opcode(opc, epfx) {
+                return true;
+            }
 
             self.buffer
                 .put1(0xc0 | ((op1.id() & 7) << 3) as u8 | (op0.id() & 7) as u8);
-            return Ok(());
+            return false;
         }
 
         let opcsz = opc_size(opc, epfx);
@@ -830,36 +840,41 @@ impl<'a> Assembler<'a> {
         let mem = op0.as_::<Mem>();
         /*if mem.index_id() == 0 && !mem.has_shift() {
 
-            return Err(AsmError::InvalidOperand);
+            self.last_error = Some(AsmError::InvalidOperand); return;
         }
 
         if !mem.has_index() && opc & OPC_VSIB != 0 {
-            return Err(AsmError::InvalidOperand);
+            self.last_error = Some(AsmError::InvalidOperand); return;
         }*/
 
         if mem.has_index() {
             if opc & OPC_VSIB != 0 {
                 if mem.index_type() != RegType::X86Xmm {
-                    return Err(AsmError::InvalidArgument);
+                    self.last_error = Some(AsmError::InvalidOperand);
+                    return true;
                 }
 
                 if opc & OPC_EVEXL0 != 0 && opc & OPC_MASK_MSK == 0 {
-                    return Err(AsmError::InvalidOperand);
+                    self.last_error = Some(AsmError::InvalidOperand);
+                    return true;
                 }
             } else {
                 if !matches!(mem.index_type(), RegType::Gp32 | RegType::Gp64) {
-                    return Err(AsmError::InvalidOperand);
+                    self.last_error = Some(AsmError::InvalidOperand);
+                    return true;
                 }
 
                 if mem.index_id() == 4 {
-                    return Err(AsmError::InvalidOperand);
+                    self.last_error = Some(AsmError::InvalidOperand);
+                    return true;
                 }
             }
 
             idx = mem.index_id() & 7;
             let scalabs = mem.shift();
             if (scalabs & (scalabs.wrapping_sub(1))) != 0 {
-                return Err(AsmError::InvalidOperand);
+                self.last_error = Some(AsmError::InvalidOperand);
+                return true;
             }
             scale = if scalabs & 0xa != 0 { 1 } else { 0 } | if scalabs & 0xf != 0 { 2 } else { 0 };
             withsib = true;
@@ -876,19 +891,22 @@ impl<'a> Assembler<'a> {
             rm = 5;
             dispsz = 4;
             if withsib {
-                return Err(AsmError::InvalidOperand);
+                self.last_error = Some(AsmError::InvalidOperand);
+                return true;
             }
         } else if mem.has_base_label() {
             rm = 5;
             if withsib {
-                return Err(AsmError::InvalidOperand);
+                self.last_error = Some(AsmError::InvalidOperand);
+                return true;
             }
             dispsz = 4;
             label_use = Some((mem.base_id(), LabelUse::X86JmpRel32));
         } else if mem.has_base_sym() {
             rm = 5;
             if withsib {
-                return Err(AsmError::InvalidOperand);
+                self.last_error = Some(AsmError::InvalidOperand);
+                return true;
             }
             dispsz = 4;
             let sym = Sym::from_id(mem.base_id());
@@ -901,7 +919,8 @@ impl<'a> Assembler<'a> {
             }
         } else {
             if !matches!(mem.base_type(), RegType::Gp32 | RegType::Gp64) {
-                return Err(AsmError::InvalidOperand);
+                self.last_error = Some(AsmError::InvalidOperand);
+                return true;
             }
 
             rm = mem.base_id() & 0x7;
@@ -933,11 +952,13 @@ impl<'a> Assembler<'a> {
         }
 
         if opcsz + 1 + (rm == 4) as usize + dispsz + immsz > 15 {
-            return Err(AsmError::InvalidOperand);
+            self.last_error = Some(AsmError::InvalidOperand);
+            return true;
         }
 
-        self.encode_opcode(opc, epfx)?;
-
+        if self.encode_opcode(opc, epfx) {
+            return true;
+        }
         self.buffer.put1(mod_ as u8 | (reg << 3) as u8 | rm as u8);
         if rm == 4 {
             self.buffer
@@ -959,14 +980,7 @@ impl<'a> Assembler<'a> {
 }
 
 impl<'a> Emitter for Assembler<'a> {
-    fn emit(
-        &mut self,
-        opcode: i64,
-        op0: &Operand,
-        op1: &Operand,
-        op2: &Operand,
-        op3: &Operand,
-    ) -> Result<(), crate::AsmError> {
+    fn emit(&mut self, opcode: i64, op0: &Operand, op1: &Operand, op2: &Operand, op3: &Operand) {
         let mut opc = opcode as u64;
         opc |= self.flags;
         self.flags = 0;
@@ -977,13 +991,15 @@ impl<'a> Emitter for Assembler<'a> {
         if opc & OPC_GPH_OP0 != 0 && op0.is_reg() && op0.id() >= Gp::SP {
             epfx |= EPFX_REX;
         } else if opc & OPC_GPH_OP0 == 0 && op0.is_reg_type_of(RegType::Gp8Hi) {
-            return Err(AsmError::InvalidOperand);
+            self.last_error = Some(AsmError::InvalidOperand);
+            return;
         }
 
         if opc & OPC_GPH_OP1 != 0 && op1.is_reg() && op1.id() >= Gp::SP {
             epfx |= EPFX_REX;
         } else if opc & OPC_GPH_OP1 == 0 && op1.is_reg_type_of(RegType::Gp8Hi) {
-            return Err(AsmError::InvalidOperand);
+            self.last_error = Some(AsmError::InvalidOperand);
+            return;
         }
 
         loop {
@@ -1001,7 +1017,8 @@ impl<'a> Emitter for Assembler<'a> {
                         opc = ALT_TAB[alt as usize] as u64;
                         continue;
                     } else {
-                        return Err($err);
+                        self.last_error = Some($err);
+                        return;
                     }
                 };
             }
@@ -1039,7 +1056,8 @@ impl<'a> Emitter for Assembler<'a> {
 
                 if ei.immctl == 3 {
                     if !i.is_reg_type_of(RegType::Vec128) {
-                        return Err(AsmError::InvalidOperand);
+                        self.last_error = Some(AsmError::InvalidOperand);
+                        return;
                     }
 
                     imm = ((i.id() as u64) << 4) as i64;
@@ -1053,7 +1071,8 @@ impl<'a> Emitter for Assembler<'a> {
                         if immsz == 1 && opc >> 56 != 0 {
                             next!();
                         } else if immsz == 1 {
-                            return Err(AsmError::InvalidInstruction);
+                            self.last_error = Some(AsmError::InvalidInstruction);
+                            return;
                         }
                         let distance = self.buffer.symbol_distance(sym);
                         reloc = Some((
@@ -1088,7 +1107,7 @@ impl<'a> Emitter for Assembler<'a> {
             }
 
             if enc == Encoding::R as u64 {
-                self.encode_memory(opc, epfx, Operand::new(), ops[0], immsz as _)?;
+                self.encode_memory(opc, epfx, Operand::new(), ops[0], immsz as _);
             } else if ei.modrm != 0 {
                 let modreg = if ei.modreg != 0 {
                     ops[ei.modreg as usize ^ 3]
@@ -1100,15 +1119,15 @@ impl<'a> Emitter for Assembler<'a> {
                     epfx |= (ops[ei.vexreg as usize ^ 3].id() as u64) << EPFX_VVVV_IDX;
                 }
 
-                if let Err(err) =
-                    self.encode_memory(opc, epfx, ops[ei.modrm as usize ^ 3], modreg, 0)
-                {
-                    next!(err);
+                if self.encode_memory(opc, epfx, ops[ei.modrm as usize ^ 3], modreg, 0) {
+                    next!(self.last_error.take().unwrap());
                 }
             } else if ei.modreg != 0 {
-                self.encode_operand(opc, epfx, ops[ei.modreg as usize ^ 3])?;
+                self.encode_operand(opc, epfx, ops[ei.modreg as usize ^ 3]);
             } else {
-                self.encode_opcode(opc, epfx)?;
+                if self.encode_opcode(opc, epfx) {
+                    return;
+                }
             }
 
             if ei.immctl >= 2 {
@@ -1126,12 +1145,11 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer
                         .use_label_at_offset(offset, Label::from_id(label_id), label_use);
                 }
-                self.encode_imm(*crate::core::operand::imm(imm).as_operand(), immsz as _)?;
+                self.encode_imm(*crate::core::operand::imm(imm).as_operand(), immsz as _);
             }
             self.flags = 0;
             break;
         }
-        Ok(())
     }
 }
 

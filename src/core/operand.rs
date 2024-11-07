@@ -127,6 +127,12 @@ impl RegType {
     pub const X86Ymm: Self = Self::Vec256;
     pub const X86Zmm: Self = Self::Vec512;
     pub const X86KReg: Self = Self::Mask;
+
+    pub const RISCVPC: Self = Self::PC;
+    pub const RISCV64Gp: Self = Self::Gp64;
+    pub const RISCV32Gp: Self = Self::Gp32;
+    pub const RISCVFp: Self = Self::Vec64;
+    pub const RISCVVec: Self = Self::VecNLen;
 }
 
 #[derive(TryFrom, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]

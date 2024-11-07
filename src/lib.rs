@@ -1,14 +1,10 @@
-//#![no_std]
+#![no_std]
 extern crate alloc;
 
-//#[cfg(feature = "assembler")]
-//pub mod assembler;
-
-pub mod x86;
-
-//pub mod encdec;
 pub mod core;
+pub mod riscv;
 pub mod util;
+pub mod x86;
 
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
 pub enum AsmError {

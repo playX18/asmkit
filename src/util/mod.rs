@@ -101,5 +101,5 @@ pub fn bit_vector_index_of(buf: &[u32], start: usize, value: bool) -> usize {
     }
 }
 
-pub mod virtual_memory;
 pub mod os;
+pub mod virtual_memory;

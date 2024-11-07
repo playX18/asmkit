@@ -543,7 +543,7 @@ def make_encoders(instr_dict):
     ```
     """
     code = ""
-    asm_code = "impl RawRISCVAssembler {\n"
+    asm_code = "pub trait EmitterExplicit: Emitter {\n"
     imms = immediates()
     for i in instr_dict:
         args: list[str] = instr_dict[i]["variable_fields"]
@@ -589,22 +589,15 @@ def make_encoders(instr_dict):
             typ = 'u16'
         else: 
             typ = 'u32'
-
+        nargs = len(args_types)
+        rem = 4 - nargs 
         code += f"""
-pub const fn {i.lower()}({", ".join(name.lower() + f": {atyp}" for name, atyp, _ in args_types)}) -> {typ} {{
-    let mut inst = Inst::new(Opcode::{i.upper().replace("_", "")}).encode();
-    {"\n    ".join(f"inst.value |= {encoder};" for _, _, encoder in args_types)} 
-    inst.value as _
-}}
+
         """
 
         asm_code += f"""
-    pub fn {i.lower()}(&mut self, {", ".join(name.lower() + f": {atyp}" for name, atyp, _ in args_types)}) -> Result<(), AsmError> {{
-        let inst = {i.lower()}({", ".join(name.lower() for name, _, _ in args_types)});
-
-        self.emit{"_compressed" if typ == "u16" else ""}(inst);
-
-        Ok(())
+    pub fn {i.lower()}(&mut self, {", ".join(f"op{i}: impl OperandCast" for i in range(nargs))}) -> Result<(), AsmError> {{
+        self.emit_n(Opcode::{i.upper().replace("_", "")} as i64, &[{','.join(f"op{i}.as_operand()" for i in range(nargs))}])
     }}
         """
 

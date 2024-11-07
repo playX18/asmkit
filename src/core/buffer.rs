@@ -2,6 +2,8 @@ use alloc::{borrow::Cow, collections::BinaryHeap, vec::Vec};
 
 use smallvec::SmallVec;
 
+use crate::riscv::opcodes::{Inst, InstructionValue, Opcode};
+
 use super::{
     operand::{Label, Sym},
     target::Environment,
@@ -313,7 +315,6 @@ impl CodeBuffer {
             if veneer_required {
                 self.emit_veneer(label, offset, kind);
             } else {
-                
                 kind.patch(buffer, start, label_offset);
             }
         } else {
@@ -323,7 +324,6 @@ impl CodeBuffer {
             self.emit_veneer(label, offset, kind);
         }
     }
-
 
     /// Emits a "veneer" the `kind` code at `offset` to jump to `label`.
     ///
@@ -367,7 +367,7 @@ impl CodeBuffer {
         // Post-invariant: as for `put1()`.
     }
 
-       /// Returns the maximal offset that islands can reach if `distance` more
+    /// Returns the maximal offset that islands can reach if `distance` more
     /// bytes are appended.
     ///
     /// This is used to determine if veneers need insertions since jumps that
@@ -468,7 +468,6 @@ impl CodeBuffer {
             alignment,
         }
     }
-
 }
 
 #[derive(Clone, PartialEq, Eq, Debug, Hash)]
@@ -673,6 +672,8 @@ pub enum LabelUse {
 
     /// 11-bit PC-relative jump offset. Equivalent to the `RVC_JUMP` relocation
     RVCJump,
+    /// 9-bit PC-relative branch offset.
+    RVCB9,
 }
 
 impl LabelUse {
@@ -686,6 +687,7 @@ impl LabelUse {
                 (imm20_max + imm12_max) as _
             }
             LabelUse::RVB12 => ((1 << 11) - 1) * 2,
+            LabelUse::RVCB9 => ((1 << 8) - 1) * 2,
             LabelUse::RVCJump => ((1 << 10) - 1) * 2,
             LabelUse::X86JmpRel32 => i32::MAX as _,
         }
@@ -705,7 +707,7 @@ impl LabelUse {
     pub const fn patch_size(&self) -> usize {
         match self {
             Self::X86JmpRel32 => 4,
-            Self::RVCJump => 2,
+            Self::RVCJump | Self::RVCB9 => 2,
             Self::RVJal20 | Self::RVB12 | Self::RVPCRelHi20 | Self::RVPCRelLo12I => 4,
             Self::RVPCRel32 => 8,
         }
@@ -715,7 +717,7 @@ impl LabelUse {
         match self {
             Self::X86JmpRel32 => 1,
             Self::RVCJump => 4,
-            Self::RVJal20 | Self::RVB12 | Self::RVPCRelHi20 | Self::RVPCRelLo12I => 4,
+            Self::RVJal20 | Self::RVB12 | Self::RVCB9 | Self::RVPCRelHi20 | Self::RVPCRelLo12I => 4,
             Self::RVPCRel32 => 4,
         }
     }
@@ -733,7 +735,7 @@ impl LabelUse {
             _ => unreachable!(),
         }
     }
-    
+
     pub fn generate_veneer(
         &self,
         _buffer: &mut [u8],
@@ -779,7 +781,7 @@ impl LabelUse {
         match self {
             Self::X86JmpRel32 => {
                 let addend = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
-                println!("{} {}" ,pc_reli, addend);
+
                 let value = pc_rel.wrapping_add(addend).wrapping_sub(4);
 
                 buffer.copy_from_slice(&value.to_le_bytes());
@@ -795,12 +797,20 @@ impl LabelUse {
                 buffer[0..4].clone_from_slice(&u32::to_le_bytes(insn | v));
             }
 
-            /*Self::RVPCRel32 => {
+            Self::RVPCRel32 => {
                 let (imm20, imm12) = generate_imm(pc_rel as u64);
                 let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
                 let insn2 = u32::from_le_bytes([buffer[4], buffer[5], buffer[6], buffer[7]]);
-                buffer[0..4].copy_from_slice(&(insn | auipc(ZERO, 0) | imm20).to_le_bytes());
-                buffer[4..8].copy_from_slice(&(insn2 | jalr(ZERO, ZERO, 0) | imm12).to_le_bytes());
+
+                let auipc = Inst::new(Opcode::AUIPC).encode().set_imm20(0);
+                let jalr = Inst::new(Opcode::JALR)
+                    .encode()
+                    .set_rd(0)
+                    .set_rs1(0)
+                    .set_imm12(0);
+
+                buffer[0..4].copy_from_slice(&(insn | auipc.value | imm20).to_le_bytes());
+                buffer[4..8].copy_from_slice(&(insn2 | jalr.value | imm12).to_le_bytes());
             }
 
             Self::RVB12 => {
@@ -838,18 +848,66 @@ impl LabelUse {
                 // which is equivalent to offset = target_address - current_instruction_address + 4.
                 //
                 let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
-
-                buffer[0..4]
-                    .copy_from_slice(&(insn | addi(ZERO, ZERO, pc_rel as i32 + 4)).to_le_bytes());
+                let addi = Inst::new(Opcode::ADDI)
+                    .encode()
+                    .set_rd(0)
+                    .set_rs1(0)
+                    .set_imm12(pc_rel as i32 + 4);
+                buffer[0..4].copy_from_slice(&(insn | addi.value).to_le_bytes());
             }
 
             Self::RVCJump => {
-                debug_assert!(pc_rel & 1 == 1);
-                buffer[0..2].clone_from_slice(&c_j(pc_rel as _).to_le_bytes());
-            }*/
+                debug_assert!(pc_rel & 1 == 0);
+
+                let insn = Inst::new(Opcode::CJ).encode().set_c_imm12(pc_rel as _);
+                buffer[0..2].clone_from_slice(&(insn.value as u16).to_le_bytes());
+            }
             _ => todo!(),
         }
     }
+}
 
-    
+pub const fn is_imm12(val: i64) -> bool {
+    val >= -2048 && val <= 2047
+}
+
+pub(crate) fn generate_imm(value: u64) -> (u32, u32) {
+    if is_imm12(value as _) {
+        return (
+            0,
+            InstructionValue::new(0)
+                .set_imm12(value as i64 as i32)
+                .value,
+        );
+    }
+
+    let value = value as i64;
+
+    let mod_num = 4096i64;
+    let (imm20, imm12) = if value > 0 {
+        let mut imm20 = value / mod_num;
+        let mut imm12 = value % mod_num;
+
+        if imm12 >= 2048 {
+            imm12 -= mod_num;
+            imm20 += 1;
+        }
+
+        (imm20, imm12)
+    } else {
+        let value_abs = value.abs();
+        let imm20 = value_abs / mod_num;
+        let imm12 = value_abs % mod_num;
+        let mut imm20 = -imm20;
+        let mut imm12 = -imm12;
+        if imm12 < -2048 {
+            imm12 += mod_num;
+            imm20 -= 1;
+        }
+        (imm20, imm12)
+    };
+    (
+        InstructionValue::new(0).set_imm20(imm20 as _).value,
+        InstructionValue::new(0).set_imm12(imm12 as _).value,
+    )
 }
