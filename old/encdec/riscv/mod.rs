@@ -549,13 +549,17 @@ pub const fn encode_immediate(immediate: &[Immediate], imm: i32) -> u32 {
 }
 
 pub const fn decode_immediate(immediate: &[Immediate], op: u32) -> i32 {
-    let mut res = 0;
+    let mut res = 0u32;
     let mut i = 0;
     while i < immediate.len() {
         res |= immediate[i].decode(op);
         i += 1;
     }
-    res
+    res as _
+}
+
+pub fn is_immediate_valid(immediate: &[Immediate], imm: i32) -> bool {
+    immediate.iter().all(|i| i.is_valid(imm))
 }
 
 impl Immediate {
@@ -567,11 +571,14 @@ impl Immediate {
         (((imm >> self.position_in_immediate.1) as u32 & mask) << self.position_in_opcode.1) as u32
     }
 
-    pub const fn decode(&self, op: u32) -> i32 {
+    pub const fn decode(&self, op: u32) -> u32 {
         let bit_count = self.position_in_opcode.0 - self.position_in_opcode.1 + 1;
         let mask = (1u32 << bit_count) - 1;
-        (((op as u32 >> self.position_in_opcode.1) as u32 & mask) << self.position_in_immediate.1)
-            as i32
+        ((op as u32 >> self.position_in_opcode.1) as u32 & mask) << self.position_in_immediate.1
+    }
+
+    pub const fn is_valid(&self, imm: i32) -> bool {
+        self.decode(self.encode(imm)) as i32 == imm
     }
 }
 
@@ -593,7 +600,7 @@ impl VReg {
     }
 }
 
-include!(concat!(env!("OUT_DIR"), "/inst_rv.rs"));
+include!("inst.rs");
 pub mod regs {
     use super::*;
     pub const X0: Reg = Reg(0);

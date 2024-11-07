@@ -9,6 +9,7 @@ from itertools import product
 import re
 import struct
 from typing import NamedTuple, FrozenSet, List, Tuple, Union, Optional, ByteString
+from rustbuilder import *
 
 def to_camel_case(text):
     s = text.replace("-", " ").replace("_", " ")
@@ -153,10 +154,23 @@ OPKIND_SIZES = {
     "zd": 4, # z-immediate, but always 4-byte operand
     "zq": 8, # z-immediate, but always 8-byte operand
 }
+
+class Access:
+    read: bool
+    write: bool
+    zext: bool
+
+    def __init__(self):
+        self.read = False
+        self.write = False
+        self.zext = False
+
+decorator = re.compile(r"^([RWwXx])\:")
 class OpKind(NamedTuple):
+    
     regkind: str
     sizestr: str
-
+    access: Access | None
     SZ_OP = -1
     SZ_VEC = -2
     SZ_VEC_HALF = -3
@@ -181,9 +195,22 @@ class OpKind(NamedTuple):
     @property
     def size(self):
         return OPKIND_SIZES[self.sizestr]
+
     @classmethod
     def parse(cls, op):
-        return cls(op[0], op[1:])
+        #  Handle RWX decorators prefix "[RWwXx]:".
+        match = decorator.match(op)
+        access = Access()
+        if match: 
+            
+            x = match[0].upper()[:-1]
+            print(f"match access = {x}")
+            access.zext = x == 'W' or x == 'X'
+            access.read = x == 'R' or x == 'X'
+            access.write = x == 'W' or x == 'X'
+            print('hello?')
+            op = op[len(match[0]):]
+        return cls(op[0], op[1:], access)
 
     def __eq__(self, other):
         # Custom equality for canonicalization of kind/size.
@@ -208,6 +235,8 @@ class InstrDesc(NamedTuple):
         ("modrm", "MEM"): 0,
         ("imm", "MEM"): 0, ("imm", "IMM"): 0, ("imm", "XMM"): 0,
     }
+
+
     OPKIND_SIZES = {
         0: 0, 1: 1, 2: 2, 4: 3, 8: 4, 16: 5, 32: 6, 64: 7, 10: 0,
         # OpKind.SZ_OP: -2, OpKind.SZ_VEC: -3, OpKind.SZ_HALFVEC: -4,
@@ -299,6 +328,8 @@ class InstrDesc(NamedTuple):
                 opname = ENCODING_OPORDER[self.encoding][i]
                 extraflags[f"{opname}_size"] = sizes.index(sz)
                 extraflags[f"{opname}_ty"] = self.OPKIND_REGTYS[opname, opkind.kind]
+                if opkind.access.write:
+                    print(f"hi {mnem}")
 
         # Miscellaneous Flags
         if "VSIB" in self.flags:        extraflags["vsib"] = 1
@@ -315,7 +346,7 @@ class InstrDesc(NamedTuple):
         enc = flags._replace(**extraflags)._encode()
         enc = tuple((enc >> i) & 0xffff for i in range(0, 48, 16))
         # First 2 bytes are the mnemonic, last 6 bytes are the encoding.
-        return f"InstDesc::new(Opcode::{mnem if not mnem.startswith('3') else f"_{mnem}"}, {enc[0]}, {enc[1]}, {enc[2]})"
+        return f"InstDesc::new(Opcode::{mnem if not mnem.startswith('3') else "_" + mnem}, {enc[0]}, {enc[1]}, {enc[2]})"
 
 class EntryKind(Enum):
     NONE = 0x00
@@ -735,7 +766,7 @@ def decode_table(entries, args):
 
     defines = ["pub const DECODE_TABLE_OFFSET_%d: usize = %d;\n"%k for k in zip(modes, root_offsets)]
 
-    return "#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash, Default)]\npub enum Opcode {\n#[default]" + (",\n".join(decode_mnems_lines)) + "\n}", f"""// Auto-generated file -- do not modify!
+    return "#[derive(Copy, Clone, PartialEq, Eq, Hash, Default)]\npub enum Opcode {\n#[default]" + (",\n".join(decode_mnems_lines)) + "\n}", f"""// Auto-generated file -- do not modify!
 pub static DECODE_TABLE: &[u16] = &[
 {"".join(f"{e:#06x}," for e in table_data)}
 ];
@@ -763,11 +794,107 @@ class EncodeVariant(NamedTuple):
     evexdisp8scale: int = 0 # EVEX disp8 shift
     downgrade: int = 0 # 0 = none, 1 = to VEX, 2 = to VEX flipping REXW
 
+# generate a Rust match arm for `ots` e.g
+# `rrr` -> `[op0, op1, op2, rest @ ...] if op0.is_reg() && op1.is_reg() && op2.is_reg() && rest.iter().all(|op| op.is_none())`
+# `ri` -> `[op0, op1, rest @ ...] if op0.is_reg() && op1.is_imm() && rest.iter().alL(|op| op.is_none())`
 
+def match_ots(ots, optys, mnem:str):
+    match_code = "["
+    checks = []
+    arm = MatchArm(None, None, None)
+    pat = "["
+    for i, ot in enumerate(ots): 
+        pat += f"op{i}, "
+        checks.append(f"op{i}.is_{optys[i].lower()}()")
+    if mnem.startswith('LOCK_'):
+        checks.append(f"(flags & PF_LOCK) != 0")
+
+    if mnem.startswith("REPNZ"):
+        checks.append(f"(flags & PF_REPNZ) != 0")
+    if mnem.startswith("REP"):
+        checks.append(f"(flags & PF_REP) != 0")
+
+    pat += f"rest @ ...]"
+    where = f"if {' && ' .join(checks)} {'&&' if len(checks) != 0 else ''} rest.iter().all(|op| op.is_invalid())"
+    arm.pat = pat 
+    arm.where = where 
+    return arm
+
+def encode3_gen_legacy(main_block: Block, variant: EncodeVariant, opsize: int,supports_high_regs: list[int], imm_expr: str, imm_size_expr: str, has_idx: bool) -> Block:
+    opcode = variant.opcode
+    desc = variant.desc
+    flags = ENCODINGS[variant.desc.encoding]
+    block = Block()
+    rex_expr = "0" if opcode.rexw != "1" else "0x48"
+    for i in supports_high_regs:
+        rex_expr += f"|if op{i}.0 >= 4 && op{i}.0 <= 15 {{ 0x40 }} else {{ 0 }}"
+    if flags.modrm_idx:
+        
+        if opcode.modrm[0] == "m":
+            rex_expr += f"|if op{flags.modrm_idx^3}.mem_base().id() & 8 != 0 {{ 0x41 }} else {{ 0 }}"
+            rex_expr += f"|if op{flags.modrm_idx^3}.mem_idx().id() & 8 != 0 {{ 0x42 }} else {{ 0 }}"
+        elif desc.operands[flags.modrm_idx^3].kind in ("GP", "XMM"):
+            rex_expr += f"|if op{flags.modrm_idx^3}.id() & 8 != 0 {{ 0x41 }} else {{ 0 }}"
+        if flags.modreg_idx:
+            if desc.operands[flags.modreg_idx^3].kind in ("GP", "XMM", "CR", "DR"):
+                rex_expr += f"|if op{flags.modreg_idx^3}.id() & 8 != 0 {{ 0x44 }} else {{ 0 }}"
+    elif flags.modreg_idx: # O encoding
+        if desc.operands[flags.modreg_idx^3].kind in ("GP", "XMM"):
+            rex_expr += f"|if op{flags.modreg_idx^3}.id() & 8 != 0 {{ 0x41 }} else {{ 0 }}"
+
+    if rex_expr != "0":
+        block.line(f"let mut rex = {rex_expr};")
+    for i in supports_high_regs:
+        block.line(f"if rex != 0 && op_reg_gph(op{i}) {{ return Err(AsmError::InvalidOperand); }}")
+
+    if opcode.prefix == "LOCK":
+        block.line(f"inst.emit_u8(0xF0);")
+    if opsize == 16 or opcode.prefix == "66":
+        block.line("inst.emit_u8(0x66);")
+    if opcode.prefix in ("F2", "F3"):
+        block.line(f"inst.emit_u8(0x{opcode.prefix});")
+    if opcode.rexw == "1":
+        block.line(f"inst.emit_u8(rex as u8);")
+    elif rex_expr != "0":
+        block.line(f"if rex != 0 {{ inst.emit_u8(rex);}}")
+    if opcode.escape:
+        block.line(f"inst.emit_u8(0x0F);")
+        if opcode.escape == 2:
+            block.line(f"inst.emit_u8(0x38);")
+        elif opcode.escape == 3:
+            block.line("inst.emit_u8(0x3A);")
+    block.line(f"inst.emit_u8({opcode.opc:#x});")
+    if None not in opcode.modrm:
+        opcext = 0xc0 | opcode.modrm[1] << 3 | opcode.modrm[2]
+        block.line(f"inst.emit_u8({opcext:#x});")
+
+    if flags.modrm:
+        if flags.modreg_idx:
+            modreg = f"op{flags.modreg_idx^3}.0"
+        else:
+            modreg = opcode.modrm[1] or 0
+        if opcode.modrm[0] == "m":
+            assert "VSIB" not in desc.flags
+            assert opcode.modrm[2] is None
+            modrm = f"op{flags.modrm_idx^3}"
+            block.line(f"let _ = inst.emit_mem((inst.len()+{imm_size_expr}) as usize, {modrm}, {modreg} as _, false, 0)?;")
+        else:
+            if flags.modrm_idx:
+                modrm = f"op{flags.modrm_idx^3}.0"
+            else:
+                modrm = f"{opcode.modrm[2] or 0}"
+            block.line(f"inst.emit_u8(0xC0|((({modreg}) as u8)<<3)|((({modrm}) as u8) &7));")
+    elif flags.modrm_idx:
+        block.line(f"inst.buf[inst.len()-1] |= op{flags.modrm_idx^3}.id() as u8 & 7;")
+    if flags.imm_control >= 2:
+        block.line(f"  inst.emit_imm(({imm_expr}) as u64, {imm_size_expr});")
+
+    return block
 def encode_mnems(entries):
     # mapping from (mnem, opsize, ots) -> (opcode, desc)
     mnemonics = defaultdict(list)
     masm_mnemonics = dict()
+    variants = defaultdict(list)
     for weak, opcode, desc in entries:
         masm_mnemonics[desc.mnemonic] = desc.operands
         if len(desc.operands) > 4:
@@ -998,6 +1125,7 @@ def encode_table(entries, args):
     alt_table = [0] # first entry is unused
     masm_out = ""
 
+    asm_code = Trait("EmitterExplicit: Emitter")
     for (mnem, opsize, ots), variants in mnemonics.items():
 
         supports_high_regs = []
@@ -1069,11 +1197,22 @@ def encode_table(entries, args):
         desc = variants[0][1] # the same for all variants
         nargs = len(desc.operands)
         rem = 4 - nargs
-        masm_out += f"""
-    pub fn {mnem.lower()}(&mut self, {", ".join(f"op{i}: Op" for i in range(nargs))}) -> Result<(), Error> {{
-        self.emit({mnem.upper()}, {"".join(f"op{i}," for i in range(nargs))}{",".join(f"NOREG /* op{i + nargs} */" for i in range(rem))})
-    }}
-        """
+       
+        if "MASK" in mnem or "MASKZ" in mnem or "LOCK_" in mnem or "REP_" in mnem or "REPNZ_" in mnem: 
+            print(mnem)
+            pass 
+        else:
+            func = Function(mnem.lower())
+            func.ret("Result<(), AsmError>")
+            for i in range(nargs):
+                func.arg(Field(f"op{i}", "impl Into<Operand>"))
+            block = Block()
+            block.line(f"self.emit({mnem.upper()}, {"".join(f"op{i}.into()," for i in range(nargs))}{",".join(f"NOREG /* op{i + nargs} */" for i in range(rem))})")
+            func.self_mut()
+            func.body(block)  
+
+            asm_code.items.append(func)
+
         alt_table += enc_opcs[1:]
     if args.masm:
         return masm_out
@@ -1085,8 +1224,10 @@ def encode_table(entries, args):
     for v in alt_table:
         alt_tab += f"{v:#x}u64 as i64,\n"
     alt_tab += "];"
+    fmt = Formatter()
+    asm_code.fmt(fmt)
     #alt_tab = "".join(f"[{i}] = {v:#x},\n" for i, v in enumerate(alt_table))
-    return f"{mnem_tab}\n{alt_tab}", ""
+    return f"{mnem_tab}\n{alt_tab}", fmt.dst
 
 def unique(it):
     vals = set(it)
@@ -1235,6 +1376,30 @@ def encode2_gen_vex(variant: EncodeVariant, imm_expr: str, imm_size_expr: str, h
         code += f"  inst.{helpercall};"
         code += f"  return Ok(inst);\n"
     return code
+
+def regty_for_opsize(regty, opsize):
+    if regty == 'Gp' or regty == 'Xmm':
+        match opsize: 
+            case 8: 
+                return regty + 'b'
+            case 16:
+                return regty + 'w'
+            case 32:
+                return regty + 'd'
+            case 64:
+                return regty + 'q'
+            case 128:
+                assert(regty == 'XMM')
+                return regty 
+            case 256:
+                assert(regty == 'XMM')
+                return 'YMM'
+            case 512:
+                assert(regty == 'ZMM')
+                return 'ZMM'       
+            case _: 
+                return regty
+    return regty
 
 def encode2_table(entries, args):
     mnemonics, masm_mnemonics = encode_mnems(entries)
@@ -1421,13 +1586,15 @@ if __name__ == "__main__":
         line, weak = (line, False) if line[0] != "*" else (line[1:], True)
         opcode_string, desc_string = tuple(line.split(maxsplit=1))
         opcode, desc = Opcode.parse(opcode_string), InstrDesc.parse(desc_string)
-        verifyOpcodeDesc(opcode, desc)
+        #verifyOpcodeDesc(opcode, desc)
         if "UNDOC" not in desc.flags or args.with_undoc:
             entries.append((weak, opcode, desc))
+
     if args.masm:
         out = encode2_table(entries, args)
         args.out_private.write(out)
     else:
-        res_public, res_private = generators[args.mode](entries, args)
+        res_encoder, res_asm = generators[args.mode](entries, args)
         print("GENERATED X86")
-        args.out_private.write(res_private + res_public)
+        args.out_private.write(res_encoder)
+        args.out_public.write(res_asm)

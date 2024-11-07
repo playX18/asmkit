@@ -107,8 +107,8 @@
 #                                                      VSIB U66
 #                                                           I66
 # -------------------  ---- --- --- --- --- -------    ---- --- ----------
-00                     MR   Eb  Gb  -   -   ADD        LOCK SZ8 EFL=m--mmmmm
-01                     MR   Ev  Gv  -   -   ADD        LOCK     EFL=m--mmmmm
+00                     MR   X:Eb  Gb  -   -   ADD        LOCK SZ8 EFL=m--mmmmm
+01                     MR   X:Ev  Gv  -   -   ADD        LOCK     EFL=m--mmmmm
 02                     RM   Gb  Eb  -   -   ADD             SZ8 EFL=m--mmmmm
 03                     RM   Gv  Ev  -   -   ADD                 EFL=m--mmmmm
 04                     IA   Rb  Ib  -   -   ADD             SZ8 EFL=m--mmmmm

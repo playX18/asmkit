@@ -919,9 +919,9 @@ pub fn flush_instruction_cache(p: *const u8, size: usize) {
 
                 const ICACHE_LINE_SIZE: usize = 4;
                 const DCACHE_LINE_SIZE: usize = 4;
-                
+
                 let mut addr = code & !(DCACHE_LINE_SIZE - 1);
-               
+
                 while addr < end {
                     unsafe {
                         asm!("dc civac, {x}", x = in(reg) addr);
@@ -951,7 +951,7 @@ pub fn flush_instruction_cache(p: *const u8, size: usize) {
                     );
                 }
 
-            } else if cfg(target_arhc="riscv64") {
+            } else if cfg(target_arch="riscv64") {
                 unsafe {
                     let _ = wasmtime_jit_icache_coherence::clear_cache(p.cast(), size);
                     let _ = wasmtime_jit_icache_coherence::pipeline_flush_mt();
@@ -962,7 +962,6 @@ pub fn flush_instruction_cache(p: *const u8, size: usize) {
             }
 
     }
-
 }
 
 #[cfg(not(windows))]
@@ -1024,7 +1023,7 @@ cfgenius::cond! {
                 },
             },
         };
-        
+
 
         struct ScopedHandle {
             value: HANDLE
@@ -1147,7 +1146,7 @@ cfgenius::cond! {
 
             let mut handle = ScopedHandle::new();
 
-            unsafe { 
+            unsafe {
                 handle.value = CreateFileMappingW(
                     INVALID_HANDLE_VALUE,
                     core::ptr::null_mut(),

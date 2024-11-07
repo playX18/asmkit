@@ -1,6 +1,9 @@
-use crate::{assembler::riscv::generate_imm, encdec::riscv::{auipc, c_j, jalr, ZERO}};
+use crate::{
+    assembler::riscv::generate_imm,
+    encdec::riscv::{addi, auipc, c_j, jalr, ZERO},
+};
 
-use super::codeholder::ExternalName;
+use super::{codeholder::ExternalName, riscv::X31};
 
 /// Offset in bytes from the beginning of the function.
 ///
@@ -78,6 +81,9 @@ pub enum Reloc {
     /// This is equivalent to `R_AARCH64_LD64_GOT_LO12_NC` (312) in the  [aaelf64](https://github.com/ARM-software/abi-aa/blob/2bcab1e3b22d55170c563c3c7940134089176746/aaelf64/aaelf64.rst#static-aarch64-relocations)
     Aarch64Ld64GotLo12Nc,
 
+    /// RISC-V Absolute address: 64-bit address.
+    RiscvAbs8,
+
     /// RISC-V Call PLT: 32-bit PC-relative function call, macros call, tail (PIC)
     ///
     /// Despite having PLT in the name, this relocation is also used for normal calls.
@@ -145,12 +151,99 @@ pub enum LabelUse {
 }
 
 impl LabelUse {
+    /// Maximum PC-relative range (positive), inclusive.
+    pub const fn max_pos_range(self) -> CodeOffset {
+        match self {
+            LabelUse::RVJal20 => ((1 << 19) - 1) * 2,
+            LabelUse::RVPCRelLo12I | LabelUse::RVPCRelHi20 | LabelUse::RVPCRel32 => {
+                let imm20_max: i64 = ((1 << 19) - 1) << 12;
+                let imm12_max = (1 << 11) - 1;
+                (imm20_max + imm12_max) as _
+            }
+            LabelUse::RVB12 => ((1 << 11) - 1) * 2,
+            LabelUse::RVCJump => ((1 << 10) - 1) * 2,
+            LabelUse::X86JmpRel32 => i32::MAX as _,
+        }
+    }
+
+    pub const fn max_neg_range(self) -> CodeOffset {
+        match self {
+            LabelUse::RVPCRel32 => {
+                let imm20_max: i64 = (1 << 19) << 12;
+                let imm12_max = 1 << 11;
+                (-imm20_max - imm12_max) as CodeOffset
+            }
+            _ => self.max_pos_range() + 2,
+        }
+    }
+
     pub const fn patch_size(&self) -> usize {
         match self {
             Self::X86JmpRel32 => 4,
             Self::RVCJump => 2,
             Self::RVJal20 | Self::RVB12 | Self::RVPCRelHi20 | Self::RVPCRelLo12I => 4,
             Self::RVPCRel32 => 8,
+        }
+    }
+
+    pub const fn align(&self) -> usize {
+        match self {
+            Self::X86JmpRel32 => 1,
+            Self::RVCJump => 4,
+            Self::RVJal20 | Self::RVB12 | Self::RVPCRelHi20 | Self::RVPCRelLo12I => 4,
+            Self::RVPCRel32 => 4,
+        }
+    }
+
+    pub const fn supports_veneer(&self) -> bool {
+        match self {
+            Self::RVB12 | Self::RVJal20 | Self::RVCJump => true,
+            _ => false,
+        }
+    }
+
+    pub const fn veneer_size(&self) -> usize {
+        match self {
+            Self::RVB12 | Self::RVJal20 | Self::RVCJump => 8,
+            _ => unreachable!(),
+        }
+    }
+
+    pub fn generate_veneer(
+        &self,
+        buffer: &mut [u8],
+        veneer_offset: CodeOffset,
+    ) -> (CodeOffset, Self) {
+        if matches!(
+            self,
+            Self::RVB12
+                | Self::RVCJump
+                | Self::RVJal20
+                | Self::RVPCRelHi20
+                | Self::RVPCRelLo12I
+                | Self::RVPCRel32
+        ) {
+            let base = X31;
+
+            {
+                let x = auipc(base, 0).to_le_bytes();
+                buffer[0] = x[0];
+                buffer[1] = x[1];
+                buffer[2] = x[2];
+                buffer[3] = x[3];
+            }
+
+            {
+                let x = jalr(ZERO, base, 0).to_le_bytes();
+                buffer[4] = x[0];
+                buffer[5] = x[1];
+                buffer[6] = x[2];
+                buffer[7] = x[3];
+            }
+
+            (veneer_offset, LabelUse::RVPCRel32)
+        } else {
+            todo!()
         }
     }
 
@@ -220,9 +313,9 @@ impl LabelUse {
                 // which is equivalent to offset = target_address - current_instruction_address + 4.
                 //
                 let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
-                let lo12 = (pc_rel + 4) as u32 & 0xfff;
-                let insn = (insn & 0xffff) | (lo12 << 20);
-                buffer[0..4].copy_from_slice(&insn.to_le_bytes());
+
+                buffer[0..4]
+                    .copy_from_slice(&(insn | addi(ZERO, ZERO, pc_rel as i32 + 4)).to_le_bytes());
             }
 
             Self::RVCJump => {
@@ -252,5 +345,64 @@ impl From<Label> for BranchTarget {
 impl From<ExternalName> for BranchTarget {
     fn from(e: ExternalName) -> Self {
         Self::Ext(e)
+    }
+}
+
+#[derive(Clone, PartialEq, Eq, Debug, Hash)]
+pub enum ConstantData {
+    WellKnown(&'static [u8]),
+    U64([u8; 8]),
+    Bytes(Vec<u8>),
+}
+
+impl ConstantData {
+    pub fn as_slice(&self) -> &[u8] {
+        match self {
+            ConstantData::WellKnown(data) => data,
+            ConstantData::U64(data) => data.as_ref(),
+            ConstantData::Bytes(data) => data,
+        }
+    }
+
+    pub fn alignment(&self) -> usize {
+        if self.as_slice().len() <= 8 {
+            8
+        } else {
+            16
+        }
+    }
+}
+
+/// A use of a constant by one or mroe assembly instructions.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub struct Constant(pub(crate) u32);
+
+impl From<&'static str> for ConstantData {
+    fn from(value: &'static str) -> Self {
+        Self::WellKnown(value.as_bytes())
+    }
+}
+
+impl From<[u8; 8]> for ConstantData {
+    fn from(value: [u8; 8]) -> Self {
+        Self::U64(value)
+    }
+}
+
+impl From<Vec<u8>> for ConstantData {
+    fn from(value: Vec<u8>) -> Self {
+        Self::Bytes(value)
+    }
+}
+
+impl From<&'static [u8]> for ConstantData {
+    fn from(value: &'static [u8]) -> Self {
+        Self::WellKnown(value)
+    }
+}
+
+impl From<u64> for ConstantData {
+    fn from(value: u64) -> Self {
+        Self::U64(value.to_ne_bytes())
     }
 }

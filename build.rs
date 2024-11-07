@@ -1,4 +1,4 @@
-use std::{
+/*use std::{
     path::{Path, PathBuf},
     sync::LazyLock,
 };
@@ -79,3 +79,6 @@ fn main() {
         build_x86();
     }
 }
+*/
+
+fn main() {}
