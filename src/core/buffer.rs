@@ -2,7 +2,7 @@ use alloc::{borrow::Cow, collections::BinaryHeap, vec::Vec};
 
 use smallvec::SmallVec;
 
-use crate::riscv::opcodes::{Inst, InstructionValue, Opcode};
+use crate::riscv::{self};
 
 use super::{
     operand::{Label, Sym},
@@ -39,7 +39,8 @@ pub enum ExternalName {
 }
 #[derive(Clone, PartialEq, Eq, Hash)]
 pub enum RelocTarget {
-    ExternalName(ExternalName),
+    Sym(Sym),
+    Label(Label),
 }
 
 #[derive(Copy, Clone, PartialEq, Eq)]
@@ -48,7 +49,7 @@ pub enum RelocDistance {
     Far,
 }
 
-struct SymData {
+pub(crate) struct SymData {
     name: ExternalName,
     distance: RelocDistance,
 }
@@ -91,6 +92,7 @@ struct AsmConstant {
 pub struct CodeBufferFinalized {
     pub(crate) data: SmallVec<[u8; 1024]>,
     pub(crate) relocs: SmallVec<[AsmReloc; 16]>,
+    pub(crate) symbols: SmallVec<[SymData; 16]>,
     pub(crate) alignment: u32,
 }
 
@@ -105,6 +107,14 @@ impl CodeBufferFinalized {
 
     pub fn data_mut(&mut self) -> &mut [u8] {
         &mut self.data[..]
+    }
+
+    pub fn symbol_name(&self, sym: Sym) -> &ExternalName {
+        &self.symbols[sym.id() as usize].name
+    }
+
+    pub fn symbol_distance(&self, sym: Sym) -> RelocDistance {
+        self.symbols[sym.id() as usize].distance
     }
 
     pub fn relocs(&self) -> &[AsmReloc] {
@@ -192,11 +202,11 @@ impl CodeBuffer {
         Sym::from_id(ix as u32)
     }
 
-    pub(crate) fn symbol_distance(&self, sym: Sym) -> RelocDistance {
+    pub fn symbol_distance(&self, sym: Sym) -> RelocDistance {
         self.symbols[sym.id() as usize].distance
     }
 
-    pub(crate) fn symbol_name(&self, sym: Sym) -> &ExternalName {
+    pub fn symbol_name(&self, sym: Sym) -> &ExternalName {
         &self.symbols[sym.id() as usize].name
     }
 
@@ -302,8 +312,6 @@ impl CodeBuffer {
         let start = offset as u32;
         let end = offset as usize + kind.patch_size();
 
-        let buffer = &mut self.data[start as usize..end];
-
         let label_offset = self.label_offsets[label.id() as usize];
         if label_offset != u32::MAX {
             let veneer_required = if label_offset >= offset {
@@ -315,7 +323,9 @@ impl CodeBuffer {
             if veneer_required {
                 self.emit_veneer(label, offset, kind);
             } else {
-                kind.patch(buffer, start, label_offset);
+                let slice = &mut self.data[start as usize..end as usize];
+
+                kind.patch(slice, start, label_offset);
             }
         } else {
             // If the offset of this label is not known at this time then
@@ -389,6 +399,18 @@ impl CodeBuffer {
         let label_offset = self.label_offset(fixup.label);
         label_offset != u32::MAX
             || fixup.offset.saturating_add(fixup.kind.max_pos_range()) < forced_threshold
+    }
+    /// Is an island needed within the next N bytes?
+    pub fn island_needed(&mut self, distance: CodeOffset) -> bool {
+        let deadline = match self.fixup_records.peek() {
+            Some(fixup) => fixup
+                .offset
+                .saturating_add(fixup.kind.max_pos_range())
+                .min(self.pending_fixup_deadline),
+            None => self.pending_fixup_deadline,
+        };
+
+        deadline < u32::MAX && self.worst_case_end_of_island(distance) > deadline
     }
 
     /// Emit all pending constants and required pending veneers.
@@ -465,6 +487,7 @@ impl CodeBuffer {
         CodeBufferFinalized {
             data: self.data,
             relocs: self.relocs,
+            symbols: self.symbols,
             alignment,
         }
     }
@@ -674,6 +697,17 @@ pub enum LabelUse {
     RVCJump,
     /// 9-bit PC-relative branch offset.
     RVCB9,
+    /// 14-bit branch offset (conditional branches). PC-rel, offset is imm <<
+    /// 2. Immediate is 14 signed bits, in bits 18:5. Used by tbz and tbnz.
+    A64Branch14,
+    /// 19-bit branch offset (conditional branches). PC-rel, offset is imm << 2. Immediate is 19
+    /// signed bits, in bits 23:5. Used by cbz, cbnz, b.cond.
+    A64Branch19,
+    /// 26-bit branch offset (unconditional branches). PC-rel, offset is imm << 2. Immediate is 26
+    /// signed bits, in bits 25:0. Used by b, bl.
+    A64Branch26,
+    A64Ldr19,
+    A64Adr21,
 }
 
 impl LabelUse {
@@ -690,6 +724,7 @@ impl LabelUse {
             LabelUse::RVCB9 => ((1 << 8) - 1) * 2,
             LabelUse::RVCJump => ((1 << 10) - 1) * 2,
             LabelUse::X86JmpRel32 => i32::MAX as _,
+            _ => u32::MAX,
         }
     }
 
@@ -710,6 +745,7 @@ impl LabelUse {
             Self::RVCJump | Self::RVCB9 => 2,
             Self::RVJal20 | Self::RVB12 | Self::RVPCRelHi20 | Self::RVPCRelLo12I => 4,
             Self::RVPCRel32 => 8,
+            _ => 4,
         }
     }
 
@@ -719,6 +755,7 @@ impl LabelUse {
             Self::RVCJump => 4,
             Self::RVJal20 | Self::RVB12 | Self::RVCB9 | Self::RVPCRelHi20 | Self::RVPCRelLo12I => 4,
             Self::RVPCRel32 => 4,
+            _ => 4,
         }
     }
 
@@ -738,7 +775,7 @@ impl LabelUse {
 
     pub fn generate_veneer(
         &self,
-        _buffer: &mut [u8],
+        buffer: &mut [u8],
         veneer_offset: CodeOffset,
     ) -> (CodeOffset, Self) {
         if matches!(
@@ -750,10 +787,14 @@ impl LabelUse {
                 | Self::RVPCRelLo12I
                 | Self::RVPCRel32
         ) {
-            /*let base = X31;
+            let base = riscv::X31;
 
             {
-                let x = auipc(base, 0).to_le_bytes();
+                let x = riscv::Inst::new(riscv::Opcode::AUIPC)
+                    .encode()
+                    .set_rd(base.id())
+                    .value
+                    .to_le_bytes();
                 buffer[0] = x[0];
                 buffer[1] = x[1];
                 buffer[2] = x[2];
@@ -761,12 +802,17 @@ impl LabelUse {
             }
 
             {
-                let x = jalr(ZERO, base, 0).to_le_bytes();
+                let x = riscv::Inst::new(riscv::Opcode::JALR)
+                    .encode()
+                    .set_rd(riscv::ZERO.id())
+                    .set_rs1(base.id())
+                    .value
+                    .to_le_bytes();
                 buffer[4] = x[0];
                 buffer[5] = x[1];
                 buffer[6] = x[2];
                 buffer[7] = x[3];
-            }*/
+            }
 
             (veneer_offset, LabelUse::RVPCRel32)
         } else {
@@ -802,8 +848,8 @@ impl LabelUse {
                 let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
                 let insn2 = u32::from_le_bytes([buffer[4], buffer[5], buffer[6], buffer[7]]);
 
-                let auipc = Inst::new(Opcode::AUIPC).encode().set_imm20(0);
-                let jalr = Inst::new(Opcode::JALR)
+                let auipc = riscv::Inst::new(riscv::Opcode::AUIPC).encode().set_imm20(0);
+                let jalr = riscv::Inst::new(riscv::Opcode::JALR)
                     .encode()
                     .set_rd(0)
                     .set_rs1(0)
@@ -829,10 +875,10 @@ impl LabelUse {
                 // We need to add 0x800 to ensure that we land at the next page as soon as it goes out of range for the
                 // Lo12 relocation. That relocation is signed and has a maximum range of -2048..2047. So when we get an
                 // offset of 2048, we need to land at the next page and subtract instead.
-                let offset = pc_rel;
+                let offset = pc_reli as u32;
                 let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
                 let hi20 = offset.wrapping_add(0x800) >> 12;
-                let insn = (insn & 0xffff) | (hi20 << 12);
+                let insn = (insn & 0xfff) | (hi20 << 12);
                 buffer[0..4].copy_from_slice(&insn.to_le_bytes());
             }
 
@@ -848,18 +894,18 @@ impl LabelUse {
                 // which is equivalent to offset = target_address - current_instruction_address + 4.
                 //
                 let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
-                let addi = Inst::new(Opcode::ADDI)
-                    .encode()
-                    .set_rd(0)
-                    .set_rs1(0)
-                    .set_imm12(pc_rel as i32 + 4);
-                buffer[0..4].copy_from_slice(&(insn | addi.value).to_le_bytes());
+
+                let lo12 = (pc_reli + 4) as u32 & 0xfff;
+                let insn = (insn & 0xFFFFF) | (lo12 << 20);
+                buffer[0..4].copy_from_slice(&insn.to_le_bytes());
             }
 
             Self::RVCJump => {
                 debug_assert!(pc_rel & 1 == 0);
 
-                let insn = Inst::new(Opcode::CJ).encode().set_c_imm12(pc_rel as _);
+                let insn = riscv::Inst::new(riscv::Opcode::CJ)
+                    .encode()
+                    .set_c_imm12(pc_rel as _);
                 buffer[0..2].clone_from_slice(&(insn.value as u16).to_le_bytes());
             }
             _ => todo!(),
@@ -875,7 +921,7 @@ pub(crate) fn generate_imm(value: u64) -> (u32, u32) {
     if is_imm12(value as _) {
         return (
             0,
-            InstructionValue::new(0)
+            riscv::InstructionValue::new(0)
                 .set_imm12(value as i64 as i32)
                 .value,
         );
@@ -907,7 +953,7 @@ pub(crate) fn generate_imm(value: u64) -> (u32, u32) {
         (imm20, imm12)
     };
     (
-        InstructionValue::new(0).set_imm20(imm20 as _).value,
-        InstructionValue::new(0).set_imm12(imm12 as _).value,
+        riscv::InstructionValue::new(0).set_imm20(imm20 as _).value,
+        riscv::InstructionValue::new(0).set_imm12(imm12 as _).value,
     )
 }

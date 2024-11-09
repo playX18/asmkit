@@ -1,7 +1,7 @@
 use super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::AsmError;
+
 const NOREG: Operand = Operand::new();
 
 pub trait X86EmitterExplicit: Emitter {

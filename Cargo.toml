@@ -5,32 +5,28 @@ edition = "2021"
 
 [dependencies]
 smallvec = "1.13"
-libc = "0.2"
+libc = { version = "0.2.162", optional = true }
 cfgenius = "0.1"
 intrusive-collections = "0.9"
-errno = "0.3.9"
+errno = { version = "0.3.9", optional = true }
 paste = "1.0"
-once_cell = { version = "1.20", features = ["critical-section"] }
-num-traits = "*"
+num-traits = "0.2.19"
 derive_more = { version = "*", features = [
     "deref",
     "deref_mut",
     "try_from",
     "add",
 ] }
-log = "*"
+capstone = "*"
 
 
 [target.'cfg(target_arch="riscv64")'.dependencies]
-wasmtime-jit-icache-coherence = "26.0.1"
+wasmtime-jit-icache-coherence = { version = "26.0.1", optional = true }
 [features]
-default = ["riscv", "x86-v1", "x86-v2", "assembler"]
+default = ["jit", "riscv", "x86"]
+x86 = []
 riscv = []
-x86-v1 = []
-x86-v2 = []
-std = []
-assembler = []
-jit = []
+jit = ["wasmtime-jit-icache-coherence", "libc", "errno"]
 
 
 [profile.release]

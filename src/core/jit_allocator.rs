@@ -590,12 +590,6 @@ impl JitAllocator {
             pools.push(Box::into_raw(Box::new(JitAllocatorPool::new(granularity))));
         }
 
-        log::debug!("JitAllocator created with={{");
-        log::debug!("  dual_mapping={}", params.use_dual_mapping);
-        log::debug!("  block_size={}", block_size);
-        log::debug!("  granularity={}", granularity);
-        log::debug!("}}");
-
         let allocator = Box::new(Self {
             options: params,
             block_size: block_size as _,

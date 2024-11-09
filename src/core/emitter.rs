@@ -1,5 +1,3 @@
-use crate::AsmError;
-
 use super::operand::Operand;
 
 const NOREG: Operand = Operand::new();

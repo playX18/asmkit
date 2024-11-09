@@ -1,8 +1,9 @@
 use super::opcodes::Opcode;
-use crate::core::buffer::{CodeBuffer, LabelUse, Reloc, RelocTarget};
+use crate::core::buffer::{CodeBuffer, CodeOffset, ConstantData, LabelUse, Reloc, RelocTarget};
 use crate::core::operand::*;
 use crate::core::operand::{Imm, Sym};
 use crate::riscv::opcodes::Encoding;
+use crate::riscv::{EmitterExplicit, RA};
 use crate::AsmError;
 use crate::{core::emitter::Emitter, riscv::opcodes::Inst};
 pub struct Assembler<'a> {
@@ -15,6 +16,120 @@ impl<'a> Assembler<'a> {
         Assembler {
             buffer,
             last_error: None,
+        }
+    }
+
+    pub fn get_label(&mut self) -> Label {
+        self.buffer.get_label()
+    }
+
+    pub fn bind_label(&mut self, label: Label) {
+        self.buffer.bind_label(label);
+    }
+
+    pub fn add_constant(&mut self, c: impl Into<ConstantData>) -> Label {
+        let c = self.buffer.add_constant(c);
+        self.buffer.get_label_for_constant(c)
+    }
+
+    pub fn label_offset(&self, label: Label) -> CodeOffset {
+        self.buffer.label_offset(label)
+    }
+
+    pub fn la(&mut self, rd: impl OperandCast, target: impl OperandCast) {
+        let rd = *rd.as_operand();
+        let target = target.as_operand();
+
+        if target.is_label() {
+            let off = self.buffer.cur_offset();
+            self.buffer
+                .use_label_at_offset(off, target.as_::<Label>(), LabelUse::RVPCRelHi20);
+            self.auipc(rd, imm(0));
+            let off = self.buffer.cur_offset();
+            self.buffer
+                .use_label_at_offset(off, target.as_::<Label>(), LabelUse::RVPCRelLo12I);
+            self.addi(rd, rd, imm(0));
+            return;
+        } else if target.is_sym() {
+            if self.buffer.env().pic() {
+                // Load a PC-relative address into a register.
+                // RISC-V does this slightly differently from other arches. We emit a relocation
+                // with a label, instead of the symbol itself.
+                //
+                // See: https://github.com/riscv-non-isa/riscv-elf-psabi-doc/blob/master/riscv-elf.adoc#pc-relative-symbol-addresses
+                //
+                // Emit the following code:
+                // label:
+                //   auipc rd, 0              # R_RISCV_GOT_HI20 (symbol_name)
+                //   ld    rd, rd, 0          # R_RISCV_PCREL_LO12_I (label)
+
+                let sym = target.as_::<Sym>();
+
+                // Create the label that is going to be published to the final binary object.
+                let auipc_label = self.get_label();
+                self.bind_label(auipc_label);
+                self.buffer
+                    .add_reloc(Reloc::RiscvGotHi20, RelocTarget::Sym(sym), 0);
+
+                // Get the current PC.
+                self.auipc(rd, imm(0));
+                // The `ld` here, points to the `auipc` label instead of directly to the symbol.
+                self.buffer
+                    .add_reloc(Reloc::RiscvPCRelLo12I, RelocTarget::Label(auipc_label), 0);
+                self.ld(rd, rd, imm(0));
+            } else {
+                // In the non PIC sequence we relocate the absolute address into
+                // a prealocatted space, load it into a register and jump over it.
+                //
+                // Emit the following code:
+                //   ld rd, label_data
+                //   j label_end
+                // label_data:
+                //   <8 byte space>           # ABS8
+                // label_end:
+                let label_data = self.get_label();
+                let label_end = self.get_label();
+
+                self.ld(rd, rd, label_data);
+                self.c_j(label_end);
+                self.bind_label(label_data);
+                self.buffer.put8(0);
+                self.bind_label(label_end);
+            }
+        } else {
+            unreachable!("LA expects label or symbol");
+        }
+    }
+
+    pub fn call(&mut self, target: impl OperandCast) {
+        let target = target.as_operand();
+
+        if target.is_label() {
+            let off = self.buffer.cur_offset();
+            self.buffer
+                .use_label_at_offset(off, target.as_::<Label>(), LabelUse::RVPCRelHi20);
+            self.auipc(RA, imm(0));
+            assert!(!self.last_error.is_some());
+            let off = self.buffer.cur_offset();
+            self.buffer
+                .use_label_at_offset(off, target.as_::<Label>(), LabelUse::RVPCRelLo12I);
+            self.jalr(RA, RA, imm(0));
+            assert!(!self.last_error.is_some());
+            return;
+        } else if target.is_sym() {
+            let sym = target.as_::<Sym>();
+
+            let reloc = Reloc::RiscvCallPlt;
+
+            self.buffer.add_reloc(reloc, RelocTarget::Sym(sym), 0);
+            self.auipc(RA, imm(0));
+            self.jalr(RA, RA, imm(0));
+        } else if target.is_imm() {
+            self.jalr(RA, RA, *target);
+        } else if target.is_reg() {
+            self.jalr(RA, *target, imm(0));
+        } else {
+            unreachable!();
         }
     }
 }
@@ -1304,7 +1419,7 @@ impl<'a> Emitter for Assembler<'a> {
         }
 
         if let Some((sym, kind)) = reloc {
-            let target = RelocTarget::ExternalName(self.buffer.symbol_name(sym).clone());
+            let target = RelocTarget::Sym(sym);
             self.buffer.add_reloc_at_offset(offset, kind, target, 0);
         }
 
@@ -1313,7 +1428,6 @@ impl<'a> Emitter for Assembler<'a> {
         } else {
             self.buffer.put4(inst.value);
         }
-        
     }
 }
 

@@ -1,7 +1,10 @@
-#![no_std]
+//#![no_std]
 extern crate alloc;
 
 pub mod core;
+
+pub mod aarch64;
+pub mod ppc;
 pub mod riscv;
 pub mod util;
 pub mod x86;

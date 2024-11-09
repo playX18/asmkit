@@ -389,24 +389,22 @@ class DecoderGenerator:
 
     def generate(self, tables_as_switch) -> tuple[str, dict[str, str]]:
         trie = make_table(self.trie_descs, list(range(len(self.trie_descs))))
-
-
-        mnems_strs = [f"    {k.lower().capitalize()}={v:#x},\n" for k, v in self.mnems.items()]
-        grpnum_strs = [f"   {k.lower().capitalize()}={v:#x},\n" for k, v in self.grpnums.items()]
+        mnems_strs = [f"{k}={v:#x},\n" for k, v in self.mnems.items()]
+        grpnum_strs = [f"{k}={v:#x},\n" for k, v in self.grpnums.items()]
         decodestr = superstring(self.decstr.values())
         decstrtab = [f'[{m}] = {len(s) << 12 | decodestr.index(s):#x},\n'
             for m, s in self.decstr.items()]
-        decoder = [f'case DA64G_{m}: {s}\n' for m, s in self.decoders.items()]
+        decoder = [f'InstGroup::{m}: {s}\n' for m, s in self.decoders.items()]
         public = f"""
-pub enum A64InstKind {{
-  Unknown = 0,
+pub enum InstKind {{
+    Unknown=0,
   {"".join(mnems_strs)}
 }};
-pub enum A64InstGroup {{
-  Unknown = 0,
+enum InstGroup {{
+  Unknown=0,
   {"".join(grpnum_strs)}
 }};
-#define DA64_GROUP(mnem) ((mnem) >> {BITS_SUBGRP})
+pub const a64_group(mnem: u32) ((mnem) >> {BITS_SUBGRP})
 """
 
         return public, {
@@ -423,58 +421,62 @@ class EncodeFunc:
     singleExpansion: bool = False
     allowOverride: bool = False
     cond: str|None = None
+    enc: str|None = None
 
 ENC_FUNCS = {
-    "const": EncodeFunc((), ("{val}",)),
-    "bool": EncodeFunc(("bool",), ("!!{0}",)),
-    "regzr": EncodeFunc((), ("31",)),
-    "reggp": EncodeFunc(("GRegZR",), ("{0}.0",)),
-    "reggpsp": EncodeFunc(("GRegSP",), ("{0}.0",)),
-    "reggpnozr": EncodeFunc(("GReg",), ("{0}.0",)),
-    "reggpls64": EncodeFunc(("GReg",), ("{0}.0",), cond="{0}.0<24&&!({0}.0&1)"),
-    "regfp": EncodeFunc(("VReg",), ("{0}.0",)),
-    "regfplim": EncodeFunc(("VReg",), ("{0}.0<<16",), singleExpansion=True, cond="{0}.0<{max}"),
-    "prfop": EncodeFunc(("enum A64PrfOp  prfop",), ("{0}&31",)),
-    "cond": EncodeFunc(("A64Cond",), ("{0}",)),
-    "invcond": EncodeFunc(("A64Cond",), ("({0}^1)",)),
-    "imm": EncodeFunc(("usize",), ("{0}",), cond="{0}<{max}"),
-    "immadr": EncodeFunc(("i32",), ("({0} as u32)&3", "({0} as u32 >>2)&0x7ffff"), cond="da_sext({0},21)=={0} as isize"),
+    "const": EncodeFunc((), ("{val}",), enc="Const{val}"),
+    "bool": EncodeFunc(("bool",), ("!!{0}",), enc="Bool"),
+    "regzr": EncodeFunc((), ("31",), enc="Zero"),
+    "reggp": EncodeFunc(("GRegZR",), ("DA_REGVAL({0})",), enc="Gp"),
+    "reggpsp": EncodeFunc(("GRegSP",), ("DA_REGVAL({0})",), enc="Gp"),
+    "reggpnozr": EncodeFunc(("GReg",), ("DA_REGVAL({0})",), enc="Gp"),
+    "reggpls64": EncodeFunc(("GReg",), ("DA_REGVAL({0})",), cond="DA_REGVAL({0})<24&&!(DA_REGVAL({0})&1)", enc="GpLs64"),
+    "regfp": EncodeFunc(("VReg",), ("DA_REGVAL({0})",), enc="Fp"),
+    "regfplim": EncodeFunc(("VReg",), ("DA_REGVAL({0})<<16",), singleExpansion=True, cond="DA_REGVAL({0})<{max}", enc="Fp"),
+    "prfop": EncodeFunc(("PrfOp  prfop",), ("{0}&31",), enc="PrfOp"),
+    "cond": EncodeFunc(("Da64Cond",), ("{0}",), enc="Cond"),
+    "invcond": EncodeFunc(("Da64Cond",), ("({0}^1)",), enc="InvCond"),
+    "imm": EncodeFunc(("unsigned",), ("{0}",), cond="{0}<{max}", enc="Imm"),
+    "immadr": EncodeFunc(("usize  target"), ("({0})&3", "(({0})>>2)&0x7ffff"), enc="ImmAddr"),
     "immadrp": EncodeFunc(
-        ("i32  offset",),
-        ("(({0} as u32 &!0xfff)>>12)&3", "(({0} as u32 &!0xfff)>>14)&0x7ffff"),
-        cond="da_sext(({0}&!0xfff),33)==({0}&!0xfff) as isize",
+        ("usize  target"),
+        ("({0}>>12) as u32 &3", "({0} as u32)>>14)&0x7ffff"),
+        enc="ImmAddrP"
     ),
-    "immlsl": EncodeFunc(("u32  lsl",), ("(-{0})&({max}-1)", "{max}-1-{0}"), cond="{0}<{max}"),
-    "immbfx": EncodeFunc(("u32  lsb", "u32  width"), ("{0}", "{0}+{1}-1"), cond="{0}<{max}&&{1}-1<{max}-{0}"),
-    "immbfi": EncodeFunc(("u32  lsb", "u32  width"), ("(!{0})&({max}-1)", "{1}-1"), cond="{0}<{max}&&{1}-1<{max}-{0}"),
+    "immlsl": EncodeFunc(("u32  lsl",), ("(-{0})&({max}-1)", "{max}-1-{0}"), cond="{0}<{max}", enc="{0}{max}"),
+    "immbfx": EncodeFunc(("u32  lsb", "u32  width"), ("{0}", "{0}+{1}-1"), cond="{0}<{max}&&{1}-1<{max}-{0}", enc="{0}{1}"),
+    "immbfi": EncodeFunc(("u32  lsb", "u32  width"), ("(-{0})&({max}-1)", "{1}-1"), cond="{0}<{max}&&{1}-1<{max}-{0}", enc="{0}{1}"),
     # only base-imm instead of 2*base - imm, as relevant bit is already set.
-    "immshiftr": EncodeFunc(("u32  imm",), ("({base}-{0})<<16",), singleExpansion=True, cond="{0} != 0 &&{0}<={base}"),
-    "immshiftl": EncodeFunc(("u32  imm",), ("{0}<<16",), singleExpansion=True, cond="{0} != 0 &&{0}<={base}"),
-    "immldraut": EncodeFunc(("i64",), ("({0}>>12) as u32 &1", "({0}&0xff8) as u32 >>3"), cond="da_sext({0},13)=={0}&&({0}&7)==0"),
-    "immvidx": EncodeFunc(("u32",), ("{0}<<({size}+{shift})",), cond="{0}<(1u<<(4-{size}))", allowOverride=True),
-    "immrotmul": EncodeFunc(("u32",), ("{0}/90",), cond="{0}<360&&{0}%90==0"),
-    "immrotadd": EncodeFunc(("u32",), ("{0}/90-1",), cond="{0}==90||{0}==270"),
-    "velemidx": EncodeFunc(("u32  elemidx",), ("({0}<<{size})>>3", "({0}<<{size})>>2", "({0}<<{size})>>1"), cond="{0}<(1u<<(4-{size}))", allowOverride=True),
-    "velemidxlim": EncodeFunc(("u32  elemidx",), ("({0}<<{size})>>3", "({0}<<{size})>>2", "({0}<<{size})>>1"), cond="{0}<(1u<<(4-{size}))&&{0}<{lim}", allowOverride=True),
-    "velemidx0": EncodeFunc(("u32  elemidx",), ("({0}<<{size})>>3", "({0}<<{size})>>2", "({0}<<{size})>>1", "(({0}<<{size})&1)<<3"), cond="{0}<(1u<<(4-{size}))", allowOverride=True),
-    "memsimdidx": EncodeFunc(("u32  elemidx",), ("({0}<<{size})>>3", "({0}<<{size})>>2", "{0}<<{size}"), cond="{0}<(1u<<(4-{size}))", allowOverride=True),
-    "uimm": EncodeFunc(("u32",), ("{0}>>{lsr}",), cond="({0}&(((1<<{bits})-1)<<{lsr}))=={0}"),
-    "simm": EncodeFunc(("i32",), ("{0}/(1<<{asr})",), cond="da_sext({0},{bits}+{asr})=={0}&&({0}&((1<<{asr})-1))==0"),
-    "tbz": EncodeFunc(("u32  bit",), ("{0}>>5", "{0}&0x1f"), cond="{0}<64"),
-    "reladdr": EncodeFunc(("isize",), ("{0}",), cond="da_sext({0},{bits})=={0}"),
-    "fcvtfixscale": EncodeFunc(("u32  fbits",), ("64-{0}",), cond="{0}<{max}"),
-    "immadd": EncodeFunc(("i{size}  imm",), ("da_immadd({0})",), singleExpansion=True, cond="da_immadd({0}) != 0xffffffff"),
-    "immlogical": EncodeFunc(("u{size}  imm",), ("da_immlogical({0}, {size}>>6)",), singleExpansion=True, cond="da_immlogical({0}, {size}>>6) != 0xffffffff"),
-    "immfmov32": EncodeFunc(("f32  imm",), ("da_immfmov32({0})",), cond="da_immfmov32({0}) != 0xffffffff"),
-    "immfmov64": EncodeFunc(("f64  imm",), ("da_immfmov64({0})",), cond="da_immfmov64({0}) != 0xffffffff"),
-    "immsimd8movi": EncodeFunc(("u64  imm64",), ("da_immsimdmovi({0})",), singleExpansion=True, cond="da_immsimdmovi({0}) != 0xffffffff"),
-    "immsimd8lsl": EncodeFunc(("u8  imm", "unsigned  lsl"), ("{0}>>5", "{0}&0x1f", "{1}>>2|1"), cond="{1}<(8*{maxshift}) && ({1}&7) == 0"),
-    "immsimd8fmov": EncodeFunc(("f32  imm",), ("da_immfmov32({0})>>5", "da_immfmov32({0})&0x1f"), cond="da_immfmov32({0}) != 0xffffffff"),
+    "immshiftr": EncodeFunc(("unsigned  imm",), ("({base}-{0})<<16",), singleExpansion=True, cond="{0}&&{0}<={base}", enc="ImmShiftr{base}"),
+    "immshiftl": EncodeFunc(("unsigned  imm",), ("{0}<<16",), singleExpansion=True, cond="{0}&&{0}<={base}", enc="ImmShiftl{base}"),
+    "immldraut": EncodeFunc(("int64_t",), ("({0}>>12)&1", "({0}&0xff8)>>3"), cond="da_sext({0},13)=={0}&&({0}&7)==0", enc="ImmLDraut"),
+    "immvidx": EncodeFunc(("unsigned",), ("{0}<<({size}+{shift})",), cond="{0}<(1u<<(4-{size}))", allowOverride=True, enc="ImmVIdx{size}_{shift}",),
+    "immrotmul": EncodeFunc(("unsigned",), ("{0}/90",), cond="{0}<360&&{0}%90==0", enc="ImmRotMul"),
+    "immrotadd": EncodeFunc(("unsigned",), ("{0}/90-1",), cond="{0}==90||{0}==270", enc="ImmRotAdd"),
+    "velemidx": EncodeFunc(("unsigned  elemidx",), ("({0}<<{size})>>3", "({0}<<{size})>>2", "({0}<<{size})>>1"), cond="{0}<(1u<<(4-{size}))", allowOverride=True, enc="VelElemIdx{size}"),
+    "velemidxlim": EncodeFunc(("unsigned  elemidx",), ("({0}<<{size})>>3", "({0}<<{size})>>2", "({0}<<{size})>>1"), cond="{0}<(1u<<(4-{size}))&&{0}<{lim}", allowOverride=True, enc="VelElemIdxLim{size}_{lim}"),
+    "velemidx0": EncodeFunc(("unsigned  elemidx",), ("({0}<<{size})>>3", "({0}<<{size})>>2", "({0}<<{size})>>1", "(({0}<<{size})&1)<<3"), cond="{0}<(1u<<(4-{size}))", allowOverride=True,enc="VelElemIdx0_{size}"),
+    "memsimdidx": EncodeFunc(("unsigned  elemidx",), ("({0}<<{size})>>3", "({0}<<{size})>>2", "{0}<<{size}"), cond="{0}<(1u<<(4-{size}))", allowOverride=True, enc="MemSIMDIdx{size}"),
+    "uimm": EncodeFunc(("uint64_t",), ("{0}>>{lsr}",), cond="({0}&(((1<<{bits})-1)<<{lsr}))=={0}", enc="UImm{bits}_{lsr}"),
+    "simm": EncodeFunc(("int64_t",), ("{0}/(1<<{asr})",), cond="da_sext({0},{bits}+{asr})=={0}&&({0}&((1<<{asr})-1))==0", enc="SImm{bits}_{asr}"),
+    "tbz": EncodeFunc(("unsigned  bit",), ("{0}>>5", "{0}&0x1f"), cond="{0}<64", enc="TBZ"),
+    "reladdr": EncodeFunc(("ptrdiff_t",), ("{0}",), cond="da_sext({0},{bits})=={0}", enc="RelAddr{bits}"),
+    "fcvtfixscale": EncodeFunc(("unsigned  fbits",), ("64-{0}",), cond="{0}<{max}", enc="FcvtFixScale"),
+    "immadd": EncodeFunc(("int{size}_t  imm",), ("da_immadd({0})",), singleExpansion=True, cond="da_immadd({0}) != 0xffffffff", enc="ImmAdd{size}"),
+    "immlogical": EncodeFunc(("uint{size}_t  imm",), ("da_immlogical({0}, {size}>>6)",), singleExpansion=True, cond="da_immlogical({0}, {size}>>6) != 0xffffffff", enc="ImmLogical{size}"),
+    "immfmov32": EncodeFunc(("float  imm",), ("da_immfmov32({0})",), cond="da_immfmov32({0}) != 0xffffffff", enc="ImmFMov32"),
+    "immfmov64": EncodeFunc(("double  imm",), ("da_immfmov64({0})",), cond="da_immfmov64({0}) != 0xffffffff", enc="ImmFMov64"),
+    "immsimd8movi": EncodeFunc(("uint64_t  imm64",), ("da_immsimdmovi({0})",), singleExpansion=True, cond="da_immsimdmovi({0}) != 0xffffffff", enc="ImmSIMD8Movi"),
+    "immsimd8lsl": EncodeFunc(("uint8_t  imm", "unsigned  lsl"), ("{0}>>5", "{0}&0x1f", "{1}>>2|1"), cond="{1}<(8*{maxshift}) && ({1}&7) == 0", enc="ImmSIMD8Lsl"),
+    "immsimd8fmov": EncodeFunc(("float  imm",), ("da_immfmov32({0})>>5", "da_immfmov32({0})&0x1f"), cond="da_immfmov32({0}) != 0xffffffff", enc="ImmSIMD8Fmov"),
 }
 
 class EncoderGenerator:
     decls: list[str] = []
     defns: list[str] = []
+    encodings: set[str] = set()
+    opcodes: list[str] = list()
+    opcode_info: list[str] = list()
     encode_in_header = False
 
     def __init__(self, encode_in_header=False):
@@ -505,6 +507,13 @@ class EncoderGenerator:
         assignments: dict[str, str] = {}
         grandExpansions: list[str] = []
         varaliases: dict[str, str] = {}
+        encs = list()
+
+        
+        if grp == "MEM_IMM":
+            name = f"{name}_imm"
+        elif grp == "MEM_REG":
+            name = f"{name}_reg"
         for varstr, _, funcspec in (comp.partition("=") for comp in ops.split()):
             vars = varstr.split(",")
             if funcspec[0] == "@":
@@ -513,17 +522,23 @@ class EncoderGenerator:
                 for var, alias in zip(vars, aliases):
                     varaliases[var] = alias
                 continue
-
+            
             funcname, _, funcops = funcspec.partition("/")
+            
             funcops = [op.partition("=") for op in funcops.split(",")]
             funcops = {key: val for key, _, val in funcops if key}
             func = ENC_FUNCS[funcname]
+
             parnamebase = "".join(vars)
             funcparnames = []
             for ty, _, parname in (ty.partition("  ") for ty in func.paramtys):
-                funcparnames.append((parname or parnamebase).lower())
+                funcparnames.append(parname or parnamebase)
                 paramtys.append(ty.format(**funcops))
             parnames += funcparnames
+            try:
+                encs.append(func.enc.format(*funcparnames, **funcops))
+            except:
+                print(f"Error encoding {funcname} {funcops}")
             if func.cond:
                 conds.append(func.cond.format(*funcparnames, **funcops))
 
@@ -539,14 +554,14 @@ class EncoderGenerator:
                 if var in assignments and not func.allowOverride:
                     raise Exception(f"duplicate assignment to {var}")
                 assignments[var] = expansion.format(*funcparnames, **funcops)
-
+        self.encodings.add("".join(encs))
         for alias, var in varaliases.items():
             assignments[alias] = assignments[var]
 
         if cond:
             getval = lambda m: f"({assignments[m.group(1)]})"
             conds.append(re.sub(r'@([a-zA-Z0-9_]+)', getval, cond))
-
+        flags = ""
         # use XOR s.t. immadd can toggle between add and sub.
         buildexprs = ["(" + "^".join([f"{descmask.val:#x}"] + grandExpansions) + ")"]
         for de in grpdesc:
@@ -559,23 +574,40 @@ class EncoderGenerator:
         expr = "|".join(buildexprs)
         if conds:
             condexpr = "&&".join(f"({cond})" for cond in conds)
-            expr = f"if !({condexpr}) {{ 0 }} else {{ {expr} }}"
+            expr = f"!({condexpr}) ? 0 : {expr}"
 
-        substs = {"GRegSP": "GPSP", "GRegZR": "GPZR"}
 
         implname = f"{name}"
-        paramstr = ", ".join(f"{parname}: {ty}" for ty, parname in zip(paramtys, parnames))
+        paramstr = ", ".join(f"{parname.lower()}: impl OperandCast" for ty, parname in zip(paramtys, parnames))
         if not paramstr:
             paramstr = ""
-        signature = f"{implname.lower()}({paramstr}) -> u32"
-        if self.encode_in_header:
-            self.decls.append(f"pub const fn {signature} {{ return {expr}; }}")
-        else:
-            self.decls.append(signature + ";")
-            self.defns.append(f"{signature} {{ return {expr}; }}")
+        self.opcodes.append(name)
+        enc = "".join(encs)
+
+        if len(enc) == 0:
+            enc = "Empty"
+        self.opcode_info.append(f"InstInfo::new(Opcode::{name}, {descmask.val}, {descmask.mask}, Encoding::{enc})")
+        signature = f"{implname.lower()}(&mut self, {paramstr})"
+        self.decls.append(f"fn {signature} {{ return self.emit_n(Opcode::{name} as _, &[{", ".join(f"{parname.lower()}.as_operand()" for parname in parnames)}]); }}")
+
 
     def generate(self) -> tuple[str, dict[str, str]]:
-        return "\n".join(self.decls) + "\n", {
+        enc = "pub enum Encoding {\n"
+        for name in sorted(self.encodings):
+            if len(name) == 0:
+                name = "Empty"
+            enc += f"\t{name},\n"
+        enc += "}\npub enum Opcode {\n"
+        for name in self.opcodes:
+            enc += f"\t{name},\n"
+        enc += "}\npub static INST_INFO: &[InstInfo] = &[\n"
+        for info in self.opcode_info:
+            enc += f"\t{info},\n"
+        enc += "];\n"
+
+        decls = f"pub trait A64EmitterExplicit: Emitter {{\n{"\n".join(self.decls)}\n}}"
+
+        return enc + decls + "\n", {
             "DA64_ENCODER": "\n".join(self.defns),
         }
 
@@ -639,8 +671,8 @@ if __name__ == "__main__":
         except ParseException as e:
             print("error parsing", grp, e)
             raise
-    print(args.descfiles)
-    public_features = "".join(f"#define DA64_HAVE_{f} {n:d}\n" for f, n in features.items())
+
+    public_features = "".join(f"pub const A64_HAVE_{f}: bool = {str(n).lower()};\n" for f, n in features.items())
     public_decode, private_decode = decoder.generate(tables_as_switch=args.coverage)
     public_encode, private_encode = encoder.generate()
     private_dict = dict(private_decode, **private_encode)

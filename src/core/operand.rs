@@ -566,7 +566,7 @@ impl Operand {
     }
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, Eq)]
+#[derive(Deref, DerefMut, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Label(pub Operand);
 
 impl PartialOrd for Label {
@@ -609,7 +609,7 @@ impl Label {
     }
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, Eq)]
+#[derive(Deref, DerefMut, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Sym(pub Operand);
 
 impl PartialOrd for Sym {

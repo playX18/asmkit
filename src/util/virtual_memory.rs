@@ -6,6 +6,7 @@ use core::{
     ffi::CStr,
     mem::MaybeUninit,
     ops::{BitAnd, BitAndAssign, BitOr, BitOrAssign},
+    ptr::{addr_of, addr_of_mut},
     sync::atomic::{AtomicBool, AtomicI32, AtomicU32, Ordering},
 };
 
@@ -874,9 +875,21 @@ pub fn release_dual_mapping(dm: &mut DualMapping, size: usize) -> Result<(), Asm
 }
 
 pub fn info() -> Info {
-    static INFO: once_cell::sync::Lazy<Info> = once_cell::sync::Lazy::new(|| get_vm_info());
-
-    *INFO
+    static mut INFO: Info = Info {
+        page_granularity: 0,
+        page_size: 0,
+    };
+    static INFO_INIT: AtomicBool = AtomicBool::new(false);
+    if INFO_INIT.load(Ordering::Relaxed) {
+        unsafe { addr_of!(INFO).read() }
+    } else {
+        unsafe {
+            let info = get_vm_info();
+            addr_of_mut!(INFO).write(info);
+            INFO_INIT.store(true, Ordering::Relaxed);
+            info
+        }
+    }
 }
 
 /// Flushes instruction cache in the given region.
@@ -951,7 +964,7 @@ pub fn flush_instruction_cache(p: *const u8, size: usize) {
                     );
                 }
 
-            } else if cfg(target_arch="riscv64") {
+            } else if cfg(any(target_arch="riscv64", target_arch = "riscv32")) {
                 unsafe {
                     let _ = wasmtime_jit_icache_coherence::clear_cache(p.cast(), size);
                     let _ = wasmtime_jit_icache_coherence::pipeline_flush_mt();

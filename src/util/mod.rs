@@ -101,5 +101,7 @@ pub fn bit_vector_index_of(buf: &[u32], start: usize, value: bool) -> usize {
     }
 }
 
+#[cfg(feature = "jit")]
 pub mod os;
+#[cfg(feature = "jit")]
 pub mod virtual_memory;

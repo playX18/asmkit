@@ -971,9 +971,8 @@ impl<'a> Assembler<'a> {
         }
 
         if let Some((sym, reloc)) = reloc {
-            let name = self.buffer.symbol_name(sym).clone();
             self.buffer
-                .add_reloc_at_offset(offset, reloc, RelocTarget::ExternalName(name), -4);
+                .add_reloc_at_offset(offset, reloc, RelocTarget::Sym(sym), -4);
         }
         self.encode_imm(*imm(off).as_operand(), dispsz)
     }
@@ -1065,6 +1064,12 @@ impl<'a> Emitter for Assembler<'a> {
 
                 if ei.immctl == 6 {
                     if i.is_label() {
+                        if immsz == 1 && opc >> 56 != 0 {
+                            next!();
+                        } else if immsz == 1 {
+                            self.last_error = Some(AsmError::InvalidInstruction);
+                            return;
+                        }
                         label_use = Some((i.id(), LabelUse::X86JmpRel32));
                     } else if i.is_sym() {
                         let sym = i.as_::<Sym>();
@@ -1133,11 +1138,10 @@ impl<'a> Emitter for Assembler<'a> {
             if ei.immctl >= 2 {
                 let offset = self.buffer.cur_offset();
                 if let Some((sym, reloc)) = reloc {
-                    let target = self.buffer.symbol_name(Sym::from_id(sym)).clone();
                     self.buffer.add_reloc_at_offset(
                         offset,
                         reloc,
-                        RelocTarget::ExternalName(target),
+                        RelocTarget::Sym(Sym::from_id(sym)),
                         -4,
                     );
                 }
