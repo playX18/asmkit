@@ -384,7 +384,7 @@ pub struct Op {
     pub misc: u8,
 }
 
-#[derive(Default, Debug)]
+#[derive(Default)]
 pub struct Instruction {
     pub typ: Opcode,
     pub flags: u8,
@@ -417,7 +417,7 @@ impl Instruction {
     }
 
     pub fn segment(&self) -> Option<Reg> {
-        Reg::try_from(self.segment)
+        Reg::try_from(self.segment & 0x3f)
             .ok()
             .filter(|reg| *reg != Reg::None)
     }
@@ -463,6 +463,10 @@ impl Instruction {
     }
 
     pub fn op_size_log(&self, idx: usize) -> usize {
+        let sz = self.operands[idx].size;
+        if sz == 0 {
+            return 0;
+        }
         (self.operands[idx].size - 1) as usize
     }
 
@@ -479,11 +483,13 @@ impl Instruction {
     }
 
     pub fn op_base(&self, idx: usize) -> Option<Reg> {
-        self.op_reg(idx)
+        self.op_reg(idx).filter(|reg| *reg != Reg::None)
     }
 
     pub fn op_index(&self, idx: usize) -> Option<Reg> {
-        Reg::try_from(self.operands[idx].misc & 0x3f).ok()
+        Reg::try_from(self.operands[idx].misc & 0x3f)
+            .ok()
+            .filter(|reg| *reg != Reg::None)
     }
 
     pub fn op_scale(&self, idx: usize) -> u8 {
@@ -597,9 +603,11 @@ impl<'a> Decoder<'a> {
 
         if self.cursor > start {
             if prefixes[PF_SEG2] != 0 {
-                inst.segment = prefixes[PF_SEG2] >> 3 & 3;
-            } else {
-                inst.segment = prefixes[PF_SEG2] & 7;
+                if prefixes[PF_SEG2] & 0x02 != 0 {
+                    inst.segment = prefixes[PF_SEG2] >> 3 & 3;
+                } else {
+                    inst.segment = prefixes[PF_SEG2] & 7;
+                }
             }
 
             if prefixes[PF_67] != 0 {
@@ -1004,7 +1012,7 @@ impl<'a> Decoder<'a> {
 
                         if addr_size == 1 {
                             assert!(!self.mode.is_64());
-
+                            /*
                             if desc.vsib() {
                                 return self.invalid();
                             }
@@ -1050,73 +1058,71 @@ impl<'a> Decoder<'a> {
                                     inst.disp = load_le_2(dispbase) as i16 as i64;
                                 } else {
                                     inst.disp = 0;
-                                }
-                                break 'end_modrm;
+                                }*/
+                            break 'end_modrm;
+                        }
+
+                        // SIB byte
+                        let mut base = rm;
+                        if rm == 4 {
+                            if self.cursor >= self.buf.len() {
+                                return self.partial();
                             }
 
-                            // SIB byte
-                            let mut base = rm;
-                            if rm == 4 {
-                                if self.cursor >= self.buf.len() {
-                                    return self.partial();
-                                }
+                            let sib = self.read_u8();
+                            let scale = sib & 0xc0;
+                            let mut idx = (sib & 0x38) >> 3;
+                            idx += if prefix_rex & PREFIX_REXX != 0 { 8 } else { 0 };
+                            base = sib & 0x07;
+                            if idx == 4 {
+                                idx = Reg::None as u8;
+                            }
+                            op_modrm.misc = scale | idx;
+                        } else {
+                            op_modrm.misc = Reg::None as u8;
+                        }
 
-                                let sib = self.read_u8();
-                                let scale = sib & 0xc0;
-                                let mut idx = (sib & 0x38) >> 3;
-                                idx += if prefix_rex & PREFIX_REXX != 0 { 8 } else { 0 };
-                                base = sib & 0x07;
-                                if idx == 4 {
-                                    idx = Reg::None as u8;
-                                }
-                                op_modrm.misc = scale | idx;
-                            } else {
-                                op_modrm.misc = Reg::None as u8;
+                        if desc.vsib() {
+                            if rm != 4 {
+                                return self.invalid();
                             }
 
-                            if desc.vsib() {
-                                if rm != 4 {
-                                    return self.invalid();
-                                }
-
-                                if op_modrm.misc & 0x3f == Reg::None as u8 {
-                                    op_modrm.misc &= 0xc4;
-                                }
-
-                                if prefix_evex != 0 {
-                                    op_modrm.misc |= if prefix_evex & 0x8 != 0 { 0 } else { 0x10 };
-                                }
+                            if op_modrm.misc & 0x3f == Reg::None as u8 {
+                                op_modrm.misc &= 0xc4;
                             }
 
-                            if op_byte < 0x40 && rm == 5 && self.mode.is_64() {
-                                op_modrm.reg = Reg::IP as u8;
-                            } else if op_byte < 0x40 && base == 5 {
-                                op_modrm.reg = Reg::None as u8;
-                            } else {
-                                op_modrm.reg =
-                                    base + if prefix_rex & PREFIX_REXB != 0 { 8 } else { 0 };
-                            }
-
-                            let dispbase = &self.buf[self.cursor..];
-
-                            if op_byte & 0x40 != 0 {
-                                if self.cursor + 1 > self.buf.len() {
-                                    return self.partial();
-                                }
-
-                                self.read_u8();
-                                inst.disp =
-                                    ((load_le_1(dispbase) as i8 as i64) << dispscale) as i64;
-                            } else if op_byte & 0x80 != 0 || (op_byte < 0x40 && base == 5) {
-                                if self.cursor + 4 > self.buf.len() {
-                                    return self.partial();
-                                }
-                                self.cursor += 4;
-                                inst.disp = load_le_4(dispbase) as i32 as i64;
-                            } else {
-                                inst.disp = 0;
+                            if prefix_evex != 0 {
+                                op_modrm.misc |= if prefix_evex & 0x8 != 0 { 0 } else { 0x10 };
                             }
                         }
+
+                        if op_byte < 0x40 && rm == 5 && self.mode.is_64() {
+                            op_modrm.reg = Reg::IP as u8;
+                        } else if op_byte < 0x40 && base == 5 {
+                            op_modrm.reg = Reg::None as u8;
+                        } else {
+                            op_modrm.reg = base + if prefix_rex & PREFIX_REXB != 0 { 8 } else { 0 };
+                        }
+
+                        let dispbase = &self.buf[self.cursor..];
+
+                        if op_byte & 0x40 != 0 {
+                            if self.cursor + 1 > self.buf.len() {
+                                return self.partial();
+                            }
+
+                            self.read_u8();
+                            inst.disp = ((load_le_1(dispbase) as i8 as i64) << dispscale) as i64;
+                        } else if op_byte & 0x80 != 0 || (op_byte < 0x40 && base == 5) {
+                            if self.cursor + 4 > self.buf.len() {
+                                return self.partial();
+                            }
+                            self.cursor += 4;
+                            inst.disp = load_le_4(dispbase) as i32 as i64;
+                        } else {
+                            inst.disp = 0;
+                        }
+
                         break;
                     }
 
@@ -1173,6 +1179,7 @@ impl<'a> Decoder<'a> {
                 // 2 = memory, address-sized, used for mov with moffs operand
                 let operand = &mut inst.operands[desc.imm_idx() as usize];
                 operand.typ = OperandType::Mem;
+
                 operand.size = operand_sizes[desc.imm_size() as usize];
                 operand.reg = Reg::None as u8;
                 operand.misc = Reg::None as u8;
@@ -1270,7 +1277,7 @@ impl<'a> Decoder<'a> {
 
                 if imm_offset != 0 {
                     if inst.address != 0 {
-                        inst.imm += inst.address as i64 + self.cursor as i64;
+                        inst.imm += inst.address as i64 + (self.cursor - start) as i64;
                     } else {
                         operand.typ = OperandType::Off;
                     }

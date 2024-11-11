@@ -8,3 +8,4 @@ pub mod sink;
 pub mod support;
 pub mod target;
 pub mod types;
+pub mod formatter;

@@ -1026,6 +1026,7 @@ impl<'a> Emitter for Assembler<'a> {
 
             let mut imm = 0xcc;
             let mut immsz = (opc >> 47) & 0xf;
+
             let mut label_use = None;
             let mut reloc = None;
             if ei.zregidx != 0 && ops[ei.zregidx as usize ^ 3].id() != ei.zregval as u32 {
@@ -1041,6 +1042,7 @@ impl<'a> Emitter for Assembler<'a> {
             }
 
             if ei.immctl > 0 {
+   
                 let i = ops[ei.immidx as usize];
                 imm = i.as_::<Imm>().value();
 
@@ -1104,6 +1106,7 @@ impl<'a> Emitter for Assembler<'a> {
                     && !op_imm_n(*crate::core::operand::imm(imm).as_operand(), immsz as _)
                 {
                     next!();
+                } else {
                 }
             }
 
@@ -1125,6 +1128,7 @@ impl<'a> Emitter for Assembler<'a> {
                 }
 
                 if self.encode_memory(opc, epfx, ops[ei.modrm as usize ^ 3], modreg, 0) {
+                    
                     next!(self.last_error.take().unwrap());
                 }
             } else if ei.modreg != 0 {

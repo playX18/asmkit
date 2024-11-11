@@ -185,30 +185,31 @@ class Trie(NamedTuple):
         stnames = [f"{fn_prefix}_{i+1:x}" for i in range(len(self.subtries))]
         res = "\n".join(st.codegen(n, tables_as_switch) for st, n in zip(self.subtries, stnames))
         res += f"\n// {self.comment}"
-        res += f"\nstatic unsigned {fn_prefix}(uint32_t inst) {{\n"
+        res += f"\npub const fn {fn_prefix}(inst: u32) -> u32 {{\n"
         if self.fmsk:
-            res += f"  if ((inst&{self.fmsk:#x}) != {self.fval:#x}) return 0;\n"
+            res += f"  if (inst&{self.fmsk:#x}) != {self.fval:#x} {{ return 0; }}\n"
         if not self.subtries and len(set(self.table)) == 1:
             res += f"  return {hex(self.table[0])};\n"
             res += "}\n"
             return res
         table_idx = f"(inst >> {self.smsk_start}) & {(1<<self.smsk_len)-1:#x}"
         if tables_as_switch:
-            res += f"  unsigned idx;\n"
-            res += f"  switch ({table_idx}) {{\n"
+            res += f"  let idx = match {table_idx} {{\n"
             for i, t in enumerate(self.table):
-                res += f"    case {i:#x}: idx = {t:#x}; break;\n"
-            res += "  }\n"
+                res += f"    {i:#x} => {t:#x},\n"
+            res += "    _ => 0,\n" 
+            res += "  };\n"
         else:
-            res += "  static const uint16_t table[] = {\n"
-            res += "    " + ",".join(f"{t:#x}" for t in self.table) + " };\n"
-            res += f"  unsigned idx = table[{table_idx}];\n"
+            res += "  pub const TABLE: &[u16] = &[\n"
+            res += "    " + ",".join(f"{t:#x}" for t in self.table) + " ];\n"
+            res += f"  let idx = table[{table_idx} as usize];\n"
         if self.subtries:
-            res += "  switch (idx) {\n"
+            res += "  match idx {\n"
             for i in range(len(self.subtries)):
-                res += f"    case {i+1:#x}: return {stnames[i]}(inst);"
+                res += f"    {i+1:#x} => return {stnames[i]}(inst),"
                 res += f" // {self.subtries[i].comment}\n"
-            res += "  }\n"
+            res += "    _ => idx\n"
+            res += "  };\n"
         res += "  return idx;\n"
         res += "}\n"
         return res
@@ -319,18 +320,18 @@ class DecoderGenerator:
 
     @staticmethod
     def generate_opdecoder(decodestr: str, desc: Desc) -> str:
-        res = "{"
+        res = "{\n"
         ops = set(x[1:] for x in re.findall(r'@[a-zA-Z0-9_]+', decodestr))
         for de in desc:
             if de.name in ops:
-                ty = "int64_t" if de.flags == "s" else "uint64_t"
+                ty = "i32" if de.flags == "s" else "u32"
                 if de.fixed.mask == (1 << de.size) - 1:
-                    val = f"{de.fixed.val}"
+                    val = f"{de.fixed.val} as {ty}"
                 else:
-                    val = f"inst>>{de.idx}&{(1<<de.size)-1:#x}"
+                    val = f"(inst>>{de.idx}&{(1<<de.size)-1:#x}) as {ty}"
                 if de.flags == "s":
-                    val = f"sext({val}, {de.size})"
-                res += f"{ty} {de.name} = {val}; "
+                    val = f"sext({val} as {ty}, {de.size})"
+                res += f"let {de.name.lower()}: {ty} = {val};\n"
         # Split decodestr, respecting parenthesized operands.
         operands, parendepth = [], 0
         for comp in decodestr.replace("@", "").strip().split():
@@ -340,9 +341,102 @@ class DecoderGenerator:
                 operands.append(comp)
             parendepth += comp.count("(") - comp.count(")")
         for i, op in enumerate(operands):
-            res += f"ddi->ops[{i}] = {op.rstrip(',')}; "
-        return res + "break;}"
+            res += f"ddi.ops[{i}] = {op.rstrip(',').lower()};\n"
+        res = res + "}"
+        res = res.replace("q?1:4", "if q != 0 { 1 } else { 4 }")
+        res = res.replace("sz?h:2", "(if sz != 0 { h } else { 2 })")
+        res = res.replace("opc==2?2:ftype^2","(if opc == 2 { 2 } else { ftype^2 })")
+        res = res.replace("opc==2?2:opc^2", "(if opc == 2 { 2 } else { opc^2 }) ")
+        pat="sf&&(option&3)==3"
+        rep="(sf&&(option&3)==3) as u32"
+        res=res.replace(pat,rep)
+        pat = "cmode<14?opuimmshift(immh<<5|imml, cmode>=12, cmode<12?(cmode>>1&3)*8:(cmode&1)*8+8):cmode==14?(op==0?opuimm(immh<<5|imml):opimmsimdmask(ddi, immh<<5|imml)):opimmfloat(ddi, immh<<5|imml)"
+        rep="""
+if cmode < 14 {
+    let shift = if cmode < 12 {
+        (cmode >> 1 & 3) * 8
+    } else {
+        (cmode & 1) * 8 + 8
+    };
+    opuimmshift((immh << 5) | imml, (cmode >= 12) as u32, shift)
+} else if cmode == 14 {
+    if op == 0 {
+        opuimm((immh << 5) | imml)
+    } else {
+        opimmsimdmask(ddi, (immh << 5) | imml)
+    }
+} else {
+    opimmfloat(ddi, (immh << 5) | imml)
+}
+        """
+        res = res.replace(pat, rep)
+        pat = "op&&cmode>=14&&!q?opregfp(rd, 3):opregvec(rd, cmode<8?2:cmode<12?1:cmode<14?2:cmode==14?(op?3:0):(op?3:o2?1:2), q)"
+        rep = """
+if op !=0 && cmode >= 14 && q == 0 {
+    opregfp(rd, 3)
+} else {
+    let mode = if cmode < 8 {
+        2
+    } else if cmode < 12 {
+        1
+    } else if cmode < 14 {
+        2
+    } else if cmode == 14 {
+        if op!=0 { 3 } else { 0 }
+    } else {
+        if op!=0 { 3 } else if o2!=0 { 1 } else { 2 }
+    };
+    opregvec(rd, mode, q)
+}
+        """
+        res = res.replace(pat, rep)
+        pat="opcode&1?1:4-(opcode>>2)"
+        rep="""
+if opcode & 1 != 0 {
+    1
+} else {
+    4 - (opcode >> 2)
+}
+        """
+        res = res.replace(pat, rep)
+        pat="(opc>=4?size:0)"
+        rep="(if opc >=4 { size } else { 0 })"
+        res = res.replace(pat, rep)
+        pat="(size>=2?m<<4:0)"
+        rep="(if size >= 2 {m<<4}else{0})"
+        res=res.replace(pat,rep)
+        pat="size>=2?2*h+l:4*h+2*l+m"
+        rep="if size>=2{2*h+l}else{4*h+2*l+m}"
+        res = res.replace(pat, rep)
+        pat="opc==2?1:opc^2"
+        rep="if opc==2{1}else{opc^2}"
+        res=res.replace(pat,rep)
+        pat="op?(immh<<3|immb)-64:128-(immh<<3|immb)"
+        rep="if op != 0{(immh<<3|immb)-64}else{128-(immh<<3|immb)}"
+        res=res.replace(pat,rep)
+        pat="op?(immh<<3|immb)-(8<<(3-clz(immh, 4))):(16<<(3-clz(immh,4)))-(immh<<3|immb)"
+        rep="""
+if op!=0 {
+    (immh << 3 | immb) - (8 << (3 - clz(immh, 4)))
+} else {
+    (16 << (3 - clz(immh, 4))) - (immh << 3 | immb)
+}
 
+        """
+        res=res.replace(pat,rep)
+        pat1="(u|(size&1))?(u<<1|(size&1)):4"
+
+        rep1="""
+if (u | (size & 1)) != 0 {
+    (u << 1) | (size & 1)
+} else {
+    4
+}
+        """
+        res=res.replace(pat1,rep1)
+        return res
+
+        
     def add_group(self, grp: str, grpdesc: Desc, props, features: dict[str, bool]):
         if grp in self.grpnums:
             raise Exception(f"redundant group {grp}")
@@ -381,37 +475,59 @@ class DecoderGenerator:
         if len(opdecoders) == 1:
             self.decoders[grp] = next(iter(opdecoders))
         else:
-            switch = "switch (mnem) { default: __builtin_unreachable();\n"
+            switch = "match mnem {\n"
             for opdecoder, mnems in opdecoders.items():
-                switch += "  " + " ".join(f"case DA64I_{mnem}:" for mnem in mnems)
-                switch += "\n    " + opdecoder + "\n"
-            self.decoders[grp] = switch + "} break;"
+                switch += "  " + "| ".join(f"InstKind::{mnem}" for mnem in mnems)
+                switch += "\n    =>" + opdecoder + ",\n"
+            switch += "  _ => unreachable!()\n"
+            self.decoders[grp] = switch + "}"
 
     def generate(self, tables_as_switch) -> tuple[str, dict[str, str]]:
         trie = make_table(self.trie_descs, list(range(len(self.trie_descs))))
         mnems_strs = [f"{k}={v:#x},\n" for k, v in self.mnems.items()]
         grpnum_strs = [f"{k}={v:#x},\n" for k, v in self.grpnums.items()]
         decodestr = superstring(self.decstr.values())
-        decstrtab = [f'[{m}] = {len(s) << 12 | decodestr.index(s):#x},\n'
-            for m, s in self.decstr.items()]
-        decoder = [f'InstGroup::{m}: {s}\n' for m, s in self.decoders.items()]
+        #decstrtab = [f'[{m}] = {len(s) << 12 | decodestr.index(s):#x},\n'
+        #    for m, s in self.decstr.items()]
+        max_m = max(self.decstr.keys())
+        decstrtab = f"{{\n  let mut tab = [0u16; {max_m+1}];\n"
+        for m, s in self.decstr.items():
+            decstrtab += f"  tab[{m}] = {len(s) << 12 | decodestr.index(s):#x};\n"
+        decstrtab += "\ntab\n};"
+        decoder = [f'InstGroup::{m} => {s}\n' for m, s in self.decoders.items()]
         public = f"""
+use derive_more::TryFrom;
+#[derive(TryFrom, Copy, Clone, PartialEq, Eq, Hash, Debug)]
+#[repr(u16)]
+#[try_from(repr)]
+#[allow(non_camel_case_types)]
 pub enum InstKind {{
     Unknown=0,
   {"".join(mnems_strs)}
-}};
-enum InstGroup {{
+}}
+
+#[derive(TryFrom, Copy, Clone, PartialEq, Eq, Hash, Debug)]
+#[repr(u16)]
+#[try_from(repr)]
+#[allow(non_camel_case_types)]
+pub enum InstGroup {{
   Unknown=0,
   {"".join(grpnum_strs)}
-}};
-pub const a64_group(mnem: u32) ((mnem) >> {BITS_SUBGRP})
+}}
+pub fn a64_group(mnem: InstKind) -> InstGroup {{ InstGroup::try_from((mnem as u32 >> {BITS_SUBGRP}) as u16).unwrap_or(InstGroup::Unknown) }}
 """
 
+        decoder_match = "match a64_group(mnem) { InstGroup::Unknown=>return false,\n" + "".join(decoder) + "}"
+        decode = "pub fn decode(inst: u32, ddi: &mut Inst) -> bool {\n"
+        decode += " for i in 0..ddi.ops.len() { ddi.ops[i] = Op::default(); }\n"
+        decode += " let mnem = classify(inst);\n"
+        decode += " ddi.mnem = mnem;\n"
+        decode += decoder_match + " true }"
         return public, {
-            "DA64_CLASSIFIER": trie.codegen("da64_classify_impl", tables_as_switch),
-            "DA64_DECSTR": '"' + decodestr + '"',
-            "DA64_DECSTRTAB": "".join(decstrtab),
-            "DA64_DECODER": "".join(decoder),
+            "DA64_CLASSIFIER": trie.codegen("classify_impl", tables_as_switch),
+            "DA64_DECSTR": 'pub static MNEMSTR: &str = "' + decodestr + '";',
+            "DA64_DECSTRTAB": f"pub static MNEMTAB: [u16;{max_m + 1}] = " + "".join(decstrtab) + "",
+            "DA64_DECODER":  decode,
         }
 
 @dataclass
@@ -437,12 +553,8 @@ ENC_FUNCS = {
     "cond": EncodeFunc(("Da64Cond",), ("{0}",), enc="Cond"),
     "invcond": EncodeFunc(("Da64Cond",), ("({0}^1)",), enc="InvCond"),
     "imm": EncodeFunc(("unsigned",), ("{0}",), cond="{0}<{max}", enc="Imm"),
-    "immadr": EncodeFunc(("usize  target"), ("({0})&3", "(({0})>>2)&0x7ffff"), enc="ImmAddr"),
-    "immadrp": EncodeFunc(
-        ("usize  target"),
-        ("({0}>>12) as u32 &3", "({0} as u32)>>14)&0x7ffff"),
-        enc="ImmAddrP"
-    ),
+    "immadr": EncodeFunc(("usize",), ("({0})&3", "(({0})>>2)&0x7ffff"), enc="ImmAddr"),
+    "immadrp": EncodeFunc(("usize",),("({0}>>12) as u32 &3", "({0} as u32)>>14)&0x7ffff"),enc="ImmAddrP"),
     "immlsl": EncodeFunc(("u32  lsl",), ("(-{0})&({max}-1)", "{max}-1-{0}"), cond="{0}<{max}", enc="{0}{max}"),
     "immbfx": EncodeFunc(("u32  lsb", "u32  width"), ("{0}", "{0}+{1}-1"), cond="{0}<{max}&&{1}-1<{max}-{0}", enc="{0}{1}"),
     "immbfi": EncodeFunc(("u32  lsb", "u32  width"), ("(-{0})&({max}-1)", "{1}-1"), cond="{0}<{max}&&{1}-1<{max}-{0}", enc="{0}{1}"),
@@ -470,6 +582,8 @@ ENC_FUNCS = {
     "immsimd8lsl": EncodeFunc(("uint8_t  imm", "unsigned  lsl"), ("{0}>>5", "{0}&0x1f", "{1}>>2|1"), cond="{1}<(8*{maxshift}) && ({1}&7) == 0", enc="ImmSIMD8Lsl"),
     "immsimd8fmov": EncodeFunc(("float  imm",), ("da_immfmov32({0})>>5", "da_immfmov32({0})&0x1f"), cond="da_immfmov32({0}) != 0xffffffff", enc="ImmSIMD8Fmov"),
 }
+
+generated_emitters = set()
 
 class EncoderGenerator:
     decls: list[str] = []
@@ -509,7 +623,6 @@ class EncoderGenerator:
         varaliases: dict[str, str] = {}
         encs = list()
 
-        
         if grp == "MEM_IMM":
             name = f"{name}_imm"
         elif grp == "MEM_REG":
@@ -531,9 +644,15 @@ class EncoderGenerator:
 
             parnamebase = "".join(vars)
             funcparnames = []
+            if name == "ADRP":
+                print(func.paramtys)
             for ty, _, parname in (ty.partition("  ") for ty in func.paramtys):
+                
+
                 funcparnames.append(parname or parnamebase)
                 paramtys.append(ty.format(**funcops))
+            if name == "ADRP":
+                print(funcparnames)
             parnames += funcparnames
             try:
                 encs.append(func.enc.format(*funcparnames, **funcops))
@@ -576,8 +695,14 @@ class EncoderGenerator:
             condexpr = "&&".join(f"({cond})" for cond in conds)
             expr = f"!({condexpr}) ? 0 : {expr}"
 
+        implname = f"{name}".lower()
+        if implname in generated_emitters:
+            implname += "_"
+        else: 
+            generated_emitters.add(implname)
 
-        implname = f"{name}"
+        if implname == "yield":
+            implname = f"r#yield"
         paramstr = ", ".join(f"{parname.lower()}: impl OperandCast" for ty, parname in zip(paramtys, parnames))
         if not paramstr:
             paramstr = ""
@@ -591,23 +716,43 @@ class EncoderGenerator:
         self.decls.append(f"fn {signature} {{ return self.emit_n(Opcode::{name} as _, &[{", ".join(f"{parname.lower()}.as_operand()" for parname in parnames)}]); }}")
 
 
-    def generate(self) -> tuple[str, dict[str, str]]:
-        enc = "pub enum Encoding {\n"
+    def generate(self) -> tuple[str, str, dict[str, str]]:
+        enc="""
+#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
+pub struct InstInfo {
+    pub opcode: Opcode,
+    pub val: u32,
+    pub mask: u32,
+    pub encoding: Encoding
+}
+
+impl InstInfo {
+    pub const fn new(opcode: Opcode, val: u32, mask: u32, encoding: Encoding) -> Self {
+        Self {
+            opcode,
+            val,
+            mask,
+            encoding
+        }
+    }
+}
+        """
+        enc += "#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)] #[allow(non_camel_case_types)] pub enum Encoding {\n"
         for name in sorted(self.encodings):
             if len(name) == 0:
                 name = "Empty"
             enc += f"\t{name},\n"
-        enc += "}\npub enum Opcode {\n"
+        enc += "}\n#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)] #[allow(non_camel_case_types)] pub enum Opcode {\n"
         for name in self.opcodes:
             enc += f"\t{name},\n"
-        enc += "}\npub static INST_INFO: &[InstInfo] = &[\n"
+        enc += "\tLAST\n}\npub static INST_INFO: &[InstInfo] = &[\n"
         for info in self.opcode_info:
             enc += f"\t{info},\n"
         enc += "];\n"
 
         decls = f"pub trait A64EmitterExplicit: Emitter {{\n{"\n".join(self.decls)}\n}}"
 
-        return enc + decls + "\n", {
+        return enc, decls + "\n", {
             "DA64_ENCODER": "\n".join(self.defns),
         }
 
@@ -619,8 +764,9 @@ if __name__ == "__main__":
     parser.add_argument("--encode-in-header", action="store_true",
         help="Move most encoding logic to header")
     parser.add_argument("--feature-desc", help="Feature description file")
-    parser.add_argument("out_public", type=argparse.FileType("w"))
-    parser.add_argument("out_private", type=argparse.FileType("w"))
+    parser.add_argument("out_emitter", type=argparse.FileType("w"))
+    parser.add_argument("out_opcodes", type=argparse.FileType("w"))
+    parser.add_argument("out_classifier", type=argparse.FileType("w"))
     parser.add_argument("descfiles", nargs="+")
     args = parser.parse_args()
 
@@ -672,13 +818,19 @@ if __name__ == "__main__":
             print("error parsing", grp, e)
             raise
 
-    public_features = "".join(f"pub const A64_HAVE_{f}: bool = {str(n).lower()};\n" for f, n in features.items())
+    public_features = "" #.join(f"pub const A64_HAVE_{f}: bool = {str(n).lower()};\n" for f, n in features.items())
     public_decode, private_decode = decoder.generate(tables_as_switch=args.coverage)
-    public_encode, private_encode = encoder.generate()
-    private_dict = dict(private_decode, **private_encode)
-    private_str = "".join(f"#{'el' if i else ''}if defined({key})\n{val}\n"
-                          for i, (key, val) in enumerate(private_dict.items()))
-    private_str += '#else\n#error "unknown table"\n#endif\n'
+    opcodes, emitter, _private_decode = encoder.generate()
 
-    args.out_public.write(public_features + public_decode + public_encode)
-    args.out_private.write(private_str)
+    args.out_emitter.write(emitter)
+    args.out_opcodes.write(opcodes + public_decode)
+    #args.out_classifier.write("#![allow(unused_parens)]")
+    for feat, code in private_decode.items(): 
+        args.out_classifier.write(code + "\n")
+    #private_dict = dict(private_decode, **private_encode)
+    #private_str = "".join(f"#{'el' if i else ''}if defined({key})\n{val}\n"
+    #                       for i, (key, val) in enumerate(private_dict.items()))
+    #private_str += '#else\n#error "unknown table"\n#endif\n'
+
+    #args.out_public.write(public_features + public_decode + public_encode)
+    #args.out_private.write(private_str)

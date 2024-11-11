@@ -1,5 +1,6 @@
 use super::opcodes::*;
 use crate::{core::emitter::*, core::operand::*};
+
 pub trait A64EmitterExplicit: Emitter {
     fn udf(&mut self, imm16: impl OperandCast) {
         return self.emit_n(Opcode::UDF as _, &[imm16.as_operand()]);
@@ -2034,33 +2035,16 @@ pub trait A64EmitterExplicit: Emitter {
     fn negsx(&mut self, rd: impl OperandCast, rm: impl OperandCast) {
         return self.emit_n(Opcode::NEGSx as _, &[rd.as_operand(), rm.as_operand()]);
     }
-    fn adr(
-        &mut self,
-        rd: impl OperandCast,
-        immloimmhi: impl OperandCast,
-    ) {
+    fn adr(&mut self, rd: impl OperandCast, immloimmhi: impl OperandCast) {
         return self.emit_n(
             Opcode::ADR as _,
-            &[
-                rd.as_operand(),
-                immloimmhi.as_operand(),
-
-            ],
+            &[rd.as_operand(), immloimmhi.as_operand()],
         );
     }
-    fn adrp(
-        &mut self,
-        rd: impl OperandCast,
-        immloimmhi: impl OperandCast,
-
-    ) {
+    fn adrp(&mut self, rd: impl OperandCast, immloimmhi: impl OperandCast) {
         return self.emit_n(
             Opcode::ADRP as _,
-            &[
-                rd.as_operand(),
-                immloimmhi.as_operand(),
-
-            ],
+            &[rd.as_operand(), immloimmhi.as_operand()],
         );
     }
     fn andwi(&mut self, rd: impl OperandCast, rn: impl OperandCast, imm: impl OperandCast) {

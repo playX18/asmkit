@@ -1,10 +1,11 @@
-use capstone::prelude::*;
+
 use uasm::core::jit_allocator::{JitAllocator, JitAllocatorOptions};
 
 fn main() {
     {
         use uasm::core::buffer::CodeBuffer;
         use uasm::x86::*;
+        use formatter::pretty_disassembler;
         let mut buf = CodeBuffer::new();
         let mut asm = Assembler::new(&mut buf);
 
@@ -43,18 +44,9 @@ fn main() {
                     .copy_from_nonoverlapping(result.data().as_ptr(), result.data().len());
             })
             .unwrap();
-
-            let cs = Capstone::new()
-                .x86()
-                .mode(arch::x86::ArchMode::Mode64)
-                .syntax(arch::x86::ArchSyntax::Intel)
-                .detail(true)
-                .build()
-                .unwrap();
-
-            for i in cs.disasm_all(result.data(), span.rx() as _).unwrap().iter() {
-                println!("{}", i);
-            }
+            let mut out = String::new();
+            pretty_disassembler(&mut out, 64, result.data(), span.rx() as _).unwrap();
+            println!("{}", out);
             #[cfg(target_arch = "x86_64")]
             {
                 let f: extern "C" fn(u64) -> u64 = std::mem::transmute(span.rx());
@@ -67,6 +59,7 @@ fn main() {
     {
         use uasm::core::buffer::CodeBuffer;
         use uasm::riscv::*;
+        use formatter::pretty_disassembler;
         let mut buf = CodeBuffer::new();
         let mut asm = Assembler::new(&mut buf);
 
@@ -104,18 +97,12 @@ fn main() {
                 span.rw()
                     .copy_from_nonoverlapping(result.data().as_ptr(), result.data().len());
             })
-            .unwrap();
+            .unwrap(); 
+            
 
-            let cs = Capstone::new()
-                .riscv()
-                .mode(arch::riscv::ArchMode::RiscV64)
-                .detail(true)
-                .build()
-                .unwrap();
-
-            for i in cs.disasm_all(result.data(), span.rx() as _).unwrap().iter() {
-                println!("{}", i);
-            }
+            let mut out = String::new();
+            pretty_disassembler(&mut out, 64, result.data(), span.rx() as _).unwrap();
+            println!("{}", out);
             #[cfg(target_arch = "riscv64")]
             {
                 let f: extern "C" fn(u64) -> u64 = std::mem::transmute(span.rx());

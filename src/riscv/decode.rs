@@ -1,3 +1,5 @@
+use opcodes::{ALL_OPCODES, OPCODE32_MASK, OPCODE32_MATCH, OPCODE64_MASK, OPCODE64_MATCH, SHORT_OPCODES};
+
 use super::*;
 pub struct Decoder<'a> {
     buf: &'a [u8],
@@ -84,6 +86,12 @@ impl<'a> Decoder<'a> {
         let val = self.buf[self.cursor];
         self.cursor += 1;
         val
+    }
+
+    pub fn decode(&mut self) -> Instruction {
+        let mut inst = Instruction::default();
+        self.decode_out(&mut inst);
+        inst
     }
 
     pub fn decode_out(&mut self, inst: &mut Instruction) {

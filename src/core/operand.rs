@@ -18,7 +18,7 @@ macro_rules! define_operand_cast {
 }
 
 /// Operand type used by [Operand_]
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, derive_more::TryFrom)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, derive_more::TryFrom, Debug)]
 #[repr(u32)]
 #[try_from(repr)]
 pub enum OperandType {
@@ -135,7 +135,7 @@ impl RegType {
     pub const RISCVVec: Self = Self::VecNLen;
 }
 
-#[derive(TryFrom, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(TryFrom, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
 #[repr(u32)]
 #[try_from(repr)]
 pub enum RegGroup {
@@ -490,13 +490,13 @@ impl Operand {
     pub fn is_reg_type_of(&self, typ: RegType) -> bool {
         self.signature
             .subset(OperandSignature::OP_TYPE_MASK | OperandSignature::REG_TYPE_MASK)
-            == OperandSignature::from_reg_type(typ)
+            == OperandSignature::from_reg_type(typ) | OperandSignature::from_op_type(OperandType::Reg)
     }
 
     pub fn is_reg_group_of(&self, group: RegGroup) -> bool {
         self.signature
             .subset(OperandSignature::OP_TYPE_MASK | OperandSignature::REG_GROUP_MASK)
-            == OperandSignature::from_reg_group(group)
+            == OperandSignature::from_reg_group(group) | OperandSignature::from_op_type(OperandType::Reg)
     }
 
     pub fn is_gp(&self) -> bool {

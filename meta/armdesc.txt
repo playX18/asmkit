@@ -18,7 +18,7 @@
   desc: {1:sf}{1:op}{1:S}01011001{5:Rm}{3:option}{3:imm3}{5:Rn|SP}{5:Rd|SP}
   cond: imm3 < 5
   mnem: {op:0=ADD:1=SUB}{S:0=:1=S}_EXT{imm3:0=:1=:2=:3=:4=}
-  decode: {op:0=add:1=sub}{S:0=:1=s} OPreggpmaysp(!@S, @Rd, @sf) OPreggpsp(@Rn, @sf) OPreggpext(@Rm, @sf&&(@option&3)==3, @option, @imm3)
+  decode: {op:0=add:1=sub}{S:0=:1=s} OPreggpmaysp(!@S, @Rd, @sf) OPreggpsp(@Rn, @sf) OPreggpext(@Rm, (@sf!=0&&(@option&3)==3) as u32, @option, @imm3)
   encmnem: {op:0=ADD:1=SUB}{S:0=:1=S}{sf:0=w:1=x}_{option:0=uxtb:1=uxth:2=uxtw:3=uxtx:4=sxtb:5=sxth:6=sxtw:7=sxtx}
   encops: Rd={S:0=reggpsp:1=reggp} Rn=reggpsp Rm=reggp imm3=imm/max=5
   encmnem_cmp: {S:1=}{op:0=CMN:1=CMP}{sf:0=w:1=x}_{option:0=uxtb:1=uxth:2=uxtw:3=uxtx:4=sxtb:5=sxth:6=sxtw:7=sxtx}
@@ -53,14 +53,14 @@
 [ADR]
   desc: {1:op}{2:immlo}10000{19:immhi|s}{5:Rd}
   mnem: ADR{op:0=:1=P}
-  decode: adr{op:0=:1=p} OPreggp(@Rd, 1) OPreladdr(ddi, (@immhi<<2|@immlo)<<(@op*12))
+  decode: adr{op:0=:1=p} OPreggp(@Rd, 1) OPreladdr(ddi, (((@immhi as u32)<<2|@immlo)<<(@op*12)) as i32)
   encmnem: ADR{op:0=:1=P}
   encops: Rd=reggp immlo,immhi={op:0=immadr:1=immadrp}
 [ANDOREOR_IMM]
   desc: {1:sf}{2:opc}100100{1:N}{6:immr}{6:imms}{5:Rn}{5:Rd}
   # Exclude sf=0&&N=1 and N,imms in {0/31,0/47,0/55,0/59,0/61,0/62,0/63,1/63}
   mnem: {opc:0=AND:1=ORR:2=EOR:3=ANDS}_IMM{sf,N:*,*=:!0,1}{N,imms:*,*=:!0,31:!0,47:!0,55:!0,59:!0,61:!0,62:!0,63:!1,63}
-  decode: {opc:0=and:1=orr:2=eor:3=ands} @OPreggpmaysp(@opc<3, @Rd, @sf) OPreggp(@Rn, @sf) OPimmlogical(ddi, @sf, @N, @immr, @imms)
+  decode: {opc:0=and:1=orr:2=eor:3=ands} @OPreggpmaysp((@opc<3) as u32, @Rd, @sf) OPreggp(@Rn, @sf) OPimmlogical(ddi, @sf, @N, @immr, @imms)
   encmnem: {opc:0=AND:1=ORR:2=EOR:3=ANDS}{sf:0=w:1=x}i
   encops: Rd={opc:0=reggpsp:1=reggpsp:2=reggpsp:3=reggp} Rn=reggp N,immr,imms=immlogical/size={sf:0=32:1=64}
   encmnem_tst: {opc:3=}TST{sf:0=w:1=x}i
@@ -255,7 +255,7 @@
 [MINMAX_IMM]
   desc: {1:sf}0{1:S=0}1000111{4:opcode=00xx}{8:imm8}{5:Rn}{5:Rd}
   mnem: {opcode<0>:0=S:1=U}{opcode<1>:0=MAX:1=MIN}_GP_IMM
-  decode: {opcode<0>:0=s:1=u}{opcode<1>:0=max:1=min} OPreggp(@Rd, @sf) OPreggp(@Rn, @sf) {opcode<0>:0=OPsimm(sext(@imm8, 8)):1=OPuimm(@imm8)}
+  decode: {opcode<0>:0=s:1=u}{opcode<1>:0=max:1=min} OPreggp(@Rd, @sf) OPreggp(@Rn, @sf) {opcode<0>:0=OPsimm(sext(@imm8 as _, 8)):1=OPuimm(@imm8)}
   encmnem: {opcode<0>:0=S:1=U}{opcode<1>:0=MAX:1=MIN}{sf:0=w:1=x}i
   encops: Rd=reggp Rn=reggp imm8={opcode<0>:0=simm/asr=0:1=uimm/lsr=0},bits=8
   feat: CSSC
@@ -373,7 +373,7 @@
   # canonical encoding of Rt2=11111 Rs=11111
   desc: {2:size}0010001{1:L}0{5:Rs}{1:o0}{5:Rt2}{5:Rn|SP}{5:Rt}
   mnem: {L,o0:0,0=STLL:0,1=STL:1,0=LDLA:1,1=LDA}R{size:0=B:1=H:2=W:3=}
-  decode: {L,o0:0,0=stll:0,1=stl:1,0=ldla:1,1=lda}r{size:0=b:1=h:2=:3=} OPreggp(@Rt, @size==3) OPmemuoff(@Rn, 0)
+  decode: {L,o0:0,0=stll:0,1=stl:1,0=ldla:1,1=lda}r{size:0=b:1=h:2=:3=} OPreggp(@Rt, (@size==3) as u32) OPmemuoff(@Rn, 0)
   encmnem: {L,o0:0,0=STLL:0,1=STL:1,0=LDLA:1,1=LDA}R{size:0=B:1=H:2=w:3=x}
   encops: Rs=regzr Rt=reggp Rt2=regzr Rn=reggpsp
   feat: {o0:0=LOR:1=}
@@ -381,20 +381,20 @@
   # canonical encoding of LDXR/STXR-Rt2=11111 LDX*-Rs=11111
   desc: {2:size}0010000{1:L}{1:P}{5:Rs}{1:o0}{5:Rt2}{5:Rn|SP}{5:Rt}
   mnem: {L,o0:0,0=ST:0,1=STL:1,0=LD:1,1=LDA}X{P,size<1>:0,0=R:0,1=R:1,1=P}{size:0=B:1=H:2=W:3=X}
-  decode: {L,o0:0,0=st:0,1=stl:1,0=ld:1,1=lda}x{P,size<1>:0,0=r:0,1=r:1,1=p}{size:0=b:1=h:2=:3=} {L:0=OPreggp(@Rs, 0):1=} OPreggp(@Rt, @size==3) {P:0=:1=OPreggp(@Rt, @size==3)} OPmemsoff(@Rn, 0)
+  decode: {L,o0:0,0=st:0,1=stl:1,0=ld:1,1=lda}x{P,size<1>:0,0=r:0,1=r:1,1=p}{size:0=b:1=h:2=:3=} {L:0=OPreggp(@Rs, 0):1=} OPreggp(@Rt, (@size==3) as u32) {P:0=:1=OPreggp(@Rt, (@size==3) as u32)} OPmemsoff(@Rn, 0)
   encmnem: {L,o0:0,0=ST:0,1=STL:1,0=LD:1,1=LDA}X{P,size:0,0=RBw:0,1=RHw:0,2=Rw:0,3=Rx:1,2=Pw:1,3=Px}
   encops: Rs={L:0=reggp:1=regzr} Rt=reggp Rt2={P:0=regzr:1=reggp} Rn=reggpsp
 [MEMNP]
   desc: {2:opc}1010000{1:L}{7:imm7|s}{5:Rt2}{5:Rn|SP}{5:Rt}
   mnem: {L:0=ST:1=LD}NP{opc:0=W:2=X}
-  decode: {L:0=st:1=ld}np OPreggp(@Rt, @opc>0) OPreggp(@Rt2, @opc>0) OPmemsoff(@Rn, @imm7<<(2+(@opc>=2)))
+  decode: {L:0=st:1=ld}np OPreggp(@Rt, (@opc>0) as u32) OPreggp(@Rt2, (@opc>0) as u32) OPmemsoff(@Rn, @imm7<<(2+(@opc>=2) as u32))
   encmnem: {L:0=ST:1=LD}NP{opc:0=w:2=x}
   encops: Rt=reggp Rt2=reggp Rn=reggpsp imm7=simm/bits=7,asr={opc:0=2:2=3}
   enccond: {L:0=:1=@Rt!=@Rt2}
 [MEMP]
   desc: {2:opc}10100{2:op2}{1:L}{7:imm7|s}{5:Rt2}{5:Rn|SP}{5:Rt}
   mnem: {L,opc:0,0=STPW:0,1=STGP:0,2=STPX:1,0=LDPW:1,1=LDPSW:1,2=LDPX}{op2:1=_POST:2=:3=_PRE}
-  decode: {L,opc:0,0=stp:0,1=stgp:0,2=stp:1,0=ldp:1,1=ldpsw:1,2=ldp} OPreggp(@Rt, @opc>0) OPreggp(@Rt2, @opc>0) OPmemsoff{op2:1=post:2=:3=pre}(@Rn, @imm7<<{L,opc:*,0=2:0,1=4:1,1=2:*,2=3})
+  decode: {L,opc:0,0=stp:0,1=stgp:0,2=stp:1,0=ldp:1,1=ldpsw:1,2=ldp} OPreggp(@Rt, (@opc>0) as u32) OPreggp(@Rt2, (@opc>0) as u32) OPmemsoff{op2:1=post:2=:3=pre}(@Rn, @imm7<<{L,opc:*,0=2:0,1=4:1,1=2:*,2=3})
   encmnem: {L,opc:0,0=STPw:0,1=STGP:0,2=STPx:1,0=LDPw:1,1=LDPSW:1,2=LDPx}{op2:1=_post:2=:3=_pre}
   encops: Rt=reggp Rt2=reggp Rn=reggpsp imm7=simm/bits=7,asr={L,opc:*,0=2:0,1=4:1,1=2:*,2=3}
   enccond: {op2<0>:0=1:1=(@Rn==31||(@Rt!=@Rn&&@Rt2!=@Rn))}{L:0=:1=&&@Rt!=@Rt2}
@@ -402,20 +402,20 @@
 [MEMU]
   desc: {2:size}111000{2:opc}0{9:imm9|s}{2:op2}{5:Rn|SP}{5:Rt}
   mnem: {opc,op2,size:0,*,*=ST:1,*,*=LD:2,*,*=LD:3,*,*=LD:!2,*,3:2,0,3=PRF}{op2:0=U:1=:2=T:3=}{opc,size:0,0=RB:0,1=RH:0,2=RW:0,3=RX:1,0=RB:1,1=RH:1,2=RW:1,3=RX:2,0=RSB:2,1=RSH:2,2=RSW:2,3=M:3,0=RSBW:3,1=RSHW}{op2:0=:1=_POST:2=:3=_PRE}
-  decode: {opc,op2,size:0,*,*=st:1,*,*=ld:2,*,*=ld:3,*,*=ld:^2,0,3=prf}{op2:0=u:1=:2=t:3=}{opc,size:0,0=rb:0,1=rh:0,2=r:0,3=r:1,0=rb:1,1=rh:1,2=r:1,3=r:2,0=rsb:2,1=rsh:2,2=rsw:2,3=m:3,0=rsb:3,1=rsh} OPreggpprf(@op2==0&&@opc==2&&@size==3, @Rt, @size>2||@opc==2) OPmemsoff{op2:0=:1=post:2=:3=pre}(@Rn, @imm9)
+  decode: {opc,op2,size:0,*,*=st:1,*,*=ld:2,*,*=ld:3,*,*=ld:^2,0,3=prf}{op2:0=u:1=:2=t:3=}{opc,size:0,0=rb:0,1=rh:0,2=r:0,3=r:1,0=rb:1,1=rh:1,2=r:1,3=r:2,0=rsb:2,1=rsh:2,2=rsw:2,3=m:3,0=rsb:3,1=rsh} OPreggpprf((@op2==0&&@opc==2&&@size==3) as u32, @Rt, (@size>2||@opc==2) as u32) OPmemsoff{op2:0=:1=post:2=:3=pre}(@Rn, @imm9)
   encmnem: {opc,op2,size:0,*,*=ST:1,*,*=LD:2,*,*=LD:3,*,*=LD:^2,0,3=PRF}{op2:0=U:1=:2=T:3=}{opc,size:0,0=RB:0,1=RH:0,2=Rw:0,3=Rx:1,0=RB:1,1=RH:1,2=Rw:1,3=Rx:2,0=RSBx:2,1=RSHx:2,2=RSWx:2,3=M:3,0=RSBw:3,1=RSHw}{op2:0=:1=_post:2=:3=_pre}
   encops: Rt={opc,op2,size:*,*,*=reggp:^2,0,3=prfop} Rn=reggpsp imm9=simm/bits=9,asr=0
   enccond: {op2<0>:0=:1=(@Rn==31||@Rt!=@Rn)}
 [MEM_IMM]
   desc: {2:size}111001{2:opc}{12:imm12}{5:Rn|SP}{5:Rt}
   mnem: {opc,size:0,0=STRB:0,1=STRH:0,2=STRW:0,3=STR:1,0=LDRB:1,1=LDRH:1,2=LDRW:1,3=LDR:2,0=LDRSB:2,1=LDRSH:2,2=LDRSW:2,3=PRFM:3,0=LDRSBW:3,1=LDRSHW}_IMM
-  decode: {opc,size:0,0=strb:0,1=strh:0,2=str:0,3=str:1,0=ldrb:1,1=ldrh:1,2=ldr:1,3=ldr:2,0=ldrsb:2,1=ldrsh:2,2=ldrsw:2,3=prfm:3,0=ldrsb:3,1=ldrsh} OPreggpprf(@opc==2&&@size==3, @Rt, @size>2||@opc==2) OPmemuoff(@Rn, @imm12<<@size)
+  decode: {opc,size:0,0=strb:0,1=strh:0,2=str:0,3=str:1,0=ldrb:1,1=ldrh:1,2=ldr:1,3=ldr:2,0=ldrsb:2,1=ldrsh:2,2=ldrsw:2,3=prfm:3,0=ldrsb:3,1=ldrsh} OPreggpprf((@opc==2&&@size==3) as u32, @Rt, (@size>2||@opc==2) as u32) OPmemuoff(@Rn, @imm12<<@size)
   encmnem: {opc,size:0,0=STRB:0,1=STRH:0,2=STRw:0,3=STRx:1,0=LDRB:1,1=LDRH:1,2=LDRw:1,3=LDRx:2,0=LDRSBx:2,1=LDRSHx:2,2=LDRSWx:2,3=PRFM:3,0=LDRSBw:3,1=LDRSHw}u
   encops: Rt={opc,size:*,*=reggp:^2,3=prfop} Rn=reggpsp imm12=uimm/bits=12,lsr={size:0=0:1=1:2=2:3=3}
 [MEM_REG]
   desc: {2:size}111000{2:opc}1{5:Rm}{3:option}{1:sc}10{5:Rn|SP}{5:Rt}
   mnem: {opc,size:0,0=STRB:0,1=STRH:0,2=STRW:0,3=STR:1,0=LDRB:1,1=LDRH:1,2=LDRW:1,3=LDR:2,0=LDRSB:2,1=LDRSH:2,2=LDRSW:2,3=PRFM:3,0=LDRSBW:3,1=LDRSHW}_REG{option<1>:1=}
-  decode: {opc,size:0,0=strb:0,1=strh:0,2=str:0,3=str:1,0=ldrb:1,1=ldrh:1,2=ldr:1,3=ldr:2,0=ldrsb:2,1=ldrsh:2,2=ldrsw:2,3=prfm:3,0=ldrsb:3,1=ldrsh} OPreggpprf(@opc==2&&@size==3, @Rt, @size>2||@opc==2) OPmemreg(@Rn, @Rm, @option, @sc, @size)
+  decode: {opc,size:0,0=strb:0,1=strh:0,2=str:0,3=str:1,0=ldrb:1,1=ldrh:1,2=ldr:1,3=ldr:2,0=ldrsb:2,1=ldrsh:2,2=ldrsw:2,3=prfm:3,0=ldrsb:3,1=ldrsh} OPreggpprf((@opc==2&&@size==3) as u32, @Rt, (@size>2||@opc==2) as u32) OPmemreg(@Rn, @Rm, @option, @sc, @size)
   encmnem: {opc,size:0,0=STRB:0,1=STRH:0,2=STRw:0,3=STRx:1,0=LDRB:1,1=LDRH:1,2=LDRw:1,3=LDRx:2,0=LDRSBx:2,1=LDRSHx:2,2=LDRSWx:2,3=PRFM:3,0=LDRSBw:3,1=LDRSHw}r_{option:2=uxtw:3=lsl:6=sxtw:7=sxtx}
   encops: Rt={opc,size:*,*=reggp:^2,3=prfop} Rn=reggpsp Rm=reggp sc=bool
   encmnem_noext: {opc,size:0,0=STRB:0,1=STRH:0,2=STRw:0,3=STRx:1,0=LDRB:1,1=LDRH:1,2=LDRw:1,3=LDRx:2,0=LDRSBx:2,1=LDRSHx:2,2=LDRSWx:2,3=PRFM:3,0=LDRSBw:3,1=LDRSHw}r{option,sc:3,0=}
@@ -423,7 +423,7 @@
 [MEM_LIT]
   desc: {2:opc}011000{19:imm19|s}{5:Rt}
   mnem: {opc:0=LDRW:1=LDR:2=LDRSW:3=PRFM}_LIT
-  decode: {opc:0=ldr:1=ldr:2=ldrsw:3=prfm} OPreggpprf(@opc==3, @Rt, @opc>0) OPreladdr(ddi, @imm19<<2)
+  decode: {opc:0=ldr:1=ldr:2=ldrsw:3=prfm} OPreggpprf((@opc==3) as u32, @Rt, (@opc>0) as u32) OPreladdr(ddi, @imm19<<2)
   encmnem: {opc:0=LDRw:1=LDRx:2=LDRSWx:3=PRFM}_pcrel
   encops: Rt={opc:0=reggp:1=reggp:2=reggp:3=prfop} imm19=reladdr/bits=19
 
@@ -1351,7 +1351,7 @@
 [LDRAUT]
   desc: {2:size=11}111000{1:M}{1:S|s}1{9:imm9}{1:W}1{5:Rn|SP}{5:Rt}
   mnem: LDRA{M:0=A:1=B}{W:0=:1=_PRE}
-  decode: ldra{M:0=a:1=b} OPreggp(@Rt, 1) OPmemsoff{W:0=:1=pre}(@Rn, @S*0x1000+@imm9*8)
+  decode: ldra{M:0=a:1=b} OPreggp(@Rt, 1) OPmemsoff{W:0=:1=pre}(@Rn, @S*0x1000+@imm9 as i32*8)
   encmnem: LDRA{M:0=A:1=B}{W:0=:1=_pre}
   encops: Rt=reggp Rn=reggpsp S,imm9=immldraut
   feat: PAuth
@@ -1373,28 +1373,28 @@
 [CAS]
   desc: {2:size}0010001{1:L}1{5:Rs}{1:o0}11111{5:Rn|SP}{5:Rt}
   mnem: CAS{L:0=:1=A}{o0:0=:1=L}{size:0=B:1=H:2=:3=}
-  decode: cas{L:0=:1=a}{o0:0=:1=l}{size:0=b:1=h:2=:3=} OPreggp(@Rs, @size==3) OPreggp(@Rt, @size==3) OPmemsoff(@Rn, 0)
+  decode: cas{L:0=:1=a}{o0:0=:1=l}{size:0=b:1=h:2=:3=} OPreggp(@Rs, (@size==3) as u32) OPreggp(@Rt, (@size==3) as u32) OPmemsoff(@Rn, 0)
   encmnem: CAS{L:0=:1=A}{o0:0=:1=L}{size:0=B:1=H:2=w:3=x}
   encops: Rs=reggp Rt=reggp Rn=reggpsp
   feat: LSE
 [CASP]
   desc: 0{1:size}0010000{1:L}1{5:Rs}{1:o0}{5:Rt2=11111}{5:Rn|SP}{5:Rt}
   mnem: CASP{L:0=:1=A}{o0:0=:1=L}
-  decode: cas{L:0=:1=a}{o0:0=:1=l} OPreggp(@Rs, @size==3) OPreggp(@Rs+1, @size==3) OPreggp(@Rt, @size==3) OPreggp(@Rt+1, @size==3) OPmemsoff(@Rn, 0)
+  decode: cas{L:0=:1=a}{o0:0=:1=l} OPreggp(@Rs, (@size==3) as u32) OPreggp(@Rs+1, (@size==3) as u32) OPreggp(@Rt, (@size==3) as u32) OPreggp(@Rt+1, (@size==3) as u32) OPmemsoff(@Rn, 0)
   encmnem: CASP{L:0=:1=A}{o0:0=:1=L}{size:0=w:1=x}
   encops: Rs=reggp Rt=reggp Rn=reggpsp
   feat: LSE
 [SWP]
   desc: {2:size}111000{1:A}{1:R}1{5:Rs}100000{5:Rn|SP}{5:Rt}
   mnem: SWP{A:0=:1=A}{R:0=:1=L}{size:0=B:1=H:2=:3=}
-  decode: swp{A:0=:1=a}{R:0=:1=l}{size:0=b:1=h:2=:3=} OPreggp(@Rs, @size==3) OPreggp(@Rt, @size==3) OPmemsoff(@Rn, 0)
+  decode: swp{A:0=:1=a}{R:0=:1=l}{size:0=b:1=h:2=:3=} OPreggp(@Rs, (@size==3) as u32) OPreggp(@Rt, (@size==3) as u32) OPmemsoff(@Rn, 0)
   encmnem: SWP{A:0=:1=A}{R:0=:1=L}{size:0=B:1=H:2=w:3=x}
   encops: Rs=reggp Rt=reggp Rn=reggpsp
   feat: LSE
 [LDATOMIC]
   desc: {2:size}111{1:VR=0}00{1:A}{1:R}1{5:Rs}{1:o3=0}{3:opc}00{5:Rn}{5:Rt}
   mnem: LD{opc:0=ADD:1=CLR:2=EOR:3=SET:4=SMAX:5=SMIN:6=UMAX:7=UMIN}{A:0=:1=A}{R:0=:1=L}{size:0=B:1=H:2=W:3=X}
-  decode: ld{opc:0=add:1=clr:2=eor:3=set:4=smax:5=smin:6=umax:7=umin}{A:0=:1=a}{R:0=:1=l}{size:0=b:1=h:2=:3=} OPreggp(@Rs, @size==3) OPreggp(@Rt, @size==3) OPmemsoff(@Rn, 0)
+  decode: ld{opc:0=add:1=clr:2=eor:3=set:4=smax:5=smin:6=umax:7=umin}{A:0=:1=a}{R:0=:1=l}{size:0=b:1=h:2=:3=} OPreggp(@Rs, (@size==3) as u32) OPreggp(@Rt, (@size==3) as u32) OPmemsoff(@Rn, 0)
   encmnem: LD{opc:0=ADD:1=CLR:2=EOR:3=SET:4=SMAX:5=SMIN:6=UMAX:7=UMIN}{A:0=:1=A}{R:0=:1=L}{size:0=B:1=H:2=w:3=x}
   encops: Rs=reggp Rt=reggp Rn=reggpsp
   feat: LSE
@@ -1402,14 +1402,14 @@
   # NB: extremely similar to MEMU
   desc: {2:size}011001{2:opc}0{9:imm9|s}00{5:Rn|SP}{5:Rt}
   mnem: {opc,size:0,0=STLURB:0,1=STLURH:0,2=STLURW:0,3=STLUR:1,0=LDAPURB:1,1=LDAPURH:1,2=LDAPURW:1,3=LDAPUR:2,0=LDAPURSB:2,1=LDAPURSH:2,2=LDAPURSW:3,0=LDAPURSBW:3,1=LDAPURSHW}
-  decode: {opc,size:0,0=stlurb:0,1=stlurh:0,2=stlur:0,3=stlur:1,0=ldapurb:1,1=ldapurh:1,2=ldapur:1,3=ldapur:2,0=ldapursb:2,1=ldapursh:2,2=ldapursw:3,0=ldapursb:3,1=ldapursh} OPreggp(@Rt, @size>2||@opc==2) OPmemsoff(@Rn, @imm9)
+  decode: {opc,size:0,0=stlurb:0,1=stlurh:0,2=stlur:0,3=stlur:1,0=ldapurb:1,1=ldapurh:1,2=ldapur:1,3=ldapur:2,0=ldapursb:2,1=ldapursh:2,2=ldapursw:3,0=ldapursb:3,1=ldapursh} OPreggp(@Rt, (@size>2||@opc==2) as u32) OPmemsoff(@Rn, @imm9)
   encmnem: {opc,size:0,0=STLURB:0,1=STLURH:0,2=STLURw:0,3=STLURx:1,0=LDAPURB:1,1=LDAPURH:1,2=LDAPURw:1,3=LDAPURx:2,0=LDAPURSBx:2,1=LDAPURSHx:2,2=LDAPURSWx:3,0=LDAPURSBw:3,1=LDAPURSHw}
   encops: Rt=reggp Rn=reggpsp imm9=simm/bits=9,asr=0
   feat: LRCPC2
 [RCPC]
   desc: {2:size}111000101{5:Rs=11111}110000{5:Rn}{5:Rt}
   mnem: LDAPR{size:0=B:1=H:2=W:3=X}
-  decode: LDAPR{size:0=B:1=H:2=:3=} OPreggp(@Rt, @size>=3) OPmemsoff(@Rn, 0)
+  decode: LDAPR{size:0=B:1=H:2=:3=} OPreggp(@Rt, (@size>=3) as u32) OPmemsoff(@Rn, 0)
   encmnem: LDAPR{size:0=B:1=H:2=w:3=x}
   encops: Rt=reggp Rn=reggpsp
   feat: LRCPC

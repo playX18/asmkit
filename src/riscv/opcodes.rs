@@ -529,7 +529,7 @@ pub const fn encode_immediate(immediate: &[Immediate], imm: i32) -> u32 {
 }
 
 pub const fn decode_immediate(immediate: &[Immediate], op: u32) -> i32 {
-    let mut res = 0u32;
+    let mut res = 0i32;
     let mut i = 0;
     while i < immediate.len() {
         res |= immediate[i].decode(op);
@@ -551,10 +551,10 @@ impl Immediate {
         (((imm >> self.position_in_immediate.1) as u32 & mask) << self.position_in_opcode.1) as u32
     }
 
-    pub const fn decode(&self, op: u32) -> u32 {
+    pub const fn decode(&self, op: u32) -> i32 {
         let bit_count = self.position_in_opcode.0 - self.position_in_opcode.1 + 1;
         let mask = (1u32 << bit_count) - 1;
-        ((op as u32 >> self.position_in_opcode.1) as u32 & mask) << self.position_in_immediate.1
+        (((op as u32 >> self.position_in_opcode.1) as u32 & mask) << self.position_in_immediate.1) as _
     }
 
     pub const fn is_valid(&self, imm: i32) -> bool {
@@ -3084,7 +3084,7 @@ pub const CAUSE_FETCH_GUEST_PAGE_FAULT: u8 = 0x14;
 pub const CAUSE_LOAD_GUEST_PAGE_FAULT: u8 = 0x15;
 pub const CAUSE_VIRTUAL_INSTRUCTION: u8 = 0x16;
 pub const CAUSE_STORE_GUEST_PAGE_FAULT: u8 = 0x17;
-/*pub static OPCODE32_MATCH: [u32; 1021] = [
+pub static OPCODE32_MATCH: [u32; 1021] = [
 0x33, /* add */
 0xffff_ffff,/* add_uw */
 0x13, /* addi */
@@ -13424,7 +13424,7 @@ Opcode::CTZW,
 Opcode::CZEROEQZ,
 Opcode::CZERONEZ,
 ];
-*/
+
 #[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]
 #[repr(u32)]
 pub enum Opcode {
@@ -14451,7 +14451,7 @@ pub enum Opcode {
     ZIP,
     Invalid,
 }
-/*
+
 pub const OPCODE_STR: &[&str] = &[
     "add",
     "add.uw",
@@ -15475,7 +15475,7 @@ pub const OPCODE_STR: &[&str] = &[
     "zext.w",
     "zip",
     "<invalid>"
-];*/
+];
 
 #[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]
 pub struct Inst {

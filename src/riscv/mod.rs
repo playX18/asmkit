@@ -2,6 +2,8 @@ pub mod assembler;
 pub mod emitter;
 pub mod opcodes;
 pub mod operands;
+pub mod decode;
+pub mod formatter;
 
 pub use crate::core::operand::imm;
 pub use assembler::*;

@@ -169,6 +169,7 @@ impl CodeBuffer {
     }
 
     pub fn put4(&mut self, value: u32) {
+      
         self.data.extend_from_slice(&value.to_ne_bytes());
     }
 
