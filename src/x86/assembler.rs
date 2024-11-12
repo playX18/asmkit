@@ -1,4 +1,4 @@
-#![allow(dead_code)]
+#![allow(dead_code, clippy::all)]
 use crate::{
     core::{
         buffer::{
@@ -12,6 +12,8 @@ use crate::{
 
 use super::opcodes::ALT_TAB;
 use super::{emitter::X86EmitterExplicit, operands::*};
+
+/// X86/X64 Assembler implementation.
 pub struct Assembler<'a> {
     pub buffer: &'a mut CodeBuffer,
     flags: u64,

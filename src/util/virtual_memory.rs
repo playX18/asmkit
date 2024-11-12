@@ -62,7 +62,7 @@ impl MemoryFlags {
     /// This flag may be turned on by the allocator if there is no other way of allocating executable memory.
     ///
     /// ## Note
-    /// This flag can only be used with [alloc], `MAP_JIT` only works on OSX and not on iOS.
+    /// This flag can only be used with [alloc()], `MAP_JIT` only works on OSX and not on iOS.
     /// When a process uses `fork()` the child process has no access to the pages mapped with `MAP_JIT`.
     pub const MMAP_ENABLE_JIT: u32 = 0x00000010;
     /// Pass `PROT_MAX(PROT_READ)` or `PROT_MPROTECT(PROT_READ)` to `mmap()` on platforms that support it.
@@ -71,7 +71,7 @@ impl MemoryFlags {
     /// [protect] to change the access flags.
     ///
     /// ## Note
-    /// This flag can only be used with [alloc] and [alloc_dual_mapping].
+    /// This flag can only be used with [alloc()] and [alloc_dual_mapping].
     /// However [alloc_dual_mapping] may automatically use this if `AccessRead` is used.
     pub const MMAP_MAX_ACCESS_READ: u32 = 0x00000020;
 
@@ -81,7 +81,7 @@ impl MemoryFlags {
     /// [protect] to change the access flags.
     ///
     /// ## Note
-    /// This flag can only be used with [alloc] and [alloc_dual_mapping].
+    /// This flag can only be used with [alloc()] and [alloc_dual_mapping].
     /// However [alloc_dual_mapping] may automatically use this if `AccessWrite` is used.
     pub const MMAP_MAX_ACCESS_WRITE: u32 = 0x00000040;
 
@@ -91,7 +91,7 @@ impl MemoryFlags {
     /// [protect] to change the access flags.
     ///
     /// ## Note
-    /// This flag can only be used with [alloc] and [alloc_dual_mapping].
+    /// This flag can only be used with [alloc()] and [alloc_dual_mapping].
     /// However [alloc_dual_mapping] may automatically use this if `AccessExecute` is used.
     pub const MMAP_MAX_ACCESS_EXECUTE: u32 = 0x00000080;
 
@@ -115,7 +115,7 @@ impl MemoryFlags {
     /// defined.
     ///
     /// ## Note
-    /// This flag can only be used with [alloc].
+    /// This flag can only be used with [alloc()].
     pub const MAPPING_PREFER_TMP: u32 = 0x80000000;
 }
 
@@ -233,7 +233,7 @@ pub struct HardenedRuntimeInfo {
     pub flags: HardenedRuntimeFlags,
 }
 
-/// Values that can be used with [`protect_jit_memory`](protect_jit_memory) function.
+/// Values that can be used with [`protect_jit_memory`] function.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(u32)]
 pub enum ProtectJitAccess {

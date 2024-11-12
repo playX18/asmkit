@@ -415,7 +415,7 @@ impl Formatter {
 
                     write!(out, "0{}", char::from_u32(1 << inst.op_scale(i)).unwrap())?;
                     write!(out, "*")?;
-                    println!("{:?}", inst.op_index(i).unwrap());
+                    
                     strpcatreg(out, idx_rt, inst.op_index(i).unwrap() as _, idx_sz)?;
                 }
 
@@ -491,7 +491,8 @@ impl Formatter {
         Ok(())
     }
 }
-
+use alloc::format;
+use alloc::vec::Vec;
 pub fn pretty_disassembler<W: Write>(
     out: &mut W,
     bitness: usize,
@@ -510,10 +511,10 @@ pub fn pretty_disassembler<W: Write>(
         let instr_bytes = data[ix..ix + inst.size()]
             .iter()
             .map(|x| format!("{:02X}", x))
-            .collect::<Vec<String>>()
+            .collect::<Vec<alloc::string::String>>()
             .join(" ");
 
-        let mut outs = String::new();
+        let mut outs = alloc::string::String::new();
         fmt.format(&mut outs, &inst)?;
         write!(out, "{:<15.016x} {:<20} {}\n", inst.address, instr_bytes, outs)?;
     }

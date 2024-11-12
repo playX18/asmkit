@@ -17,7 +17,7 @@ macro_rules! define_operand_cast {
     };
 }
 
-/// Operand type used by [Operand_]
+/// Operand type used by [Operand]
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, derive_more::TryFrom, Debug)]
 #[repr(u32)]
 #[try_from(repr)]

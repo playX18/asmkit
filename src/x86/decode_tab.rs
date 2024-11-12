@@ -1,4 +1,5 @@
-#![allow(non_camel_case_types)]
+#![allow(non_camel_case_types, clippy::all)]
+
 use super::decode::*;
 
 // Auto-generated file -- do not modify!

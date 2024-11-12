@@ -29,7 +29,7 @@ pub struct JitAllocatorOptions {
     /// Enables the use of an anonymous memory-mapped memory that is mapped into two buffers having a different pointer.
     /// The first buffer has read and execute permissions and the second buffer has read+write permissions.
     ///
-    /// See [alloc_dual_mapping](crate::virtual_memory::alloc_dual_mapping) for more details about this feature.
+    /// See [alloc_dual_mapping] for more details about this feature.
     ///
     /// ## Remarks
     ///
@@ -532,7 +532,7 @@ impl JitAllocatorPool {
 }
 use alloc::boxed::Box;
 
-/// A simple implementation of memory manager that uses [virtual_memory](crate::virtual_memory).
+/// A simple implementation of memory manager that uses [virtual_memory].
 /// functions to manage virtual memory for JIT compiled code.
 ///
 /// Implementation notes:
@@ -1255,7 +1255,7 @@ impl Span {
     /// Depending on the type of the allocation strategy this could either be:
     ///
     ///   - the same address as returned by `rx()` if the allocator uses RWX mapping (pages have all of Read, Write,
-    ///     and Execute permissions) or MAP_JIT, which requires to call [protect_jit_memory()](crate::util::virtual_memory::protect_jit_memory) manually.
+    ///     and Execute permissions) or MAP_JIT, which requires to call [protect_jit_memory()] manually.
     ///   - a valid pointer, but not the same as `rx` - this would be valid if dual mapping is used.
     ///   - NULL pointer, in case that the allocation strategy doesn't use RWX, MAP_JIT, or dual mapping. In this
     ///     case only [JitAllocator] can copy new code into the executable memory referenced by [Span].

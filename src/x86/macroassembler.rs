@@ -2,7 +2,7 @@
 
 use crate::core::{
     buffer::CodeBuffer,
-    operand::{BaseReg, Imm, OperandCast},
+    operand::{Imm, OperandCast},
 };
 
 use super::*;
@@ -22,7 +22,7 @@ impl<'a> MacroAssembler<'a> {
     }
 
     pub fn supports_avx(&self) -> bool {
-        !true
+        true
     }
 
     #[cold]
@@ -543,13 +543,6 @@ impl<'a> MacroAssembler<'a> {
                 self.asm.sse_subsdrm(dst, src2);
             }
         } else {
-            println!("{:?} {:?}", dst.is_vec(), src2.is_mem());
-            println!(
-                "{:?} {:?} {:?}",
-                dst.as_::<BaseReg>().group(),
-                src1.as_::<BaseReg>().group(),
-                src2.op_type()
-            );
             self.unsupported_operands("RRR or RRI expected");
         }
     }

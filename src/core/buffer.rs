@@ -2,9 +2,13 @@ use alloc::{borrow::Cow, collections::BinaryHeap, vec::Vec};
 
 use smallvec::SmallVec;
 
-use crate::riscv::{self};
+use crate::{
+    riscv::{self},
+    AsmError,
+};
 
 use super::{
+    jit_allocator::{JitAllocator, Span},
     operand::{Label, Sym},
     target::Environment,
 };
@@ -123,6 +127,19 @@ impl CodeBufferFinalized {
 
     pub fn alignment(&self) -> u32 {
         self.alignment
+    }
+
+    pub fn allocate(&self, jit_allocator: &mut JitAllocator) -> Result<Span, AsmError> {
+        let mut span = jit_allocator.alloc(self.data().len())?;
+
+        unsafe {
+            jit_allocator.write(&mut span, |span| {
+                span.rw()
+                    .copy_from_nonoverlapping(self.data().as_ptr(), self.data().len());
+            })?;
+        }
+
+        Ok(span)
     }
 }
 
@@ -958,10 +975,10 @@ pub(crate) fn generate_imm(value: u64) -> (u32, u32) {
     )
 }
 
-/// A generic implementation of relocation resolving. 
-/// 
+/// A generic implementation of relocation resolving.
+///
 /// # NOTE
-/// 
+///
 /// Very simple and incomplete. At the moment only Abs4, Abs8, X86 and RISC-V GOT relocations are supported.
 pub fn perform_relocations(
     code: *mut u8,
