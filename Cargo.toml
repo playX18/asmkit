@@ -16,7 +16,7 @@ intrusive-collections = "0.9"
 errno = { version = "0.3.9", optional = true }
 paste = "1.0"
 num-traits = "0.2.19"
-derive_more = { version = "*", features = [
+derive_more = { version = "1.0.0", features = [
     "deref",
     "deref_mut",
     "try_from",
