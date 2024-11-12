@@ -1,4 +1,4 @@
-# uasm
+# asmkit
 
 `#![no_std]` assembler library. 
 
@@ -14,7 +14,7 @@
 # Goals
 - Auto-generated assemblers for as many as possible platform.
 - Portability: library should built & run on any platform (even if it does not provide assembler for one), and assemblers on its own
-must not be dependent on platform we built `uasm` on.
+must not be dependent on platform we built `asmkit` on.
 
 
 

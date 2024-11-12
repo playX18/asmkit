@@ -1,10 +1,10 @@
 
-use uasm::core::jit_allocator::{JitAllocator, JitAllocatorOptions};
+use asmkit::core::jit_allocator::{JitAllocator, JitAllocatorOptions};
 
 fn main() {
     {
-        use uasm::core::buffer::CodeBuffer;
-        use uasm::x86::*;
+        use asmkit::core::buffer::CodeBuffer;
+        use asmkit::x86::*;
         use formatter::pretty_disassembler;
         let mut buf = CodeBuffer::new();
         let mut asm = Assembler::new(&mut buf);
@@ -57,8 +57,8 @@ fn main() {
     }
 
     {
-        use uasm::core::buffer::CodeBuffer;
-        use uasm::riscv::*;
+        use asmkit::core::buffer::CodeBuffer;
+        use asmkit::riscv::*;
         use formatter::pretty_disassembler;
         let mut buf = CodeBuffer::new();
         let mut asm = Assembler::new(&mut buf);

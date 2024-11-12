@@ -1383,6 +1383,15 @@ macro_rules! mem_ptr {
                 Mem::from_label_and_index_shift_disp(&base, index.deref(), shift, offset, $size, 0.into())
             }
 
+            pub fn [<$name _sym>](base: Sym, offset: i32) -> Mem {
+                Mem::from_sym_and_disp(&base, offset, $size, 0.into())
+            }
+
+            pub fn [<$name _sym_index>](base: Sym, index: impl Deref<Target = Gp>, shift: u32, offset: i32) -> Mem {
+                Mem::from_sym_and_index_shift_disp(&base, index.deref(), shift, offset, $size, 0.into())
+            }
+
+
             pub fn [<$name _rip>](offset: i32) -> Mem {
                 Mem::from_base_and_disp(&RIP, offset, $size, 0.into())
             }

@@ -1,7 +1,12 @@
 [package]
-name = "uasm"
+name = "asmkit"
 version = "0.1.0"
 edition = "2021"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
+description = "Portable assembler toolkit: decoding and encoding of various architectures"
+repository = "https://github.com/playx18/asmkit"
+keywords = ["assembler", "asm", "jit", "riscv", "x86"]
 
 [dependencies]
 smallvec = "1.13"
@@ -17,7 +22,6 @@ derive_more = { version = "*", features = [
     "try_from",
     "add",
 ] }
-capstone = "*"
 
 
 [target.'cfg(target_arch="riscv64")'.dependencies]

@@ -2,7 +2,6 @@
 extern crate alloc;
 
 pub mod core;
-pub mod ujit;
 pub mod aarch64;
 pub mod ppc;
 pub mod riscv;

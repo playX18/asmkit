@@ -13,7 +13,7 @@ use crate::{
 use super::opcodes::ALT_TAB;
 use super::{emitter::X86EmitterExplicit, operands::*};
 pub struct Assembler<'a> {
-    buffer: &'a mut CodeBuffer,
+    pub buffer: &'a mut CodeBuffer,
     flags: u64,
     extra_reg: Reg,
     last_error: Option<AsmError>,

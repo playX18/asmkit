@@ -490,13 +490,15 @@ impl Operand {
     pub fn is_reg_type_of(&self, typ: RegType) -> bool {
         self.signature
             .subset(OperandSignature::OP_TYPE_MASK | OperandSignature::REG_TYPE_MASK)
-            == OperandSignature::from_reg_type(typ) | OperandSignature::from_op_type(OperandType::Reg)
+            == OperandSignature::from_reg_type(typ)
+                | OperandSignature::from_op_type(OperandType::Reg)
     }
 
     pub fn is_reg_group_of(&self, group: RegGroup) -> bool {
         self.signature
             .subset(OperandSignature::OP_TYPE_MASK | OperandSignature::REG_GROUP_MASK)
-            == OperandSignature::from_reg_group(group) | OperandSignature::from_op_type(OperandType::Reg)
+            == OperandSignature::from_reg_group(group)
+                | OperandSignature::from_op_type(OperandType::Reg)
     }
 
     pub fn is_gp(&self) -> bool {
@@ -569,6 +571,12 @@ impl Operand {
 #[derive(Deref, DerefMut, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Label(pub Operand);
 
+impl core::fmt::Debug for Label {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "label{}", self.id())
+    }
+}
+
 impl PartialOrd for Label {
     fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
         self.id().partial_cmp(&other.id())
@@ -611,6 +619,12 @@ impl Label {
 
 #[derive(Deref, DerefMut, Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Sym(pub Operand);
+
+impl core::fmt::Debug for Sym {
+    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
+        write!(f, "sym{}",self.id())
+    }
+}
 
 impl PartialOrd for Sym {
     fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {

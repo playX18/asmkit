@@ -37,7 +37,7 @@ pub enum ExternalName {
     Symbol(Cow<'static, str>),
     UserName(u32),
 }
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub enum RelocTarget {
     Sym(Sym),
     Label(Label),
@@ -55,7 +55,7 @@ pub(crate) struct SymData {
 }
 
 /// A relocation resulting from emitting assembly.
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub struct AsmReloc {
     pub offset: CodeOffset,
     pub kind: Reloc,
@@ -169,7 +169,6 @@ impl CodeBuffer {
     }
 
     pub fn put4(&mut self, value: u32) {
-      
         self.data.extend_from_slice(&value.to_ne_bytes());
     }
 
@@ -957,4 +956,104 @@ pub(crate) fn generate_imm(value: u64) -> (u32, u32) {
         riscv::InstructionValue::new(0).set_imm20(imm20 as _).value,
         riscv::InstructionValue::new(0).set_imm12(imm12 as _).value,
     )
+}
+
+/// A generic implementation of relocation resolving. 
+/// 
+/// # NOTE
+/// 
+/// Very simple and incomplete. At the moment only Abs4, Abs8, X86 and RISC-V GOT relocations are supported.
+pub fn perform_relocations(
+    code: *mut u8,
+    code_rx: *const u8,
+    relocs: &[AsmReloc],
+    get_address: impl Fn(&RelocTarget) -> *const u8,
+    get_got_entry: impl Fn(&RelocTarget) -> *const u8,
+    get_plt_entry: impl Fn(&RelocTarget) -> *const u8,
+) {
+    use core::ptr::write_unaligned;
+
+    for &AsmReloc {
+        addend,
+        kind,
+        offset,
+        ref target,
+    } in relocs
+    {
+        let at = unsafe { code.offset(isize::try_from(offset).unwrap()) };
+        let atrx = unsafe { code_rx.offset(isize::try_from(offset).unwrap()) };
+        match kind {
+            Reloc::Abs4 => {
+                let base = get_address(target);
+                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
+                unsafe {
+                    write_unaligned(at as *mut u32, u32::try_from(what as usize).unwrap());
+                }
+            }
+
+            Reloc::Abs8 => {
+                let base = get_address(target);
+                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
+                unsafe {
+                    write_unaligned(at as *mut u64, u64::try_from(what as usize).unwrap());
+                }
+            }
+
+            Reloc::X86PCRel4 | Reloc::X86CallPCRel4 => {
+                let base = get_address(target);
+                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
+                let pcrel = i32::try_from((what as isize) - (atrx as isize)).unwrap();
+
+                unsafe {
+                    write_unaligned(at as *mut i32, pcrel);
+                }
+            }
+
+            Reloc::X86GOTPCRel4 => {
+                let base = get_got_entry(target);
+                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
+                let pcrel = i32::try_from((what as isize) - (atrx as isize)).unwrap();
+
+                unsafe {
+                    write_unaligned(at as *mut i32, pcrel);
+                }
+            }
+
+            Reloc::X86CallPLTRel4 => {
+                let base = get_plt_entry(target);
+                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
+                let pcrel = i32::try_from((what as isize) - (atrx as isize)).unwrap();
+                unsafe { write_unaligned(at as *mut i32, pcrel) };
+            }
+
+            Reloc::RiscvGotHi20 => {
+                let base = get_got_entry(target);
+                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
+                let pc_rel = i32::try_from((what as isize) - (atrx as isize)).unwrap();
+                unsafe {
+                    let buffer = core::slice::from_raw_parts_mut(at as *mut u8, 4);
+                    let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
+                    let hi20 = (pc_rel as u32).wrapping_add(0x800) >> 12;
+                    let insn = (insn & 0xfff) | (hi20 << 12);
+                    buffer.copy_from_slice(&insn.to_le_bytes());
+                }
+            }
+
+            Reloc::RiscvPCRelLo12I => {
+                let base = get_got_entry(target);
+                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
+                let pc_rel = i32::try_from((what as isize) - (atrx as isize)).unwrap();
+
+                unsafe {
+                    let buffer = core::slice::from_raw_parts_mut(at as *mut u8, 4);
+                    let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
+                    let lo12 = (pc_rel + 4) as u32 & 0xfff;
+                    let insn = (insn & 0xFFFFF) | (lo12 << 20);
+                    buffer.copy_from_slice(&insn.to_le_bytes());
+                }
+            }
+
+            _ => todo!(),
+        }
+    }
 }

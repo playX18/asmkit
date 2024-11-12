@@ -2,6 +2,7 @@
     "files.associations": {
         "compare": "cpp",
         "cstdint": "cpp",
-        "netfwd": "cpp"
+        "netfwd": "cpp",
+        "format": "cpp"
     }
 }
