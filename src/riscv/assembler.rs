@@ -91,8 +91,10 @@ impl<'a> Assembler<'a> {
                 let label_end = self.get_label();
 
                 self.ld(rd, rd, label_data);
-                self.c_j(label_end);
+                self.j(label_end);
                 self.bind_label(label_data);
+                self.buffer
+                    .add_reloc(Reloc::Abs8, RelocTarget::Sym(target.as_::<Sym>()), 0);
                 self.buffer.put8(0);
                 self.bind_label(label_end);
             }
@@ -846,6 +848,10 @@ impl<'a> Emitter for Assembler<'a> {
                 } else if isign3 == enc_ops3!(Reg, Reg, Label) {
                     let rd = ops[0].id();
                     let rs1 = ops[1].id();
+                    let off = self.buffer.cur_offset();
+                    self.buffer
+                        .use_label_at_offset(off, ops[2].as_(), LabelUse::RVPCRelHi20);
+                    self.auipc(*ops[0], imm(0));
                     label_use = Some((ops[2], LabelUse::RVPCRelLo12I));
                     inst = inst.set_rd(rd).set_rs1(rs1).set_imm12(0);
                 } else {

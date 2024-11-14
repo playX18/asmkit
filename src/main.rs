@@ -11,7 +11,7 @@ use capstone::prelude::*;
 
 fn main() {
     let mut buf = CodeBuffer::new();
-
+    buf.env_mut().set_pic(false);
     let r = |id: u32| {
         BaseReg::from_signature_and_id(OperandSignature::from_op_type(OperandType::Reg), id)
     };

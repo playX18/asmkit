@@ -1,18 +1,17 @@
-
 /* Copyright (c) 2008-2024 The AsmJit Authors
 
-    This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
+   This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
 
-    Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+   Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
 
-    The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
-    Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
-    This notice may not be removed or altered from any source distribution.
+   The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
+   Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+   This notice may not be removed or altered from any source distribution.
 
- */
+*/
 
 //! Default operand types available across all backends. All Operands derive from [`Operand`] and all of them
-//! must be of the same size and downcast-able/upcast-able from/to Operand itself. 
+//! must be of the same size and downcast-able/upcast-able from/to Operand itself.
 use derive_more::derive::{BitAnd, BitOr, BitXor, Deref, DerefMut, TryFrom};
 use num_traits::{FromPrimitive, ToPrimitive};
 
@@ -637,7 +636,7 @@ pub struct Sym(pub Operand);
 
 impl core::fmt::Debug for Sym {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        write!(f, "sym{}",self.id())
+        write!(f, "sym{}", self.id())
     }
 }
 
@@ -666,7 +665,7 @@ impl Sym {
 
     pub const fn from_id(id: u32) -> Self {
         Self(Operand {
-            signature: OperandSignature::from_op_type(OperandType::Label),
+            signature: OperandSignature::from_op_type(OperandType::Sym),
             base_id: id,
             data: [0; 2],
         })
@@ -1212,6 +1211,16 @@ impl Imm {
     pub fn value(&self) -> i64 {
         (((self.data[DATA_IMM_VALUE_HI] as u64) << 32) | (self.data[DATA_IMM_VALUE_LO] as u64))
             as i64
+    }
+
+    pub fn value_f32(&self) -> f32 {
+        f32::from_bits(self.data[DATA_IMM_VALUE_LO])
+    }
+
+    pub fn value_f64(&self) -> f64 {
+        f64::from_bits(
+            ((self.data[DATA_IMM_VALUE_HI] as u64) << 32) | (self.data[DATA_IMM_VALUE_LO] as u64),
+        )
     }
 
     pub fn is_int(&self) -> bool {

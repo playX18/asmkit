@@ -165,6 +165,10 @@ impl CodeBuffer {
         &self.env
     }
 
+    pub fn env_mut(&mut self) -> &mut Environment {
+        &mut self.env
+    }
+
     pub fn data(&self) -> &[u8] {
         &self.data
     }
@@ -1067,6 +1071,49 @@ pub fn perform_relocations(
                     let lo12 = (pc_rel + 4) as u32 & 0xfff;
                     let insn = (insn & 0xFFFFF) | (lo12 << 20);
                     buffer.copy_from_slice(&insn.to_le_bytes());
+                }
+            }
+
+            Reloc::RiscvCallPlt => {
+                // A R_RISCV_CALL_PLT relocation expects auipc+jalr instruction pair.
+                // It is the equivalent of two relocations:
+                // 1. R_RISCV_PCREL_HI20 on the `auipc`
+                // 2. R_RISCV_PCREL_LO12_I on the `jalr`
+
+                let base = get_address(target);
+                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
+                let pcrel = i32::try_from((what as isize) - (atrx as isize)).unwrap();
+
+                // See https://github.com/riscv-non-isa/riscv-elf-psabi-doc/blob/master/riscv-elf.adoc#pc-relative-symbol-addresses
+                // for a better explanation of the following code.
+                //
+                // Unlike the regular symbol relocations, here both "sub-relocations" point to the same address.
+                //
+                // `pcrel` is a signed value (+/- 2GiB range), when splitting it into two parts, we need to
+                // ensure that `hi20` is close enough to `pcrel` to be able to add `lo12` to it and still
+                // get a valid address.
+                //
+                // `lo12` is also a signed offset (+/- 2KiB range) relative to the `hi20` value.
+                //
+                // `hi20` should also be shifted right to be the "true" value. But we also need it
+                // left shifted for the `lo12` calculation and it also matches the instruction encoding.
+                let hi20 = pcrel.wrapping_add(0x800) as u32 & 0xFFFFF000u32;
+                let lo12 = (pcrel as u32).wrapping_sub(hi20) & 0xFFF;
+
+                unsafe {
+                    let auipc_addr = at as *mut u32;
+                    let auipc = riscv::Inst::new(riscv::Opcode::AUIPC)
+                        .encode()
+                        .set_imm20(hi20 as _)
+                        .value;
+                    auipc_addr.write(auipc_addr.read() | auipc);
+
+                    let jalr_addr = at.offset(4) as *mut u32;
+                    let jalr = riscv::Inst::new(riscv::Opcode::JALR)
+                        .encode()
+                        .set_imm12(lo12 as _)
+                        .value;
+                    jalr_addr.write(jalr_addr.read() | jalr);
                 }
             }
 
