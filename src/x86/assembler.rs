@@ -1,4 +1,6 @@
 #![allow(dead_code, clippy::all)]
+use super::opcodes::ALT_TAB;
+use super::{emitter::X86EmitterExplicit, operands::*};
 use crate::{
     core::{
         buffer::{
@@ -9,9 +11,6 @@ use crate::{
     },
     AsmError,
 };
-
-use super::opcodes::ALT_TAB;
-use super::{emitter::X86EmitterExplicit, operands::*};
 
 /// X86/X64 Assembler implementation.
 pub struct Assembler<'a> {
@@ -1044,7 +1043,6 @@ impl<'a> Emitter for Assembler<'a> {
             }
 
             if ei.immctl > 0 {
-   
                 let i = ops[ei.immidx as usize];
                 imm = i.as_::<Imm>().value();
 
@@ -1130,7 +1128,6 @@ impl<'a> Emitter for Assembler<'a> {
                 }
 
                 if self.encode_memory(opc, epfx, ops[ei.modrm as usize ^ 3], modreg, 0) {
-                    
                     next!(self.last_error.take().unwrap());
                 }
             } else if ei.modreg != 0 {

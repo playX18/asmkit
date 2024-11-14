@@ -4,3 +4,6 @@ pub mod emitter;
 pub mod inst_info;
 pub mod opcodes;
 pub mod decoder;
+
+pub use assembler::*;
+pub use emitter::*;

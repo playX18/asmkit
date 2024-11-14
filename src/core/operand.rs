@@ -1,3 +1,18 @@
+
+/* Copyright (c) 2008-2024 The AsmJit Authors
+
+    This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
+
+    Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+
+    The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
+    Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+    This notice may not be removed or altered from any source distribution.
+
+ */
+
+//! Default operand types available across all backends. All Operands derive from [`Operand`] and all of them
+//! must be of the same size and downcast-able/upcast-able from/to Operand itself. 
 use derive_more::derive::{BitAnd, BitOr, BitXor, Deref, DerefMut, TryFrom};
 use num_traits::{FromPrimitive, ToPrimitive};
 
