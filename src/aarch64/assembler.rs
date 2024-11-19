@@ -2076,7 +2076,6 @@ impl<'a> Emitter for Assembler<'a> {
                 Some(AsmError::InvalidOperand)
             }
 
-
             Encoding::GpGpGp => {
                 if isign3 == enc_ops3!(Reg, Reg, Reg) {
                     let rd = ops[0].id();
