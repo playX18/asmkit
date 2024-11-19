@@ -26,8 +26,6 @@ derive_more = { version = "1.0.0", features = [
     "add",
 ] }
 
-capstone = "*"
-
 
 [target.'cfg(target_arch="riscv64")'.dependencies]
 wasmtime-jit-icache-coherence = { version = "26.0.1", optional = true }
@@ -36,6 +34,17 @@ default = ["jit", "riscv", "x86"]
 x86 = []
 riscv = []
 jit = ["wasmtime-jit-icache-coherence", "libc", "errno"]
+
+
+[dev-dependencies]
+criterion = { version = "0.5", features = ["html_reports"] }
+iced-x86 = { version = "1.21", features = ["code_asm"] }
+
+
+[[bench]]
+name = "x86"
+harness = false
+
 
 
 [profile.release]

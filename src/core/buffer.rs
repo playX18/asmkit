@@ -160,6 +160,13 @@ impl CodeBuffer {
         self.relocs.clear();
         self.label_offsets.clear();
         self.pending_fixup_records.clear();
+        self.constants.clear();
+        self.fixup_records.clear();
+        self.symbols.clear();
+        self.used_constants.clear();
+        self.pending_fixup_deadline = 0;
+        self.pending_constants_size = 0;
+        self.pending_constants.clear();
     }
     pub fn env(&self) -> &Environment {
         &self.env

@@ -10,6 +10,61 @@ pub struct Assembler<'a> {
     last_error: Option<AsmError>,
 }
 
+fn imm_add(value: i64) -> u32 {
+    let mut inst = 0;
+    let mut uval = value as u64;
+    if value < 0 {
+        inst = 0x40000000;
+        uval = !uval;
+    }
+
+    if (uval & 0xfff) == uval {
+        return inst | (uval << 10) as u32;
+    }
+
+    if (uval & 0xfff000) == uval {
+        return inst | 1 << 22 | (uval >> 2) as u32;
+    }
+
+    u32::MAX
+}
+
+fn imm_logical(mut value: u64, is64: bool) -> u32 {
+    if !is64 {
+        value = value | (value << 32);
+    }
+
+    if value == 0 || !value == 0 {
+        return u32::MAX;
+    }
+
+    let clz = value.leading_zeros();
+    let iclz = (!value).leading_zeros();
+    let ctz = value.trailing_zeros();
+    let ictz = (!value).trailing_zeros();
+    let popcount = value.count_ones();
+    let mut elog = 0;
+    let mut shift = 64;
+    let mut imms = (0x1780) | (popcount - 1);
+    while elog < 6 {
+        if (clz + ctz) == (shift - popcount) {
+            return (((if ctz != 0 { shift - ctz } else { 0 }) << 6) | (imms & 0x103f)) << 10;
+        } else if (iclz + ictz) == popcount {
+            return ((iclz << 6) | (imms & 0x103f)) << 10;
+        }
+        elog += 1;
+        popcount >>= 1;
+        shift >>= 1;
+        imms >>= 1;
+        let mask = (1u64 << shift) - 1;
+        if (value & mask) != (value >> shift & mask) {
+            break;
+        }
+    }
+
+    unreachable!()
+}
+
 fn imm_fmov32(value: f32) -> u32 {
     let vi = value.to_bits();
     if (vi & 0x7ffff) == 0 && ((vi >> 25 & 0x3f) - 0x1f) <= 1 {
@@ -149,16 +204,6 @@ macro_rules! enc_ops4 {
             | ((OperandType::$op1 as u32) << 3)
             | ((OperandType::$op2 as u32) << 6)
             | ((OperandType::$op3 as u32) << 9)
-    };
-}
-
-macro_rules! enc_ops5 {
-    ($op0:ident, $op1:ident, $op2:ident, $op3:ident, $op4:ident) => {
-        (OperandType::$op0 as u32)
-            | ((OperandType::$op1 as u32) << 3)
-            | ((OperandType::$op2 as u32) << 6)
-            | ((OperandType::$op3 as u32) << 9)
-            | ((OperandType::$op4 as u32) << 12)
     };
 }
 
@@ -1621,7 +1666,62 @@ impl<'a> Emitter for Assembler<'a> {
                 Some(AsmError::InvalidOperand)
             }
 
-            
+            Encoding::GpGpGpBool => {
+                if isign4 == enc_ops4!(Reg, Reg, Reg, Imm) {
+                    let rt = ops[0].id();
+                    let rn = ops[1].id();
+                    let rm = ops[2].id();
+                    let sc = ops[3].as_::<Imm>().value() as u32;
+
+                    let val = info.val
+                        | ((rm & 0x1f) << 16)
+                        | ((sc & 0x1) << 12)
+                        | ((rn & 0x1f) << 5)
+                        | ((rt & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+
+            Encoding::GpGpGpCond => {
+                if isign4 == enc_ops4!(Reg, Reg, Reg, Imm) {
+                    let rt = ops[0].id();
+                    let rn = ops[1].id();
+                    let rm = ops[2].id();
+                    let sc = ops[3].as_::<Imm>().value() as u32;
+
+                    let val = info.val
+                        | ((rm & 0x1f) << 16)
+                        | ((sc & 0xf) << 12)
+                        | ((rn & 0x1f) << 5)
+                        | ((rt & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+
+            Encoding::GpGpGpGp => {
+                if isign4 == enc_ops4!(Reg, Reg, Reg, Reg) {
+                    let rs = ops[0].id();
+                    let rt = ops[1].id();
+                    let rt2 = ops[2].id();
+                    let rn = ops[3].id();
+
+                    let val = info.val
+                        | ((rs & 0x1f) << 16)
+                        | ((rt2 & 0x1f) << 10)
+                        | ((rn & 0x1f) << 5)
+                        | ((rt & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
 
             Encoding::GpGpGpImm => {
                 if isign4 == enc_ops4!(Reg, Reg, Reg, Imm) {
@@ -1642,6 +1742,341 @@ impl<'a> Emitter for Assembler<'a> {
 
                 Some(AsmError::InvalidOperand)
             }
+
+            Encoding::GpGpGpSImm7_2 => {
+                if isign4 == enc_ops4!(Reg, Reg, Reg, Imm) {
+                    let rt = ops[0].id();
+                    let rt2 = ops[1].id();
+                    let rn = ops[2].id();
+                    let imm7 = ops[3].as_::<Imm>().value() as i32 as u32;
+
+                    let val = info.val
+                        | (((imm7 / (1 << 2)) & 0x7f) << 15)
+                        | ((rt2 & 0x1f) << 10)
+                        | ((rn & 0x1f) << 5)
+                        | ((rt & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+
+            Encoding::GpGpGpSImm7_3 => {
+                if isign4 == enc_ops4!(Reg, Reg, Reg, Imm) {
+                    let rt = ops[0].id();
+                    let rt2 = ops[1].id();
+                    let rn = ops[2].id();
+                    let imm7 = ops[3].as_::<Imm>().value() as i32 as u32;
+
+                    let val = info.val
+                        | (((imm7 / (1 << 3)) & 0x7f) << 15)
+                        | ((rt2 & 0x1f) << 10)
+                        | ((rn & 0x1f) << 5)
+                        | ((rt & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+            Encoding::GpGpGpSImm7_4 => {
+                if isign4 == enc_ops4!(Reg, Reg, Reg, Imm) {
+                    let rt = ops[0].id();
+                    let rt2 = ops[1].id();
+                    let rn = ops[2].id();
+                    let imm7 = ops[3].as_::<Imm>().value() as i32 as u32;
+
+                    let val = info.val
+                        | (((imm7 / (1 << 4)) & 0x7f) << 15)
+                        | ((rt2 & 0x1f) << 10)
+                        | ((rn & 0x1f) << 5)
+                        | ((rt & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+
+            Encoding::GpGpGpZero => {
+                if isign3 == enc_ops3!(Reg, Reg, Reg) {
+                    let rd = ops[0].id();
+                    let rn = ops[1].id();
+                    let rm = ops[2].id();
+
+                    let val = info.val
+                        | ((rm & 0x1f) << 16)
+                        | ((31 & 0x1f) << 10)
+                        | ((rn & 0x1f) << 5)
+                        | ((rd & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+
+            Encoding::GpGpImmAdd32 => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rd = ops[0].id();
+                    let rn = ops[1].id();
+                    let imm = ops[2].as_::<Imm>().value();
+
+                    let val = (info.val ^ imm_add(imm))
+                        | ((0 & 0x3) << 22)
+                        | ((0 & 0xfff) << 10)
+                        | ((rn & 0x1f) << 5)
+                        | ((rd & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+
+            Encoding::GpGpImmAdd64 => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rd = ops[0].id();
+                    let rn = ops[1].id();
+                    let imm = ops[2].as_::<Imm>().value();
+
+                    let val = (info.val ^ imm_add(imm))
+                        | ((0 & 0x3) << 22)
+                        | ((0 & 0xfff) << 10)
+                        | ((rn & 0x1f) << 5)
+                        | ((rd & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+
+            Encoding::GpGpImmCond => {
+                if isign4 == enc_ops4!(Reg, Reg, Imm, Imm) {
+                    let rn = ops[0].id();
+                    let rm = ops[1].id();
+                    let nzcv = ops[2].as_::<Imm>().value() as u32;
+                    let cond = ops[3].as_::<Imm>().value() as u32;
+
+                    let val = info.val
+                        | ((rm & 0x1f) << 16)
+                        | ((cond & 0xf) << 12)
+                        | ((rn & 0x1f) << 5)
+                        | ((nzcv & 0xf) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+
+            // rd, rn, immr
+            Encoding::GpGpImmConst31 => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rd = ops[0].id();
+                    let rn = ops[1].id();
+                    let immr = ops[2].as_::<Imm>().value() as u32;
+
+                    let val = info.val
+                        | ((immr & 0x3f) << 16)
+                        | ((31 & 0x3f) << 10)
+                        | ((rn & 0x1f) << 5)
+                        | ((rd & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+
+            Encoding::GpGpImmConst63 => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rd = ops[0].id();
+                    let rn = ops[1].id();
+                    let immr = ops[2].as_::<Imm>().value() as u32;
+
+                    let val = info.val
+                        | ((immr & 0x3f) << 16)
+                        | ((63 & 0x3f) << 10)
+                        | ((rn & 0x1f) << 5)
+                        | ((rd & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+
+            // Rd, Rn, immr, imms
+            Encoding::GpGpImmImm => {
+                if isign4 == enc_ops4!(Reg, Reg, Imm, Imm) {
+                    let rd = ops[0].id();
+                    let rn = ops[1].id();
+                    let immr = ops[2].as_::<Imm>().value() as u32;
+                    let imms = ops[3].as_::<Imm>().value() as u32;
+
+                    let val = info.val
+                        | ((immr & 0x3f) << 16)
+                        | ((imms & 0x3f) << 10)
+                        | ((rn & 0x1f) << 5)
+                        | ((rd & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+
+            // rt, rn, simm9
+            Encoding::GpGpImmLDraut => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rt = ops[0].id();
+                    let rn = ops[1].id();
+                    let simm9 = ops[2].as_::<Imm>().value() as i32 as u32;
+
+                    let val = info.val
+                        | ((((simm9 >> 12) & 1) & 0x1) << 22)
+                        | ((((simm9 & 0xff8) >> 3) & 0x1ff) << 12)
+                        | ((rn & 0x1f) << 5)
+                        | ((rt & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+
+            // rd, rn, imm
+            Encoding::GpGpImmLogical32 => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rd = ops[0].id();
+                    let rn = ops[1].id();
+                    let imm = ops[2].as_::<Imm>().value() as u64;
+
+                    let val = (info.val ^ imm_logical(imm, (32 >> 6) != 0))
+                        | ((0 & 0x3f) << 16)
+                        | ((0 & 0x3f) << 10)
+                        | ((rn & 0x1f) << 5)
+                        | ((rd & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+
+            // rd, rn, imm
+            Encoding::GpGpImmLogical64 => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rd = ops[0].id();
+                    let rn = ops[1].id();
+                    let imm = ops[2].as_::<Imm>().value() as u64;
+
+                    let val = (info.val ^ imm_logical(imm, (64 >> 6) != 0))
+                        | ((0 & 0x3f) << 16)
+                        | ((0 & 0x3f) << 10)
+                        | ((rn & 0x1f) << 5)
+                        | ((rd & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+
+            // rd, rn, cond
+            Encoding::GpGpInvCond => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rd = ops[0].id();
+                    let rn = ops[1].id();
+                    let cond = ops[2].as_::<Imm>().value() as u32;
+
+                    let val = info.val
+                        | ((rn & 0x1f) << 16)
+                        | (((cond ^ 1) & 0xf) << 12)
+                        | ((rn & 0x1f) << 5)
+                        | ((rd & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+
+            }
+
+            // rs, rt, rn
+            Encoding::GpGpLs64Gp => {
+                if isign3 == enc_ops3!(Reg, Reg, Reg) {
+                    let rs = ops[0].id();
+                    let rt = ops[1].id();
+                    let rn = ops[2].id();
+
+                    let val = info.val
+                        | ((rs & 0x1f) << 16)
+                        | ((rt & 0x1f) << 5)
+                        | ((rn & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+
+            // rd, rn, imm8
+            Encoding::GpGpSImm8_0 => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rd = ops[0].id();
+                    let rn = ops[1].id();
+                    let imm8 = ops[2].as_::<Imm>().value() as u32;
+
+                    let val = info.val
+                        | (((imm8 / (1 << 0)) & 0xff) << 10)
+                        | (((rn) & 0x1f) << 5)
+                        | (((rd) & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+            
+            Encoding::GpGpSImm9_0 => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rd = ops[0].id();
+                    let rn = ops[1].id();
+                    let imm9 = ops[2].as_::<Imm>().value() as u32;
+
+                    let val = info.val
+                        | (((imm9 / (1 << 0)) & 0x1ff) << 12)
+                        | (((rn) & 0x1f) << 5)
+                        | (((rd) & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+
+            Encoding::GpGpSImm9_4 => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rd = ops[0].id();
+                    let rn = ops[1].id();
+                    let imm9 = ops[2].as_::<Imm>().value() as u32;
+
+                    let val = info.val
+                        | (((imm9 / (1 << 4)) & 0x1ff) << 12)
+                        | (((rn) & 0x1f) << 5)
+                        | (((rd) & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+
+                Some(AsmError::InvalidOperand)
+            }
+
+
             Encoding::GpGpGp => {
                 if isign3 == enc_ops3!(Reg, Reg, Reg) {
                     let rd = ops[0].id();
