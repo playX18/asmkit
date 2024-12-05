@@ -1,5 +1,5 @@
 use crate::aarch64::opcodes::{Encoding, Opcode, INST_INFO};
-use crate::core::buffer::LabelUse;
+use crate::core::buffer::{LabelUse, Reloc, RelocTarget};
 use crate::core::operand::*;
 use crate::core::{buffer::CodeBuffer, emitter::Emitter};
 use crate::AsmError;
@@ -42,7 +42,7 @@ fn imm_logical(mut value: u64, is64: bool) -> u32 {
     let iclz = (!value).leading_zeros();
     let ctz = value.trailing_zeros();
     let ictz = (!value).trailing_zeros();
-    let popcount = value.count_ones();
+    let mut popcount = value.count_ones();
     let mut elog = 0;
     let mut shift = 64;
     let mut imms = (0x1780) | (popcount - 1);
@@ -239,7 +239,9 @@ impl<'a> Emitter for Assembler<'a> {
             }
         };
 
-        let err = match info.encoding {
+        let mut err = None;
+
+        match info.encoding {
             Encoding::Empty => {
                 self.buffer.put4(info.val);
                 return;
@@ -260,7 +262,6 @@ impl<'a> Emitter for Assembler<'a> {
                         .put4(info.val | ((imm & 0x7ffff) << 5) | ((cond & 0xf) << 0));
                     return;
                 } else {
-                    Some(AsmError::InvalidOperand)
                 }
             }
 
@@ -281,8 +282,6 @@ impl<'a> Emitter for Assembler<'a> {
                         .put4(info.val | (0 & 0x1f) << 16 | (rn & 0x1f) << 5);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFp => {
@@ -293,8 +292,6 @@ impl<'a> Emitter for Assembler<'a> {
                         .put4(info.val | (rm & 0x1f) << 16 | (rn & 0x1f) << 5);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpConst0 => {
@@ -305,8 +302,6 @@ impl<'a> Emitter for Assembler<'a> {
                         .put4(info.val | (0 & 0x7) << 16 | (rn & 0x1f) << 5 | (rd & 0x1f) << 0);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpFp => {
@@ -320,8 +315,6 @@ impl<'a> Emitter for Assembler<'a> {
                     );
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpFpCond => {
@@ -340,7 +333,6 @@ impl<'a> Emitter for Assembler<'a> {
                     );
                     return;
                 }
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpFpFp => {
@@ -359,8 +351,6 @@ impl<'a> Emitter for Assembler<'a> {
                     );
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpFpImm => {
@@ -379,8 +369,6 @@ impl<'a> Emitter for Assembler<'a> {
                     );
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpFpImmRotAdd => {
@@ -399,10 +387,8 @@ impl<'a> Emitter for Assembler<'a> {
                         );
                         return;
                     } else {
-                        Some(AsmError::InvalidOperand)
                     }
                 } else {
-                    Some(AsmError::InvalidOperand)
                 }
             }
 
@@ -422,10 +408,8 @@ impl<'a> Emitter for Assembler<'a> {
                         );
                         return;
                     } else {
-                        Some(AsmError::InvalidOperand)
                     }
                 } else {
-                    Some(AsmError::InvalidOperand)
                 }
             }
 
@@ -448,10 +432,8 @@ impl<'a> Emitter for Assembler<'a> {
                         self.buffer.put4(v);
                         return;
                     } else {
-                        Some(AsmError::InvalidOperand)
                     }
                 } else {
-                    Some(AsmError::InvalidOperand)
                 }
             }
 
@@ -472,8 +454,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpFpVelElemIdx2 => {
@@ -493,8 +473,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpFpVelElemIdx3 => {
@@ -514,8 +492,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpFpVelElemIdxLim2_2ImmRotMul => {
@@ -538,8 +514,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpFpVelElemIdxLim2_4ImmRotMul => {
@@ -562,8 +536,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
             //
             Encoding::FpFpFpVelElemIdxLim3_4ImmRotMul => {
@@ -586,8 +558,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
             Encoding::FpFpGpSImm7_2 => {
                 if isign4 == enc_ops4!(Reg, Reg, Reg, Imm) {
@@ -604,8 +574,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpGpSImm7_3 => {
@@ -623,8 +591,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpGpSImm7_4 => {
@@ -642,8 +608,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpImmCond => {
@@ -661,8 +625,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpImmShiftl16 => {
@@ -679,8 +641,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpImmShiftl32 => {
@@ -697,8 +657,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpImmShiftl64 => {
@@ -715,8 +673,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpImmShiftl8 => {
@@ -734,8 +690,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpImmShiftr8 => {
@@ -752,8 +706,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpImmShiftr16 => {
@@ -770,8 +722,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpImmShiftr32 => {
@@ -788,8 +738,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpImmShiftr64 => {
@@ -806,8 +754,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpImmVIdx0_1 => {
@@ -823,8 +769,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpImmVIdx1_1 => {
@@ -840,8 +784,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpFpImmVIdx2_1 => {
@@ -857,8 +799,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
             Encoding::FpFpImmVIdx3_1 => {
                 if isign3 == enc_ops3!(Reg, Reg, Imm) {
@@ -873,8 +813,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpGpFcvtFixScale => {
@@ -889,8 +827,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpGpGp => {
@@ -904,8 +840,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpGpGpBool => {
@@ -923,8 +857,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpGpSImm9_0 => {
@@ -939,8 +871,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpGpUImm12_0 => {
@@ -955,8 +885,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpGpUImm12_1 => {
@@ -971,8 +899,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpGpUImm12_2 => {
@@ -987,8 +913,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpGpUImm12_3 => {
@@ -1003,8 +927,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpGpUImm12_4 => {
@@ -1019,8 +941,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpGpZero => {
@@ -1034,8 +954,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpImmFMov32 => {
@@ -1046,7 +964,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpImmFMov64 => {
@@ -1058,7 +975,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpImmSIMD8Fmov => {
@@ -1072,8 +988,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpImmSIMD8Lsl => {
@@ -1090,8 +1004,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpImmSIMD8Movi => {
@@ -1109,8 +1021,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpImmVIdx0_1FpImmVIdx0_0 => {
@@ -1128,8 +1038,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpImmVIdx0_1Gp => {
@@ -1145,8 +1053,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpImmVIdx1_1FpImmVIdx1_0 => {
@@ -1164,8 +1070,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpImmVIdx1_1Gp => {
@@ -1181,8 +1085,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpImmVIdx2_1FpImmVIdx2_0 => {
@@ -1200,8 +1102,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpImmVIdx2_1Gp => {
@@ -1217,8 +1117,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpImmVIdx3_1FpImmVIdx3_0 => {
@@ -1236,8 +1134,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpImmVIdx3_1Gp => {
@@ -1253,8 +1149,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpMemSIMDIdx0Gp => {
@@ -1272,8 +1166,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpMemSIMDIdx0GpGp => {
@@ -1293,8 +1185,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpMemSIMDIdx0GpZero => {
@@ -1313,8 +1203,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpMemSIMDIdx1GpGp => {
@@ -1334,8 +1222,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpMemSIMDIdx1GpZero => {
@@ -1354,8 +1240,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpMemSIMDIdx2Gp => {
@@ -1375,8 +1259,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpMemSIMDIdx2GpGp => {
@@ -1396,8 +1278,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpMemSIMDIdx2GpZero => {
@@ -1416,8 +1296,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpMemSIMDIdx3Gp => {
@@ -1437,8 +1315,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpMemSIMDIdx3GpGp => {
@@ -1458,8 +1334,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpMemSIMDIdx3GpZero => {
@@ -1478,8 +1352,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::FpRelAddr19 => {
@@ -1501,8 +1373,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpFp => {
@@ -1514,8 +1384,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpFpFcvtFixScale => {
@@ -1531,8 +1399,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpFpImmVIdx0_1 => {
@@ -1547,8 +1413,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpFpImmVIdx1_1 => {
@@ -1563,8 +1427,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpFpImmVIdx2_1 => {
@@ -1579,8 +1441,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpFpImmVIdx3_1 => {
@@ -1595,8 +1455,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpGpConst0Const0 => {
@@ -1612,8 +1470,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpGpConst0Const15 => {
@@ -1629,8 +1485,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpGpConst0Const31 => {
@@ -1646,8 +1500,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
             Encoding::GpGpConst0Const7 => {
                 if isign3 == enc_ops2!(Reg, Reg) {
@@ -1662,8 +1514,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpGpGpBool => {
@@ -1681,8 +1531,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpGpGpCond => {
@@ -1700,8 +1548,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpGpGpGp => {
@@ -1719,8 +1565,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpGpGpImm => {
@@ -1739,8 +1583,6 @@ impl<'a> Emitter for Assembler<'a> {
                     );
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpGpGpSImm7_2 => {
@@ -1758,8 +1600,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpGpGpSImm7_3 => {
@@ -1777,8 +1617,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
             Encoding::GpGpGpSImm7_4 => {
                 if isign4 == enc_ops4!(Reg, Reg, Reg, Imm) {
@@ -1795,8 +1633,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpGpGpZero => {
@@ -1813,8 +1649,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpGpImmAdd32 => {
@@ -1831,8 +1665,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpGpImmAdd64 => {
@@ -1849,8 +1681,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpGpImmCond => {
@@ -1868,8 +1698,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             // rd, rn, immr
@@ -1887,8 +1715,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpGpImmConst63 => {
@@ -1905,8 +1731,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             // Rd, Rn, immr, imms
@@ -1925,8 +1749,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             // rt, rn, simm9
@@ -1944,8 +1766,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             // rd, rn, imm
@@ -1963,8 +1783,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             // rd, rn, imm
@@ -1982,8 +1800,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             // rd, rn, cond
@@ -2001,9 +1817,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
-
             }
 
             // rs, rt, rn
@@ -2013,15 +1826,11 @@ impl<'a> Emitter for Assembler<'a> {
                     let rt = ops[1].id();
                     let rn = ops[2].id();
 
-                    let val = info.val
-                        | ((rs & 0x1f) << 16)
-                        | ((rt & 0x1f) << 5)
-                        | ((rn & 0x1f) << 0);
+                    let val =
+                        info.val | ((rs & 0x1f) << 16) | ((rt & 0x1f) << 5) | ((rn & 0x1f) << 0);
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             // rd, rn, imm8
@@ -2038,10 +1847,8 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
-            
+
             Encoding::GpGpSImm9_0 => {
                 if isign3 == enc_ops3!(Reg, Reg, Imm) {
                     let rd = ops[0].id();
@@ -2055,8 +1862,6 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpGpSImm9_4 => {
@@ -2072,8 +1877,321 @@ impl<'a> Emitter for Assembler<'a> {
                     self.buffer.put4(val);
                     return;
                 }
+            }
 
-                Some(AsmError::InvalidOperand)
+            Encoding::GpGpUImm12_0 => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rt = ops[0].id();
+                    let rn = ops[1].id();
+                    let imm12 = ops[2].as_::<Imm>().value() as i32 as u32;
+
+                    let val = info.val
+                        | (((imm12 >> 0) & 0xfff) << 10)
+                        | ((rn & 0x1f) << 5)
+                        | ((rt & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+            }
+
+            Encoding::GpGpUImm12_1 => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rt = ops[0].id();
+                    let rn = ops[1].id();
+                    let imm12 = ops[2].as_::<Imm>().value() as i32 as u32;
+
+                    let val = info.val
+                        | (((imm12 >> 1) & 0xfff) << 10)
+                        | ((rn & 0x1f) << 5)
+                        | ((rt & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+            }
+
+            Encoding::GpGpUImm12_2 => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rt = ops[0].id();
+                    let rn = ops[1].id();
+                    let imm12 = ops[2].as_::<Imm>().value() as i32 as u32;
+
+                    let val = info.val
+                        | (((imm12 >> 2) & 0xfff) << 10)
+                        | ((rn & 0x1f) << 5)
+                        | ((rt & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+            }
+
+            Encoding::GpGpUImm12_3 => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rt = ops[0].id();
+                    let rn = ops[1].id();
+                    let imm12 = ops[2].as_::<Imm>().value() as i32 as u32;
+
+                    let val = info.val
+                        | (((imm12 >> 3) & 0xfff) << 10)
+                        | ((rn & 0x1f) << 5)
+                        | ((rt & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+            }
+
+            // rd, rn, uimm6, uimm4
+            Encoding::GpGpUImm6_4UImm4_0Const0 => {
+                if isign4 == enc_ops4!(Reg, Reg, Imm, Imm) {
+                    let rd = ops[0].id();
+                    let rn = ops[1].id();
+                    let imm6 = ops[2].as_::<Imm>().value() as u32;
+                    let imm4 = ops[3].as_::<Imm>().value() as u32;
+
+                    let val = info.val
+                        | ((rn & 0x1f) << 5)
+                        | ((rd & 0x1f) << 0)
+                        | ((0 & 0x3) << 14)
+                        | (((imm4 >> 0) & 0xf) << 10)
+                        | (((imm6 >> 4) & 0x3f) << 16);
+
+                    self.buffer.put4(val);
+                    return;
+                }
+            }
+
+            // rd, rn, imm8
+            Encoding::GpGpUImm8_0 => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rd = ops[0].id();
+                    let rn = ops[1].id();
+                    let imm8 = ops[2].as_::<Imm>().value() as u32;
+
+                    let val = info.val
+                        | (((imm8 >> 0) & 0xff) << 12)
+                        | ((rn & 0x1f) << 5)
+                        | ((rd & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+            }
+
+            // rs, rt, rn
+            Encoding::GpGpZeroGp => {
+                if isign3 == enc_ops3!(Reg, Reg, Reg) {
+                    let rs = ops[0].id();
+                    let rn = ops[1].id();
+                    let rt = ops[2].id();
+
+                    let val = info.val
+                        | ((31 & 0x1f) << 10)
+                        | ((rn & 0x1f) << 5)
+                        | ((rt & 0x1f) << 0)
+                        | ((rs & 0x1f) << 16);
+
+                    self.buffer.put4(val);
+                    return;
+                }
+            }
+
+            // rd, rn, lsb, width
+            Encoding::GpGplsbwidth => {
+                if isign4 == enc_ops4!(Reg, Reg, Imm, Imm) {
+                    let rd = ops[0].id();
+                    let rn = ops[1].id();
+                    let lsb = ops[2].as_::<Imm>().value() as u32;
+                    let width = ops[3].as_::<Imm>().value() as u32;
+
+                    let val = info.val
+                        | (((lsb + width - 1) & 0x3f) << 10)
+                        | (((rn) & 0x1f) << 5)
+                        | (((rd) & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+            }
+
+            Encoding::GpGplsl32 => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rd = ops[0].id();
+                    let rn = ops[1].id();
+                    let lsl32 = ops[2].as_::<Imm>().value() as u32;
+
+                    let val = info.val
+                        | (((32 - 1 - lsl32) & 0x3f) << 10)
+                        | (((rn) & 0x1f) << 5)
+                        | (((rd) & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+            }
+
+            Encoding::GpGplsl64 => {
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rd = ops[0].id();
+                    let rn = ops[1].id();
+                    let lsl64 = ops[2].as_::<Imm>().value() as u32;
+
+                    let val = info.val
+                        | (((64 - 1 - lsl64) & 0x3f) << 10)
+                        | (((rn) & 0x1f) << 5)
+                        | (((rd) & 0x1f) << 0);
+                    self.buffer.put4(val);
+                    return;
+                }
+            }
+
+            // rd, target
+            Encoding::GpImmAddr => {
+                if isign3 == enc_ops2!(Reg, Imm) {
+                    let rd = ops[0].id();
+                    let target = ops[1].as_::<Imm>().value() as i32 as u32;
+
+                    let val = info.val
+                        | (((target & 3) & 0x3) << 29)
+                        | (((target >> 2) & 0x7ffff) << 5)
+                        | ((rd & 0x1f) << 0);
+
+                    self.buffer.put4(val);
+                    return;
+                } else if isign3 == enc_ops2!(Reg, Label) {
+                    let rd = ops[0].id();
+                    self.use_label(&ops[1], LabelUse::A64Adr21);
+                    let val = info.val | (rd & 0x1f) << 0;
+                    self.buffer.put4(val);
+                    return;
+                }
+            }
+
+            Encoding::GpImmAddrP => {
+                if isign3 == enc_ops2!(Reg, Imm) {
+                    let rd = ops[0].id();
+                    let target = ops[1].as_::<Imm>().value() as u64;
+
+                    let val = info.val
+                        | ((((target & !0xfffu64) >> 12) as u32 & 3) << 29)
+                        | ((((target & !0xfffu64) >> 14) as u32 & 0x7ffff) << 5)
+                        | ((rd & 0x1f) << 0);
+
+                    self.buffer.put4(val);
+                    return;
+                } else if isign3 == enc_ops2!(Reg, Label) {
+                    let rd = ops[0].id();
+                    self.use_label(&ops[1], LabelUse::A64Adr21);
+                    let val = info.val | (rd & 0x1f) << 0;
+                    self.buffer.put4(val);
+                    return;
+                } else if isign3 == enc_ops2!(Reg, Sym) {
+                    let rd = ops[0].id();
+                    self.buffer.add_reloc(
+                        Reloc::Aarch64AdrGotPage21,
+                        RelocTarget::Sym(ops[1].as_::<Sym>()),
+                        0,
+                    );
+                    let val = info.val | (rd & 0x1f) << 0;
+                    self.buffer.put4(val);
+                    return;
+                }
+            }
+
+            // rn, imm5, nzcv, cond
+            Encoding::GpImmImmCond => {
+                if isign4 == enc_ops4!(Reg, Imm, Imm, Imm) {
+                    let rn = ops[0].id();
+                    let imm5 = ops[1].as_::<Imm>().value() as u32;
+                    let nzcv = ops[2].as_::<Imm>().value() as u32;
+                    let cond = ops[3].as_::<Imm>().value() as u32;
+                    let val = info.val
+                        | ((imm5 & 0x1f) << 16)
+                        | ((cond & 0xf) << 12)
+                        | ((rn & 0x1f) << 5)
+                        | ((nzcv & 0xf) << 0);
+
+                    self.buffer.put4(val);
+                    return;
+                }
+            }
+
+            // rt, imm19
+            Encoding::GpRelAddr19 => {
+                if isign3 == enc_ops2!(Reg, Imm) {
+                    let rt = ops[0].id();
+                    let imm19 = ops[1].as_::<Imm>().value() as i32 as u32;
+
+                    let val = info.val | (((imm19 & 0x7ffff) << 5) & 0x7ffff0) | ((rt & 0x1f) << 0);
+
+                    self.buffer.put4(val);
+                    return;
+                } else if isign3 == enc_ops2!(Reg, Label) {
+                    let rt = ops[0].id();
+                    self.use_label(&ops[1], LabelUse::A64Ldr19);
+                    let val = info.val | (rt & 0x1f) << 0;
+                    self.buffer.put4(val);
+                    return;
+                }
+            }
+            // rt, bit, imm14
+            Encoding::GpTBZRelAddr14 => {
+                if isign3 == enc_ops3!(Reg, Imm, Label) {
+                    let rt = ops[0].id();
+                    let bit = ops[1].as_::<Imm>().value() as u32;
+
+                    self.use_label(ops[2], LabelUse::A64Branch14);
+                    let val = info.val
+                        | (((bit >> 5) & 0x1) << 31)
+                        | (((bit & 0x1f) & 0x1f) << 19)
+                        | (((0 >> 2) & 0x3fff) << 5)
+                        | ((rt & 0x1f) << 0);
+
+                    self.buffer.put4(val);
+                    return;
+                } else if isign3 == enc_ops3!(Reg, Imm, Imm) {
+                    let rt = ops[0].id();
+                    let bit = ops[1].as_::<Imm>().value() as u32;
+                    let imm14 = ops[2].as_::<Imm>();
+
+                    let val = info.val
+                        | (((bit >> 5) & 0x1) << 31)
+                        | (((bit & 0x1f) & 0x1f) << 19)
+                        | (((imm14.value() as i32 as u32 >> 2) & 0x3fff) << 5)
+                        | ((rt & 0x1f) << 0);
+
+                    self.buffer.put4(val);
+                    return;
+                }
+            }
+
+            // rd, imm16 e.g MOVNw
+            Encoding::GpUImm16_0 => {
+                if isign3 == enc_ops2!(Reg, Imm) {
+                    let rd = ops[0].id();
+                    let imm16 = ops[1].as_::<Imm>().value() as u32;
+
+                    let val = info.val | (((imm16 >> 0) & 0xffff) << 5) | ((rd & 0x1f) << 0);
+
+                    self.buffer.put4(val);
+                    return;
+                }
+            }
+
+            // rd, imm16, hw
+            Encoding::GpUImm16_0Imm => {
+                if isign3 == enc_ops3!(Reg, Imm, Imm) {
+                    let rd = ops[0].id();
+                    let imm16 = ops[1].as_::<Imm>().value() as u32;
+                    let hw = ops[2].as_::<Imm>().value() as u32;
+
+                    let val = info.val
+                        | (((imm16 >> 0) & 0xffff) << 5)
+                        | (((hw >> 0) & 0x3) << 21)
+                        | ((rd & 0x1f) << 0);
+
+                    self.buffer.put4(val);
+                    return;
+                }
+            }
+
+            Encoding::GpZeroGpConst0 => {
+                todo!()
             }
 
             Encoding::GpGpGp => {
@@ -2091,8 +2209,6 @@ impl<'a> Emitter for Assembler<'a> {
                     );
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             Encoding::GpGpGpConst0 => {
@@ -2110,12 +2226,13 @@ impl<'a> Emitter for Assembler<'a> {
                     );
                     return;
                 }
-
-                Some(AsmError::InvalidOperand)
             }
 
             _ => panic!("{:?}", info.encoding),
         };
+        if err.is_none() {
+            err = Some(AsmError::InvalidOperand);
+        }
         self.last_error = err;
     }
 

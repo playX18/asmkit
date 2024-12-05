@@ -1,7 +1,5 @@
 use asmkit::core::buffer::{perform_relocations, CodeBuffer, ExternalName, RelocDistance};
 use asmkit::core::jit_allocator::JitAllocator;
-use capstone::arch::BuildsCapstone;
-use capstone::Capstone;
 
 extern "C" {
     fn puts(_: *const i8);
