@@ -554,7 +554,8 @@ impl Immediate {
     pub const fn decode(&self, op: u32) -> i32 {
         let bit_count = self.position_in_opcode.0 - self.position_in_opcode.1 + 1;
         let mask = (1u32 << bit_count) - 1;
-        (((op as u32 >> self.position_in_opcode.1) as u32 & mask) << self.position_in_immediate.1) as _
+        (((op as u32 >> self.position_in_opcode.1) as u32 & mask) << self.position_in_immediate.1)
+            as _
     }
 
     pub const fn is_valid(&self, imm: i32) -> bool {
@@ -3085,10344 +3086,5635 @@ pub const CAUSE_LOAD_GUEST_PAGE_FAULT: u8 = 0x15;
 pub const CAUSE_VIRTUAL_INSTRUCTION: u8 = 0x16;
 pub const CAUSE_STORE_GUEST_PAGE_FAULT: u8 = 0x17;
 pub static OPCODE32_MATCH: [u32; 1021] = [
-0x33, /* add */
-0xffff_ffff,/* add_uw */
-0x13, /* addi */
-0xffff_ffff,/* addiw */
-0xffff_ffff,/* addw */
-0x2a000033, /* aes32dsi */
-0x2e000033, /* aes32dsmi */
-0x22000033, /* aes32esi */
-0x26000033, /* aes32esmi */
-0xffff_ffff,/* aes64ds */
-0xffff_ffff,/* aes64dsm */
-0xffff_ffff,/* aes64es */
-0xffff_ffff,/* aes64esm */
-0xffff_ffff,/* aes64im */
-0xffff_ffff,/* aes64ks1i */
-0xffff_ffff,/* aes64ks2 */
-0x2f, /* amoadd_b */
-0xffff_ffff,/* amoadd_d */
-0x102f, /* amoadd_h */
-0x202f, /* amoadd_w */
-0x6000002f, /* amoand_b */
-0xffff_ffff,/* amoand_d */
-0x6000102f, /* amoand_h */
-0x6000202f, /* amoand_w */
-0x2800002f, /* amocas_b */
-0x2800302f, /* amocas_d */
-0x2800102f, /* amocas_h */
-0xffff_ffff,/* amocas_q */
-0x2800202f, /* amocas_w */
-0xa000002f, /* amomax_b */
-0xffff_ffff,/* amomax_d */
-0xa000102f, /* amomax_h */
-0xa000202f, /* amomax_w */
-0xe000002f, /* amomaxu_b */
-0xffff_ffff,/* amomaxu_d */
-0xe000102f, /* amomaxu_h */
-0xe000202f, /* amomaxu_w */
-0x8000002f, /* amomin_b */
-0xffff_ffff,/* amomin_d */
-0x8000102f, /* amomin_h */
-0x8000202f, /* amomin_w */
-0xc000002f, /* amominu_b */
-0xffff_ffff,/* amominu_d */
-0xc000102f, /* amominu_h */
-0xc000202f, /* amominu_w */
-0x4000002f, /* amoor_b */
-0xffff_ffff,/* amoor_d */
-0x4000102f, /* amoor_h */
-0x4000202f, /* amoor_w */
-0x800002f, /* amoswap_b */
-0xffff_ffff,/* amoswap_d */
-0x800102f, /* amoswap_h */
-0x800202f, /* amoswap_w */
-0x2000002f, /* amoxor_b */
-0xffff_ffff,/* amoxor_d */
-0x2000102f, /* amoxor_h */
-0x2000202f, /* amoxor_w */
-0x7033, /* and */
-0x7013, /* andi */
-0x40007033, /* andn */
-0x17, /* auipc */
-0x48001033, /* bclr */
-0xffff_ffff,/* bclri */
-0x48001013, /* bclri_rv32 */
-0x63, /* beq */
-0x63, /* beqz */
-0x48005033, /* bext */
-0xffff_ffff,/* bexti */
-0x48005013, /* bexti_rv32 */
-0x5063, /* bge */
-0x7063, /* bgeu */
-0x5063, /* bgez */
-0x4063, /* bgt */
-0x6063, /* bgtu */
-0x4063, /* bgtz */
-0x68001033, /* binv */
-0xffff_ffff,/* binvi */
-0x68001013, /* binvi_rv32 */
-0x5063, /* ble */
-0x7063, /* bleu */
-0x5063, /* blez */
-0x4063, /* blt */
-0x6063, /* bltu */
-0x4063, /* bltz */
-0x1063, /* bne */
-0x1063, /* bnez */
-0x68705013, /* brev8 */
-0x28001033, /* bset */
-0xffff_ffff,/* bseti */
-0x28001013, /* bseti_rv32 */
-0x9002, /* c_add */
-0x1, /* c_addi */
-0x6101, /* c_addi16sp */
-0x0, /* c_addi4spn */
-0xffff_ffff,/* c_addiw */
-0xffff_ffff,/* c_addw */
-0x8c61, /* c_and */
-0x8801, /* c_andi */
-0xc001, /* c_beqz */
-0xe001, /* c_bnez */
-0x9002, /* c_ebreak */
-0x2000, /* c_fld */
-0x2002, /* c_fldsp */
-0x6000, /* c_flw */
-0x6002, /* c_flwsp */
-0xa000, /* c_fsd */
-0xa002, /* c_fsdsp */
-0xe000, /* c_fsw */
-0xe002, /* c_fswsp */
-0xa001, /* c_j */
-0x2001, /* c_jal */
-0x9002, /* c_jalr */
-0x8002, /* c_jr */
-0x8000, /* c_lbu */
-0xffff_ffff,/* c_ld */
-0xffff_ffff,/* c_ldsp */
-0x8440, /* c_lh */
-0x8400, /* c_lhu */
-0x4001, /* c_li */
-0x6001, /* c_lui */
-0x4000, /* c_lw */
-0x4002, /* c_lwsp */
-0x6081, /* c_mop_1 */
-0x6581, /* c_mop_11 */
-0x6681, /* c_mop_13 */
-0x6781, /* c_mop_15 */
-0x6181, /* c_mop_3 */
-0x6281, /* c_mop_5 */
-0x6381, /* c_mop_7 */
-0x6481, /* c_mop_9 */
-0x6081, /* c_mop_N */
-0x9c41, /* c_mul */
-0x8002, /* c_mv */
-0x1, /* c_nop */
-0x9c75, /* c_not */
-0x9016, /* c_ntl_all */
-0x900a, /* c_ntl_p1 */
-0x900e, /* c_ntl_pall */
-0x9012, /* c_ntl_s1 */
-0x8c41, /* c_or */
-0x8800, /* c_sb */
-0xffff_ffff,/* c_sd */
-0xffff_ffff,/* c_sdsp */
-0x9c65, /* c_sext_b */
-0x9c6d, /* c_sext_h */
-0xffff_ffff,/* c_sext_w */
-0x8c00, /* c_sh */
-0x2, /* c_slli */
-0x2, /* c_slli_rv32 */
-0x8401, /* c_srai */
-0x8401, /* c_srai_rv32 */
-0x8001, /* c_srli */
-0x8001, /* c_srli_rv32 */
-0x8c01, /* c_sub */
-0xffff_ffff,/* c_subw */
-0xc000, /* c_sw */
-0xc002, /* c_swsp */
-0x8c21, /* c_xor */
-0x9c61, /* c_zext_b */
-0x9c69, /* c_zext_h */
-0xffff_ffff,/* c_zext_w */
-0x10200f, /* cbo_clean */
-0x20200f, /* cbo_flush */
-0x200f, /* cbo_inval */
-0x40200f, /* cbo_zero */
-0xa001033, /* clmul */
-0xa003033, /* clmulh */
-0xa002033, /* clmulr */
-0x60001013, /* clz */
-0xffff_ffff,/* clzw */
-0xa002, /* cm_jalt */
-0xac62, /* cm_mva01s */
-0xac22, /* cm_mvsa01 */
-0xba02, /* cm_pop */
-0xbe02, /* cm_popret */
-0xbc02, /* cm_popretz */
-0xb802, /* cm_push */
-0x60201013, /* cpop */
-0xffff_ffff,/* cpopw */
-0x3073, /* csrc */
-0x7073, /* csrci */
-0x2073, /* csrr */
-0x3073, /* csrrc */
-0x7073, /* csrrci */
-0x2073, /* csrrs */
-0x6073, /* csrrsi */
-0x1073, /* csrrw */
-0x5073, /* csrrwi */
-0x2073, /* csrs */
-0x6073, /* csrsi */
-0x1073, /* csrw */
-0x5073, /* csrwi */
-0x60101013, /* ctz */
-0xffff_ffff,/* ctzw */
-0xe005033, /* czero_eqz */
-0xe007033, /* czero_nez */
-0x2004033, /* div */
-0x2005033, /* divu */
-0xffff_ffff,/* divuw */
-0xffff_ffff,/* divw */
-0x7b200073, /* dret */
-0x100073, /* ebreak */
-0x73, /* ecall */
-0x22002053, /* fabs_d */
-0x24002053, /* fabs_h */
-0x26002053, /* fabs_q */
-0x20002053, /* fabs_s */
-0x2000053, /* fadd_d */
-0x4000053, /* fadd_h */
-0x6000053, /* fadd_q */
-0x53, /* fadd_s */
-0xe2001053, /* fclass_d */
-0xe4001053, /* fclass_h */
-0xe6001053, /* fclass_q */
-0xe0001053, /* fclass_s */
-0x42200053, /* fcvt_d_h */
-0xffff_ffff,/* fcvt_d_l */
-0xffff_ffff,/* fcvt_d_lu */
-0x42300053, /* fcvt_d_q */
-0x42000053, /* fcvt_d_s */
-0xd2000053, /* fcvt_d_w */
-0xd2100053, /* fcvt_d_wu */
-0x44100053, /* fcvt_h_d */
-0xffff_ffff,/* fcvt_h_l */
-0xffff_ffff,/* fcvt_h_lu */
-0x44300053, /* fcvt_h_q */
-0x44000053, /* fcvt_h_s */
-0xd4000053, /* fcvt_h_w */
-0xd4100053, /* fcvt_h_wu */
-0xffff_ffff,/* fcvt_l_d */
-0xffff_ffff,/* fcvt_l_h */
-0xffff_ffff,/* fcvt_l_q */
-0xffff_ffff,/* fcvt_l_s */
-0xffff_ffff,/* fcvt_lu_d */
-0xffff_ffff,/* fcvt_lu_h */
-0xffff_ffff,/* fcvt_lu_q */
-0xffff_ffff,/* fcvt_lu_s */
-0x46100053, /* fcvt_q_d */
-0x46200053, /* fcvt_q_h */
-0xffff_ffff,/* fcvt_q_l */
-0xffff_ffff,/* fcvt_q_lu */
-0x46000053, /* fcvt_q_s */
-0xd6000053, /* fcvt_q_w */
-0xd6100053, /* fcvt_q_wu */
-0x40100053, /* fcvt_s_d */
-0x40200053, /* fcvt_s_h */
-0xffff_ffff,/* fcvt_s_l */
-0xffff_ffff,/* fcvt_s_lu */
-0x40300053, /* fcvt_s_q */
-0xd0000053, /* fcvt_s_w */
-0xd0100053, /* fcvt_s_wu */
-0xc2000053, /* fcvt_w_d */
-0xc4000053, /* fcvt_w_h */
-0xc6000053, /* fcvt_w_q */
-0xc0000053, /* fcvt_w_s */
-0xc2100053, /* fcvt_wu_d */
-0xc4100053, /* fcvt_wu_h */
-0xc6100053, /* fcvt_wu_q */
-0xc0100053, /* fcvt_wu_s */
-0xc2801053, /* fcvtmod_w_d */
-0x1a000053, /* fdiv_d */
-0x1c000053, /* fdiv_h */
-0x1e000053, /* fdiv_q */
-0x18000053, /* fdiv_s */
-0xf, /* fence */
-0x100f, /* fence_i */
-0x8330000f, /* fence_tso */
-0xa2002053, /* feq_d */
-0xa4002053, /* feq_h */
-0xa6002053, /* feq_q */
-0xa0002053, /* feq_s */
-0x3007, /* fld */
-0xa2000053, /* fle_d */
-0xa4000053, /* fle_h */
-0xa6000053, /* fle_q */
-0xa0000053, /* fle_s */
-0xa2004053, /* fleq_d */
-0xa4004053, /* fleq_h */
-0xa6004053, /* fleq_q */
-0xa0004053, /* fleq_s */
-0x1007, /* flh */
-0xf2100053, /* fli_d */
-0xf4100053, /* fli_h */
-0xf6100053, /* fli_q */
-0xf0100053, /* fli_s */
-0x4007, /* flq */
-0xa2001053, /* flt_d */
-0xa4001053, /* flt_h */
-0xa6001053, /* flt_q */
-0xa0001053, /* flt_s */
-0xa2005053, /* fltq_d */
-0xa4005053, /* fltq_h */
-0xa6005053, /* fltq_q */
-0xa0005053, /* fltq_s */
-0x2007, /* flw */
-0x2000043, /* fmadd_d */
-0x4000043, /* fmadd_h */
-0x6000043, /* fmadd_q */
-0x43, /* fmadd_s */
-0x2a001053, /* fmax_d */
-0x2c001053, /* fmax_h */
-0x2e001053, /* fmax_q */
-0x28001053, /* fmax_s */
-0x2a003053, /* fmaxm_d */
-0x2c003053, /* fmaxm_h */
-0x2e003053, /* fmaxm_q */
-0x28003053, /* fmaxm_s */
-0x2a000053, /* fmin_d */
-0x2c000053, /* fmin_h */
-0x2e000053, /* fmin_q */
-0x28000053, /* fmin_s */
-0x2a002053, /* fminm_d */
-0x2c002053, /* fminm_h */
-0x2e002053, /* fminm_q */
-0x28002053, /* fminm_s */
-0x2000047, /* fmsub_d */
-0x4000047, /* fmsub_h */
-0x6000047, /* fmsub_q */
-0x47, /* fmsub_s */
-0x12000053, /* fmul_d */
-0x14000053, /* fmul_h */
-0x16000053, /* fmul_q */
-0x10000053, /* fmul_s */
-0x22000053, /* fmv_d */
-0xffff_ffff,/* fmv_d_x */
-0x24000053, /* fmv_h */
-0xf4000053, /* fmv_h_x */
-0x26000053, /* fmv_q */
-0x20000053, /* fmv_s */
-0xf0000053, /* fmv_s_x */
-0xf0000053, /* fmv_w_x */
-0xffff_ffff,/* fmv_x_d */
-0xe4000053, /* fmv_x_h */
-0xe0000053, /* fmv_x_s */
-0xe0000053, /* fmv_x_w */
-0xe2100053, /* fmvh_x_d */
-0xffff_ffff,/* fmvh_x_q */
-0xb2000053, /* fmvp_d_x */
-0xffff_ffff,/* fmvp_q_x */
-0x22001053, /* fneg_d */
-0x24001053, /* fneg_h */
-0x26001053, /* fneg_q */
-0x20001053, /* fneg_s */
-0x200004f, /* fnmadd_d */
-0x400004f, /* fnmadd_h */
-0x600004f, /* fnmadd_q */
-0x4f, /* fnmadd_s */
-0x200004b, /* fnmsub_d */
-0x400004b, /* fnmsub_h */
-0x600004b, /* fnmsub_q */
-0x4b, /* fnmsub_s */
-0x302073, /* frcsr */
-0x102073, /* frflags */
-0x42400053, /* fround_d */
-0x44400053, /* fround_h */
-0x46400053, /* fround_q */
-0x40400053, /* fround_s */
-0x42500053, /* froundnx_d */
-0x44500053, /* froundnx_h */
-0x46500053, /* froundnx_q */
-0x40500053, /* froundnx_s */
-0x202073, /* frrm */
-0x301073, /* fscsr */
-0x3027, /* fsd */
-0x101073, /* fsflags */
-0x105073, /* fsflagsi */
-0x22000053, /* fsgnj_d */
-0x24000053, /* fsgnj_h */
-0x26000053, /* fsgnj_q */
-0x20000053, /* fsgnj_s */
-0x22001053, /* fsgnjn_d */
-0x24001053, /* fsgnjn_h */
-0x26001053, /* fsgnjn_q */
-0x20001053, /* fsgnjn_s */
-0x22002053, /* fsgnjx_d */
-0x24002053, /* fsgnjx_h */
-0x26002053, /* fsgnjx_q */
-0x20002053, /* fsgnjx_s */
-0x1027, /* fsh */
-0x4027, /* fsq */
-0x5a000053, /* fsqrt_d */
-0x5c000053, /* fsqrt_h */
-0x5e000053, /* fsqrt_q */
-0x58000053, /* fsqrt_s */
-0x201073, /* fsrm */
-0x205073, /* fsrmi */
-0xa000053, /* fsub_d */
-0xc000053, /* fsub_h */
-0xe000053, /* fsub_q */
-0x8000053, /* fsub_s */
-0x2027, /* fsw */
-0x62000073, /* hfence_gvma */
-0x22000073, /* hfence_vvma */
-0x66000073, /* hinval_gvma */
-0x26000073, /* hinval_vvma */
-0x60004073, /* hlv_b */
-0x60104073, /* hlv_bu */
-0xffff_ffff,/* hlv_d */
-0x64004073, /* hlv_h */
-0x64104073, /* hlv_hu */
-0x68004073, /* hlv_w */
-0xffff_ffff,/* hlv_wu */
-0x64304073, /* hlvx_hu */
-0x68304073, /* hlvx_wu */
-0x62004073, /* hsv_b */
-0xffff_ffff,/* hsv_d */
-0x66004073, /* hsv_h */
-0x6a004073, /* hsv_w */
-0x6f, /* j */
-0x6f, /* jal */
-0xef, /* jal_pseudo */
-0x67, /* jalr */
-0xe7, /* jalr_pseudo */
-0x67, /* jr */
-0x3, /* lb */
-0x4003, /* lbu */
-0xffff_ffff,/* ld */
-0x1003, /* lh */
-0x5003, /* lhu */
-0xffff_ffff,/* lr_d */
-0x1000202f, /* lr_w */
-0x37, /* lui */
-0x2003, /* lw */
-0xffff_ffff,/* lwu */
-0xa006033, /* max */
-0xa007033, /* maxu */
-0xa004033, /* min */
-0xa005033, /* minu */
-0x81c04073, /* mop_r_0 */
-0x81d04073, /* mop_r_1 */
-0x89e04073, /* mop_r_10 */
-0x89f04073, /* mop_r_11 */
-0x8dc04073, /* mop_r_12 */
-0x8dd04073, /* mop_r_13 */
-0x8de04073, /* mop_r_14 */
-0x8df04073, /* mop_r_15 */
-0xc1c04073, /* mop_r_16 */
-0xc1d04073, /* mop_r_17 */
-0xc1e04073, /* mop_r_18 */
-0xc1f04073, /* mop_r_19 */
-0x81e04073, /* mop_r_2 */
-0xc5c04073, /* mop_r_20 */
-0xc5d04073, /* mop_r_21 */
-0xc5e04073, /* mop_r_22 */
-0xc5f04073, /* mop_r_23 */
-0xc9c04073, /* mop_r_24 */
-0xc9d04073, /* mop_r_25 */
-0xc9e04073, /* mop_r_26 */
-0xc9f04073, /* mop_r_27 */
-0xcdc04073, /* mop_r_28 */
-0xcdd04073, /* mop_r_29 */
-0x81f04073, /* mop_r_3 */
-0xcde04073, /* mop_r_30 */
-0xcdf04073, /* mop_r_31 */
-0x85c04073, /* mop_r_4 */
-0x85d04073, /* mop_r_5 */
-0x85e04073, /* mop_r_6 */
-0x85f04073, /* mop_r_7 */
-0x89c04073, /* mop_r_8 */
-0x89d04073, /* mop_r_9 */
-0x81c04073, /* mop_r_N */
-0x82004073, /* mop_rr_0 */
-0x86004073, /* mop_rr_1 */
-0x8a004073, /* mop_rr_2 */
-0x8e004073, /* mop_rr_3 */
-0xc2004073, /* mop_rr_4 */
-0xc6004073, /* mop_rr_5 */
-0xca004073, /* mop_rr_6 */
-0xce004073, /* mop_rr_7 */
-0x82004073, /* mop_rr_N */
-0x30200073, /* mret */
-0x2000033, /* mul */
-0x2001033, /* mulh */
-0x2002033, /* mulhsu */
-0x2003033, /* mulhu */
-0xffff_ffff,/* mulw */
-0x13, /* mv */
-0x40000033, /* neg */
-0x13, /* nop */
-0x500033, /* ntl_all */
-0x200033, /* ntl_p1 */
-0x300033, /* ntl_pall */
-0x400033, /* ntl_s1 */
-0x6033, /* or */
-0x28705013, /* orc_b */
-0x6013, /* ori */
-0x40006033, /* orn */
-0x8004033, /* pack */
-0x8007033, /* packh */
-0xffff_ffff,/* packw */
-0x100000f, /* pause */
-0x6013, /* prefetch_i */
-0x106013, /* prefetch_r */
-0x306013, /* prefetch_w */
-0xc0002073, /* rdcycle */
-0xc8002073, /* rdcycleh */
-0xc0202073, /* rdinstret */
-0xc8202073, /* rdinstreth */
-0xc0102073, /* rdtime */
-0xc8102073, /* rdtimeh */
-0x2006033, /* rem */
-0x2007033, /* remu */
-0xffff_ffff,/* remuw */
-0xffff_ffff,/* remw */
-0x8067, /* ret */
-0xffff_ffff,/* rev8 */
-0x69805013, /* rev8_rv32 */
-0x60001033, /* rol */
-0xffff_ffff,/* rolw */
-0x60005033, /* ror */
-0xffff_ffff,/* rori */
-0x60005013, /* rori_rv32 */
-0xffff_ffff,/* roriw */
-0xffff_ffff,/* rorw */
-0x23, /* sb */
-0x100073, /* sbreak */
-0xffff_ffff,/* sc_d */
-0x1800202f, /* sc_w */
-0x73, /* scall */
-0xffff_ffff,/* sd */
-0x103013, /* seqz */
-0x60401013, /* sext_b */
-0x60501013, /* sext_h */
-0xffff_ffff,/* sext_w */
-0x18100073, /* sfence_inval_ir */
-0x12000073, /* sfence_vma */
-0x18000073, /* sfence_w_inval */
-0x2033, /* sgtz */
-0x1023, /* sh */
-0x20002033, /* sh1add */
-0xffff_ffff,/* sh1add_uw */
-0x20004033, /* sh2add */
-0xffff_ffff,/* sh2add_uw */
-0x20006033, /* sh3add */
-0xffff_ffff,/* sh3add_uw */
-0x10201013, /* sha256sig0 */
-0x10301013, /* sha256sig1 */
-0x10001013, /* sha256sum0 */
-0x10101013, /* sha256sum1 */
-0xffff_ffff,/* sha512sig0 */
-0x5c000033, /* sha512sig0h */
-0x54000033, /* sha512sig0l */
-0xffff_ffff,/* sha512sig1 */
-0x5e000033, /* sha512sig1h */
-0x56000033, /* sha512sig1l */
-0xffff_ffff,/* sha512sum0 */
-0x50000033, /* sha512sum0r */
-0xffff_ffff,/* sha512sum1 */
-0x52000033, /* sha512sum1r */
-0x16000073, /* sinval_vma */
-0x1033, /* sll */
-0x1013, /* slli */
-0x1013, /* slli_rv32 */
-0xffff_ffff,/* slli_uw */
-0xffff_ffff,/* slliw */
-0xffff_ffff,/* sllw */
-0x2033, /* slt */
-0x2013, /* slti */
-0x3013, /* sltiu */
-0x3033, /* sltu */
-0x2033, /* sltz */
-0x10801013, /* sm3p0 */
-0x10901013, /* sm3p1 */
-0x30000033, /* sm4ed */
-0x34000033, /* sm4ks */
-0x3033, /* snez */
-0x40005033, /* sra */
-0x40005013, /* srai */
-0x40005013, /* srai_rv32 */
-0xffff_ffff,/* sraiw */
-0xffff_ffff,/* sraw */
-0x10200073, /* sret */
-0x5033, /* srl */
-0x5013, /* srli */
-0x5013, /* srli_rv32 */
-0xffff_ffff,/* srliw */
-0xffff_ffff,/* srlw */
-0x40000033, /* sub */
-0xffff_ffff,/* subw */
-0x2023, /* sw */
-0x8f05013, /* unzip */
-0x24002057, /* vaadd_vv */
-0x24006057, /* vaadd_vx */
-0x20002057, /* vaaddu_vv */
-0x20006057, /* vaaddu_vx */
-0x40003057, /* vadc_vim */
-0x40000057, /* vadc_vvm */
-0x40004057, /* vadc_vxm */
-0x3057, /* vadd_vi */
-0x57, /* vadd_vv */
-0x4057, /* vadd_vx */
-0xa600a077, /* vaesdf_vs */
-0xa200a077, /* vaesdf_vv */
-0xa6002077, /* vaesdm_vs */
-0xa2002077, /* vaesdm_vv */
-0xa601a077, /* vaesef_vs */
-0xa201a077, /* vaesef_vv */
-0xa6012077, /* vaesem_vs */
-0xa2012077, /* vaesem_vv */
-0x8a002077, /* vaeskf1_vi */
-0xaa002077, /* vaeskf2_vi */
-0xa603a077, /* vaesz_vs */
-0x24003057, /* vand_vi */
-0x24000057, /* vand_vv */
-0x24004057, /* vand_vx */
-0x4000057, /* vandn_vv */
-0x4004057, /* vandn_vx */
-0x2c002057, /* vasub_vv */
-0x2c006057, /* vasub_vx */
-0x28002057, /* vasubu_vv */
-0x28006057, /* vasubu_vx */
-0x48042057, /* vbrev8_v */
-0x48052057, /* vbrev_v */
-0x30002057, /* vclmul_vv */
-0x30006057, /* vclmul_vx */
-0x34002057, /* vclmulh_vv */
-0x34006057, /* vclmulh_vx */
-0x48062057, /* vclz_v */
-0x5e002057, /* vcompress_vm */
-0x40082057, /* vcpop_m */
-0x48072057, /* vcpop_v */
-0x4806a057, /* vctz_v */
-0x84002057, /* vdiv_vv */
-0x84006057, /* vdiv_vx */
-0x80002057, /* vdivu_vv */
-0x80006057, /* vdivu_vx */
-0x5057, /* vfadd_vf */
-0x1057, /* vfadd_vv */
-0x4c081057, /* vfclass_v */
-0x48019057, /* vfcvt_f_x_v */
-0x48011057, /* vfcvt_f_xu_v */
-0x48039057, /* vfcvt_rtz_x_f_v */
-0x48031057, /* vfcvt_rtz_xu_f_v */
-0x48009057, /* vfcvt_x_f_v */
-0x48001057, /* vfcvt_xu_f_v */
-0x80005057, /* vfdiv_vf */
-0x80001057, /* vfdiv_vv */
-0x4008a057, /* vfirst_m */
-0xb0005057, /* vfmacc_vf */
-0xb0001057, /* vfmacc_vv */
-0xa0005057, /* vfmadd_vf */
-0xa0001057, /* vfmadd_vv */
-0x18005057, /* vfmax_vf */
-0x18001057, /* vfmax_vv */
-0x5c005057, /* vfmerge_vfm */
-0x10005057, /* vfmin_vf */
-0x10001057, /* vfmin_vv */
-0xb8005057, /* vfmsac_vf */
-0xb8001057, /* vfmsac_vv */
-0xa8005057, /* vfmsub_vf */
-0xa8001057, /* vfmsub_vv */
-0x90005057, /* vfmul_vf */
-0x90001057, /* vfmul_vv */
-0x42001057, /* vfmv_f_s */
-0x42005057, /* vfmv_s_f */
-0x5e005057, /* vfmv_v_f */
-0x480a1057, /* vfncvt_f_f_w */
-0x48099057, /* vfncvt_f_x_w */
-0x48091057, /* vfncvt_f_xu_w */
-0x480a9057, /* vfncvt_rod_f_f_w */
-0x480b9057, /* vfncvt_rtz_x_f_w */
-0x480b1057, /* vfncvt_rtz_xu_f_w */
-0x48089057, /* vfncvt_x_f_w */
-0x48081057, /* vfncvt_xu_f_w */
-0xb4005057, /* vfnmacc_vf */
-0xb4001057, /* vfnmacc_vv */
-0xa4005057, /* vfnmadd_vf */
-0xa4001057, /* vfnmadd_vv */
-0xbc005057, /* vfnmsac_vf */
-0xbc001057, /* vfnmsac_vv */
-0xac005057, /* vfnmsub_vf */
-0xac001057, /* vfnmsub_vv */
-0x84005057, /* vfrdiv_vf */
-0x4c029057, /* vfrec7_v */
-0x1c001057, /* vfredmax_vs */
-0x14001057, /* vfredmin_vs */
-0xc001057, /* vfredosum_vs */
-0x4001057, /* vfredsum_vs */
-0x4001057, /* vfredusum_vs */
-0x4c021057, /* vfrsqrt7_v */
-0x9c005057, /* vfrsub_vf */
-0x20005057, /* vfsgnj_vf */
-0x20001057, /* vfsgnj_vv */
-0x24005057, /* vfsgnjn_vf */
-0x24001057, /* vfsgnjn_vv */
-0x28005057, /* vfsgnjx_vf */
-0x28001057, /* vfsgnjx_vv */
-0x3c005057, /* vfslide1down_vf */
-0x38005057, /* vfslide1up_vf */
-0x4c001057, /* vfsqrt_v */
-0x8005057, /* vfsub_vf */
-0x8001057, /* vfsub_vv */
-0xc0005057, /* vfwadd_vf */
-0xc0001057, /* vfwadd_vv */
-0xd0005057, /* vfwadd_wf */
-0xd0001057, /* vfwadd_wv */
-0x48061057, /* vfwcvt_f_f_v */
-0x48059057, /* vfwcvt_f_x_v */
-0x48051057, /* vfwcvt_f_xu_v */
-0x48079057, /* vfwcvt_rtz_x_f_v */
-0x48071057, /* vfwcvt_rtz_xu_f_v */
-0x48049057, /* vfwcvt_x_f_v */
-0x48041057, /* vfwcvt_xu_f_v */
-0xf0005057, /* vfwmacc_vf */
-0xf0001057, /* vfwmacc_vv */
-0xf8005057, /* vfwmsac_vf */
-0xf8001057, /* vfwmsac_vv */
-0xe0005057, /* vfwmul_vf */
-0xe0001057, /* vfwmul_vv */
-0xf4005057, /* vfwnmacc_vf */
-0xf4001057, /* vfwnmacc_vv */
-0xfc005057, /* vfwnmsac_vf */
-0xfc001057, /* vfwnmsac_vv */
-0xcc001057, /* vfwredosum_vs */
-0xc4001057, /* vfwredsum_vs */
-0xc4001057, /* vfwredusum_vs */
-0xc8005057, /* vfwsub_vf */
-0xc8001057, /* vfwsub_vv */
-0xd8005057, /* vfwsub_wf */
-0xd8001057, /* vfwsub_wv */
-0xb2002077, /* vghsh_vv */
-0xa208a077, /* vgmul_vv */
-0x5008a057, /* vid_v */
-0x50082057, /* viota_m */
-0x2800007, /* vl1r_v */
-0x2805007, /* vl1re16_v */
-0x2806007, /* vl1re32_v */
-0x2807007, /* vl1re64_v */
-0x2800007, /* vl1re8_v */
-0x22800007, /* vl2r_v */
-0x22805007, /* vl2re16_v */
-0x22806007, /* vl2re32_v */
-0x22807007, /* vl2re64_v */
-0x22800007, /* vl2re8_v */
-0x62800007, /* vl4r_v */
-0x62805007, /* vl4re16_v */
-0x62806007, /* vl4re32_v */
-0x62807007, /* vl4re64_v */
-0x62800007, /* vl4re8_v */
-0xe2800007, /* vl8r_v */
-0xe2805007, /* vl8re16_v */
-0xe2806007, /* vl8re32_v */
-0xe2807007, /* vl8re64_v */
-0xe2800007, /* vl8re8_v */
-0x5007, /* vle16_v */
-0x1005007, /* vle16ff_v */
-0x2b00007, /* vle1_v */
-0x6007, /* vle32_v */
-0x1006007, /* vle32ff_v */
-0x7007, /* vle64_v */
-0x1007007, /* vle64ff_v */
-0x7, /* vle8_v */
-0x1000007, /* vle8ff_v */
-0x2b00007, /* vlm_v */
-0xc005007, /* vloxei16_v */
-0xc006007, /* vloxei32_v */
-0xc007007, /* vloxei64_v */
-0xc000007, /* vloxei8_v */
-0x8005007, /* vlse16_v */
-0x8006007, /* vlse32_v */
-0x8007007, /* vlse64_v */
-0x8000007, /* vlse8_v */
-0x4005007, /* vluxei16_v */
-0x4006007, /* vluxei32_v */
-0x4007007, /* vluxei64_v */
-0x4000007, /* vluxei8_v */
-0xb4002057, /* vmacc_vv */
-0xb4006057, /* vmacc_vx */
-0x46003057, /* vmadc_vi */
-0x44003057, /* vmadc_vim */
-0x46000057, /* vmadc_vv */
-0x44000057, /* vmadc_vvm */
-0x46004057, /* vmadc_vx */
-0x44004057, /* vmadc_vxm */
-0xa4002057, /* vmadd_vv */
-0xa4006057, /* vmadd_vx */
-0x66002057, /* vmand_mm */
-0x62002057, /* vmandn_mm */
-0x60002057, /* vmandnot_mm */
-0x1c000057, /* vmax_vv */
-0x1c004057, /* vmax_vx */
-0x18000057, /* vmaxu_vv */
-0x18004057, /* vmaxu_vx */
-0x5c003057, /* vmerge_vim */
-0x5c000057, /* vmerge_vvm */
-0x5c004057, /* vmerge_vxm */
-0x60005057, /* vmfeq_vf */
-0x60001057, /* vmfeq_vv */
-0x7c005057, /* vmfge_vf */
-0x74005057, /* vmfgt_vf */
-0x64005057, /* vmfle_vf */
-0x64001057, /* vmfle_vv */
-0x6c005057, /* vmflt_vf */
-0x6c001057, /* vmflt_vv */
-0x70005057, /* vmfne_vf */
-0x70001057, /* vmfne_vv */
-0x14000057, /* vmin_vv */
-0x14004057, /* vmin_vx */
-0x10000057, /* vminu_vv */
-0x10004057, /* vminu_vx */
-0x76002057, /* vmnand_mm */
-0x7a002057, /* vmnor_mm */
-0x6a002057, /* vmor_mm */
-0x72002057, /* vmorn_mm */
-0x70002057, /* vmornot_mm */
-0x4e000057, /* vmsbc_vv */
-0x4c000057, /* vmsbc_vvm */
-0x4e004057, /* vmsbc_vx */
-0x4c004057, /* vmsbc_vxm */
-0x5000a057, /* vmsbf_m */
-0x60003057, /* vmseq_vi */
-0x60000057, /* vmseq_vv */
-0x60004057, /* vmseq_vx */
-0x7c003057, /* vmsgt_vi */
-0x7c004057, /* vmsgt_vx */
-0x78003057, /* vmsgtu_vi */
-0x78004057, /* vmsgtu_vx */
-0x5001a057, /* vmsif_m */
-0x74003057, /* vmsle_vi */
-0x74000057, /* vmsle_vv */
-0x74004057, /* vmsle_vx */
-0x70003057, /* vmsleu_vi */
-0x70000057, /* vmsleu_vv */
-0x70004057, /* vmsleu_vx */
-0x6c000057, /* vmslt_vv */
-0x6c004057, /* vmslt_vx */
-0x68000057, /* vmsltu_vv */
-0x68004057, /* vmsltu_vx */
-0x64003057, /* vmsne_vi */
-0x64000057, /* vmsne_vv */
-0x64004057, /* vmsne_vx */
-0x50012057, /* vmsof_m */
-0x94002057, /* vmul_vv */
-0x94006057, /* vmul_vx */
-0x9c002057, /* vmulh_vv */
-0x9c006057, /* vmulh_vx */
-0x98002057, /* vmulhsu_vv */
-0x98006057, /* vmulhsu_vx */
-0x90002057, /* vmulhu_vv */
-0x90006057, /* vmulhu_vx */
-0x9e003057, /* vmv1r_v */
-0x9e00b057, /* vmv2r_v */
-0x9e01b057, /* vmv4r_v */
-0x9e03b057, /* vmv8r_v */
-0x42006057, /* vmv_s_x */
-0x5e003057, /* vmv_v_i */
-0x5e000057, /* vmv_v_v */
-0x5e004057, /* vmv_v_x */
-0x42002057, /* vmv_x_s */
-0x7e002057, /* vmxnor_mm */
-0x6e002057, /* vmxor_mm */
-0xbc003057, /* vnclip_wi */
-0xbc000057, /* vnclip_wv */
-0xbc004057, /* vnclip_wx */
-0xb8003057, /* vnclipu_wi */
-0xb8000057, /* vnclipu_wv */
-0xb8004057, /* vnclipu_wx */
-0xbc002057, /* vnmsac_vv */
-0xbc006057, /* vnmsac_vx */
-0xac002057, /* vnmsub_vv */
-0xac006057, /* vnmsub_vx */
-0xb4003057, /* vnsra_wi */
-0xb4000057, /* vnsra_wv */
-0xb4004057, /* vnsra_wx */
-0xb0003057, /* vnsrl_wi */
-0xb0000057, /* vnsrl_wv */
-0xb0004057, /* vnsrl_wx */
-0x28003057, /* vor_vi */
-0x28000057, /* vor_vv */
-0x28004057, /* vor_vx */
-0x40082057, /* vpopc_m */
-0x4002057, /* vredand_vs */
-0x1c002057, /* vredmax_vs */
-0x18002057, /* vredmaxu_vs */
-0x14002057, /* vredmin_vs */
-0x10002057, /* vredminu_vs */
-0x8002057, /* vredor_vs */
-0x2057, /* vredsum_vs */
-0xc002057, /* vredxor_vs */
-0x8c002057, /* vrem_vv */
-0x8c006057, /* vrem_vx */
-0x88002057, /* vremu_vv */
-0x88006057, /* vremu_vx */
-0x4804a057, /* vrev8_v */
-0x30003057, /* vrgather_vi */
-0x30000057, /* vrgather_vv */
-0x30004057, /* vrgather_vx */
-0x38000057, /* vrgatherei16_vv */
-0x54000057, /* vrol_vv */
-0x54004057, /* vrol_vx */
-0x50003057, /* vror_vi */
-0x50000057, /* vror_vv */
-0x50004057, /* vror_vx */
-0xc003057, /* vrsub_vi */
-0xc004057, /* vrsub_vx */
-0x2800027, /* vs1r_v */
-0x22800027, /* vs2r_v */
-0x62800027, /* vs4r_v */
-0xe2800027, /* vs8r_v */
-0x84003057, /* vsadd_vi */
-0x84000057, /* vsadd_vv */
-0x84004057, /* vsadd_vx */
-0x80003057, /* vsaddu_vi */
-0x80000057, /* vsaddu_vv */
-0x80004057, /* vsaddu_vx */
-0x48000057, /* vsbc_vvm */
-0x48004057, /* vsbc_vxm */
-0x5027, /* vse16_v */
-0x2b00027, /* vse1_v */
-0x6027, /* vse32_v */
-0x7027, /* vse64_v */
-0x27, /* vse8_v */
-0xc0007057, /* vsetivli */
-0x80007057, /* vsetvl */
-0x7057, /* vsetvli */
-0x4803a057, /* vsext_vf2 */
-0x4802a057, /* vsext_vf4 */
-0x4801a057, /* vsext_vf8 */
-0xba002077, /* vsha2ch_vv */
-0xbe002077, /* vsha2cl_vv */
-0xb6002077, /* vsha2ms_vv */
-0x3c006057, /* vslide1down_vx */
-0x38006057, /* vslide1up_vx */
-0x3c003057, /* vslidedown_vi */
-0x3c004057, /* vslidedown_vx */
-0x38003057, /* vslideup_vi */
-0x38004057, /* vslideup_vx */
-0x94003057, /* vsll_vi */
-0x94000057, /* vsll_vv */
-0x94004057, /* vsll_vx */
-0xae002077, /* vsm3c_vi */
-0x82002077, /* vsm3me_vv */
-0x86002077, /* vsm4k_vi */
-0xa6082077, /* vsm4r_vs */
-0xa2082077, /* vsm4r_vv */
-0x2b00027, /* vsm_v */
-0x9c000057, /* vsmul_vv */
-0x9c004057, /* vsmul_vx */
-0xc005027, /* vsoxei16_v */
-0xc006027, /* vsoxei32_v */
-0xc007027, /* vsoxei64_v */
-0xc000027, /* vsoxei8_v */
-0xa4003057, /* vsra_vi */
-0xa4000057, /* vsra_vv */
-0xa4004057, /* vsra_vx */
-0xa0003057, /* vsrl_vi */
-0xa0000057, /* vsrl_vv */
-0xa0004057, /* vsrl_vx */
-0x8005027, /* vsse16_v */
-0x8006027, /* vsse32_v */
-0x8007027, /* vsse64_v */
-0x8000027, /* vsse8_v */
-0xac003057, /* vssra_vi */
-0xac000057, /* vssra_vv */
-0xac004057, /* vssra_vx */
-0xa8003057, /* vssrl_vi */
-0xa8000057, /* vssrl_vv */
-0xa8004057, /* vssrl_vx */
-0x8c000057, /* vssub_vv */
-0x8c004057, /* vssub_vx */
-0x88000057, /* vssubu_vv */
-0x88004057, /* vssubu_vx */
-0x8000057, /* vsub_vv */
-0x8004057, /* vsub_vx */
-0x4005027, /* vsuxei16_v */
-0x4006027, /* vsuxei32_v */
-0x4007027, /* vsuxei64_v */
-0x4000027, /* vsuxei8_v */
-0xc4002057, /* vwadd_vv */
-0xc4006057, /* vwadd_vx */
-0xd4002057, /* vwadd_wv */
-0xd4006057, /* vwadd_wx */
-0xc0002057, /* vwaddu_vv */
-0xc0006057, /* vwaddu_vx */
-0xd0002057, /* vwaddu_wv */
-0xd0006057, /* vwaddu_wx */
-0xf4002057, /* vwmacc_vv */
-0xf4006057, /* vwmacc_vx */
-0xfc002057, /* vwmaccsu_vv */
-0xfc006057, /* vwmaccsu_vx */
-0xf0002057, /* vwmaccu_vv */
-0xf0006057, /* vwmaccu_vx */
-0xf8006057, /* vwmaccus_vx */
-0xec002057, /* vwmul_vv */
-0xec006057, /* vwmul_vx */
-0xe8002057, /* vwmulsu_vv */
-0xe8006057, /* vwmulsu_vx */
-0xe0002057, /* vwmulu_vv */
-0xe0006057, /* vwmulu_vx */
-0xc4000057, /* vwredsum_vs */
-0xc0000057, /* vwredsumu_vs */
-0xd4003057, /* vwsll_vi */
-0xd4000057, /* vwsll_vv */
-0xd4004057, /* vwsll_vx */
-0xcc002057, /* vwsub_vv */
-0xcc006057, /* vwsub_vx */
-0xdc002057, /* vwsub_wv */
-0xdc006057, /* vwsub_wx */
-0xc8002057, /* vwsubu_vv */
-0xc8006057, /* vwsubu_vx */
-0xd8002057, /* vwsubu_wv */
-0xd8006057, /* vwsubu_wx */
-0x2c003057, /* vxor_vi */
-0x2c000057, /* vxor_vv */
-0x2c004057, /* vxor_vx */
-0x48032057, /* vzext_vf2 */
-0x48022057, /* vzext_vf4 */
-0x48012057, /* vzext_vf8 */
-0x10500073, /* wfi */
-0xd00073, /* wrs_nto */
-0x1d00073, /* wrs_sto */
-0x40004033, /* xnor */
-0x4033, /* xor */
-0x4013, /* xori */
-0x28002033, /* xperm4 */
-0x28004033, /* xperm8 */
-0x7013, /* zext_b */
-0xffff_ffff,/* zext_h */
-0x8004033, /* zext_h_rv32 */
-0xffff_ffff,/* zext_w */
-0x8f01013, /* zip */
+    0x33,        /* add */
+    0xffff_ffff, /* add_uw */
+    0x13,        /* addi */
+    0xffff_ffff, /* addiw */
+    0xffff_ffff, /* addw */
+    0x2a000033,  /* aes32dsi */
+    0x2e000033,  /* aes32dsmi */
+    0x22000033,  /* aes32esi */
+    0x26000033,  /* aes32esmi */
+    0xffff_ffff, /* aes64ds */
+    0xffff_ffff, /* aes64dsm */
+    0xffff_ffff, /* aes64es */
+    0xffff_ffff, /* aes64esm */
+    0xffff_ffff, /* aes64im */
+    0xffff_ffff, /* aes64ks1i */
+    0xffff_ffff, /* aes64ks2 */
+    0x2f,        /* amoadd_b */
+    0xffff_ffff, /* amoadd_d */
+    0x102f,      /* amoadd_h */
+    0x202f,      /* amoadd_w */
+    0x6000002f,  /* amoand_b */
+    0xffff_ffff, /* amoand_d */
+    0x6000102f,  /* amoand_h */
+    0x6000202f,  /* amoand_w */
+    0x2800002f,  /* amocas_b */
+    0x2800302f,  /* amocas_d */
+    0x2800102f,  /* amocas_h */
+    0xffff_ffff, /* amocas_q */
+    0x2800202f,  /* amocas_w */
+    0xa000002f,  /* amomax_b */
+    0xffff_ffff, /* amomax_d */
+    0xa000102f,  /* amomax_h */
+    0xa000202f,  /* amomax_w */
+    0xe000002f,  /* amomaxu_b */
+    0xffff_ffff, /* amomaxu_d */
+    0xe000102f,  /* amomaxu_h */
+    0xe000202f,  /* amomaxu_w */
+    0x8000002f,  /* amomin_b */
+    0xffff_ffff, /* amomin_d */
+    0x8000102f,  /* amomin_h */
+    0x8000202f,  /* amomin_w */
+    0xc000002f,  /* amominu_b */
+    0xffff_ffff, /* amominu_d */
+    0xc000102f,  /* amominu_h */
+    0xc000202f,  /* amominu_w */
+    0x4000002f,  /* amoor_b */
+    0xffff_ffff, /* amoor_d */
+    0x4000102f,  /* amoor_h */
+    0x4000202f,  /* amoor_w */
+    0x800002f,   /* amoswap_b */
+    0xffff_ffff, /* amoswap_d */
+    0x800102f,   /* amoswap_h */
+    0x800202f,   /* amoswap_w */
+    0x2000002f,  /* amoxor_b */
+    0xffff_ffff, /* amoxor_d */
+    0x2000102f,  /* amoxor_h */
+    0x2000202f,  /* amoxor_w */
+    0x7033,      /* and */
+    0x7013,      /* andi */
+    0x40007033,  /* andn */
+    0x17,        /* auipc */
+    0x48001033,  /* bclr */
+    0xffff_ffff, /* bclri */
+    0x48001013,  /* bclri_rv32 */
+    0x63,        /* beq */
+    0x63,        /* beqz */
+    0x48005033,  /* bext */
+    0xffff_ffff, /* bexti */
+    0x48005013,  /* bexti_rv32 */
+    0x5063,      /* bge */
+    0x7063,      /* bgeu */
+    0x5063,      /* bgez */
+    0x4063,      /* bgt */
+    0x6063,      /* bgtu */
+    0x4063,      /* bgtz */
+    0x68001033,  /* binv */
+    0xffff_ffff, /* binvi */
+    0x68001013,  /* binvi_rv32 */
+    0x5063,      /* ble */
+    0x7063,      /* bleu */
+    0x5063,      /* blez */
+    0x4063,      /* blt */
+    0x6063,      /* bltu */
+    0x4063,      /* bltz */
+    0x1063,      /* bne */
+    0x1063,      /* bnez */
+    0x68705013,  /* brev8 */
+    0x28001033,  /* bset */
+    0xffff_ffff, /* bseti */
+    0x28001013,  /* bseti_rv32 */
+    0x9002,      /* c_add */
+    0x1,         /* c_addi */
+    0x6101,      /* c_addi16sp */
+    0x0,         /* c_addi4spn */
+    0xffff_ffff, /* c_addiw */
+    0xffff_ffff, /* c_addw */
+    0x8c61,      /* c_and */
+    0x8801,      /* c_andi */
+    0xc001,      /* c_beqz */
+    0xe001,      /* c_bnez */
+    0x9002,      /* c_ebreak */
+    0x2000,      /* c_fld */
+    0x2002,      /* c_fldsp */
+    0x6000,      /* c_flw */
+    0x6002,      /* c_flwsp */
+    0xa000,      /* c_fsd */
+    0xa002,      /* c_fsdsp */
+    0xe000,      /* c_fsw */
+    0xe002,      /* c_fswsp */
+    0xa001,      /* c_j */
+    0x2001,      /* c_jal */
+    0x9002,      /* c_jalr */
+    0x8002,      /* c_jr */
+    0x8000,      /* c_lbu */
+    0xffff_ffff, /* c_ld */
+    0xffff_ffff, /* c_ldsp */
+    0x8440,      /* c_lh */
+    0x8400,      /* c_lhu */
+    0x4001,      /* c_li */
+    0x6001,      /* c_lui */
+    0x4000,      /* c_lw */
+    0x4002,      /* c_lwsp */
+    0x6081,      /* c_mop_1 */
+    0x6581,      /* c_mop_11 */
+    0x6681,      /* c_mop_13 */
+    0x6781,      /* c_mop_15 */
+    0x6181,      /* c_mop_3 */
+    0x6281,      /* c_mop_5 */
+    0x6381,      /* c_mop_7 */
+    0x6481,      /* c_mop_9 */
+    0x6081,      /* c_mop_N */
+    0x9c41,      /* c_mul */
+    0x8002,      /* c_mv */
+    0x1,         /* c_nop */
+    0x9c75,      /* c_not */
+    0x9016,      /* c_ntl_all */
+    0x900a,      /* c_ntl_p1 */
+    0x900e,      /* c_ntl_pall */
+    0x9012,      /* c_ntl_s1 */
+    0x8c41,      /* c_or */
+    0x8800,      /* c_sb */
+    0xffff_ffff, /* c_sd */
+    0xffff_ffff, /* c_sdsp */
+    0x9c65,      /* c_sext_b */
+    0x9c6d,      /* c_sext_h */
+    0xffff_ffff, /* c_sext_w */
+    0x8c00,      /* c_sh */
+    0x2,         /* c_slli */
+    0x2,         /* c_slli_rv32 */
+    0x8401,      /* c_srai */
+    0x8401,      /* c_srai_rv32 */
+    0x8001,      /* c_srli */
+    0x8001,      /* c_srli_rv32 */
+    0x8c01,      /* c_sub */
+    0xffff_ffff, /* c_subw */
+    0xc000,      /* c_sw */
+    0xc002,      /* c_swsp */
+    0x8c21,      /* c_xor */
+    0x9c61,      /* c_zext_b */
+    0x9c69,      /* c_zext_h */
+    0xffff_ffff, /* c_zext_w */
+    0x10200f,    /* cbo_clean */
+    0x20200f,    /* cbo_flush */
+    0x200f,      /* cbo_inval */
+    0x40200f,    /* cbo_zero */
+    0xa001033,   /* clmul */
+    0xa003033,   /* clmulh */
+    0xa002033,   /* clmulr */
+    0x60001013,  /* clz */
+    0xffff_ffff, /* clzw */
+    0xa002,      /* cm_jalt */
+    0xac62,      /* cm_mva01s */
+    0xac22,      /* cm_mvsa01 */
+    0xba02,      /* cm_pop */
+    0xbe02,      /* cm_popret */
+    0xbc02,      /* cm_popretz */
+    0xb802,      /* cm_push */
+    0x60201013,  /* cpop */
+    0xffff_ffff, /* cpopw */
+    0x3073,      /* csrc */
+    0x7073,      /* csrci */
+    0x2073,      /* csrr */
+    0x3073,      /* csrrc */
+    0x7073,      /* csrrci */
+    0x2073,      /* csrrs */
+    0x6073,      /* csrrsi */
+    0x1073,      /* csrrw */
+    0x5073,      /* csrrwi */
+    0x2073,      /* csrs */
+    0x6073,      /* csrsi */
+    0x1073,      /* csrw */
+    0x5073,      /* csrwi */
+    0x60101013,  /* ctz */
+    0xffff_ffff, /* ctzw */
+    0xe005033,   /* czero_eqz */
+    0xe007033,   /* czero_nez */
+    0x2004033,   /* div */
+    0x2005033,   /* divu */
+    0xffff_ffff, /* divuw */
+    0xffff_ffff, /* divw */
+    0x7b200073,  /* dret */
+    0x100073,    /* ebreak */
+    0x73,        /* ecall */
+    0x22002053,  /* fabs_d */
+    0x24002053,  /* fabs_h */
+    0x26002053,  /* fabs_q */
+    0x20002053,  /* fabs_s */
+    0x2000053,   /* fadd_d */
+    0x4000053,   /* fadd_h */
+    0x6000053,   /* fadd_q */
+    0x53,        /* fadd_s */
+    0xe2001053,  /* fclass_d */
+    0xe4001053,  /* fclass_h */
+    0xe6001053,  /* fclass_q */
+    0xe0001053,  /* fclass_s */
+    0x42200053,  /* fcvt_d_h */
+    0xffff_ffff, /* fcvt_d_l */
+    0xffff_ffff, /* fcvt_d_lu */
+    0x42300053,  /* fcvt_d_q */
+    0x42000053,  /* fcvt_d_s */
+    0xd2000053,  /* fcvt_d_w */
+    0xd2100053,  /* fcvt_d_wu */
+    0x44100053,  /* fcvt_h_d */
+    0xffff_ffff, /* fcvt_h_l */
+    0xffff_ffff, /* fcvt_h_lu */
+    0x44300053,  /* fcvt_h_q */
+    0x44000053,  /* fcvt_h_s */
+    0xd4000053,  /* fcvt_h_w */
+    0xd4100053,  /* fcvt_h_wu */
+    0xffff_ffff, /* fcvt_l_d */
+    0xffff_ffff, /* fcvt_l_h */
+    0xffff_ffff, /* fcvt_l_q */
+    0xffff_ffff, /* fcvt_l_s */
+    0xffff_ffff, /* fcvt_lu_d */
+    0xffff_ffff, /* fcvt_lu_h */
+    0xffff_ffff, /* fcvt_lu_q */
+    0xffff_ffff, /* fcvt_lu_s */
+    0x46100053,  /* fcvt_q_d */
+    0x46200053,  /* fcvt_q_h */
+    0xffff_ffff, /* fcvt_q_l */
+    0xffff_ffff, /* fcvt_q_lu */
+    0x46000053,  /* fcvt_q_s */
+    0xd6000053,  /* fcvt_q_w */
+    0xd6100053,  /* fcvt_q_wu */
+    0x40100053,  /* fcvt_s_d */
+    0x40200053,  /* fcvt_s_h */
+    0xffff_ffff, /* fcvt_s_l */
+    0xffff_ffff, /* fcvt_s_lu */
+    0x40300053,  /* fcvt_s_q */
+    0xd0000053,  /* fcvt_s_w */
+    0xd0100053,  /* fcvt_s_wu */
+    0xc2000053,  /* fcvt_w_d */
+    0xc4000053,  /* fcvt_w_h */
+    0xc6000053,  /* fcvt_w_q */
+    0xc0000053,  /* fcvt_w_s */
+    0xc2100053,  /* fcvt_wu_d */
+    0xc4100053,  /* fcvt_wu_h */
+    0xc6100053,  /* fcvt_wu_q */
+    0xc0100053,  /* fcvt_wu_s */
+    0xc2801053,  /* fcvtmod_w_d */
+    0x1a000053,  /* fdiv_d */
+    0x1c000053,  /* fdiv_h */
+    0x1e000053,  /* fdiv_q */
+    0x18000053,  /* fdiv_s */
+    0xf,         /* fence */
+    0x100f,      /* fence_i */
+    0x8330000f,  /* fence_tso */
+    0xa2002053,  /* feq_d */
+    0xa4002053,  /* feq_h */
+    0xa6002053,  /* feq_q */
+    0xa0002053,  /* feq_s */
+    0x3007,      /* fld */
+    0xa2000053,  /* fle_d */
+    0xa4000053,  /* fle_h */
+    0xa6000053,  /* fle_q */
+    0xa0000053,  /* fle_s */
+    0xa2004053,  /* fleq_d */
+    0xa4004053,  /* fleq_h */
+    0xa6004053,  /* fleq_q */
+    0xa0004053,  /* fleq_s */
+    0x1007,      /* flh */
+    0xf2100053,  /* fli_d */
+    0xf4100053,  /* fli_h */
+    0xf6100053,  /* fli_q */
+    0xf0100053,  /* fli_s */
+    0x4007,      /* flq */
+    0xa2001053,  /* flt_d */
+    0xa4001053,  /* flt_h */
+    0xa6001053,  /* flt_q */
+    0xa0001053,  /* flt_s */
+    0xa2005053,  /* fltq_d */
+    0xa4005053,  /* fltq_h */
+    0xa6005053,  /* fltq_q */
+    0xa0005053,  /* fltq_s */
+    0x2007,      /* flw */
+    0x2000043,   /* fmadd_d */
+    0x4000043,   /* fmadd_h */
+    0x6000043,   /* fmadd_q */
+    0x43,        /* fmadd_s */
+    0x2a001053,  /* fmax_d */
+    0x2c001053,  /* fmax_h */
+    0x2e001053,  /* fmax_q */
+    0x28001053,  /* fmax_s */
+    0x2a003053,  /* fmaxm_d */
+    0x2c003053,  /* fmaxm_h */
+    0x2e003053,  /* fmaxm_q */
+    0x28003053,  /* fmaxm_s */
+    0x2a000053,  /* fmin_d */
+    0x2c000053,  /* fmin_h */
+    0x2e000053,  /* fmin_q */
+    0x28000053,  /* fmin_s */
+    0x2a002053,  /* fminm_d */
+    0x2c002053,  /* fminm_h */
+    0x2e002053,  /* fminm_q */
+    0x28002053,  /* fminm_s */
+    0x2000047,   /* fmsub_d */
+    0x4000047,   /* fmsub_h */
+    0x6000047,   /* fmsub_q */
+    0x47,        /* fmsub_s */
+    0x12000053,  /* fmul_d */
+    0x14000053,  /* fmul_h */
+    0x16000053,  /* fmul_q */
+    0x10000053,  /* fmul_s */
+    0x22000053,  /* fmv_d */
+    0xffff_ffff, /* fmv_d_x */
+    0x24000053,  /* fmv_h */
+    0xf4000053,  /* fmv_h_x */
+    0x26000053,  /* fmv_q */
+    0x20000053,  /* fmv_s */
+    0xf0000053,  /* fmv_s_x */
+    0xf0000053,  /* fmv_w_x */
+    0xffff_ffff, /* fmv_x_d */
+    0xe4000053,  /* fmv_x_h */
+    0xe0000053,  /* fmv_x_s */
+    0xe0000053,  /* fmv_x_w */
+    0xe2100053,  /* fmvh_x_d */
+    0xffff_ffff, /* fmvh_x_q */
+    0xb2000053,  /* fmvp_d_x */
+    0xffff_ffff, /* fmvp_q_x */
+    0x22001053,  /* fneg_d */
+    0x24001053,  /* fneg_h */
+    0x26001053,  /* fneg_q */
+    0x20001053,  /* fneg_s */
+    0x200004f,   /* fnmadd_d */
+    0x400004f,   /* fnmadd_h */
+    0x600004f,   /* fnmadd_q */
+    0x4f,        /* fnmadd_s */
+    0x200004b,   /* fnmsub_d */
+    0x400004b,   /* fnmsub_h */
+    0x600004b,   /* fnmsub_q */
+    0x4b,        /* fnmsub_s */
+    0x302073,    /* frcsr */
+    0x102073,    /* frflags */
+    0x42400053,  /* fround_d */
+    0x44400053,  /* fround_h */
+    0x46400053,  /* fround_q */
+    0x40400053,  /* fround_s */
+    0x42500053,  /* froundnx_d */
+    0x44500053,  /* froundnx_h */
+    0x46500053,  /* froundnx_q */
+    0x40500053,  /* froundnx_s */
+    0x202073,    /* frrm */
+    0x301073,    /* fscsr */
+    0x3027,      /* fsd */
+    0x101073,    /* fsflags */
+    0x105073,    /* fsflagsi */
+    0x22000053,  /* fsgnj_d */
+    0x24000053,  /* fsgnj_h */
+    0x26000053,  /* fsgnj_q */
+    0x20000053,  /* fsgnj_s */
+    0x22001053,  /* fsgnjn_d */
+    0x24001053,  /* fsgnjn_h */
+    0x26001053,  /* fsgnjn_q */
+    0x20001053,  /* fsgnjn_s */
+    0x22002053,  /* fsgnjx_d */
+    0x24002053,  /* fsgnjx_h */
+    0x26002053,  /* fsgnjx_q */
+    0x20002053,  /* fsgnjx_s */
+    0x1027,      /* fsh */
+    0x4027,      /* fsq */
+    0x5a000053,  /* fsqrt_d */
+    0x5c000053,  /* fsqrt_h */
+    0x5e000053,  /* fsqrt_q */
+    0x58000053,  /* fsqrt_s */
+    0x201073,    /* fsrm */
+    0x205073,    /* fsrmi */
+    0xa000053,   /* fsub_d */
+    0xc000053,   /* fsub_h */
+    0xe000053,   /* fsub_q */
+    0x8000053,   /* fsub_s */
+    0x2027,      /* fsw */
+    0x62000073,  /* hfence_gvma */
+    0x22000073,  /* hfence_vvma */
+    0x66000073,  /* hinval_gvma */
+    0x26000073,  /* hinval_vvma */
+    0x60004073,  /* hlv_b */
+    0x60104073,  /* hlv_bu */
+    0xffff_ffff, /* hlv_d */
+    0x64004073,  /* hlv_h */
+    0x64104073,  /* hlv_hu */
+    0x68004073,  /* hlv_w */
+    0xffff_ffff, /* hlv_wu */
+    0x64304073,  /* hlvx_hu */
+    0x68304073,  /* hlvx_wu */
+    0x62004073,  /* hsv_b */
+    0xffff_ffff, /* hsv_d */
+    0x66004073,  /* hsv_h */
+    0x6a004073,  /* hsv_w */
+    0x6f,        /* j */
+    0x6f,        /* jal */
+    0xef,        /* jal_pseudo */
+    0x67,        /* jalr */
+    0xe7,        /* jalr_pseudo */
+    0x67,        /* jr */
+    0x3,         /* lb */
+    0x4003,      /* lbu */
+    0xffff_ffff, /* ld */
+    0x1003,      /* lh */
+    0x5003,      /* lhu */
+    0xffff_ffff, /* lr_d */
+    0x1000202f,  /* lr_w */
+    0x37,        /* lui */
+    0x2003,      /* lw */
+    0xffff_ffff, /* lwu */
+    0xa006033,   /* max */
+    0xa007033,   /* maxu */
+    0xa004033,   /* min */
+    0xa005033,   /* minu */
+    0x81c04073,  /* mop_r_0 */
+    0x81d04073,  /* mop_r_1 */
+    0x89e04073,  /* mop_r_10 */
+    0x89f04073,  /* mop_r_11 */
+    0x8dc04073,  /* mop_r_12 */
+    0x8dd04073,  /* mop_r_13 */
+    0x8de04073,  /* mop_r_14 */
+    0x8df04073,  /* mop_r_15 */
+    0xc1c04073,  /* mop_r_16 */
+    0xc1d04073,  /* mop_r_17 */
+    0xc1e04073,  /* mop_r_18 */
+    0xc1f04073,  /* mop_r_19 */
+    0x81e04073,  /* mop_r_2 */
+    0xc5c04073,  /* mop_r_20 */
+    0xc5d04073,  /* mop_r_21 */
+    0xc5e04073,  /* mop_r_22 */
+    0xc5f04073,  /* mop_r_23 */
+    0xc9c04073,  /* mop_r_24 */
+    0xc9d04073,  /* mop_r_25 */
+    0xc9e04073,  /* mop_r_26 */
+    0xc9f04073,  /* mop_r_27 */
+    0xcdc04073,  /* mop_r_28 */
+    0xcdd04073,  /* mop_r_29 */
+    0x81f04073,  /* mop_r_3 */
+    0xcde04073,  /* mop_r_30 */
+    0xcdf04073,  /* mop_r_31 */
+    0x85c04073,  /* mop_r_4 */
+    0x85d04073,  /* mop_r_5 */
+    0x85e04073,  /* mop_r_6 */
+    0x85f04073,  /* mop_r_7 */
+    0x89c04073,  /* mop_r_8 */
+    0x89d04073,  /* mop_r_9 */
+    0x81c04073,  /* mop_r_N */
+    0x82004073,  /* mop_rr_0 */
+    0x86004073,  /* mop_rr_1 */
+    0x8a004073,  /* mop_rr_2 */
+    0x8e004073,  /* mop_rr_3 */
+    0xc2004073,  /* mop_rr_4 */
+    0xc6004073,  /* mop_rr_5 */
+    0xca004073,  /* mop_rr_6 */
+    0xce004073,  /* mop_rr_7 */
+    0x82004073,  /* mop_rr_N */
+    0x30200073,  /* mret */
+    0x2000033,   /* mul */
+    0x2001033,   /* mulh */
+    0x2002033,   /* mulhsu */
+    0x2003033,   /* mulhu */
+    0xffff_ffff, /* mulw */
+    0x13,        /* mv */
+    0x40000033,  /* neg */
+    0x13,        /* nop */
+    0x500033,    /* ntl_all */
+    0x200033,    /* ntl_p1 */
+    0x300033,    /* ntl_pall */
+    0x400033,    /* ntl_s1 */
+    0x6033,      /* or */
+    0x28705013,  /* orc_b */
+    0x6013,      /* ori */
+    0x40006033,  /* orn */
+    0x8004033,   /* pack */
+    0x8007033,   /* packh */
+    0xffff_ffff, /* packw */
+    0x100000f,   /* pause */
+    0x6013,      /* prefetch_i */
+    0x106013,    /* prefetch_r */
+    0x306013,    /* prefetch_w */
+    0xc0002073,  /* rdcycle */
+    0xc8002073,  /* rdcycleh */
+    0xc0202073,  /* rdinstret */
+    0xc8202073,  /* rdinstreth */
+    0xc0102073,  /* rdtime */
+    0xc8102073,  /* rdtimeh */
+    0x2006033,   /* rem */
+    0x2007033,   /* remu */
+    0xffff_ffff, /* remuw */
+    0xffff_ffff, /* remw */
+    0x8067,      /* ret */
+    0xffff_ffff, /* rev8 */
+    0x69805013,  /* rev8_rv32 */
+    0x60001033,  /* rol */
+    0xffff_ffff, /* rolw */
+    0x60005033,  /* ror */
+    0xffff_ffff, /* rori */
+    0x60005013,  /* rori_rv32 */
+    0xffff_ffff, /* roriw */
+    0xffff_ffff, /* rorw */
+    0x23,        /* sb */
+    0x100073,    /* sbreak */
+    0xffff_ffff, /* sc_d */
+    0x1800202f,  /* sc_w */
+    0x73,        /* scall */
+    0xffff_ffff, /* sd */
+    0x103013,    /* seqz */
+    0x60401013,  /* sext_b */
+    0x60501013,  /* sext_h */
+    0xffff_ffff, /* sext_w */
+    0x18100073,  /* sfence_inval_ir */
+    0x12000073,  /* sfence_vma */
+    0x18000073,  /* sfence_w_inval */
+    0x2033,      /* sgtz */
+    0x1023,      /* sh */
+    0x20002033,  /* sh1add */
+    0xffff_ffff, /* sh1add_uw */
+    0x20004033,  /* sh2add */
+    0xffff_ffff, /* sh2add_uw */
+    0x20006033,  /* sh3add */
+    0xffff_ffff, /* sh3add_uw */
+    0x10201013,  /* sha256sig0 */
+    0x10301013,  /* sha256sig1 */
+    0x10001013,  /* sha256sum0 */
+    0x10101013,  /* sha256sum1 */
+    0xffff_ffff, /* sha512sig0 */
+    0x5c000033,  /* sha512sig0h */
+    0x54000033,  /* sha512sig0l */
+    0xffff_ffff, /* sha512sig1 */
+    0x5e000033,  /* sha512sig1h */
+    0x56000033,  /* sha512sig1l */
+    0xffff_ffff, /* sha512sum0 */
+    0x50000033,  /* sha512sum0r */
+    0xffff_ffff, /* sha512sum1 */
+    0x52000033,  /* sha512sum1r */
+    0x16000073,  /* sinval_vma */
+    0x1033,      /* sll */
+    0x1013,      /* slli */
+    0x1013,      /* slli_rv32 */
+    0xffff_ffff, /* slli_uw */
+    0xffff_ffff, /* slliw */
+    0xffff_ffff, /* sllw */
+    0x2033,      /* slt */
+    0x2013,      /* slti */
+    0x3013,      /* sltiu */
+    0x3033,      /* sltu */
+    0x2033,      /* sltz */
+    0x10801013,  /* sm3p0 */
+    0x10901013,  /* sm3p1 */
+    0x30000033,  /* sm4ed */
+    0x34000033,  /* sm4ks */
+    0x3033,      /* snez */
+    0x40005033,  /* sra */
+    0x40005013,  /* srai */
+    0x40005013,  /* srai_rv32 */
+    0xffff_ffff, /* sraiw */
+    0xffff_ffff, /* sraw */
+    0x10200073,  /* sret */
+    0x5033,      /* srl */
+    0x5013,      /* srli */
+    0x5013,      /* srli_rv32 */
+    0xffff_ffff, /* srliw */
+    0xffff_ffff, /* srlw */
+    0x40000033,  /* sub */
+    0xffff_ffff, /* subw */
+    0x2023,      /* sw */
+    0x8f05013,   /* unzip */
+    0x24002057,  /* vaadd_vv */
+    0x24006057,  /* vaadd_vx */
+    0x20002057,  /* vaaddu_vv */
+    0x20006057,  /* vaaddu_vx */
+    0x40003057,  /* vadc_vim */
+    0x40000057,  /* vadc_vvm */
+    0x40004057,  /* vadc_vxm */
+    0x3057,      /* vadd_vi */
+    0x57,        /* vadd_vv */
+    0x4057,      /* vadd_vx */
+    0xa600a077,  /* vaesdf_vs */
+    0xa200a077,  /* vaesdf_vv */
+    0xa6002077,  /* vaesdm_vs */
+    0xa2002077,  /* vaesdm_vv */
+    0xa601a077,  /* vaesef_vs */
+    0xa201a077,  /* vaesef_vv */
+    0xa6012077,  /* vaesem_vs */
+    0xa2012077,  /* vaesem_vv */
+    0x8a002077,  /* vaeskf1_vi */
+    0xaa002077,  /* vaeskf2_vi */
+    0xa603a077,  /* vaesz_vs */
+    0x24003057,  /* vand_vi */
+    0x24000057,  /* vand_vv */
+    0x24004057,  /* vand_vx */
+    0x4000057,   /* vandn_vv */
+    0x4004057,   /* vandn_vx */
+    0x2c002057,  /* vasub_vv */
+    0x2c006057,  /* vasub_vx */
+    0x28002057,  /* vasubu_vv */
+    0x28006057,  /* vasubu_vx */
+    0x48042057,  /* vbrev8_v */
+    0x48052057,  /* vbrev_v */
+    0x30002057,  /* vclmul_vv */
+    0x30006057,  /* vclmul_vx */
+    0x34002057,  /* vclmulh_vv */
+    0x34006057,  /* vclmulh_vx */
+    0x48062057,  /* vclz_v */
+    0x5e002057,  /* vcompress_vm */
+    0x40082057,  /* vcpop_m */
+    0x48072057,  /* vcpop_v */
+    0x4806a057,  /* vctz_v */
+    0x84002057,  /* vdiv_vv */
+    0x84006057,  /* vdiv_vx */
+    0x80002057,  /* vdivu_vv */
+    0x80006057,  /* vdivu_vx */
+    0x5057,      /* vfadd_vf */
+    0x1057,      /* vfadd_vv */
+    0x4c081057,  /* vfclass_v */
+    0x48019057,  /* vfcvt_f_x_v */
+    0x48011057,  /* vfcvt_f_xu_v */
+    0x48039057,  /* vfcvt_rtz_x_f_v */
+    0x48031057,  /* vfcvt_rtz_xu_f_v */
+    0x48009057,  /* vfcvt_x_f_v */
+    0x48001057,  /* vfcvt_xu_f_v */
+    0x80005057,  /* vfdiv_vf */
+    0x80001057,  /* vfdiv_vv */
+    0x4008a057,  /* vfirst_m */
+    0xb0005057,  /* vfmacc_vf */
+    0xb0001057,  /* vfmacc_vv */
+    0xa0005057,  /* vfmadd_vf */
+    0xa0001057,  /* vfmadd_vv */
+    0x18005057,  /* vfmax_vf */
+    0x18001057,  /* vfmax_vv */
+    0x5c005057,  /* vfmerge_vfm */
+    0x10005057,  /* vfmin_vf */
+    0x10001057,  /* vfmin_vv */
+    0xb8005057,  /* vfmsac_vf */
+    0xb8001057,  /* vfmsac_vv */
+    0xa8005057,  /* vfmsub_vf */
+    0xa8001057,  /* vfmsub_vv */
+    0x90005057,  /* vfmul_vf */
+    0x90001057,  /* vfmul_vv */
+    0x42001057,  /* vfmv_f_s */
+    0x42005057,  /* vfmv_s_f */
+    0x5e005057,  /* vfmv_v_f */
+    0x480a1057,  /* vfncvt_f_f_w */
+    0x48099057,  /* vfncvt_f_x_w */
+    0x48091057,  /* vfncvt_f_xu_w */
+    0x480a9057,  /* vfncvt_rod_f_f_w */
+    0x480b9057,  /* vfncvt_rtz_x_f_w */
+    0x480b1057,  /* vfncvt_rtz_xu_f_w */
+    0x48089057,  /* vfncvt_x_f_w */
+    0x48081057,  /* vfncvt_xu_f_w */
+    0xb4005057,  /* vfnmacc_vf */
+    0xb4001057,  /* vfnmacc_vv */
+    0xa4005057,  /* vfnmadd_vf */
+    0xa4001057,  /* vfnmadd_vv */
+    0xbc005057,  /* vfnmsac_vf */
+    0xbc001057,  /* vfnmsac_vv */
+    0xac005057,  /* vfnmsub_vf */
+    0xac001057,  /* vfnmsub_vv */
+    0x84005057,  /* vfrdiv_vf */
+    0x4c029057,  /* vfrec7_v */
+    0x1c001057,  /* vfredmax_vs */
+    0x14001057,  /* vfredmin_vs */
+    0xc001057,   /* vfredosum_vs */
+    0x4001057,   /* vfredsum_vs */
+    0x4001057,   /* vfredusum_vs */
+    0x4c021057,  /* vfrsqrt7_v */
+    0x9c005057,  /* vfrsub_vf */
+    0x20005057,  /* vfsgnj_vf */
+    0x20001057,  /* vfsgnj_vv */
+    0x24005057,  /* vfsgnjn_vf */
+    0x24001057,  /* vfsgnjn_vv */
+    0x28005057,  /* vfsgnjx_vf */
+    0x28001057,  /* vfsgnjx_vv */
+    0x3c005057,  /* vfslide1down_vf */
+    0x38005057,  /* vfslide1up_vf */
+    0x4c001057,  /* vfsqrt_v */
+    0x8005057,   /* vfsub_vf */
+    0x8001057,   /* vfsub_vv */
+    0xc0005057,  /* vfwadd_vf */
+    0xc0001057,  /* vfwadd_vv */
+    0xd0005057,  /* vfwadd_wf */
+    0xd0001057,  /* vfwadd_wv */
+    0x48061057,  /* vfwcvt_f_f_v */
+    0x48059057,  /* vfwcvt_f_x_v */
+    0x48051057,  /* vfwcvt_f_xu_v */
+    0x48079057,  /* vfwcvt_rtz_x_f_v */
+    0x48071057,  /* vfwcvt_rtz_xu_f_v */
+    0x48049057,  /* vfwcvt_x_f_v */
+    0x48041057,  /* vfwcvt_xu_f_v */
+    0xf0005057,  /* vfwmacc_vf */
+    0xf0001057,  /* vfwmacc_vv */
+    0xf8005057,  /* vfwmsac_vf */
+    0xf8001057,  /* vfwmsac_vv */
+    0xe0005057,  /* vfwmul_vf */
+    0xe0001057,  /* vfwmul_vv */
+    0xf4005057,  /* vfwnmacc_vf */
+    0xf4001057,  /* vfwnmacc_vv */
+    0xfc005057,  /* vfwnmsac_vf */
+    0xfc001057,  /* vfwnmsac_vv */
+    0xcc001057,  /* vfwredosum_vs */
+    0xc4001057,  /* vfwredsum_vs */
+    0xc4001057,  /* vfwredusum_vs */
+    0xc8005057,  /* vfwsub_vf */
+    0xc8001057,  /* vfwsub_vv */
+    0xd8005057,  /* vfwsub_wf */
+    0xd8001057,  /* vfwsub_wv */
+    0xb2002077,  /* vghsh_vv */
+    0xa208a077,  /* vgmul_vv */
+    0x5008a057,  /* vid_v */
+    0x50082057,  /* viota_m */
+    0x2800007,   /* vl1r_v */
+    0x2805007,   /* vl1re16_v */
+    0x2806007,   /* vl1re32_v */
+    0x2807007,   /* vl1re64_v */
+    0x2800007,   /* vl1re8_v */
+    0x22800007,  /* vl2r_v */
+    0x22805007,  /* vl2re16_v */
+    0x22806007,  /* vl2re32_v */
+    0x22807007,  /* vl2re64_v */
+    0x22800007,  /* vl2re8_v */
+    0x62800007,  /* vl4r_v */
+    0x62805007,  /* vl4re16_v */
+    0x62806007,  /* vl4re32_v */
+    0x62807007,  /* vl4re64_v */
+    0x62800007,  /* vl4re8_v */
+    0xe2800007,  /* vl8r_v */
+    0xe2805007,  /* vl8re16_v */
+    0xe2806007,  /* vl8re32_v */
+    0xe2807007,  /* vl8re64_v */
+    0xe2800007,  /* vl8re8_v */
+    0x5007,      /* vle16_v */
+    0x1005007,   /* vle16ff_v */
+    0x2b00007,   /* vle1_v */
+    0x6007,      /* vle32_v */
+    0x1006007,   /* vle32ff_v */
+    0x7007,      /* vle64_v */
+    0x1007007,   /* vle64ff_v */
+    0x7,         /* vle8_v */
+    0x1000007,   /* vle8ff_v */
+    0x2b00007,   /* vlm_v */
+    0xc005007,   /* vloxei16_v */
+    0xc006007,   /* vloxei32_v */
+    0xc007007,   /* vloxei64_v */
+    0xc000007,   /* vloxei8_v */
+    0x8005007,   /* vlse16_v */
+    0x8006007,   /* vlse32_v */
+    0x8007007,   /* vlse64_v */
+    0x8000007,   /* vlse8_v */
+    0x4005007,   /* vluxei16_v */
+    0x4006007,   /* vluxei32_v */
+    0x4007007,   /* vluxei64_v */
+    0x4000007,   /* vluxei8_v */
+    0xb4002057,  /* vmacc_vv */
+    0xb4006057,  /* vmacc_vx */
+    0x46003057,  /* vmadc_vi */
+    0x44003057,  /* vmadc_vim */
+    0x46000057,  /* vmadc_vv */
+    0x44000057,  /* vmadc_vvm */
+    0x46004057,  /* vmadc_vx */
+    0x44004057,  /* vmadc_vxm */
+    0xa4002057,  /* vmadd_vv */
+    0xa4006057,  /* vmadd_vx */
+    0x66002057,  /* vmand_mm */
+    0x62002057,  /* vmandn_mm */
+    0x60002057,  /* vmandnot_mm */
+    0x1c000057,  /* vmax_vv */
+    0x1c004057,  /* vmax_vx */
+    0x18000057,  /* vmaxu_vv */
+    0x18004057,  /* vmaxu_vx */
+    0x5c003057,  /* vmerge_vim */
+    0x5c000057,  /* vmerge_vvm */
+    0x5c004057,  /* vmerge_vxm */
+    0x60005057,  /* vmfeq_vf */
+    0x60001057,  /* vmfeq_vv */
+    0x7c005057,  /* vmfge_vf */
+    0x74005057,  /* vmfgt_vf */
+    0x64005057,  /* vmfle_vf */
+    0x64001057,  /* vmfle_vv */
+    0x6c005057,  /* vmflt_vf */
+    0x6c001057,  /* vmflt_vv */
+    0x70005057,  /* vmfne_vf */
+    0x70001057,  /* vmfne_vv */
+    0x14000057,  /* vmin_vv */
+    0x14004057,  /* vmin_vx */
+    0x10000057,  /* vminu_vv */
+    0x10004057,  /* vminu_vx */
+    0x76002057,  /* vmnand_mm */
+    0x7a002057,  /* vmnor_mm */
+    0x6a002057,  /* vmor_mm */
+    0x72002057,  /* vmorn_mm */
+    0x70002057,  /* vmornot_mm */
+    0x4e000057,  /* vmsbc_vv */
+    0x4c000057,  /* vmsbc_vvm */
+    0x4e004057,  /* vmsbc_vx */
+    0x4c004057,  /* vmsbc_vxm */
+    0x5000a057,  /* vmsbf_m */
+    0x60003057,  /* vmseq_vi */
+    0x60000057,  /* vmseq_vv */
+    0x60004057,  /* vmseq_vx */
+    0x7c003057,  /* vmsgt_vi */
+    0x7c004057,  /* vmsgt_vx */
+    0x78003057,  /* vmsgtu_vi */
+    0x78004057,  /* vmsgtu_vx */
+    0x5001a057,  /* vmsif_m */
+    0x74003057,  /* vmsle_vi */
+    0x74000057,  /* vmsle_vv */
+    0x74004057,  /* vmsle_vx */
+    0x70003057,  /* vmsleu_vi */
+    0x70000057,  /* vmsleu_vv */
+    0x70004057,  /* vmsleu_vx */
+    0x6c000057,  /* vmslt_vv */
+    0x6c004057,  /* vmslt_vx */
+    0x68000057,  /* vmsltu_vv */
+    0x68004057,  /* vmsltu_vx */
+    0x64003057,  /* vmsne_vi */
+    0x64000057,  /* vmsne_vv */
+    0x64004057,  /* vmsne_vx */
+    0x50012057,  /* vmsof_m */
+    0x94002057,  /* vmul_vv */
+    0x94006057,  /* vmul_vx */
+    0x9c002057,  /* vmulh_vv */
+    0x9c006057,  /* vmulh_vx */
+    0x98002057,  /* vmulhsu_vv */
+    0x98006057,  /* vmulhsu_vx */
+    0x90002057,  /* vmulhu_vv */
+    0x90006057,  /* vmulhu_vx */
+    0x9e003057,  /* vmv1r_v */
+    0x9e00b057,  /* vmv2r_v */
+    0x9e01b057,  /* vmv4r_v */
+    0x9e03b057,  /* vmv8r_v */
+    0x42006057,  /* vmv_s_x */
+    0x5e003057,  /* vmv_v_i */
+    0x5e000057,  /* vmv_v_v */
+    0x5e004057,  /* vmv_v_x */
+    0x42002057,  /* vmv_x_s */
+    0x7e002057,  /* vmxnor_mm */
+    0x6e002057,  /* vmxor_mm */
+    0xbc003057,  /* vnclip_wi */
+    0xbc000057,  /* vnclip_wv */
+    0xbc004057,  /* vnclip_wx */
+    0xb8003057,  /* vnclipu_wi */
+    0xb8000057,  /* vnclipu_wv */
+    0xb8004057,  /* vnclipu_wx */
+    0xbc002057,  /* vnmsac_vv */
+    0xbc006057,  /* vnmsac_vx */
+    0xac002057,  /* vnmsub_vv */
+    0xac006057,  /* vnmsub_vx */
+    0xb4003057,  /* vnsra_wi */
+    0xb4000057,  /* vnsra_wv */
+    0xb4004057,  /* vnsra_wx */
+    0xb0003057,  /* vnsrl_wi */
+    0xb0000057,  /* vnsrl_wv */
+    0xb0004057,  /* vnsrl_wx */
+    0x28003057,  /* vor_vi */
+    0x28000057,  /* vor_vv */
+    0x28004057,  /* vor_vx */
+    0x40082057,  /* vpopc_m */
+    0x4002057,   /* vredand_vs */
+    0x1c002057,  /* vredmax_vs */
+    0x18002057,  /* vredmaxu_vs */
+    0x14002057,  /* vredmin_vs */
+    0x10002057,  /* vredminu_vs */
+    0x8002057,   /* vredor_vs */
+    0x2057,      /* vredsum_vs */
+    0xc002057,   /* vredxor_vs */
+    0x8c002057,  /* vrem_vv */
+    0x8c006057,  /* vrem_vx */
+    0x88002057,  /* vremu_vv */
+    0x88006057,  /* vremu_vx */
+    0x4804a057,  /* vrev8_v */
+    0x30003057,  /* vrgather_vi */
+    0x30000057,  /* vrgather_vv */
+    0x30004057,  /* vrgather_vx */
+    0x38000057,  /* vrgatherei16_vv */
+    0x54000057,  /* vrol_vv */
+    0x54004057,  /* vrol_vx */
+    0x50003057,  /* vror_vi */
+    0x50000057,  /* vror_vv */
+    0x50004057,  /* vror_vx */
+    0xc003057,   /* vrsub_vi */
+    0xc004057,   /* vrsub_vx */
+    0x2800027,   /* vs1r_v */
+    0x22800027,  /* vs2r_v */
+    0x62800027,  /* vs4r_v */
+    0xe2800027,  /* vs8r_v */
+    0x84003057,  /* vsadd_vi */
+    0x84000057,  /* vsadd_vv */
+    0x84004057,  /* vsadd_vx */
+    0x80003057,  /* vsaddu_vi */
+    0x80000057,  /* vsaddu_vv */
+    0x80004057,  /* vsaddu_vx */
+    0x48000057,  /* vsbc_vvm */
+    0x48004057,  /* vsbc_vxm */
+    0x5027,      /* vse16_v */
+    0x2b00027,   /* vse1_v */
+    0x6027,      /* vse32_v */
+    0x7027,      /* vse64_v */
+    0x27,        /* vse8_v */
+    0xc0007057,  /* vsetivli */
+    0x80007057,  /* vsetvl */
+    0x7057,      /* vsetvli */
+    0x4803a057,  /* vsext_vf2 */
+    0x4802a057,  /* vsext_vf4 */
+    0x4801a057,  /* vsext_vf8 */
+    0xba002077,  /* vsha2ch_vv */
+    0xbe002077,  /* vsha2cl_vv */
+    0xb6002077,  /* vsha2ms_vv */
+    0x3c006057,  /* vslide1down_vx */
+    0x38006057,  /* vslide1up_vx */
+    0x3c003057,  /* vslidedown_vi */
+    0x3c004057,  /* vslidedown_vx */
+    0x38003057,  /* vslideup_vi */
+    0x38004057,  /* vslideup_vx */
+    0x94003057,  /* vsll_vi */
+    0x94000057,  /* vsll_vv */
+    0x94004057,  /* vsll_vx */
+    0xae002077,  /* vsm3c_vi */
+    0x82002077,  /* vsm3me_vv */
+    0x86002077,  /* vsm4k_vi */
+    0xa6082077,  /* vsm4r_vs */
+    0xa2082077,  /* vsm4r_vv */
+    0x2b00027,   /* vsm_v */
+    0x9c000057,  /* vsmul_vv */
+    0x9c004057,  /* vsmul_vx */
+    0xc005027,   /* vsoxei16_v */
+    0xc006027,   /* vsoxei32_v */
+    0xc007027,   /* vsoxei64_v */
+    0xc000027,   /* vsoxei8_v */
+    0xa4003057,  /* vsra_vi */
+    0xa4000057,  /* vsra_vv */
+    0xa4004057,  /* vsra_vx */
+    0xa0003057,  /* vsrl_vi */
+    0xa0000057,  /* vsrl_vv */
+    0xa0004057,  /* vsrl_vx */
+    0x8005027,   /* vsse16_v */
+    0x8006027,   /* vsse32_v */
+    0x8007027,   /* vsse64_v */
+    0x8000027,   /* vsse8_v */
+    0xac003057,  /* vssra_vi */
+    0xac000057,  /* vssra_vv */
+    0xac004057,  /* vssra_vx */
+    0xa8003057,  /* vssrl_vi */
+    0xa8000057,  /* vssrl_vv */
+    0xa8004057,  /* vssrl_vx */
+    0x8c000057,  /* vssub_vv */
+    0x8c004057,  /* vssub_vx */
+    0x88000057,  /* vssubu_vv */
+    0x88004057,  /* vssubu_vx */
+    0x8000057,   /* vsub_vv */
+    0x8004057,   /* vsub_vx */
+    0x4005027,   /* vsuxei16_v */
+    0x4006027,   /* vsuxei32_v */
+    0x4007027,   /* vsuxei64_v */
+    0x4000027,   /* vsuxei8_v */
+    0xc4002057,  /* vwadd_vv */
+    0xc4006057,  /* vwadd_vx */
+    0xd4002057,  /* vwadd_wv */
+    0xd4006057,  /* vwadd_wx */
+    0xc0002057,  /* vwaddu_vv */
+    0xc0006057,  /* vwaddu_vx */
+    0xd0002057,  /* vwaddu_wv */
+    0xd0006057,  /* vwaddu_wx */
+    0xf4002057,  /* vwmacc_vv */
+    0xf4006057,  /* vwmacc_vx */
+    0xfc002057,  /* vwmaccsu_vv */
+    0xfc006057,  /* vwmaccsu_vx */
+    0xf0002057,  /* vwmaccu_vv */
+    0xf0006057,  /* vwmaccu_vx */
+    0xf8006057,  /* vwmaccus_vx */
+    0xec002057,  /* vwmul_vv */
+    0xec006057,  /* vwmul_vx */
+    0xe8002057,  /* vwmulsu_vv */
+    0xe8006057,  /* vwmulsu_vx */
+    0xe0002057,  /* vwmulu_vv */
+    0xe0006057,  /* vwmulu_vx */
+    0xc4000057,  /* vwredsum_vs */
+    0xc0000057,  /* vwredsumu_vs */
+    0xd4003057,  /* vwsll_vi */
+    0xd4000057,  /* vwsll_vv */
+    0xd4004057,  /* vwsll_vx */
+    0xcc002057,  /* vwsub_vv */
+    0xcc006057,  /* vwsub_vx */
+    0xdc002057,  /* vwsub_wv */
+    0xdc006057,  /* vwsub_wx */
+    0xc8002057,  /* vwsubu_vv */
+    0xc8006057,  /* vwsubu_vx */
+    0xd8002057,  /* vwsubu_wv */
+    0xd8006057,  /* vwsubu_wx */
+    0x2c003057,  /* vxor_vi */
+    0x2c000057,  /* vxor_vv */
+    0x2c004057,  /* vxor_vx */
+    0x48032057,  /* vzext_vf2 */
+    0x48022057,  /* vzext_vf4 */
+    0x48012057,  /* vzext_vf8 */
+    0x10500073,  /* wfi */
+    0xd00073,    /* wrs_nto */
+    0x1d00073,   /* wrs_sto */
+    0x40004033,  /* xnor */
+    0x4033,      /* xor */
+    0x4013,      /* xori */
+    0x28002033,  /* xperm4 */
+    0x28004033,  /* xperm8 */
+    0x7013,      /* zext_b */
+    0xffff_ffff, /* zext_h */
+    0x8004033,   /* zext_h_rv32 */
+    0xffff_ffff, /* zext_w */
+    0x8f01013,   /* zip */
 ];
 pub static OPCODE32_MASK: [u32; 1021] = [
-0xfe00707f, /* add */
-0xffff_ffff, /* add_uw */
-0x707f, /* addi */
-0xffff_ffff, /* addiw */
-0xffff_ffff, /* addw */
-0x3e00707f, /* aes32dsi */
-0x3e00707f, /* aes32dsmi */
-0x3e00707f, /* aes32esi */
-0x3e00707f, /* aes32esmi */
-0xffff_ffff, /* aes64ds */
-0xffff_ffff, /* aes64dsm */
-0xffff_ffff, /* aes64es */
-0xffff_ffff, /* aes64esm */
-0xffff_ffff, /* aes64im */
-0xffff_ffff, /* aes64ks1i */
-0xffff_ffff, /* aes64ks2 */
-0xf800707f, /* amoadd_b */
-0xffff_ffff, /* amoadd_d */
-0xf800707f, /* amoadd_h */
-0xf800707f, /* amoadd_w */
-0xf800707f, /* amoand_b */
-0xffff_ffff, /* amoand_d */
-0xf800707f, /* amoand_h */
-0xf800707f, /* amoand_w */
-0xf800707f, /* amocas_b */
-0xf800707f, /* amocas_d */
-0xf800707f, /* amocas_h */
-0xffff_ffff, /* amocas_q */
-0xf800707f, /* amocas_w */
-0xf800707f, /* amomax_b */
-0xffff_ffff, /* amomax_d */
-0xf800707f, /* amomax_h */
-0xf800707f, /* amomax_w */
-0xf800707f, /* amomaxu_b */
-0xffff_ffff, /* amomaxu_d */
-0xf800707f, /* amomaxu_h */
-0xf800707f, /* amomaxu_w */
-0xf800707f, /* amomin_b */
-0xffff_ffff, /* amomin_d */
-0xf800707f, /* amomin_h */
-0xf800707f, /* amomin_w */
-0xf800707f, /* amominu_b */
-0xffff_ffff, /* amominu_d */
-0xf800707f, /* amominu_h */
-0xf800707f, /* amominu_w */
-0xf800707f, /* amoor_b */
-0xffff_ffff, /* amoor_d */
-0xf800707f, /* amoor_h */
-0xf800707f, /* amoor_w */
-0xf800707f, /* amoswap_b */
-0xffff_ffff, /* amoswap_d */
-0xf800707f, /* amoswap_h */
-0xf800707f, /* amoswap_w */
-0xf800707f, /* amoxor_b */
-0xffff_ffff, /* amoxor_d */
-0xf800707f, /* amoxor_h */
-0xf800707f, /* amoxor_w */
-0xfe00707f, /* and */
-0x707f, /* andi */
-0xfe00707f, /* andn */
-0x7f, /* auipc */
-0xfe00707f, /* bclr */
-0xffff_ffff, /* bclri */
-0xfe00707f, /* bclri_rv32 */
-0x707f, /* beq */
-0x1f0707f, /* beqz */
-0xfe00707f, /* bext */
-0xffff_ffff, /* bexti */
-0xfe00707f, /* bexti_rv32 */
-0x707f, /* bge */
-0x707f, /* bgeu */
-0x1f0707f, /* bgez */
-0x707f, /* bgt */
-0x707f, /* bgtu */
-0xff07f, /* bgtz */
-0xfe00707f, /* binv */
-0xffff_ffff, /* binvi */
-0xfe00707f, /* binvi_rv32 */
-0x707f, /* ble */
-0x707f, /* bleu */
-0xff07f, /* blez */
-0x707f, /* blt */
-0x707f, /* bltu */
-0x1f0707f, /* bltz */
-0x707f, /* bne */
-0x1f0707f, /* bnez */
-0xfff0707f, /* brev8 */
-0xfe00707f, /* bset */
-0xffff_ffff, /* bseti */
-0xfe00707f, /* bseti_rv32 */
-0xf003, /* c_add */
-0xe003, /* c_addi */
-0xef83, /* c_addi16sp */
-0xe003, /* c_addi4spn */
-0xffff_ffff, /* c_addiw */
-0xffff_ffff, /* c_addw */
-0xfc63, /* c_and */
-0xec03, /* c_andi */
-0xe003, /* c_beqz */
-0xe003, /* c_bnez */
-0xffff, /* c_ebreak */
-0xe003, /* c_fld */
-0xe003, /* c_fldsp */
-0xe003, /* c_flw */
-0xe003, /* c_flwsp */
-0xe003, /* c_fsd */
-0xe003, /* c_fsdsp */
-0xe003, /* c_fsw */
-0xe003, /* c_fswsp */
-0xe003, /* c_j */
-0xe003, /* c_jal */
-0xf07f, /* c_jalr */
-0xf07f, /* c_jr */
-0xfc03, /* c_lbu */
-0xffff_ffff, /* c_ld */
-0xffff_ffff, /* c_ldsp */
-0xfc43, /* c_lh */
-0xfc43, /* c_lhu */
-0xe003, /* c_li */
-0xe003, /* c_lui */
-0xe003, /* c_lw */
-0xe003, /* c_lwsp */
-0xffff, /* c_mop_1 */
-0xffff, /* c_mop_11 */
-0xffff, /* c_mop_13 */
-0xffff, /* c_mop_15 */
-0xffff, /* c_mop_3 */
-0xffff, /* c_mop_5 */
-0xffff, /* c_mop_7 */
-0xffff, /* c_mop_9 */
-0xf8ff, /* c_mop_N */
-0xfc63, /* c_mul */
-0xf003, /* c_mv */
-0xef83, /* c_nop */
-0xfc7f, /* c_not */
-0xffff, /* c_ntl_all */
-0xffff, /* c_ntl_p1 */
-0xffff, /* c_ntl_pall */
-0xffff, /* c_ntl_s1 */
-0xfc63, /* c_or */
-0xfc03, /* c_sb */
-0xffff_ffff, /* c_sd */
-0xffff_ffff, /* c_sdsp */
-0xfc7f, /* c_sext_b */
-0xfc7f, /* c_sext_h */
-0xffff_ffff, /* c_sext_w */
-0xfc43, /* c_sh */
-0xe003, /* c_slli */
-0xf003, /* c_slli_rv32 */
-0xec03, /* c_srai */
-0xfc03, /* c_srai_rv32 */
-0xec03, /* c_srli */
-0xfc03, /* c_srli_rv32 */
-0xfc63, /* c_sub */
-0xffff_ffff, /* c_subw */
-0xe003, /* c_sw */
-0xe003, /* c_swsp */
-0xfc63, /* c_xor */
-0xfc7f, /* c_zext_b */
-0xfc7f, /* c_zext_h */
-0xffff_ffff, /* c_zext_w */
-0xfff07fff, /* cbo_clean */
-0xfff07fff, /* cbo_flush */
-0xfff07fff, /* cbo_inval */
-0xfff07fff, /* cbo_zero */
-0xfe00707f, /* clmul */
-0xfe00707f, /* clmulh */
-0xfe00707f, /* clmulr */
-0xfff0707f, /* clz */
-0xffff_ffff, /* clzw */
-0xfc03, /* cm_jalt */
-0xfc63, /* cm_mva01s */
-0xfc63, /* cm_mvsa01 */
-0xff03, /* cm_pop */
-0xff03, /* cm_popret */
-0xff03, /* cm_popretz */
-0xff03, /* cm_push */
-0xfff0707f, /* cpop */
-0xffff_ffff, /* cpopw */
-0x7fff, /* csrc */
-0x7fff, /* csrci */
-0xff07f, /* csrr */
-0x707f, /* csrrc */
-0x707f, /* csrrci */
-0x707f, /* csrrs */
-0x707f, /* csrrsi */
-0x707f, /* csrrw */
-0x707f, /* csrrwi */
-0x7fff, /* csrs */
-0x7fff, /* csrsi */
-0x7fff, /* csrw */
-0x7fff, /* csrwi */
-0xfff0707f, /* ctz */
-0xffff_ffff, /* ctzw */
-0xfe00707f, /* czero_eqz */
-0xfe00707f, /* czero_nez */
-0xfe00707f, /* div */
-0xfe00707f, /* divu */
-0xffff_ffff, /* divuw */
-0xffff_ffff, /* divw */
-0xffffffff, /* dret */
-0xffffffff, /* ebreak */
-0xffffffff, /* ecall */
-0xfe00707f, /* fabs_d */
-0xfe00707f, /* fabs_h */
-0xfe00707f, /* fabs_q */
-0xfe00707f, /* fabs_s */
-0xfe00007f, /* fadd_d */
-0xfe00007f, /* fadd_h */
-0xfe00007f, /* fadd_q */
-0xfe00007f, /* fadd_s */
-0xfff0707f, /* fclass_d */
-0xfff0707f, /* fclass_h */
-0xfff0707f, /* fclass_q */
-0xfff0707f, /* fclass_s */
-0xfff0007f, /* fcvt_d_h */
-0xffff_ffff, /* fcvt_d_l */
-0xffff_ffff, /* fcvt_d_lu */
-0xfff0007f, /* fcvt_d_q */
-0xfff0007f, /* fcvt_d_s */
-0xfff0007f, /* fcvt_d_w */
-0xfff0007f, /* fcvt_d_wu */
-0xfff0007f, /* fcvt_h_d */
-0xffff_ffff, /* fcvt_h_l */
-0xffff_ffff, /* fcvt_h_lu */
-0xfff0007f, /* fcvt_h_q */
-0xfff0007f, /* fcvt_h_s */
-0xfff0007f, /* fcvt_h_w */
-0xfff0007f, /* fcvt_h_wu */
-0xffff_ffff, /* fcvt_l_d */
-0xffff_ffff, /* fcvt_l_h */
-0xffff_ffff, /* fcvt_l_q */
-0xffff_ffff, /* fcvt_l_s */
-0xffff_ffff, /* fcvt_lu_d */
-0xffff_ffff, /* fcvt_lu_h */
-0xffff_ffff, /* fcvt_lu_q */
-0xffff_ffff, /* fcvt_lu_s */
-0xfff0007f, /* fcvt_q_d */
-0xfff0007f, /* fcvt_q_h */
-0xffff_ffff, /* fcvt_q_l */
-0xffff_ffff, /* fcvt_q_lu */
-0xfff0007f, /* fcvt_q_s */
-0xfff0007f, /* fcvt_q_w */
-0xfff0007f, /* fcvt_q_wu */
-0xfff0007f, /* fcvt_s_d */
-0xfff0007f, /* fcvt_s_h */
-0xffff_ffff, /* fcvt_s_l */
-0xffff_ffff, /* fcvt_s_lu */
-0xfff0007f, /* fcvt_s_q */
-0xfff0007f, /* fcvt_s_w */
-0xfff0007f, /* fcvt_s_wu */
-0xfff0007f, /* fcvt_w_d */
-0xfff0007f, /* fcvt_w_h */
-0xfff0007f, /* fcvt_w_q */
-0xfff0007f, /* fcvt_w_s */
-0xfff0007f, /* fcvt_wu_d */
-0xfff0007f, /* fcvt_wu_h */
-0xfff0007f, /* fcvt_wu_q */
-0xfff0007f, /* fcvt_wu_s */
-0xfff0707f, /* fcvtmod_w_d */
-0xfe00007f, /* fdiv_d */
-0xfe00007f, /* fdiv_h */
-0xfe00007f, /* fdiv_q */
-0xfe00007f, /* fdiv_s */
-0x707f, /* fence */
-0x707f, /* fence_i */
-0xfff0707f, /* fence_tso */
-0xfe00707f, /* feq_d */
-0xfe00707f, /* feq_h */
-0xfe00707f, /* feq_q */
-0xfe00707f, /* feq_s */
-0x707f, /* fld */
-0xfe00707f, /* fle_d */
-0xfe00707f, /* fle_h */
-0xfe00707f, /* fle_q */
-0xfe00707f, /* fle_s */
-0xfe00707f, /* fleq_d */
-0xfe00707f, /* fleq_h */
-0xfe00707f, /* fleq_q */
-0xfe00707f, /* fleq_s */
-0x707f, /* flh */
-0xfff0707f, /* fli_d */
-0xfff0707f, /* fli_h */
-0xfff0707f, /* fli_q */
-0xfff0707f, /* fli_s */
-0x707f, /* flq */
-0xfe00707f, /* flt_d */
-0xfe00707f, /* flt_h */
-0xfe00707f, /* flt_q */
-0xfe00707f, /* flt_s */
-0xfe00707f, /* fltq_d */
-0xfe00707f, /* fltq_h */
-0xfe00707f, /* fltq_q */
-0xfe00707f, /* fltq_s */
-0x707f, /* flw */
-0x600007f, /* fmadd_d */
-0x600007f, /* fmadd_h */
-0x600007f, /* fmadd_q */
-0x600007f, /* fmadd_s */
-0xfe00707f, /* fmax_d */
-0xfe00707f, /* fmax_h */
-0xfe00707f, /* fmax_q */
-0xfe00707f, /* fmax_s */
-0xfe00707f, /* fmaxm_d */
-0xfe00707f, /* fmaxm_h */
-0xfe00707f, /* fmaxm_q */
-0xfe00707f, /* fmaxm_s */
-0xfe00707f, /* fmin_d */
-0xfe00707f, /* fmin_h */
-0xfe00707f, /* fmin_q */
-0xfe00707f, /* fmin_s */
-0xfe00707f, /* fminm_d */
-0xfe00707f, /* fminm_h */
-0xfe00707f, /* fminm_q */
-0xfe00707f, /* fminm_s */
-0x600007f, /* fmsub_d */
-0x600007f, /* fmsub_h */
-0x600007f, /* fmsub_q */
-0x600007f, /* fmsub_s */
-0xfe00007f, /* fmul_d */
-0xfe00007f, /* fmul_h */
-0xfe00007f, /* fmul_q */
-0xfe00007f, /* fmul_s */
-0xfe00707f, /* fmv_d */
-0xffff_ffff, /* fmv_d_x */
-0xfe00707f, /* fmv_h */
-0xfff0707f, /* fmv_h_x */
-0xfe00707f, /* fmv_q */
-0xfe00707f, /* fmv_s */
-0xfff0707f, /* fmv_s_x */
-0xfff0707f, /* fmv_w_x */
-0xffff_ffff, /* fmv_x_d */
-0xfff0707f, /* fmv_x_h */
-0xfff0707f, /* fmv_x_s */
-0xfff0707f, /* fmv_x_w */
-0xfff0707f, /* fmvh_x_d */
-0xffff_ffff, /* fmvh_x_q */
-0xfe00707f, /* fmvp_d_x */
-0xffff_ffff, /* fmvp_q_x */
-0xfe00707f, /* fneg_d */
-0xfe00707f, /* fneg_h */
-0xfe00707f, /* fneg_q */
-0xfe00707f, /* fneg_s */
-0x600007f, /* fnmadd_d */
-0x600007f, /* fnmadd_h */
-0x600007f, /* fnmadd_q */
-0x600007f, /* fnmadd_s */
-0x600007f, /* fnmsub_d */
-0x600007f, /* fnmsub_h */
-0x600007f, /* fnmsub_q */
-0x600007f, /* fnmsub_s */
-0xfffff07f, /* frcsr */
-0xfffff07f, /* frflags */
-0xfff0007f, /* fround_d */
-0xfff0007f, /* fround_h */
-0xfff0007f, /* fround_q */
-0xfff0007f, /* fround_s */
-0xfff0007f, /* froundnx_d */
-0xfff0007f, /* froundnx_h */
-0xfff0007f, /* froundnx_q */
-0xfff0007f, /* froundnx_s */
-0xfffff07f, /* frrm */
-0xfff0707f, /* fscsr */
-0x707f, /* fsd */
-0xfff0707f, /* fsflags */
-0xfff0707f, /* fsflagsi */
-0xfe00707f, /* fsgnj_d */
-0xfe00707f, /* fsgnj_h */
-0xfe00707f, /* fsgnj_q */
-0xfe00707f, /* fsgnj_s */
-0xfe00707f, /* fsgnjn_d */
-0xfe00707f, /* fsgnjn_h */
-0xfe00707f, /* fsgnjn_q */
-0xfe00707f, /* fsgnjn_s */
-0xfe00707f, /* fsgnjx_d */
-0xfe00707f, /* fsgnjx_h */
-0xfe00707f, /* fsgnjx_q */
-0xfe00707f, /* fsgnjx_s */
-0x707f, /* fsh */
-0x707f, /* fsq */
-0xfff0007f, /* fsqrt_d */
-0xfff0007f, /* fsqrt_h */
-0xfff0007f, /* fsqrt_q */
-0xfff0007f, /* fsqrt_s */
-0xfff0707f, /* fsrm */
-0xfff0707f, /* fsrmi */
-0xfe00007f, /* fsub_d */
-0xfe00007f, /* fsub_h */
-0xfe00007f, /* fsub_q */
-0xfe00007f, /* fsub_s */
-0x707f, /* fsw */
-0xfe007fff, /* hfence_gvma */
-0xfe007fff, /* hfence_vvma */
-0xfe007fff, /* hinval_gvma */
-0xfe007fff, /* hinval_vvma */
-0xfff0707f, /* hlv_b */
-0xfff0707f, /* hlv_bu */
-0xffff_ffff, /* hlv_d */
-0xfff0707f, /* hlv_h */
-0xfff0707f, /* hlv_hu */
-0xfff0707f, /* hlv_w */
-0xffff_ffff, /* hlv_wu */
-0xfff0707f, /* hlvx_hu */
-0xfff0707f, /* hlvx_wu */
-0xfe007fff, /* hsv_b */
-0xffff_ffff, /* hsv_d */
-0xfe007fff, /* hsv_h */
-0xfe007fff, /* hsv_w */
-0xfff, /* j */
-0x7f, /* jal */
-0xfff, /* jal_pseudo */
-0x707f, /* jalr */
-0xfff07fff, /* jalr_pseudo */
-0xfff07fff, /* jr */
-0x707f, /* lb */
-0x707f, /* lbu */
-0xffff_ffff, /* ld */
-0x707f, /* lh */
-0x707f, /* lhu */
-0xffff_ffff, /* lr_d */
-0xf9f0707f, /* lr_w */
-0x7f, /* lui */
-0x707f, /* lw */
-0xffff_ffff, /* lwu */
-0xfe00707f, /* max */
-0xfe00707f, /* maxu */
-0xfe00707f, /* min */
-0xfe00707f, /* minu */
-0xfff0707f, /* mop_r_0 */
-0xfff0707f, /* mop_r_1 */
-0xfff0707f, /* mop_r_10 */
-0xfff0707f, /* mop_r_11 */
-0xfff0707f, /* mop_r_12 */
-0xfff0707f, /* mop_r_13 */
-0xfff0707f, /* mop_r_14 */
-0xfff0707f, /* mop_r_15 */
-0xfff0707f, /* mop_r_16 */
-0xfff0707f, /* mop_r_17 */
-0xfff0707f, /* mop_r_18 */
-0xfff0707f, /* mop_r_19 */
-0xfff0707f, /* mop_r_2 */
-0xfff0707f, /* mop_r_20 */
-0xfff0707f, /* mop_r_21 */
-0xfff0707f, /* mop_r_22 */
-0xfff0707f, /* mop_r_23 */
-0xfff0707f, /* mop_r_24 */
-0xfff0707f, /* mop_r_25 */
-0xfff0707f, /* mop_r_26 */
-0xfff0707f, /* mop_r_27 */
-0xfff0707f, /* mop_r_28 */
-0xfff0707f, /* mop_r_29 */
-0xfff0707f, /* mop_r_3 */
-0xfff0707f, /* mop_r_30 */
-0xfff0707f, /* mop_r_31 */
-0xfff0707f, /* mop_r_4 */
-0xfff0707f, /* mop_r_5 */
-0xfff0707f, /* mop_r_6 */
-0xfff0707f, /* mop_r_7 */
-0xfff0707f, /* mop_r_8 */
-0xfff0707f, /* mop_r_9 */
-0xb3c0707f, /* mop_r_N */
-0xfe00707f, /* mop_rr_0 */
-0xfe00707f, /* mop_rr_1 */
-0xfe00707f, /* mop_rr_2 */
-0xfe00707f, /* mop_rr_3 */
-0xfe00707f, /* mop_rr_4 */
-0xfe00707f, /* mop_rr_5 */
-0xfe00707f, /* mop_rr_6 */
-0xfe00707f, /* mop_rr_7 */
-0xb200707f, /* mop_rr_N */
-0xffffffff, /* mret */
-0xfe00707f, /* mul */
-0xfe00707f, /* mulh */
-0xfe00707f, /* mulhsu */
-0xfe00707f, /* mulhu */
-0xffff_ffff, /* mulw */
-0xfff0707f, /* mv */
-0xfff0707f, /* neg */
-0xffffffff, /* nop */
-0xffffffff, /* ntl_all */
-0xffffffff, /* ntl_p1 */
-0xffffffff, /* ntl_pall */
-0xffffffff, /* ntl_s1 */
-0xfe00707f, /* or */
-0xfff0707f, /* orc_b */
-0x707f, /* ori */
-0xfe00707f, /* orn */
-0xfe00707f, /* pack */
-0xfe00707f, /* packh */
-0xffff_ffff, /* packw */
-0xffffffff, /* pause */
-0x1f07fff, /* prefetch_i */
-0x1f07fff, /* prefetch_r */
-0x1f07fff, /* prefetch_w */
-0xfffff07f, /* rdcycle */
-0xfffff07f, /* rdcycleh */
-0xfffff07f, /* rdinstret */
-0xfffff07f, /* rdinstreth */
-0xfffff07f, /* rdtime */
-0xfffff07f, /* rdtimeh */
-0xfe00707f, /* rem */
-0xfe00707f, /* remu */
-0xffff_ffff, /* remuw */
-0xffff_ffff, /* remw */
-0xffffffff, /* ret */
-0xffff_ffff, /* rev8 */
-0xfff0707f, /* rev8_rv32 */
-0xfe00707f, /* rol */
-0xffff_ffff, /* rolw */
-0xfe00707f, /* ror */
-0xffff_ffff, /* rori */
-0xfe00707f, /* rori_rv32 */
-0xffff_ffff, /* roriw */
-0xffff_ffff, /* rorw */
-0x707f, /* sb */
-0xffffffff, /* sbreak */
-0xffff_ffff, /* sc_d */
-0xf800707f, /* sc_w */
-0xffffffff, /* scall */
-0xffff_ffff, /* sd */
-0xfff0707f, /* seqz */
-0xfff0707f, /* sext_b */
-0xfff0707f, /* sext_h */
-0xffff_ffff, /* sext_w */
-0xffffffff, /* sfence_inval_ir */
-0xfe007fff, /* sfence_vma */
-0xffffffff, /* sfence_w_inval */
-0xfe0ff07f, /* sgtz */
-0x707f, /* sh */
-0xfe00707f, /* sh1add */
-0xffff_ffff, /* sh1add_uw */
-0xfe00707f, /* sh2add */
-0xffff_ffff, /* sh2add_uw */
-0xfe00707f, /* sh3add */
-0xffff_ffff, /* sh3add_uw */
-0xfff0707f, /* sha256sig0 */
-0xfff0707f, /* sha256sig1 */
-0xfff0707f, /* sha256sum0 */
-0xfff0707f, /* sha256sum1 */
-0xffff_ffff, /* sha512sig0 */
-0xfe00707f, /* sha512sig0h */
-0xfe00707f, /* sha512sig0l */
-0xffff_ffff, /* sha512sig1 */
-0xfe00707f, /* sha512sig1h */
-0xfe00707f, /* sha512sig1l */
-0xffff_ffff, /* sha512sum0 */
-0xfe00707f, /* sha512sum0r */
-0xffff_ffff, /* sha512sum1 */
-0xfe00707f, /* sha512sum1r */
-0xfe007fff, /* sinval_vma */
-0xfe00707f, /* sll */
-0xfc00707f, /* slli */
-0xfe00707f, /* slli_rv32 */
-0xffff_ffff, /* slli_uw */
-0xffff_ffff, /* slliw */
-0xffff_ffff, /* sllw */
-0xfe00707f, /* slt */
-0x707f, /* slti */
-0x707f, /* sltiu */
-0xfe00707f, /* sltu */
-0xfff0707f, /* sltz */
-0xfff0707f, /* sm3p0 */
-0xfff0707f, /* sm3p1 */
-0x3e00707f, /* sm4ed */
-0x3e00707f, /* sm4ks */
-0xfe0ff07f, /* snez */
-0xfe00707f, /* sra */
-0xfc00707f, /* srai */
-0xfe00707f, /* srai_rv32 */
-0xffff_ffff, /* sraiw */
-0xffff_ffff, /* sraw */
-0xffffffff, /* sret */
-0xfe00707f, /* srl */
-0xfc00707f, /* srli */
-0xfe00707f, /* srli_rv32 */
-0xffff_ffff, /* srliw */
-0xffff_ffff, /* srlw */
-0xfe00707f, /* sub */
-0xffff_ffff, /* subw */
-0x707f, /* sw */
-0xfff0707f, /* unzip */
-0xfc00707f, /* vaadd_vv */
-0xfc00707f, /* vaadd_vx */
-0xfc00707f, /* vaaddu_vv */
-0xfc00707f, /* vaaddu_vx */
-0xfe00707f, /* vadc_vim */
-0xfe00707f, /* vadc_vvm */
-0xfe00707f, /* vadc_vxm */
-0xfc00707f, /* vadd_vi */
-0xfc00707f, /* vadd_vv */
-0xfc00707f, /* vadd_vx */
-0xfe0ff07f, /* vaesdf_vs */
-0xfe0ff07f, /* vaesdf_vv */
-0xfe0ff07f, /* vaesdm_vs */
-0xfe0ff07f, /* vaesdm_vv */
-0xfe0ff07f, /* vaesef_vs */
-0xfe0ff07f, /* vaesef_vv */
-0xfe0ff07f, /* vaesem_vs */
-0xfe0ff07f, /* vaesem_vv */
-0xfe00707f, /* vaeskf1_vi */
-0xfe00707f, /* vaeskf2_vi */
-0xfe0ff07f, /* vaesz_vs */
-0xfc00707f, /* vand_vi */
-0xfc00707f, /* vand_vv */
-0xfc00707f, /* vand_vx */
-0xfc00707f, /* vandn_vv */
-0xfc00707f, /* vandn_vx */
-0xfc00707f, /* vasub_vv */
-0xfc00707f, /* vasub_vx */
-0xfc00707f, /* vasubu_vv */
-0xfc00707f, /* vasubu_vx */
-0xfc0ff07f, /* vbrev8_v */
-0xfc0ff07f, /* vbrev_v */
-0xfc00707f, /* vclmul_vv */
-0xfc00707f, /* vclmul_vx */
-0xfc00707f, /* vclmulh_vv */
-0xfc00707f, /* vclmulh_vx */
-0xfc0ff07f, /* vclz_v */
-0xfe00707f, /* vcompress_vm */
-0xfc0ff07f, /* vcpop_m */
-0xfc0ff07f, /* vcpop_v */
-0xfc0ff07f, /* vctz_v */
-0xfc00707f, /* vdiv_vv */
-0xfc00707f, /* vdiv_vx */
-0xfc00707f, /* vdivu_vv */
-0xfc00707f, /* vdivu_vx */
-0xfc00707f, /* vfadd_vf */
-0xfc00707f, /* vfadd_vv */
-0xfc0ff07f, /* vfclass_v */
-0xfc0ff07f, /* vfcvt_f_x_v */
-0xfc0ff07f, /* vfcvt_f_xu_v */
-0xfc0ff07f, /* vfcvt_rtz_x_f_v */
-0xfc0ff07f, /* vfcvt_rtz_xu_f_v */
-0xfc0ff07f, /* vfcvt_x_f_v */
-0xfc0ff07f, /* vfcvt_xu_f_v */
-0xfc00707f, /* vfdiv_vf */
-0xfc00707f, /* vfdiv_vv */
-0xfc0ff07f, /* vfirst_m */
-0xfc00707f, /* vfmacc_vf */
-0xfc00707f, /* vfmacc_vv */
-0xfc00707f, /* vfmadd_vf */
-0xfc00707f, /* vfmadd_vv */
-0xfc00707f, /* vfmax_vf */
-0xfc00707f, /* vfmax_vv */
-0xfe00707f, /* vfmerge_vfm */
-0xfc00707f, /* vfmin_vf */
-0xfc00707f, /* vfmin_vv */
-0xfc00707f, /* vfmsac_vf */
-0xfc00707f, /* vfmsac_vv */
-0xfc00707f, /* vfmsub_vf */
-0xfc00707f, /* vfmsub_vv */
-0xfc00707f, /* vfmul_vf */
-0xfc00707f, /* vfmul_vv */
-0xfe0ff07f, /* vfmv_f_s */
-0xfff0707f, /* vfmv_s_f */
-0xfff0707f, /* vfmv_v_f */
-0xfc0ff07f, /* vfncvt_f_f_w */
-0xfc0ff07f, /* vfncvt_f_x_w */
-0xfc0ff07f, /* vfncvt_f_xu_w */
-0xfc0ff07f, /* vfncvt_rod_f_f_w */
-0xfc0ff07f, /* vfncvt_rtz_x_f_w */
-0xfc0ff07f, /* vfncvt_rtz_xu_f_w */
-0xfc0ff07f, /* vfncvt_x_f_w */
-0xfc0ff07f, /* vfncvt_xu_f_w */
-0xfc00707f, /* vfnmacc_vf */
-0xfc00707f, /* vfnmacc_vv */
-0xfc00707f, /* vfnmadd_vf */
-0xfc00707f, /* vfnmadd_vv */
-0xfc00707f, /* vfnmsac_vf */
-0xfc00707f, /* vfnmsac_vv */
-0xfc00707f, /* vfnmsub_vf */
-0xfc00707f, /* vfnmsub_vv */
-0xfc00707f, /* vfrdiv_vf */
-0xfc0ff07f, /* vfrec7_v */
-0xfc00707f, /* vfredmax_vs */
-0xfc00707f, /* vfredmin_vs */
-0xfc00707f, /* vfredosum_vs */
-0xfc00707f, /* vfredsum_vs */
-0xfc00707f, /* vfredusum_vs */
-0xfc0ff07f, /* vfrsqrt7_v */
-0xfc00707f, /* vfrsub_vf */
-0xfc00707f, /* vfsgnj_vf */
-0xfc00707f, /* vfsgnj_vv */
-0xfc00707f, /* vfsgnjn_vf */
-0xfc00707f, /* vfsgnjn_vv */
-0xfc00707f, /* vfsgnjx_vf */
-0xfc00707f, /* vfsgnjx_vv */
-0xfc00707f, /* vfslide1down_vf */
-0xfc00707f, /* vfslide1up_vf */
-0xfc0ff07f, /* vfsqrt_v */
-0xfc00707f, /* vfsub_vf */
-0xfc00707f, /* vfsub_vv */
-0xfc00707f, /* vfwadd_vf */
-0xfc00707f, /* vfwadd_vv */
-0xfc00707f, /* vfwadd_wf */
-0xfc00707f, /* vfwadd_wv */
-0xfc0ff07f, /* vfwcvt_f_f_v */
-0xfc0ff07f, /* vfwcvt_f_x_v */
-0xfc0ff07f, /* vfwcvt_f_xu_v */
-0xfc0ff07f, /* vfwcvt_rtz_x_f_v */
-0xfc0ff07f, /* vfwcvt_rtz_xu_f_v */
-0xfc0ff07f, /* vfwcvt_x_f_v */
-0xfc0ff07f, /* vfwcvt_xu_f_v */
-0xfc00707f, /* vfwmacc_vf */
-0xfc00707f, /* vfwmacc_vv */
-0xfc00707f, /* vfwmsac_vf */
-0xfc00707f, /* vfwmsac_vv */
-0xfc00707f, /* vfwmul_vf */
-0xfc00707f, /* vfwmul_vv */
-0xfc00707f, /* vfwnmacc_vf */
-0xfc00707f, /* vfwnmacc_vv */
-0xfc00707f, /* vfwnmsac_vf */
-0xfc00707f, /* vfwnmsac_vv */
-0xfc00707f, /* vfwredosum_vs */
-0xfc00707f, /* vfwredsum_vs */
-0xfc00707f, /* vfwredusum_vs */
-0xfc00707f, /* vfwsub_vf */
-0xfc00707f, /* vfwsub_vv */
-0xfc00707f, /* vfwsub_wf */
-0xfc00707f, /* vfwsub_wv */
-0xfe00707f, /* vghsh_vv */
-0xfe0ff07f, /* vgmul_vv */
-0xfdfff07f, /* vid_v */
-0xfc0ff07f, /* viota_m */
-0xfff0707f, /* vl1r_v */
-0xfff0707f, /* vl1re16_v */
-0xfff0707f, /* vl1re32_v */
-0xfff0707f, /* vl1re64_v */
-0xfff0707f, /* vl1re8_v */
-0xfff0707f, /* vl2r_v */
-0xfff0707f, /* vl2re16_v */
-0xfff0707f, /* vl2re32_v */
-0xfff0707f, /* vl2re64_v */
-0xfff0707f, /* vl2re8_v */
-0xfff0707f, /* vl4r_v */
-0xfff0707f, /* vl4re16_v */
-0xfff0707f, /* vl4re32_v */
-0xfff0707f, /* vl4re64_v */
-0xfff0707f, /* vl4re8_v */
-0xfff0707f, /* vl8r_v */
-0xfff0707f, /* vl8re16_v */
-0xfff0707f, /* vl8re32_v */
-0xfff0707f, /* vl8re64_v */
-0xfff0707f, /* vl8re8_v */
-0x1df0707f, /* vle16_v */
-0x1df0707f, /* vle16ff_v */
-0xfff0707f, /* vle1_v */
-0x1df0707f, /* vle32_v */
-0x1df0707f, /* vle32ff_v */
-0x1df0707f, /* vle64_v */
-0x1df0707f, /* vle64ff_v */
-0x1df0707f, /* vle8_v */
-0x1df0707f, /* vle8ff_v */
-0xfff0707f, /* vlm_v */
-0x1c00707f, /* vloxei16_v */
-0x1c00707f, /* vloxei32_v */
-0x1c00707f, /* vloxei64_v */
-0x1c00707f, /* vloxei8_v */
-0x1c00707f, /* vlse16_v */
-0x1c00707f, /* vlse32_v */
-0x1c00707f, /* vlse64_v */
-0x1c00707f, /* vlse8_v */
-0x1c00707f, /* vluxei16_v */
-0x1c00707f, /* vluxei32_v */
-0x1c00707f, /* vluxei64_v */
-0x1c00707f, /* vluxei8_v */
-0xfc00707f, /* vmacc_vv */
-0xfc00707f, /* vmacc_vx */
-0xfe00707f, /* vmadc_vi */
-0xfe00707f, /* vmadc_vim */
-0xfe00707f, /* vmadc_vv */
-0xfe00707f, /* vmadc_vvm */
-0xfe00707f, /* vmadc_vx */
-0xfe00707f, /* vmadc_vxm */
-0xfc00707f, /* vmadd_vv */
-0xfc00707f, /* vmadd_vx */
-0xfe00707f, /* vmand_mm */
-0xfe00707f, /* vmandn_mm */
-0xfc00707f, /* vmandnot_mm */
-0xfc00707f, /* vmax_vv */
-0xfc00707f, /* vmax_vx */
-0xfc00707f, /* vmaxu_vv */
-0xfc00707f, /* vmaxu_vx */
-0xfe00707f, /* vmerge_vim */
-0xfe00707f, /* vmerge_vvm */
-0xfe00707f, /* vmerge_vxm */
-0xfc00707f, /* vmfeq_vf */
-0xfc00707f, /* vmfeq_vv */
-0xfc00707f, /* vmfge_vf */
-0xfc00707f, /* vmfgt_vf */
-0xfc00707f, /* vmfle_vf */
-0xfc00707f, /* vmfle_vv */
-0xfc00707f, /* vmflt_vf */
-0xfc00707f, /* vmflt_vv */
-0xfc00707f, /* vmfne_vf */
-0xfc00707f, /* vmfne_vv */
-0xfc00707f, /* vmin_vv */
-0xfc00707f, /* vmin_vx */
-0xfc00707f, /* vminu_vv */
-0xfc00707f, /* vminu_vx */
-0xfe00707f, /* vmnand_mm */
-0xfe00707f, /* vmnor_mm */
-0xfe00707f, /* vmor_mm */
-0xfe00707f, /* vmorn_mm */
-0xfc00707f, /* vmornot_mm */
-0xfe00707f, /* vmsbc_vv */
-0xfe00707f, /* vmsbc_vvm */
-0xfe00707f, /* vmsbc_vx */
-0xfe00707f, /* vmsbc_vxm */
-0xfc0ff07f, /* vmsbf_m */
-0xfc00707f, /* vmseq_vi */
-0xfc00707f, /* vmseq_vv */
-0xfc00707f, /* vmseq_vx */
-0xfc00707f, /* vmsgt_vi */
-0xfc00707f, /* vmsgt_vx */
-0xfc00707f, /* vmsgtu_vi */
-0xfc00707f, /* vmsgtu_vx */
-0xfc0ff07f, /* vmsif_m */
-0xfc00707f, /* vmsle_vi */
-0xfc00707f, /* vmsle_vv */
-0xfc00707f, /* vmsle_vx */
-0xfc00707f, /* vmsleu_vi */
-0xfc00707f, /* vmsleu_vv */
-0xfc00707f, /* vmsleu_vx */
-0xfc00707f, /* vmslt_vv */
-0xfc00707f, /* vmslt_vx */
-0xfc00707f, /* vmsltu_vv */
-0xfc00707f, /* vmsltu_vx */
-0xfc00707f, /* vmsne_vi */
-0xfc00707f, /* vmsne_vv */
-0xfc00707f, /* vmsne_vx */
-0xfc0ff07f, /* vmsof_m */
-0xfc00707f, /* vmul_vv */
-0xfc00707f, /* vmul_vx */
-0xfc00707f, /* vmulh_vv */
-0xfc00707f, /* vmulh_vx */
-0xfc00707f, /* vmulhsu_vv */
-0xfc00707f, /* vmulhsu_vx */
-0xfc00707f, /* vmulhu_vv */
-0xfc00707f, /* vmulhu_vx */
-0xfe0ff07f, /* vmv1r_v */
-0xfe0ff07f, /* vmv2r_v */
-0xfe0ff07f, /* vmv4r_v */
-0xfe0ff07f, /* vmv8r_v */
-0xfff0707f, /* vmv_s_x */
-0xfff0707f, /* vmv_v_i */
-0xfff0707f, /* vmv_v_v */
-0xfff0707f, /* vmv_v_x */
-0xfe0ff07f, /* vmv_x_s */
-0xfe00707f, /* vmxnor_mm */
-0xfe00707f, /* vmxor_mm */
-0xfc00707f, /* vnclip_wi */
-0xfc00707f, /* vnclip_wv */
-0xfc00707f, /* vnclip_wx */
-0xfc00707f, /* vnclipu_wi */
-0xfc00707f, /* vnclipu_wv */
-0xfc00707f, /* vnclipu_wx */
-0xfc00707f, /* vnmsac_vv */
-0xfc00707f, /* vnmsac_vx */
-0xfc00707f, /* vnmsub_vv */
-0xfc00707f, /* vnmsub_vx */
-0xfc00707f, /* vnsra_wi */
-0xfc00707f, /* vnsra_wv */
-0xfc00707f, /* vnsra_wx */
-0xfc00707f, /* vnsrl_wi */
-0xfc00707f, /* vnsrl_wv */
-0xfc00707f, /* vnsrl_wx */
-0xfc00707f, /* vor_vi */
-0xfc00707f, /* vor_vv */
-0xfc00707f, /* vor_vx */
-0xfc0ff07f, /* vpopc_m */
-0xfc00707f, /* vredand_vs */
-0xfc00707f, /* vredmax_vs */
-0xfc00707f, /* vredmaxu_vs */
-0xfc00707f, /* vredmin_vs */
-0xfc00707f, /* vredminu_vs */
-0xfc00707f, /* vredor_vs */
-0xfc00707f, /* vredsum_vs */
-0xfc00707f, /* vredxor_vs */
-0xfc00707f, /* vrem_vv */
-0xfc00707f, /* vrem_vx */
-0xfc00707f, /* vremu_vv */
-0xfc00707f, /* vremu_vx */
-0xfc0ff07f, /* vrev8_v */
-0xfc00707f, /* vrgather_vi */
-0xfc00707f, /* vrgather_vv */
-0xfc00707f, /* vrgather_vx */
-0xfc00707f, /* vrgatherei16_vv */
-0xfc00707f, /* vrol_vv */
-0xfc00707f, /* vrol_vx */
-0xf800707f, /* vror_vi */
-0xfc00707f, /* vror_vv */
-0xfc00707f, /* vror_vx */
-0xfc00707f, /* vrsub_vi */
-0xfc00707f, /* vrsub_vx */
-0xfff0707f, /* vs1r_v */
-0xfff0707f, /* vs2r_v */
-0xfff0707f, /* vs4r_v */
-0xfff0707f, /* vs8r_v */
-0xfc00707f, /* vsadd_vi */
-0xfc00707f, /* vsadd_vv */
-0xfc00707f, /* vsadd_vx */
-0xfc00707f, /* vsaddu_vi */
-0xfc00707f, /* vsaddu_vv */
-0xfc00707f, /* vsaddu_vx */
-0xfe00707f, /* vsbc_vvm */
-0xfe00707f, /* vsbc_vxm */
-0x1df0707f, /* vse16_v */
-0xfff0707f, /* vse1_v */
-0x1df0707f, /* vse32_v */
-0x1df0707f, /* vse64_v */
-0x1df0707f, /* vse8_v */
-0xc000707f, /* vsetivli */
-0xfe00707f, /* vsetvl */
-0x8000707f, /* vsetvli */
-0xfc0ff07f, /* vsext_vf2 */
-0xfc0ff07f, /* vsext_vf4 */
-0xfc0ff07f, /* vsext_vf8 */
-0xfe00707f, /* vsha2ch_vv */
-0xfe00707f, /* vsha2cl_vv */
-0xfe00707f, /* vsha2ms_vv */
-0xfc00707f, /* vslide1down_vx */
-0xfc00707f, /* vslide1up_vx */
-0xfc00707f, /* vslidedown_vi */
-0xfc00707f, /* vslidedown_vx */
-0xfc00707f, /* vslideup_vi */
-0xfc00707f, /* vslideup_vx */
-0xfc00707f, /* vsll_vi */
-0xfc00707f, /* vsll_vv */
-0xfc00707f, /* vsll_vx */
-0xfe00707f, /* vsm3c_vi */
-0xfe00707f, /* vsm3me_vv */
-0xfe00707f, /* vsm4k_vi */
-0xfe0ff07f, /* vsm4r_vs */
-0xfe0ff07f, /* vsm4r_vv */
-0xfff0707f, /* vsm_v */
-0xfc00707f, /* vsmul_vv */
-0xfc00707f, /* vsmul_vx */
-0x1c00707f, /* vsoxei16_v */
-0x1c00707f, /* vsoxei32_v */
-0x1c00707f, /* vsoxei64_v */
-0x1c00707f, /* vsoxei8_v */
-0xfc00707f, /* vsra_vi */
-0xfc00707f, /* vsra_vv */
-0xfc00707f, /* vsra_vx */
-0xfc00707f, /* vsrl_vi */
-0xfc00707f, /* vsrl_vv */
-0xfc00707f, /* vsrl_vx */
-0x1c00707f, /* vsse16_v */
-0x1c00707f, /* vsse32_v */
-0x1c00707f, /* vsse64_v */
-0x1c00707f, /* vsse8_v */
-0xfc00707f, /* vssra_vi */
-0xfc00707f, /* vssra_vv */
-0xfc00707f, /* vssra_vx */
-0xfc00707f, /* vssrl_vi */
-0xfc00707f, /* vssrl_vv */
-0xfc00707f, /* vssrl_vx */
-0xfc00707f, /* vssub_vv */
-0xfc00707f, /* vssub_vx */
-0xfc00707f, /* vssubu_vv */
-0xfc00707f, /* vssubu_vx */
-0xfc00707f, /* vsub_vv */
-0xfc00707f, /* vsub_vx */
-0x1c00707f, /* vsuxei16_v */
-0x1c00707f, /* vsuxei32_v */
-0x1c00707f, /* vsuxei64_v */
-0x1c00707f, /* vsuxei8_v */
-0xfc00707f, /* vwadd_vv */
-0xfc00707f, /* vwadd_vx */
-0xfc00707f, /* vwadd_wv */
-0xfc00707f, /* vwadd_wx */
-0xfc00707f, /* vwaddu_vv */
-0xfc00707f, /* vwaddu_vx */
-0xfc00707f, /* vwaddu_wv */
-0xfc00707f, /* vwaddu_wx */
-0xfc00707f, /* vwmacc_vv */
-0xfc00707f, /* vwmacc_vx */
-0xfc00707f, /* vwmaccsu_vv */
-0xfc00707f, /* vwmaccsu_vx */
-0xfc00707f, /* vwmaccu_vv */
-0xfc00707f, /* vwmaccu_vx */
-0xfc00707f, /* vwmaccus_vx */
-0xfc00707f, /* vwmul_vv */
-0xfc00707f, /* vwmul_vx */
-0xfc00707f, /* vwmulsu_vv */
-0xfc00707f, /* vwmulsu_vx */
-0xfc00707f, /* vwmulu_vv */
-0xfc00707f, /* vwmulu_vx */
-0xfc00707f, /* vwredsum_vs */
-0xfc00707f, /* vwredsumu_vs */
-0xfc00707f, /* vwsll_vi */
-0xfc00707f, /* vwsll_vv */
-0xfc00707f, /* vwsll_vx */
-0xfc00707f, /* vwsub_vv */
-0xfc00707f, /* vwsub_vx */
-0xfc00707f, /* vwsub_wv */
-0xfc00707f, /* vwsub_wx */
-0xfc00707f, /* vwsubu_vv */
-0xfc00707f, /* vwsubu_vx */
-0xfc00707f, /* vwsubu_wv */
-0xfc00707f, /* vwsubu_wx */
-0xfc00707f, /* vxor_vi */
-0xfc00707f, /* vxor_vv */
-0xfc00707f, /* vxor_vx */
-0xfc0ff07f, /* vzext_vf2 */
-0xfc0ff07f, /* vzext_vf4 */
-0xfc0ff07f, /* vzext_vf8 */
-0xffffffff, /* wfi */
-0xffffffff, /* wrs_nto */
-0xffffffff, /* wrs_sto */
-0xfe00707f, /* xnor */
-0xfe00707f, /* xor */
-0x707f, /* xori */
-0xfe00707f, /* xperm4 */
-0xfe00707f, /* xperm8 */
-0xfff0707f, /* zext_b */
-0xffff_ffff, /* zext_h */
-0xfff0707f, /* zext_h_rv32 */
-0xffff_ffff, /* zext_w */
-0xfff0707f, /* zip */
+    0xfe00707f,  /* add */
+    0xffff_ffff, /* add_uw */
+    0x707f,      /* addi */
+    0xffff_ffff, /* addiw */
+    0xffff_ffff, /* addw */
+    0x3e00707f,  /* aes32dsi */
+    0x3e00707f,  /* aes32dsmi */
+    0x3e00707f,  /* aes32esi */
+    0x3e00707f,  /* aes32esmi */
+    0xffff_ffff, /* aes64ds */
+    0xffff_ffff, /* aes64dsm */
+    0xffff_ffff, /* aes64es */
+    0xffff_ffff, /* aes64esm */
+    0xffff_ffff, /* aes64im */
+    0xffff_ffff, /* aes64ks1i */
+    0xffff_ffff, /* aes64ks2 */
+    0xf800707f,  /* amoadd_b */
+    0xffff_ffff, /* amoadd_d */
+    0xf800707f,  /* amoadd_h */
+    0xf800707f,  /* amoadd_w */
+    0xf800707f,  /* amoand_b */
+    0xffff_ffff, /* amoand_d */
+    0xf800707f,  /* amoand_h */
+    0xf800707f,  /* amoand_w */
+    0xf800707f,  /* amocas_b */
+    0xf800707f,  /* amocas_d */
+    0xf800707f,  /* amocas_h */
+    0xffff_ffff, /* amocas_q */
+    0xf800707f,  /* amocas_w */
+    0xf800707f,  /* amomax_b */
+    0xffff_ffff, /* amomax_d */
+    0xf800707f,  /* amomax_h */
+    0xf800707f,  /* amomax_w */
+    0xf800707f,  /* amomaxu_b */
+    0xffff_ffff, /* amomaxu_d */
+    0xf800707f,  /* amomaxu_h */
+    0xf800707f,  /* amomaxu_w */
+    0xf800707f,  /* amomin_b */
+    0xffff_ffff, /* amomin_d */
+    0xf800707f,  /* amomin_h */
+    0xf800707f,  /* amomin_w */
+    0xf800707f,  /* amominu_b */
+    0xffff_ffff, /* amominu_d */
+    0xf800707f,  /* amominu_h */
+    0xf800707f,  /* amominu_w */
+    0xf800707f,  /* amoor_b */
+    0xffff_ffff, /* amoor_d */
+    0xf800707f,  /* amoor_h */
+    0xf800707f,  /* amoor_w */
+    0xf800707f,  /* amoswap_b */
+    0xffff_ffff, /* amoswap_d */
+    0xf800707f,  /* amoswap_h */
+    0xf800707f,  /* amoswap_w */
+    0xf800707f,  /* amoxor_b */
+    0xffff_ffff, /* amoxor_d */
+    0xf800707f,  /* amoxor_h */
+    0xf800707f,  /* amoxor_w */
+    0xfe00707f,  /* and */
+    0x707f,      /* andi */
+    0xfe00707f,  /* andn */
+    0x7f,        /* auipc */
+    0xfe00707f,  /* bclr */
+    0xffff_ffff, /* bclri */
+    0xfe00707f,  /* bclri_rv32 */
+    0x707f,      /* beq */
+    0x1f0707f,   /* beqz */
+    0xfe00707f,  /* bext */
+    0xffff_ffff, /* bexti */
+    0xfe00707f,  /* bexti_rv32 */
+    0x707f,      /* bge */
+    0x707f,      /* bgeu */
+    0x1f0707f,   /* bgez */
+    0x707f,      /* bgt */
+    0x707f,      /* bgtu */
+    0xff07f,     /* bgtz */
+    0xfe00707f,  /* binv */
+    0xffff_ffff, /* binvi */
+    0xfe00707f,  /* binvi_rv32 */
+    0x707f,      /* ble */
+    0x707f,      /* bleu */
+    0xff07f,     /* blez */
+    0x707f,      /* blt */
+    0x707f,      /* bltu */
+    0x1f0707f,   /* bltz */
+    0x707f,      /* bne */
+    0x1f0707f,   /* bnez */
+    0xfff0707f,  /* brev8 */
+    0xfe00707f,  /* bset */
+    0xffff_ffff, /* bseti */
+    0xfe00707f,  /* bseti_rv32 */
+    0xf003,      /* c_add */
+    0xe003,      /* c_addi */
+    0xef83,      /* c_addi16sp */
+    0xe003,      /* c_addi4spn */
+    0xffff_ffff, /* c_addiw */
+    0xffff_ffff, /* c_addw */
+    0xfc63,      /* c_and */
+    0xec03,      /* c_andi */
+    0xe003,      /* c_beqz */
+    0xe003,      /* c_bnez */
+    0xffff,      /* c_ebreak */
+    0xe003,      /* c_fld */
+    0xe003,      /* c_fldsp */
+    0xe003,      /* c_flw */
+    0xe003,      /* c_flwsp */
+    0xe003,      /* c_fsd */
+    0xe003,      /* c_fsdsp */
+    0xe003,      /* c_fsw */
+    0xe003,      /* c_fswsp */
+    0xe003,      /* c_j */
+    0xe003,      /* c_jal */
+    0xf07f,      /* c_jalr */
+    0xf07f,      /* c_jr */
+    0xfc03,      /* c_lbu */
+    0xffff_ffff, /* c_ld */
+    0xffff_ffff, /* c_ldsp */
+    0xfc43,      /* c_lh */
+    0xfc43,      /* c_lhu */
+    0xe003,      /* c_li */
+    0xe003,      /* c_lui */
+    0xe003,      /* c_lw */
+    0xe003,      /* c_lwsp */
+    0xffff,      /* c_mop_1 */
+    0xffff,      /* c_mop_11 */
+    0xffff,      /* c_mop_13 */
+    0xffff,      /* c_mop_15 */
+    0xffff,      /* c_mop_3 */
+    0xffff,      /* c_mop_5 */
+    0xffff,      /* c_mop_7 */
+    0xffff,      /* c_mop_9 */
+    0xf8ff,      /* c_mop_N */
+    0xfc63,      /* c_mul */
+    0xf003,      /* c_mv */
+    0xef83,      /* c_nop */
+    0xfc7f,      /* c_not */
+    0xffff,      /* c_ntl_all */
+    0xffff,      /* c_ntl_p1 */
+    0xffff,      /* c_ntl_pall */
+    0xffff,      /* c_ntl_s1 */
+    0xfc63,      /* c_or */
+    0xfc03,      /* c_sb */
+    0xffff_ffff, /* c_sd */
+    0xffff_ffff, /* c_sdsp */
+    0xfc7f,      /* c_sext_b */
+    0xfc7f,      /* c_sext_h */
+    0xffff_ffff, /* c_sext_w */
+    0xfc43,      /* c_sh */
+    0xe003,      /* c_slli */
+    0xf003,      /* c_slli_rv32 */
+    0xec03,      /* c_srai */
+    0xfc03,      /* c_srai_rv32 */
+    0xec03,      /* c_srli */
+    0xfc03,      /* c_srli_rv32 */
+    0xfc63,      /* c_sub */
+    0xffff_ffff, /* c_subw */
+    0xe003,      /* c_sw */
+    0xe003,      /* c_swsp */
+    0xfc63,      /* c_xor */
+    0xfc7f,      /* c_zext_b */
+    0xfc7f,      /* c_zext_h */
+    0xffff_ffff, /* c_zext_w */
+    0xfff07fff,  /* cbo_clean */
+    0xfff07fff,  /* cbo_flush */
+    0xfff07fff,  /* cbo_inval */
+    0xfff07fff,  /* cbo_zero */
+    0xfe00707f,  /* clmul */
+    0xfe00707f,  /* clmulh */
+    0xfe00707f,  /* clmulr */
+    0xfff0707f,  /* clz */
+    0xffff_ffff, /* clzw */
+    0xfc03,      /* cm_jalt */
+    0xfc63,      /* cm_mva01s */
+    0xfc63,      /* cm_mvsa01 */
+    0xff03,      /* cm_pop */
+    0xff03,      /* cm_popret */
+    0xff03,      /* cm_popretz */
+    0xff03,      /* cm_push */
+    0xfff0707f,  /* cpop */
+    0xffff_ffff, /* cpopw */
+    0x7fff,      /* csrc */
+    0x7fff,      /* csrci */
+    0xff07f,     /* csrr */
+    0x707f,      /* csrrc */
+    0x707f,      /* csrrci */
+    0x707f,      /* csrrs */
+    0x707f,      /* csrrsi */
+    0x707f,      /* csrrw */
+    0x707f,      /* csrrwi */
+    0x7fff,      /* csrs */
+    0x7fff,      /* csrsi */
+    0x7fff,      /* csrw */
+    0x7fff,      /* csrwi */
+    0xfff0707f,  /* ctz */
+    0xffff_ffff, /* ctzw */
+    0xfe00707f,  /* czero_eqz */
+    0xfe00707f,  /* czero_nez */
+    0xfe00707f,  /* div */
+    0xfe00707f,  /* divu */
+    0xffff_ffff, /* divuw */
+    0xffff_ffff, /* divw */
+    0xffffffff,  /* dret */
+    0xffffffff,  /* ebreak */
+    0xffffffff,  /* ecall */
+    0xfe00707f,  /* fabs_d */
+    0xfe00707f,  /* fabs_h */
+    0xfe00707f,  /* fabs_q */
+    0xfe00707f,  /* fabs_s */
+    0xfe00007f,  /* fadd_d */
+    0xfe00007f,  /* fadd_h */
+    0xfe00007f,  /* fadd_q */
+    0xfe00007f,  /* fadd_s */
+    0xfff0707f,  /* fclass_d */
+    0xfff0707f,  /* fclass_h */
+    0xfff0707f,  /* fclass_q */
+    0xfff0707f,  /* fclass_s */
+    0xfff0007f,  /* fcvt_d_h */
+    0xffff_ffff, /* fcvt_d_l */
+    0xffff_ffff, /* fcvt_d_lu */
+    0xfff0007f,  /* fcvt_d_q */
+    0xfff0007f,  /* fcvt_d_s */
+    0xfff0007f,  /* fcvt_d_w */
+    0xfff0007f,  /* fcvt_d_wu */
+    0xfff0007f,  /* fcvt_h_d */
+    0xffff_ffff, /* fcvt_h_l */
+    0xffff_ffff, /* fcvt_h_lu */
+    0xfff0007f,  /* fcvt_h_q */
+    0xfff0007f,  /* fcvt_h_s */
+    0xfff0007f,  /* fcvt_h_w */
+    0xfff0007f,  /* fcvt_h_wu */
+    0xffff_ffff, /* fcvt_l_d */
+    0xffff_ffff, /* fcvt_l_h */
+    0xffff_ffff, /* fcvt_l_q */
+    0xffff_ffff, /* fcvt_l_s */
+    0xffff_ffff, /* fcvt_lu_d */
+    0xffff_ffff, /* fcvt_lu_h */
+    0xffff_ffff, /* fcvt_lu_q */
+    0xffff_ffff, /* fcvt_lu_s */
+    0xfff0007f,  /* fcvt_q_d */
+    0xfff0007f,  /* fcvt_q_h */
+    0xffff_ffff, /* fcvt_q_l */
+    0xffff_ffff, /* fcvt_q_lu */
+    0xfff0007f,  /* fcvt_q_s */
+    0xfff0007f,  /* fcvt_q_w */
+    0xfff0007f,  /* fcvt_q_wu */
+    0xfff0007f,  /* fcvt_s_d */
+    0xfff0007f,  /* fcvt_s_h */
+    0xffff_ffff, /* fcvt_s_l */
+    0xffff_ffff, /* fcvt_s_lu */
+    0xfff0007f,  /* fcvt_s_q */
+    0xfff0007f,  /* fcvt_s_w */
+    0xfff0007f,  /* fcvt_s_wu */
+    0xfff0007f,  /* fcvt_w_d */
+    0xfff0007f,  /* fcvt_w_h */
+    0xfff0007f,  /* fcvt_w_q */
+    0xfff0007f,  /* fcvt_w_s */
+    0xfff0007f,  /* fcvt_wu_d */
+    0xfff0007f,  /* fcvt_wu_h */
+    0xfff0007f,  /* fcvt_wu_q */
+    0xfff0007f,  /* fcvt_wu_s */
+    0xfff0707f,  /* fcvtmod_w_d */
+    0xfe00007f,  /* fdiv_d */
+    0xfe00007f,  /* fdiv_h */
+    0xfe00007f,  /* fdiv_q */
+    0xfe00007f,  /* fdiv_s */
+    0x707f,      /* fence */
+    0x707f,      /* fence_i */
+    0xfff0707f,  /* fence_tso */
+    0xfe00707f,  /* feq_d */
+    0xfe00707f,  /* feq_h */
+    0xfe00707f,  /* feq_q */
+    0xfe00707f,  /* feq_s */
+    0x707f,      /* fld */
+    0xfe00707f,  /* fle_d */
+    0xfe00707f,  /* fle_h */
+    0xfe00707f,  /* fle_q */
+    0xfe00707f,  /* fle_s */
+    0xfe00707f,  /* fleq_d */
+    0xfe00707f,  /* fleq_h */
+    0xfe00707f,  /* fleq_q */
+    0xfe00707f,  /* fleq_s */
+    0x707f,      /* flh */
+    0xfff0707f,  /* fli_d */
+    0xfff0707f,  /* fli_h */
+    0xfff0707f,  /* fli_q */
+    0xfff0707f,  /* fli_s */
+    0x707f,      /* flq */
+    0xfe00707f,  /* flt_d */
+    0xfe00707f,  /* flt_h */
+    0xfe00707f,  /* flt_q */
+    0xfe00707f,  /* flt_s */
+    0xfe00707f,  /* fltq_d */
+    0xfe00707f,  /* fltq_h */
+    0xfe00707f,  /* fltq_q */
+    0xfe00707f,  /* fltq_s */
+    0x707f,      /* flw */
+    0x600007f,   /* fmadd_d */
+    0x600007f,   /* fmadd_h */
+    0x600007f,   /* fmadd_q */
+    0x600007f,   /* fmadd_s */
+    0xfe00707f,  /* fmax_d */
+    0xfe00707f,  /* fmax_h */
+    0xfe00707f,  /* fmax_q */
+    0xfe00707f,  /* fmax_s */
+    0xfe00707f,  /* fmaxm_d */
+    0xfe00707f,  /* fmaxm_h */
+    0xfe00707f,  /* fmaxm_q */
+    0xfe00707f,  /* fmaxm_s */
+    0xfe00707f,  /* fmin_d */
+    0xfe00707f,  /* fmin_h */
+    0xfe00707f,  /* fmin_q */
+    0xfe00707f,  /* fmin_s */
+    0xfe00707f,  /* fminm_d */
+    0xfe00707f,  /* fminm_h */
+    0xfe00707f,  /* fminm_q */
+    0xfe00707f,  /* fminm_s */
+    0x600007f,   /* fmsub_d */
+    0x600007f,   /* fmsub_h */
+    0x600007f,   /* fmsub_q */
+    0x600007f,   /* fmsub_s */
+    0xfe00007f,  /* fmul_d */
+    0xfe00007f,  /* fmul_h */
+    0xfe00007f,  /* fmul_q */
+    0xfe00007f,  /* fmul_s */
+    0xfe00707f,  /* fmv_d */
+    0xffff_ffff, /* fmv_d_x */
+    0xfe00707f,  /* fmv_h */
+    0xfff0707f,  /* fmv_h_x */
+    0xfe00707f,  /* fmv_q */
+    0xfe00707f,  /* fmv_s */
+    0xfff0707f,  /* fmv_s_x */
+    0xfff0707f,  /* fmv_w_x */
+    0xffff_ffff, /* fmv_x_d */
+    0xfff0707f,  /* fmv_x_h */
+    0xfff0707f,  /* fmv_x_s */
+    0xfff0707f,  /* fmv_x_w */
+    0xfff0707f,  /* fmvh_x_d */
+    0xffff_ffff, /* fmvh_x_q */
+    0xfe00707f,  /* fmvp_d_x */
+    0xffff_ffff, /* fmvp_q_x */
+    0xfe00707f,  /* fneg_d */
+    0xfe00707f,  /* fneg_h */
+    0xfe00707f,  /* fneg_q */
+    0xfe00707f,  /* fneg_s */
+    0x600007f,   /* fnmadd_d */
+    0x600007f,   /* fnmadd_h */
+    0x600007f,   /* fnmadd_q */
+    0x600007f,   /* fnmadd_s */
+    0x600007f,   /* fnmsub_d */
+    0x600007f,   /* fnmsub_h */
+    0x600007f,   /* fnmsub_q */
+    0x600007f,   /* fnmsub_s */
+    0xfffff07f,  /* frcsr */
+    0xfffff07f,  /* frflags */
+    0xfff0007f,  /* fround_d */
+    0xfff0007f,  /* fround_h */
+    0xfff0007f,  /* fround_q */
+    0xfff0007f,  /* fround_s */
+    0xfff0007f,  /* froundnx_d */
+    0xfff0007f,  /* froundnx_h */
+    0xfff0007f,  /* froundnx_q */
+    0xfff0007f,  /* froundnx_s */
+    0xfffff07f,  /* frrm */
+    0xfff0707f,  /* fscsr */
+    0x707f,      /* fsd */
+    0xfff0707f,  /* fsflags */
+    0xfff0707f,  /* fsflagsi */
+    0xfe00707f,  /* fsgnj_d */
+    0xfe00707f,  /* fsgnj_h */
+    0xfe00707f,  /* fsgnj_q */
+    0xfe00707f,  /* fsgnj_s */
+    0xfe00707f,  /* fsgnjn_d */
+    0xfe00707f,  /* fsgnjn_h */
+    0xfe00707f,  /* fsgnjn_q */
+    0xfe00707f,  /* fsgnjn_s */
+    0xfe00707f,  /* fsgnjx_d */
+    0xfe00707f,  /* fsgnjx_h */
+    0xfe00707f,  /* fsgnjx_q */
+    0xfe00707f,  /* fsgnjx_s */
+    0x707f,      /* fsh */
+    0x707f,      /* fsq */
+    0xfff0007f,  /* fsqrt_d */
+    0xfff0007f,  /* fsqrt_h */
+    0xfff0007f,  /* fsqrt_q */
+    0xfff0007f,  /* fsqrt_s */
+    0xfff0707f,  /* fsrm */
+    0xfff0707f,  /* fsrmi */
+    0xfe00007f,  /* fsub_d */
+    0xfe00007f,  /* fsub_h */
+    0xfe00007f,  /* fsub_q */
+    0xfe00007f,  /* fsub_s */
+    0x707f,      /* fsw */
+    0xfe007fff,  /* hfence_gvma */
+    0xfe007fff,  /* hfence_vvma */
+    0xfe007fff,  /* hinval_gvma */
+    0xfe007fff,  /* hinval_vvma */
+    0xfff0707f,  /* hlv_b */
+    0xfff0707f,  /* hlv_bu */
+    0xffff_ffff, /* hlv_d */
+    0xfff0707f,  /* hlv_h */
+    0xfff0707f,  /* hlv_hu */
+    0xfff0707f,  /* hlv_w */
+    0xffff_ffff, /* hlv_wu */
+    0xfff0707f,  /* hlvx_hu */
+    0xfff0707f,  /* hlvx_wu */
+    0xfe007fff,  /* hsv_b */
+    0xffff_ffff, /* hsv_d */
+    0xfe007fff,  /* hsv_h */
+    0xfe007fff,  /* hsv_w */
+    0xfff,       /* j */
+    0x7f,        /* jal */
+    0xfff,       /* jal_pseudo */
+    0x707f,      /* jalr */
+    0xfff07fff,  /* jalr_pseudo */
+    0xfff07fff,  /* jr */
+    0x707f,      /* lb */
+    0x707f,      /* lbu */
+    0xffff_ffff, /* ld */
+    0x707f,      /* lh */
+    0x707f,      /* lhu */
+    0xffff_ffff, /* lr_d */
+    0xf9f0707f,  /* lr_w */
+    0x7f,        /* lui */
+    0x707f,      /* lw */
+    0xffff_ffff, /* lwu */
+    0xfe00707f,  /* max */
+    0xfe00707f,  /* maxu */
+    0xfe00707f,  /* min */
+    0xfe00707f,  /* minu */
+    0xfff0707f,  /* mop_r_0 */
+    0xfff0707f,  /* mop_r_1 */
+    0xfff0707f,  /* mop_r_10 */
+    0xfff0707f,  /* mop_r_11 */
+    0xfff0707f,  /* mop_r_12 */
+    0xfff0707f,  /* mop_r_13 */
+    0xfff0707f,  /* mop_r_14 */
+    0xfff0707f,  /* mop_r_15 */
+    0xfff0707f,  /* mop_r_16 */
+    0xfff0707f,  /* mop_r_17 */
+    0xfff0707f,  /* mop_r_18 */
+    0xfff0707f,  /* mop_r_19 */
+    0xfff0707f,  /* mop_r_2 */
+    0xfff0707f,  /* mop_r_20 */
+    0xfff0707f,  /* mop_r_21 */
+    0xfff0707f,  /* mop_r_22 */
+    0xfff0707f,  /* mop_r_23 */
+    0xfff0707f,  /* mop_r_24 */
+    0xfff0707f,  /* mop_r_25 */
+    0xfff0707f,  /* mop_r_26 */
+    0xfff0707f,  /* mop_r_27 */
+    0xfff0707f,  /* mop_r_28 */
+    0xfff0707f,  /* mop_r_29 */
+    0xfff0707f,  /* mop_r_3 */
+    0xfff0707f,  /* mop_r_30 */
+    0xfff0707f,  /* mop_r_31 */
+    0xfff0707f,  /* mop_r_4 */
+    0xfff0707f,  /* mop_r_5 */
+    0xfff0707f,  /* mop_r_6 */
+    0xfff0707f,  /* mop_r_7 */
+    0xfff0707f,  /* mop_r_8 */
+    0xfff0707f,  /* mop_r_9 */
+    0xb3c0707f,  /* mop_r_N */
+    0xfe00707f,  /* mop_rr_0 */
+    0xfe00707f,  /* mop_rr_1 */
+    0xfe00707f,  /* mop_rr_2 */
+    0xfe00707f,  /* mop_rr_3 */
+    0xfe00707f,  /* mop_rr_4 */
+    0xfe00707f,  /* mop_rr_5 */
+    0xfe00707f,  /* mop_rr_6 */
+    0xfe00707f,  /* mop_rr_7 */
+    0xb200707f,  /* mop_rr_N */
+    0xffffffff,  /* mret */
+    0xfe00707f,  /* mul */
+    0xfe00707f,  /* mulh */
+    0xfe00707f,  /* mulhsu */
+    0xfe00707f,  /* mulhu */
+    0xffff_ffff, /* mulw */
+    0xfff0707f,  /* mv */
+    0xfff0707f,  /* neg */
+    0xffffffff,  /* nop */
+    0xffffffff,  /* ntl_all */
+    0xffffffff,  /* ntl_p1 */
+    0xffffffff,  /* ntl_pall */
+    0xffffffff,  /* ntl_s1 */
+    0xfe00707f,  /* or */
+    0xfff0707f,  /* orc_b */
+    0x707f,      /* ori */
+    0xfe00707f,  /* orn */
+    0xfe00707f,  /* pack */
+    0xfe00707f,  /* packh */
+    0xffff_ffff, /* packw */
+    0xffffffff,  /* pause */
+    0x1f07fff,   /* prefetch_i */
+    0x1f07fff,   /* prefetch_r */
+    0x1f07fff,   /* prefetch_w */
+    0xfffff07f,  /* rdcycle */
+    0xfffff07f,  /* rdcycleh */
+    0xfffff07f,  /* rdinstret */
+    0xfffff07f,  /* rdinstreth */
+    0xfffff07f,  /* rdtime */
+    0xfffff07f,  /* rdtimeh */
+    0xfe00707f,  /* rem */
+    0xfe00707f,  /* remu */
+    0xffff_ffff, /* remuw */
+    0xffff_ffff, /* remw */
+    0xffffffff,  /* ret */
+    0xffff_ffff, /* rev8 */
+    0xfff0707f,  /* rev8_rv32 */
+    0xfe00707f,  /* rol */
+    0xffff_ffff, /* rolw */
+    0xfe00707f,  /* ror */
+    0xffff_ffff, /* rori */
+    0xfe00707f,  /* rori_rv32 */
+    0xffff_ffff, /* roriw */
+    0xffff_ffff, /* rorw */
+    0x707f,      /* sb */
+    0xffffffff,  /* sbreak */
+    0xffff_ffff, /* sc_d */
+    0xf800707f,  /* sc_w */
+    0xffffffff,  /* scall */
+    0xffff_ffff, /* sd */
+    0xfff0707f,  /* seqz */
+    0xfff0707f,  /* sext_b */
+    0xfff0707f,  /* sext_h */
+    0xffff_ffff, /* sext_w */
+    0xffffffff,  /* sfence_inval_ir */
+    0xfe007fff,  /* sfence_vma */
+    0xffffffff,  /* sfence_w_inval */
+    0xfe0ff07f,  /* sgtz */
+    0x707f,      /* sh */
+    0xfe00707f,  /* sh1add */
+    0xffff_ffff, /* sh1add_uw */
+    0xfe00707f,  /* sh2add */
+    0xffff_ffff, /* sh2add_uw */
+    0xfe00707f,  /* sh3add */
+    0xffff_ffff, /* sh3add_uw */
+    0xfff0707f,  /* sha256sig0 */
+    0xfff0707f,  /* sha256sig1 */
+    0xfff0707f,  /* sha256sum0 */
+    0xfff0707f,  /* sha256sum1 */
+    0xffff_ffff, /* sha512sig0 */
+    0xfe00707f,  /* sha512sig0h */
+    0xfe00707f,  /* sha512sig0l */
+    0xffff_ffff, /* sha512sig1 */
+    0xfe00707f,  /* sha512sig1h */
+    0xfe00707f,  /* sha512sig1l */
+    0xffff_ffff, /* sha512sum0 */
+    0xfe00707f,  /* sha512sum0r */
+    0xffff_ffff, /* sha512sum1 */
+    0xfe00707f,  /* sha512sum1r */
+    0xfe007fff,  /* sinval_vma */
+    0xfe00707f,  /* sll */
+    0xfc00707f,  /* slli */
+    0xfe00707f,  /* slli_rv32 */
+    0xffff_ffff, /* slli_uw */
+    0xffff_ffff, /* slliw */
+    0xffff_ffff, /* sllw */
+    0xfe00707f,  /* slt */
+    0x707f,      /* slti */
+    0x707f,      /* sltiu */
+    0xfe00707f,  /* sltu */
+    0xfff0707f,  /* sltz */
+    0xfff0707f,  /* sm3p0 */
+    0xfff0707f,  /* sm3p1 */
+    0x3e00707f,  /* sm4ed */
+    0x3e00707f,  /* sm4ks */
+    0xfe0ff07f,  /* snez */
+    0xfe00707f,  /* sra */
+    0xfc00707f,  /* srai */
+    0xfe00707f,  /* srai_rv32 */
+    0xffff_ffff, /* sraiw */
+    0xffff_ffff, /* sraw */
+    0xffffffff,  /* sret */
+    0xfe00707f,  /* srl */
+    0xfc00707f,  /* srli */
+    0xfe00707f,  /* srli_rv32 */
+    0xffff_ffff, /* srliw */
+    0xffff_ffff, /* srlw */
+    0xfe00707f,  /* sub */
+    0xffff_ffff, /* subw */
+    0x707f,      /* sw */
+    0xfff0707f,  /* unzip */
+    0xfc00707f,  /* vaadd_vv */
+    0xfc00707f,  /* vaadd_vx */
+    0xfc00707f,  /* vaaddu_vv */
+    0xfc00707f,  /* vaaddu_vx */
+    0xfe00707f,  /* vadc_vim */
+    0xfe00707f,  /* vadc_vvm */
+    0xfe00707f,  /* vadc_vxm */
+    0xfc00707f,  /* vadd_vi */
+    0xfc00707f,  /* vadd_vv */
+    0xfc00707f,  /* vadd_vx */
+    0xfe0ff07f,  /* vaesdf_vs */
+    0xfe0ff07f,  /* vaesdf_vv */
+    0xfe0ff07f,  /* vaesdm_vs */
+    0xfe0ff07f,  /* vaesdm_vv */
+    0xfe0ff07f,  /* vaesef_vs */
+    0xfe0ff07f,  /* vaesef_vv */
+    0xfe0ff07f,  /* vaesem_vs */
+    0xfe0ff07f,  /* vaesem_vv */
+    0xfe00707f,  /* vaeskf1_vi */
+    0xfe00707f,  /* vaeskf2_vi */
+    0xfe0ff07f,  /* vaesz_vs */
+    0xfc00707f,  /* vand_vi */
+    0xfc00707f,  /* vand_vv */
+    0xfc00707f,  /* vand_vx */
+    0xfc00707f,  /* vandn_vv */
+    0xfc00707f,  /* vandn_vx */
+    0xfc00707f,  /* vasub_vv */
+    0xfc00707f,  /* vasub_vx */
+    0xfc00707f,  /* vasubu_vv */
+    0xfc00707f,  /* vasubu_vx */
+    0xfc0ff07f,  /* vbrev8_v */
+    0xfc0ff07f,  /* vbrev_v */
+    0xfc00707f,  /* vclmul_vv */
+    0xfc00707f,  /* vclmul_vx */
+    0xfc00707f,  /* vclmulh_vv */
+    0xfc00707f,  /* vclmulh_vx */
+    0xfc0ff07f,  /* vclz_v */
+    0xfe00707f,  /* vcompress_vm */
+    0xfc0ff07f,  /* vcpop_m */
+    0xfc0ff07f,  /* vcpop_v */
+    0xfc0ff07f,  /* vctz_v */
+    0xfc00707f,  /* vdiv_vv */
+    0xfc00707f,  /* vdiv_vx */
+    0xfc00707f,  /* vdivu_vv */
+    0xfc00707f,  /* vdivu_vx */
+    0xfc00707f,  /* vfadd_vf */
+    0xfc00707f,  /* vfadd_vv */
+    0xfc0ff07f,  /* vfclass_v */
+    0xfc0ff07f,  /* vfcvt_f_x_v */
+    0xfc0ff07f,  /* vfcvt_f_xu_v */
+    0xfc0ff07f,  /* vfcvt_rtz_x_f_v */
+    0xfc0ff07f,  /* vfcvt_rtz_xu_f_v */
+    0xfc0ff07f,  /* vfcvt_x_f_v */
+    0xfc0ff07f,  /* vfcvt_xu_f_v */
+    0xfc00707f,  /* vfdiv_vf */
+    0xfc00707f,  /* vfdiv_vv */
+    0xfc0ff07f,  /* vfirst_m */
+    0xfc00707f,  /* vfmacc_vf */
+    0xfc00707f,  /* vfmacc_vv */
+    0xfc00707f,  /* vfmadd_vf */
+    0xfc00707f,  /* vfmadd_vv */
+    0xfc00707f,  /* vfmax_vf */
+    0xfc00707f,  /* vfmax_vv */
+    0xfe00707f,  /* vfmerge_vfm */
+    0xfc00707f,  /* vfmin_vf */
+    0xfc00707f,  /* vfmin_vv */
+    0xfc00707f,  /* vfmsac_vf */
+    0xfc00707f,  /* vfmsac_vv */
+    0xfc00707f,  /* vfmsub_vf */
+    0xfc00707f,  /* vfmsub_vv */
+    0xfc00707f,  /* vfmul_vf */
+    0xfc00707f,  /* vfmul_vv */
+    0xfe0ff07f,  /* vfmv_f_s */
+    0xfff0707f,  /* vfmv_s_f */
+    0xfff0707f,  /* vfmv_v_f */
+    0xfc0ff07f,  /* vfncvt_f_f_w */
+    0xfc0ff07f,  /* vfncvt_f_x_w */
+    0xfc0ff07f,  /* vfncvt_f_xu_w */
+    0xfc0ff07f,  /* vfncvt_rod_f_f_w */
+    0xfc0ff07f,  /* vfncvt_rtz_x_f_w */
+    0xfc0ff07f,  /* vfncvt_rtz_xu_f_w */
+    0xfc0ff07f,  /* vfncvt_x_f_w */
+    0xfc0ff07f,  /* vfncvt_xu_f_w */
+    0xfc00707f,  /* vfnmacc_vf */
+    0xfc00707f,  /* vfnmacc_vv */
+    0xfc00707f,  /* vfnmadd_vf */
+    0xfc00707f,  /* vfnmadd_vv */
+    0xfc00707f,  /* vfnmsac_vf */
+    0xfc00707f,  /* vfnmsac_vv */
+    0xfc00707f,  /* vfnmsub_vf */
+    0xfc00707f,  /* vfnmsub_vv */
+    0xfc00707f,  /* vfrdiv_vf */
+    0xfc0ff07f,  /* vfrec7_v */
+    0xfc00707f,  /* vfredmax_vs */
+    0xfc00707f,  /* vfredmin_vs */
+    0xfc00707f,  /* vfredosum_vs */
+    0xfc00707f,  /* vfredsum_vs */
+    0xfc00707f,  /* vfredusum_vs */
+    0xfc0ff07f,  /* vfrsqrt7_v */
+    0xfc00707f,  /* vfrsub_vf */
+    0xfc00707f,  /* vfsgnj_vf */
+    0xfc00707f,  /* vfsgnj_vv */
+    0xfc00707f,  /* vfsgnjn_vf */
+    0xfc00707f,  /* vfsgnjn_vv */
+    0xfc00707f,  /* vfsgnjx_vf */
+    0xfc00707f,  /* vfsgnjx_vv */
+    0xfc00707f,  /* vfslide1down_vf */
+    0xfc00707f,  /* vfslide1up_vf */
+    0xfc0ff07f,  /* vfsqrt_v */
+    0xfc00707f,  /* vfsub_vf */
+    0xfc00707f,  /* vfsub_vv */
+    0xfc00707f,  /* vfwadd_vf */
+    0xfc00707f,  /* vfwadd_vv */
+    0xfc00707f,  /* vfwadd_wf */
+    0xfc00707f,  /* vfwadd_wv */
+    0xfc0ff07f,  /* vfwcvt_f_f_v */
+    0xfc0ff07f,  /* vfwcvt_f_x_v */
+    0xfc0ff07f,  /* vfwcvt_f_xu_v */
+    0xfc0ff07f,  /* vfwcvt_rtz_x_f_v */
+    0xfc0ff07f,  /* vfwcvt_rtz_xu_f_v */
+    0xfc0ff07f,  /* vfwcvt_x_f_v */
+    0xfc0ff07f,  /* vfwcvt_xu_f_v */
+    0xfc00707f,  /* vfwmacc_vf */
+    0xfc00707f,  /* vfwmacc_vv */
+    0xfc00707f,  /* vfwmsac_vf */
+    0xfc00707f,  /* vfwmsac_vv */
+    0xfc00707f,  /* vfwmul_vf */
+    0xfc00707f,  /* vfwmul_vv */
+    0xfc00707f,  /* vfwnmacc_vf */
+    0xfc00707f,  /* vfwnmacc_vv */
+    0xfc00707f,  /* vfwnmsac_vf */
+    0xfc00707f,  /* vfwnmsac_vv */
+    0xfc00707f,  /* vfwredosum_vs */
+    0xfc00707f,  /* vfwredsum_vs */
+    0xfc00707f,  /* vfwredusum_vs */
+    0xfc00707f,  /* vfwsub_vf */
+    0xfc00707f,  /* vfwsub_vv */
+    0xfc00707f,  /* vfwsub_wf */
+    0xfc00707f,  /* vfwsub_wv */
+    0xfe00707f,  /* vghsh_vv */
+    0xfe0ff07f,  /* vgmul_vv */
+    0xfdfff07f,  /* vid_v */
+    0xfc0ff07f,  /* viota_m */
+    0xfff0707f,  /* vl1r_v */
+    0xfff0707f,  /* vl1re16_v */
+    0xfff0707f,  /* vl1re32_v */
+    0xfff0707f,  /* vl1re64_v */
+    0xfff0707f,  /* vl1re8_v */
+    0xfff0707f,  /* vl2r_v */
+    0xfff0707f,  /* vl2re16_v */
+    0xfff0707f,  /* vl2re32_v */
+    0xfff0707f,  /* vl2re64_v */
+    0xfff0707f,  /* vl2re8_v */
+    0xfff0707f,  /* vl4r_v */
+    0xfff0707f,  /* vl4re16_v */
+    0xfff0707f,  /* vl4re32_v */
+    0xfff0707f,  /* vl4re64_v */
+    0xfff0707f,  /* vl4re8_v */
+    0xfff0707f,  /* vl8r_v */
+    0xfff0707f,  /* vl8re16_v */
+    0xfff0707f,  /* vl8re32_v */
+    0xfff0707f,  /* vl8re64_v */
+    0xfff0707f,  /* vl8re8_v */
+    0x1df0707f,  /* vle16_v */
+    0x1df0707f,  /* vle16ff_v */
+    0xfff0707f,  /* vle1_v */
+    0x1df0707f,  /* vle32_v */
+    0x1df0707f,  /* vle32ff_v */
+    0x1df0707f,  /* vle64_v */
+    0x1df0707f,  /* vle64ff_v */
+    0x1df0707f,  /* vle8_v */
+    0x1df0707f,  /* vle8ff_v */
+    0xfff0707f,  /* vlm_v */
+    0x1c00707f,  /* vloxei16_v */
+    0x1c00707f,  /* vloxei32_v */
+    0x1c00707f,  /* vloxei64_v */
+    0x1c00707f,  /* vloxei8_v */
+    0x1c00707f,  /* vlse16_v */
+    0x1c00707f,  /* vlse32_v */
+    0x1c00707f,  /* vlse64_v */
+    0x1c00707f,  /* vlse8_v */
+    0x1c00707f,  /* vluxei16_v */
+    0x1c00707f,  /* vluxei32_v */
+    0x1c00707f,  /* vluxei64_v */
+    0x1c00707f,  /* vluxei8_v */
+    0xfc00707f,  /* vmacc_vv */
+    0xfc00707f,  /* vmacc_vx */
+    0xfe00707f,  /* vmadc_vi */
+    0xfe00707f,  /* vmadc_vim */
+    0xfe00707f,  /* vmadc_vv */
+    0xfe00707f,  /* vmadc_vvm */
+    0xfe00707f,  /* vmadc_vx */
+    0xfe00707f,  /* vmadc_vxm */
+    0xfc00707f,  /* vmadd_vv */
+    0xfc00707f,  /* vmadd_vx */
+    0xfe00707f,  /* vmand_mm */
+    0xfe00707f,  /* vmandn_mm */
+    0xfc00707f,  /* vmandnot_mm */
+    0xfc00707f,  /* vmax_vv */
+    0xfc00707f,  /* vmax_vx */
+    0xfc00707f,  /* vmaxu_vv */
+    0xfc00707f,  /* vmaxu_vx */
+    0xfe00707f,  /* vmerge_vim */
+    0xfe00707f,  /* vmerge_vvm */
+    0xfe00707f,  /* vmerge_vxm */
+    0xfc00707f,  /* vmfeq_vf */
+    0xfc00707f,  /* vmfeq_vv */
+    0xfc00707f,  /* vmfge_vf */
+    0xfc00707f,  /* vmfgt_vf */
+    0xfc00707f,  /* vmfle_vf */
+    0xfc00707f,  /* vmfle_vv */
+    0xfc00707f,  /* vmflt_vf */
+    0xfc00707f,  /* vmflt_vv */
+    0xfc00707f,  /* vmfne_vf */
+    0xfc00707f,  /* vmfne_vv */
+    0xfc00707f,  /* vmin_vv */
+    0xfc00707f,  /* vmin_vx */
+    0xfc00707f,  /* vminu_vv */
+    0xfc00707f,  /* vminu_vx */
+    0xfe00707f,  /* vmnand_mm */
+    0xfe00707f,  /* vmnor_mm */
+    0xfe00707f,  /* vmor_mm */
+    0xfe00707f,  /* vmorn_mm */
+    0xfc00707f,  /* vmornot_mm */
+    0xfe00707f,  /* vmsbc_vv */
+    0xfe00707f,  /* vmsbc_vvm */
+    0xfe00707f,  /* vmsbc_vx */
+    0xfe00707f,  /* vmsbc_vxm */
+    0xfc0ff07f,  /* vmsbf_m */
+    0xfc00707f,  /* vmseq_vi */
+    0xfc00707f,  /* vmseq_vv */
+    0xfc00707f,  /* vmseq_vx */
+    0xfc00707f,  /* vmsgt_vi */
+    0xfc00707f,  /* vmsgt_vx */
+    0xfc00707f,  /* vmsgtu_vi */
+    0xfc00707f,  /* vmsgtu_vx */
+    0xfc0ff07f,  /* vmsif_m */
+    0xfc00707f,  /* vmsle_vi */
+    0xfc00707f,  /* vmsle_vv */
+    0xfc00707f,  /* vmsle_vx */
+    0xfc00707f,  /* vmsleu_vi */
+    0xfc00707f,  /* vmsleu_vv */
+    0xfc00707f,  /* vmsleu_vx */
+    0xfc00707f,  /* vmslt_vv */
+    0xfc00707f,  /* vmslt_vx */
+    0xfc00707f,  /* vmsltu_vv */
+    0xfc00707f,  /* vmsltu_vx */
+    0xfc00707f,  /* vmsne_vi */
+    0xfc00707f,  /* vmsne_vv */
+    0xfc00707f,  /* vmsne_vx */
+    0xfc0ff07f,  /* vmsof_m */
+    0xfc00707f,  /* vmul_vv */
+    0xfc00707f,  /* vmul_vx */
+    0xfc00707f,  /* vmulh_vv */
+    0xfc00707f,  /* vmulh_vx */
+    0xfc00707f,  /* vmulhsu_vv */
+    0xfc00707f,  /* vmulhsu_vx */
+    0xfc00707f,  /* vmulhu_vv */
+    0xfc00707f,  /* vmulhu_vx */
+    0xfe0ff07f,  /* vmv1r_v */
+    0xfe0ff07f,  /* vmv2r_v */
+    0xfe0ff07f,  /* vmv4r_v */
+    0xfe0ff07f,  /* vmv8r_v */
+    0xfff0707f,  /* vmv_s_x */
+    0xfff0707f,  /* vmv_v_i */
+    0xfff0707f,  /* vmv_v_v */
+    0xfff0707f,  /* vmv_v_x */
+    0xfe0ff07f,  /* vmv_x_s */
+    0xfe00707f,  /* vmxnor_mm */
+    0xfe00707f,  /* vmxor_mm */
+    0xfc00707f,  /* vnclip_wi */
+    0xfc00707f,  /* vnclip_wv */
+    0xfc00707f,  /* vnclip_wx */
+    0xfc00707f,  /* vnclipu_wi */
+    0xfc00707f,  /* vnclipu_wv */
+    0xfc00707f,  /* vnclipu_wx */
+    0xfc00707f,  /* vnmsac_vv */
+    0xfc00707f,  /* vnmsac_vx */
+    0xfc00707f,  /* vnmsub_vv */
+    0xfc00707f,  /* vnmsub_vx */
+    0xfc00707f,  /* vnsra_wi */
+    0xfc00707f,  /* vnsra_wv */
+    0xfc00707f,  /* vnsra_wx */
+    0xfc00707f,  /* vnsrl_wi */
+    0xfc00707f,  /* vnsrl_wv */
+    0xfc00707f,  /* vnsrl_wx */
+    0xfc00707f,  /* vor_vi */
+    0xfc00707f,  /* vor_vv */
+    0xfc00707f,  /* vor_vx */
+    0xfc0ff07f,  /* vpopc_m */
+    0xfc00707f,  /* vredand_vs */
+    0xfc00707f,  /* vredmax_vs */
+    0xfc00707f,  /* vredmaxu_vs */
+    0xfc00707f,  /* vredmin_vs */
+    0xfc00707f,  /* vredminu_vs */
+    0xfc00707f,  /* vredor_vs */
+    0xfc00707f,  /* vredsum_vs */
+    0xfc00707f,  /* vredxor_vs */
+    0xfc00707f,  /* vrem_vv */
+    0xfc00707f,  /* vrem_vx */
+    0xfc00707f,  /* vremu_vv */
+    0xfc00707f,  /* vremu_vx */
+    0xfc0ff07f,  /* vrev8_v */
+    0xfc00707f,  /* vrgather_vi */
+    0xfc00707f,  /* vrgather_vv */
+    0xfc00707f,  /* vrgather_vx */
+    0xfc00707f,  /* vrgatherei16_vv */
+    0xfc00707f,  /* vrol_vv */
+    0xfc00707f,  /* vrol_vx */
+    0xf800707f,  /* vror_vi */
+    0xfc00707f,  /* vror_vv */
+    0xfc00707f,  /* vror_vx */
+    0xfc00707f,  /* vrsub_vi */
+    0xfc00707f,  /* vrsub_vx */
+    0xfff0707f,  /* vs1r_v */
+    0xfff0707f,  /* vs2r_v */
+    0xfff0707f,  /* vs4r_v */
+    0xfff0707f,  /* vs8r_v */
+    0xfc00707f,  /* vsadd_vi */
+    0xfc00707f,  /* vsadd_vv */
+    0xfc00707f,  /* vsadd_vx */
+    0xfc00707f,  /* vsaddu_vi */
+    0xfc00707f,  /* vsaddu_vv */
+    0xfc00707f,  /* vsaddu_vx */
+    0xfe00707f,  /* vsbc_vvm */
+    0xfe00707f,  /* vsbc_vxm */
+    0x1df0707f,  /* vse16_v */
+    0xfff0707f,  /* vse1_v */
+    0x1df0707f,  /* vse32_v */
+    0x1df0707f,  /* vse64_v */
+    0x1df0707f,  /* vse8_v */
+    0xc000707f,  /* vsetivli */
+    0xfe00707f,  /* vsetvl */
+    0x8000707f,  /* vsetvli */
+    0xfc0ff07f,  /* vsext_vf2 */
+    0xfc0ff07f,  /* vsext_vf4 */
+    0xfc0ff07f,  /* vsext_vf8 */
+    0xfe00707f,  /* vsha2ch_vv */
+    0xfe00707f,  /* vsha2cl_vv */
+    0xfe00707f,  /* vsha2ms_vv */
+    0xfc00707f,  /* vslide1down_vx */
+    0xfc00707f,  /* vslide1up_vx */
+    0xfc00707f,  /* vslidedown_vi */
+    0xfc00707f,  /* vslidedown_vx */
+    0xfc00707f,  /* vslideup_vi */
+    0xfc00707f,  /* vslideup_vx */
+    0xfc00707f,  /* vsll_vi */
+    0xfc00707f,  /* vsll_vv */
+    0xfc00707f,  /* vsll_vx */
+    0xfe00707f,  /* vsm3c_vi */
+    0xfe00707f,  /* vsm3me_vv */
+    0xfe00707f,  /* vsm4k_vi */
+    0xfe0ff07f,  /* vsm4r_vs */
+    0xfe0ff07f,  /* vsm4r_vv */
+    0xfff0707f,  /* vsm_v */
+    0xfc00707f,  /* vsmul_vv */
+    0xfc00707f,  /* vsmul_vx */
+    0x1c00707f,  /* vsoxei16_v */
+    0x1c00707f,  /* vsoxei32_v */
+    0x1c00707f,  /* vsoxei64_v */
+    0x1c00707f,  /* vsoxei8_v */
+    0xfc00707f,  /* vsra_vi */
+    0xfc00707f,  /* vsra_vv */
+    0xfc00707f,  /* vsra_vx */
+    0xfc00707f,  /* vsrl_vi */
+    0xfc00707f,  /* vsrl_vv */
+    0xfc00707f,  /* vsrl_vx */
+    0x1c00707f,  /* vsse16_v */
+    0x1c00707f,  /* vsse32_v */
+    0x1c00707f,  /* vsse64_v */
+    0x1c00707f,  /* vsse8_v */
+    0xfc00707f,  /* vssra_vi */
+    0xfc00707f,  /* vssra_vv */
+    0xfc00707f,  /* vssra_vx */
+    0xfc00707f,  /* vssrl_vi */
+    0xfc00707f,  /* vssrl_vv */
+    0xfc00707f,  /* vssrl_vx */
+    0xfc00707f,  /* vssub_vv */
+    0xfc00707f,  /* vssub_vx */
+    0xfc00707f,  /* vssubu_vv */
+    0xfc00707f,  /* vssubu_vx */
+    0xfc00707f,  /* vsub_vv */
+    0xfc00707f,  /* vsub_vx */
+    0x1c00707f,  /* vsuxei16_v */
+    0x1c00707f,  /* vsuxei32_v */
+    0x1c00707f,  /* vsuxei64_v */
+    0x1c00707f,  /* vsuxei8_v */
+    0xfc00707f,  /* vwadd_vv */
+    0xfc00707f,  /* vwadd_vx */
+    0xfc00707f,  /* vwadd_wv */
+    0xfc00707f,  /* vwadd_wx */
+    0xfc00707f,  /* vwaddu_vv */
+    0xfc00707f,  /* vwaddu_vx */
+    0xfc00707f,  /* vwaddu_wv */
+    0xfc00707f,  /* vwaddu_wx */
+    0xfc00707f,  /* vwmacc_vv */
+    0xfc00707f,  /* vwmacc_vx */
+    0xfc00707f,  /* vwmaccsu_vv */
+    0xfc00707f,  /* vwmaccsu_vx */
+    0xfc00707f,  /* vwmaccu_vv */
+    0xfc00707f,  /* vwmaccu_vx */
+    0xfc00707f,  /* vwmaccus_vx */
+    0xfc00707f,  /* vwmul_vv */
+    0xfc00707f,  /* vwmul_vx */
+    0xfc00707f,  /* vwmulsu_vv */
+    0xfc00707f,  /* vwmulsu_vx */
+    0xfc00707f,  /* vwmulu_vv */
+    0xfc00707f,  /* vwmulu_vx */
+    0xfc00707f,  /* vwredsum_vs */
+    0xfc00707f,  /* vwredsumu_vs */
+    0xfc00707f,  /* vwsll_vi */
+    0xfc00707f,  /* vwsll_vv */
+    0xfc00707f,  /* vwsll_vx */
+    0xfc00707f,  /* vwsub_vv */
+    0xfc00707f,  /* vwsub_vx */
+    0xfc00707f,  /* vwsub_wv */
+    0xfc00707f,  /* vwsub_wx */
+    0xfc00707f,  /* vwsubu_vv */
+    0xfc00707f,  /* vwsubu_vx */
+    0xfc00707f,  /* vwsubu_wv */
+    0xfc00707f,  /* vwsubu_wx */
+    0xfc00707f,  /* vxor_vi */
+    0xfc00707f,  /* vxor_vv */
+    0xfc00707f,  /* vxor_vx */
+    0xfc0ff07f,  /* vzext_vf2 */
+    0xfc0ff07f,  /* vzext_vf4 */
+    0xfc0ff07f,  /* vzext_vf8 */
+    0xffffffff,  /* wfi */
+    0xffffffff,  /* wrs_nto */
+    0xffffffff,  /* wrs_sto */
+    0xfe00707f,  /* xnor */
+    0xfe00707f,  /* xor */
+    0x707f,      /* xori */
+    0xfe00707f,  /* xperm4 */
+    0xfe00707f,  /* xperm8 */
+    0xfff0707f,  /* zext_b */
+    0xffff_ffff, /* zext_h */
+    0xfff0707f,  /* zext_h_rv32 */
+    0xffff_ffff, /* zext_w */
+    0xfff0707f,  /* zip */
 ];
 pub static OPCODE64_MATCH: [u32; 1021] = [
-0x33, /* add */
-0x800003b, /* add_uw */
-0x13, /* addi */
-0x1b, /* addiw */
-0x3b, /* addw */
-0xffff_ffff, /* aes32dsi */
-0xffff_ffff, /* aes32dsmi */
-0xffff_ffff, /* aes32esi */
-0xffff_ffff, /* aes32esmi */
-0x3a000033, /* aes64ds */
-0x3e000033, /* aes64dsm */
-0x32000033, /* aes64es */
-0x36000033, /* aes64esm */
-0x30001013, /* aes64im */
-0x31001013, /* aes64ks1i */
-0x7e000033, /* aes64ks2 */
-0x2f, /* amoadd_b */
-0x302f, /* amoadd_d */
-0x102f, /* amoadd_h */
-0x202f, /* amoadd_w */
-0x6000002f, /* amoand_b */
-0x6000302f, /* amoand_d */
-0x6000102f, /* amoand_h */
-0x6000202f, /* amoand_w */
-0x2800002f, /* amocas_b */
-0x2800302f, /* amocas_d */
-0x2800102f, /* amocas_h */
-0x2800402f, /* amocas_q */
-0x2800202f, /* amocas_w */
-0xa000002f, /* amomax_b */
-0xa000302f, /* amomax_d */
-0xa000102f, /* amomax_h */
-0xa000202f, /* amomax_w */
-0xe000002f, /* amomaxu_b */
-0xe000302f, /* amomaxu_d */
-0xe000102f, /* amomaxu_h */
-0xe000202f, /* amomaxu_w */
-0x8000002f, /* amomin_b */
-0x8000302f, /* amomin_d */
-0x8000102f, /* amomin_h */
-0x8000202f, /* amomin_w */
-0xc000002f, /* amominu_b */
-0xc000302f, /* amominu_d */
-0xc000102f, /* amominu_h */
-0xc000202f, /* amominu_w */
-0x4000002f, /* amoor_b */
-0x4000302f, /* amoor_d */
-0x4000102f, /* amoor_h */
-0x4000202f, /* amoor_w */
-0x800002f, /* amoswap_b */
-0x800302f, /* amoswap_d */
-0x800102f, /* amoswap_h */
-0x800202f, /* amoswap_w */
-0x2000002f, /* amoxor_b */
-0x2000302f, /* amoxor_d */
-0x2000102f, /* amoxor_h */
-0x2000202f, /* amoxor_w */
-0x7033, /* and */
-0x7013, /* andi */
-0x40007033, /* andn */
-0x17, /* auipc */
-0x48001033, /* bclr */
-0x48001013, /* bclri */
-0xffff_ffff, /* bclri_rv32 */
-0x63, /* beq */
-0x63, /* beqz */
-0x48005033, /* bext */
-0x48005013, /* bexti */
-0xffff_ffff, /* bexti_rv32 */
-0x5063, /* bge */
-0x7063, /* bgeu */
-0x5063, /* bgez */
-0x4063, /* bgt */
-0x6063, /* bgtu */
-0x4063, /* bgtz */
-0x68001033, /* binv */
-0x68001013, /* binvi */
-0xffff_ffff, /* binvi_rv32 */
-0x5063, /* ble */
-0x7063, /* bleu */
-0x5063, /* blez */
-0x4063, /* blt */
-0x6063, /* bltu */
-0x4063, /* bltz */
-0x1063, /* bne */
-0x1063, /* bnez */
-0x68705013, /* brev8 */
-0x28001033, /* bset */
-0x28001013, /* bseti */
-0xffff_ffff, /* bseti_rv32 */
-0x9002, /* c_add */
-0x1, /* c_addi */
-0x6101, /* c_addi16sp */
-0x0, /* c_addi4spn */
-0x2001, /* c_addiw */
-0x9c21, /* c_addw */
-0x8c61, /* c_and */
-0x8801, /* c_andi */
-0xc001, /* c_beqz */
-0xe001, /* c_bnez */
-0x9002, /* c_ebreak */
-0x2000, /* c_fld */
-0x2002, /* c_fldsp */
-0xffff_ffff, /* c_flw */
-0xffff_ffff, /* c_flwsp */
-0xa000, /* c_fsd */
-0xa002, /* c_fsdsp */
-0xffff_ffff, /* c_fsw */
-0xffff_ffff, /* c_fswsp */
-0xa001, /* c_j */
-0xffff_ffff, /* c_jal */
-0x9002, /* c_jalr */
-0x8002, /* c_jr */
-0x8000, /* c_lbu */
-0x6000, /* c_ld */
-0x6002, /* c_ldsp */
-0x8440, /* c_lh */
-0x8400, /* c_lhu */
-0x4001, /* c_li */
-0x6001, /* c_lui */
-0x4000, /* c_lw */
-0x4002, /* c_lwsp */
-0x6081, /* c_mop_1 */
-0x6581, /* c_mop_11 */
-0x6681, /* c_mop_13 */
-0x6781, /* c_mop_15 */
-0x6181, /* c_mop_3 */
-0x6281, /* c_mop_5 */
-0x6381, /* c_mop_7 */
-0x6481, /* c_mop_9 */
-0x6081, /* c_mop_N */
-0x9c41, /* c_mul */
-0x8002, /* c_mv */
-0x1, /* c_nop */
-0x9c75, /* c_not */
-0x9016, /* c_ntl_all */
-0x900a, /* c_ntl_p1 */
-0x900e, /* c_ntl_pall */
-0x9012, /* c_ntl_s1 */
-0x8c41, /* c_or */
-0x8800, /* c_sb */
-0xe000, /* c_sd */
-0xe002, /* c_sdsp */
-0x9c65, /* c_sext_b */
-0x9c6d, /* c_sext_h */
-0x2001, /* c_sext_w */
-0x8c00, /* c_sh */
-0x2, /* c_slli */
-0xffff_ffff, /* c_slli_rv32 */
-0x8401, /* c_srai */
-0xffff_ffff, /* c_srai_rv32 */
-0x8001, /* c_srli */
-0xffff_ffff, /* c_srli_rv32 */
-0x8c01, /* c_sub */
-0x9c01, /* c_subw */
-0xc000, /* c_sw */
-0xc002, /* c_swsp */
-0x8c21, /* c_xor */
-0x9c61, /* c_zext_b */
-0x9c69, /* c_zext_h */
-0x9c71, /* c_zext_w */
-0x10200f, /* cbo_clean */
-0x20200f, /* cbo_flush */
-0x200f, /* cbo_inval */
-0x40200f, /* cbo_zero */
-0xa001033, /* clmul */
-0xa003033, /* clmulh */
-0xa002033, /* clmulr */
-0x60001013, /* clz */
-0x6000101b, /* clzw */
-0xa002, /* cm_jalt */
-0xac62, /* cm_mva01s */
-0xac22, /* cm_mvsa01 */
-0xba02, /* cm_pop */
-0xbe02, /* cm_popret */
-0xbc02, /* cm_popretz */
-0xb802, /* cm_push */
-0x60201013, /* cpop */
-0x6020101b, /* cpopw */
-0x3073, /* csrc */
-0x7073, /* csrci */
-0x2073, /* csrr */
-0x3073, /* csrrc */
-0x7073, /* csrrci */
-0x2073, /* csrrs */
-0x6073, /* csrrsi */
-0x1073, /* csrrw */
-0x5073, /* csrrwi */
-0x2073, /* csrs */
-0x6073, /* csrsi */
-0x1073, /* csrw */
-0x5073, /* csrwi */
-0x60101013, /* ctz */
-0x6010101b, /* ctzw */
-0xe005033, /* czero_eqz */
-0xe007033, /* czero_nez */
-0x2004033, /* div */
-0x2005033, /* divu */
-0x200503b, /* divuw */
-0x200403b, /* divw */
-0x7b200073, /* dret */
-0x100073, /* ebreak */
-0x73, /* ecall */
-0x22002053, /* fabs_d */
-0x24002053, /* fabs_h */
-0x26002053, /* fabs_q */
-0x20002053, /* fabs_s */
-0x2000053, /* fadd_d */
-0x4000053, /* fadd_h */
-0x6000053, /* fadd_q */
-0x53, /* fadd_s */
-0xe2001053, /* fclass_d */
-0xe4001053, /* fclass_h */
-0xe6001053, /* fclass_q */
-0xe0001053, /* fclass_s */
-0x42200053, /* fcvt_d_h */
-0xd2200053, /* fcvt_d_l */
-0xd2300053, /* fcvt_d_lu */
-0x42300053, /* fcvt_d_q */
-0x42000053, /* fcvt_d_s */
-0xd2000053, /* fcvt_d_w */
-0xd2100053, /* fcvt_d_wu */
-0x44100053, /* fcvt_h_d */
-0xd4200053, /* fcvt_h_l */
-0xd4300053, /* fcvt_h_lu */
-0x44300053, /* fcvt_h_q */
-0x44000053, /* fcvt_h_s */
-0xd4000053, /* fcvt_h_w */
-0xd4100053, /* fcvt_h_wu */
-0xc2200053, /* fcvt_l_d */
-0xc4200053, /* fcvt_l_h */
-0xc6200053, /* fcvt_l_q */
-0xc0200053, /* fcvt_l_s */
-0xc2300053, /* fcvt_lu_d */
-0xc4300053, /* fcvt_lu_h */
-0xc6300053, /* fcvt_lu_q */
-0xc0300053, /* fcvt_lu_s */
-0x46100053, /* fcvt_q_d */
-0x46200053, /* fcvt_q_h */
-0xd6200053, /* fcvt_q_l */
-0xd6300053, /* fcvt_q_lu */
-0x46000053, /* fcvt_q_s */
-0xd6000053, /* fcvt_q_w */
-0xd6100053, /* fcvt_q_wu */
-0x40100053, /* fcvt_s_d */
-0x40200053, /* fcvt_s_h */
-0xd0200053, /* fcvt_s_l */
-0xd0300053, /* fcvt_s_lu */
-0x40300053, /* fcvt_s_q */
-0xd0000053, /* fcvt_s_w */
-0xd0100053, /* fcvt_s_wu */
-0xc2000053, /* fcvt_w_d */
-0xc4000053, /* fcvt_w_h */
-0xc6000053, /* fcvt_w_q */
-0xc0000053, /* fcvt_w_s */
-0xc2100053, /* fcvt_wu_d */
-0xc4100053, /* fcvt_wu_h */
-0xc6100053, /* fcvt_wu_q */
-0xc0100053, /* fcvt_wu_s */
-0xc2801053, /* fcvtmod_w_d */
-0x1a000053, /* fdiv_d */
-0x1c000053, /* fdiv_h */
-0x1e000053, /* fdiv_q */
-0x18000053, /* fdiv_s */
-0xf, /* fence */
-0x100f, /* fence_i */
-0x8330000f, /* fence_tso */
-0xa2002053, /* feq_d */
-0xa4002053, /* feq_h */
-0xa6002053, /* feq_q */
-0xa0002053, /* feq_s */
-0x3007, /* fld */
-0xa2000053, /* fle_d */
-0xa4000053, /* fle_h */
-0xa6000053, /* fle_q */
-0xa0000053, /* fle_s */
-0xa2004053, /* fleq_d */
-0xa4004053, /* fleq_h */
-0xa6004053, /* fleq_q */
-0xa0004053, /* fleq_s */
-0x1007, /* flh */
-0xf2100053, /* fli_d */
-0xf4100053, /* fli_h */
-0xf6100053, /* fli_q */
-0xf0100053, /* fli_s */
-0x4007, /* flq */
-0xa2001053, /* flt_d */
-0xa4001053, /* flt_h */
-0xa6001053, /* flt_q */
-0xa0001053, /* flt_s */
-0xa2005053, /* fltq_d */
-0xa4005053, /* fltq_h */
-0xa6005053, /* fltq_q */
-0xa0005053, /* fltq_s */
-0x2007, /* flw */
-0x2000043, /* fmadd_d */
-0x4000043, /* fmadd_h */
-0x6000043, /* fmadd_q */
-0x43, /* fmadd_s */
-0x2a001053, /* fmax_d */
-0x2c001053, /* fmax_h */
-0x2e001053, /* fmax_q */
-0x28001053, /* fmax_s */
-0x2a003053, /* fmaxm_d */
-0x2c003053, /* fmaxm_h */
-0x2e003053, /* fmaxm_q */
-0x28003053, /* fmaxm_s */
-0x2a000053, /* fmin_d */
-0x2c000053, /* fmin_h */
-0x2e000053, /* fmin_q */
-0x28000053, /* fmin_s */
-0x2a002053, /* fminm_d */
-0x2c002053, /* fminm_h */
-0x2e002053, /* fminm_q */
-0x28002053, /* fminm_s */
-0x2000047, /* fmsub_d */
-0x4000047, /* fmsub_h */
-0x6000047, /* fmsub_q */
-0x47, /* fmsub_s */
-0x12000053, /* fmul_d */
-0x14000053, /* fmul_h */
-0x16000053, /* fmul_q */
-0x10000053, /* fmul_s */
-0x22000053, /* fmv_d */
-0xf2000053, /* fmv_d_x */
-0x24000053, /* fmv_h */
-0xf4000053, /* fmv_h_x */
-0x26000053, /* fmv_q */
-0x20000053, /* fmv_s */
-0xf0000053, /* fmv_s_x */
-0xf0000053, /* fmv_w_x */
-0xe2000053, /* fmv_x_d */
-0xe4000053, /* fmv_x_h */
-0xe0000053, /* fmv_x_s */
-0xe0000053, /* fmv_x_w */
-0xffff_ffff, /* fmvh_x_d */
-0xe6100053, /* fmvh_x_q */
-0xffff_ffff, /* fmvp_d_x */
-0xb6000053, /* fmvp_q_x */
-0x22001053, /* fneg_d */
-0x24001053, /* fneg_h */
-0x26001053, /* fneg_q */
-0x20001053, /* fneg_s */
-0x200004f, /* fnmadd_d */
-0x400004f, /* fnmadd_h */
-0x600004f, /* fnmadd_q */
-0x4f, /* fnmadd_s */
-0x200004b, /* fnmsub_d */
-0x400004b, /* fnmsub_h */
-0x600004b, /* fnmsub_q */
-0x4b, /* fnmsub_s */
-0x302073, /* frcsr */
-0x102073, /* frflags */
-0x42400053, /* fround_d */
-0x44400053, /* fround_h */
-0x46400053, /* fround_q */
-0x40400053, /* fround_s */
-0x42500053, /* froundnx_d */
-0x44500053, /* froundnx_h */
-0x46500053, /* froundnx_q */
-0x40500053, /* froundnx_s */
-0x202073, /* frrm */
-0x301073, /* fscsr */
-0x3027, /* fsd */
-0x101073, /* fsflags */
-0x105073, /* fsflagsi */
-0x22000053, /* fsgnj_d */
-0x24000053, /* fsgnj_h */
-0x26000053, /* fsgnj_q */
-0x20000053, /* fsgnj_s */
-0x22001053, /* fsgnjn_d */
-0x24001053, /* fsgnjn_h */
-0x26001053, /* fsgnjn_q */
-0x20001053, /* fsgnjn_s */
-0x22002053, /* fsgnjx_d */
-0x24002053, /* fsgnjx_h */
-0x26002053, /* fsgnjx_q */
-0x20002053, /* fsgnjx_s */
-0x1027, /* fsh */
-0x4027, /* fsq */
-0x5a000053, /* fsqrt_d */
-0x5c000053, /* fsqrt_h */
-0x5e000053, /* fsqrt_q */
-0x58000053, /* fsqrt_s */
-0x201073, /* fsrm */
-0x205073, /* fsrmi */
-0xa000053, /* fsub_d */
-0xc000053, /* fsub_h */
-0xe000053, /* fsub_q */
-0x8000053, /* fsub_s */
-0x2027, /* fsw */
-0x62000073, /* hfence_gvma */
-0x22000073, /* hfence_vvma */
-0x66000073, /* hinval_gvma */
-0x26000073, /* hinval_vvma */
-0x60004073, /* hlv_b */
-0x60104073, /* hlv_bu */
-0x6c004073, /* hlv_d */
-0x64004073, /* hlv_h */
-0x64104073, /* hlv_hu */
-0x68004073, /* hlv_w */
-0x68104073, /* hlv_wu */
-0x64304073, /* hlvx_hu */
-0x68304073, /* hlvx_wu */
-0x62004073, /* hsv_b */
-0x6e004073, /* hsv_d */
-0x66004073, /* hsv_h */
-0x6a004073, /* hsv_w */
-0x6f, /* j */
-0x6f, /* jal */
-0xef, /* jal_pseudo */
-0x67, /* jalr */
-0xe7, /* jalr_pseudo */
-0x67, /* jr */
-0x3, /* lb */
-0x4003, /* lbu */
-0x3003, /* ld */
-0x1003, /* lh */
-0x5003, /* lhu */
-0x1000302f, /* lr_d */
-0x1000202f, /* lr_w */
-0x37, /* lui */
-0x2003, /* lw */
-0x6003, /* lwu */
-0xa006033, /* max */
-0xa007033, /* maxu */
-0xa004033, /* min */
-0xa005033, /* minu */
-0x81c04073, /* mop_r_0 */
-0x81d04073, /* mop_r_1 */
-0x89e04073, /* mop_r_10 */
-0x89f04073, /* mop_r_11 */
-0x8dc04073, /* mop_r_12 */
-0x8dd04073, /* mop_r_13 */
-0x8de04073, /* mop_r_14 */
-0x8df04073, /* mop_r_15 */
-0xc1c04073, /* mop_r_16 */
-0xc1d04073, /* mop_r_17 */
-0xc1e04073, /* mop_r_18 */
-0xc1f04073, /* mop_r_19 */
-0x81e04073, /* mop_r_2 */
-0xc5c04073, /* mop_r_20 */
-0xc5d04073, /* mop_r_21 */
-0xc5e04073, /* mop_r_22 */
-0xc5f04073, /* mop_r_23 */
-0xc9c04073, /* mop_r_24 */
-0xc9d04073, /* mop_r_25 */
-0xc9e04073, /* mop_r_26 */
-0xc9f04073, /* mop_r_27 */
-0xcdc04073, /* mop_r_28 */
-0xcdd04073, /* mop_r_29 */
-0x81f04073, /* mop_r_3 */
-0xcde04073, /* mop_r_30 */
-0xcdf04073, /* mop_r_31 */
-0x85c04073, /* mop_r_4 */
-0x85d04073, /* mop_r_5 */
-0x85e04073, /* mop_r_6 */
-0x85f04073, /* mop_r_7 */
-0x89c04073, /* mop_r_8 */
-0x89d04073, /* mop_r_9 */
-0x81c04073, /* mop_r_N */
-0x82004073, /* mop_rr_0 */
-0x86004073, /* mop_rr_1 */
-0x8a004073, /* mop_rr_2 */
-0x8e004073, /* mop_rr_3 */
-0xc2004073, /* mop_rr_4 */
-0xc6004073, /* mop_rr_5 */
-0xca004073, /* mop_rr_6 */
-0xce004073, /* mop_rr_7 */
-0x82004073, /* mop_rr_N */
-0x30200073, /* mret */
-0x2000033, /* mul */
-0x2001033, /* mulh */
-0x2002033, /* mulhsu */
-0x2003033, /* mulhu */
-0x200003b, /* mulw */
-0x13, /* mv */
-0x40000033, /* neg */
-0x13, /* nop */
-0x500033, /* ntl_all */
-0x200033, /* ntl_p1 */
-0x300033, /* ntl_pall */
-0x400033, /* ntl_s1 */
-0x6033, /* or */
-0x28705013, /* orc_b */
-0x6013, /* ori */
-0x40006033, /* orn */
-0x8004033, /* pack */
-0x8007033, /* packh */
-0x800403b, /* packw */
-0x100000f, /* pause */
-0x6013, /* prefetch_i */
-0x106013, /* prefetch_r */
-0x306013, /* prefetch_w */
-0xc0002073, /* rdcycle */
-0xffff_ffff, /* rdcycleh */
-0xc0202073, /* rdinstret */
-0xffff_ffff, /* rdinstreth */
-0xc0102073, /* rdtime */
-0xffff_ffff, /* rdtimeh */
-0x2006033, /* rem */
-0x2007033, /* remu */
-0x200703b, /* remuw */
-0x200603b, /* remw */
-0x8067, /* ret */
-0x6b805013, /* rev8 */
-0xffff_ffff, /* rev8_rv32 */
-0x60001033, /* rol */
-0x6000103b, /* rolw */
-0x60005033, /* ror */
-0x60005013, /* rori */
-0xffff_ffff, /* rori_rv32 */
-0x6000501b, /* roriw */
-0x6000503b, /* rorw */
-0x23, /* sb */
-0x100073, /* sbreak */
-0x1800302f, /* sc_d */
-0x1800202f, /* sc_w */
-0x73, /* scall */
-0x3023, /* sd */
-0x103013, /* seqz */
-0x60401013, /* sext_b */
-0x60501013, /* sext_h */
-0x1b, /* sext_w */
-0x18100073, /* sfence_inval_ir */
-0x12000073, /* sfence_vma */
-0x18000073, /* sfence_w_inval */
-0x2033, /* sgtz */
-0x1023, /* sh */
-0x20002033, /* sh1add */
-0x2000203b, /* sh1add_uw */
-0x20004033, /* sh2add */
-0x2000403b, /* sh2add_uw */
-0x20006033, /* sh3add */
-0x2000603b, /* sh3add_uw */
-0x10201013, /* sha256sig0 */
-0x10301013, /* sha256sig1 */
-0x10001013, /* sha256sum0 */
-0x10101013, /* sha256sum1 */
-0x10601013, /* sha512sig0 */
-0xffff_ffff, /* sha512sig0h */
-0xffff_ffff, /* sha512sig0l */
-0x10701013, /* sha512sig1 */
-0xffff_ffff, /* sha512sig1h */
-0xffff_ffff, /* sha512sig1l */
-0x10401013, /* sha512sum0 */
-0xffff_ffff, /* sha512sum0r */
-0x10501013, /* sha512sum1 */
-0xffff_ffff, /* sha512sum1r */
-0x16000073, /* sinval_vma */
-0x1033, /* sll */
-0x1013, /* slli */
-0xffff_ffff, /* slli_rv32 */
-0x800101b, /* slli_uw */
-0x101b, /* slliw */
-0x103b, /* sllw */
-0x2033, /* slt */
-0x2013, /* slti */
-0x3013, /* sltiu */
-0x3033, /* sltu */
-0x2033, /* sltz */
-0x10801013, /* sm3p0 */
-0x10901013, /* sm3p1 */
-0x30000033, /* sm4ed */
-0x34000033, /* sm4ks */
-0x3033, /* snez */
-0x40005033, /* sra */
-0x40005013, /* srai */
-0xffff_ffff, /* srai_rv32 */
-0x4000501b, /* sraiw */
-0x4000503b, /* sraw */
-0x10200073, /* sret */
-0x5033, /* srl */
-0x5013, /* srli */
-0xffff_ffff, /* srli_rv32 */
-0x501b, /* srliw */
-0x503b, /* srlw */
-0x40000033, /* sub */
-0x4000003b, /* subw */
-0x2023, /* sw */
-0xffff_ffff, /* unzip */
-0x24002057, /* vaadd_vv */
-0x24006057, /* vaadd_vx */
-0x20002057, /* vaaddu_vv */
-0x20006057, /* vaaddu_vx */
-0x40003057, /* vadc_vim */
-0x40000057, /* vadc_vvm */
-0x40004057, /* vadc_vxm */
-0x3057, /* vadd_vi */
-0x57, /* vadd_vv */
-0x4057, /* vadd_vx */
-0xa600a077, /* vaesdf_vs */
-0xa200a077, /* vaesdf_vv */
-0xa6002077, /* vaesdm_vs */
-0xa2002077, /* vaesdm_vv */
-0xa601a077, /* vaesef_vs */
-0xa201a077, /* vaesef_vv */
-0xa6012077, /* vaesem_vs */
-0xa2012077, /* vaesem_vv */
-0x8a002077, /* vaeskf1_vi */
-0xaa002077, /* vaeskf2_vi */
-0xa603a077, /* vaesz_vs */
-0x24003057, /* vand_vi */
-0x24000057, /* vand_vv */
-0x24004057, /* vand_vx */
-0x4000057, /* vandn_vv */
-0x4004057, /* vandn_vx */
-0x2c002057, /* vasub_vv */
-0x2c006057, /* vasub_vx */
-0x28002057, /* vasubu_vv */
-0x28006057, /* vasubu_vx */
-0x48042057, /* vbrev8_v */
-0x48052057, /* vbrev_v */
-0x30002057, /* vclmul_vv */
-0x30006057, /* vclmul_vx */
-0x34002057, /* vclmulh_vv */
-0x34006057, /* vclmulh_vx */
-0x48062057, /* vclz_v */
-0x5e002057, /* vcompress_vm */
-0x40082057, /* vcpop_m */
-0x48072057, /* vcpop_v */
-0x4806a057, /* vctz_v */
-0x84002057, /* vdiv_vv */
-0x84006057, /* vdiv_vx */
-0x80002057, /* vdivu_vv */
-0x80006057, /* vdivu_vx */
-0x5057, /* vfadd_vf */
-0x1057, /* vfadd_vv */
-0x4c081057, /* vfclass_v */
-0x48019057, /* vfcvt_f_x_v */
-0x48011057, /* vfcvt_f_xu_v */
-0x48039057, /* vfcvt_rtz_x_f_v */
-0x48031057, /* vfcvt_rtz_xu_f_v */
-0x48009057, /* vfcvt_x_f_v */
-0x48001057, /* vfcvt_xu_f_v */
-0x80005057, /* vfdiv_vf */
-0x80001057, /* vfdiv_vv */
-0x4008a057, /* vfirst_m */
-0xb0005057, /* vfmacc_vf */
-0xb0001057, /* vfmacc_vv */
-0xa0005057, /* vfmadd_vf */
-0xa0001057, /* vfmadd_vv */
-0x18005057, /* vfmax_vf */
-0x18001057, /* vfmax_vv */
-0x5c005057, /* vfmerge_vfm */
-0x10005057, /* vfmin_vf */
-0x10001057, /* vfmin_vv */
-0xb8005057, /* vfmsac_vf */
-0xb8001057, /* vfmsac_vv */
-0xa8005057, /* vfmsub_vf */
-0xa8001057, /* vfmsub_vv */
-0x90005057, /* vfmul_vf */
-0x90001057, /* vfmul_vv */
-0x42001057, /* vfmv_f_s */
-0x42005057, /* vfmv_s_f */
-0x5e005057, /* vfmv_v_f */
-0x480a1057, /* vfncvt_f_f_w */
-0x48099057, /* vfncvt_f_x_w */
-0x48091057, /* vfncvt_f_xu_w */
-0x480a9057, /* vfncvt_rod_f_f_w */
-0x480b9057, /* vfncvt_rtz_x_f_w */
-0x480b1057, /* vfncvt_rtz_xu_f_w */
-0x48089057, /* vfncvt_x_f_w */
-0x48081057, /* vfncvt_xu_f_w */
-0xb4005057, /* vfnmacc_vf */
-0xb4001057, /* vfnmacc_vv */
-0xa4005057, /* vfnmadd_vf */
-0xa4001057, /* vfnmadd_vv */
-0xbc005057, /* vfnmsac_vf */
-0xbc001057, /* vfnmsac_vv */
-0xac005057, /* vfnmsub_vf */
-0xac001057, /* vfnmsub_vv */
-0x84005057, /* vfrdiv_vf */
-0x4c029057, /* vfrec7_v */
-0x1c001057, /* vfredmax_vs */
-0x14001057, /* vfredmin_vs */
-0xc001057, /* vfredosum_vs */
-0x4001057, /* vfredsum_vs */
-0x4001057, /* vfredusum_vs */
-0x4c021057, /* vfrsqrt7_v */
-0x9c005057, /* vfrsub_vf */
-0x20005057, /* vfsgnj_vf */
-0x20001057, /* vfsgnj_vv */
-0x24005057, /* vfsgnjn_vf */
-0x24001057, /* vfsgnjn_vv */
-0x28005057, /* vfsgnjx_vf */
-0x28001057, /* vfsgnjx_vv */
-0x3c005057, /* vfslide1down_vf */
-0x38005057, /* vfslide1up_vf */
-0x4c001057, /* vfsqrt_v */
-0x8005057, /* vfsub_vf */
-0x8001057, /* vfsub_vv */
-0xc0005057, /* vfwadd_vf */
-0xc0001057, /* vfwadd_vv */
-0xd0005057, /* vfwadd_wf */
-0xd0001057, /* vfwadd_wv */
-0x48061057, /* vfwcvt_f_f_v */
-0x48059057, /* vfwcvt_f_x_v */
-0x48051057, /* vfwcvt_f_xu_v */
-0x48079057, /* vfwcvt_rtz_x_f_v */
-0x48071057, /* vfwcvt_rtz_xu_f_v */
-0x48049057, /* vfwcvt_x_f_v */
-0x48041057, /* vfwcvt_xu_f_v */
-0xf0005057, /* vfwmacc_vf */
-0xf0001057, /* vfwmacc_vv */
-0xf8005057, /* vfwmsac_vf */
-0xf8001057, /* vfwmsac_vv */
-0xe0005057, /* vfwmul_vf */
-0xe0001057, /* vfwmul_vv */
-0xf4005057, /* vfwnmacc_vf */
-0xf4001057, /* vfwnmacc_vv */
-0xfc005057, /* vfwnmsac_vf */
-0xfc001057, /* vfwnmsac_vv */
-0xcc001057, /* vfwredosum_vs */
-0xc4001057, /* vfwredsum_vs */
-0xc4001057, /* vfwredusum_vs */
-0xc8005057, /* vfwsub_vf */
-0xc8001057, /* vfwsub_vv */
-0xd8005057, /* vfwsub_wf */
-0xd8001057, /* vfwsub_wv */
-0xb2002077, /* vghsh_vv */
-0xa208a077, /* vgmul_vv */
-0x5008a057, /* vid_v */
-0x50082057, /* viota_m */
-0x2800007, /* vl1r_v */
-0x2805007, /* vl1re16_v */
-0x2806007, /* vl1re32_v */
-0x2807007, /* vl1re64_v */
-0x2800007, /* vl1re8_v */
-0x22800007, /* vl2r_v */
-0x22805007, /* vl2re16_v */
-0x22806007, /* vl2re32_v */
-0x22807007, /* vl2re64_v */
-0x22800007, /* vl2re8_v */
-0x62800007, /* vl4r_v */
-0x62805007, /* vl4re16_v */
-0x62806007, /* vl4re32_v */
-0x62807007, /* vl4re64_v */
-0x62800007, /* vl4re8_v */
-0xe2800007, /* vl8r_v */
-0xe2805007, /* vl8re16_v */
-0xe2806007, /* vl8re32_v */
-0xe2807007, /* vl8re64_v */
-0xe2800007, /* vl8re8_v */
-0x5007, /* vle16_v */
-0x1005007, /* vle16ff_v */
-0x2b00007, /* vle1_v */
-0x6007, /* vle32_v */
-0x1006007, /* vle32ff_v */
-0x7007, /* vle64_v */
-0x1007007, /* vle64ff_v */
-0x7, /* vle8_v */
-0x1000007, /* vle8ff_v */
-0x2b00007, /* vlm_v */
-0xc005007, /* vloxei16_v */
-0xc006007, /* vloxei32_v */
-0xc007007, /* vloxei64_v */
-0xc000007, /* vloxei8_v */
-0x8005007, /* vlse16_v */
-0x8006007, /* vlse32_v */
-0x8007007, /* vlse64_v */
-0x8000007, /* vlse8_v */
-0x4005007, /* vluxei16_v */
-0x4006007, /* vluxei32_v */
-0x4007007, /* vluxei64_v */
-0x4000007, /* vluxei8_v */
-0xb4002057, /* vmacc_vv */
-0xb4006057, /* vmacc_vx */
-0x46003057, /* vmadc_vi */
-0x44003057, /* vmadc_vim */
-0x46000057, /* vmadc_vv */
-0x44000057, /* vmadc_vvm */
-0x46004057, /* vmadc_vx */
-0x44004057, /* vmadc_vxm */
-0xa4002057, /* vmadd_vv */
-0xa4006057, /* vmadd_vx */
-0x66002057, /* vmand_mm */
-0x62002057, /* vmandn_mm */
-0x60002057, /* vmandnot_mm */
-0x1c000057, /* vmax_vv */
-0x1c004057, /* vmax_vx */
-0x18000057, /* vmaxu_vv */
-0x18004057, /* vmaxu_vx */
-0x5c003057, /* vmerge_vim */
-0x5c000057, /* vmerge_vvm */
-0x5c004057, /* vmerge_vxm */
-0x60005057, /* vmfeq_vf */
-0x60001057, /* vmfeq_vv */
-0x7c005057, /* vmfge_vf */
-0x74005057, /* vmfgt_vf */
-0x64005057, /* vmfle_vf */
-0x64001057, /* vmfle_vv */
-0x6c005057, /* vmflt_vf */
-0x6c001057, /* vmflt_vv */
-0x70005057, /* vmfne_vf */
-0x70001057, /* vmfne_vv */
-0x14000057, /* vmin_vv */
-0x14004057, /* vmin_vx */
-0x10000057, /* vminu_vv */
-0x10004057, /* vminu_vx */
-0x76002057, /* vmnand_mm */
-0x7a002057, /* vmnor_mm */
-0x6a002057, /* vmor_mm */
-0x72002057, /* vmorn_mm */
-0x70002057, /* vmornot_mm */
-0x4e000057, /* vmsbc_vv */
-0x4c000057, /* vmsbc_vvm */
-0x4e004057, /* vmsbc_vx */
-0x4c004057, /* vmsbc_vxm */
-0x5000a057, /* vmsbf_m */
-0x60003057, /* vmseq_vi */
-0x60000057, /* vmseq_vv */
-0x60004057, /* vmseq_vx */
-0x7c003057, /* vmsgt_vi */
-0x7c004057, /* vmsgt_vx */
-0x78003057, /* vmsgtu_vi */
-0x78004057, /* vmsgtu_vx */
-0x5001a057, /* vmsif_m */
-0x74003057, /* vmsle_vi */
-0x74000057, /* vmsle_vv */
-0x74004057, /* vmsle_vx */
-0x70003057, /* vmsleu_vi */
-0x70000057, /* vmsleu_vv */
-0x70004057, /* vmsleu_vx */
-0x6c000057, /* vmslt_vv */
-0x6c004057, /* vmslt_vx */
-0x68000057, /* vmsltu_vv */
-0x68004057, /* vmsltu_vx */
-0x64003057, /* vmsne_vi */
-0x64000057, /* vmsne_vv */
-0x64004057, /* vmsne_vx */
-0x50012057, /* vmsof_m */
-0x94002057, /* vmul_vv */
-0x94006057, /* vmul_vx */
-0x9c002057, /* vmulh_vv */
-0x9c006057, /* vmulh_vx */
-0x98002057, /* vmulhsu_vv */
-0x98006057, /* vmulhsu_vx */
-0x90002057, /* vmulhu_vv */
-0x90006057, /* vmulhu_vx */
-0x9e003057, /* vmv1r_v */
-0x9e00b057, /* vmv2r_v */
-0x9e01b057, /* vmv4r_v */
-0x9e03b057, /* vmv8r_v */
-0x42006057, /* vmv_s_x */
-0x5e003057, /* vmv_v_i */
-0x5e000057, /* vmv_v_v */
-0x5e004057, /* vmv_v_x */
-0x42002057, /* vmv_x_s */
-0x7e002057, /* vmxnor_mm */
-0x6e002057, /* vmxor_mm */
-0xbc003057, /* vnclip_wi */
-0xbc000057, /* vnclip_wv */
-0xbc004057, /* vnclip_wx */
-0xb8003057, /* vnclipu_wi */
-0xb8000057, /* vnclipu_wv */
-0xb8004057, /* vnclipu_wx */
-0xbc002057, /* vnmsac_vv */
-0xbc006057, /* vnmsac_vx */
-0xac002057, /* vnmsub_vv */
-0xac006057, /* vnmsub_vx */
-0xb4003057, /* vnsra_wi */
-0xb4000057, /* vnsra_wv */
-0xb4004057, /* vnsra_wx */
-0xb0003057, /* vnsrl_wi */
-0xb0000057, /* vnsrl_wv */
-0xb0004057, /* vnsrl_wx */
-0x28003057, /* vor_vi */
-0x28000057, /* vor_vv */
-0x28004057, /* vor_vx */
-0x40082057, /* vpopc_m */
-0x4002057, /* vredand_vs */
-0x1c002057, /* vredmax_vs */
-0x18002057, /* vredmaxu_vs */
-0x14002057, /* vredmin_vs */
-0x10002057, /* vredminu_vs */
-0x8002057, /* vredor_vs */
-0x2057, /* vredsum_vs */
-0xc002057, /* vredxor_vs */
-0x8c002057, /* vrem_vv */
-0x8c006057, /* vrem_vx */
-0x88002057, /* vremu_vv */
-0x88006057, /* vremu_vx */
-0x4804a057, /* vrev8_v */
-0x30003057, /* vrgather_vi */
-0x30000057, /* vrgather_vv */
-0x30004057, /* vrgather_vx */
-0x38000057, /* vrgatherei16_vv */
-0x54000057, /* vrol_vv */
-0x54004057, /* vrol_vx */
-0x50003057, /* vror_vi */
-0x50000057, /* vror_vv */
-0x50004057, /* vror_vx */
-0xc003057, /* vrsub_vi */
-0xc004057, /* vrsub_vx */
-0x2800027, /* vs1r_v */
-0x22800027, /* vs2r_v */
-0x62800027, /* vs4r_v */
-0xe2800027, /* vs8r_v */
-0x84003057, /* vsadd_vi */
-0x84000057, /* vsadd_vv */
-0x84004057, /* vsadd_vx */
-0x80003057, /* vsaddu_vi */
-0x80000057, /* vsaddu_vv */
-0x80004057, /* vsaddu_vx */
-0x48000057, /* vsbc_vvm */
-0x48004057, /* vsbc_vxm */
-0x5027, /* vse16_v */
-0x2b00027, /* vse1_v */
-0x6027, /* vse32_v */
-0x7027, /* vse64_v */
-0x27, /* vse8_v */
-0xc0007057, /* vsetivli */
-0x80007057, /* vsetvl */
-0x7057, /* vsetvli */
-0x4803a057, /* vsext_vf2 */
-0x4802a057, /* vsext_vf4 */
-0x4801a057, /* vsext_vf8 */
-0xba002077, /* vsha2ch_vv */
-0xbe002077, /* vsha2cl_vv */
-0xb6002077, /* vsha2ms_vv */
-0x3c006057, /* vslide1down_vx */
-0x38006057, /* vslide1up_vx */
-0x3c003057, /* vslidedown_vi */
-0x3c004057, /* vslidedown_vx */
-0x38003057, /* vslideup_vi */
-0x38004057, /* vslideup_vx */
-0x94003057, /* vsll_vi */
-0x94000057, /* vsll_vv */
-0x94004057, /* vsll_vx */
-0xae002077, /* vsm3c_vi */
-0x82002077, /* vsm3me_vv */
-0x86002077, /* vsm4k_vi */
-0xa6082077, /* vsm4r_vs */
-0xa2082077, /* vsm4r_vv */
-0x2b00027, /* vsm_v */
-0x9c000057, /* vsmul_vv */
-0x9c004057, /* vsmul_vx */
-0xc005027, /* vsoxei16_v */
-0xc006027, /* vsoxei32_v */
-0xc007027, /* vsoxei64_v */
-0xc000027, /* vsoxei8_v */
-0xa4003057, /* vsra_vi */
-0xa4000057, /* vsra_vv */
-0xa4004057, /* vsra_vx */
-0xa0003057, /* vsrl_vi */
-0xa0000057, /* vsrl_vv */
-0xa0004057, /* vsrl_vx */
-0x8005027, /* vsse16_v */
-0x8006027, /* vsse32_v */
-0x8007027, /* vsse64_v */
-0x8000027, /* vsse8_v */
-0xac003057, /* vssra_vi */
-0xac000057, /* vssra_vv */
-0xac004057, /* vssra_vx */
-0xa8003057, /* vssrl_vi */
-0xa8000057, /* vssrl_vv */
-0xa8004057, /* vssrl_vx */
-0x8c000057, /* vssub_vv */
-0x8c004057, /* vssub_vx */
-0x88000057, /* vssubu_vv */
-0x88004057, /* vssubu_vx */
-0x8000057, /* vsub_vv */
-0x8004057, /* vsub_vx */
-0x4005027, /* vsuxei16_v */
-0x4006027, /* vsuxei32_v */
-0x4007027, /* vsuxei64_v */
-0x4000027, /* vsuxei8_v */
-0xc4002057, /* vwadd_vv */
-0xc4006057, /* vwadd_vx */
-0xd4002057, /* vwadd_wv */
-0xd4006057, /* vwadd_wx */
-0xc0002057, /* vwaddu_vv */
-0xc0006057, /* vwaddu_vx */
-0xd0002057, /* vwaddu_wv */
-0xd0006057, /* vwaddu_wx */
-0xf4002057, /* vwmacc_vv */
-0xf4006057, /* vwmacc_vx */
-0xfc002057, /* vwmaccsu_vv */
-0xfc006057, /* vwmaccsu_vx */
-0xf0002057, /* vwmaccu_vv */
-0xf0006057, /* vwmaccu_vx */
-0xf8006057, /* vwmaccus_vx */
-0xec002057, /* vwmul_vv */
-0xec006057, /* vwmul_vx */
-0xe8002057, /* vwmulsu_vv */
-0xe8006057, /* vwmulsu_vx */
-0xe0002057, /* vwmulu_vv */
-0xe0006057, /* vwmulu_vx */
-0xc4000057, /* vwredsum_vs */
-0xc0000057, /* vwredsumu_vs */
-0xd4003057, /* vwsll_vi */
-0xd4000057, /* vwsll_vv */
-0xd4004057, /* vwsll_vx */
-0xcc002057, /* vwsub_vv */
-0xcc006057, /* vwsub_vx */
-0xdc002057, /* vwsub_wv */
-0xdc006057, /* vwsub_wx */
-0xc8002057, /* vwsubu_vv */
-0xc8006057, /* vwsubu_vx */
-0xd8002057, /* vwsubu_wv */
-0xd8006057, /* vwsubu_wx */
-0x2c003057, /* vxor_vi */
-0x2c000057, /* vxor_vv */
-0x2c004057, /* vxor_vx */
-0x48032057, /* vzext_vf2 */
-0x48022057, /* vzext_vf4 */
-0x48012057, /* vzext_vf8 */
-0x10500073, /* wfi */
-0xd00073, /* wrs_nto */
-0x1d00073, /* wrs_sto */
-0x40004033, /* xnor */
-0x4033, /* xor */
-0x4013, /* xori */
-0x28002033, /* xperm4 */
-0x28004033, /* xperm8 */
-0x7013, /* zext_b */
-0x800403b, /* zext_h */
-0xffff_ffff, /* zext_h_rv32 */
-0x800003b, /* zext_w */
-0xffff_ffff, /* zip */
+    0x33,        /* add */
+    0x800003b,   /* add_uw */
+    0x13,        /* addi */
+    0x1b,        /* addiw */
+    0x3b,        /* addw */
+    0xffff_ffff, /* aes32dsi */
+    0xffff_ffff, /* aes32dsmi */
+    0xffff_ffff, /* aes32esi */
+    0xffff_ffff, /* aes32esmi */
+    0x3a000033,  /* aes64ds */
+    0x3e000033,  /* aes64dsm */
+    0x32000033,  /* aes64es */
+    0x36000033,  /* aes64esm */
+    0x30001013,  /* aes64im */
+    0x31001013,  /* aes64ks1i */
+    0x7e000033,  /* aes64ks2 */
+    0x2f,        /* amoadd_b */
+    0x302f,      /* amoadd_d */
+    0x102f,      /* amoadd_h */
+    0x202f,      /* amoadd_w */
+    0x6000002f,  /* amoand_b */
+    0x6000302f,  /* amoand_d */
+    0x6000102f,  /* amoand_h */
+    0x6000202f,  /* amoand_w */
+    0x2800002f,  /* amocas_b */
+    0x2800302f,  /* amocas_d */
+    0x2800102f,  /* amocas_h */
+    0x2800402f,  /* amocas_q */
+    0x2800202f,  /* amocas_w */
+    0xa000002f,  /* amomax_b */
+    0xa000302f,  /* amomax_d */
+    0xa000102f,  /* amomax_h */
+    0xa000202f,  /* amomax_w */
+    0xe000002f,  /* amomaxu_b */
+    0xe000302f,  /* amomaxu_d */
+    0xe000102f,  /* amomaxu_h */
+    0xe000202f,  /* amomaxu_w */
+    0x8000002f,  /* amomin_b */
+    0x8000302f,  /* amomin_d */
+    0x8000102f,  /* amomin_h */
+    0x8000202f,  /* amomin_w */
+    0xc000002f,  /* amominu_b */
+    0xc000302f,  /* amominu_d */
+    0xc000102f,  /* amominu_h */
+    0xc000202f,  /* amominu_w */
+    0x4000002f,  /* amoor_b */
+    0x4000302f,  /* amoor_d */
+    0x4000102f,  /* amoor_h */
+    0x4000202f,  /* amoor_w */
+    0x800002f,   /* amoswap_b */
+    0x800302f,   /* amoswap_d */
+    0x800102f,   /* amoswap_h */
+    0x800202f,   /* amoswap_w */
+    0x2000002f,  /* amoxor_b */
+    0x2000302f,  /* amoxor_d */
+    0x2000102f,  /* amoxor_h */
+    0x2000202f,  /* amoxor_w */
+    0x7033,      /* and */
+    0x7013,      /* andi */
+    0x40007033,  /* andn */
+    0x17,        /* auipc */
+    0x48001033,  /* bclr */
+    0x48001013,  /* bclri */
+    0xffff_ffff, /* bclri_rv32 */
+    0x63,        /* beq */
+    0x63,        /* beqz */
+    0x48005033,  /* bext */
+    0x48005013,  /* bexti */
+    0xffff_ffff, /* bexti_rv32 */
+    0x5063,      /* bge */
+    0x7063,      /* bgeu */
+    0x5063,      /* bgez */
+    0x4063,      /* bgt */
+    0x6063,      /* bgtu */
+    0x4063,      /* bgtz */
+    0x68001033,  /* binv */
+    0x68001013,  /* binvi */
+    0xffff_ffff, /* binvi_rv32 */
+    0x5063,      /* ble */
+    0x7063,      /* bleu */
+    0x5063,      /* blez */
+    0x4063,      /* blt */
+    0x6063,      /* bltu */
+    0x4063,      /* bltz */
+    0x1063,      /* bne */
+    0x1063,      /* bnez */
+    0x68705013,  /* brev8 */
+    0x28001033,  /* bset */
+    0x28001013,  /* bseti */
+    0xffff_ffff, /* bseti_rv32 */
+    0x9002,      /* c_add */
+    0x1,         /* c_addi */
+    0x6101,      /* c_addi16sp */
+    0x0,         /* c_addi4spn */
+    0x2001,      /* c_addiw */
+    0x9c21,      /* c_addw */
+    0x8c61,      /* c_and */
+    0x8801,      /* c_andi */
+    0xc001,      /* c_beqz */
+    0xe001,      /* c_bnez */
+    0x9002,      /* c_ebreak */
+    0x2000,      /* c_fld */
+    0x2002,      /* c_fldsp */
+    0xffff_ffff, /* c_flw */
+    0xffff_ffff, /* c_flwsp */
+    0xa000,      /* c_fsd */
+    0xa002,      /* c_fsdsp */
+    0xffff_ffff, /* c_fsw */
+    0xffff_ffff, /* c_fswsp */
+    0xa001,      /* c_j */
+    0xffff_ffff, /* c_jal */
+    0x9002,      /* c_jalr */
+    0x8002,      /* c_jr */
+    0x8000,      /* c_lbu */
+    0x6000,      /* c_ld */
+    0x6002,      /* c_ldsp */
+    0x8440,      /* c_lh */
+    0x8400,      /* c_lhu */
+    0x4001,      /* c_li */
+    0x6001,      /* c_lui */
+    0x4000,      /* c_lw */
+    0x4002,      /* c_lwsp */
+    0x6081,      /* c_mop_1 */
+    0x6581,      /* c_mop_11 */
+    0x6681,      /* c_mop_13 */
+    0x6781,      /* c_mop_15 */
+    0x6181,      /* c_mop_3 */
+    0x6281,      /* c_mop_5 */
+    0x6381,      /* c_mop_7 */
+    0x6481,      /* c_mop_9 */
+    0x6081,      /* c_mop_N */
+    0x9c41,      /* c_mul */
+    0x8002,      /* c_mv */
+    0x1,         /* c_nop */
+    0x9c75,      /* c_not */
+    0x9016,      /* c_ntl_all */
+    0x900a,      /* c_ntl_p1 */
+    0x900e,      /* c_ntl_pall */
+    0x9012,      /* c_ntl_s1 */
+    0x8c41,      /* c_or */
+    0x8800,      /* c_sb */
+    0xe000,      /* c_sd */
+    0xe002,      /* c_sdsp */
+    0x9c65,      /* c_sext_b */
+    0x9c6d,      /* c_sext_h */
+    0x2001,      /* c_sext_w */
+    0x8c00,      /* c_sh */
+    0x2,         /* c_slli */
+    0xffff_ffff, /* c_slli_rv32 */
+    0x8401,      /* c_srai */
+    0xffff_ffff, /* c_srai_rv32 */
+    0x8001,      /* c_srli */
+    0xffff_ffff, /* c_srli_rv32 */
+    0x8c01,      /* c_sub */
+    0x9c01,      /* c_subw */
+    0xc000,      /* c_sw */
+    0xc002,      /* c_swsp */
+    0x8c21,      /* c_xor */
+    0x9c61,      /* c_zext_b */
+    0x9c69,      /* c_zext_h */
+    0x9c71,      /* c_zext_w */
+    0x10200f,    /* cbo_clean */
+    0x20200f,    /* cbo_flush */
+    0x200f,      /* cbo_inval */
+    0x40200f,    /* cbo_zero */
+    0xa001033,   /* clmul */
+    0xa003033,   /* clmulh */
+    0xa002033,   /* clmulr */
+    0x60001013,  /* clz */
+    0x6000101b,  /* clzw */
+    0xa002,      /* cm_jalt */
+    0xac62,      /* cm_mva01s */
+    0xac22,      /* cm_mvsa01 */
+    0xba02,      /* cm_pop */
+    0xbe02,      /* cm_popret */
+    0xbc02,      /* cm_popretz */
+    0xb802,      /* cm_push */
+    0x60201013,  /* cpop */
+    0x6020101b,  /* cpopw */
+    0x3073,      /* csrc */
+    0x7073,      /* csrci */
+    0x2073,      /* csrr */
+    0x3073,      /* csrrc */
+    0x7073,      /* csrrci */
+    0x2073,      /* csrrs */
+    0x6073,      /* csrrsi */
+    0x1073,      /* csrrw */
+    0x5073,      /* csrrwi */
+    0x2073,      /* csrs */
+    0x6073,      /* csrsi */
+    0x1073,      /* csrw */
+    0x5073,      /* csrwi */
+    0x60101013,  /* ctz */
+    0x6010101b,  /* ctzw */
+    0xe005033,   /* czero_eqz */
+    0xe007033,   /* czero_nez */
+    0x2004033,   /* div */
+    0x2005033,   /* divu */
+    0x200503b,   /* divuw */
+    0x200403b,   /* divw */
+    0x7b200073,  /* dret */
+    0x100073,    /* ebreak */
+    0x73,        /* ecall */
+    0x22002053,  /* fabs_d */
+    0x24002053,  /* fabs_h */
+    0x26002053,  /* fabs_q */
+    0x20002053,  /* fabs_s */
+    0x2000053,   /* fadd_d */
+    0x4000053,   /* fadd_h */
+    0x6000053,   /* fadd_q */
+    0x53,        /* fadd_s */
+    0xe2001053,  /* fclass_d */
+    0xe4001053,  /* fclass_h */
+    0xe6001053,  /* fclass_q */
+    0xe0001053,  /* fclass_s */
+    0x42200053,  /* fcvt_d_h */
+    0xd2200053,  /* fcvt_d_l */
+    0xd2300053,  /* fcvt_d_lu */
+    0x42300053,  /* fcvt_d_q */
+    0x42000053,  /* fcvt_d_s */
+    0xd2000053,  /* fcvt_d_w */
+    0xd2100053,  /* fcvt_d_wu */
+    0x44100053,  /* fcvt_h_d */
+    0xd4200053,  /* fcvt_h_l */
+    0xd4300053,  /* fcvt_h_lu */
+    0x44300053,  /* fcvt_h_q */
+    0x44000053,  /* fcvt_h_s */
+    0xd4000053,  /* fcvt_h_w */
+    0xd4100053,  /* fcvt_h_wu */
+    0xc2200053,  /* fcvt_l_d */
+    0xc4200053,  /* fcvt_l_h */
+    0xc6200053,  /* fcvt_l_q */
+    0xc0200053,  /* fcvt_l_s */
+    0xc2300053,  /* fcvt_lu_d */
+    0xc4300053,  /* fcvt_lu_h */
+    0xc6300053,  /* fcvt_lu_q */
+    0xc0300053,  /* fcvt_lu_s */
+    0x46100053,  /* fcvt_q_d */
+    0x46200053,  /* fcvt_q_h */
+    0xd6200053,  /* fcvt_q_l */
+    0xd6300053,  /* fcvt_q_lu */
+    0x46000053,  /* fcvt_q_s */
+    0xd6000053,  /* fcvt_q_w */
+    0xd6100053,  /* fcvt_q_wu */
+    0x40100053,  /* fcvt_s_d */
+    0x40200053,  /* fcvt_s_h */
+    0xd0200053,  /* fcvt_s_l */
+    0xd0300053,  /* fcvt_s_lu */
+    0x40300053,  /* fcvt_s_q */
+    0xd0000053,  /* fcvt_s_w */
+    0xd0100053,  /* fcvt_s_wu */
+    0xc2000053,  /* fcvt_w_d */
+    0xc4000053,  /* fcvt_w_h */
+    0xc6000053,  /* fcvt_w_q */
+    0xc0000053,  /* fcvt_w_s */
+    0xc2100053,  /* fcvt_wu_d */
+    0xc4100053,  /* fcvt_wu_h */
+    0xc6100053,  /* fcvt_wu_q */
+    0xc0100053,  /* fcvt_wu_s */
+    0xc2801053,  /* fcvtmod_w_d */
+    0x1a000053,  /* fdiv_d */
+    0x1c000053,  /* fdiv_h */
+    0x1e000053,  /* fdiv_q */
+    0x18000053,  /* fdiv_s */
+    0xf,         /* fence */
+    0x100f,      /* fence_i */
+    0x8330000f,  /* fence_tso */
+    0xa2002053,  /* feq_d */
+    0xa4002053,  /* feq_h */
+    0xa6002053,  /* feq_q */
+    0xa0002053,  /* feq_s */
+    0x3007,      /* fld */
+    0xa2000053,  /* fle_d */
+    0xa4000053,  /* fle_h */
+    0xa6000053,  /* fle_q */
+    0xa0000053,  /* fle_s */
+    0xa2004053,  /* fleq_d */
+    0xa4004053,  /* fleq_h */
+    0xa6004053,  /* fleq_q */
+    0xa0004053,  /* fleq_s */
+    0x1007,      /* flh */
+    0xf2100053,  /* fli_d */
+    0xf4100053,  /* fli_h */
+    0xf6100053,  /* fli_q */
+    0xf0100053,  /* fli_s */
+    0x4007,      /* flq */
+    0xa2001053,  /* flt_d */
+    0xa4001053,  /* flt_h */
+    0xa6001053,  /* flt_q */
+    0xa0001053,  /* flt_s */
+    0xa2005053,  /* fltq_d */
+    0xa4005053,  /* fltq_h */
+    0xa6005053,  /* fltq_q */
+    0xa0005053,  /* fltq_s */
+    0x2007,      /* flw */
+    0x2000043,   /* fmadd_d */
+    0x4000043,   /* fmadd_h */
+    0x6000043,   /* fmadd_q */
+    0x43,        /* fmadd_s */
+    0x2a001053,  /* fmax_d */
+    0x2c001053,  /* fmax_h */
+    0x2e001053,  /* fmax_q */
+    0x28001053,  /* fmax_s */
+    0x2a003053,  /* fmaxm_d */
+    0x2c003053,  /* fmaxm_h */
+    0x2e003053,  /* fmaxm_q */
+    0x28003053,  /* fmaxm_s */
+    0x2a000053,  /* fmin_d */
+    0x2c000053,  /* fmin_h */
+    0x2e000053,  /* fmin_q */
+    0x28000053,  /* fmin_s */
+    0x2a002053,  /* fminm_d */
+    0x2c002053,  /* fminm_h */
+    0x2e002053,  /* fminm_q */
+    0x28002053,  /* fminm_s */
+    0x2000047,   /* fmsub_d */
+    0x4000047,   /* fmsub_h */
+    0x6000047,   /* fmsub_q */
+    0x47,        /* fmsub_s */
+    0x12000053,  /* fmul_d */
+    0x14000053,  /* fmul_h */
+    0x16000053,  /* fmul_q */
+    0x10000053,  /* fmul_s */
+    0x22000053,  /* fmv_d */
+    0xf2000053,  /* fmv_d_x */
+    0x24000053,  /* fmv_h */
+    0xf4000053,  /* fmv_h_x */
+    0x26000053,  /* fmv_q */
+    0x20000053,  /* fmv_s */
+    0xf0000053,  /* fmv_s_x */
+    0xf0000053,  /* fmv_w_x */
+    0xe2000053,  /* fmv_x_d */
+    0xe4000053,  /* fmv_x_h */
+    0xe0000053,  /* fmv_x_s */
+    0xe0000053,  /* fmv_x_w */
+    0xffff_ffff, /* fmvh_x_d */
+    0xe6100053,  /* fmvh_x_q */
+    0xffff_ffff, /* fmvp_d_x */
+    0xb6000053,  /* fmvp_q_x */
+    0x22001053,  /* fneg_d */
+    0x24001053,  /* fneg_h */
+    0x26001053,  /* fneg_q */
+    0x20001053,  /* fneg_s */
+    0x200004f,   /* fnmadd_d */
+    0x400004f,   /* fnmadd_h */
+    0x600004f,   /* fnmadd_q */
+    0x4f,        /* fnmadd_s */
+    0x200004b,   /* fnmsub_d */
+    0x400004b,   /* fnmsub_h */
+    0x600004b,   /* fnmsub_q */
+    0x4b,        /* fnmsub_s */
+    0x302073,    /* frcsr */
+    0x102073,    /* frflags */
+    0x42400053,  /* fround_d */
+    0x44400053,  /* fround_h */
+    0x46400053,  /* fround_q */
+    0x40400053,  /* fround_s */
+    0x42500053,  /* froundnx_d */
+    0x44500053,  /* froundnx_h */
+    0x46500053,  /* froundnx_q */
+    0x40500053,  /* froundnx_s */
+    0x202073,    /* frrm */
+    0x301073,    /* fscsr */
+    0x3027,      /* fsd */
+    0x101073,    /* fsflags */
+    0x105073,    /* fsflagsi */
+    0x22000053,  /* fsgnj_d */
+    0x24000053,  /* fsgnj_h */
+    0x26000053,  /* fsgnj_q */
+    0x20000053,  /* fsgnj_s */
+    0x22001053,  /* fsgnjn_d */
+    0x24001053,  /* fsgnjn_h */
+    0x26001053,  /* fsgnjn_q */
+    0x20001053,  /* fsgnjn_s */
+    0x22002053,  /* fsgnjx_d */
+    0x24002053,  /* fsgnjx_h */
+    0x26002053,  /* fsgnjx_q */
+    0x20002053,  /* fsgnjx_s */
+    0x1027,      /* fsh */
+    0x4027,      /* fsq */
+    0x5a000053,  /* fsqrt_d */
+    0x5c000053,  /* fsqrt_h */
+    0x5e000053,  /* fsqrt_q */
+    0x58000053,  /* fsqrt_s */
+    0x201073,    /* fsrm */
+    0x205073,    /* fsrmi */
+    0xa000053,   /* fsub_d */
+    0xc000053,   /* fsub_h */
+    0xe000053,   /* fsub_q */
+    0x8000053,   /* fsub_s */
+    0x2027,      /* fsw */
+    0x62000073,  /* hfence_gvma */
+    0x22000073,  /* hfence_vvma */
+    0x66000073,  /* hinval_gvma */
+    0x26000073,  /* hinval_vvma */
+    0x60004073,  /* hlv_b */
+    0x60104073,  /* hlv_bu */
+    0x6c004073,  /* hlv_d */
+    0x64004073,  /* hlv_h */
+    0x64104073,  /* hlv_hu */
+    0x68004073,  /* hlv_w */
+    0x68104073,  /* hlv_wu */
+    0x64304073,  /* hlvx_hu */
+    0x68304073,  /* hlvx_wu */
+    0x62004073,  /* hsv_b */
+    0x6e004073,  /* hsv_d */
+    0x66004073,  /* hsv_h */
+    0x6a004073,  /* hsv_w */
+    0x6f,        /* j */
+    0x6f,        /* jal */
+    0xef,        /* jal_pseudo */
+    0x67,        /* jalr */
+    0xe7,        /* jalr_pseudo */
+    0x67,        /* jr */
+    0x3,         /* lb */
+    0x4003,      /* lbu */
+    0x3003,      /* ld */
+    0x1003,      /* lh */
+    0x5003,      /* lhu */
+    0x1000302f,  /* lr_d */
+    0x1000202f,  /* lr_w */
+    0x37,        /* lui */
+    0x2003,      /* lw */
+    0x6003,      /* lwu */
+    0xa006033,   /* max */
+    0xa007033,   /* maxu */
+    0xa004033,   /* min */
+    0xa005033,   /* minu */
+    0x81c04073,  /* mop_r_0 */
+    0x81d04073,  /* mop_r_1 */
+    0x89e04073,  /* mop_r_10 */
+    0x89f04073,  /* mop_r_11 */
+    0x8dc04073,  /* mop_r_12 */
+    0x8dd04073,  /* mop_r_13 */
+    0x8de04073,  /* mop_r_14 */
+    0x8df04073,  /* mop_r_15 */
+    0xc1c04073,  /* mop_r_16 */
+    0xc1d04073,  /* mop_r_17 */
+    0xc1e04073,  /* mop_r_18 */
+    0xc1f04073,  /* mop_r_19 */
+    0x81e04073,  /* mop_r_2 */
+    0xc5c04073,  /* mop_r_20 */
+    0xc5d04073,  /* mop_r_21 */
+    0xc5e04073,  /* mop_r_22 */
+    0xc5f04073,  /* mop_r_23 */
+    0xc9c04073,  /* mop_r_24 */
+    0xc9d04073,  /* mop_r_25 */
+    0xc9e04073,  /* mop_r_26 */
+    0xc9f04073,  /* mop_r_27 */
+    0xcdc04073,  /* mop_r_28 */
+    0xcdd04073,  /* mop_r_29 */
+    0x81f04073,  /* mop_r_3 */
+    0xcde04073,  /* mop_r_30 */
+    0xcdf04073,  /* mop_r_31 */
+    0x85c04073,  /* mop_r_4 */
+    0x85d04073,  /* mop_r_5 */
+    0x85e04073,  /* mop_r_6 */
+    0x85f04073,  /* mop_r_7 */
+    0x89c04073,  /* mop_r_8 */
+    0x89d04073,  /* mop_r_9 */
+    0x81c04073,  /* mop_r_N */
+    0x82004073,  /* mop_rr_0 */
+    0x86004073,  /* mop_rr_1 */
+    0x8a004073,  /* mop_rr_2 */
+    0x8e004073,  /* mop_rr_3 */
+    0xc2004073,  /* mop_rr_4 */
+    0xc6004073,  /* mop_rr_5 */
+    0xca004073,  /* mop_rr_6 */
+    0xce004073,  /* mop_rr_7 */
+    0x82004073,  /* mop_rr_N */
+    0x30200073,  /* mret */
+    0x2000033,   /* mul */
+    0x2001033,   /* mulh */
+    0x2002033,   /* mulhsu */
+    0x2003033,   /* mulhu */
+    0x200003b,   /* mulw */
+    0x13,        /* mv */
+    0x40000033,  /* neg */
+    0x13,        /* nop */
+    0x500033,    /* ntl_all */
+    0x200033,    /* ntl_p1 */
+    0x300033,    /* ntl_pall */
+    0x400033,    /* ntl_s1 */
+    0x6033,      /* or */
+    0x28705013,  /* orc_b */
+    0x6013,      /* ori */
+    0x40006033,  /* orn */
+    0x8004033,   /* pack */
+    0x8007033,   /* packh */
+    0x800403b,   /* packw */
+    0x100000f,   /* pause */
+    0x6013,      /* prefetch_i */
+    0x106013,    /* prefetch_r */
+    0x306013,    /* prefetch_w */
+    0xc0002073,  /* rdcycle */
+    0xffff_ffff, /* rdcycleh */
+    0xc0202073,  /* rdinstret */
+    0xffff_ffff, /* rdinstreth */
+    0xc0102073,  /* rdtime */
+    0xffff_ffff, /* rdtimeh */
+    0x2006033,   /* rem */
+    0x2007033,   /* remu */
+    0x200703b,   /* remuw */
+    0x200603b,   /* remw */
+    0x8067,      /* ret */
+    0x6b805013,  /* rev8 */
+    0xffff_ffff, /* rev8_rv32 */
+    0x60001033,  /* rol */
+    0x6000103b,  /* rolw */
+    0x60005033,  /* ror */
+    0x60005013,  /* rori */
+    0xffff_ffff, /* rori_rv32 */
+    0x6000501b,  /* roriw */
+    0x6000503b,  /* rorw */
+    0x23,        /* sb */
+    0x100073,    /* sbreak */
+    0x1800302f,  /* sc_d */
+    0x1800202f,  /* sc_w */
+    0x73,        /* scall */
+    0x3023,      /* sd */
+    0x103013,    /* seqz */
+    0x60401013,  /* sext_b */
+    0x60501013,  /* sext_h */
+    0x1b,        /* sext_w */
+    0x18100073,  /* sfence_inval_ir */
+    0x12000073,  /* sfence_vma */
+    0x18000073,  /* sfence_w_inval */
+    0x2033,      /* sgtz */
+    0x1023,      /* sh */
+    0x20002033,  /* sh1add */
+    0x2000203b,  /* sh1add_uw */
+    0x20004033,  /* sh2add */
+    0x2000403b,  /* sh2add_uw */
+    0x20006033,  /* sh3add */
+    0x2000603b,  /* sh3add_uw */
+    0x10201013,  /* sha256sig0 */
+    0x10301013,  /* sha256sig1 */
+    0x10001013,  /* sha256sum0 */
+    0x10101013,  /* sha256sum1 */
+    0x10601013,  /* sha512sig0 */
+    0xffff_ffff, /* sha512sig0h */
+    0xffff_ffff, /* sha512sig0l */
+    0x10701013,  /* sha512sig1 */
+    0xffff_ffff, /* sha512sig1h */
+    0xffff_ffff, /* sha512sig1l */
+    0x10401013,  /* sha512sum0 */
+    0xffff_ffff, /* sha512sum0r */
+    0x10501013,  /* sha512sum1 */
+    0xffff_ffff, /* sha512sum1r */
+    0x16000073,  /* sinval_vma */
+    0x1033,      /* sll */
+    0x1013,      /* slli */
+    0xffff_ffff, /* slli_rv32 */
+    0x800101b,   /* slli_uw */
+    0x101b,      /* slliw */
+    0x103b,      /* sllw */
+    0x2033,      /* slt */
+    0x2013,      /* slti */
+    0x3013,      /* sltiu */
+    0x3033,      /* sltu */
+    0x2033,      /* sltz */
+    0x10801013,  /* sm3p0 */
+    0x10901013,  /* sm3p1 */
+    0x30000033,  /* sm4ed */
+    0x34000033,  /* sm4ks */
+    0x3033,      /* snez */
+    0x40005033,  /* sra */
+    0x40005013,  /* srai */
+    0xffff_ffff, /* srai_rv32 */
+    0x4000501b,  /* sraiw */
+    0x4000503b,  /* sraw */
+    0x10200073,  /* sret */
+    0x5033,      /* srl */
+    0x5013,      /* srli */
+    0xffff_ffff, /* srli_rv32 */
+    0x501b,      /* srliw */
+    0x503b,      /* srlw */
+    0x40000033,  /* sub */
+    0x4000003b,  /* subw */
+    0x2023,      /* sw */
+    0xffff_ffff, /* unzip */
+    0x24002057,  /* vaadd_vv */
+    0x24006057,  /* vaadd_vx */
+    0x20002057,  /* vaaddu_vv */
+    0x20006057,  /* vaaddu_vx */
+    0x40003057,  /* vadc_vim */
+    0x40000057,  /* vadc_vvm */
+    0x40004057,  /* vadc_vxm */
+    0x3057,      /* vadd_vi */
+    0x57,        /* vadd_vv */
+    0x4057,      /* vadd_vx */
+    0xa600a077,  /* vaesdf_vs */
+    0xa200a077,  /* vaesdf_vv */
+    0xa6002077,  /* vaesdm_vs */
+    0xa2002077,  /* vaesdm_vv */
+    0xa601a077,  /* vaesef_vs */
+    0xa201a077,  /* vaesef_vv */
+    0xa6012077,  /* vaesem_vs */
+    0xa2012077,  /* vaesem_vv */
+    0x8a002077,  /* vaeskf1_vi */
+    0xaa002077,  /* vaeskf2_vi */
+    0xa603a077,  /* vaesz_vs */
+    0x24003057,  /* vand_vi */
+    0x24000057,  /* vand_vv */
+    0x24004057,  /* vand_vx */
+    0x4000057,   /* vandn_vv */
+    0x4004057,   /* vandn_vx */
+    0x2c002057,  /* vasub_vv */
+    0x2c006057,  /* vasub_vx */
+    0x28002057,  /* vasubu_vv */
+    0x28006057,  /* vasubu_vx */
+    0x48042057,  /* vbrev8_v */
+    0x48052057,  /* vbrev_v */
+    0x30002057,  /* vclmul_vv */
+    0x30006057,  /* vclmul_vx */
+    0x34002057,  /* vclmulh_vv */
+    0x34006057,  /* vclmulh_vx */
+    0x48062057,  /* vclz_v */
+    0x5e002057,  /* vcompress_vm */
+    0x40082057,  /* vcpop_m */
+    0x48072057,  /* vcpop_v */
+    0x4806a057,  /* vctz_v */
+    0x84002057,  /* vdiv_vv */
+    0x84006057,  /* vdiv_vx */
+    0x80002057,  /* vdivu_vv */
+    0x80006057,  /* vdivu_vx */
+    0x5057,      /* vfadd_vf */
+    0x1057,      /* vfadd_vv */
+    0x4c081057,  /* vfclass_v */
+    0x48019057,  /* vfcvt_f_x_v */
+    0x48011057,  /* vfcvt_f_xu_v */
+    0x48039057,  /* vfcvt_rtz_x_f_v */
+    0x48031057,  /* vfcvt_rtz_xu_f_v */
+    0x48009057,  /* vfcvt_x_f_v */
+    0x48001057,  /* vfcvt_xu_f_v */
+    0x80005057,  /* vfdiv_vf */
+    0x80001057,  /* vfdiv_vv */
+    0x4008a057,  /* vfirst_m */
+    0xb0005057,  /* vfmacc_vf */
+    0xb0001057,  /* vfmacc_vv */
+    0xa0005057,  /* vfmadd_vf */
+    0xa0001057,  /* vfmadd_vv */
+    0x18005057,  /* vfmax_vf */
+    0x18001057,  /* vfmax_vv */
+    0x5c005057,  /* vfmerge_vfm */
+    0x10005057,  /* vfmin_vf */
+    0x10001057,  /* vfmin_vv */
+    0xb8005057,  /* vfmsac_vf */
+    0xb8001057,  /* vfmsac_vv */
+    0xa8005057,  /* vfmsub_vf */
+    0xa8001057,  /* vfmsub_vv */
+    0x90005057,  /* vfmul_vf */
+    0x90001057,  /* vfmul_vv */
+    0x42001057,  /* vfmv_f_s */
+    0x42005057,  /* vfmv_s_f */
+    0x5e005057,  /* vfmv_v_f */
+    0x480a1057,  /* vfncvt_f_f_w */
+    0x48099057,  /* vfncvt_f_x_w */
+    0x48091057,  /* vfncvt_f_xu_w */
+    0x480a9057,  /* vfncvt_rod_f_f_w */
+    0x480b9057,  /* vfncvt_rtz_x_f_w */
+    0x480b1057,  /* vfncvt_rtz_xu_f_w */
+    0x48089057,  /* vfncvt_x_f_w */
+    0x48081057,  /* vfncvt_xu_f_w */
+    0xb4005057,  /* vfnmacc_vf */
+    0xb4001057,  /* vfnmacc_vv */
+    0xa4005057,  /* vfnmadd_vf */
+    0xa4001057,  /* vfnmadd_vv */
+    0xbc005057,  /* vfnmsac_vf */
+    0xbc001057,  /* vfnmsac_vv */
+    0xac005057,  /* vfnmsub_vf */
+    0xac001057,  /* vfnmsub_vv */
+    0x84005057,  /* vfrdiv_vf */
+    0x4c029057,  /* vfrec7_v */
+    0x1c001057,  /* vfredmax_vs */
+    0x14001057,  /* vfredmin_vs */
+    0xc001057,   /* vfredosum_vs */
+    0x4001057,   /* vfredsum_vs */
+    0x4001057,   /* vfredusum_vs */
+    0x4c021057,  /* vfrsqrt7_v */
+    0x9c005057,  /* vfrsub_vf */
+    0x20005057,  /* vfsgnj_vf */
+    0x20001057,  /* vfsgnj_vv */
+    0x24005057,  /* vfsgnjn_vf */
+    0x24001057,  /* vfsgnjn_vv */
+    0x28005057,  /* vfsgnjx_vf */
+    0x28001057,  /* vfsgnjx_vv */
+    0x3c005057,  /* vfslide1down_vf */
+    0x38005057,  /* vfslide1up_vf */
+    0x4c001057,  /* vfsqrt_v */
+    0x8005057,   /* vfsub_vf */
+    0x8001057,   /* vfsub_vv */
+    0xc0005057,  /* vfwadd_vf */
+    0xc0001057,  /* vfwadd_vv */
+    0xd0005057,  /* vfwadd_wf */
+    0xd0001057,  /* vfwadd_wv */
+    0x48061057,  /* vfwcvt_f_f_v */
+    0x48059057,  /* vfwcvt_f_x_v */
+    0x48051057,  /* vfwcvt_f_xu_v */
+    0x48079057,  /* vfwcvt_rtz_x_f_v */
+    0x48071057,  /* vfwcvt_rtz_xu_f_v */
+    0x48049057,  /* vfwcvt_x_f_v */
+    0x48041057,  /* vfwcvt_xu_f_v */
+    0xf0005057,  /* vfwmacc_vf */
+    0xf0001057,  /* vfwmacc_vv */
+    0xf8005057,  /* vfwmsac_vf */
+    0xf8001057,  /* vfwmsac_vv */
+    0xe0005057,  /* vfwmul_vf */
+    0xe0001057,  /* vfwmul_vv */
+    0xf4005057,  /* vfwnmacc_vf */
+    0xf4001057,  /* vfwnmacc_vv */
+    0xfc005057,  /* vfwnmsac_vf */
+    0xfc001057,  /* vfwnmsac_vv */
+    0xcc001057,  /* vfwredosum_vs */
+    0xc4001057,  /* vfwredsum_vs */
+    0xc4001057,  /* vfwredusum_vs */
+    0xc8005057,  /* vfwsub_vf */
+    0xc8001057,  /* vfwsub_vv */
+    0xd8005057,  /* vfwsub_wf */
+    0xd8001057,  /* vfwsub_wv */
+    0xb2002077,  /* vghsh_vv */
+    0xa208a077,  /* vgmul_vv */
+    0x5008a057,  /* vid_v */
+    0x50082057,  /* viota_m */
+    0x2800007,   /* vl1r_v */
+    0x2805007,   /* vl1re16_v */
+    0x2806007,   /* vl1re32_v */
+    0x2807007,   /* vl1re64_v */
+    0x2800007,   /* vl1re8_v */
+    0x22800007,  /* vl2r_v */
+    0x22805007,  /* vl2re16_v */
+    0x22806007,  /* vl2re32_v */
+    0x22807007,  /* vl2re64_v */
+    0x22800007,  /* vl2re8_v */
+    0x62800007,  /* vl4r_v */
+    0x62805007,  /* vl4re16_v */
+    0x62806007,  /* vl4re32_v */
+    0x62807007,  /* vl4re64_v */
+    0x62800007,  /* vl4re8_v */
+    0xe2800007,  /* vl8r_v */
+    0xe2805007,  /* vl8re16_v */
+    0xe2806007,  /* vl8re32_v */
+    0xe2807007,  /* vl8re64_v */
+    0xe2800007,  /* vl8re8_v */
+    0x5007,      /* vle16_v */
+    0x1005007,   /* vle16ff_v */
+    0x2b00007,   /* vle1_v */
+    0x6007,      /* vle32_v */
+    0x1006007,   /* vle32ff_v */
+    0x7007,      /* vle64_v */
+    0x1007007,   /* vle64ff_v */
+    0x7,         /* vle8_v */
+    0x1000007,   /* vle8ff_v */
+    0x2b00007,   /* vlm_v */
+    0xc005007,   /* vloxei16_v */
+    0xc006007,   /* vloxei32_v */
+    0xc007007,   /* vloxei64_v */
+    0xc000007,   /* vloxei8_v */
+    0x8005007,   /* vlse16_v */
+    0x8006007,   /* vlse32_v */
+    0x8007007,   /* vlse64_v */
+    0x8000007,   /* vlse8_v */
+    0x4005007,   /* vluxei16_v */
+    0x4006007,   /* vluxei32_v */
+    0x4007007,   /* vluxei64_v */
+    0x4000007,   /* vluxei8_v */
+    0xb4002057,  /* vmacc_vv */
+    0xb4006057,  /* vmacc_vx */
+    0x46003057,  /* vmadc_vi */
+    0x44003057,  /* vmadc_vim */
+    0x46000057,  /* vmadc_vv */
+    0x44000057,  /* vmadc_vvm */
+    0x46004057,  /* vmadc_vx */
+    0x44004057,  /* vmadc_vxm */
+    0xa4002057,  /* vmadd_vv */
+    0xa4006057,  /* vmadd_vx */
+    0x66002057,  /* vmand_mm */
+    0x62002057,  /* vmandn_mm */
+    0x60002057,  /* vmandnot_mm */
+    0x1c000057,  /* vmax_vv */
+    0x1c004057,  /* vmax_vx */
+    0x18000057,  /* vmaxu_vv */
+    0x18004057,  /* vmaxu_vx */
+    0x5c003057,  /* vmerge_vim */
+    0x5c000057,  /* vmerge_vvm */
+    0x5c004057,  /* vmerge_vxm */
+    0x60005057,  /* vmfeq_vf */
+    0x60001057,  /* vmfeq_vv */
+    0x7c005057,  /* vmfge_vf */
+    0x74005057,  /* vmfgt_vf */
+    0x64005057,  /* vmfle_vf */
+    0x64001057,  /* vmfle_vv */
+    0x6c005057,  /* vmflt_vf */
+    0x6c001057,  /* vmflt_vv */
+    0x70005057,  /* vmfne_vf */
+    0x70001057,  /* vmfne_vv */
+    0x14000057,  /* vmin_vv */
+    0x14004057,  /* vmin_vx */
+    0x10000057,  /* vminu_vv */
+    0x10004057,  /* vminu_vx */
+    0x76002057,  /* vmnand_mm */
+    0x7a002057,  /* vmnor_mm */
+    0x6a002057,  /* vmor_mm */
+    0x72002057,  /* vmorn_mm */
+    0x70002057,  /* vmornot_mm */
+    0x4e000057,  /* vmsbc_vv */
+    0x4c000057,  /* vmsbc_vvm */
+    0x4e004057,  /* vmsbc_vx */
+    0x4c004057,  /* vmsbc_vxm */
+    0x5000a057,  /* vmsbf_m */
+    0x60003057,  /* vmseq_vi */
+    0x60000057,  /* vmseq_vv */
+    0x60004057,  /* vmseq_vx */
+    0x7c003057,  /* vmsgt_vi */
+    0x7c004057,  /* vmsgt_vx */
+    0x78003057,  /* vmsgtu_vi */
+    0x78004057,  /* vmsgtu_vx */
+    0x5001a057,  /* vmsif_m */
+    0x74003057,  /* vmsle_vi */
+    0x74000057,  /* vmsle_vv */
+    0x74004057,  /* vmsle_vx */
+    0x70003057,  /* vmsleu_vi */
+    0x70000057,  /* vmsleu_vv */
+    0x70004057,  /* vmsleu_vx */
+    0x6c000057,  /* vmslt_vv */
+    0x6c004057,  /* vmslt_vx */
+    0x68000057,  /* vmsltu_vv */
+    0x68004057,  /* vmsltu_vx */
+    0x64003057,  /* vmsne_vi */
+    0x64000057,  /* vmsne_vv */
+    0x64004057,  /* vmsne_vx */
+    0x50012057,  /* vmsof_m */
+    0x94002057,  /* vmul_vv */
+    0x94006057,  /* vmul_vx */
+    0x9c002057,  /* vmulh_vv */
+    0x9c006057,  /* vmulh_vx */
+    0x98002057,  /* vmulhsu_vv */
+    0x98006057,  /* vmulhsu_vx */
+    0x90002057,  /* vmulhu_vv */
+    0x90006057,  /* vmulhu_vx */
+    0x9e003057,  /* vmv1r_v */
+    0x9e00b057,  /* vmv2r_v */
+    0x9e01b057,  /* vmv4r_v */
+    0x9e03b057,  /* vmv8r_v */
+    0x42006057,  /* vmv_s_x */
+    0x5e003057,  /* vmv_v_i */
+    0x5e000057,  /* vmv_v_v */
+    0x5e004057,  /* vmv_v_x */
+    0x42002057,  /* vmv_x_s */
+    0x7e002057,  /* vmxnor_mm */
+    0x6e002057,  /* vmxor_mm */
+    0xbc003057,  /* vnclip_wi */
+    0xbc000057,  /* vnclip_wv */
+    0xbc004057,  /* vnclip_wx */
+    0xb8003057,  /* vnclipu_wi */
+    0xb8000057,  /* vnclipu_wv */
+    0xb8004057,  /* vnclipu_wx */
+    0xbc002057,  /* vnmsac_vv */
+    0xbc006057,  /* vnmsac_vx */
+    0xac002057,  /* vnmsub_vv */
+    0xac006057,  /* vnmsub_vx */
+    0xb4003057,  /* vnsra_wi */
+    0xb4000057,  /* vnsra_wv */
+    0xb4004057,  /* vnsra_wx */
+    0xb0003057,  /* vnsrl_wi */
+    0xb0000057,  /* vnsrl_wv */
+    0xb0004057,  /* vnsrl_wx */
+    0x28003057,  /* vor_vi */
+    0x28000057,  /* vor_vv */
+    0x28004057,  /* vor_vx */
+    0x40082057,  /* vpopc_m */
+    0x4002057,   /* vredand_vs */
+    0x1c002057,  /* vredmax_vs */
+    0x18002057,  /* vredmaxu_vs */
+    0x14002057,  /* vredmin_vs */
+    0x10002057,  /* vredminu_vs */
+    0x8002057,   /* vredor_vs */
+    0x2057,      /* vredsum_vs */
+    0xc002057,   /* vredxor_vs */
+    0x8c002057,  /* vrem_vv */
+    0x8c006057,  /* vrem_vx */
+    0x88002057,  /* vremu_vv */
+    0x88006057,  /* vremu_vx */
+    0x4804a057,  /* vrev8_v */
+    0x30003057,  /* vrgather_vi */
+    0x30000057,  /* vrgather_vv */
+    0x30004057,  /* vrgather_vx */
+    0x38000057,  /* vrgatherei16_vv */
+    0x54000057,  /* vrol_vv */
+    0x54004057,  /* vrol_vx */
+    0x50003057,  /* vror_vi */
+    0x50000057,  /* vror_vv */
+    0x50004057,  /* vror_vx */
+    0xc003057,   /* vrsub_vi */
+    0xc004057,   /* vrsub_vx */
+    0x2800027,   /* vs1r_v */
+    0x22800027,  /* vs2r_v */
+    0x62800027,  /* vs4r_v */
+    0xe2800027,  /* vs8r_v */
+    0x84003057,  /* vsadd_vi */
+    0x84000057,  /* vsadd_vv */
+    0x84004057,  /* vsadd_vx */
+    0x80003057,  /* vsaddu_vi */
+    0x80000057,  /* vsaddu_vv */
+    0x80004057,  /* vsaddu_vx */
+    0x48000057,  /* vsbc_vvm */
+    0x48004057,  /* vsbc_vxm */
+    0x5027,      /* vse16_v */
+    0x2b00027,   /* vse1_v */
+    0x6027,      /* vse32_v */
+    0x7027,      /* vse64_v */
+    0x27,        /* vse8_v */
+    0xc0007057,  /* vsetivli */
+    0x80007057,  /* vsetvl */
+    0x7057,      /* vsetvli */
+    0x4803a057,  /* vsext_vf2 */
+    0x4802a057,  /* vsext_vf4 */
+    0x4801a057,  /* vsext_vf8 */
+    0xba002077,  /* vsha2ch_vv */
+    0xbe002077,  /* vsha2cl_vv */
+    0xb6002077,  /* vsha2ms_vv */
+    0x3c006057,  /* vslide1down_vx */
+    0x38006057,  /* vslide1up_vx */
+    0x3c003057,  /* vslidedown_vi */
+    0x3c004057,  /* vslidedown_vx */
+    0x38003057,  /* vslideup_vi */
+    0x38004057,  /* vslideup_vx */
+    0x94003057,  /* vsll_vi */
+    0x94000057,  /* vsll_vv */
+    0x94004057,  /* vsll_vx */
+    0xae002077,  /* vsm3c_vi */
+    0x82002077,  /* vsm3me_vv */
+    0x86002077,  /* vsm4k_vi */
+    0xa6082077,  /* vsm4r_vs */
+    0xa2082077,  /* vsm4r_vv */
+    0x2b00027,   /* vsm_v */
+    0x9c000057,  /* vsmul_vv */
+    0x9c004057,  /* vsmul_vx */
+    0xc005027,   /* vsoxei16_v */
+    0xc006027,   /* vsoxei32_v */
+    0xc007027,   /* vsoxei64_v */
+    0xc000027,   /* vsoxei8_v */
+    0xa4003057,  /* vsra_vi */
+    0xa4000057,  /* vsra_vv */
+    0xa4004057,  /* vsra_vx */
+    0xa0003057,  /* vsrl_vi */
+    0xa0000057,  /* vsrl_vv */
+    0xa0004057,  /* vsrl_vx */
+    0x8005027,   /* vsse16_v */
+    0x8006027,   /* vsse32_v */
+    0x8007027,   /* vsse64_v */
+    0x8000027,   /* vsse8_v */
+    0xac003057,  /* vssra_vi */
+    0xac000057,  /* vssra_vv */
+    0xac004057,  /* vssra_vx */
+    0xa8003057,  /* vssrl_vi */
+    0xa8000057,  /* vssrl_vv */
+    0xa8004057,  /* vssrl_vx */
+    0x8c000057,  /* vssub_vv */
+    0x8c004057,  /* vssub_vx */
+    0x88000057,  /* vssubu_vv */
+    0x88004057,  /* vssubu_vx */
+    0x8000057,   /* vsub_vv */
+    0x8004057,   /* vsub_vx */
+    0x4005027,   /* vsuxei16_v */
+    0x4006027,   /* vsuxei32_v */
+    0x4007027,   /* vsuxei64_v */
+    0x4000027,   /* vsuxei8_v */
+    0xc4002057,  /* vwadd_vv */
+    0xc4006057,  /* vwadd_vx */
+    0xd4002057,  /* vwadd_wv */
+    0xd4006057,  /* vwadd_wx */
+    0xc0002057,  /* vwaddu_vv */
+    0xc0006057,  /* vwaddu_vx */
+    0xd0002057,  /* vwaddu_wv */
+    0xd0006057,  /* vwaddu_wx */
+    0xf4002057,  /* vwmacc_vv */
+    0xf4006057,  /* vwmacc_vx */
+    0xfc002057,  /* vwmaccsu_vv */
+    0xfc006057,  /* vwmaccsu_vx */
+    0xf0002057,  /* vwmaccu_vv */
+    0xf0006057,  /* vwmaccu_vx */
+    0xf8006057,  /* vwmaccus_vx */
+    0xec002057,  /* vwmul_vv */
+    0xec006057,  /* vwmul_vx */
+    0xe8002057,  /* vwmulsu_vv */
+    0xe8006057,  /* vwmulsu_vx */
+    0xe0002057,  /* vwmulu_vv */
+    0xe0006057,  /* vwmulu_vx */
+    0xc4000057,  /* vwredsum_vs */
+    0xc0000057,  /* vwredsumu_vs */
+    0xd4003057,  /* vwsll_vi */
+    0xd4000057,  /* vwsll_vv */
+    0xd4004057,  /* vwsll_vx */
+    0xcc002057,  /* vwsub_vv */
+    0xcc006057,  /* vwsub_vx */
+    0xdc002057,  /* vwsub_wv */
+    0xdc006057,  /* vwsub_wx */
+    0xc8002057,  /* vwsubu_vv */
+    0xc8006057,  /* vwsubu_vx */
+    0xd8002057,  /* vwsubu_wv */
+    0xd8006057,  /* vwsubu_wx */
+    0x2c003057,  /* vxor_vi */
+    0x2c000057,  /* vxor_vv */
+    0x2c004057,  /* vxor_vx */
+    0x48032057,  /* vzext_vf2 */
+    0x48022057,  /* vzext_vf4 */
+    0x48012057,  /* vzext_vf8 */
+    0x10500073,  /* wfi */
+    0xd00073,    /* wrs_nto */
+    0x1d00073,   /* wrs_sto */
+    0x40004033,  /* xnor */
+    0x4033,      /* xor */
+    0x4013,      /* xori */
+    0x28002033,  /* xperm4 */
+    0x28004033,  /* xperm8 */
+    0x7013,      /* zext_b */
+    0x800403b,   /* zext_h */
+    0xffff_ffff, /* zext_h_rv32 */
+    0x800003b,   /* zext_w */
+    0xffff_ffff, /* zip */
 ];
 pub static OPCODE64_MASK: [u32; 1021] = [
-0xfe00707f, /* add */
-0xfe00707f, /* add_uw */
-0x707f, /* addi */
-0x707f, /* addiw */
-0xfe00707f, /* addw */
-0xffff_ffff, /* aes32dsi */
-0xffff_ffff, /* aes32dsmi */
-0xffff_ffff, /* aes32esi */
-0xffff_ffff, /* aes32esmi */
-0xfe00707f, /* aes64ds */
-0xfe00707f, /* aes64dsm */
-0xfe00707f, /* aes64es */
-0xfe00707f, /* aes64esm */
-0xfff0707f, /* aes64im */
-0xff00707f, /* aes64ks1i */
-0xfe00707f, /* aes64ks2 */
-0xf800707f, /* amoadd_b */
-0xf800707f, /* amoadd_d */
-0xf800707f, /* amoadd_h */
-0xf800707f, /* amoadd_w */
-0xf800707f, /* amoand_b */
-0xf800707f, /* amoand_d */
-0xf800707f, /* amoand_h */
-0xf800707f, /* amoand_w */
-0xf800707f, /* amocas_b */
-0xf800707f, /* amocas_d */
-0xf800707f, /* amocas_h */
-0xf800707f, /* amocas_q */
-0xf800707f, /* amocas_w */
-0xf800707f, /* amomax_b */
-0xf800707f, /* amomax_d */
-0xf800707f, /* amomax_h */
-0xf800707f, /* amomax_w */
-0xf800707f, /* amomaxu_b */
-0xf800707f, /* amomaxu_d */
-0xf800707f, /* amomaxu_h */
-0xf800707f, /* amomaxu_w */
-0xf800707f, /* amomin_b */
-0xf800707f, /* amomin_d */
-0xf800707f, /* amomin_h */
-0xf800707f, /* amomin_w */
-0xf800707f, /* amominu_b */
-0xf800707f, /* amominu_d */
-0xf800707f, /* amominu_h */
-0xf800707f, /* amominu_w */
-0xf800707f, /* amoor_b */
-0xf800707f, /* amoor_d */
-0xf800707f, /* amoor_h */
-0xf800707f, /* amoor_w */
-0xf800707f, /* amoswap_b */
-0xf800707f, /* amoswap_d */
-0xf800707f, /* amoswap_h */
-0xf800707f, /* amoswap_w */
-0xf800707f, /* amoxor_b */
-0xf800707f, /* amoxor_d */
-0xf800707f, /* amoxor_h */
-0xf800707f, /* amoxor_w */
-0xfe00707f, /* and */
-0x707f, /* andi */
-0xfe00707f, /* andn */
-0x7f, /* auipc */
-0xfe00707f, /* bclr */
-0xfc00707f, /* bclri */
-0xffff_ffff, /* bclri_rv32 */
-0x707f, /* beq */
-0x1f0707f, /* beqz */
-0xfe00707f, /* bext */
-0xfc00707f, /* bexti */
-0xffff_ffff, /* bexti_rv32 */
-0x707f, /* bge */
-0x707f, /* bgeu */
-0x1f0707f, /* bgez */
-0x707f, /* bgt */
-0x707f, /* bgtu */
-0xff07f, /* bgtz */
-0xfe00707f, /* binv */
-0xfc00707f, /* binvi */
-0xffff_ffff, /* binvi_rv32 */
-0x707f, /* ble */
-0x707f, /* bleu */
-0xff07f, /* blez */
-0x707f, /* blt */
-0x707f, /* bltu */
-0x1f0707f, /* bltz */
-0x707f, /* bne */
-0x1f0707f, /* bnez */
-0xfff0707f, /* brev8 */
-0xfe00707f, /* bset */
-0xfc00707f, /* bseti */
-0xffff_ffff, /* bseti_rv32 */
-0xf003, /* c_add */
-0xe003, /* c_addi */
-0xef83, /* c_addi16sp */
-0xe003, /* c_addi4spn */
-0xe003, /* c_addiw */
-0xfc63, /* c_addw */
-0xfc63, /* c_and */
-0xec03, /* c_andi */
-0xe003, /* c_beqz */
-0xe003, /* c_bnez */
-0xffff, /* c_ebreak */
-0xe003, /* c_fld */
-0xe003, /* c_fldsp */
-0xffff_ffff, /* c_flw */
-0xffff_ffff, /* c_flwsp */
-0xe003, /* c_fsd */
-0xe003, /* c_fsdsp */
-0xffff_ffff, /* c_fsw */
-0xffff_ffff, /* c_fswsp */
-0xe003, /* c_j */
-0xffff_ffff, /* c_jal */
-0xf07f, /* c_jalr */
-0xf07f, /* c_jr */
-0xfc03, /* c_lbu */
-0xe003, /* c_ld */
-0xe003, /* c_ldsp */
-0xfc43, /* c_lh */
-0xfc43, /* c_lhu */
-0xe003, /* c_li */
-0xe003, /* c_lui */
-0xe003, /* c_lw */
-0xe003, /* c_lwsp */
-0xffff, /* c_mop_1 */
-0xffff, /* c_mop_11 */
-0xffff, /* c_mop_13 */
-0xffff, /* c_mop_15 */
-0xffff, /* c_mop_3 */
-0xffff, /* c_mop_5 */
-0xffff, /* c_mop_7 */
-0xffff, /* c_mop_9 */
-0xf8ff, /* c_mop_N */
-0xfc63, /* c_mul */
-0xf003, /* c_mv */
-0xef83, /* c_nop */
-0xfc7f, /* c_not */
-0xffff, /* c_ntl_all */
-0xffff, /* c_ntl_p1 */
-0xffff, /* c_ntl_pall */
-0xffff, /* c_ntl_s1 */
-0xfc63, /* c_or */
-0xfc03, /* c_sb */
-0xe003, /* c_sd */
-0xe003, /* c_sdsp */
-0xfc7f, /* c_sext_b */
-0xfc7f, /* c_sext_h */
-0xf07f, /* c_sext_w */
-0xfc43, /* c_sh */
-0xe003, /* c_slli */
-0xffff_ffff, /* c_slli_rv32 */
-0xec03, /* c_srai */
-0xffff_ffff, /* c_srai_rv32 */
-0xec03, /* c_srli */
-0xffff_ffff, /* c_srli_rv32 */
-0xfc63, /* c_sub */
-0xfc63, /* c_subw */
-0xe003, /* c_sw */
-0xe003, /* c_swsp */
-0xfc63, /* c_xor */
-0xfc7f, /* c_zext_b */
-0xfc7f, /* c_zext_h */
-0xfc7f, /* c_zext_w */
-0xfff07fff, /* cbo_clean */
-0xfff07fff, /* cbo_flush */
-0xfff07fff, /* cbo_inval */
-0xfff07fff, /* cbo_zero */
-0xfe00707f, /* clmul */
-0xfe00707f, /* clmulh */
-0xfe00707f, /* clmulr */
-0xfff0707f, /* clz */
-0xfff0707f, /* clzw */
-0xfc03, /* cm_jalt */
-0xfc63, /* cm_mva01s */
-0xfc63, /* cm_mvsa01 */
-0xff03, /* cm_pop */
-0xff03, /* cm_popret */
-0xff03, /* cm_popretz */
-0xff03, /* cm_push */
-0xfff0707f, /* cpop */
-0xfff0707f, /* cpopw */
-0x7fff, /* csrc */
-0x7fff, /* csrci */
-0xff07f, /* csrr */
-0x707f, /* csrrc */
-0x707f, /* csrrci */
-0x707f, /* csrrs */
-0x707f, /* csrrsi */
-0x707f, /* csrrw */
-0x707f, /* csrrwi */
-0x7fff, /* csrs */
-0x7fff, /* csrsi */
-0x7fff, /* csrw */
-0x7fff, /* csrwi */
-0xfff0707f, /* ctz */
-0xfff0707f, /* ctzw */
-0xfe00707f, /* czero_eqz */
-0xfe00707f, /* czero_nez */
-0xfe00707f, /* div */
-0xfe00707f, /* divu */
-0xfe00707f, /* divuw */
-0xfe00707f, /* divw */
-0xffffffff, /* dret */
-0xffffffff, /* ebreak */
-0xffffffff, /* ecall */
-0xfe00707f, /* fabs_d */
-0xfe00707f, /* fabs_h */
-0xfe00707f, /* fabs_q */
-0xfe00707f, /* fabs_s */
-0xfe00007f, /* fadd_d */
-0xfe00007f, /* fadd_h */
-0xfe00007f, /* fadd_q */
-0xfe00007f, /* fadd_s */
-0xfff0707f, /* fclass_d */
-0xfff0707f, /* fclass_h */
-0xfff0707f, /* fclass_q */
-0xfff0707f, /* fclass_s */
-0xfff0007f, /* fcvt_d_h */
-0xfff0007f, /* fcvt_d_l */
-0xfff0007f, /* fcvt_d_lu */
-0xfff0007f, /* fcvt_d_q */
-0xfff0007f, /* fcvt_d_s */
-0xfff0007f, /* fcvt_d_w */
-0xfff0007f, /* fcvt_d_wu */
-0xfff0007f, /* fcvt_h_d */
-0xfff0007f, /* fcvt_h_l */
-0xfff0007f, /* fcvt_h_lu */
-0xfff0007f, /* fcvt_h_q */
-0xfff0007f, /* fcvt_h_s */
-0xfff0007f, /* fcvt_h_w */
-0xfff0007f, /* fcvt_h_wu */
-0xfff0007f, /* fcvt_l_d */
-0xfff0007f, /* fcvt_l_h */
-0xfff0007f, /* fcvt_l_q */
-0xfff0007f, /* fcvt_l_s */
-0xfff0007f, /* fcvt_lu_d */
-0xfff0007f, /* fcvt_lu_h */
-0xfff0007f, /* fcvt_lu_q */
-0xfff0007f, /* fcvt_lu_s */
-0xfff0007f, /* fcvt_q_d */
-0xfff0007f, /* fcvt_q_h */
-0xfff0007f, /* fcvt_q_l */
-0xfff0007f, /* fcvt_q_lu */
-0xfff0007f, /* fcvt_q_s */
-0xfff0007f, /* fcvt_q_w */
-0xfff0007f, /* fcvt_q_wu */
-0xfff0007f, /* fcvt_s_d */
-0xfff0007f, /* fcvt_s_h */
-0xfff0007f, /* fcvt_s_l */
-0xfff0007f, /* fcvt_s_lu */
-0xfff0007f, /* fcvt_s_q */
-0xfff0007f, /* fcvt_s_w */
-0xfff0007f, /* fcvt_s_wu */
-0xfff0007f, /* fcvt_w_d */
-0xfff0007f, /* fcvt_w_h */
-0xfff0007f, /* fcvt_w_q */
-0xfff0007f, /* fcvt_w_s */
-0xfff0007f, /* fcvt_wu_d */
-0xfff0007f, /* fcvt_wu_h */
-0xfff0007f, /* fcvt_wu_q */
-0xfff0007f, /* fcvt_wu_s */
-0xfff0707f, /* fcvtmod_w_d */
-0xfe00007f, /* fdiv_d */
-0xfe00007f, /* fdiv_h */
-0xfe00007f, /* fdiv_q */
-0xfe00007f, /* fdiv_s */
-0x707f, /* fence */
-0x707f, /* fence_i */
-0xfff0707f, /* fence_tso */
-0xfe00707f, /* feq_d */
-0xfe00707f, /* feq_h */
-0xfe00707f, /* feq_q */
-0xfe00707f, /* feq_s */
-0x707f, /* fld */
-0xfe00707f, /* fle_d */
-0xfe00707f, /* fle_h */
-0xfe00707f, /* fle_q */
-0xfe00707f, /* fle_s */
-0xfe00707f, /* fleq_d */
-0xfe00707f, /* fleq_h */
-0xfe00707f, /* fleq_q */
-0xfe00707f, /* fleq_s */
-0x707f, /* flh */
-0xfff0707f, /* fli_d */
-0xfff0707f, /* fli_h */
-0xfff0707f, /* fli_q */
-0xfff0707f, /* fli_s */
-0x707f, /* flq */
-0xfe00707f, /* flt_d */
-0xfe00707f, /* flt_h */
-0xfe00707f, /* flt_q */
-0xfe00707f, /* flt_s */
-0xfe00707f, /* fltq_d */
-0xfe00707f, /* fltq_h */
-0xfe00707f, /* fltq_q */
-0xfe00707f, /* fltq_s */
-0x707f, /* flw */
-0x600007f, /* fmadd_d */
-0x600007f, /* fmadd_h */
-0x600007f, /* fmadd_q */
-0x600007f, /* fmadd_s */
-0xfe00707f, /* fmax_d */
-0xfe00707f, /* fmax_h */
-0xfe00707f, /* fmax_q */
-0xfe00707f, /* fmax_s */
-0xfe00707f, /* fmaxm_d */
-0xfe00707f, /* fmaxm_h */
-0xfe00707f, /* fmaxm_q */
-0xfe00707f, /* fmaxm_s */
-0xfe00707f, /* fmin_d */
-0xfe00707f, /* fmin_h */
-0xfe00707f, /* fmin_q */
-0xfe00707f, /* fmin_s */
-0xfe00707f, /* fminm_d */
-0xfe00707f, /* fminm_h */
-0xfe00707f, /* fminm_q */
-0xfe00707f, /* fminm_s */
-0x600007f, /* fmsub_d */
-0x600007f, /* fmsub_h */
-0x600007f, /* fmsub_q */
-0x600007f, /* fmsub_s */
-0xfe00007f, /* fmul_d */
-0xfe00007f, /* fmul_h */
-0xfe00007f, /* fmul_q */
-0xfe00007f, /* fmul_s */
-0xfe00707f, /* fmv_d */
-0xfff0707f, /* fmv_d_x */
-0xfe00707f, /* fmv_h */
-0xfff0707f, /* fmv_h_x */
-0xfe00707f, /* fmv_q */
-0xfe00707f, /* fmv_s */
-0xfff0707f, /* fmv_s_x */
-0xfff0707f, /* fmv_w_x */
-0xfff0707f, /* fmv_x_d */
-0xfff0707f, /* fmv_x_h */
-0xfff0707f, /* fmv_x_s */
-0xfff0707f, /* fmv_x_w */
-0xffff_ffff, /* fmvh_x_d */
-0xfff0707f, /* fmvh_x_q */
-0xffff_ffff, /* fmvp_d_x */
-0xfe00707f, /* fmvp_q_x */
-0xfe00707f, /* fneg_d */
-0xfe00707f, /* fneg_h */
-0xfe00707f, /* fneg_q */
-0xfe00707f, /* fneg_s */
-0x600007f, /* fnmadd_d */
-0x600007f, /* fnmadd_h */
-0x600007f, /* fnmadd_q */
-0x600007f, /* fnmadd_s */
-0x600007f, /* fnmsub_d */
-0x600007f, /* fnmsub_h */
-0x600007f, /* fnmsub_q */
-0x600007f, /* fnmsub_s */
-0xfffff07f, /* frcsr */
-0xfffff07f, /* frflags */
-0xfff0007f, /* fround_d */
-0xfff0007f, /* fround_h */
-0xfff0007f, /* fround_q */
-0xfff0007f, /* fround_s */
-0xfff0007f, /* froundnx_d */
-0xfff0007f, /* froundnx_h */
-0xfff0007f, /* froundnx_q */
-0xfff0007f, /* froundnx_s */
-0xfffff07f, /* frrm */
-0xfff0707f, /* fscsr */
-0x707f, /* fsd */
-0xfff0707f, /* fsflags */
-0xfff0707f, /* fsflagsi */
-0xfe00707f, /* fsgnj_d */
-0xfe00707f, /* fsgnj_h */
-0xfe00707f, /* fsgnj_q */
-0xfe00707f, /* fsgnj_s */
-0xfe00707f, /* fsgnjn_d */
-0xfe00707f, /* fsgnjn_h */
-0xfe00707f, /* fsgnjn_q */
-0xfe00707f, /* fsgnjn_s */
-0xfe00707f, /* fsgnjx_d */
-0xfe00707f, /* fsgnjx_h */
-0xfe00707f, /* fsgnjx_q */
-0xfe00707f, /* fsgnjx_s */
-0x707f, /* fsh */
-0x707f, /* fsq */
-0xfff0007f, /* fsqrt_d */
-0xfff0007f, /* fsqrt_h */
-0xfff0007f, /* fsqrt_q */
-0xfff0007f, /* fsqrt_s */
-0xfff0707f, /* fsrm */
-0xfff0707f, /* fsrmi */
-0xfe00007f, /* fsub_d */
-0xfe00007f, /* fsub_h */
-0xfe00007f, /* fsub_q */
-0xfe00007f, /* fsub_s */
-0x707f, /* fsw */
-0xfe007fff, /* hfence_gvma */
-0xfe007fff, /* hfence_vvma */
-0xfe007fff, /* hinval_gvma */
-0xfe007fff, /* hinval_vvma */
-0xfff0707f, /* hlv_b */
-0xfff0707f, /* hlv_bu */
-0xfff0707f, /* hlv_d */
-0xfff0707f, /* hlv_h */
-0xfff0707f, /* hlv_hu */
-0xfff0707f, /* hlv_w */
-0xfff0707f, /* hlv_wu */
-0xfff0707f, /* hlvx_hu */
-0xfff0707f, /* hlvx_wu */
-0xfe007fff, /* hsv_b */
-0xfe007fff, /* hsv_d */
-0xfe007fff, /* hsv_h */
-0xfe007fff, /* hsv_w */
-0xfff, /* j */
-0x7f, /* jal */
-0xfff, /* jal_pseudo */
-0x707f, /* jalr */
-0xfff07fff, /* jalr_pseudo */
-0xfff07fff, /* jr */
-0x707f, /* lb */
-0x707f, /* lbu */
-0x707f, /* ld */
-0x707f, /* lh */
-0x707f, /* lhu */
-0xf9f0707f, /* lr_d */
-0xf9f0707f, /* lr_w */
-0x7f, /* lui */
-0x707f, /* lw */
-0x707f, /* lwu */
-0xfe00707f, /* max */
-0xfe00707f, /* maxu */
-0xfe00707f, /* min */
-0xfe00707f, /* minu */
-0xfff0707f, /* mop_r_0 */
-0xfff0707f, /* mop_r_1 */
-0xfff0707f, /* mop_r_10 */
-0xfff0707f, /* mop_r_11 */
-0xfff0707f, /* mop_r_12 */
-0xfff0707f, /* mop_r_13 */
-0xfff0707f, /* mop_r_14 */
-0xfff0707f, /* mop_r_15 */
-0xfff0707f, /* mop_r_16 */
-0xfff0707f, /* mop_r_17 */
-0xfff0707f, /* mop_r_18 */
-0xfff0707f, /* mop_r_19 */
-0xfff0707f, /* mop_r_2 */
-0xfff0707f, /* mop_r_20 */
-0xfff0707f, /* mop_r_21 */
-0xfff0707f, /* mop_r_22 */
-0xfff0707f, /* mop_r_23 */
-0xfff0707f, /* mop_r_24 */
-0xfff0707f, /* mop_r_25 */
-0xfff0707f, /* mop_r_26 */
-0xfff0707f, /* mop_r_27 */
-0xfff0707f, /* mop_r_28 */
-0xfff0707f, /* mop_r_29 */
-0xfff0707f, /* mop_r_3 */
-0xfff0707f, /* mop_r_30 */
-0xfff0707f, /* mop_r_31 */
-0xfff0707f, /* mop_r_4 */
-0xfff0707f, /* mop_r_5 */
-0xfff0707f, /* mop_r_6 */
-0xfff0707f, /* mop_r_7 */
-0xfff0707f, /* mop_r_8 */
-0xfff0707f, /* mop_r_9 */
-0xb3c0707f, /* mop_r_N */
-0xfe00707f, /* mop_rr_0 */
-0xfe00707f, /* mop_rr_1 */
-0xfe00707f, /* mop_rr_2 */
-0xfe00707f, /* mop_rr_3 */
-0xfe00707f, /* mop_rr_4 */
-0xfe00707f, /* mop_rr_5 */
-0xfe00707f, /* mop_rr_6 */
-0xfe00707f, /* mop_rr_7 */
-0xb200707f, /* mop_rr_N */
-0xffffffff, /* mret */
-0xfe00707f, /* mul */
-0xfe00707f, /* mulh */
-0xfe00707f, /* mulhsu */
-0xfe00707f, /* mulhu */
-0xfe00707f, /* mulw */
-0xfff0707f, /* mv */
-0xfff0707f, /* neg */
-0xffffffff, /* nop */
-0xffffffff, /* ntl_all */
-0xffffffff, /* ntl_p1 */
-0xffffffff, /* ntl_pall */
-0xffffffff, /* ntl_s1 */
-0xfe00707f, /* or */
-0xfff0707f, /* orc_b */
-0x707f, /* ori */
-0xfe00707f, /* orn */
-0xfe00707f, /* pack */
-0xfe00707f, /* packh */
-0xfe00707f, /* packw */
-0xffffffff, /* pause */
-0x1f07fff, /* prefetch_i */
-0x1f07fff, /* prefetch_r */
-0x1f07fff, /* prefetch_w */
-0xfffff07f, /* rdcycle */
-0xffff_ffff, /* rdcycleh */
-0xfffff07f, /* rdinstret */
-0xffff_ffff, /* rdinstreth */
-0xfffff07f, /* rdtime */
-0xffff_ffff, /* rdtimeh */
-0xfe00707f, /* rem */
-0xfe00707f, /* remu */
-0xfe00707f, /* remuw */
-0xfe00707f, /* remw */
-0xffffffff, /* ret */
-0xfff0707f, /* rev8 */
-0xffff_ffff, /* rev8_rv32 */
-0xfe00707f, /* rol */
-0xfe00707f, /* rolw */
-0xfe00707f, /* ror */
-0xfc00707f, /* rori */
-0xffff_ffff, /* rori_rv32 */
-0xfe00707f, /* roriw */
-0xfe00707f, /* rorw */
-0x707f, /* sb */
-0xffffffff, /* sbreak */
-0xf800707f, /* sc_d */
-0xf800707f, /* sc_w */
-0xffffffff, /* scall */
-0x707f, /* sd */
-0xfff0707f, /* seqz */
-0xfff0707f, /* sext_b */
-0xfff0707f, /* sext_h */
-0xfff0707f, /* sext_w */
-0xffffffff, /* sfence_inval_ir */
-0xfe007fff, /* sfence_vma */
-0xffffffff, /* sfence_w_inval */
-0xfe0ff07f, /* sgtz */
-0x707f, /* sh */
-0xfe00707f, /* sh1add */
-0xfe00707f, /* sh1add_uw */
-0xfe00707f, /* sh2add */
-0xfe00707f, /* sh2add_uw */
-0xfe00707f, /* sh3add */
-0xfe00707f, /* sh3add_uw */
-0xfff0707f, /* sha256sig0 */
-0xfff0707f, /* sha256sig1 */
-0xfff0707f, /* sha256sum0 */
-0xfff0707f, /* sha256sum1 */
-0xfff0707f, /* sha512sig0 */
-0xffff_ffff, /* sha512sig0h */
-0xffff_ffff, /* sha512sig0l */
-0xfff0707f, /* sha512sig1 */
-0xffff_ffff, /* sha512sig1h */
-0xffff_ffff, /* sha512sig1l */
-0xfff0707f, /* sha512sum0 */
-0xffff_ffff, /* sha512sum0r */
-0xfff0707f, /* sha512sum1 */
-0xffff_ffff, /* sha512sum1r */
-0xfe007fff, /* sinval_vma */
-0xfe00707f, /* sll */
-0xfc00707f, /* slli */
-0xffff_ffff, /* slli_rv32 */
-0xfc00707f, /* slli_uw */
-0xfe00707f, /* slliw */
-0xfe00707f, /* sllw */
-0xfe00707f, /* slt */
-0x707f, /* slti */
-0x707f, /* sltiu */
-0xfe00707f, /* sltu */
-0xfff0707f, /* sltz */
-0xfff0707f, /* sm3p0 */
-0xfff0707f, /* sm3p1 */
-0x3e00707f, /* sm4ed */
-0x3e00707f, /* sm4ks */
-0xfe0ff07f, /* snez */
-0xfe00707f, /* sra */
-0xfc00707f, /* srai */
-0xffff_ffff, /* srai_rv32 */
-0xfe00707f, /* sraiw */
-0xfe00707f, /* sraw */
-0xffffffff, /* sret */
-0xfe00707f, /* srl */
-0xfc00707f, /* srli */
-0xffff_ffff, /* srli_rv32 */
-0xfe00707f, /* srliw */
-0xfe00707f, /* srlw */
-0xfe00707f, /* sub */
-0xfe00707f, /* subw */
-0x707f, /* sw */
-0xffff_ffff, /* unzip */
-0xfc00707f, /* vaadd_vv */
-0xfc00707f, /* vaadd_vx */
-0xfc00707f, /* vaaddu_vv */
-0xfc00707f, /* vaaddu_vx */
-0xfe00707f, /* vadc_vim */
-0xfe00707f, /* vadc_vvm */
-0xfe00707f, /* vadc_vxm */
-0xfc00707f, /* vadd_vi */
-0xfc00707f, /* vadd_vv */
-0xfc00707f, /* vadd_vx */
-0xfe0ff07f, /* vaesdf_vs */
-0xfe0ff07f, /* vaesdf_vv */
-0xfe0ff07f, /* vaesdm_vs */
-0xfe0ff07f, /* vaesdm_vv */
-0xfe0ff07f, /* vaesef_vs */
-0xfe0ff07f, /* vaesef_vv */
-0xfe0ff07f, /* vaesem_vs */
-0xfe0ff07f, /* vaesem_vv */
-0xfe00707f, /* vaeskf1_vi */
-0xfe00707f, /* vaeskf2_vi */
-0xfe0ff07f, /* vaesz_vs */
-0xfc00707f, /* vand_vi */
-0xfc00707f, /* vand_vv */
-0xfc00707f, /* vand_vx */
-0xfc00707f, /* vandn_vv */
-0xfc00707f, /* vandn_vx */
-0xfc00707f, /* vasub_vv */
-0xfc00707f, /* vasub_vx */
-0xfc00707f, /* vasubu_vv */
-0xfc00707f, /* vasubu_vx */
-0xfc0ff07f, /* vbrev8_v */
-0xfc0ff07f, /* vbrev_v */
-0xfc00707f, /* vclmul_vv */
-0xfc00707f, /* vclmul_vx */
-0xfc00707f, /* vclmulh_vv */
-0xfc00707f, /* vclmulh_vx */
-0xfc0ff07f, /* vclz_v */
-0xfe00707f, /* vcompress_vm */
-0xfc0ff07f, /* vcpop_m */
-0xfc0ff07f, /* vcpop_v */
-0xfc0ff07f, /* vctz_v */
-0xfc00707f, /* vdiv_vv */
-0xfc00707f, /* vdiv_vx */
-0xfc00707f, /* vdivu_vv */
-0xfc00707f, /* vdivu_vx */
-0xfc00707f, /* vfadd_vf */
-0xfc00707f, /* vfadd_vv */
-0xfc0ff07f, /* vfclass_v */
-0xfc0ff07f, /* vfcvt_f_x_v */
-0xfc0ff07f, /* vfcvt_f_xu_v */
-0xfc0ff07f, /* vfcvt_rtz_x_f_v */
-0xfc0ff07f, /* vfcvt_rtz_xu_f_v */
-0xfc0ff07f, /* vfcvt_x_f_v */
-0xfc0ff07f, /* vfcvt_xu_f_v */
-0xfc00707f, /* vfdiv_vf */
-0xfc00707f, /* vfdiv_vv */
-0xfc0ff07f, /* vfirst_m */
-0xfc00707f, /* vfmacc_vf */
-0xfc00707f, /* vfmacc_vv */
-0xfc00707f, /* vfmadd_vf */
-0xfc00707f, /* vfmadd_vv */
-0xfc00707f, /* vfmax_vf */
-0xfc00707f, /* vfmax_vv */
-0xfe00707f, /* vfmerge_vfm */
-0xfc00707f, /* vfmin_vf */
-0xfc00707f, /* vfmin_vv */
-0xfc00707f, /* vfmsac_vf */
-0xfc00707f, /* vfmsac_vv */
-0xfc00707f, /* vfmsub_vf */
-0xfc00707f, /* vfmsub_vv */
-0xfc00707f, /* vfmul_vf */
-0xfc00707f, /* vfmul_vv */
-0xfe0ff07f, /* vfmv_f_s */
-0xfff0707f, /* vfmv_s_f */
-0xfff0707f, /* vfmv_v_f */
-0xfc0ff07f, /* vfncvt_f_f_w */
-0xfc0ff07f, /* vfncvt_f_x_w */
-0xfc0ff07f, /* vfncvt_f_xu_w */
-0xfc0ff07f, /* vfncvt_rod_f_f_w */
-0xfc0ff07f, /* vfncvt_rtz_x_f_w */
-0xfc0ff07f, /* vfncvt_rtz_xu_f_w */
-0xfc0ff07f, /* vfncvt_x_f_w */
-0xfc0ff07f, /* vfncvt_xu_f_w */
-0xfc00707f, /* vfnmacc_vf */
-0xfc00707f, /* vfnmacc_vv */
-0xfc00707f, /* vfnmadd_vf */
-0xfc00707f, /* vfnmadd_vv */
-0xfc00707f, /* vfnmsac_vf */
-0xfc00707f, /* vfnmsac_vv */
-0xfc00707f, /* vfnmsub_vf */
-0xfc00707f, /* vfnmsub_vv */
-0xfc00707f, /* vfrdiv_vf */
-0xfc0ff07f, /* vfrec7_v */
-0xfc00707f, /* vfredmax_vs */
-0xfc00707f, /* vfredmin_vs */
-0xfc00707f, /* vfredosum_vs */
-0xfc00707f, /* vfredsum_vs */
-0xfc00707f, /* vfredusum_vs */
-0xfc0ff07f, /* vfrsqrt7_v */
-0xfc00707f, /* vfrsub_vf */
-0xfc00707f, /* vfsgnj_vf */
-0xfc00707f, /* vfsgnj_vv */
-0xfc00707f, /* vfsgnjn_vf */
-0xfc00707f, /* vfsgnjn_vv */
-0xfc00707f, /* vfsgnjx_vf */
-0xfc00707f, /* vfsgnjx_vv */
-0xfc00707f, /* vfslide1down_vf */
-0xfc00707f, /* vfslide1up_vf */
-0xfc0ff07f, /* vfsqrt_v */
-0xfc00707f, /* vfsub_vf */
-0xfc00707f, /* vfsub_vv */
-0xfc00707f, /* vfwadd_vf */
-0xfc00707f, /* vfwadd_vv */
-0xfc00707f, /* vfwadd_wf */
-0xfc00707f, /* vfwadd_wv */
-0xfc0ff07f, /* vfwcvt_f_f_v */
-0xfc0ff07f, /* vfwcvt_f_x_v */
-0xfc0ff07f, /* vfwcvt_f_xu_v */
-0xfc0ff07f, /* vfwcvt_rtz_x_f_v */
-0xfc0ff07f, /* vfwcvt_rtz_xu_f_v */
-0xfc0ff07f, /* vfwcvt_x_f_v */
-0xfc0ff07f, /* vfwcvt_xu_f_v */
-0xfc00707f, /* vfwmacc_vf */
-0xfc00707f, /* vfwmacc_vv */
-0xfc00707f, /* vfwmsac_vf */
-0xfc00707f, /* vfwmsac_vv */
-0xfc00707f, /* vfwmul_vf */
-0xfc00707f, /* vfwmul_vv */
-0xfc00707f, /* vfwnmacc_vf */
-0xfc00707f, /* vfwnmacc_vv */
-0xfc00707f, /* vfwnmsac_vf */
-0xfc00707f, /* vfwnmsac_vv */
-0xfc00707f, /* vfwredosum_vs */
-0xfc00707f, /* vfwredsum_vs */
-0xfc00707f, /* vfwredusum_vs */
-0xfc00707f, /* vfwsub_vf */
-0xfc00707f, /* vfwsub_vv */
-0xfc00707f, /* vfwsub_wf */
-0xfc00707f, /* vfwsub_wv */
-0xfe00707f, /* vghsh_vv */
-0xfe0ff07f, /* vgmul_vv */
-0xfdfff07f, /* vid_v */
-0xfc0ff07f, /* viota_m */
-0xfff0707f, /* vl1r_v */
-0xfff0707f, /* vl1re16_v */
-0xfff0707f, /* vl1re32_v */
-0xfff0707f, /* vl1re64_v */
-0xfff0707f, /* vl1re8_v */
-0xfff0707f, /* vl2r_v */
-0xfff0707f, /* vl2re16_v */
-0xfff0707f, /* vl2re32_v */
-0xfff0707f, /* vl2re64_v */
-0xfff0707f, /* vl2re8_v */
-0xfff0707f, /* vl4r_v */
-0xfff0707f, /* vl4re16_v */
-0xfff0707f, /* vl4re32_v */
-0xfff0707f, /* vl4re64_v */
-0xfff0707f, /* vl4re8_v */
-0xfff0707f, /* vl8r_v */
-0xfff0707f, /* vl8re16_v */
-0xfff0707f, /* vl8re32_v */
-0xfff0707f, /* vl8re64_v */
-0xfff0707f, /* vl8re8_v */
-0x1df0707f, /* vle16_v */
-0x1df0707f, /* vle16ff_v */
-0xfff0707f, /* vle1_v */
-0x1df0707f, /* vle32_v */
-0x1df0707f, /* vle32ff_v */
-0x1df0707f, /* vle64_v */
-0x1df0707f, /* vle64ff_v */
-0x1df0707f, /* vle8_v */
-0x1df0707f, /* vle8ff_v */
-0xfff0707f, /* vlm_v */
-0x1c00707f, /* vloxei16_v */
-0x1c00707f, /* vloxei32_v */
-0x1c00707f, /* vloxei64_v */
-0x1c00707f, /* vloxei8_v */
-0x1c00707f, /* vlse16_v */
-0x1c00707f, /* vlse32_v */
-0x1c00707f, /* vlse64_v */
-0x1c00707f, /* vlse8_v */
-0x1c00707f, /* vluxei16_v */
-0x1c00707f, /* vluxei32_v */
-0x1c00707f, /* vluxei64_v */
-0x1c00707f, /* vluxei8_v */
-0xfc00707f, /* vmacc_vv */
-0xfc00707f, /* vmacc_vx */
-0xfe00707f, /* vmadc_vi */
-0xfe00707f, /* vmadc_vim */
-0xfe00707f, /* vmadc_vv */
-0xfe00707f, /* vmadc_vvm */
-0xfe00707f, /* vmadc_vx */
-0xfe00707f, /* vmadc_vxm */
-0xfc00707f, /* vmadd_vv */
-0xfc00707f, /* vmadd_vx */
-0xfe00707f, /* vmand_mm */
-0xfe00707f, /* vmandn_mm */
-0xfc00707f, /* vmandnot_mm */
-0xfc00707f, /* vmax_vv */
-0xfc00707f, /* vmax_vx */
-0xfc00707f, /* vmaxu_vv */
-0xfc00707f, /* vmaxu_vx */
-0xfe00707f, /* vmerge_vim */
-0xfe00707f, /* vmerge_vvm */
-0xfe00707f, /* vmerge_vxm */
-0xfc00707f, /* vmfeq_vf */
-0xfc00707f, /* vmfeq_vv */
-0xfc00707f, /* vmfge_vf */
-0xfc00707f, /* vmfgt_vf */
-0xfc00707f, /* vmfle_vf */
-0xfc00707f, /* vmfle_vv */
-0xfc00707f, /* vmflt_vf */
-0xfc00707f, /* vmflt_vv */
-0xfc00707f, /* vmfne_vf */
-0xfc00707f, /* vmfne_vv */
-0xfc00707f, /* vmin_vv */
-0xfc00707f, /* vmin_vx */
-0xfc00707f, /* vminu_vv */
-0xfc00707f, /* vminu_vx */
-0xfe00707f, /* vmnand_mm */
-0xfe00707f, /* vmnor_mm */
-0xfe00707f, /* vmor_mm */
-0xfe00707f, /* vmorn_mm */
-0xfc00707f, /* vmornot_mm */
-0xfe00707f, /* vmsbc_vv */
-0xfe00707f, /* vmsbc_vvm */
-0xfe00707f, /* vmsbc_vx */
-0xfe00707f, /* vmsbc_vxm */
-0xfc0ff07f, /* vmsbf_m */
-0xfc00707f, /* vmseq_vi */
-0xfc00707f, /* vmseq_vv */
-0xfc00707f, /* vmseq_vx */
-0xfc00707f, /* vmsgt_vi */
-0xfc00707f, /* vmsgt_vx */
-0xfc00707f, /* vmsgtu_vi */
-0xfc00707f, /* vmsgtu_vx */
-0xfc0ff07f, /* vmsif_m */
-0xfc00707f, /* vmsle_vi */
-0xfc00707f, /* vmsle_vv */
-0xfc00707f, /* vmsle_vx */
-0xfc00707f, /* vmsleu_vi */
-0xfc00707f, /* vmsleu_vv */
-0xfc00707f, /* vmsleu_vx */
-0xfc00707f, /* vmslt_vv */
-0xfc00707f, /* vmslt_vx */
-0xfc00707f, /* vmsltu_vv */
-0xfc00707f, /* vmsltu_vx */
-0xfc00707f, /* vmsne_vi */
-0xfc00707f, /* vmsne_vv */
-0xfc00707f, /* vmsne_vx */
-0xfc0ff07f, /* vmsof_m */
-0xfc00707f, /* vmul_vv */
-0xfc00707f, /* vmul_vx */
-0xfc00707f, /* vmulh_vv */
-0xfc00707f, /* vmulh_vx */
-0xfc00707f, /* vmulhsu_vv */
-0xfc00707f, /* vmulhsu_vx */
-0xfc00707f, /* vmulhu_vv */
-0xfc00707f, /* vmulhu_vx */
-0xfe0ff07f, /* vmv1r_v */
-0xfe0ff07f, /* vmv2r_v */
-0xfe0ff07f, /* vmv4r_v */
-0xfe0ff07f, /* vmv8r_v */
-0xfff0707f, /* vmv_s_x */
-0xfff0707f, /* vmv_v_i */
-0xfff0707f, /* vmv_v_v */
-0xfff0707f, /* vmv_v_x */
-0xfe0ff07f, /* vmv_x_s */
-0xfe00707f, /* vmxnor_mm */
-0xfe00707f, /* vmxor_mm */
-0xfc00707f, /* vnclip_wi */
-0xfc00707f, /* vnclip_wv */
-0xfc00707f, /* vnclip_wx */
-0xfc00707f, /* vnclipu_wi */
-0xfc00707f, /* vnclipu_wv */
-0xfc00707f, /* vnclipu_wx */
-0xfc00707f, /* vnmsac_vv */
-0xfc00707f, /* vnmsac_vx */
-0xfc00707f, /* vnmsub_vv */
-0xfc00707f, /* vnmsub_vx */
-0xfc00707f, /* vnsra_wi */
-0xfc00707f, /* vnsra_wv */
-0xfc00707f, /* vnsra_wx */
-0xfc00707f, /* vnsrl_wi */
-0xfc00707f, /* vnsrl_wv */
-0xfc00707f, /* vnsrl_wx */
-0xfc00707f, /* vor_vi */
-0xfc00707f, /* vor_vv */
-0xfc00707f, /* vor_vx */
-0xfc0ff07f, /* vpopc_m */
-0xfc00707f, /* vredand_vs */
-0xfc00707f, /* vredmax_vs */
-0xfc00707f, /* vredmaxu_vs */
-0xfc00707f, /* vredmin_vs */
-0xfc00707f, /* vredminu_vs */
-0xfc00707f, /* vredor_vs */
-0xfc00707f, /* vredsum_vs */
-0xfc00707f, /* vredxor_vs */
-0xfc00707f, /* vrem_vv */
-0xfc00707f, /* vrem_vx */
-0xfc00707f, /* vremu_vv */
-0xfc00707f, /* vremu_vx */
-0xfc0ff07f, /* vrev8_v */
-0xfc00707f, /* vrgather_vi */
-0xfc00707f, /* vrgather_vv */
-0xfc00707f, /* vrgather_vx */
-0xfc00707f, /* vrgatherei16_vv */
-0xfc00707f, /* vrol_vv */
-0xfc00707f, /* vrol_vx */
-0xf800707f, /* vror_vi */
-0xfc00707f, /* vror_vv */
-0xfc00707f, /* vror_vx */
-0xfc00707f, /* vrsub_vi */
-0xfc00707f, /* vrsub_vx */
-0xfff0707f, /* vs1r_v */
-0xfff0707f, /* vs2r_v */
-0xfff0707f, /* vs4r_v */
-0xfff0707f, /* vs8r_v */
-0xfc00707f, /* vsadd_vi */
-0xfc00707f, /* vsadd_vv */
-0xfc00707f, /* vsadd_vx */
-0xfc00707f, /* vsaddu_vi */
-0xfc00707f, /* vsaddu_vv */
-0xfc00707f, /* vsaddu_vx */
-0xfe00707f, /* vsbc_vvm */
-0xfe00707f, /* vsbc_vxm */
-0x1df0707f, /* vse16_v */
-0xfff0707f, /* vse1_v */
-0x1df0707f, /* vse32_v */
-0x1df0707f, /* vse64_v */
-0x1df0707f, /* vse8_v */
-0xc000707f, /* vsetivli */
-0xfe00707f, /* vsetvl */
-0x8000707f, /* vsetvli */
-0xfc0ff07f, /* vsext_vf2 */
-0xfc0ff07f, /* vsext_vf4 */
-0xfc0ff07f, /* vsext_vf8 */
-0xfe00707f, /* vsha2ch_vv */
-0xfe00707f, /* vsha2cl_vv */
-0xfe00707f, /* vsha2ms_vv */
-0xfc00707f, /* vslide1down_vx */
-0xfc00707f, /* vslide1up_vx */
-0xfc00707f, /* vslidedown_vi */
-0xfc00707f, /* vslidedown_vx */
-0xfc00707f, /* vslideup_vi */
-0xfc00707f, /* vslideup_vx */
-0xfc00707f, /* vsll_vi */
-0xfc00707f, /* vsll_vv */
-0xfc00707f, /* vsll_vx */
-0xfe00707f, /* vsm3c_vi */
-0xfe00707f, /* vsm3me_vv */
-0xfe00707f, /* vsm4k_vi */
-0xfe0ff07f, /* vsm4r_vs */
-0xfe0ff07f, /* vsm4r_vv */
-0xfff0707f, /* vsm_v */
-0xfc00707f, /* vsmul_vv */
-0xfc00707f, /* vsmul_vx */
-0x1c00707f, /* vsoxei16_v */
-0x1c00707f, /* vsoxei32_v */
-0x1c00707f, /* vsoxei64_v */
-0x1c00707f, /* vsoxei8_v */
-0xfc00707f, /* vsra_vi */
-0xfc00707f, /* vsra_vv */
-0xfc00707f, /* vsra_vx */
-0xfc00707f, /* vsrl_vi */
-0xfc00707f, /* vsrl_vv */
-0xfc00707f, /* vsrl_vx */
-0x1c00707f, /* vsse16_v */
-0x1c00707f, /* vsse32_v */
-0x1c00707f, /* vsse64_v */
-0x1c00707f, /* vsse8_v */
-0xfc00707f, /* vssra_vi */
-0xfc00707f, /* vssra_vv */
-0xfc00707f, /* vssra_vx */
-0xfc00707f, /* vssrl_vi */
-0xfc00707f, /* vssrl_vv */
-0xfc00707f, /* vssrl_vx */
-0xfc00707f, /* vssub_vv */
-0xfc00707f, /* vssub_vx */
-0xfc00707f, /* vssubu_vv */
-0xfc00707f, /* vssubu_vx */
-0xfc00707f, /* vsub_vv */
-0xfc00707f, /* vsub_vx */
-0x1c00707f, /* vsuxei16_v */
-0x1c00707f, /* vsuxei32_v */
-0x1c00707f, /* vsuxei64_v */
-0x1c00707f, /* vsuxei8_v */
-0xfc00707f, /* vwadd_vv */
-0xfc00707f, /* vwadd_vx */
-0xfc00707f, /* vwadd_wv */
-0xfc00707f, /* vwadd_wx */
-0xfc00707f, /* vwaddu_vv */
-0xfc00707f, /* vwaddu_vx */
-0xfc00707f, /* vwaddu_wv */
-0xfc00707f, /* vwaddu_wx */
-0xfc00707f, /* vwmacc_vv */
-0xfc00707f, /* vwmacc_vx */
-0xfc00707f, /* vwmaccsu_vv */
-0xfc00707f, /* vwmaccsu_vx */
-0xfc00707f, /* vwmaccu_vv */
-0xfc00707f, /* vwmaccu_vx */
-0xfc00707f, /* vwmaccus_vx */
-0xfc00707f, /* vwmul_vv */
-0xfc00707f, /* vwmul_vx */
-0xfc00707f, /* vwmulsu_vv */
-0xfc00707f, /* vwmulsu_vx */
-0xfc00707f, /* vwmulu_vv */
-0xfc00707f, /* vwmulu_vx */
-0xfc00707f, /* vwredsum_vs */
-0xfc00707f, /* vwredsumu_vs */
-0xfc00707f, /* vwsll_vi */
-0xfc00707f, /* vwsll_vv */
-0xfc00707f, /* vwsll_vx */
-0xfc00707f, /* vwsub_vv */
-0xfc00707f, /* vwsub_vx */
-0xfc00707f, /* vwsub_wv */
-0xfc00707f, /* vwsub_wx */
-0xfc00707f, /* vwsubu_vv */
-0xfc00707f, /* vwsubu_vx */
-0xfc00707f, /* vwsubu_wv */
-0xfc00707f, /* vwsubu_wx */
-0xfc00707f, /* vxor_vi */
-0xfc00707f, /* vxor_vv */
-0xfc00707f, /* vxor_vx */
-0xfc0ff07f, /* vzext_vf2 */
-0xfc0ff07f, /* vzext_vf4 */
-0xfc0ff07f, /* vzext_vf8 */
-0xffffffff, /* wfi */
-0xffffffff, /* wrs_nto */
-0xffffffff, /* wrs_sto */
-0xfe00707f, /* xnor */
-0xfe00707f, /* xor */
-0x707f, /* xori */
-0xfe00707f, /* xperm4 */
-0xfe00707f, /* xperm8 */
-0xfff0707f, /* zext_b */
-0xfff0707f, /* zext_h */
-0xffff_ffff, /* zext_h_rv32 */
-0xfff0707f, /* zext_w */
-0xffff_ffff, /* zip */
+    0xfe00707f,  /* add */
+    0xfe00707f,  /* add_uw */
+    0x707f,      /* addi */
+    0x707f,      /* addiw */
+    0xfe00707f,  /* addw */
+    0xffff_ffff, /* aes32dsi */
+    0xffff_ffff, /* aes32dsmi */
+    0xffff_ffff, /* aes32esi */
+    0xffff_ffff, /* aes32esmi */
+    0xfe00707f,  /* aes64ds */
+    0xfe00707f,  /* aes64dsm */
+    0xfe00707f,  /* aes64es */
+    0xfe00707f,  /* aes64esm */
+    0xfff0707f,  /* aes64im */
+    0xff00707f,  /* aes64ks1i */
+    0xfe00707f,  /* aes64ks2 */
+    0xf800707f,  /* amoadd_b */
+    0xf800707f,  /* amoadd_d */
+    0xf800707f,  /* amoadd_h */
+    0xf800707f,  /* amoadd_w */
+    0xf800707f,  /* amoand_b */
+    0xf800707f,  /* amoand_d */
+    0xf800707f,  /* amoand_h */
+    0xf800707f,  /* amoand_w */
+    0xf800707f,  /* amocas_b */
+    0xf800707f,  /* amocas_d */
+    0xf800707f,  /* amocas_h */
+    0xf800707f,  /* amocas_q */
+    0xf800707f,  /* amocas_w */
+    0xf800707f,  /* amomax_b */
+    0xf800707f,  /* amomax_d */
+    0xf800707f,  /* amomax_h */
+    0xf800707f,  /* amomax_w */
+    0xf800707f,  /* amomaxu_b */
+    0xf800707f,  /* amomaxu_d */
+    0xf800707f,  /* amomaxu_h */
+    0xf800707f,  /* amomaxu_w */
+    0xf800707f,  /* amomin_b */
+    0xf800707f,  /* amomin_d */
+    0xf800707f,  /* amomin_h */
+    0xf800707f,  /* amomin_w */
+    0xf800707f,  /* amominu_b */
+    0xf800707f,  /* amominu_d */
+    0xf800707f,  /* amominu_h */
+    0xf800707f,  /* amominu_w */
+    0xf800707f,  /* amoor_b */
+    0xf800707f,  /* amoor_d */
+    0xf800707f,  /* amoor_h */
+    0xf800707f,  /* amoor_w */
+    0xf800707f,  /* amoswap_b */
+    0xf800707f,  /* amoswap_d */
+    0xf800707f,  /* amoswap_h */
+    0xf800707f,  /* amoswap_w */
+    0xf800707f,  /* amoxor_b */
+    0xf800707f,  /* amoxor_d */
+    0xf800707f,  /* amoxor_h */
+    0xf800707f,  /* amoxor_w */
+    0xfe00707f,  /* and */
+    0x707f,      /* andi */
+    0xfe00707f,  /* andn */
+    0x7f,        /* auipc */
+    0xfe00707f,  /* bclr */
+    0xfc00707f,  /* bclri */
+    0xffff_ffff, /* bclri_rv32 */
+    0x707f,      /* beq */
+    0x1f0707f,   /* beqz */
+    0xfe00707f,  /* bext */
+    0xfc00707f,  /* bexti */
+    0xffff_ffff, /* bexti_rv32 */
+    0x707f,      /* bge */
+    0x707f,      /* bgeu */
+    0x1f0707f,   /* bgez */
+    0x707f,      /* bgt */
+    0x707f,      /* bgtu */
+    0xff07f,     /* bgtz */
+    0xfe00707f,  /* binv */
+    0xfc00707f,  /* binvi */
+    0xffff_ffff, /* binvi_rv32 */
+    0x707f,      /* ble */
+    0x707f,      /* bleu */
+    0xff07f,     /* blez */
+    0x707f,      /* blt */
+    0x707f,      /* bltu */
+    0x1f0707f,   /* bltz */
+    0x707f,      /* bne */
+    0x1f0707f,   /* bnez */
+    0xfff0707f,  /* brev8 */
+    0xfe00707f,  /* bset */
+    0xfc00707f,  /* bseti */
+    0xffff_ffff, /* bseti_rv32 */
+    0xf003,      /* c_add */
+    0xe003,      /* c_addi */
+    0xef83,      /* c_addi16sp */
+    0xe003,      /* c_addi4spn */
+    0xe003,      /* c_addiw */
+    0xfc63,      /* c_addw */
+    0xfc63,      /* c_and */
+    0xec03,      /* c_andi */
+    0xe003,      /* c_beqz */
+    0xe003,      /* c_bnez */
+    0xffff,      /* c_ebreak */
+    0xe003,      /* c_fld */
+    0xe003,      /* c_fldsp */
+    0xffff_ffff, /* c_flw */
+    0xffff_ffff, /* c_flwsp */
+    0xe003,      /* c_fsd */
+    0xe003,      /* c_fsdsp */
+    0xffff_ffff, /* c_fsw */
+    0xffff_ffff, /* c_fswsp */
+    0xe003,      /* c_j */
+    0xffff_ffff, /* c_jal */
+    0xf07f,      /* c_jalr */
+    0xf07f,      /* c_jr */
+    0xfc03,      /* c_lbu */
+    0xe003,      /* c_ld */
+    0xe003,      /* c_ldsp */
+    0xfc43,      /* c_lh */
+    0xfc43,      /* c_lhu */
+    0xe003,      /* c_li */
+    0xe003,      /* c_lui */
+    0xe003,      /* c_lw */
+    0xe003,      /* c_lwsp */
+    0xffff,      /* c_mop_1 */
+    0xffff,      /* c_mop_11 */
+    0xffff,      /* c_mop_13 */
+    0xffff,      /* c_mop_15 */
+    0xffff,      /* c_mop_3 */
+    0xffff,      /* c_mop_5 */
+    0xffff,      /* c_mop_7 */
+    0xffff,      /* c_mop_9 */
+    0xf8ff,      /* c_mop_N */
+    0xfc63,      /* c_mul */
+    0xf003,      /* c_mv */
+    0xef83,      /* c_nop */
+    0xfc7f,      /* c_not */
+    0xffff,      /* c_ntl_all */
+    0xffff,      /* c_ntl_p1 */
+    0xffff,      /* c_ntl_pall */
+    0xffff,      /* c_ntl_s1 */
+    0xfc63,      /* c_or */
+    0xfc03,      /* c_sb */
+    0xe003,      /* c_sd */
+    0xe003,      /* c_sdsp */
+    0xfc7f,      /* c_sext_b */
+    0xfc7f,      /* c_sext_h */
+    0xf07f,      /* c_sext_w */
+    0xfc43,      /* c_sh */
+    0xe003,      /* c_slli */
+    0xffff_ffff, /* c_slli_rv32 */
+    0xec03,      /* c_srai */
+    0xffff_ffff, /* c_srai_rv32 */
+    0xec03,      /* c_srli */
+    0xffff_ffff, /* c_srli_rv32 */
+    0xfc63,      /* c_sub */
+    0xfc63,      /* c_subw */
+    0xe003,      /* c_sw */
+    0xe003,      /* c_swsp */
+    0xfc63,      /* c_xor */
+    0xfc7f,      /* c_zext_b */
+    0xfc7f,      /* c_zext_h */
+    0xfc7f,      /* c_zext_w */
+    0xfff07fff,  /* cbo_clean */
+    0xfff07fff,  /* cbo_flush */
+    0xfff07fff,  /* cbo_inval */
+    0xfff07fff,  /* cbo_zero */
+    0xfe00707f,  /* clmul */
+    0xfe00707f,  /* clmulh */
+    0xfe00707f,  /* clmulr */
+    0xfff0707f,  /* clz */
+    0xfff0707f,  /* clzw */
+    0xfc03,      /* cm_jalt */
+    0xfc63,      /* cm_mva01s */
+    0xfc63,      /* cm_mvsa01 */
+    0xff03,      /* cm_pop */
+    0xff03,      /* cm_popret */
+    0xff03,      /* cm_popretz */
+    0xff03,      /* cm_push */
+    0xfff0707f,  /* cpop */
+    0xfff0707f,  /* cpopw */
+    0x7fff,      /* csrc */
+    0x7fff,      /* csrci */
+    0xff07f,     /* csrr */
+    0x707f,      /* csrrc */
+    0x707f,      /* csrrci */
+    0x707f,      /* csrrs */
+    0x707f,      /* csrrsi */
+    0x707f,      /* csrrw */
+    0x707f,      /* csrrwi */
+    0x7fff,      /* csrs */
+    0x7fff,      /* csrsi */
+    0x7fff,      /* csrw */
+    0x7fff,      /* csrwi */
+    0xfff0707f,  /* ctz */
+    0xfff0707f,  /* ctzw */
+    0xfe00707f,  /* czero_eqz */
+    0xfe00707f,  /* czero_nez */
+    0xfe00707f,  /* div */
+    0xfe00707f,  /* divu */
+    0xfe00707f,  /* divuw */
+    0xfe00707f,  /* divw */
+    0xffffffff,  /* dret */
+    0xffffffff,  /* ebreak */
+    0xffffffff,  /* ecall */
+    0xfe00707f,  /* fabs_d */
+    0xfe00707f,  /* fabs_h */
+    0xfe00707f,  /* fabs_q */
+    0xfe00707f,  /* fabs_s */
+    0xfe00007f,  /* fadd_d */
+    0xfe00007f,  /* fadd_h */
+    0xfe00007f,  /* fadd_q */
+    0xfe00007f,  /* fadd_s */
+    0xfff0707f,  /* fclass_d */
+    0xfff0707f,  /* fclass_h */
+    0xfff0707f,  /* fclass_q */
+    0xfff0707f,  /* fclass_s */
+    0xfff0007f,  /* fcvt_d_h */
+    0xfff0007f,  /* fcvt_d_l */
+    0xfff0007f,  /* fcvt_d_lu */
+    0xfff0007f,  /* fcvt_d_q */
+    0xfff0007f,  /* fcvt_d_s */
+    0xfff0007f,  /* fcvt_d_w */
+    0xfff0007f,  /* fcvt_d_wu */
+    0xfff0007f,  /* fcvt_h_d */
+    0xfff0007f,  /* fcvt_h_l */
+    0xfff0007f,  /* fcvt_h_lu */
+    0xfff0007f,  /* fcvt_h_q */
+    0xfff0007f,  /* fcvt_h_s */
+    0xfff0007f,  /* fcvt_h_w */
+    0xfff0007f,  /* fcvt_h_wu */
+    0xfff0007f,  /* fcvt_l_d */
+    0xfff0007f,  /* fcvt_l_h */
+    0xfff0007f,  /* fcvt_l_q */
+    0xfff0007f,  /* fcvt_l_s */
+    0xfff0007f,  /* fcvt_lu_d */
+    0xfff0007f,  /* fcvt_lu_h */
+    0xfff0007f,  /* fcvt_lu_q */
+    0xfff0007f,  /* fcvt_lu_s */
+    0xfff0007f,  /* fcvt_q_d */
+    0xfff0007f,  /* fcvt_q_h */
+    0xfff0007f,  /* fcvt_q_l */
+    0xfff0007f,  /* fcvt_q_lu */
+    0xfff0007f,  /* fcvt_q_s */
+    0xfff0007f,  /* fcvt_q_w */
+    0xfff0007f,  /* fcvt_q_wu */
+    0xfff0007f,  /* fcvt_s_d */
+    0xfff0007f,  /* fcvt_s_h */
+    0xfff0007f,  /* fcvt_s_l */
+    0xfff0007f,  /* fcvt_s_lu */
+    0xfff0007f,  /* fcvt_s_q */
+    0xfff0007f,  /* fcvt_s_w */
+    0xfff0007f,  /* fcvt_s_wu */
+    0xfff0007f,  /* fcvt_w_d */
+    0xfff0007f,  /* fcvt_w_h */
+    0xfff0007f,  /* fcvt_w_q */
+    0xfff0007f,  /* fcvt_w_s */
+    0xfff0007f,  /* fcvt_wu_d */
+    0xfff0007f,  /* fcvt_wu_h */
+    0xfff0007f,  /* fcvt_wu_q */
+    0xfff0007f,  /* fcvt_wu_s */
+    0xfff0707f,  /* fcvtmod_w_d */
+    0xfe00007f,  /* fdiv_d */
+    0xfe00007f,  /* fdiv_h */
+    0xfe00007f,  /* fdiv_q */
+    0xfe00007f,  /* fdiv_s */
+    0x707f,      /* fence */
+    0x707f,      /* fence_i */
+    0xfff0707f,  /* fence_tso */
+    0xfe00707f,  /* feq_d */
+    0xfe00707f,  /* feq_h */
+    0xfe00707f,  /* feq_q */
+    0xfe00707f,  /* feq_s */
+    0x707f,      /* fld */
+    0xfe00707f,  /* fle_d */
+    0xfe00707f,  /* fle_h */
+    0xfe00707f,  /* fle_q */
+    0xfe00707f,  /* fle_s */
+    0xfe00707f,  /* fleq_d */
+    0xfe00707f,  /* fleq_h */
+    0xfe00707f,  /* fleq_q */
+    0xfe00707f,  /* fleq_s */
+    0x707f,      /* flh */
+    0xfff0707f,  /* fli_d */
+    0xfff0707f,  /* fli_h */
+    0xfff0707f,  /* fli_q */
+    0xfff0707f,  /* fli_s */
+    0x707f,      /* flq */
+    0xfe00707f,  /* flt_d */
+    0xfe00707f,  /* flt_h */
+    0xfe00707f,  /* flt_q */
+    0xfe00707f,  /* flt_s */
+    0xfe00707f,  /* fltq_d */
+    0xfe00707f,  /* fltq_h */
+    0xfe00707f,  /* fltq_q */
+    0xfe00707f,  /* fltq_s */
+    0x707f,      /* flw */
+    0x600007f,   /* fmadd_d */
+    0x600007f,   /* fmadd_h */
+    0x600007f,   /* fmadd_q */
+    0x600007f,   /* fmadd_s */
+    0xfe00707f,  /* fmax_d */
+    0xfe00707f,  /* fmax_h */
+    0xfe00707f,  /* fmax_q */
+    0xfe00707f,  /* fmax_s */
+    0xfe00707f,  /* fmaxm_d */
+    0xfe00707f,  /* fmaxm_h */
+    0xfe00707f,  /* fmaxm_q */
+    0xfe00707f,  /* fmaxm_s */
+    0xfe00707f,  /* fmin_d */
+    0xfe00707f,  /* fmin_h */
+    0xfe00707f,  /* fmin_q */
+    0xfe00707f,  /* fmin_s */
+    0xfe00707f,  /* fminm_d */
+    0xfe00707f,  /* fminm_h */
+    0xfe00707f,  /* fminm_q */
+    0xfe00707f,  /* fminm_s */
+    0x600007f,   /* fmsub_d */
+    0x600007f,   /* fmsub_h */
+    0x600007f,   /* fmsub_q */
+    0x600007f,   /* fmsub_s */
+    0xfe00007f,  /* fmul_d */
+    0xfe00007f,  /* fmul_h */
+    0xfe00007f,  /* fmul_q */
+    0xfe00007f,  /* fmul_s */
+    0xfe00707f,  /* fmv_d */
+    0xfff0707f,  /* fmv_d_x */
+    0xfe00707f,  /* fmv_h */
+    0xfff0707f,  /* fmv_h_x */
+    0xfe00707f,  /* fmv_q */
+    0xfe00707f,  /* fmv_s */
+    0xfff0707f,  /* fmv_s_x */
+    0xfff0707f,  /* fmv_w_x */
+    0xfff0707f,  /* fmv_x_d */
+    0xfff0707f,  /* fmv_x_h */
+    0xfff0707f,  /* fmv_x_s */
+    0xfff0707f,  /* fmv_x_w */
+    0xffff_ffff, /* fmvh_x_d */
+    0xfff0707f,  /* fmvh_x_q */
+    0xffff_ffff, /* fmvp_d_x */
+    0xfe00707f,  /* fmvp_q_x */
+    0xfe00707f,  /* fneg_d */
+    0xfe00707f,  /* fneg_h */
+    0xfe00707f,  /* fneg_q */
+    0xfe00707f,  /* fneg_s */
+    0x600007f,   /* fnmadd_d */
+    0x600007f,   /* fnmadd_h */
+    0x600007f,   /* fnmadd_q */
+    0x600007f,   /* fnmadd_s */
+    0x600007f,   /* fnmsub_d */
+    0x600007f,   /* fnmsub_h */
+    0x600007f,   /* fnmsub_q */
+    0x600007f,   /* fnmsub_s */
+    0xfffff07f,  /* frcsr */
+    0xfffff07f,  /* frflags */
+    0xfff0007f,  /* fround_d */
+    0xfff0007f,  /* fround_h */
+    0xfff0007f,  /* fround_q */
+    0xfff0007f,  /* fround_s */
+    0xfff0007f,  /* froundnx_d */
+    0xfff0007f,  /* froundnx_h */
+    0xfff0007f,  /* froundnx_q */
+    0xfff0007f,  /* froundnx_s */
+    0xfffff07f,  /* frrm */
+    0xfff0707f,  /* fscsr */
+    0x707f,      /* fsd */
+    0xfff0707f,  /* fsflags */
+    0xfff0707f,  /* fsflagsi */
+    0xfe00707f,  /* fsgnj_d */
+    0xfe00707f,  /* fsgnj_h */
+    0xfe00707f,  /* fsgnj_q */
+    0xfe00707f,  /* fsgnj_s */
+    0xfe00707f,  /* fsgnjn_d */
+    0xfe00707f,  /* fsgnjn_h */
+    0xfe00707f,  /* fsgnjn_q */
+    0xfe00707f,  /* fsgnjn_s */
+    0xfe00707f,  /* fsgnjx_d */
+    0xfe00707f,  /* fsgnjx_h */
+    0xfe00707f,  /* fsgnjx_q */
+    0xfe00707f,  /* fsgnjx_s */
+    0x707f,      /* fsh */
+    0x707f,      /* fsq */
+    0xfff0007f,  /* fsqrt_d */
+    0xfff0007f,  /* fsqrt_h */
+    0xfff0007f,  /* fsqrt_q */
+    0xfff0007f,  /* fsqrt_s */
+    0xfff0707f,  /* fsrm */
+    0xfff0707f,  /* fsrmi */
+    0xfe00007f,  /* fsub_d */
+    0xfe00007f,  /* fsub_h */
+    0xfe00007f,  /* fsub_q */
+    0xfe00007f,  /* fsub_s */
+    0x707f,      /* fsw */
+    0xfe007fff,  /* hfence_gvma */
+    0xfe007fff,  /* hfence_vvma */
+    0xfe007fff,  /* hinval_gvma */
+    0xfe007fff,  /* hinval_vvma */
+    0xfff0707f,  /* hlv_b */
+    0xfff0707f,  /* hlv_bu */
+    0xfff0707f,  /* hlv_d */
+    0xfff0707f,  /* hlv_h */
+    0xfff0707f,  /* hlv_hu */
+    0xfff0707f,  /* hlv_w */
+    0xfff0707f,  /* hlv_wu */
+    0xfff0707f,  /* hlvx_hu */
+    0xfff0707f,  /* hlvx_wu */
+    0xfe007fff,  /* hsv_b */
+    0xfe007fff,  /* hsv_d */
+    0xfe007fff,  /* hsv_h */
+    0xfe007fff,  /* hsv_w */
+    0xfff,       /* j */
+    0x7f,        /* jal */
+    0xfff,       /* jal_pseudo */
+    0x707f,      /* jalr */
+    0xfff07fff,  /* jalr_pseudo */
+    0xfff07fff,  /* jr */
+    0x707f,      /* lb */
+    0x707f,      /* lbu */
+    0x707f,      /* ld */
+    0x707f,      /* lh */
+    0x707f,      /* lhu */
+    0xf9f0707f,  /* lr_d */
+    0xf9f0707f,  /* lr_w */
+    0x7f,        /* lui */
+    0x707f,      /* lw */
+    0x707f,      /* lwu */
+    0xfe00707f,  /* max */
+    0xfe00707f,  /* maxu */
+    0xfe00707f,  /* min */
+    0xfe00707f,  /* minu */
+    0xfff0707f,  /* mop_r_0 */
+    0xfff0707f,  /* mop_r_1 */
+    0xfff0707f,  /* mop_r_10 */
+    0xfff0707f,  /* mop_r_11 */
+    0xfff0707f,  /* mop_r_12 */
+    0xfff0707f,  /* mop_r_13 */
+    0xfff0707f,  /* mop_r_14 */
+    0xfff0707f,  /* mop_r_15 */
+    0xfff0707f,  /* mop_r_16 */
+    0xfff0707f,  /* mop_r_17 */
+    0xfff0707f,  /* mop_r_18 */
+    0xfff0707f,  /* mop_r_19 */
+    0xfff0707f,  /* mop_r_2 */
+    0xfff0707f,  /* mop_r_20 */
+    0xfff0707f,  /* mop_r_21 */
+    0xfff0707f,  /* mop_r_22 */
+    0xfff0707f,  /* mop_r_23 */
+    0xfff0707f,  /* mop_r_24 */
+    0xfff0707f,  /* mop_r_25 */
+    0xfff0707f,  /* mop_r_26 */
+    0xfff0707f,  /* mop_r_27 */
+    0xfff0707f,  /* mop_r_28 */
+    0xfff0707f,  /* mop_r_29 */
+    0xfff0707f,  /* mop_r_3 */
+    0xfff0707f,  /* mop_r_30 */
+    0xfff0707f,  /* mop_r_31 */
+    0xfff0707f,  /* mop_r_4 */
+    0xfff0707f,  /* mop_r_5 */
+    0xfff0707f,  /* mop_r_6 */
+    0xfff0707f,  /* mop_r_7 */
+    0xfff0707f,  /* mop_r_8 */
+    0xfff0707f,  /* mop_r_9 */
+    0xb3c0707f,  /* mop_r_N */
+    0xfe00707f,  /* mop_rr_0 */
+    0xfe00707f,  /* mop_rr_1 */
+    0xfe00707f,  /* mop_rr_2 */
+    0xfe00707f,  /* mop_rr_3 */
+    0xfe00707f,  /* mop_rr_4 */
+    0xfe00707f,  /* mop_rr_5 */
+    0xfe00707f,  /* mop_rr_6 */
+    0xfe00707f,  /* mop_rr_7 */
+    0xb200707f,  /* mop_rr_N */
+    0xffffffff,  /* mret */
+    0xfe00707f,  /* mul */
+    0xfe00707f,  /* mulh */
+    0xfe00707f,  /* mulhsu */
+    0xfe00707f,  /* mulhu */
+    0xfe00707f,  /* mulw */
+    0xfff0707f,  /* mv */
+    0xfff0707f,  /* neg */
+    0xffffffff,  /* nop */
+    0xffffffff,  /* ntl_all */
+    0xffffffff,  /* ntl_p1 */
+    0xffffffff,  /* ntl_pall */
+    0xffffffff,  /* ntl_s1 */
+    0xfe00707f,  /* or */
+    0xfff0707f,  /* orc_b */
+    0x707f,      /* ori */
+    0xfe00707f,  /* orn */
+    0xfe00707f,  /* pack */
+    0xfe00707f,  /* packh */
+    0xfe00707f,  /* packw */
+    0xffffffff,  /* pause */
+    0x1f07fff,   /* prefetch_i */
+    0x1f07fff,   /* prefetch_r */
+    0x1f07fff,   /* prefetch_w */
+    0xfffff07f,  /* rdcycle */
+    0xffff_ffff, /* rdcycleh */
+    0xfffff07f,  /* rdinstret */
+    0xffff_ffff, /* rdinstreth */
+    0xfffff07f,  /* rdtime */
+    0xffff_ffff, /* rdtimeh */
+    0xfe00707f,  /* rem */
+    0xfe00707f,  /* remu */
+    0xfe00707f,  /* remuw */
+    0xfe00707f,  /* remw */
+    0xffffffff,  /* ret */
+    0xfff0707f,  /* rev8 */
+    0xffff_ffff, /* rev8_rv32 */
+    0xfe00707f,  /* rol */
+    0xfe00707f,  /* rolw */
+    0xfe00707f,  /* ror */
+    0xfc00707f,  /* rori */
+    0xffff_ffff, /* rori_rv32 */
+    0xfe00707f,  /* roriw */
+    0xfe00707f,  /* rorw */
+    0x707f,      /* sb */
+    0xffffffff,  /* sbreak */
+    0xf800707f,  /* sc_d */
+    0xf800707f,  /* sc_w */
+    0xffffffff,  /* scall */
+    0x707f,      /* sd */
+    0xfff0707f,  /* seqz */
+    0xfff0707f,  /* sext_b */
+    0xfff0707f,  /* sext_h */
+    0xfff0707f,  /* sext_w */
+    0xffffffff,  /* sfence_inval_ir */
+    0xfe007fff,  /* sfence_vma */
+    0xffffffff,  /* sfence_w_inval */
+    0xfe0ff07f,  /* sgtz */
+    0x707f,      /* sh */
+    0xfe00707f,  /* sh1add */
+    0xfe00707f,  /* sh1add_uw */
+    0xfe00707f,  /* sh2add */
+    0xfe00707f,  /* sh2add_uw */
+    0xfe00707f,  /* sh3add */
+    0xfe00707f,  /* sh3add_uw */
+    0xfff0707f,  /* sha256sig0 */
+    0xfff0707f,  /* sha256sig1 */
+    0xfff0707f,  /* sha256sum0 */
+    0xfff0707f,  /* sha256sum1 */
+    0xfff0707f,  /* sha512sig0 */
+    0xffff_ffff, /* sha512sig0h */
+    0xffff_ffff, /* sha512sig0l */
+    0xfff0707f,  /* sha512sig1 */
+    0xffff_ffff, /* sha512sig1h */
+    0xffff_ffff, /* sha512sig1l */
+    0xfff0707f,  /* sha512sum0 */
+    0xffff_ffff, /* sha512sum0r */
+    0xfff0707f,  /* sha512sum1 */
+    0xffff_ffff, /* sha512sum1r */
+    0xfe007fff,  /* sinval_vma */
+    0xfe00707f,  /* sll */
+    0xfc00707f,  /* slli */
+    0xffff_ffff, /* slli_rv32 */
+    0xfc00707f,  /* slli_uw */
+    0xfe00707f,  /* slliw */
+    0xfe00707f,  /* sllw */
+    0xfe00707f,  /* slt */
+    0x707f,      /* slti */
+    0x707f,      /* sltiu */
+    0xfe00707f,  /* sltu */
+    0xfff0707f,  /* sltz */
+    0xfff0707f,  /* sm3p0 */
+    0xfff0707f,  /* sm3p1 */
+    0x3e00707f,  /* sm4ed */
+    0x3e00707f,  /* sm4ks */
+    0xfe0ff07f,  /* snez */
+    0xfe00707f,  /* sra */
+    0xfc00707f,  /* srai */
+    0xffff_ffff, /* srai_rv32 */
+    0xfe00707f,  /* sraiw */
+    0xfe00707f,  /* sraw */
+    0xffffffff,  /* sret */
+    0xfe00707f,  /* srl */
+    0xfc00707f,  /* srli */
+    0xffff_ffff, /* srli_rv32 */
+    0xfe00707f,  /* srliw */
+    0xfe00707f,  /* srlw */
+    0xfe00707f,  /* sub */
+    0xfe00707f,  /* subw */
+    0x707f,      /* sw */
+    0xffff_ffff, /* unzip */
+    0xfc00707f,  /* vaadd_vv */
+    0xfc00707f,  /* vaadd_vx */
+    0xfc00707f,  /* vaaddu_vv */
+    0xfc00707f,  /* vaaddu_vx */
+    0xfe00707f,  /* vadc_vim */
+    0xfe00707f,  /* vadc_vvm */
+    0xfe00707f,  /* vadc_vxm */
+    0xfc00707f,  /* vadd_vi */
+    0xfc00707f,  /* vadd_vv */
+    0xfc00707f,  /* vadd_vx */
+    0xfe0ff07f,  /* vaesdf_vs */
+    0xfe0ff07f,  /* vaesdf_vv */
+    0xfe0ff07f,  /* vaesdm_vs */
+    0xfe0ff07f,  /* vaesdm_vv */
+    0xfe0ff07f,  /* vaesef_vs */
+    0xfe0ff07f,  /* vaesef_vv */
+    0xfe0ff07f,  /* vaesem_vs */
+    0xfe0ff07f,  /* vaesem_vv */
+    0xfe00707f,  /* vaeskf1_vi */
+    0xfe00707f,  /* vaeskf2_vi */
+    0xfe0ff07f,  /* vaesz_vs */
+    0xfc00707f,  /* vand_vi */
+    0xfc00707f,  /* vand_vv */
+    0xfc00707f,  /* vand_vx */
+    0xfc00707f,  /* vandn_vv */
+    0xfc00707f,  /* vandn_vx */
+    0xfc00707f,  /* vasub_vv */
+    0xfc00707f,  /* vasub_vx */
+    0xfc00707f,  /* vasubu_vv */
+    0xfc00707f,  /* vasubu_vx */
+    0xfc0ff07f,  /* vbrev8_v */
+    0xfc0ff07f,  /* vbrev_v */
+    0xfc00707f,  /* vclmul_vv */
+    0xfc00707f,  /* vclmul_vx */
+    0xfc00707f,  /* vclmulh_vv */
+    0xfc00707f,  /* vclmulh_vx */
+    0xfc0ff07f,  /* vclz_v */
+    0xfe00707f,  /* vcompress_vm */
+    0xfc0ff07f,  /* vcpop_m */
+    0xfc0ff07f,  /* vcpop_v */
+    0xfc0ff07f,  /* vctz_v */
+    0xfc00707f,  /* vdiv_vv */
+    0xfc00707f,  /* vdiv_vx */
+    0xfc00707f,  /* vdivu_vv */
+    0xfc00707f,  /* vdivu_vx */
+    0xfc00707f,  /* vfadd_vf */
+    0xfc00707f,  /* vfadd_vv */
+    0xfc0ff07f,  /* vfclass_v */
+    0xfc0ff07f,  /* vfcvt_f_x_v */
+    0xfc0ff07f,  /* vfcvt_f_xu_v */
+    0xfc0ff07f,  /* vfcvt_rtz_x_f_v */
+    0xfc0ff07f,  /* vfcvt_rtz_xu_f_v */
+    0xfc0ff07f,  /* vfcvt_x_f_v */
+    0xfc0ff07f,  /* vfcvt_xu_f_v */
+    0xfc00707f,  /* vfdiv_vf */
+    0xfc00707f,  /* vfdiv_vv */
+    0xfc0ff07f,  /* vfirst_m */
+    0xfc00707f,  /* vfmacc_vf */
+    0xfc00707f,  /* vfmacc_vv */
+    0xfc00707f,  /* vfmadd_vf */
+    0xfc00707f,  /* vfmadd_vv */
+    0xfc00707f,  /* vfmax_vf */
+    0xfc00707f,  /* vfmax_vv */
+    0xfe00707f,  /* vfmerge_vfm */
+    0xfc00707f,  /* vfmin_vf */
+    0xfc00707f,  /* vfmin_vv */
+    0xfc00707f,  /* vfmsac_vf */
+    0xfc00707f,  /* vfmsac_vv */
+    0xfc00707f,  /* vfmsub_vf */
+    0xfc00707f,  /* vfmsub_vv */
+    0xfc00707f,  /* vfmul_vf */
+    0xfc00707f,  /* vfmul_vv */
+    0xfe0ff07f,  /* vfmv_f_s */
+    0xfff0707f,  /* vfmv_s_f */
+    0xfff0707f,  /* vfmv_v_f */
+    0xfc0ff07f,  /* vfncvt_f_f_w */
+    0xfc0ff07f,  /* vfncvt_f_x_w */
+    0xfc0ff07f,  /* vfncvt_f_xu_w */
+    0xfc0ff07f,  /* vfncvt_rod_f_f_w */
+    0xfc0ff07f,  /* vfncvt_rtz_x_f_w */
+    0xfc0ff07f,  /* vfncvt_rtz_xu_f_w */
+    0xfc0ff07f,  /* vfncvt_x_f_w */
+    0xfc0ff07f,  /* vfncvt_xu_f_w */
+    0xfc00707f,  /* vfnmacc_vf */
+    0xfc00707f,  /* vfnmacc_vv */
+    0xfc00707f,  /* vfnmadd_vf */
+    0xfc00707f,  /* vfnmadd_vv */
+    0xfc00707f,  /* vfnmsac_vf */
+    0xfc00707f,  /* vfnmsac_vv */
+    0xfc00707f,  /* vfnmsub_vf */
+    0xfc00707f,  /* vfnmsub_vv */
+    0xfc00707f,  /* vfrdiv_vf */
+    0xfc0ff07f,  /* vfrec7_v */
+    0xfc00707f,  /* vfredmax_vs */
+    0xfc00707f,  /* vfredmin_vs */
+    0xfc00707f,  /* vfredosum_vs */
+    0xfc00707f,  /* vfredsum_vs */
+    0xfc00707f,  /* vfredusum_vs */
+    0xfc0ff07f,  /* vfrsqrt7_v */
+    0xfc00707f,  /* vfrsub_vf */
+    0xfc00707f,  /* vfsgnj_vf */
+    0xfc00707f,  /* vfsgnj_vv */
+    0xfc00707f,  /* vfsgnjn_vf */
+    0xfc00707f,  /* vfsgnjn_vv */
+    0xfc00707f,  /* vfsgnjx_vf */
+    0xfc00707f,  /* vfsgnjx_vv */
+    0xfc00707f,  /* vfslide1down_vf */
+    0xfc00707f,  /* vfslide1up_vf */
+    0xfc0ff07f,  /* vfsqrt_v */
+    0xfc00707f,  /* vfsub_vf */
+    0xfc00707f,  /* vfsub_vv */
+    0xfc00707f,  /* vfwadd_vf */
+    0xfc00707f,  /* vfwadd_vv */
+    0xfc00707f,  /* vfwadd_wf */
+    0xfc00707f,  /* vfwadd_wv */
+    0xfc0ff07f,  /* vfwcvt_f_f_v */
+    0xfc0ff07f,  /* vfwcvt_f_x_v */
+    0xfc0ff07f,  /* vfwcvt_f_xu_v */
+    0xfc0ff07f,  /* vfwcvt_rtz_x_f_v */
+    0xfc0ff07f,  /* vfwcvt_rtz_xu_f_v */
+    0xfc0ff07f,  /* vfwcvt_x_f_v */
+    0xfc0ff07f,  /* vfwcvt_xu_f_v */
+    0xfc00707f,  /* vfwmacc_vf */
+    0xfc00707f,  /* vfwmacc_vv */
+    0xfc00707f,  /* vfwmsac_vf */
+    0xfc00707f,  /* vfwmsac_vv */
+    0xfc00707f,  /* vfwmul_vf */
+    0xfc00707f,  /* vfwmul_vv */
+    0xfc00707f,  /* vfwnmacc_vf */
+    0xfc00707f,  /* vfwnmacc_vv */
+    0xfc00707f,  /* vfwnmsac_vf */
+    0xfc00707f,  /* vfwnmsac_vv */
+    0xfc00707f,  /* vfwredosum_vs */
+    0xfc00707f,  /* vfwredsum_vs */
+    0xfc00707f,  /* vfwredusum_vs */
+    0xfc00707f,  /* vfwsub_vf */
+    0xfc00707f,  /* vfwsub_vv */
+    0xfc00707f,  /* vfwsub_wf */
+    0xfc00707f,  /* vfwsub_wv */
+    0xfe00707f,  /* vghsh_vv */
+    0xfe0ff07f,  /* vgmul_vv */
+    0xfdfff07f,  /* vid_v */
+    0xfc0ff07f,  /* viota_m */
+    0xfff0707f,  /* vl1r_v */
+    0xfff0707f,  /* vl1re16_v */
+    0xfff0707f,  /* vl1re32_v */
+    0xfff0707f,  /* vl1re64_v */
+    0xfff0707f,  /* vl1re8_v */
+    0xfff0707f,  /* vl2r_v */
+    0xfff0707f,  /* vl2re16_v */
+    0xfff0707f,  /* vl2re32_v */
+    0xfff0707f,  /* vl2re64_v */
+    0xfff0707f,  /* vl2re8_v */
+    0xfff0707f,  /* vl4r_v */
+    0xfff0707f,  /* vl4re16_v */
+    0xfff0707f,  /* vl4re32_v */
+    0xfff0707f,  /* vl4re64_v */
+    0xfff0707f,  /* vl4re8_v */
+    0xfff0707f,  /* vl8r_v */
+    0xfff0707f,  /* vl8re16_v */
+    0xfff0707f,  /* vl8re32_v */
+    0xfff0707f,  /* vl8re64_v */
+    0xfff0707f,  /* vl8re8_v */
+    0x1df0707f,  /* vle16_v */
+    0x1df0707f,  /* vle16ff_v */
+    0xfff0707f,  /* vle1_v */
+    0x1df0707f,  /* vle32_v */
+    0x1df0707f,  /* vle32ff_v */
+    0x1df0707f,  /* vle64_v */
+    0x1df0707f,  /* vle64ff_v */
+    0x1df0707f,  /* vle8_v */
+    0x1df0707f,  /* vle8ff_v */
+    0xfff0707f,  /* vlm_v */
+    0x1c00707f,  /* vloxei16_v */
+    0x1c00707f,  /* vloxei32_v */
+    0x1c00707f,  /* vloxei64_v */
+    0x1c00707f,  /* vloxei8_v */
+    0x1c00707f,  /* vlse16_v */
+    0x1c00707f,  /* vlse32_v */
+    0x1c00707f,  /* vlse64_v */
+    0x1c00707f,  /* vlse8_v */
+    0x1c00707f,  /* vluxei16_v */
+    0x1c00707f,  /* vluxei32_v */
+    0x1c00707f,  /* vluxei64_v */
+    0x1c00707f,  /* vluxei8_v */
+    0xfc00707f,  /* vmacc_vv */
+    0xfc00707f,  /* vmacc_vx */
+    0xfe00707f,  /* vmadc_vi */
+    0xfe00707f,  /* vmadc_vim */
+    0xfe00707f,  /* vmadc_vv */
+    0xfe00707f,  /* vmadc_vvm */
+    0xfe00707f,  /* vmadc_vx */
+    0xfe00707f,  /* vmadc_vxm */
+    0xfc00707f,  /* vmadd_vv */
+    0xfc00707f,  /* vmadd_vx */
+    0xfe00707f,  /* vmand_mm */
+    0xfe00707f,  /* vmandn_mm */
+    0xfc00707f,  /* vmandnot_mm */
+    0xfc00707f,  /* vmax_vv */
+    0xfc00707f,  /* vmax_vx */
+    0xfc00707f,  /* vmaxu_vv */
+    0xfc00707f,  /* vmaxu_vx */
+    0xfe00707f,  /* vmerge_vim */
+    0xfe00707f,  /* vmerge_vvm */
+    0xfe00707f,  /* vmerge_vxm */
+    0xfc00707f,  /* vmfeq_vf */
+    0xfc00707f,  /* vmfeq_vv */
+    0xfc00707f,  /* vmfge_vf */
+    0xfc00707f,  /* vmfgt_vf */
+    0xfc00707f,  /* vmfle_vf */
+    0xfc00707f,  /* vmfle_vv */
+    0xfc00707f,  /* vmflt_vf */
+    0xfc00707f,  /* vmflt_vv */
+    0xfc00707f,  /* vmfne_vf */
+    0xfc00707f,  /* vmfne_vv */
+    0xfc00707f,  /* vmin_vv */
+    0xfc00707f,  /* vmin_vx */
+    0xfc00707f,  /* vminu_vv */
+    0xfc00707f,  /* vminu_vx */
+    0xfe00707f,  /* vmnand_mm */
+    0xfe00707f,  /* vmnor_mm */
+    0xfe00707f,  /* vmor_mm */
+    0xfe00707f,  /* vmorn_mm */
+    0xfc00707f,  /* vmornot_mm */
+    0xfe00707f,  /* vmsbc_vv */
+    0xfe00707f,  /* vmsbc_vvm */
+    0xfe00707f,  /* vmsbc_vx */
+    0xfe00707f,  /* vmsbc_vxm */
+    0xfc0ff07f,  /* vmsbf_m */
+    0xfc00707f,  /* vmseq_vi */
+    0xfc00707f,  /* vmseq_vv */
+    0xfc00707f,  /* vmseq_vx */
+    0xfc00707f,  /* vmsgt_vi */
+    0xfc00707f,  /* vmsgt_vx */
+    0xfc00707f,  /* vmsgtu_vi */
+    0xfc00707f,  /* vmsgtu_vx */
+    0xfc0ff07f,  /* vmsif_m */
+    0xfc00707f,  /* vmsle_vi */
+    0xfc00707f,  /* vmsle_vv */
+    0xfc00707f,  /* vmsle_vx */
+    0xfc00707f,  /* vmsleu_vi */
+    0xfc00707f,  /* vmsleu_vv */
+    0xfc00707f,  /* vmsleu_vx */
+    0xfc00707f,  /* vmslt_vv */
+    0xfc00707f,  /* vmslt_vx */
+    0xfc00707f,  /* vmsltu_vv */
+    0xfc00707f,  /* vmsltu_vx */
+    0xfc00707f,  /* vmsne_vi */
+    0xfc00707f,  /* vmsne_vv */
+    0xfc00707f,  /* vmsne_vx */
+    0xfc0ff07f,  /* vmsof_m */
+    0xfc00707f,  /* vmul_vv */
+    0xfc00707f,  /* vmul_vx */
+    0xfc00707f,  /* vmulh_vv */
+    0xfc00707f,  /* vmulh_vx */
+    0xfc00707f,  /* vmulhsu_vv */
+    0xfc00707f,  /* vmulhsu_vx */
+    0xfc00707f,  /* vmulhu_vv */
+    0xfc00707f,  /* vmulhu_vx */
+    0xfe0ff07f,  /* vmv1r_v */
+    0xfe0ff07f,  /* vmv2r_v */
+    0xfe0ff07f,  /* vmv4r_v */
+    0xfe0ff07f,  /* vmv8r_v */
+    0xfff0707f,  /* vmv_s_x */
+    0xfff0707f,  /* vmv_v_i */
+    0xfff0707f,  /* vmv_v_v */
+    0xfff0707f,  /* vmv_v_x */
+    0xfe0ff07f,  /* vmv_x_s */
+    0xfe00707f,  /* vmxnor_mm */
+    0xfe00707f,  /* vmxor_mm */
+    0xfc00707f,  /* vnclip_wi */
+    0xfc00707f,  /* vnclip_wv */
+    0xfc00707f,  /* vnclip_wx */
+    0xfc00707f,  /* vnclipu_wi */
+    0xfc00707f,  /* vnclipu_wv */
+    0xfc00707f,  /* vnclipu_wx */
+    0xfc00707f,  /* vnmsac_vv */
+    0xfc00707f,  /* vnmsac_vx */
+    0xfc00707f,  /* vnmsub_vv */
+    0xfc00707f,  /* vnmsub_vx */
+    0xfc00707f,  /* vnsra_wi */
+    0xfc00707f,  /* vnsra_wv */
+    0xfc00707f,  /* vnsra_wx */
+    0xfc00707f,  /* vnsrl_wi */
+    0xfc00707f,  /* vnsrl_wv */
+    0xfc00707f,  /* vnsrl_wx */
+    0xfc00707f,  /* vor_vi */
+    0xfc00707f,  /* vor_vv */
+    0xfc00707f,  /* vor_vx */
+    0xfc0ff07f,  /* vpopc_m */
+    0xfc00707f,  /* vredand_vs */
+    0xfc00707f,  /* vredmax_vs */
+    0xfc00707f,  /* vredmaxu_vs */
+    0xfc00707f,  /* vredmin_vs */
+    0xfc00707f,  /* vredminu_vs */
+    0xfc00707f,  /* vredor_vs */
+    0xfc00707f,  /* vredsum_vs */
+    0xfc00707f,  /* vredxor_vs */
+    0xfc00707f,  /* vrem_vv */
+    0xfc00707f,  /* vrem_vx */
+    0xfc00707f,  /* vremu_vv */
+    0xfc00707f,  /* vremu_vx */
+    0xfc0ff07f,  /* vrev8_v */
+    0xfc00707f,  /* vrgather_vi */
+    0xfc00707f,  /* vrgather_vv */
+    0xfc00707f,  /* vrgather_vx */
+    0xfc00707f,  /* vrgatherei16_vv */
+    0xfc00707f,  /* vrol_vv */
+    0xfc00707f,  /* vrol_vx */
+    0xf800707f,  /* vror_vi */
+    0xfc00707f,  /* vror_vv */
+    0xfc00707f,  /* vror_vx */
+    0xfc00707f,  /* vrsub_vi */
+    0xfc00707f,  /* vrsub_vx */
+    0xfff0707f,  /* vs1r_v */
+    0xfff0707f,  /* vs2r_v */
+    0xfff0707f,  /* vs4r_v */
+    0xfff0707f,  /* vs8r_v */
+    0xfc00707f,  /* vsadd_vi */
+    0xfc00707f,  /* vsadd_vv */
+    0xfc00707f,  /* vsadd_vx */
+    0xfc00707f,  /* vsaddu_vi */
+    0xfc00707f,  /* vsaddu_vv */
+    0xfc00707f,  /* vsaddu_vx */
+    0xfe00707f,  /* vsbc_vvm */
+    0xfe00707f,  /* vsbc_vxm */
+    0x1df0707f,  /* vse16_v */
+    0xfff0707f,  /* vse1_v */
+    0x1df0707f,  /* vse32_v */
+    0x1df0707f,  /* vse64_v */
+    0x1df0707f,  /* vse8_v */
+    0xc000707f,  /* vsetivli */
+    0xfe00707f,  /* vsetvl */
+    0x8000707f,  /* vsetvli */
+    0xfc0ff07f,  /* vsext_vf2 */
+    0xfc0ff07f,  /* vsext_vf4 */
+    0xfc0ff07f,  /* vsext_vf8 */
+    0xfe00707f,  /* vsha2ch_vv */
+    0xfe00707f,  /* vsha2cl_vv */
+    0xfe00707f,  /* vsha2ms_vv */
+    0xfc00707f,  /* vslide1down_vx */
+    0xfc00707f,  /* vslide1up_vx */
+    0xfc00707f,  /* vslidedown_vi */
+    0xfc00707f,  /* vslidedown_vx */
+    0xfc00707f,  /* vslideup_vi */
+    0xfc00707f,  /* vslideup_vx */
+    0xfc00707f,  /* vsll_vi */
+    0xfc00707f,  /* vsll_vv */
+    0xfc00707f,  /* vsll_vx */
+    0xfe00707f,  /* vsm3c_vi */
+    0xfe00707f,  /* vsm3me_vv */
+    0xfe00707f,  /* vsm4k_vi */
+    0xfe0ff07f,  /* vsm4r_vs */
+    0xfe0ff07f,  /* vsm4r_vv */
+    0xfff0707f,  /* vsm_v */
+    0xfc00707f,  /* vsmul_vv */
+    0xfc00707f,  /* vsmul_vx */
+    0x1c00707f,  /* vsoxei16_v */
+    0x1c00707f,  /* vsoxei32_v */
+    0x1c00707f,  /* vsoxei64_v */
+    0x1c00707f,  /* vsoxei8_v */
+    0xfc00707f,  /* vsra_vi */
+    0xfc00707f,  /* vsra_vv */
+    0xfc00707f,  /* vsra_vx */
+    0xfc00707f,  /* vsrl_vi */
+    0xfc00707f,  /* vsrl_vv */
+    0xfc00707f,  /* vsrl_vx */
+    0x1c00707f,  /* vsse16_v */
+    0x1c00707f,  /* vsse32_v */
+    0x1c00707f,  /* vsse64_v */
+    0x1c00707f,  /* vsse8_v */
+    0xfc00707f,  /* vssra_vi */
+    0xfc00707f,  /* vssra_vv */
+    0xfc00707f,  /* vssra_vx */
+    0xfc00707f,  /* vssrl_vi */
+    0xfc00707f,  /* vssrl_vv */
+    0xfc00707f,  /* vssrl_vx */
+    0xfc00707f,  /* vssub_vv */
+    0xfc00707f,  /* vssub_vx */
+    0xfc00707f,  /* vssubu_vv */
+    0xfc00707f,  /* vssubu_vx */
+    0xfc00707f,  /* vsub_vv */
+    0xfc00707f,  /* vsub_vx */
+    0x1c00707f,  /* vsuxei16_v */
+    0x1c00707f,  /* vsuxei32_v */
+    0x1c00707f,  /* vsuxei64_v */
+    0x1c00707f,  /* vsuxei8_v */
+    0xfc00707f,  /* vwadd_vv */
+    0xfc00707f,  /* vwadd_vx */
+    0xfc00707f,  /* vwadd_wv */
+    0xfc00707f,  /* vwadd_wx */
+    0xfc00707f,  /* vwaddu_vv */
+    0xfc00707f,  /* vwaddu_vx */
+    0xfc00707f,  /* vwaddu_wv */
+    0xfc00707f,  /* vwaddu_wx */
+    0xfc00707f,  /* vwmacc_vv */
+    0xfc00707f,  /* vwmacc_vx */
+    0xfc00707f,  /* vwmaccsu_vv */
+    0xfc00707f,  /* vwmaccsu_vx */
+    0xfc00707f,  /* vwmaccu_vv */
+    0xfc00707f,  /* vwmaccu_vx */
+    0xfc00707f,  /* vwmaccus_vx */
+    0xfc00707f,  /* vwmul_vv */
+    0xfc00707f,  /* vwmul_vx */
+    0xfc00707f,  /* vwmulsu_vv */
+    0xfc00707f,  /* vwmulsu_vx */
+    0xfc00707f,  /* vwmulu_vv */
+    0xfc00707f,  /* vwmulu_vx */
+    0xfc00707f,  /* vwredsum_vs */
+    0xfc00707f,  /* vwredsumu_vs */
+    0xfc00707f,  /* vwsll_vi */
+    0xfc00707f,  /* vwsll_vv */
+    0xfc00707f,  /* vwsll_vx */
+    0xfc00707f,  /* vwsub_vv */
+    0xfc00707f,  /* vwsub_vx */
+    0xfc00707f,  /* vwsub_wv */
+    0xfc00707f,  /* vwsub_wx */
+    0xfc00707f,  /* vwsubu_vv */
+    0xfc00707f,  /* vwsubu_vx */
+    0xfc00707f,  /* vwsubu_wv */
+    0xfc00707f,  /* vwsubu_wx */
+    0xfc00707f,  /* vxor_vi */
+    0xfc00707f,  /* vxor_vv */
+    0xfc00707f,  /* vxor_vx */
+    0xfc0ff07f,  /* vzext_vf2 */
+    0xfc0ff07f,  /* vzext_vf4 */
+    0xfc0ff07f,  /* vzext_vf8 */
+    0xffffffff,  /* wfi */
+    0xffffffff,  /* wrs_nto */
+    0xffffffff,  /* wrs_sto */
+    0xfe00707f,  /* xnor */
+    0xfe00707f,  /* xor */
+    0x707f,      /* xori */
+    0xfe00707f,  /* xperm4 */
+    0xfe00707f,  /* xperm8 */
+    0xfff0707f,  /* zext_b */
+    0xfff0707f,  /* zext_h */
+    0xffff_ffff, /* zext_h_rv32 */
+    0xfff0707f,  /* zext_w */
+    0xffff_ffff, /* zip */
 ];
 pub static OPCODE_MATCH: [u32; 1021] = [
-0x33,
-0x800003b,
-0x13,
-0x1b,
-0x3b,
-0x2a000033,
-0x2e000033,
-0x22000033,
-0x26000033,
-0x3a000033,
-0x3e000033,
-0x32000033,
-0x36000033,
-0x30001013,
-0x31001013,
-0x7e000033,
-0x2f,
-0x302f,
-0x102f,
-0x202f,
-0x6000002f,
-0x6000302f,
-0x6000102f,
-0x6000202f,
-0x2800002f,
-0x2800302f,
-0x2800102f,
-0x2800402f,
-0x2800202f,
-0xa000002f,
-0xa000302f,
-0xa000102f,
-0xa000202f,
-0xe000002f,
-0xe000302f,
-0xe000102f,
-0xe000202f,
-0x8000002f,
-0x8000302f,
-0x8000102f,
-0x8000202f,
-0xc000002f,
-0xc000302f,
-0xc000102f,
-0xc000202f,
-0x4000002f,
-0x4000302f,
-0x4000102f,
-0x4000202f,
-0x800002f,
-0x800302f,
-0x800102f,
-0x800202f,
-0x2000002f,
-0x2000302f,
-0x2000102f,
-0x2000202f,
-0x7033,
-0x7013,
-0x40007033,
-0x17,
-0x48001033,
-0x48001013,
-0x48001013,
-0x63,
-0x63,
-0x48005033,
-0x48005013,
-0x48005013,
-0x5063,
-0x7063,
-0x5063,
-0x4063,
-0x6063,
-0x4063,
-0x68001033,
-0x68001013,
-0x68001013,
-0x5063,
-0x7063,
-0x5063,
-0x4063,
-0x6063,
-0x4063,
-0x1063,
-0x1063,
-0x68705013,
-0x28001033,
-0x28001013,
-0x28001013,
-0x9002,
-0x1,
-0x6101,
-0x0,
-0x2001,
-0x9c21,
-0x8c61,
-0x8801,
-0xc001,
-0xe001,
-0x9002,
-0x2000,
-0x2002,
-0x6000,
-0x6002,
-0xa000,
-0xa002,
-0xe000,
-0xe002,
-0xa001,
-0x2001,
-0x9002,
-0x8002,
-0x8000,
-0x6000,
-0x6002,
-0x8440,
-0x8400,
-0x4001,
-0x6001,
-0x4000,
-0x4002,
-0x6081,
-0x6581,
-0x6681,
-0x6781,
-0x6181,
-0x6281,
-0x6381,
-0x6481,
-0x6081,
-0x9c41,
-0x8002,
-0x1,
-0x9c75,
-0x9016,
-0x900a,
-0x900e,
-0x9012,
-0x8c41,
-0x8800,
-0xe000,
-0xe002,
-0x9c65,
-0x9c6d,
-0x2001,
-0x8c00,
-0x2,
-0x2,
-0x8401,
-0x8401,
-0x8001,
-0x8001,
-0x8c01,
-0x9c01,
-0xc000,
-0xc002,
-0x8c21,
-0x9c61,
-0x9c69,
-0x9c71,
-0x10200f,
-0x20200f,
-0x200f,
-0x40200f,
-0xa001033,
-0xa003033,
-0xa002033,
-0x60001013,
-0x6000101b,
-0xa002,
-0xac62,
-0xac22,
-0xba02,
-0xbe02,
-0xbc02,
-0xb802,
-0x60201013,
-0x6020101b,
-0x3073,
-0x7073,
-0x2073,
-0x3073,
-0x7073,
-0x2073,
-0x6073,
-0x1073,
-0x5073,
-0x2073,
-0x6073,
-0x1073,
-0x5073,
-0x60101013,
-0x6010101b,
-0xe005033,
-0xe007033,
-0x2004033,
-0x2005033,
-0x200503b,
-0x200403b,
-0x7b200073,
-0x100073,
-0x73,
-0x22002053,
-0x24002053,
-0x26002053,
-0x20002053,
-0x2000053,
-0x4000053,
-0x6000053,
-0x53,
-0xe2001053,
-0xe4001053,
-0xe6001053,
-0xe0001053,
-0x42200053,
-0xd2200053,
-0xd2300053,
-0x42300053,
-0x42000053,
-0xd2000053,
-0xd2100053,
-0x44100053,
-0xd4200053,
-0xd4300053,
-0x44300053,
-0x44000053,
-0xd4000053,
-0xd4100053,
-0xc2200053,
-0xc4200053,
-0xc6200053,
-0xc0200053,
-0xc2300053,
-0xc4300053,
-0xc6300053,
-0xc0300053,
-0x46100053,
-0x46200053,
-0xd6200053,
-0xd6300053,
-0x46000053,
-0xd6000053,
-0xd6100053,
-0x40100053,
-0x40200053,
-0xd0200053,
-0xd0300053,
-0x40300053,
-0xd0000053,
-0xd0100053,
-0xc2000053,
-0xc4000053,
-0xc6000053,
-0xc0000053,
-0xc2100053,
-0xc4100053,
-0xc6100053,
-0xc0100053,
-0xc2801053,
-0x1a000053,
-0x1c000053,
-0x1e000053,
-0x18000053,
-0xf,
-0x100f,
-0x8330000f,
-0xa2002053,
-0xa4002053,
-0xa6002053,
-0xa0002053,
-0x3007,
-0xa2000053,
-0xa4000053,
-0xa6000053,
-0xa0000053,
-0xa2004053,
-0xa4004053,
-0xa6004053,
-0xa0004053,
-0x1007,
-0xf2100053,
-0xf4100053,
-0xf6100053,
-0xf0100053,
-0x4007,
-0xa2001053,
-0xa4001053,
-0xa6001053,
-0xa0001053,
-0xa2005053,
-0xa4005053,
-0xa6005053,
-0xa0005053,
-0x2007,
-0x2000043,
-0x4000043,
-0x6000043,
-0x43,
-0x2a001053,
-0x2c001053,
-0x2e001053,
-0x28001053,
-0x2a003053,
-0x2c003053,
-0x2e003053,
-0x28003053,
-0x2a000053,
-0x2c000053,
-0x2e000053,
-0x28000053,
-0x2a002053,
-0x2c002053,
-0x2e002053,
-0x28002053,
-0x2000047,
-0x4000047,
-0x6000047,
-0x47,
-0x12000053,
-0x14000053,
-0x16000053,
-0x10000053,
-0x22000053,
-0xf2000053,
-0x24000053,
-0xf4000053,
-0x26000053,
-0x20000053,
-0xf0000053,
-0xf0000053,
-0xe2000053,
-0xe4000053,
-0xe0000053,
-0xe0000053,
-0xe2100053,
-0xe6100053,
-0xb2000053,
-0xb6000053,
-0x22001053,
-0x24001053,
-0x26001053,
-0x20001053,
-0x200004f,
-0x400004f,
-0x600004f,
-0x4f,
-0x200004b,
-0x400004b,
-0x600004b,
-0x4b,
-0x302073,
-0x102073,
-0x42400053,
-0x44400053,
-0x46400053,
-0x40400053,
-0x42500053,
-0x44500053,
-0x46500053,
-0x40500053,
-0x202073,
-0x301073,
-0x3027,
-0x101073,
-0x105073,
-0x22000053,
-0x24000053,
-0x26000053,
-0x20000053,
-0x22001053,
-0x24001053,
-0x26001053,
-0x20001053,
-0x22002053,
-0x24002053,
-0x26002053,
-0x20002053,
-0x1027,
-0x4027,
-0x5a000053,
-0x5c000053,
-0x5e000053,
-0x58000053,
-0x201073,
-0x205073,
-0xa000053,
-0xc000053,
-0xe000053,
-0x8000053,
-0x2027,
-0x62000073,
-0x22000073,
-0x66000073,
-0x26000073,
-0x60004073,
-0x60104073,
-0x6c004073,
-0x64004073,
-0x64104073,
-0x68004073,
-0x68104073,
-0x64304073,
-0x68304073,
-0x62004073,
-0x6e004073,
-0x66004073,
-0x6a004073,
-0x6f,
-0x6f,
-0xef,
-0x67,
-0xe7,
-0x67,
-0x3,
-0x4003,
-0x3003,
-0x1003,
-0x5003,
-0x1000302f,
-0x1000202f,
-0x37,
-0x2003,
-0x6003,
-0xa006033,
-0xa007033,
-0xa004033,
-0xa005033,
-0x81c04073,
-0x81d04073,
-0x89e04073,
-0x89f04073,
-0x8dc04073,
-0x8dd04073,
-0x8de04073,
-0x8df04073,
-0xc1c04073,
-0xc1d04073,
-0xc1e04073,
-0xc1f04073,
-0x81e04073,
-0xc5c04073,
-0xc5d04073,
-0xc5e04073,
-0xc5f04073,
-0xc9c04073,
-0xc9d04073,
-0xc9e04073,
-0xc9f04073,
-0xcdc04073,
-0xcdd04073,
-0x81f04073,
-0xcde04073,
-0xcdf04073,
-0x85c04073,
-0x85d04073,
-0x85e04073,
-0x85f04073,
-0x89c04073,
-0x89d04073,
-0x81c04073,
-0x82004073,
-0x86004073,
-0x8a004073,
-0x8e004073,
-0xc2004073,
-0xc6004073,
-0xca004073,
-0xce004073,
-0x82004073,
-0x30200073,
-0x2000033,
-0x2001033,
-0x2002033,
-0x2003033,
-0x200003b,
-0x13,
-0x40000033,
-0x13,
-0x500033,
-0x200033,
-0x300033,
-0x400033,
-0x6033,
-0x28705013,
-0x6013,
-0x40006033,
-0x8004033,
-0x8007033,
-0x800403b,
-0x100000f,
-0x6013,
-0x106013,
-0x306013,
-0xc0002073,
-0xc8002073,
-0xc0202073,
-0xc8202073,
-0xc0102073,
-0xc8102073,
-0x2006033,
-0x2007033,
-0x200703b,
-0x200603b,
-0x8067,
-0x6b805013,
-0x69805013,
-0x60001033,
-0x6000103b,
-0x60005033,
-0x60005013,
-0x60005013,
-0x6000501b,
-0x6000503b,
-0x23,
-0x100073,
-0x1800302f,
-0x1800202f,
-0x73,
-0x3023,
-0x103013,
-0x60401013,
-0x60501013,
-0x1b,
-0x18100073,
-0x12000073,
-0x18000073,
-0x2033,
-0x1023,
-0x20002033,
-0x2000203b,
-0x20004033,
-0x2000403b,
-0x20006033,
-0x2000603b,
-0x10201013,
-0x10301013,
-0x10001013,
-0x10101013,
-0x10601013,
-0x5c000033,
-0x54000033,
-0x10701013,
-0x5e000033,
-0x56000033,
-0x10401013,
-0x50000033,
-0x10501013,
-0x52000033,
-0x16000073,
-0x1033,
-0x1013,
-0x1013,
-0x800101b,
-0x101b,
-0x103b,
-0x2033,
-0x2013,
-0x3013,
-0x3033,
-0x2033,
-0x10801013,
-0x10901013,
-0x30000033,
-0x34000033,
-0x3033,
-0x40005033,
-0x40005013,
-0x40005013,
-0x4000501b,
-0x4000503b,
-0x10200073,
-0x5033,
-0x5013,
-0x5013,
-0x501b,
-0x503b,
-0x40000033,
-0x4000003b,
-0x2023,
-0x8f05013,
-0x24002057,
-0x24006057,
-0x20002057,
-0x20006057,
-0x40003057,
-0x40000057,
-0x40004057,
-0x3057,
-0x57,
-0x4057,
-0xa600a077,
-0xa200a077,
-0xa6002077,
-0xa2002077,
-0xa601a077,
-0xa201a077,
-0xa6012077,
-0xa2012077,
-0x8a002077,
-0xaa002077,
-0xa603a077,
-0x24003057,
-0x24000057,
-0x24004057,
-0x4000057,
-0x4004057,
-0x2c002057,
-0x2c006057,
-0x28002057,
-0x28006057,
-0x48042057,
-0x48052057,
-0x30002057,
-0x30006057,
-0x34002057,
-0x34006057,
-0x48062057,
-0x5e002057,
-0x40082057,
-0x48072057,
-0x4806a057,
-0x84002057,
-0x84006057,
-0x80002057,
-0x80006057,
-0x5057,
-0x1057,
-0x4c081057,
-0x48019057,
-0x48011057,
-0x48039057,
-0x48031057,
-0x48009057,
-0x48001057,
-0x80005057,
-0x80001057,
-0x4008a057,
-0xb0005057,
-0xb0001057,
-0xa0005057,
-0xa0001057,
-0x18005057,
-0x18001057,
-0x5c005057,
-0x10005057,
-0x10001057,
-0xb8005057,
-0xb8001057,
-0xa8005057,
-0xa8001057,
-0x90005057,
-0x90001057,
-0x42001057,
-0x42005057,
-0x5e005057,
-0x480a1057,
-0x48099057,
-0x48091057,
-0x480a9057,
-0x480b9057,
-0x480b1057,
-0x48089057,
-0x48081057,
-0xb4005057,
-0xb4001057,
-0xa4005057,
-0xa4001057,
-0xbc005057,
-0xbc001057,
-0xac005057,
-0xac001057,
-0x84005057,
-0x4c029057,
-0x1c001057,
-0x14001057,
-0xc001057,
-0x4001057,
-0x4001057,
-0x4c021057,
-0x9c005057,
-0x20005057,
-0x20001057,
-0x24005057,
-0x24001057,
-0x28005057,
-0x28001057,
-0x3c005057,
-0x38005057,
-0x4c001057,
-0x8005057,
-0x8001057,
-0xc0005057,
-0xc0001057,
-0xd0005057,
-0xd0001057,
-0x48061057,
-0x48059057,
-0x48051057,
-0x48079057,
-0x48071057,
-0x48049057,
-0x48041057,
-0xf0005057,
-0xf0001057,
-0xf8005057,
-0xf8001057,
-0xe0005057,
-0xe0001057,
-0xf4005057,
-0xf4001057,
-0xfc005057,
-0xfc001057,
-0xcc001057,
-0xc4001057,
-0xc4001057,
-0xc8005057,
-0xc8001057,
-0xd8005057,
-0xd8001057,
-0xb2002077,
-0xa208a077,
-0x5008a057,
-0x50082057,
-0x2800007,
-0x2805007,
-0x2806007,
-0x2807007,
-0x2800007,
-0x22800007,
-0x22805007,
-0x22806007,
-0x22807007,
-0x22800007,
-0x62800007,
-0x62805007,
-0x62806007,
-0x62807007,
-0x62800007,
-0xe2800007,
-0xe2805007,
-0xe2806007,
-0xe2807007,
-0xe2800007,
-0x5007,
-0x1005007,
-0x2b00007,
-0x6007,
-0x1006007,
-0x7007,
-0x1007007,
-0x7,
-0x1000007,
-0x2b00007,
-0xc005007,
-0xc006007,
-0xc007007,
-0xc000007,
-0x8005007,
-0x8006007,
-0x8007007,
-0x8000007,
-0x4005007,
-0x4006007,
-0x4007007,
-0x4000007,
-0xb4002057,
-0xb4006057,
-0x46003057,
-0x44003057,
-0x46000057,
-0x44000057,
-0x46004057,
-0x44004057,
-0xa4002057,
-0xa4006057,
-0x66002057,
-0x62002057,
-0x60002057,
-0x1c000057,
-0x1c004057,
-0x18000057,
-0x18004057,
-0x5c003057,
-0x5c000057,
-0x5c004057,
-0x60005057,
-0x60001057,
-0x7c005057,
-0x74005057,
-0x64005057,
-0x64001057,
-0x6c005057,
-0x6c001057,
-0x70005057,
-0x70001057,
-0x14000057,
-0x14004057,
-0x10000057,
-0x10004057,
-0x76002057,
-0x7a002057,
-0x6a002057,
-0x72002057,
-0x70002057,
-0x4e000057,
-0x4c000057,
-0x4e004057,
-0x4c004057,
-0x5000a057,
-0x60003057,
-0x60000057,
-0x60004057,
-0x7c003057,
-0x7c004057,
-0x78003057,
-0x78004057,
-0x5001a057,
-0x74003057,
-0x74000057,
-0x74004057,
-0x70003057,
-0x70000057,
-0x70004057,
-0x6c000057,
-0x6c004057,
-0x68000057,
-0x68004057,
-0x64003057,
-0x64000057,
-0x64004057,
-0x50012057,
-0x94002057,
-0x94006057,
-0x9c002057,
-0x9c006057,
-0x98002057,
-0x98006057,
-0x90002057,
-0x90006057,
-0x9e003057,
-0x9e00b057,
-0x9e01b057,
-0x9e03b057,
-0x42006057,
-0x5e003057,
-0x5e000057,
-0x5e004057,
-0x42002057,
-0x7e002057,
-0x6e002057,
-0xbc003057,
-0xbc000057,
-0xbc004057,
-0xb8003057,
-0xb8000057,
-0xb8004057,
-0xbc002057,
-0xbc006057,
-0xac002057,
-0xac006057,
-0xb4003057,
-0xb4000057,
-0xb4004057,
-0xb0003057,
-0xb0000057,
-0xb0004057,
-0x28003057,
-0x28000057,
-0x28004057,
-0x40082057,
-0x4002057,
-0x1c002057,
-0x18002057,
-0x14002057,
-0x10002057,
-0x8002057,
-0x2057,
-0xc002057,
-0x8c002057,
-0x8c006057,
-0x88002057,
-0x88006057,
-0x4804a057,
-0x30003057,
-0x30000057,
-0x30004057,
-0x38000057,
-0x54000057,
-0x54004057,
-0x50003057,
-0x50000057,
-0x50004057,
-0xc003057,
-0xc004057,
-0x2800027,
-0x22800027,
-0x62800027,
-0xe2800027,
-0x84003057,
-0x84000057,
-0x84004057,
-0x80003057,
-0x80000057,
-0x80004057,
-0x48000057,
-0x48004057,
-0x5027,
-0x2b00027,
-0x6027,
-0x7027,
-0x27,
-0xc0007057,
-0x80007057,
-0x7057,
-0x4803a057,
-0x4802a057,
-0x4801a057,
-0xba002077,
-0xbe002077,
-0xb6002077,
-0x3c006057,
-0x38006057,
-0x3c003057,
-0x3c004057,
-0x38003057,
-0x38004057,
-0x94003057,
-0x94000057,
-0x94004057,
-0xae002077,
-0x82002077,
-0x86002077,
-0xa6082077,
-0xa2082077,
-0x2b00027,
-0x9c000057,
-0x9c004057,
-0xc005027,
-0xc006027,
-0xc007027,
-0xc000027,
-0xa4003057,
-0xa4000057,
-0xa4004057,
-0xa0003057,
-0xa0000057,
-0xa0004057,
-0x8005027,
-0x8006027,
-0x8007027,
-0x8000027,
-0xac003057,
-0xac000057,
-0xac004057,
-0xa8003057,
-0xa8000057,
-0xa8004057,
-0x8c000057,
-0x8c004057,
-0x88000057,
-0x88004057,
-0x8000057,
-0x8004057,
-0x4005027,
-0x4006027,
-0x4007027,
-0x4000027,
-0xc4002057,
-0xc4006057,
-0xd4002057,
-0xd4006057,
-0xc0002057,
-0xc0006057,
-0xd0002057,
-0xd0006057,
-0xf4002057,
-0xf4006057,
-0xfc002057,
-0xfc006057,
-0xf0002057,
-0xf0006057,
-0xf8006057,
-0xec002057,
-0xec006057,
-0xe8002057,
-0xe8006057,
-0xe0002057,
-0xe0006057,
-0xc4000057,
-0xc0000057,
-0xd4003057,
-0xd4000057,
-0xd4004057,
-0xcc002057,
-0xcc006057,
-0xdc002057,
-0xdc006057,
-0xc8002057,
-0xc8006057,
-0xd8002057,
-0xd8006057,
-0x2c003057,
-0x2c000057,
-0x2c004057,
-0x48032057,
-0x48022057,
-0x48012057,
-0x10500073,
-0xd00073,
-0x1d00073,
-0x40004033,
-0x4033,
-0x4013,
-0x28002033,
-0x28004033,
-0x7013,
-0x800403b,
-0x8004033,
-0x800003b,
-0x8f01013,
+    0x33, 0x800003b, 0x13, 0x1b, 0x3b, 0x2a000033, 0x2e000033, 0x22000033, 0x26000033, 0x3a000033,
+    0x3e000033, 0x32000033, 0x36000033, 0x30001013, 0x31001013, 0x7e000033, 0x2f, 0x302f, 0x102f,
+    0x202f, 0x6000002f, 0x6000302f, 0x6000102f, 0x6000202f, 0x2800002f, 0x2800302f, 0x2800102f,
+    0x2800402f, 0x2800202f, 0xa000002f, 0xa000302f, 0xa000102f, 0xa000202f, 0xe000002f, 0xe000302f,
+    0xe000102f, 0xe000202f, 0x8000002f, 0x8000302f, 0x8000102f, 0x8000202f, 0xc000002f, 0xc000302f,
+    0xc000102f, 0xc000202f, 0x4000002f, 0x4000302f, 0x4000102f, 0x4000202f, 0x800002f, 0x800302f,
+    0x800102f, 0x800202f, 0x2000002f, 0x2000302f, 0x2000102f, 0x2000202f, 0x7033, 0x7013,
+    0x40007033, 0x17, 0x48001033, 0x48001013, 0x48001013, 0x63, 0x63, 0x48005033, 0x48005013,
+    0x48005013, 0x5063, 0x7063, 0x5063, 0x4063, 0x6063, 0x4063, 0x68001033, 0x68001013, 0x68001013,
+    0x5063, 0x7063, 0x5063, 0x4063, 0x6063, 0x4063, 0x1063, 0x1063, 0x68705013, 0x28001033,
+    0x28001013, 0x28001013, 0x9002, 0x1, 0x6101, 0x0, 0x2001, 0x9c21, 0x8c61, 0x8801, 0xc001,
+    0xe001, 0x9002, 0x2000, 0x2002, 0x6000, 0x6002, 0xa000, 0xa002, 0xe000, 0xe002, 0xa001, 0x2001,
+    0x9002, 0x8002, 0x8000, 0x6000, 0x6002, 0x8440, 0x8400, 0x4001, 0x6001, 0x4000, 0x4002, 0x6081,
+    0x6581, 0x6681, 0x6781, 0x6181, 0x6281, 0x6381, 0x6481, 0x6081, 0x9c41, 0x8002, 0x1, 0x9c75,
+    0x9016, 0x900a, 0x900e, 0x9012, 0x8c41, 0x8800, 0xe000, 0xe002, 0x9c65, 0x9c6d, 0x2001, 0x8c00,
+    0x2, 0x2, 0x8401, 0x8401, 0x8001, 0x8001, 0x8c01, 0x9c01, 0xc000, 0xc002, 0x8c21, 0x9c61,
+    0x9c69, 0x9c71, 0x10200f, 0x20200f, 0x200f, 0x40200f, 0xa001033, 0xa003033, 0xa002033,
+    0x60001013, 0x6000101b, 0xa002, 0xac62, 0xac22, 0xba02, 0xbe02, 0xbc02, 0xb802, 0x60201013,
+    0x6020101b, 0x3073, 0x7073, 0x2073, 0x3073, 0x7073, 0x2073, 0x6073, 0x1073, 0x5073, 0x2073,
+    0x6073, 0x1073, 0x5073, 0x60101013, 0x6010101b, 0xe005033, 0xe007033, 0x2004033, 0x2005033,
+    0x200503b, 0x200403b, 0x7b200073, 0x100073, 0x73, 0x22002053, 0x24002053, 0x26002053,
+    0x20002053, 0x2000053, 0x4000053, 0x6000053, 0x53, 0xe2001053, 0xe4001053, 0xe6001053,
+    0xe0001053, 0x42200053, 0xd2200053, 0xd2300053, 0x42300053, 0x42000053, 0xd2000053, 0xd2100053,
+    0x44100053, 0xd4200053, 0xd4300053, 0x44300053, 0x44000053, 0xd4000053, 0xd4100053, 0xc2200053,
+    0xc4200053, 0xc6200053, 0xc0200053, 0xc2300053, 0xc4300053, 0xc6300053, 0xc0300053, 0x46100053,
+    0x46200053, 0xd6200053, 0xd6300053, 0x46000053, 0xd6000053, 0xd6100053, 0x40100053, 0x40200053,
+    0xd0200053, 0xd0300053, 0x40300053, 0xd0000053, 0xd0100053, 0xc2000053, 0xc4000053, 0xc6000053,
+    0xc0000053, 0xc2100053, 0xc4100053, 0xc6100053, 0xc0100053, 0xc2801053, 0x1a000053, 0x1c000053,
+    0x1e000053, 0x18000053, 0xf, 0x100f, 0x8330000f, 0xa2002053, 0xa4002053, 0xa6002053,
+    0xa0002053, 0x3007, 0xa2000053, 0xa4000053, 0xa6000053, 0xa0000053, 0xa2004053, 0xa4004053,
+    0xa6004053, 0xa0004053, 0x1007, 0xf2100053, 0xf4100053, 0xf6100053, 0xf0100053, 0x4007,
+    0xa2001053, 0xa4001053, 0xa6001053, 0xa0001053, 0xa2005053, 0xa4005053, 0xa6005053, 0xa0005053,
+    0x2007, 0x2000043, 0x4000043, 0x6000043, 0x43, 0x2a001053, 0x2c001053, 0x2e001053, 0x28001053,
+    0x2a003053, 0x2c003053, 0x2e003053, 0x28003053, 0x2a000053, 0x2c000053, 0x2e000053, 0x28000053,
+    0x2a002053, 0x2c002053, 0x2e002053, 0x28002053, 0x2000047, 0x4000047, 0x6000047, 0x47,
+    0x12000053, 0x14000053, 0x16000053, 0x10000053, 0x22000053, 0xf2000053, 0x24000053, 0xf4000053,
+    0x26000053, 0x20000053, 0xf0000053, 0xf0000053, 0xe2000053, 0xe4000053, 0xe0000053, 0xe0000053,
+    0xe2100053, 0xe6100053, 0xb2000053, 0xb6000053, 0x22001053, 0x24001053, 0x26001053, 0x20001053,
+    0x200004f, 0x400004f, 0x600004f, 0x4f, 0x200004b, 0x400004b, 0x600004b, 0x4b, 0x302073,
+    0x102073, 0x42400053, 0x44400053, 0x46400053, 0x40400053, 0x42500053, 0x44500053, 0x46500053,
+    0x40500053, 0x202073, 0x301073, 0x3027, 0x101073, 0x105073, 0x22000053, 0x24000053, 0x26000053,
+    0x20000053, 0x22001053, 0x24001053, 0x26001053, 0x20001053, 0x22002053, 0x24002053, 0x26002053,
+    0x20002053, 0x1027, 0x4027, 0x5a000053, 0x5c000053, 0x5e000053, 0x58000053, 0x201073, 0x205073,
+    0xa000053, 0xc000053, 0xe000053, 0x8000053, 0x2027, 0x62000073, 0x22000073, 0x66000073,
+    0x26000073, 0x60004073, 0x60104073, 0x6c004073, 0x64004073, 0x64104073, 0x68004073, 0x68104073,
+    0x64304073, 0x68304073, 0x62004073, 0x6e004073, 0x66004073, 0x6a004073, 0x6f, 0x6f, 0xef, 0x67,
+    0xe7, 0x67, 0x3, 0x4003, 0x3003, 0x1003, 0x5003, 0x1000302f, 0x1000202f, 0x37, 0x2003, 0x6003,
+    0xa006033, 0xa007033, 0xa004033, 0xa005033, 0x81c04073, 0x81d04073, 0x89e04073, 0x89f04073,
+    0x8dc04073, 0x8dd04073, 0x8de04073, 0x8df04073, 0xc1c04073, 0xc1d04073, 0xc1e04073, 0xc1f04073,
+    0x81e04073, 0xc5c04073, 0xc5d04073, 0xc5e04073, 0xc5f04073, 0xc9c04073, 0xc9d04073, 0xc9e04073,
+    0xc9f04073, 0xcdc04073, 0xcdd04073, 0x81f04073, 0xcde04073, 0xcdf04073, 0x85c04073, 0x85d04073,
+    0x85e04073, 0x85f04073, 0x89c04073, 0x89d04073, 0x81c04073, 0x82004073, 0x86004073, 0x8a004073,
+    0x8e004073, 0xc2004073, 0xc6004073, 0xca004073, 0xce004073, 0x82004073, 0x30200073, 0x2000033,
+    0x2001033, 0x2002033, 0x2003033, 0x200003b, 0x13, 0x40000033, 0x13, 0x500033, 0x200033,
+    0x300033, 0x400033, 0x6033, 0x28705013, 0x6013, 0x40006033, 0x8004033, 0x8007033, 0x800403b,
+    0x100000f, 0x6013, 0x106013, 0x306013, 0xc0002073, 0xc8002073, 0xc0202073, 0xc8202073,
+    0xc0102073, 0xc8102073, 0x2006033, 0x2007033, 0x200703b, 0x200603b, 0x8067, 0x6b805013,
+    0x69805013, 0x60001033, 0x6000103b, 0x60005033, 0x60005013, 0x60005013, 0x6000501b, 0x6000503b,
+    0x23, 0x100073, 0x1800302f, 0x1800202f, 0x73, 0x3023, 0x103013, 0x60401013, 0x60501013, 0x1b,
+    0x18100073, 0x12000073, 0x18000073, 0x2033, 0x1023, 0x20002033, 0x2000203b, 0x20004033,
+    0x2000403b, 0x20006033, 0x2000603b, 0x10201013, 0x10301013, 0x10001013, 0x10101013, 0x10601013,
+    0x5c000033, 0x54000033, 0x10701013, 0x5e000033, 0x56000033, 0x10401013, 0x50000033, 0x10501013,
+    0x52000033, 0x16000073, 0x1033, 0x1013, 0x1013, 0x800101b, 0x101b, 0x103b, 0x2033, 0x2013,
+    0x3013, 0x3033, 0x2033, 0x10801013, 0x10901013, 0x30000033, 0x34000033, 0x3033, 0x40005033,
+    0x40005013, 0x40005013, 0x4000501b, 0x4000503b, 0x10200073, 0x5033, 0x5013, 0x5013, 0x501b,
+    0x503b, 0x40000033, 0x4000003b, 0x2023, 0x8f05013, 0x24002057, 0x24006057, 0x20002057,
+    0x20006057, 0x40003057, 0x40000057, 0x40004057, 0x3057, 0x57, 0x4057, 0xa600a077, 0xa200a077,
+    0xa6002077, 0xa2002077, 0xa601a077, 0xa201a077, 0xa6012077, 0xa2012077, 0x8a002077, 0xaa002077,
+    0xa603a077, 0x24003057, 0x24000057, 0x24004057, 0x4000057, 0x4004057, 0x2c002057, 0x2c006057,
+    0x28002057, 0x28006057, 0x48042057, 0x48052057, 0x30002057, 0x30006057, 0x34002057, 0x34006057,
+    0x48062057, 0x5e002057, 0x40082057, 0x48072057, 0x4806a057, 0x84002057, 0x84006057, 0x80002057,
+    0x80006057, 0x5057, 0x1057, 0x4c081057, 0x48019057, 0x48011057, 0x48039057, 0x48031057,
+    0x48009057, 0x48001057, 0x80005057, 0x80001057, 0x4008a057, 0xb0005057, 0xb0001057, 0xa0005057,
+    0xa0001057, 0x18005057, 0x18001057, 0x5c005057, 0x10005057, 0x10001057, 0xb8005057, 0xb8001057,
+    0xa8005057, 0xa8001057, 0x90005057, 0x90001057, 0x42001057, 0x42005057, 0x5e005057, 0x480a1057,
+    0x48099057, 0x48091057, 0x480a9057, 0x480b9057, 0x480b1057, 0x48089057, 0x48081057, 0xb4005057,
+    0xb4001057, 0xa4005057, 0xa4001057, 0xbc005057, 0xbc001057, 0xac005057, 0xac001057, 0x84005057,
+    0x4c029057, 0x1c001057, 0x14001057, 0xc001057, 0x4001057, 0x4001057, 0x4c021057, 0x9c005057,
+    0x20005057, 0x20001057, 0x24005057, 0x24001057, 0x28005057, 0x28001057, 0x3c005057, 0x38005057,
+    0x4c001057, 0x8005057, 0x8001057, 0xc0005057, 0xc0001057, 0xd0005057, 0xd0001057, 0x48061057,
+    0x48059057, 0x48051057, 0x48079057, 0x48071057, 0x48049057, 0x48041057, 0xf0005057, 0xf0001057,
+    0xf8005057, 0xf8001057, 0xe0005057, 0xe0001057, 0xf4005057, 0xf4001057, 0xfc005057, 0xfc001057,
+    0xcc001057, 0xc4001057, 0xc4001057, 0xc8005057, 0xc8001057, 0xd8005057, 0xd8001057, 0xb2002077,
+    0xa208a077, 0x5008a057, 0x50082057, 0x2800007, 0x2805007, 0x2806007, 0x2807007, 0x2800007,
+    0x22800007, 0x22805007, 0x22806007, 0x22807007, 0x22800007, 0x62800007, 0x62805007, 0x62806007,
+    0x62807007, 0x62800007, 0xe2800007, 0xe2805007, 0xe2806007, 0xe2807007, 0xe2800007, 0x5007,
+    0x1005007, 0x2b00007, 0x6007, 0x1006007, 0x7007, 0x1007007, 0x7, 0x1000007, 0x2b00007,
+    0xc005007, 0xc006007, 0xc007007, 0xc000007, 0x8005007, 0x8006007, 0x8007007, 0x8000007,
+    0x4005007, 0x4006007, 0x4007007, 0x4000007, 0xb4002057, 0xb4006057, 0x46003057, 0x44003057,
+    0x46000057, 0x44000057, 0x46004057, 0x44004057, 0xa4002057, 0xa4006057, 0x66002057, 0x62002057,
+    0x60002057, 0x1c000057, 0x1c004057, 0x18000057, 0x18004057, 0x5c003057, 0x5c000057, 0x5c004057,
+    0x60005057, 0x60001057, 0x7c005057, 0x74005057, 0x64005057, 0x64001057, 0x6c005057, 0x6c001057,
+    0x70005057, 0x70001057, 0x14000057, 0x14004057, 0x10000057, 0x10004057, 0x76002057, 0x7a002057,
+    0x6a002057, 0x72002057, 0x70002057, 0x4e000057, 0x4c000057, 0x4e004057, 0x4c004057, 0x5000a057,
+    0x60003057, 0x60000057, 0x60004057, 0x7c003057, 0x7c004057, 0x78003057, 0x78004057, 0x5001a057,
+    0x74003057, 0x74000057, 0x74004057, 0x70003057, 0x70000057, 0x70004057, 0x6c000057, 0x6c004057,
+    0x68000057, 0x68004057, 0x64003057, 0x64000057, 0x64004057, 0x50012057, 0x94002057, 0x94006057,
+    0x9c002057, 0x9c006057, 0x98002057, 0x98006057, 0x90002057, 0x90006057, 0x9e003057, 0x9e00b057,
+    0x9e01b057, 0x9e03b057, 0x42006057, 0x5e003057, 0x5e000057, 0x5e004057, 0x42002057, 0x7e002057,
+    0x6e002057, 0xbc003057, 0xbc000057, 0xbc004057, 0xb8003057, 0xb8000057, 0xb8004057, 0xbc002057,
+    0xbc006057, 0xac002057, 0xac006057, 0xb4003057, 0xb4000057, 0xb4004057, 0xb0003057, 0xb0000057,
+    0xb0004057, 0x28003057, 0x28000057, 0x28004057, 0x40082057, 0x4002057, 0x1c002057, 0x18002057,
+    0x14002057, 0x10002057, 0x8002057, 0x2057, 0xc002057, 0x8c002057, 0x8c006057, 0x88002057,
+    0x88006057, 0x4804a057, 0x30003057, 0x30000057, 0x30004057, 0x38000057, 0x54000057, 0x54004057,
+    0x50003057, 0x50000057, 0x50004057, 0xc003057, 0xc004057, 0x2800027, 0x22800027, 0x62800027,
+    0xe2800027, 0x84003057, 0x84000057, 0x84004057, 0x80003057, 0x80000057, 0x80004057, 0x48000057,
+    0x48004057, 0x5027, 0x2b00027, 0x6027, 0x7027, 0x27, 0xc0007057, 0x80007057, 0x7057,
+    0x4803a057, 0x4802a057, 0x4801a057, 0xba002077, 0xbe002077, 0xb6002077, 0x3c006057, 0x38006057,
+    0x3c003057, 0x3c004057, 0x38003057, 0x38004057, 0x94003057, 0x94000057, 0x94004057, 0xae002077,
+    0x82002077, 0x86002077, 0xa6082077, 0xa2082077, 0x2b00027, 0x9c000057, 0x9c004057, 0xc005027,
+    0xc006027, 0xc007027, 0xc000027, 0xa4003057, 0xa4000057, 0xa4004057, 0xa0003057, 0xa0000057,
+    0xa0004057, 0x8005027, 0x8006027, 0x8007027, 0x8000027, 0xac003057, 0xac000057, 0xac004057,
+    0xa8003057, 0xa8000057, 0xa8004057, 0x8c000057, 0x8c004057, 0x88000057, 0x88004057, 0x8000057,
+    0x8004057, 0x4005027, 0x4006027, 0x4007027, 0x4000027, 0xc4002057, 0xc4006057, 0xd4002057,
+    0xd4006057, 0xc0002057, 0xc0006057, 0xd0002057, 0xd0006057, 0xf4002057, 0xf4006057, 0xfc002057,
+    0xfc006057, 0xf0002057, 0xf0006057, 0xf8006057, 0xec002057, 0xec006057, 0xe8002057, 0xe8006057,
+    0xe0002057, 0xe0006057, 0xc4000057, 0xc0000057, 0xd4003057, 0xd4000057, 0xd4004057, 0xcc002057,
+    0xcc006057, 0xdc002057, 0xdc006057, 0xc8002057, 0xc8006057, 0xd8002057, 0xd8006057, 0x2c003057,
+    0x2c000057, 0x2c004057, 0x48032057, 0x48022057, 0x48012057, 0x10500073, 0xd00073, 0x1d00073,
+    0x40004033, 0x4033, 0x4013, 0x28002033, 0x28004033, 0x7013, 0x800403b, 0x8004033, 0x800003b,
+    0x8f01013,
 ];
 pub static OPCODE_MASK: [u32; 1021] = [
-0xfe00707f,
-0xfe00707f,
-0x707f,
-0x707f,
-0xfe00707f,
-0x3e00707f,
-0x3e00707f,
-0x3e00707f,
-0x3e00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfff0707f,
-0xff00707f,
-0xfe00707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xf800707f,
-0xfe00707f,
-0x707f,
-0xfe00707f,
-0x7f,
-0xfe00707f,
-0xfc00707f,
-0xfe00707f,
-0x707f,
-0x1f0707f,
-0xfe00707f,
-0xfc00707f,
-0xfe00707f,
-0x707f,
-0x707f,
-0x1f0707f,
-0x707f,
-0x707f,
-0xff07f,
-0xfe00707f,
-0xfc00707f,
-0xfe00707f,
-0x707f,
-0x707f,
-0xff07f,
-0x707f,
-0x707f,
-0x1f0707f,
-0x707f,
-0x1f0707f,
-0xfff0707f,
-0xfe00707f,
-0xfc00707f,
-0xfe00707f,
-0xf003,
-0xe003,
-0xef83,
-0xe003,
-0xe003,
-0xfc63,
-0xfc63,
-0xec03,
-0xe003,
-0xe003,
-0xffff,
-0xe003,
-0xe003,
-0xe003,
-0xe003,
-0xe003,
-0xe003,
-0xe003,
-0xe003,
-0xe003,
-0xe003,
-0xf07f,
-0xf07f,
-0xfc03,
-0xe003,
-0xe003,
-0xfc43,
-0xfc43,
-0xe003,
-0xe003,
-0xe003,
-0xe003,
-0xffff,
-0xffff,
-0xffff,
-0xffff,
-0xffff,
-0xffff,
-0xffff,
-0xffff,
-0xf8ff,
-0xfc63,
-0xf003,
-0xef83,
-0xfc7f,
-0xffff,
-0xffff,
-0xffff,
-0xffff,
-0xfc63,
-0xfc03,
-0xe003,
-0xe003,
-0xfc7f,
-0xfc7f,
-0xf07f,
-0xfc43,
-0xe003,
-0xf003,
-0xec03,
-0xfc03,
-0xec03,
-0xfc03,
-0xfc63,
-0xfc63,
-0xe003,
-0xe003,
-0xfc63,
-0xfc7f,
-0xfc7f,
-0xfc7f,
-0xfff07fff,
-0xfff07fff,
-0xfff07fff,
-0xfff07fff,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfff0707f,
-0xfff0707f,
-0xfc03,
-0xfc63,
-0xfc63,
-0xff03,
-0xff03,
-0xff03,
-0xff03,
-0xfff0707f,
-0xfff0707f,
-0x7fff,
-0x7fff,
-0xff07f,
-0x707f,
-0x707f,
-0x707f,
-0x707f,
-0x707f,
-0x707f,
-0x7fff,
-0x7fff,
-0x7fff,
-0x7fff,
-0xfff0707f,
-0xfff0707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xffffffff,
-0xffffffff,
-0xffffffff,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00007f,
-0xfe00007f,
-0xfe00007f,
-0xfe00007f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0707f,
-0xfe00007f,
-0xfe00007f,
-0xfe00007f,
-0xfe00007f,
-0x707f,
-0x707f,
-0xfff0707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0x707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0x707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0x707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0x707f,
-0x600007f,
-0x600007f,
-0x600007f,
-0x600007f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0x600007f,
-0x600007f,
-0x600007f,
-0x600007f,
-0xfe00007f,
-0xfe00007f,
-0xfe00007f,
-0xfe00007f,
-0xfe00707f,
-0xfff0707f,
-0xfe00707f,
-0xfff0707f,
-0xfe00707f,
-0xfe00707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0x600007f,
-0x600007f,
-0x600007f,
-0x600007f,
-0x600007f,
-0x600007f,
-0x600007f,
-0x600007f,
-0xfffff07f,
-0xfffff07f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfffff07f,
-0xfff0707f,
-0x707f,
-0xfff0707f,
-0xfff0707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0x707f,
-0x707f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0007f,
-0xfff0707f,
-0xfff0707f,
-0xfe00007f,
-0xfe00007f,
-0xfe00007f,
-0xfe00007f,
-0x707f,
-0xfe007fff,
-0xfe007fff,
-0xfe007fff,
-0xfe007fff,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfe007fff,
-0xfe007fff,
-0xfe007fff,
-0xfe007fff,
-0xfff,
-0x7f,
-0xfff,
-0x707f,
-0xfff07fff,
-0xfff07fff,
-0x707f,
-0x707f,
-0x707f,
-0x707f,
-0x707f,
-0xf9f0707f,
-0xf9f0707f,
-0x7f,
-0x707f,
-0x707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xb3c0707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xb200707f,
-0xffffffff,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfff0707f,
-0xfff0707f,
-0xffffffff,
-0xffffffff,
-0xffffffff,
-0xffffffff,
-0xffffffff,
-0xfe00707f,
-0xfff0707f,
-0x707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xffffffff,
-0x1f07fff,
-0x1f07fff,
-0x1f07fff,
-0xfffff07f,
-0xfffff07f,
-0xfffff07f,
-0xfffff07f,
-0xfffff07f,
-0xfffff07f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xffffffff,
-0xfff0707f,
-0xfff0707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfc00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0x707f,
-0xffffffff,
-0xf800707f,
-0xf800707f,
-0xffffffff,
-0x707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xffffffff,
-0xfe007fff,
-0xffffffff,
-0xfe0ff07f,
-0x707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfe00707f,
-0xfe00707f,
-0xfff0707f,
-0xfe00707f,
-0xfe00707f,
-0xfff0707f,
-0xfe00707f,
-0xfff0707f,
-0xfe00707f,
-0xfe007fff,
-0xfe00707f,
-0xfc00707f,
-0xfe00707f,
-0xfc00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0x707f,
-0x707f,
-0xfe00707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0x3e00707f,
-0x3e00707f,
-0xfe0ff07f,
-0xfe00707f,
-0xfc00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xffffffff,
-0xfe00707f,
-0xfc00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0x707f,
-0xfff0707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfe0ff07f,
-0xfe0ff07f,
-0xfe0ff07f,
-0xfe0ff07f,
-0xfe0ff07f,
-0xfe0ff07f,
-0xfe0ff07f,
-0xfe0ff07f,
-0xfe00707f,
-0xfe00707f,
-0xfe0ff07f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc0ff07f,
-0xfe00707f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc00707f,
-0xfc00707f,
-0xfc0ff07f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfe00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfe0ff07f,
-0xfff0707f,
-0xfff0707f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc0ff07f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc0ff07f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc0ff07f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfe00707f,
-0xfe0ff07f,
-0xfdfff07f,
-0xfc0ff07f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0x1df0707f,
-0x1df0707f,
-0xfff0707f,
-0x1df0707f,
-0x1df0707f,
-0x1df0707f,
-0x1df0707f,
-0x1df0707f,
-0x1df0707f,
-0xfff0707f,
-0x1c00707f,
-0x1c00707f,
-0x1c00707f,
-0x1c00707f,
-0x1c00707f,
-0x1c00707f,
-0x1c00707f,
-0x1c00707f,
-0x1c00707f,
-0x1c00707f,
-0x1c00707f,
-0x1c00707f,
-0xfc00707f,
-0xfc00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfc00707f,
-0xfc00707f,
-0xfe00707f,
-0xfe00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfc00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfc0ff07f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc0ff07f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc0ff07f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfe0ff07f,
-0xfe0ff07f,
-0xfe0ff07f,
-0xfe0ff07f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfe0ff07f,
-0xfe00707f,
-0xfe00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc0ff07f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc0ff07f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xf800707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfe00707f,
-0xfe00707f,
-0x1df0707f,
-0xfff0707f,
-0x1df0707f,
-0x1df0707f,
-0x1df0707f,
-0xc000707f,
-0xfe00707f,
-0x8000707f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe00707f,
-0xfe0ff07f,
-0xfe0ff07f,
-0xfff0707f,
-0xfc00707f,
-0xfc00707f,
-0x1c00707f,
-0x1c00707f,
-0x1c00707f,
-0x1c00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0x1c00707f,
-0x1c00707f,
-0x1c00707f,
-0x1c00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0x1c00707f,
-0x1c00707f,
-0x1c00707f,
-0x1c00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc00707f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xfc0ff07f,
-0xffffffff,
-0xffffffff,
-0xffffffff,
-0xfe00707f,
-0xfe00707f,
-0x707f,
-0xfe00707f,
-0xfe00707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
-0xfff0707f,
+    0xfe00707f, 0xfe00707f, 0x707f, 0x707f, 0xfe00707f, 0x3e00707f, 0x3e00707f, 0x3e00707f,
+    0x3e00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfff0707f, 0xff00707f, 0xfe00707f,
+    0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f,
+    0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f,
+    0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f,
+    0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f,
+    0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f, 0xf800707f,
+    0xf800707f, 0xfe00707f, 0x707f, 0xfe00707f, 0x7f, 0xfe00707f, 0xfc00707f, 0xfe00707f, 0x707f,
+    0x1f0707f, 0xfe00707f, 0xfc00707f, 0xfe00707f, 0x707f, 0x707f, 0x1f0707f, 0x707f, 0x707f,
+    0xff07f, 0xfe00707f, 0xfc00707f, 0xfe00707f, 0x707f, 0x707f, 0xff07f, 0x707f, 0x707f,
+    0x1f0707f, 0x707f, 0x1f0707f, 0xfff0707f, 0xfe00707f, 0xfc00707f, 0xfe00707f, 0xf003, 0xe003,
+    0xef83, 0xe003, 0xe003, 0xfc63, 0xfc63, 0xec03, 0xe003, 0xe003, 0xffff, 0xe003, 0xe003, 0xe003,
+    0xe003, 0xe003, 0xe003, 0xe003, 0xe003, 0xe003, 0xe003, 0xf07f, 0xf07f, 0xfc03, 0xe003, 0xe003,
+    0xfc43, 0xfc43, 0xe003, 0xe003, 0xe003, 0xe003, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+    0xffff, 0xffff, 0xf8ff, 0xfc63, 0xf003, 0xef83, 0xfc7f, 0xffff, 0xffff, 0xffff, 0xffff, 0xfc63,
+    0xfc03, 0xe003, 0xe003, 0xfc7f, 0xfc7f, 0xf07f, 0xfc43, 0xe003, 0xf003, 0xec03, 0xfc03, 0xec03,
+    0xfc03, 0xfc63, 0xfc63, 0xe003, 0xe003, 0xfc63, 0xfc7f, 0xfc7f, 0xfc7f, 0xfff07fff, 0xfff07fff,
+    0xfff07fff, 0xfff07fff, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfff0707f, 0xfff0707f, 0xfc03,
+    0xfc63, 0xfc63, 0xff03, 0xff03, 0xff03, 0xff03, 0xfff0707f, 0xfff0707f, 0x7fff, 0x7fff,
+    0xff07f, 0x707f, 0x707f, 0x707f, 0x707f, 0x707f, 0x707f, 0x7fff, 0x7fff, 0x7fff, 0x7fff,
+    0xfff0707f, 0xfff0707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f,
+    0xffffffff, 0xffffffff, 0xffffffff, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00007f,
+    0xfe00007f, 0xfe00007f, 0xfe00007f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0007f,
+    0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f,
+    0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f,
+    0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f,
+    0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f,
+    0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f,
+    0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0707f, 0xfe00007f, 0xfe00007f, 0xfe00007f, 0xfe00007f,
+    0x707f, 0x707f, 0xfff0707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0x707f, 0xfe00707f,
+    0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0x707f,
+    0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0x707f, 0xfe00707f, 0xfe00707f, 0xfe00707f,
+    0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0x707f, 0x600007f, 0x600007f,
+    0x600007f, 0x600007f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f,
+    0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f,
+    0xfe00707f, 0xfe00707f, 0x600007f, 0x600007f, 0x600007f, 0x600007f, 0xfe00007f, 0xfe00007f,
+    0xfe00007f, 0xfe00007f, 0xfe00707f, 0xfff0707f, 0xfe00707f, 0xfff0707f, 0xfe00707f, 0xfe00707f,
+    0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f,
+    0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0x600007f, 0x600007f,
+    0x600007f, 0x600007f, 0x600007f, 0x600007f, 0x600007f, 0x600007f, 0xfffff07f, 0xfffff07f,
+    0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f,
+    0xfffff07f, 0xfff0707f, 0x707f, 0xfff0707f, 0xfff0707f, 0xfe00707f, 0xfe00707f, 0xfe00707f,
+    0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f,
+    0xfe00707f, 0x707f, 0x707f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0007f, 0xfff0707f,
+    0xfff0707f, 0xfe00007f, 0xfe00007f, 0xfe00007f, 0xfe00007f, 0x707f, 0xfe007fff, 0xfe007fff,
+    0xfe007fff, 0xfe007fff, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f,
+    0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfe007fff, 0xfe007fff, 0xfe007fff, 0xfe007fff, 0xfff,
+    0x7f, 0xfff, 0x707f, 0xfff07fff, 0xfff07fff, 0x707f, 0x707f, 0x707f, 0x707f, 0x707f,
+    0xf9f0707f, 0xf9f0707f, 0x7f, 0x707f, 0x707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f,
+    0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f,
+    0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f,
+    0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f,
+    0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f,
+    0xb3c0707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f,
+    0xfe00707f, 0xb200707f, 0xffffffff, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f,
+    0xfff0707f, 0xfff0707f, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xffffffff, 0xfe00707f,
+    0xfff0707f, 0x707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xffffffff, 0x1f07fff,
+    0x1f07fff, 0x1f07fff, 0xfffff07f, 0xfffff07f, 0xfffff07f, 0xfffff07f, 0xfffff07f, 0xfffff07f,
+    0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xffffffff, 0xfff0707f, 0xfff0707f, 0xfe00707f,
+    0xfe00707f, 0xfe00707f, 0xfc00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0x707f, 0xffffffff,
+    0xf800707f, 0xf800707f, 0xffffffff, 0x707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f,
+    0xffffffff, 0xfe007fff, 0xffffffff, 0xfe0ff07f, 0x707f, 0xfe00707f, 0xfe00707f, 0xfe00707f,
+    0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f,
+    0xfe00707f, 0xfe00707f, 0xfff0707f, 0xfe00707f, 0xfe00707f, 0xfff0707f, 0xfe00707f, 0xfff0707f,
+    0xfe00707f, 0xfe007fff, 0xfe00707f, 0xfc00707f, 0xfe00707f, 0xfc00707f, 0xfe00707f, 0xfe00707f,
+    0xfe00707f, 0x707f, 0x707f, 0xfe00707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0x3e00707f,
+    0x3e00707f, 0xfe0ff07f, 0xfe00707f, 0xfc00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xffffffff,
+    0xfe00707f, 0xfc00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0x707f,
+    0xfff0707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfe0ff07f, 0xfe0ff07f, 0xfe0ff07f, 0xfe0ff07f, 0xfe0ff07f,
+    0xfe0ff07f, 0xfe0ff07f, 0xfe0ff07f, 0xfe00707f, 0xfe00707f, 0xfe0ff07f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc0ff07f,
+    0xfc0ff07f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc0ff07f, 0xfe00707f, 0xfc0ff07f,
+    0xfc0ff07f, 0xfc0ff07f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc0ff07f, 0xfc0ff07f, 0xfc0ff07f, 0xfc0ff07f, 0xfc0ff07f, 0xfc0ff07f, 0xfc0ff07f, 0xfc00707f,
+    0xfc00707f, 0xfc0ff07f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfe00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfe0ff07f, 0xfff0707f, 0xfff0707f, 0xfc0ff07f, 0xfc0ff07f, 0xfc0ff07f, 0xfc0ff07f,
+    0xfc0ff07f, 0xfc0ff07f, 0xfc0ff07f, 0xfc0ff07f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc0ff07f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc0ff07f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc0ff07f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc0ff07f, 0xfc0ff07f, 0xfc0ff07f, 0xfc0ff07f,
+    0xfc0ff07f, 0xfc0ff07f, 0xfc0ff07f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfe00707f, 0xfe0ff07f, 0xfdfff07f, 0xfc0ff07f,
+    0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f,
+    0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f,
+    0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0x1df0707f, 0x1df0707f, 0xfff0707f, 0x1df0707f,
+    0x1df0707f, 0x1df0707f, 0x1df0707f, 0x1df0707f, 0x1df0707f, 0xfff0707f, 0x1c00707f, 0x1c00707f,
+    0x1c00707f, 0x1c00707f, 0x1c00707f, 0x1c00707f, 0x1c00707f, 0x1c00707f, 0x1c00707f, 0x1c00707f,
+    0x1c00707f, 0x1c00707f, 0xfc00707f, 0xfc00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f,
+    0xfe00707f, 0xfe00707f, 0xfc00707f, 0xfc00707f, 0xfe00707f, 0xfe00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f,
+    0xfc00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfc0ff07f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc0ff07f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc0ff07f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfe0ff07f, 0xfe0ff07f, 0xfe0ff07f, 0xfe0ff07f,
+    0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfe0ff07f, 0xfe00707f, 0xfe00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc0ff07f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc0ff07f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xf800707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfe00707f, 0xfe00707f, 0x1df0707f,
+    0xfff0707f, 0x1df0707f, 0x1df0707f, 0x1df0707f, 0xc000707f, 0xfe00707f, 0x8000707f, 0xfc0ff07f,
+    0xfc0ff07f, 0xfc0ff07f, 0xfe00707f, 0xfe00707f, 0xfe00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfe00707f, 0xfe00707f,
+    0xfe00707f, 0xfe0ff07f, 0xfe0ff07f, 0xfff0707f, 0xfc00707f, 0xfc00707f, 0x1c00707f, 0x1c00707f,
+    0x1c00707f, 0x1c00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0x1c00707f, 0x1c00707f, 0x1c00707f, 0x1c00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0x1c00707f, 0x1c00707f, 0x1c00707f, 0x1c00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f, 0xfc00707f,
+    0xfc00707f, 0xfc0ff07f, 0xfc0ff07f, 0xfc0ff07f, 0xffffffff, 0xffffffff, 0xffffffff, 0xfe00707f,
+    0xfe00707f, 0x707f, 0xfe00707f, 0xfe00707f, 0xfff0707f, 0xfff0707f, 0xfff0707f, 0xfff0707f,
+    0xfff0707f,
 ];
 pub static OPCODE_MASK_COMPRESSED: [u16; 1021] = [
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-61443,
-57347,
-61315,
-57347,
-57347,
-64611,
-64611,
-60419,
-57347,
-57347,
-65535,
-57347,
-57347,
-57347,
-57347,
-57347,
-57347,
-57347,
-57347,
-57347,
-57347,
-61567,
-61567,
-64515,
-57347,
-57347,
-64579,
-64579,
-57347,
-57347,
-57347,
-57347,
-65535,
-65535,
-65535,
-65535,
-65535,
-65535,
-65535,
-65535,
-63743,
-64611,
-61443,
-61315,
-64639,
-65535,
-65535,
-65535,
-65535,
-64611,
-64515,
-57347,
-57347,
-64639,
-64639,
-61567,
-64579,
-57347,
-61443,
-60419,
-64515,
-60419,
-64515,
-64611,
-64611,
-57347,
-57347,
-64611,
-64639,
-64639,
-64639,
-32767,
-32767,
-32767,
-32767,
-28799,
-28799,
-28799,
-28799,
-28799,
-64515,
-64611,
-64611,
-65283,
-65283,
-65283,
-65283,
-28799,
-28799,
-32767,
-32767,
-61567,
-28799,
-28799,
-28799,
-28799,
-28799,
-28799,
-32767,
-32767,
-32767,
-32767,
-28799,
-28799,
-28799,
-28799,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 61443, 57347,
+    61315, 57347, 57347, 64611, 64611, 60419, 57347, 57347, 65535, 57347, 57347, 57347, 57347,
+    57347, 57347, 57347, 57347, 57347, 57347, 61567, 61567, 64515, 57347, 57347, 64579, 64579,
+    57347, 57347, 57347, 57347, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 63743,
+    64611, 61443, 61315, 64639, 65535, 65535, 65535, 65535, 64611, 64515, 57347, 57347, 64639,
+    64639, 61567, 64579, 57347, 61443, 60419, 64515, 60419, 64515, 64611, 64611, 57347, 57347,
+    64611, 64639, 64639, 64639, 32767, 32767, 32767, 32767, 28799, 28799, 28799, 28799, 28799,
+    64515, 64611, 64611, 65283, 65283, 65283, 65283, 28799, 28799, 32767, 32767, 61567, 28799,
+    28799, 28799, 28799, 28799, 28799, 32767, 32767, 32767, 32767, 28799, 28799, 28799, 28799, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 ];
 
 pub static OPCODE_MATCH_COMPRESSED: [u16; 1021] = [
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-36866,
-1,
-24833,
-0,
-8193,
-39969,
-35937,
-34817,
-49153,
-57345,
-36866,
-8192,
-8194,
-24576,
-24578,
-40960,
-40962,
-57344,
-57346,
-40961,
-8193,
-36866,
-32770,
-32768,
-24576,
-24578,
-33856,
-33792,
-16385,
-24577,
-16384,
-16386,
-24705,
-25985,
-26241,
-26497,
-24961,
-25217,
-25473,
-25729,
-24705,
-40001,
-32770,
-1,
-40053,
-36886,
-36874,
-36878,
-36882,
-35905,
-34816,
-57344,
-57346,
-40037,
-40045,
-8193,
-35840,
-2,
-2,
-33793,
-33793,
-32769,
-32769,
-35841,
-39937,
-49152,
-49154,
-35873,
-40033,
-40041,
-40049,
-8207,
-8207,
-8207,
-8207,
-4147,
-12339,
-8243,
-4115,
-4123,
-40962,
-44130,
-44066,
-47618,
-48642,
-48130,
-47106,
-4115,
-4123,
-12403,
-28787,
-8307,
-12403,
-28787,
-8307,
-24691,
-4211,
-20595,
-8307,
-24691,
-4211,
-20595,
-4115,
-4123,
-20531,
-28723,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
-0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 36866, 1, 24833,
+    0, 8193, 39969, 35937, 34817, 49153, 57345, 36866, 8192, 8194, 24576, 24578, 40960, 40962,
+    57344, 57346, 40961, 8193, 36866, 32770, 32768, 24576, 24578, 33856, 33792, 16385, 24577,
+    16384, 16386, 24705, 25985, 26241, 26497, 24961, 25217, 25473, 25729, 24705, 40001, 32770, 1,
+    40053, 36886, 36874, 36878, 36882, 35905, 34816, 57344, 57346, 40037, 40045, 8193, 35840, 2, 2,
+    33793, 33793, 32769, 32769, 35841, 39937, 49152, 49154, 35873, 40033, 40041, 40049, 8207, 8207,
+    8207, 8207, 4147, 12339, 8243, 4115, 4123, 40962, 44130, 44066, 47618, 48642, 48130, 47106,
+    4115, 4123, 12403, 28787, 8307, 12403, 28787, 8307, 24691, 4211, 20595, 8307, 24691, 4211,
+    20595, 4115, 4123, 20531, 28723, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0,
 ];
 
 pub static ALL_OPCODES: [Opcode; 1021] = [
-Opcode::ADD,
-Opcode::ADDUW,
-Opcode::ADDI,
-Opcode::ADDIW,
-Opcode::ADDW,
-Opcode::AES32DSI,
-Opcode::AES32DSMI,
-Opcode::AES32ESI,
-Opcode::AES32ESMI,
-Opcode::AES64DS,
-Opcode::AES64DSM,
-Opcode::AES64ES,
-Opcode::AES64ESM,
-Opcode::AES64IM,
-Opcode::AES64KS1I,
-Opcode::AES64KS2,
-Opcode::AMOADDB,
-Opcode::AMOADDD,
-Opcode::AMOADDH,
-Opcode::AMOADDW,
-Opcode::AMOANDB,
-Opcode::AMOANDD,
-Opcode::AMOANDH,
-Opcode::AMOANDW,
-Opcode::AMOCASB,
-Opcode::AMOCASD,
-Opcode::AMOCASH,
-Opcode::AMOCASQ,
-Opcode::AMOCASW,
-Opcode::AMOMAXB,
-Opcode::AMOMAXD,
-Opcode::AMOMAXH,
-Opcode::AMOMAXW,
-Opcode::AMOMAXUB,
-Opcode::AMOMAXUD,
-Opcode::AMOMAXUH,
-Opcode::AMOMAXUW,
-Opcode::AMOMINB,
-Opcode::AMOMIND,
-Opcode::AMOMINH,
-Opcode::AMOMINW,
-Opcode::AMOMINUB,
-Opcode::AMOMINUD,
-Opcode::AMOMINUH,
-Opcode::AMOMINUW,
-Opcode::AMOORB,
-Opcode::AMOORD,
-Opcode::AMOORH,
-Opcode::AMOORW,
-Opcode::AMOSWAPB,
-Opcode::AMOSWAPD,
-Opcode::AMOSWAPH,
-Opcode::AMOSWAPW,
-Opcode::AMOXORB,
-Opcode::AMOXORD,
-Opcode::AMOXORH,
-Opcode::AMOXORW,
-Opcode::AND,
-Opcode::ANDI,
-Opcode::ANDN,
-Opcode::AUIPC,
-Opcode::BCLR,
-Opcode::BCLRI,
-Opcode::BCLRIRV32,
-Opcode::BEQ,
-Opcode::BEQZ,
-Opcode::BEXT,
-Opcode::BEXTI,
-Opcode::BEXTIRV32,
-Opcode::BGE,
-Opcode::BGEU,
-Opcode::BGEZ,
-Opcode::BGT,
-Opcode::BGTU,
-Opcode::BGTZ,
-Opcode::BINV,
-Opcode::BINVI,
-Opcode::BINVIRV32,
-Opcode::BLE,
-Opcode::BLEU,
-Opcode::BLEZ,
-Opcode::BLT,
-Opcode::BLTU,
-Opcode::BLTZ,
-Opcode::BNE,
-Opcode::BNEZ,
-Opcode::BREV8,
-Opcode::BSET,
-Opcode::BSETI,
-Opcode::BSETIRV32,
-Opcode::CADD,
-Opcode::CADDI,
-Opcode::CADDI16SP,
-Opcode::CADDI4SPN,
-Opcode::CADDIW,
-Opcode::CADDW,
-Opcode::CAND,
-Opcode::CANDI,
-Opcode::CBEQZ,
-Opcode::CBNEZ,
-Opcode::CEBREAK,
-Opcode::CFLD,
-Opcode::CFLDSP,
-Opcode::CFLW,
-Opcode::CFLWSP,
-Opcode::CFSD,
-Opcode::CFSDSP,
-Opcode::CFSW,
-Opcode::CFSWSP,
-Opcode::CJ,
-Opcode::CJAL,
-Opcode::CJALR,
-Opcode::CJR,
-Opcode::CLBU,
-Opcode::CLD,
-Opcode::CLDSP,
-Opcode::CLH,
-Opcode::CLHU,
-Opcode::CLI,
-Opcode::CLUI,
-Opcode::CLW,
-Opcode::CLWSP,
-Opcode::CMOP1,
-Opcode::CMOP11,
-Opcode::CMOP13,
-Opcode::CMOP15,
-Opcode::CMOP3,
-Opcode::CMOP5,
-Opcode::CMOP7,
-Opcode::CMOP9,
-Opcode::CMOPN,
-Opcode::CMUL,
-Opcode::CMV,
-Opcode::CNOP,
-Opcode::CNOT,
-Opcode::CNTLALL,
-Opcode::CNTLP1,
-Opcode::CNTLPALL,
-Opcode::CNTLS1,
-Opcode::COR,
-Opcode::CSB,
-Opcode::CSD,
-Opcode::CSDSP,
-Opcode::CSEXTB,
-Opcode::CSEXTH,
-Opcode::CSEXTW,
-Opcode::CSH,
-Opcode::CSLLI,
-Opcode::CSLLIRV32,
-Opcode::CSRAI,
-Opcode::CSRAIRV32,
-Opcode::CSRLI,
-Opcode::CSRLIRV32,
-Opcode::CSUB,
-Opcode::CSUBW,
-Opcode::CSW,
-Opcode::CSWSP,
-Opcode::CXOR,
-Opcode::CZEXTB,
-Opcode::CZEXTH,
-Opcode::CZEXTW,
-Opcode::CBOCLEAN,
-Opcode::CBOFLUSH,
-Opcode::CBOINVAL,
-Opcode::CBOZERO,
-Opcode::CLMUL,
-Opcode::CLMULH,
-Opcode::CLMULR,
-Opcode::CLZ,
-Opcode::CLZW,
-Opcode::CMJALT,
-Opcode::CMMVA01S,
-Opcode::CMMVSA01,
-Opcode::CMPOP,
-Opcode::CMPOPRET,
-Opcode::CMPOPRETZ,
-Opcode::CMPUSH,
-Opcode::CPOP,
-Opcode::CPOPW,
-Opcode::CSRC,
-Opcode::CSRCI,
-Opcode::CSRR,
-Opcode::CSRRC,
-Opcode::CSRRCI,
-Opcode::CSRRS,
-Opcode::CSRRSI,
-Opcode::CSRRW,
-Opcode::CSRRWI,
-Opcode::CSRS,
-Opcode::CSRSI,
-Opcode::CSRW,
-Opcode::CSRWI,
-Opcode::CTZ,
-Opcode::CTZW,
-Opcode::CZEROEQZ,
-Opcode::CZERONEZ,
-Opcode::DIV,
-Opcode::DIVU,
-Opcode::DIVUW,
-Opcode::DIVW,
-Opcode::DRET,
-Opcode::EBREAK,
-Opcode::ECALL,
-Opcode::FABSD,
-Opcode::FABSH,
-Opcode::FABSQ,
-Opcode::FABSS,
-Opcode::FADDD,
-Opcode::FADDH,
-Opcode::FADDQ,
-Opcode::FADDS,
-Opcode::FCLASSD,
-Opcode::FCLASSH,
-Opcode::FCLASSQ,
-Opcode::FCLASSS,
-Opcode::FCVTDH,
-Opcode::FCVTDL,
-Opcode::FCVTDLU,
-Opcode::FCVTDQ,
-Opcode::FCVTDS,
-Opcode::FCVTDW,
-Opcode::FCVTDWU,
-Opcode::FCVTHD,
-Opcode::FCVTHL,
-Opcode::FCVTHLU,
-Opcode::FCVTHQ,
-Opcode::FCVTHS,
-Opcode::FCVTHW,
-Opcode::FCVTHWU,
-Opcode::FCVTLD,
-Opcode::FCVTLH,
-Opcode::FCVTLQ,
-Opcode::FCVTLS,
-Opcode::FCVTLUD,
-Opcode::FCVTLUH,
-Opcode::FCVTLUQ,
-Opcode::FCVTLUS,
-Opcode::FCVTQD,
-Opcode::FCVTQH,
-Opcode::FCVTQL,
-Opcode::FCVTQLU,
-Opcode::FCVTQS,
-Opcode::FCVTQW,
-Opcode::FCVTQWU,
-Opcode::FCVTSD,
-Opcode::FCVTSH,
-Opcode::FCVTSL,
-Opcode::FCVTSLU,
-Opcode::FCVTSQ,
-Opcode::FCVTSW,
-Opcode::FCVTSWU,
-Opcode::FCVTWD,
-Opcode::FCVTWH,
-Opcode::FCVTWQ,
-Opcode::FCVTWS,
-Opcode::FCVTWUD,
-Opcode::FCVTWUH,
-Opcode::FCVTWUQ,
-Opcode::FCVTWUS,
-Opcode::FCVTMODWD,
-Opcode::FDIVD,
-Opcode::FDIVH,
-Opcode::FDIVQ,
-Opcode::FDIVS,
-Opcode::FENCE,
-Opcode::FENCEI,
-Opcode::FENCETSO,
-Opcode::FEQD,
-Opcode::FEQH,
-Opcode::FEQQ,
-Opcode::FEQS,
-Opcode::FLD,
-Opcode::FLED,
-Opcode::FLEH,
-Opcode::FLEQ,
-Opcode::FLES,
-Opcode::FLEQD,
-Opcode::FLEQH,
-Opcode::FLEQQ,
-Opcode::FLEQS,
-Opcode::FLH,
-Opcode::FLID,
-Opcode::FLIH,
-Opcode::FLIQ,
-Opcode::FLIS,
-Opcode::FLQ,
-Opcode::FLTD,
-Opcode::FLTH,
-Opcode::FLTQ,
-Opcode::FLTS,
-Opcode::FLTQD,
-Opcode::FLTQH,
-Opcode::FLTQQ,
-Opcode::FLTQS,
-Opcode::FLW,
-Opcode::FMADDD,
-Opcode::FMADDH,
-Opcode::FMADDQ,
-Opcode::FMADDS,
-Opcode::FMAXD,
-Opcode::FMAXH,
-Opcode::FMAXQ,
-Opcode::FMAXS,
-Opcode::FMAXMD,
-Opcode::FMAXMH,
-Opcode::FMAXMQ,
-Opcode::FMAXMS,
-Opcode::FMIND,
-Opcode::FMINH,
-Opcode::FMINQ,
-Opcode::FMINS,
-Opcode::FMINMD,
-Opcode::FMINMH,
-Opcode::FMINMQ,
-Opcode::FMINMS,
-Opcode::FMSUBD,
-Opcode::FMSUBH,
-Opcode::FMSUBQ,
-Opcode::FMSUBS,
-Opcode::FMULD,
-Opcode::FMULH,
-Opcode::FMULQ,
-Opcode::FMULS,
-Opcode::FMVD,
-Opcode::FMVDX,
-Opcode::FMVH,
-Opcode::FMVHX,
-Opcode::FMVQ,
-Opcode::FMVS,
-Opcode::FMVSX,
-Opcode::FMVWX,
-Opcode::FMVXD,
-Opcode::FMVXH,
-Opcode::FMVXS,
-Opcode::FMVXW,
-Opcode::FMVHXD,
-Opcode::FMVHXQ,
-Opcode::FMVPDX,
-Opcode::FMVPQX,
-Opcode::FNEGD,
-Opcode::FNEGH,
-Opcode::FNEGQ,
-Opcode::FNEGS,
-Opcode::FNMADDD,
-Opcode::FNMADDH,
-Opcode::FNMADDQ,
-Opcode::FNMADDS,
-Opcode::FNMSUBD,
-Opcode::FNMSUBH,
-Opcode::FNMSUBQ,
-Opcode::FNMSUBS,
-Opcode::FRCSR,
-Opcode::FRFLAGS,
-Opcode::FROUNDD,
-Opcode::FROUNDH,
-Opcode::FROUNDQ,
-Opcode::FROUNDS,
-Opcode::FROUNDNXD,
-Opcode::FROUNDNXH,
-Opcode::FROUNDNXQ,
-Opcode::FROUNDNXS,
-Opcode::FRRM,
-Opcode::FSCSR,
-Opcode::FSD,
-Opcode::FSFLAGS,
-Opcode::FSFLAGSI,
-Opcode::FSGNJD,
-Opcode::FSGNJH,
-Opcode::FSGNJQ,
-Opcode::FSGNJS,
-Opcode::FSGNJND,
-Opcode::FSGNJNH,
-Opcode::FSGNJNQ,
-Opcode::FSGNJNS,
-Opcode::FSGNJXD,
-Opcode::FSGNJXH,
-Opcode::FSGNJXQ,
-Opcode::FSGNJXS,
-Opcode::FSH,
-Opcode::FSQ,
-Opcode::FSQRTD,
-Opcode::FSQRTH,
-Opcode::FSQRTQ,
-Opcode::FSQRTS,
-Opcode::FSRM,
-Opcode::FSRMI,
-Opcode::FSUBD,
-Opcode::FSUBH,
-Opcode::FSUBQ,
-Opcode::FSUBS,
-Opcode::FSW,
-Opcode::HFENCEGVMA,
-Opcode::HFENCEVVMA,
-Opcode::HINVALGVMA,
-Opcode::HINVALVVMA,
-Opcode::HLVB,
-Opcode::HLVBU,
-Opcode::HLVD,
-Opcode::HLVH,
-Opcode::HLVHU,
-Opcode::HLVW,
-Opcode::HLVWU,
-Opcode::HLVXHU,
-Opcode::HLVXWU,
-Opcode::HSVB,
-Opcode::HSVD,
-Opcode::HSVH,
-Opcode::HSVW,
-Opcode::J,
-Opcode::JAL,
-Opcode::JALPSEUDO,
-Opcode::JALR,
-Opcode::JALRPSEUDO,
-Opcode::JR,
-Opcode::LB,
-Opcode::LBU,
-Opcode::LD,
-Opcode::LH,
-Opcode::LHU,
-Opcode::LRD,
-Opcode::LRW,
-Opcode::LUI,
-Opcode::LW,
-Opcode::LWU,
-Opcode::MAX,
-Opcode::MAXU,
-Opcode::MIN,
-Opcode::MINU,
-Opcode::MOPR0,
-Opcode::MOPR1,
-Opcode::MOPR10,
-Opcode::MOPR11,
-Opcode::MOPR12,
-Opcode::MOPR13,
-Opcode::MOPR14,
-Opcode::MOPR15,
-Opcode::MOPR16,
-Opcode::MOPR17,
-Opcode::MOPR18,
-Opcode::MOPR19,
-Opcode::MOPR2,
-Opcode::MOPR20,
-Opcode::MOPR21,
-Opcode::MOPR22,
-Opcode::MOPR23,
-Opcode::MOPR24,
-Opcode::MOPR25,
-Opcode::MOPR26,
-Opcode::MOPR27,
-Opcode::MOPR28,
-Opcode::MOPR29,
-Opcode::MOPR3,
-Opcode::MOPR30,
-Opcode::MOPR31,
-Opcode::MOPR4,
-Opcode::MOPR5,
-Opcode::MOPR6,
-Opcode::MOPR7,
-Opcode::MOPR8,
-Opcode::MOPR9,
-Opcode::MOPRN,
-Opcode::MOPRR0,
-Opcode::MOPRR1,
-Opcode::MOPRR2,
-Opcode::MOPRR3,
-Opcode::MOPRR4,
-Opcode::MOPRR5,
-Opcode::MOPRR6,
-Opcode::MOPRR7,
-Opcode::MOPRRN,
-Opcode::MRET,
-Opcode::MUL,
-Opcode::MULH,
-Opcode::MULHSU,
-Opcode::MULHU,
-Opcode::MULW,
-Opcode::MV,
-Opcode::NEG,
-Opcode::NOP,
-Opcode::NTLALL,
-Opcode::NTLP1,
-Opcode::NTLPALL,
-Opcode::NTLS1,
-Opcode::OR,
-Opcode::ORCB,
-Opcode::ORI,
-Opcode::ORN,
-Opcode::PACK,
-Opcode::PACKH,
-Opcode::PACKW,
-Opcode::PAUSE,
-Opcode::PREFETCHI,
-Opcode::PREFETCHR,
-Opcode::PREFETCHW,
-Opcode::RDCYCLE,
-Opcode::RDCYCLEH,
-Opcode::RDINSTRET,
-Opcode::RDINSTRETH,
-Opcode::RDTIME,
-Opcode::RDTIMEH,
-Opcode::REM,
-Opcode::REMU,
-Opcode::REMUW,
-Opcode::REMW,
-Opcode::RET,
-Opcode::REV8,
-Opcode::REV8RV32,
-Opcode::ROL,
-Opcode::ROLW,
-Opcode::ROR,
-Opcode::RORI,
-Opcode::RORIRV32,
-Opcode::RORIW,
-Opcode::RORW,
-Opcode::SB,
-Opcode::SBREAK,
-Opcode::SCD,
-Opcode::SCW,
-Opcode::SCALL,
-Opcode::SD,
-Opcode::SEQZ,
-Opcode::SEXTB,
-Opcode::SEXTH,
-Opcode::SEXTW,
-Opcode::SFENCEINVALIR,
-Opcode::SFENCEVMA,
-Opcode::SFENCEWINVAL,
-Opcode::SGTZ,
-Opcode::SH,
-Opcode::SH1ADD,
-Opcode::SH1ADDUW,
-Opcode::SH2ADD,
-Opcode::SH2ADDUW,
-Opcode::SH3ADD,
-Opcode::SH3ADDUW,
-Opcode::SHA256SIG0,
-Opcode::SHA256SIG1,
-Opcode::SHA256SUM0,
-Opcode::SHA256SUM1,
-Opcode::SHA512SIG0,
-Opcode::SHA512SIG0H,
-Opcode::SHA512SIG0L,
-Opcode::SHA512SIG1,
-Opcode::SHA512SIG1H,
-Opcode::SHA512SIG1L,
-Opcode::SHA512SUM0,
-Opcode::SHA512SUM0R,
-Opcode::SHA512SUM1,
-Opcode::SHA512SUM1R,
-Opcode::SINVALVMA,
-Opcode::SLL,
-Opcode::SLLI,
-Opcode::SLLIRV32,
-Opcode::SLLIUW,
-Opcode::SLLIW,
-Opcode::SLLW,
-Opcode::SLT,
-Opcode::SLTI,
-Opcode::SLTIU,
-Opcode::SLTU,
-Opcode::SLTZ,
-Opcode::SM3P0,
-Opcode::SM3P1,
-Opcode::SM4ED,
-Opcode::SM4KS,
-Opcode::SNEZ,
-Opcode::SRA,
-Opcode::SRAI,
-Opcode::SRAIRV32,
-Opcode::SRAIW,
-Opcode::SRAW,
-Opcode::SRET,
-Opcode::SRL,
-Opcode::SRLI,
-Opcode::SRLIRV32,
-Opcode::SRLIW,
-Opcode::SRLW,
-Opcode::SUB,
-Opcode::SUBW,
-Opcode::SW,
-Opcode::UNZIP,
-Opcode::VAADDVV,
-Opcode::VAADDVX,
-Opcode::VAADDUVV,
-Opcode::VAADDUVX,
-Opcode::VADCVIM,
-Opcode::VADCVVM,
-Opcode::VADCVXM,
-Opcode::VADDVI,
-Opcode::VADDVV,
-Opcode::VADDVX,
-Opcode::VAESDFVS,
-Opcode::VAESDFVV,
-Opcode::VAESDMVS,
-Opcode::VAESDMVV,
-Opcode::VAESEFVS,
-Opcode::VAESEFVV,
-Opcode::VAESEMVS,
-Opcode::VAESEMVV,
-Opcode::VAESKF1VI,
-Opcode::VAESKF2VI,
-Opcode::VAESZVS,
-Opcode::VANDVI,
-Opcode::VANDVV,
-Opcode::VANDVX,
-Opcode::VANDNVV,
-Opcode::VANDNVX,
-Opcode::VASUBVV,
-Opcode::VASUBVX,
-Opcode::VASUBUVV,
-Opcode::VASUBUVX,
-Opcode::VBREV8V,
-Opcode::VBREVV,
-Opcode::VCLMULVV,
-Opcode::VCLMULVX,
-Opcode::VCLMULHVV,
-Opcode::VCLMULHVX,
-Opcode::VCLZV,
-Opcode::VCOMPRESSVM,
-Opcode::VCPOPM,
-Opcode::VCPOPV,
-Opcode::VCTZV,
-Opcode::VDIVVV,
-Opcode::VDIVVX,
-Opcode::VDIVUVV,
-Opcode::VDIVUVX,
-Opcode::VFADDVF,
-Opcode::VFADDVV,
-Opcode::VFCLASSV,
-Opcode::VFCVTFXV,
-Opcode::VFCVTFXUV,
-Opcode::VFCVTRTZXFV,
-Opcode::VFCVTRTZXUFV,
-Opcode::VFCVTXFV,
-Opcode::VFCVTXUFV,
-Opcode::VFDIVVF,
-Opcode::VFDIVVV,
-Opcode::VFIRSTM,
-Opcode::VFMACCVF,
-Opcode::VFMACCVV,
-Opcode::VFMADDVF,
-Opcode::VFMADDVV,
-Opcode::VFMAXVF,
-Opcode::VFMAXVV,
-Opcode::VFMERGEVFM,
-Opcode::VFMINVF,
-Opcode::VFMINVV,
-Opcode::VFMSACVF,
-Opcode::VFMSACVV,
-Opcode::VFMSUBVF,
-Opcode::VFMSUBVV,
-Opcode::VFMULVF,
-Opcode::VFMULVV,
-Opcode::VFMVFS,
-Opcode::VFMVSF,
-Opcode::VFMVVF,
-Opcode::VFNCVTFFW,
-Opcode::VFNCVTFXW,
-Opcode::VFNCVTFXUW,
-Opcode::VFNCVTRODFFW,
-Opcode::VFNCVTRTZXFW,
-Opcode::VFNCVTRTZXUFW,
-Opcode::VFNCVTXFW,
-Opcode::VFNCVTXUFW,
-Opcode::VFNMACCVF,
-Opcode::VFNMACCVV,
-Opcode::VFNMADDVF,
-Opcode::VFNMADDVV,
-Opcode::VFNMSACVF,
-Opcode::VFNMSACVV,
-Opcode::VFNMSUBVF,
-Opcode::VFNMSUBVV,
-Opcode::VFRDIVVF,
-Opcode::VFREC7V,
-Opcode::VFREDMAXVS,
-Opcode::VFREDMINVS,
-Opcode::VFREDOSUMVS,
-Opcode::VFREDSUMVS,
-Opcode::VFREDUSUMVS,
-Opcode::VFRSQRT7V,
-Opcode::VFRSUBVF,
-Opcode::VFSGNJVF,
-Opcode::VFSGNJVV,
-Opcode::VFSGNJNVF,
-Opcode::VFSGNJNVV,
-Opcode::VFSGNJXVF,
-Opcode::VFSGNJXVV,
-Opcode::VFSLIDE1DOWNVF,
-Opcode::VFSLIDE1UPVF,
-Opcode::VFSQRTV,
-Opcode::VFSUBVF,
-Opcode::VFSUBVV,
-Opcode::VFWADDVF,
-Opcode::VFWADDVV,
-Opcode::VFWADDWF,
-Opcode::VFWADDWV,
-Opcode::VFWCVTFFV,
-Opcode::VFWCVTFXV,
-Opcode::VFWCVTFXUV,
-Opcode::VFWCVTRTZXFV,
-Opcode::VFWCVTRTZXUFV,
-Opcode::VFWCVTXFV,
-Opcode::VFWCVTXUFV,
-Opcode::VFWMACCVF,
-Opcode::VFWMACCVV,
-Opcode::VFWMSACVF,
-Opcode::VFWMSACVV,
-Opcode::VFWMULVF,
-Opcode::VFWMULVV,
-Opcode::VFWNMACCVF,
-Opcode::VFWNMACCVV,
-Opcode::VFWNMSACVF,
-Opcode::VFWNMSACVV,
-Opcode::VFWREDOSUMVS,
-Opcode::VFWREDSUMVS,
-Opcode::VFWREDUSUMVS,
-Opcode::VFWSUBVF,
-Opcode::VFWSUBVV,
-Opcode::VFWSUBWF,
-Opcode::VFWSUBWV,
-Opcode::VGHSHVV,
-Opcode::VGMULVV,
-Opcode::VIDV,
-Opcode::VIOTAM,
-Opcode::VL1RV,
-Opcode::VL1RE16V,
-Opcode::VL1RE32V,
-Opcode::VL1RE64V,
-Opcode::VL1RE8V,
-Opcode::VL2RV,
-Opcode::VL2RE16V,
-Opcode::VL2RE32V,
-Opcode::VL2RE64V,
-Opcode::VL2RE8V,
-Opcode::VL4RV,
-Opcode::VL4RE16V,
-Opcode::VL4RE32V,
-Opcode::VL4RE64V,
-Opcode::VL4RE8V,
-Opcode::VL8RV,
-Opcode::VL8RE16V,
-Opcode::VL8RE32V,
-Opcode::VL8RE64V,
-Opcode::VL8RE8V,
-Opcode::VLE16V,
-Opcode::VLE16FFV,
-Opcode::VLE1V,
-Opcode::VLE32V,
-Opcode::VLE32FFV,
-Opcode::VLE64V,
-Opcode::VLE64FFV,
-Opcode::VLE8V,
-Opcode::VLE8FFV,
-Opcode::VLMV,
-Opcode::VLOXEI16V,
-Opcode::VLOXEI32V,
-Opcode::VLOXEI64V,
-Opcode::VLOXEI8V,
-Opcode::VLSE16V,
-Opcode::VLSE32V,
-Opcode::VLSE64V,
-Opcode::VLSE8V,
-Opcode::VLUXEI16V,
-Opcode::VLUXEI32V,
-Opcode::VLUXEI64V,
-Opcode::VLUXEI8V,
-Opcode::VMACCVV,
-Opcode::VMACCVX,
-Opcode::VMADCVI,
-Opcode::VMADCVIM,
-Opcode::VMADCVV,
-Opcode::VMADCVVM,
-Opcode::VMADCVX,
-Opcode::VMADCVXM,
-Opcode::VMADDVV,
-Opcode::VMADDVX,
-Opcode::VMANDMM,
-Opcode::VMANDNMM,
-Opcode::VMANDNOTMM,
-Opcode::VMAXVV,
-Opcode::VMAXVX,
-Opcode::VMAXUVV,
-Opcode::VMAXUVX,
-Opcode::VMERGEVIM,
-Opcode::VMERGEVVM,
-Opcode::VMERGEVXM,
-Opcode::VMFEQVF,
-Opcode::VMFEQVV,
-Opcode::VMFGEVF,
-Opcode::VMFGTVF,
-Opcode::VMFLEVF,
-Opcode::VMFLEVV,
-Opcode::VMFLTVF,
-Opcode::VMFLTVV,
-Opcode::VMFNEVF,
-Opcode::VMFNEVV,
-Opcode::VMINVV,
-Opcode::VMINVX,
-Opcode::VMINUVV,
-Opcode::VMINUVX,
-Opcode::VMNANDMM,
-Opcode::VMNORMM,
-Opcode::VMORMM,
-Opcode::VMORNMM,
-Opcode::VMORNOTMM,
-Opcode::VMSBCVV,
-Opcode::VMSBCVVM,
-Opcode::VMSBCVX,
-Opcode::VMSBCVXM,
-Opcode::VMSBFM,
-Opcode::VMSEQVI,
-Opcode::VMSEQVV,
-Opcode::VMSEQVX,
-Opcode::VMSGTVI,
-Opcode::VMSGTVX,
-Opcode::VMSGTUVI,
-Opcode::VMSGTUVX,
-Opcode::VMSIFM,
-Opcode::VMSLEVI,
-Opcode::VMSLEVV,
-Opcode::VMSLEVX,
-Opcode::VMSLEUVI,
-Opcode::VMSLEUVV,
-Opcode::VMSLEUVX,
-Opcode::VMSLTVV,
-Opcode::VMSLTVX,
-Opcode::VMSLTUVV,
-Opcode::VMSLTUVX,
-Opcode::VMSNEVI,
-Opcode::VMSNEVV,
-Opcode::VMSNEVX,
-Opcode::VMSOFM,
-Opcode::VMULVV,
-Opcode::VMULVX,
-Opcode::VMULHVV,
-Opcode::VMULHVX,
-Opcode::VMULHSUVV,
-Opcode::VMULHSUVX,
-Opcode::VMULHUVV,
-Opcode::VMULHUVX,
-Opcode::VMV1RV,
-Opcode::VMV2RV,
-Opcode::VMV4RV,
-Opcode::VMV8RV,
-Opcode::VMVSX,
-Opcode::VMVVI,
-Opcode::VMVVV,
-Opcode::VMVVX,
-Opcode::VMVXS,
-Opcode::VMXNORMM,
-Opcode::VMXORMM,
-Opcode::VNCLIPWI,
-Opcode::VNCLIPWV,
-Opcode::VNCLIPWX,
-Opcode::VNCLIPUWI,
-Opcode::VNCLIPUWV,
-Opcode::VNCLIPUWX,
-Opcode::VNMSACVV,
-Opcode::VNMSACVX,
-Opcode::VNMSUBVV,
-Opcode::VNMSUBVX,
-Opcode::VNSRAWI,
-Opcode::VNSRAWV,
-Opcode::VNSRAWX,
-Opcode::VNSRLWI,
-Opcode::VNSRLWV,
-Opcode::VNSRLWX,
-Opcode::VORVI,
-Opcode::VORVV,
-Opcode::VORVX,
-Opcode::VPOPCM,
-Opcode::VREDANDVS,
-Opcode::VREDMAXVS,
-Opcode::VREDMAXUVS,
-Opcode::VREDMINVS,
-Opcode::VREDMINUVS,
-Opcode::VREDORVS,
-Opcode::VREDSUMVS,
-Opcode::VREDXORVS,
-Opcode::VREMVV,
-Opcode::VREMVX,
-Opcode::VREMUVV,
-Opcode::VREMUVX,
-Opcode::VREV8V,
-Opcode::VRGATHERVI,
-Opcode::VRGATHERVV,
-Opcode::VRGATHERVX,
-Opcode::VRGATHEREI16VV,
-Opcode::VROLVV,
-Opcode::VROLVX,
-Opcode::VRORVI,
-Opcode::VRORVV,
-Opcode::VRORVX,
-Opcode::VRSUBVI,
-Opcode::VRSUBVX,
-Opcode::VS1RV,
-Opcode::VS2RV,
-Opcode::VS4RV,
-Opcode::VS8RV,
-Opcode::VSADDVI,
-Opcode::VSADDVV,
-Opcode::VSADDVX,
-Opcode::VSADDUVI,
-Opcode::VSADDUVV,
-Opcode::VSADDUVX,
-Opcode::VSBCVVM,
-Opcode::VSBCVXM,
-Opcode::VSE16V,
-Opcode::VSE1V,
-Opcode::VSE32V,
-Opcode::VSE64V,
-Opcode::VSE8V,
-Opcode::VSETIVLI,
-Opcode::VSETVL,
-Opcode::VSETVLI,
-Opcode::VSEXTVF2,
-Opcode::VSEXTVF4,
-Opcode::VSEXTVF8,
-Opcode::VSHA2CHVV,
-Opcode::VSHA2CLVV,
-Opcode::VSHA2MSVV,
-Opcode::VSLIDE1DOWNVX,
-Opcode::VSLIDE1UPVX,
-Opcode::VSLIDEDOWNVI,
-Opcode::VSLIDEDOWNVX,
-Opcode::VSLIDEUPVI,
-Opcode::VSLIDEUPVX,
-Opcode::VSLLVI,
-Opcode::VSLLVV,
-Opcode::VSLLVX,
-Opcode::VSM3CVI,
-Opcode::VSM3MEVV,
-Opcode::VSM4KVI,
-Opcode::VSM4RVS,
-Opcode::VSM4RVV,
-Opcode::VSMV,
-Opcode::VSMULVV,
-Opcode::VSMULVX,
-Opcode::VSOXEI16V,
-Opcode::VSOXEI32V,
-Opcode::VSOXEI64V,
-Opcode::VSOXEI8V,
-Opcode::VSRAVI,
-Opcode::VSRAVV,
-Opcode::VSRAVX,
-Opcode::VSRLVI,
-Opcode::VSRLVV,
-Opcode::VSRLVX,
-Opcode::VSSE16V,
-Opcode::VSSE32V,
-Opcode::VSSE64V,
-Opcode::VSSE8V,
-Opcode::VSSRAVI,
-Opcode::VSSRAVV,
-Opcode::VSSRAVX,
-Opcode::VSSRLVI,
-Opcode::VSSRLVV,
-Opcode::VSSRLVX,
-Opcode::VSSUBVV,
-Opcode::VSSUBVX,
-Opcode::VSSUBUVV,
-Opcode::VSSUBUVX,
-Opcode::VSUBVV,
-Opcode::VSUBVX,
-Opcode::VSUXEI16V,
-Opcode::VSUXEI32V,
-Opcode::VSUXEI64V,
-Opcode::VSUXEI8V,
-Opcode::VWADDVV,
-Opcode::VWADDVX,
-Opcode::VWADDWV,
-Opcode::VWADDWX,
-Opcode::VWADDUVV,
-Opcode::VWADDUVX,
-Opcode::VWADDUWV,
-Opcode::VWADDUWX,
-Opcode::VWMACCVV,
-Opcode::VWMACCVX,
-Opcode::VWMACCSUVV,
-Opcode::VWMACCSUVX,
-Opcode::VWMACCUVV,
-Opcode::VWMACCUVX,
-Opcode::VWMACCUSVX,
-Opcode::VWMULVV,
-Opcode::VWMULVX,
-Opcode::VWMULSUVV,
-Opcode::VWMULSUVX,
-Opcode::VWMULUVV,
-Opcode::VWMULUVX,
-Opcode::VWREDSUMVS,
-Opcode::VWREDSUMUVS,
-Opcode::VWSLLVI,
-Opcode::VWSLLVV,
-Opcode::VWSLLVX,
-Opcode::VWSUBVV,
-Opcode::VWSUBVX,
-Opcode::VWSUBWV,
-Opcode::VWSUBWX,
-Opcode::VWSUBUVV,
-Opcode::VWSUBUVX,
-Opcode::VWSUBUWV,
-Opcode::VWSUBUWX,
-Opcode::VXORVI,
-Opcode::VXORVV,
-Opcode::VXORVX,
-Opcode::VZEXTVF2,
-Opcode::VZEXTVF4,
-Opcode::VZEXTVF8,
-Opcode::WFI,
-Opcode::WRSNTO,
-Opcode::WRSSTO,
-Opcode::XNOR,
-Opcode::XOR,
-Opcode::XORI,
-Opcode::XPERM4,
-Opcode::XPERM8,
-Opcode::ZEXTB,
-Opcode::ZEXTH,
-Opcode::ZEXTHRV32,
-Opcode::ZEXTW,
-Opcode::ZIP,
+    Opcode::ADD,
+    Opcode::ADDUW,
+    Opcode::ADDI,
+    Opcode::ADDIW,
+    Opcode::ADDW,
+    Opcode::AES32DSI,
+    Opcode::AES32DSMI,
+    Opcode::AES32ESI,
+    Opcode::AES32ESMI,
+    Opcode::AES64DS,
+    Opcode::AES64DSM,
+    Opcode::AES64ES,
+    Opcode::AES64ESM,
+    Opcode::AES64IM,
+    Opcode::AES64KS1I,
+    Opcode::AES64KS2,
+    Opcode::AMOADDB,
+    Opcode::AMOADDD,
+    Opcode::AMOADDH,
+    Opcode::AMOADDW,
+    Opcode::AMOANDB,
+    Opcode::AMOANDD,
+    Opcode::AMOANDH,
+    Opcode::AMOANDW,
+    Opcode::AMOCASB,
+    Opcode::AMOCASD,
+    Opcode::AMOCASH,
+    Opcode::AMOCASQ,
+    Opcode::AMOCASW,
+    Opcode::AMOMAXB,
+    Opcode::AMOMAXD,
+    Opcode::AMOMAXH,
+    Opcode::AMOMAXW,
+    Opcode::AMOMAXUB,
+    Opcode::AMOMAXUD,
+    Opcode::AMOMAXUH,
+    Opcode::AMOMAXUW,
+    Opcode::AMOMINB,
+    Opcode::AMOMIND,
+    Opcode::AMOMINH,
+    Opcode::AMOMINW,
+    Opcode::AMOMINUB,
+    Opcode::AMOMINUD,
+    Opcode::AMOMINUH,
+    Opcode::AMOMINUW,
+    Opcode::AMOORB,
+    Opcode::AMOORD,
+    Opcode::AMOORH,
+    Opcode::AMOORW,
+    Opcode::AMOSWAPB,
+    Opcode::AMOSWAPD,
+    Opcode::AMOSWAPH,
+    Opcode::AMOSWAPW,
+    Opcode::AMOXORB,
+    Opcode::AMOXORD,
+    Opcode::AMOXORH,
+    Opcode::AMOXORW,
+    Opcode::AND,
+    Opcode::ANDI,
+    Opcode::ANDN,
+    Opcode::AUIPC,
+    Opcode::BCLR,
+    Opcode::BCLRI,
+    Opcode::BCLRIRV32,
+    Opcode::BEQ,
+    Opcode::BEQZ,
+    Opcode::BEXT,
+    Opcode::BEXTI,
+    Opcode::BEXTIRV32,
+    Opcode::BGE,
+    Opcode::BGEU,
+    Opcode::BGEZ,
+    Opcode::BGT,
+    Opcode::BGTU,
+    Opcode::BGTZ,
+    Opcode::BINV,
+    Opcode::BINVI,
+    Opcode::BINVIRV32,
+    Opcode::BLE,
+    Opcode::BLEU,
+    Opcode::BLEZ,
+    Opcode::BLT,
+    Opcode::BLTU,
+    Opcode::BLTZ,
+    Opcode::BNE,
+    Opcode::BNEZ,
+    Opcode::BREV8,
+    Opcode::BSET,
+    Opcode::BSETI,
+    Opcode::BSETIRV32,
+    Opcode::CADD,
+    Opcode::CADDI,
+    Opcode::CADDI16SP,
+    Opcode::CADDI4SPN,
+    Opcode::CADDIW,
+    Opcode::CADDW,
+    Opcode::CAND,
+    Opcode::CANDI,
+    Opcode::CBEQZ,
+    Opcode::CBNEZ,
+    Opcode::CEBREAK,
+    Opcode::CFLD,
+    Opcode::CFLDSP,
+    Opcode::CFLW,
+    Opcode::CFLWSP,
+    Opcode::CFSD,
+    Opcode::CFSDSP,
+    Opcode::CFSW,
+    Opcode::CFSWSP,
+    Opcode::CJ,
+    Opcode::CJAL,
+    Opcode::CJALR,
+    Opcode::CJR,
+    Opcode::CLBU,
+    Opcode::CLD,
+    Opcode::CLDSP,
+    Opcode::CLH,
+    Opcode::CLHU,
+    Opcode::CLI,
+    Opcode::CLUI,
+    Opcode::CLW,
+    Opcode::CLWSP,
+    Opcode::CMOP1,
+    Opcode::CMOP11,
+    Opcode::CMOP13,
+    Opcode::CMOP15,
+    Opcode::CMOP3,
+    Opcode::CMOP5,
+    Opcode::CMOP7,
+    Opcode::CMOP9,
+    Opcode::CMOPN,
+    Opcode::CMUL,
+    Opcode::CMV,
+    Opcode::CNOP,
+    Opcode::CNOT,
+    Opcode::CNTLALL,
+    Opcode::CNTLP1,
+    Opcode::CNTLPALL,
+    Opcode::CNTLS1,
+    Opcode::COR,
+    Opcode::CSB,
+    Opcode::CSD,
+    Opcode::CSDSP,
+    Opcode::CSEXTB,
+    Opcode::CSEXTH,
+    Opcode::CSEXTW,
+    Opcode::CSH,
+    Opcode::CSLLI,
+    Opcode::CSLLIRV32,
+    Opcode::CSRAI,
+    Opcode::CSRAIRV32,
+    Opcode::CSRLI,
+    Opcode::CSRLIRV32,
+    Opcode::CSUB,
+    Opcode::CSUBW,
+    Opcode::CSW,
+    Opcode::CSWSP,
+    Opcode::CXOR,
+    Opcode::CZEXTB,
+    Opcode::CZEXTH,
+    Opcode::CZEXTW,
+    Opcode::CBOCLEAN,
+    Opcode::CBOFLUSH,
+    Opcode::CBOINVAL,
+    Opcode::CBOZERO,
+    Opcode::CLMUL,
+    Opcode::CLMULH,
+    Opcode::CLMULR,
+    Opcode::CLZ,
+    Opcode::CLZW,
+    Opcode::CMJALT,
+    Opcode::CMMVA01S,
+    Opcode::CMMVSA01,
+    Opcode::CMPOP,
+    Opcode::CMPOPRET,
+    Opcode::CMPOPRETZ,
+    Opcode::CMPUSH,
+    Opcode::CPOP,
+    Opcode::CPOPW,
+    Opcode::CSRC,
+    Opcode::CSRCI,
+    Opcode::CSRR,
+    Opcode::CSRRC,
+    Opcode::CSRRCI,
+    Opcode::CSRRS,
+    Opcode::CSRRSI,
+    Opcode::CSRRW,
+    Opcode::CSRRWI,
+    Opcode::CSRS,
+    Opcode::CSRSI,
+    Opcode::CSRW,
+    Opcode::CSRWI,
+    Opcode::CTZ,
+    Opcode::CTZW,
+    Opcode::CZEROEQZ,
+    Opcode::CZERONEZ,
+    Opcode::DIV,
+    Opcode::DIVU,
+    Opcode::DIVUW,
+    Opcode::DIVW,
+    Opcode::DRET,
+    Opcode::EBREAK,
+    Opcode::ECALL,
+    Opcode::FABSD,
+    Opcode::FABSH,
+    Opcode::FABSQ,
+    Opcode::FABSS,
+    Opcode::FADDD,
+    Opcode::FADDH,
+    Opcode::FADDQ,
+    Opcode::FADDS,
+    Opcode::FCLASSD,
+    Opcode::FCLASSH,
+    Opcode::FCLASSQ,
+    Opcode::FCLASSS,
+    Opcode::FCVTDH,
+    Opcode::FCVTDL,
+    Opcode::FCVTDLU,
+    Opcode::FCVTDQ,
+    Opcode::FCVTDS,
+    Opcode::FCVTDW,
+    Opcode::FCVTDWU,
+    Opcode::FCVTHD,
+    Opcode::FCVTHL,
+    Opcode::FCVTHLU,
+    Opcode::FCVTHQ,
+    Opcode::FCVTHS,
+    Opcode::FCVTHW,
+    Opcode::FCVTHWU,
+    Opcode::FCVTLD,
+    Opcode::FCVTLH,
+    Opcode::FCVTLQ,
+    Opcode::FCVTLS,
+    Opcode::FCVTLUD,
+    Opcode::FCVTLUH,
+    Opcode::FCVTLUQ,
+    Opcode::FCVTLUS,
+    Opcode::FCVTQD,
+    Opcode::FCVTQH,
+    Opcode::FCVTQL,
+    Opcode::FCVTQLU,
+    Opcode::FCVTQS,
+    Opcode::FCVTQW,
+    Opcode::FCVTQWU,
+    Opcode::FCVTSD,
+    Opcode::FCVTSH,
+    Opcode::FCVTSL,
+    Opcode::FCVTSLU,
+    Opcode::FCVTSQ,
+    Opcode::FCVTSW,
+    Opcode::FCVTSWU,
+    Opcode::FCVTWD,
+    Opcode::FCVTWH,
+    Opcode::FCVTWQ,
+    Opcode::FCVTWS,
+    Opcode::FCVTWUD,
+    Opcode::FCVTWUH,
+    Opcode::FCVTWUQ,
+    Opcode::FCVTWUS,
+    Opcode::FCVTMODWD,
+    Opcode::FDIVD,
+    Opcode::FDIVH,
+    Opcode::FDIVQ,
+    Opcode::FDIVS,
+    Opcode::FENCE,
+    Opcode::FENCEI,
+    Opcode::FENCETSO,
+    Opcode::FEQD,
+    Opcode::FEQH,
+    Opcode::FEQQ,
+    Opcode::FEQS,
+    Opcode::FLD,
+    Opcode::FLED,
+    Opcode::FLEH,
+    Opcode::FLEQ,
+    Opcode::FLES,
+    Opcode::FLEQD,
+    Opcode::FLEQH,
+    Opcode::FLEQQ,
+    Opcode::FLEQS,
+    Opcode::FLH,
+    Opcode::FLID,
+    Opcode::FLIH,
+    Opcode::FLIQ,
+    Opcode::FLIS,
+    Opcode::FLQ,
+    Opcode::FLTD,
+    Opcode::FLTH,
+    Opcode::FLTQ,
+    Opcode::FLTS,
+    Opcode::FLTQD,
+    Opcode::FLTQH,
+    Opcode::FLTQQ,
+    Opcode::FLTQS,
+    Opcode::FLW,
+    Opcode::FMADDD,
+    Opcode::FMADDH,
+    Opcode::FMADDQ,
+    Opcode::FMADDS,
+    Opcode::FMAXD,
+    Opcode::FMAXH,
+    Opcode::FMAXQ,
+    Opcode::FMAXS,
+    Opcode::FMAXMD,
+    Opcode::FMAXMH,
+    Opcode::FMAXMQ,
+    Opcode::FMAXMS,
+    Opcode::FMIND,
+    Opcode::FMINH,
+    Opcode::FMINQ,
+    Opcode::FMINS,
+    Opcode::FMINMD,
+    Opcode::FMINMH,
+    Opcode::FMINMQ,
+    Opcode::FMINMS,
+    Opcode::FMSUBD,
+    Opcode::FMSUBH,
+    Opcode::FMSUBQ,
+    Opcode::FMSUBS,
+    Opcode::FMULD,
+    Opcode::FMULH,
+    Opcode::FMULQ,
+    Opcode::FMULS,
+    Opcode::FMVD,
+    Opcode::FMVDX,
+    Opcode::FMVH,
+    Opcode::FMVHX,
+    Opcode::FMVQ,
+    Opcode::FMVS,
+    Opcode::FMVSX,
+    Opcode::FMVWX,
+    Opcode::FMVXD,
+    Opcode::FMVXH,
+    Opcode::FMVXS,
+    Opcode::FMVXW,
+    Opcode::FMVHXD,
+    Opcode::FMVHXQ,
+    Opcode::FMVPDX,
+    Opcode::FMVPQX,
+    Opcode::FNEGD,
+    Opcode::FNEGH,
+    Opcode::FNEGQ,
+    Opcode::FNEGS,
+    Opcode::FNMADDD,
+    Opcode::FNMADDH,
+    Opcode::FNMADDQ,
+    Opcode::FNMADDS,
+    Opcode::FNMSUBD,
+    Opcode::FNMSUBH,
+    Opcode::FNMSUBQ,
+    Opcode::FNMSUBS,
+    Opcode::FRCSR,
+    Opcode::FRFLAGS,
+    Opcode::FROUNDD,
+    Opcode::FROUNDH,
+    Opcode::FROUNDQ,
+    Opcode::FROUNDS,
+    Opcode::FROUNDNXD,
+    Opcode::FROUNDNXH,
+    Opcode::FROUNDNXQ,
+    Opcode::FROUNDNXS,
+    Opcode::FRRM,
+    Opcode::FSCSR,
+    Opcode::FSD,
+    Opcode::FSFLAGS,
+    Opcode::FSFLAGSI,
+    Opcode::FSGNJD,
+    Opcode::FSGNJH,
+    Opcode::FSGNJQ,
+    Opcode::FSGNJS,
+    Opcode::FSGNJND,
+    Opcode::FSGNJNH,
+    Opcode::FSGNJNQ,
+    Opcode::FSGNJNS,
+    Opcode::FSGNJXD,
+    Opcode::FSGNJXH,
+    Opcode::FSGNJXQ,
+    Opcode::FSGNJXS,
+    Opcode::FSH,
+    Opcode::FSQ,
+    Opcode::FSQRTD,
+    Opcode::FSQRTH,
+    Opcode::FSQRTQ,
+    Opcode::FSQRTS,
+    Opcode::FSRM,
+    Opcode::FSRMI,
+    Opcode::FSUBD,
+    Opcode::FSUBH,
+    Opcode::FSUBQ,
+    Opcode::FSUBS,
+    Opcode::FSW,
+    Opcode::HFENCEGVMA,
+    Opcode::HFENCEVVMA,
+    Opcode::HINVALGVMA,
+    Opcode::HINVALVVMA,
+    Opcode::HLVB,
+    Opcode::HLVBU,
+    Opcode::HLVD,
+    Opcode::HLVH,
+    Opcode::HLVHU,
+    Opcode::HLVW,
+    Opcode::HLVWU,
+    Opcode::HLVXHU,
+    Opcode::HLVXWU,
+    Opcode::HSVB,
+    Opcode::HSVD,
+    Opcode::HSVH,
+    Opcode::HSVW,
+    Opcode::J,
+    Opcode::JAL,
+    Opcode::JALPSEUDO,
+    Opcode::JALR,
+    Opcode::JALRPSEUDO,
+    Opcode::JR,
+    Opcode::LB,
+    Opcode::LBU,
+    Opcode::LD,
+    Opcode::LH,
+    Opcode::LHU,
+    Opcode::LRD,
+    Opcode::LRW,
+    Opcode::LUI,
+    Opcode::LW,
+    Opcode::LWU,
+    Opcode::MAX,
+    Opcode::MAXU,
+    Opcode::MIN,
+    Opcode::MINU,
+    Opcode::MOPR0,
+    Opcode::MOPR1,
+    Opcode::MOPR10,
+    Opcode::MOPR11,
+    Opcode::MOPR12,
+    Opcode::MOPR13,
+    Opcode::MOPR14,
+    Opcode::MOPR15,
+    Opcode::MOPR16,
+    Opcode::MOPR17,
+    Opcode::MOPR18,
+    Opcode::MOPR19,
+    Opcode::MOPR2,
+    Opcode::MOPR20,
+    Opcode::MOPR21,
+    Opcode::MOPR22,
+    Opcode::MOPR23,
+    Opcode::MOPR24,
+    Opcode::MOPR25,
+    Opcode::MOPR26,
+    Opcode::MOPR27,
+    Opcode::MOPR28,
+    Opcode::MOPR29,
+    Opcode::MOPR3,
+    Opcode::MOPR30,
+    Opcode::MOPR31,
+    Opcode::MOPR4,
+    Opcode::MOPR5,
+    Opcode::MOPR6,
+    Opcode::MOPR7,
+    Opcode::MOPR8,
+    Opcode::MOPR9,
+    Opcode::MOPRN,
+    Opcode::MOPRR0,
+    Opcode::MOPRR1,
+    Opcode::MOPRR2,
+    Opcode::MOPRR3,
+    Opcode::MOPRR4,
+    Opcode::MOPRR5,
+    Opcode::MOPRR6,
+    Opcode::MOPRR7,
+    Opcode::MOPRRN,
+    Opcode::MRET,
+    Opcode::MUL,
+    Opcode::MULH,
+    Opcode::MULHSU,
+    Opcode::MULHU,
+    Opcode::MULW,
+    Opcode::MV,
+    Opcode::NEG,
+    Opcode::NOP,
+    Opcode::NTLALL,
+    Opcode::NTLP1,
+    Opcode::NTLPALL,
+    Opcode::NTLS1,
+    Opcode::OR,
+    Opcode::ORCB,
+    Opcode::ORI,
+    Opcode::ORN,
+    Opcode::PACK,
+    Opcode::PACKH,
+    Opcode::PACKW,
+    Opcode::PAUSE,
+    Opcode::PREFETCHI,
+    Opcode::PREFETCHR,
+    Opcode::PREFETCHW,
+    Opcode::RDCYCLE,
+    Opcode::RDCYCLEH,
+    Opcode::RDINSTRET,
+    Opcode::RDINSTRETH,
+    Opcode::RDTIME,
+    Opcode::RDTIMEH,
+    Opcode::REM,
+    Opcode::REMU,
+    Opcode::REMUW,
+    Opcode::REMW,
+    Opcode::RET,
+    Opcode::REV8,
+    Opcode::REV8RV32,
+    Opcode::ROL,
+    Opcode::ROLW,
+    Opcode::ROR,
+    Opcode::RORI,
+    Opcode::RORIRV32,
+    Opcode::RORIW,
+    Opcode::RORW,
+    Opcode::SB,
+    Opcode::SBREAK,
+    Opcode::SCD,
+    Opcode::SCW,
+    Opcode::SCALL,
+    Opcode::SD,
+    Opcode::SEQZ,
+    Opcode::SEXTB,
+    Opcode::SEXTH,
+    Opcode::SEXTW,
+    Opcode::SFENCEINVALIR,
+    Opcode::SFENCEVMA,
+    Opcode::SFENCEWINVAL,
+    Opcode::SGTZ,
+    Opcode::SH,
+    Opcode::SH1ADD,
+    Opcode::SH1ADDUW,
+    Opcode::SH2ADD,
+    Opcode::SH2ADDUW,
+    Opcode::SH3ADD,
+    Opcode::SH3ADDUW,
+    Opcode::SHA256SIG0,
+    Opcode::SHA256SIG1,
+    Opcode::SHA256SUM0,
+    Opcode::SHA256SUM1,
+    Opcode::SHA512SIG0,
+    Opcode::SHA512SIG0H,
+    Opcode::SHA512SIG0L,
+    Opcode::SHA512SIG1,
+    Opcode::SHA512SIG1H,
+    Opcode::SHA512SIG1L,
+    Opcode::SHA512SUM0,
+    Opcode::SHA512SUM0R,
+    Opcode::SHA512SUM1,
+    Opcode::SHA512SUM1R,
+    Opcode::SINVALVMA,
+    Opcode::SLL,
+    Opcode::SLLI,
+    Opcode::SLLIRV32,
+    Opcode::SLLIUW,
+    Opcode::SLLIW,
+    Opcode::SLLW,
+    Opcode::SLT,
+    Opcode::SLTI,
+    Opcode::SLTIU,
+    Opcode::SLTU,
+    Opcode::SLTZ,
+    Opcode::SM3P0,
+    Opcode::SM3P1,
+    Opcode::SM4ED,
+    Opcode::SM4KS,
+    Opcode::SNEZ,
+    Opcode::SRA,
+    Opcode::SRAI,
+    Opcode::SRAIRV32,
+    Opcode::SRAIW,
+    Opcode::SRAW,
+    Opcode::SRET,
+    Opcode::SRL,
+    Opcode::SRLI,
+    Opcode::SRLIRV32,
+    Opcode::SRLIW,
+    Opcode::SRLW,
+    Opcode::SUB,
+    Opcode::SUBW,
+    Opcode::SW,
+    Opcode::UNZIP,
+    Opcode::VAADDVV,
+    Opcode::VAADDVX,
+    Opcode::VAADDUVV,
+    Opcode::VAADDUVX,
+    Opcode::VADCVIM,
+    Opcode::VADCVVM,
+    Opcode::VADCVXM,
+    Opcode::VADDVI,
+    Opcode::VADDVV,
+    Opcode::VADDVX,
+    Opcode::VAESDFVS,
+    Opcode::VAESDFVV,
+    Opcode::VAESDMVS,
+    Opcode::VAESDMVV,
+    Opcode::VAESEFVS,
+    Opcode::VAESEFVV,
+    Opcode::VAESEMVS,
+    Opcode::VAESEMVV,
+    Opcode::VAESKF1VI,
+    Opcode::VAESKF2VI,
+    Opcode::VAESZVS,
+    Opcode::VANDVI,
+    Opcode::VANDVV,
+    Opcode::VANDVX,
+    Opcode::VANDNVV,
+    Opcode::VANDNVX,
+    Opcode::VASUBVV,
+    Opcode::VASUBVX,
+    Opcode::VASUBUVV,
+    Opcode::VASUBUVX,
+    Opcode::VBREV8V,
+    Opcode::VBREVV,
+    Opcode::VCLMULVV,
+    Opcode::VCLMULVX,
+    Opcode::VCLMULHVV,
+    Opcode::VCLMULHVX,
+    Opcode::VCLZV,
+    Opcode::VCOMPRESSVM,
+    Opcode::VCPOPM,
+    Opcode::VCPOPV,
+    Opcode::VCTZV,
+    Opcode::VDIVVV,
+    Opcode::VDIVVX,
+    Opcode::VDIVUVV,
+    Opcode::VDIVUVX,
+    Opcode::VFADDVF,
+    Opcode::VFADDVV,
+    Opcode::VFCLASSV,
+    Opcode::VFCVTFXV,
+    Opcode::VFCVTFXUV,
+    Opcode::VFCVTRTZXFV,
+    Opcode::VFCVTRTZXUFV,
+    Opcode::VFCVTXFV,
+    Opcode::VFCVTXUFV,
+    Opcode::VFDIVVF,
+    Opcode::VFDIVVV,
+    Opcode::VFIRSTM,
+    Opcode::VFMACCVF,
+    Opcode::VFMACCVV,
+    Opcode::VFMADDVF,
+    Opcode::VFMADDVV,
+    Opcode::VFMAXVF,
+    Opcode::VFMAXVV,
+    Opcode::VFMERGEVFM,
+    Opcode::VFMINVF,
+    Opcode::VFMINVV,
+    Opcode::VFMSACVF,
+    Opcode::VFMSACVV,
+    Opcode::VFMSUBVF,
+    Opcode::VFMSUBVV,
+    Opcode::VFMULVF,
+    Opcode::VFMULVV,
+    Opcode::VFMVFS,
+    Opcode::VFMVSF,
+    Opcode::VFMVVF,
+    Opcode::VFNCVTFFW,
+    Opcode::VFNCVTFXW,
+    Opcode::VFNCVTFXUW,
+    Opcode::VFNCVTRODFFW,
+    Opcode::VFNCVTRTZXFW,
+    Opcode::VFNCVTRTZXUFW,
+    Opcode::VFNCVTXFW,
+    Opcode::VFNCVTXUFW,
+    Opcode::VFNMACCVF,
+    Opcode::VFNMACCVV,
+    Opcode::VFNMADDVF,
+    Opcode::VFNMADDVV,
+    Opcode::VFNMSACVF,
+    Opcode::VFNMSACVV,
+    Opcode::VFNMSUBVF,
+    Opcode::VFNMSUBVV,
+    Opcode::VFRDIVVF,
+    Opcode::VFREC7V,
+    Opcode::VFREDMAXVS,
+    Opcode::VFREDMINVS,
+    Opcode::VFREDOSUMVS,
+    Opcode::VFREDSUMVS,
+    Opcode::VFREDUSUMVS,
+    Opcode::VFRSQRT7V,
+    Opcode::VFRSUBVF,
+    Opcode::VFSGNJVF,
+    Opcode::VFSGNJVV,
+    Opcode::VFSGNJNVF,
+    Opcode::VFSGNJNVV,
+    Opcode::VFSGNJXVF,
+    Opcode::VFSGNJXVV,
+    Opcode::VFSLIDE1DOWNVF,
+    Opcode::VFSLIDE1UPVF,
+    Opcode::VFSQRTV,
+    Opcode::VFSUBVF,
+    Opcode::VFSUBVV,
+    Opcode::VFWADDVF,
+    Opcode::VFWADDVV,
+    Opcode::VFWADDWF,
+    Opcode::VFWADDWV,
+    Opcode::VFWCVTFFV,
+    Opcode::VFWCVTFXV,
+    Opcode::VFWCVTFXUV,
+    Opcode::VFWCVTRTZXFV,
+    Opcode::VFWCVTRTZXUFV,
+    Opcode::VFWCVTXFV,
+    Opcode::VFWCVTXUFV,
+    Opcode::VFWMACCVF,
+    Opcode::VFWMACCVV,
+    Opcode::VFWMSACVF,
+    Opcode::VFWMSACVV,
+    Opcode::VFWMULVF,
+    Opcode::VFWMULVV,
+    Opcode::VFWNMACCVF,
+    Opcode::VFWNMACCVV,
+    Opcode::VFWNMSACVF,
+    Opcode::VFWNMSACVV,
+    Opcode::VFWREDOSUMVS,
+    Opcode::VFWREDSUMVS,
+    Opcode::VFWREDUSUMVS,
+    Opcode::VFWSUBVF,
+    Opcode::VFWSUBVV,
+    Opcode::VFWSUBWF,
+    Opcode::VFWSUBWV,
+    Opcode::VGHSHVV,
+    Opcode::VGMULVV,
+    Opcode::VIDV,
+    Opcode::VIOTAM,
+    Opcode::VL1RV,
+    Opcode::VL1RE16V,
+    Opcode::VL1RE32V,
+    Opcode::VL1RE64V,
+    Opcode::VL1RE8V,
+    Opcode::VL2RV,
+    Opcode::VL2RE16V,
+    Opcode::VL2RE32V,
+    Opcode::VL2RE64V,
+    Opcode::VL2RE8V,
+    Opcode::VL4RV,
+    Opcode::VL4RE16V,
+    Opcode::VL4RE32V,
+    Opcode::VL4RE64V,
+    Opcode::VL4RE8V,
+    Opcode::VL8RV,
+    Opcode::VL8RE16V,
+    Opcode::VL8RE32V,
+    Opcode::VL8RE64V,
+    Opcode::VL8RE8V,
+    Opcode::VLE16V,
+    Opcode::VLE16FFV,
+    Opcode::VLE1V,
+    Opcode::VLE32V,
+    Opcode::VLE32FFV,
+    Opcode::VLE64V,
+    Opcode::VLE64FFV,
+    Opcode::VLE8V,
+    Opcode::VLE8FFV,
+    Opcode::VLMV,
+    Opcode::VLOXEI16V,
+    Opcode::VLOXEI32V,
+    Opcode::VLOXEI64V,
+    Opcode::VLOXEI8V,
+    Opcode::VLSE16V,
+    Opcode::VLSE32V,
+    Opcode::VLSE64V,
+    Opcode::VLSE8V,
+    Opcode::VLUXEI16V,
+    Opcode::VLUXEI32V,
+    Opcode::VLUXEI64V,
+    Opcode::VLUXEI8V,
+    Opcode::VMACCVV,
+    Opcode::VMACCVX,
+    Opcode::VMADCVI,
+    Opcode::VMADCVIM,
+    Opcode::VMADCVV,
+    Opcode::VMADCVVM,
+    Opcode::VMADCVX,
+    Opcode::VMADCVXM,
+    Opcode::VMADDVV,
+    Opcode::VMADDVX,
+    Opcode::VMANDMM,
+    Opcode::VMANDNMM,
+    Opcode::VMANDNOTMM,
+    Opcode::VMAXVV,
+    Opcode::VMAXVX,
+    Opcode::VMAXUVV,
+    Opcode::VMAXUVX,
+    Opcode::VMERGEVIM,
+    Opcode::VMERGEVVM,
+    Opcode::VMERGEVXM,
+    Opcode::VMFEQVF,
+    Opcode::VMFEQVV,
+    Opcode::VMFGEVF,
+    Opcode::VMFGTVF,
+    Opcode::VMFLEVF,
+    Opcode::VMFLEVV,
+    Opcode::VMFLTVF,
+    Opcode::VMFLTVV,
+    Opcode::VMFNEVF,
+    Opcode::VMFNEVV,
+    Opcode::VMINVV,
+    Opcode::VMINVX,
+    Opcode::VMINUVV,
+    Opcode::VMINUVX,
+    Opcode::VMNANDMM,
+    Opcode::VMNORMM,
+    Opcode::VMORMM,
+    Opcode::VMORNMM,
+    Opcode::VMORNOTMM,
+    Opcode::VMSBCVV,
+    Opcode::VMSBCVVM,
+    Opcode::VMSBCVX,
+    Opcode::VMSBCVXM,
+    Opcode::VMSBFM,
+    Opcode::VMSEQVI,
+    Opcode::VMSEQVV,
+    Opcode::VMSEQVX,
+    Opcode::VMSGTVI,
+    Opcode::VMSGTVX,
+    Opcode::VMSGTUVI,
+    Opcode::VMSGTUVX,
+    Opcode::VMSIFM,
+    Opcode::VMSLEVI,
+    Opcode::VMSLEVV,
+    Opcode::VMSLEVX,
+    Opcode::VMSLEUVI,
+    Opcode::VMSLEUVV,
+    Opcode::VMSLEUVX,
+    Opcode::VMSLTVV,
+    Opcode::VMSLTVX,
+    Opcode::VMSLTUVV,
+    Opcode::VMSLTUVX,
+    Opcode::VMSNEVI,
+    Opcode::VMSNEVV,
+    Opcode::VMSNEVX,
+    Opcode::VMSOFM,
+    Opcode::VMULVV,
+    Opcode::VMULVX,
+    Opcode::VMULHVV,
+    Opcode::VMULHVX,
+    Opcode::VMULHSUVV,
+    Opcode::VMULHSUVX,
+    Opcode::VMULHUVV,
+    Opcode::VMULHUVX,
+    Opcode::VMV1RV,
+    Opcode::VMV2RV,
+    Opcode::VMV4RV,
+    Opcode::VMV8RV,
+    Opcode::VMVSX,
+    Opcode::VMVVI,
+    Opcode::VMVVV,
+    Opcode::VMVVX,
+    Opcode::VMVXS,
+    Opcode::VMXNORMM,
+    Opcode::VMXORMM,
+    Opcode::VNCLIPWI,
+    Opcode::VNCLIPWV,
+    Opcode::VNCLIPWX,
+    Opcode::VNCLIPUWI,
+    Opcode::VNCLIPUWV,
+    Opcode::VNCLIPUWX,
+    Opcode::VNMSACVV,
+    Opcode::VNMSACVX,
+    Opcode::VNMSUBVV,
+    Opcode::VNMSUBVX,
+    Opcode::VNSRAWI,
+    Opcode::VNSRAWV,
+    Opcode::VNSRAWX,
+    Opcode::VNSRLWI,
+    Opcode::VNSRLWV,
+    Opcode::VNSRLWX,
+    Opcode::VORVI,
+    Opcode::VORVV,
+    Opcode::VORVX,
+    Opcode::VPOPCM,
+    Opcode::VREDANDVS,
+    Opcode::VREDMAXVS,
+    Opcode::VREDMAXUVS,
+    Opcode::VREDMINVS,
+    Opcode::VREDMINUVS,
+    Opcode::VREDORVS,
+    Opcode::VREDSUMVS,
+    Opcode::VREDXORVS,
+    Opcode::VREMVV,
+    Opcode::VREMVX,
+    Opcode::VREMUVV,
+    Opcode::VREMUVX,
+    Opcode::VREV8V,
+    Opcode::VRGATHERVI,
+    Opcode::VRGATHERVV,
+    Opcode::VRGATHERVX,
+    Opcode::VRGATHEREI16VV,
+    Opcode::VROLVV,
+    Opcode::VROLVX,
+    Opcode::VRORVI,
+    Opcode::VRORVV,
+    Opcode::VRORVX,
+    Opcode::VRSUBVI,
+    Opcode::VRSUBVX,
+    Opcode::VS1RV,
+    Opcode::VS2RV,
+    Opcode::VS4RV,
+    Opcode::VS8RV,
+    Opcode::VSADDVI,
+    Opcode::VSADDVV,
+    Opcode::VSADDVX,
+    Opcode::VSADDUVI,
+    Opcode::VSADDUVV,
+    Opcode::VSADDUVX,
+    Opcode::VSBCVVM,
+    Opcode::VSBCVXM,
+    Opcode::VSE16V,
+    Opcode::VSE1V,
+    Opcode::VSE32V,
+    Opcode::VSE64V,
+    Opcode::VSE8V,
+    Opcode::VSETIVLI,
+    Opcode::VSETVL,
+    Opcode::VSETVLI,
+    Opcode::VSEXTVF2,
+    Opcode::VSEXTVF4,
+    Opcode::VSEXTVF8,
+    Opcode::VSHA2CHVV,
+    Opcode::VSHA2CLVV,
+    Opcode::VSHA2MSVV,
+    Opcode::VSLIDE1DOWNVX,
+    Opcode::VSLIDE1UPVX,
+    Opcode::VSLIDEDOWNVI,
+    Opcode::VSLIDEDOWNVX,
+    Opcode::VSLIDEUPVI,
+    Opcode::VSLIDEUPVX,
+    Opcode::VSLLVI,
+    Opcode::VSLLVV,
+    Opcode::VSLLVX,
+    Opcode::VSM3CVI,
+    Opcode::VSM3MEVV,
+    Opcode::VSM4KVI,
+    Opcode::VSM4RVS,
+    Opcode::VSM4RVV,
+    Opcode::VSMV,
+    Opcode::VSMULVV,
+    Opcode::VSMULVX,
+    Opcode::VSOXEI16V,
+    Opcode::VSOXEI32V,
+    Opcode::VSOXEI64V,
+    Opcode::VSOXEI8V,
+    Opcode::VSRAVI,
+    Opcode::VSRAVV,
+    Opcode::VSRAVX,
+    Opcode::VSRLVI,
+    Opcode::VSRLVV,
+    Opcode::VSRLVX,
+    Opcode::VSSE16V,
+    Opcode::VSSE32V,
+    Opcode::VSSE64V,
+    Opcode::VSSE8V,
+    Opcode::VSSRAVI,
+    Opcode::VSSRAVV,
+    Opcode::VSSRAVX,
+    Opcode::VSSRLVI,
+    Opcode::VSSRLVV,
+    Opcode::VSSRLVX,
+    Opcode::VSSUBVV,
+    Opcode::VSSUBVX,
+    Opcode::VSSUBUVV,
+    Opcode::VSSUBUVX,
+    Opcode::VSUBVV,
+    Opcode::VSUBVX,
+    Opcode::VSUXEI16V,
+    Opcode::VSUXEI32V,
+    Opcode::VSUXEI64V,
+    Opcode::VSUXEI8V,
+    Opcode::VWADDVV,
+    Opcode::VWADDVX,
+    Opcode::VWADDWV,
+    Opcode::VWADDWX,
+    Opcode::VWADDUVV,
+    Opcode::VWADDUVX,
+    Opcode::VWADDUWV,
+    Opcode::VWADDUWX,
+    Opcode::VWMACCVV,
+    Opcode::VWMACCVX,
+    Opcode::VWMACCSUVV,
+    Opcode::VWMACCSUVX,
+    Opcode::VWMACCUVV,
+    Opcode::VWMACCUVX,
+    Opcode::VWMACCUSVX,
+    Opcode::VWMULVV,
+    Opcode::VWMULVX,
+    Opcode::VWMULSUVV,
+    Opcode::VWMULSUVX,
+    Opcode::VWMULUVV,
+    Opcode::VWMULUVX,
+    Opcode::VWREDSUMVS,
+    Opcode::VWREDSUMUVS,
+    Opcode::VWSLLVI,
+    Opcode::VWSLLVV,
+    Opcode::VWSLLVX,
+    Opcode::VWSUBVV,
+    Opcode::VWSUBVX,
+    Opcode::VWSUBWV,
+    Opcode::VWSUBWX,
+    Opcode::VWSUBUVV,
+    Opcode::VWSUBUVX,
+    Opcode::VWSUBUWV,
+    Opcode::VWSUBUWX,
+    Opcode::VXORVI,
+    Opcode::VXORVV,
+    Opcode::VXORVX,
+    Opcode::VZEXTVF2,
+    Opcode::VZEXTVF4,
+    Opcode::VZEXTVF8,
+    Opcode::WFI,
+    Opcode::WRSNTO,
+    Opcode::WRSSTO,
+    Opcode::XNOR,
+    Opcode::XOR,
+    Opcode::XORI,
+    Opcode::XPERM4,
+    Opcode::XPERM8,
+    Opcode::ZEXTB,
+    Opcode::ZEXTH,
+    Opcode::ZEXTHRV32,
+    Opcode::ZEXTW,
+    Opcode::ZIP,
 ];
 pub static SHORT_OPCODE: [bool; 1021] = [
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-true,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
-false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, true, true,
+    true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
+    true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
+    true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
+    true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
+    true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
+    true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
+    true, true, true, true, true, true, true, true, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
 ];
 pub const SHORT_OPCODES: [Opcode; 106] = [
-Opcode::CADD,
-Opcode::CADDI,
-Opcode::CADDI16SP,
-Opcode::CADDI4SPN,
-Opcode::CADDIW,
-Opcode::CADDW,
-Opcode::CAND,
-Opcode::CANDI,
-Opcode::CBEQZ,
-Opcode::CBNEZ,
-Opcode::CEBREAK,
-Opcode::CFLD,
-Opcode::CFLDSP,
-Opcode::CFLW,
-Opcode::CFLWSP,
-Opcode::CFSD,
-Opcode::CFSDSP,
-Opcode::CFSW,
-Opcode::CFSWSP,
-Opcode::CJ,
-Opcode::CJAL,
-Opcode::CJALR,
-Opcode::CJR,
-Opcode::CLBU,
-Opcode::CLD,
-Opcode::CLDSP,
-Opcode::CLH,
-Opcode::CLHU,
-Opcode::CLI,
-Opcode::CLUI,
-Opcode::CLW,
-Opcode::CLWSP,
-Opcode::CMOP1,
-Opcode::CMOP11,
-Opcode::CMOP13,
-Opcode::CMOP15,
-Opcode::CMOP3,
-Opcode::CMOP5,
-Opcode::CMOP7,
-Opcode::CMOP9,
-Opcode::CMOPN,
-Opcode::CMUL,
-Opcode::CMV,
-Opcode::CNOP,
-Opcode::CNOT,
-Opcode::CNTLALL,
-Opcode::CNTLP1,
-Opcode::CNTLPALL,
-Opcode::CNTLS1,
-Opcode::COR,
-Opcode::CSB,
-Opcode::CSD,
-Opcode::CSDSP,
-Opcode::CSEXTB,
-Opcode::CSEXTH,
-Opcode::CSEXTW,
-Opcode::CSH,
-Opcode::CSLLI,
-Opcode::CSLLIRV32,
-Opcode::CSRAI,
-Opcode::CSRAIRV32,
-Opcode::CSRLI,
-Opcode::CSRLIRV32,
-Opcode::CSUB,
-Opcode::CSUBW,
-Opcode::CSW,
-Opcode::CSWSP,
-Opcode::CXOR,
-Opcode::CZEXTB,
-Opcode::CZEXTH,
-Opcode::CZEXTW,
-Opcode::CBOCLEAN,
-Opcode::CBOFLUSH,
-Opcode::CBOINVAL,
-Opcode::CBOZERO,
-Opcode::CLMUL,
-Opcode::CLMULH,
-Opcode::CLMULR,
-Opcode::CLZ,
-Opcode::CLZW,
-Opcode::CMJALT,
-Opcode::CMMVA01S,
-Opcode::CMMVSA01,
-Opcode::CMPOP,
-Opcode::CMPOPRET,
-Opcode::CMPOPRETZ,
-Opcode::CMPUSH,
-Opcode::CPOP,
-Opcode::CPOPW,
-Opcode::CSRC,
-Opcode::CSRCI,
-Opcode::CSRR,
-Opcode::CSRRC,
-Opcode::CSRRCI,
-Opcode::CSRRS,
-Opcode::CSRRSI,
-Opcode::CSRRW,
-Opcode::CSRRWI,
-Opcode::CSRS,
-Opcode::CSRSI,
-Opcode::CSRW,
-Opcode::CSRWI,
-Opcode::CTZ,
-Opcode::CTZW,
-Opcode::CZEROEQZ,
-Opcode::CZERONEZ,
+    Opcode::CADD,
+    Opcode::CADDI,
+    Opcode::CADDI16SP,
+    Opcode::CADDI4SPN,
+    Opcode::CADDIW,
+    Opcode::CADDW,
+    Opcode::CAND,
+    Opcode::CANDI,
+    Opcode::CBEQZ,
+    Opcode::CBNEZ,
+    Opcode::CEBREAK,
+    Opcode::CFLD,
+    Opcode::CFLDSP,
+    Opcode::CFLW,
+    Opcode::CFLWSP,
+    Opcode::CFSD,
+    Opcode::CFSDSP,
+    Opcode::CFSW,
+    Opcode::CFSWSP,
+    Opcode::CJ,
+    Opcode::CJAL,
+    Opcode::CJALR,
+    Opcode::CJR,
+    Opcode::CLBU,
+    Opcode::CLD,
+    Opcode::CLDSP,
+    Opcode::CLH,
+    Opcode::CLHU,
+    Opcode::CLI,
+    Opcode::CLUI,
+    Opcode::CLW,
+    Opcode::CLWSP,
+    Opcode::CMOP1,
+    Opcode::CMOP11,
+    Opcode::CMOP13,
+    Opcode::CMOP15,
+    Opcode::CMOP3,
+    Opcode::CMOP5,
+    Opcode::CMOP7,
+    Opcode::CMOP9,
+    Opcode::CMOPN,
+    Opcode::CMUL,
+    Opcode::CMV,
+    Opcode::CNOP,
+    Opcode::CNOT,
+    Opcode::CNTLALL,
+    Opcode::CNTLP1,
+    Opcode::CNTLPALL,
+    Opcode::CNTLS1,
+    Opcode::COR,
+    Opcode::CSB,
+    Opcode::CSD,
+    Opcode::CSDSP,
+    Opcode::CSEXTB,
+    Opcode::CSEXTH,
+    Opcode::CSEXTW,
+    Opcode::CSH,
+    Opcode::CSLLI,
+    Opcode::CSLLIRV32,
+    Opcode::CSRAI,
+    Opcode::CSRAIRV32,
+    Opcode::CSRLI,
+    Opcode::CSRLIRV32,
+    Opcode::CSUB,
+    Opcode::CSUBW,
+    Opcode::CSW,
+    Opcode::CSWSP,
+    Opcode::CXOR,
+    Opcode::CZEXTB,
+    Opcode::CZEXTH,
+    Opcode::CZEXTW,
+    Opcode::CBOCLEAN,
+    Opcode::CBOFLUSH,
+    Opcode::CBOINVAL,
+    Opcode::CBOZERO,
+    Opcode::CLMUL,
+    Opcode::CLMULH,
+    Opcode::CLMULR,
+    Opcode::CLZ,
+    Opcode::CLZW,
+    Opcode::CMJALT,
+    Opcode::CMMVA01S,
+    Opcode::CMMVSA01,
+    Opcode::CMPOP,
+    Opcode::CMPOPRET,
+    Opcode::CMPOPRETZ,
+    Opcode::CMPUSH,
+    Opcode::CPOP,
+    Opcode::CPOPW,
+    Opcode::CSRC,
+    Opcode::CSRCI,
+    Opcode::CSRR,
+    Opcode::CSRRC,
+    Opcode::CSRRCI,
+    Opcode::CSRRS,
+    Opcode::CSRRSI,
+    Opcode::CSRRW,
+    Opcode::CSRRWI,
+    Opcode::CSRS,
+    Opcode::CSRSI,
+    Opcode::CSRW,
+    Opcode::CSRWI,
+    Opcode::CTZ,
+    Opcode::CTZW,
+    Opcode::CZEROEQZ,
+    Opcode::CZERONEZ,
 ];
 
 #[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]
@@ -15474,7 +10766,7 @@ pub const OPCODE_STR: &[&str] = &[
     "zext.h.rv32",
     "zext.w",
     "zip",
-    "<invalid>"
+    "<invalid>",
 ];
 
 #[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]

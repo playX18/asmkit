@@ -2,6 +2,7 @@ use super::opcodes::Opcode;
 use crate::core::buffer::{CodeBuffer, CodeOffset, ConstantData, LabelUse, Reloc, RelocTarget};
 use crate::core::operand::*;
 use crate::core::operand::{Imm, Sym};
+use crate::core::patch::PatchSiteId;
 use crate::riscv::opcodes::Encoding;
 use crate::riscv::{EmitterExplicit, RA};
 use crate::AsmError;
@@ -34,6 +35,20 @@ impl<'a> Assembler<'a> {
 
     pub fn label_offset(&self, label: Label) -> CodeOffset {
         self.buffer.label_offset(label)
+    }
+
+    pub fn patchable_j(&mut self, label: Label) -> Result<PatchSiteId, AsmError> {
+        let offset = self.buffer.cur_offset();
+        self.j(label);
+        self.buffer
+            .record_label_patch_site(offset, label, LabelUse::RVJal20)
+    }
+
+    pub fn patchable_call(&mut self, label: Label) -> Result<PatchSiteId, AsmError> {
+        let offset = self.buffer.cur_offset();
+        self.jal(RA, label);
+        self.buffer
+            .record_label_patch_site(offset, label, LabelUse::RVJal20)
     }
 
     pub fn la(&mut self, rd: impl OperandCast, target: impl OperandCast) {
@@ -1416,7 +1431,23 @@ impl<'a> Emitter for Assembler<'a> {
                     return;
                 }
             }
-            _ => todo!(),
+            Encoding::RdRs1N0CNzimm6loCNzimm6hi => {
+                short = true;
+                if isign3 == enc_ops2!(Reg, Imm) {
+                    let rd = ops[0].id();
+                    let imm = ops[1].as_::<Imm>().value() as i32;
+                    if imm == 0 {
+                        self.last_error = Some(AsmError::InvalidOperand);
+                        return;
+                    } else {
+                        inst = inst.set_rd_n0(rd).set_c_nzimm6lohi(imm);
+                    }
+                } else {
+                    self.last_error = Some(AsmError::InvalidOperand);
+                    return;
+                }
+            }
+            _ => todo!("unimplemented encoding: {encoding:?}"),
         }
         let offset = self.buffer.cur_offset();
         if let Some((label, kind)) = label_use {

@@ -130,8 +130,7 @@ impl Formatter {
             Encoding::Bimm12HiRs1Bimm12lo => {
                 write!(out, " ")?;
                 self.write_reg(out, false, false, inst.value.rs1())?;
-                let addr =
-                    inst.address as isize as isize + inst.value.bimm12lohi() as isize;
+                let addr = inst.address as isize as isize + inst.value.bimm12lohi() as isize;
                 write!(out, ", {:x}", addr)?;
             }
 
@@ -140,8 +139,7 @@ impl Formatter {
                 self.write_reg(out, false, false, inst.value.rs1())?;
                 write!(out, ", ")?;
                 self.write_reg(out, false, false, inst.value.rs2())?;
-                let addr =
-                    inst.address as isize  + inst.value.bimm12lohi() as isize;
+                let addr = inst.address as isize + inst.value.bimm12lohi() as isize;
                 write!(out, ", {:x}", addr)?;
             }
 
@@ -165,7 +163,7 @@ impl Formatter {
 
             Encoding::CImm12 => {
                 write!(out, " ")?;
-                let addr = inst.address as i64  + inst.value.c_imm12() as i64;
+                let addr = inst.address as i64 + inst.value.c_imm12() as i64;
                 write!(out, "{:x}", addr)?;
             }
 
@@ -571,7 +569,7 @@ impl Formatter {
                     | Opcode::FLW
                     | Opcode::LB
                     | Opcode::LBU
-                    | Opcode::LD 
+                    | Opcode::LD
                     | Opcode::LH
                     | Opcode::LHU
                     | Opcode::LW
@@ -723,6 +721,41 @@ impl Formatter {
                 write!(out, ", ")?;
                 self.write_reg(out, false, false, inst.value.rs1())?;
                 write!(out, ", {}", inst.value.shamtd())?;
+            }
+
+            Encoding::Rs1PRs2PCUimm8loCUimm8hi => {
+                write!(out, " ")?;
+                self.write_reg(out, false, false, inst.value.rs1_p())?;
+                write!(out, ", ")?;
+                self.write_reg(out, false, false, inst.value.rs2_p())?;
+                write!(out, ", {}", inst.value.c_uimm8lohi())?;
+            }
+
+            Encoding::RdRs1Rs2Rs3Rm => {
+                write!(out, " ")?;
+                self.write_reg(out, false, false, inst.value.rd())?;
+                write!(out, ", ")?;
+                self.write_reg(out, false, false, inst.value.rs1())?;
+                write!(out, ", ")?;
+                self.write_reg(out, false, false, inst.value.rs2())?;
+                write!(out, ", ")?;
+                self.write_reg(out, false, false, inst.value.rs3())?;
+            }
+
+            Encoding::Rs1PRs2PCUimm7loCUimm7hi => {
+                write!(out, " ")?;
+                self.write_reg(out, false, false, inst.value.rs1_p())?;
+                write!(out, ", ")?;
+                self.write_reg(out, false, false, inst.value.rs2_p())?;
+                write!(out, ", {}", inst.value.c_uimm7lohi())?;
+            }
+
+            Encoding::Rs1PRs2PCUimm8hiCUimm8lo => {
+                write!(out, " ")?;
+                self.write_reg(out, false, false, inst.value.rs1_p())?;
+                write!(out, ", ")?;
+                self.write_reg(out, false, false, inst.value.rs2_p())?;
+                write!(out, ", {}", inst.value.c_uimm8lohi())?;
             }
             _ => todo!("{:?}", encoding),
         }
