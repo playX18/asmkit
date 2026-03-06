@@ -5,14 +5,21 @@ id = 0
 class Formatter:
 
     def __init__(self):
-        self.dst = ""
+        self.parts: list[str] = []
         self.spaces = 0
         self.indent_ = 4
+        self._line_start = True
+        self._indent_cache: dict[int, str] = {0: ""}
     def isStartOfLine(self) -> bool: 
-        return len(self.dst) == 0 or self.dst.endswith('\n')
+        return self._line_start
     def pushSpaces(self):
-        for _ in range(self.spaces):
-            self.dst += " "
+        if self.spaces <= 0:
+            return
+        indent = self._indent_cache.get(self.spaces)
+        if indent is None:
+            indent = " " * self.spaces
+            self._indent_cache[self.spaces] = indent
+        self.parts.append(indent)
     
     def indent[R](self, f: Callable[[Self], R]) -> R: 
         self.spaces += self.indent_
@@ -33,29 +40,29 @@ class Formatter:
         self.write("}\n")
 
     def __str__(self):
-        return self.dst
+        return "".join(self.parts)
+
+    @property
+    def dst(self) -> str:
+        return str(self)
+
+    @dst.setter
+    def dst(self, value: str):
+        self.parts = [value]
+        self._line_start = value.endswith("\n") or len(value) == 0
         
     def __add__(self, other: str):
         self.write(other)
         return self
 
     def write(self, s: str):
-        first = True
-        should_indent = self.isStartOfLine()
-
-        for line in s.splitlines():
-            if not first:
-                self.dst += "\n"
-            first = False
-            
-            do_indent = should_indent and len(line) != 0 and not line.endswith('\n')
-            
-            if do_indent:
+        if not s:
+            return
+        for chunk in s.splitlines(keepends=True):
+            if self._line_start and chunk != "\n":
                 self.pushSpaces()
-            should_indent = True
-            self.dst += line
-        if s.endswith('\n'):
-            self.dst += "\n"
+            self.parts.append(chunk)
+            self._line_start = chunk.endswith("\n")
 
 class Expr:
     def fmt(self, fmt: Formatter):
@@ -143,11 +150,9 @@ class Match(Expr):
     def fmt(self, fmt: Formatter):
         fmt.write(f"match {self.expr} {{\n")
         fmt.indentStart()
-        print(f"{len(self.arms)} arms for {self.expr}", )
         total = 0
         for arm in self.arms: 
-            fmt.dst += f"{arm.pat}{arm.where if arm.where else ""} =>"
-            arm.body.fmt(fmt)
+            arm.fmt(fmt)
             total += 1
             if total == 512:
                 break
@@ -232,10 +237,11 @@ class Field(Expr):
         fmt.write(f"{self.name}: {self.ty}")
 class Function(Expr):
     def __init__(self, name) -> None:
-        self.name = name 
+        self.name = "r#loop" if name == "loop" else name
         self.args: list[Field] = list()
+        self.docs: list[str] = list()
         self.vis = None 
-        self.arg_self = None 
+        self.arg_self = None    
         self._ret = None
         self._body = None 
 
@@ -261,6 +267,12 @@ class Function(Expr):
     def arg(self, arg: Field):
         self.args.append(arg)
         return self 
+
+    def doc(self, text: str):
+        for line in text.splitlines():
+            self.docs.append(line.rstrip())
+        return self
+
     def body(self, block: Block):
         self._body = block 
 
@@ -270,6 +282,8 @@ class Function(Expr):
         self._body.line(line)
     
     def fmt(self, fmt: Formatter):
+        for line in self.docs:
+            fmt.write(f"/// {line}\n")
         fmt.write(f"{(self.vis + " ") if self.vis else ""}fn {self.name}({self.arg_self if self.arg_self else ""}")
         if self.arg_self:
             fmt.write(",")
@@ -342,7 +356,7 @@ class Trait(Expr):
     def fmt(self, fmt):
         fmt.write(f"pub trait {self.name} {{\n")
         fmt.indentStart()
-        for item in self.items: 
+        for item in self.items:
             item.fmt(fmt)
         fmt.indentEnd()
         fmt.write("}\n")
