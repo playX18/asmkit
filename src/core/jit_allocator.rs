@@ -1,22 +1,15 @@
-
 /* Copyright (c) 2008-2024 The AsmJit Authors
 
-    This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
+   This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
 
-    Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+   Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
 
-    The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
-    Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
-    This notice may not be removed or altered from any source distribution.
+   The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
+   Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+   This notice may not be removed or altered from any source distribution.
 
- */
+*/
 
-
-use alloc::vec::Vec;
-use core::cell::{Cell, UnsafeCell};
-use core::mem::size_of;
-use core::ops::Range;
-use core::ptr::null_mut;
 use crate::util::virtual_memory::{
     self, alloc, alloc_dual_mapping, flush_instruction_cache, protect_jit_memory, release,
     release_dual_mapping, DualMapping, MemoryFlags, ProtectJitAccess,
@@ -26,6 +19,11 @@ use crate::util::{
     bit_vector_index_of, bit_vector_set_bit,
 };
 use crate::AsmError;
+use alloc::vec::Vec;
+use core::cell::{Cell, UnsafeCell};
+use core::mem::size_of;
+use core::ops::Range;
+use core::ptr::null_mut;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(u32)]
@@ -1190,6 +1188,15 @@ impl JitAllocator {
         }
     }
 
+    /// Writes to the memory referenced by `span` using `write_func` and then flushes the instruction cache for that memory range.
+    ///
+    /// # SAFETY
+    ///
+    /// - `span` must reference a valid memory range allocated by this allocator.
+    /// - `write_func` must only write to the memory range referenced by `span`.
+    /// - After `write_func` is called, the memory range referenced by `span` must contain valid executable code.
+    /// - The caller must ensure that no other threads are executing code in the memory range referenced by `span` while `write_func` is modifying it.
+    ///
     pub unsafe fn write(
         &mut self,
         span: &mut Span,
@@ -1248,6 +1255,7 @@ unsafe impl Send for JitAllocator {}
 
 /// A memory reference returned by [`JitAllocator::alloc`]
 #[allow(dead_code)]
+#[derive(Debug, Clone, Copy)]
 pub struct Span {
     rx: *const u8,
     rw: *mut u8,

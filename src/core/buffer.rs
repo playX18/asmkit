@@ -10,6 +10,10 @@ use crate::{
 use super::{
     jit_allocator::{JitAllocator, Span},
     operand::{Label, Sym},
+    patch::{
+        fill_with_nops, minimum_patch_alignment, PatchBlock, PatchBlockId, PatchCatalog, PatchSite,
+        PatchSiteId,
+    },
     target::Environment,
 };
 
@@ -34,6 +38,29 @@ pub struct CodeBuffer {
     used_constants: SmallVec<[(Constant, CodeOffset); 4]>,
     constants: SmallVec<[(ConstantData, AsmConstant); 4]>,
     fixup_records: BinaryHeap<AsmFixup>,
+    patch_blocks: SmallVec<[PendingPatchBlock; 4]>,
+    patch_sites: SmallVec<[PendingPatchSite; 8]>,
+}
+
+#[derive(Clone, Copy)]
+struct PendingPatchBlock {
+    offset: CodeOffset,
+    size: CodeOffset,
+    align: CodeOffset,
+}
+
+#[derive(Clone, Copy)]
+enum PendingPatchTarget {
+    Offset(CodeOffset),
+    Label(Label),
+}
+
+#[derive(Clone, Copy)]
+struct PendingPatchSite {
+    offset: CodeOffset,
+    kind: LabelUse,
+    target: PendingPatchTarget,
+    addend: i64,
 }
 
 #[derive(Clone, PartialEq, Eq, Hash)]
@@ -98,6 +125,7 @@ pub struct CodeBufferFinalized {
     pub(crate) relocs: SmallVec<[AsmReloc; 16]>,
     pub(crate) symbols: SmallVec<[SymData; 16]>,
     pub(crate) alignment: u32,
+    pub(crate) patch_catalog: PatchCatalog,
 }
 
 impl CodeBufferFinalized {
@@ -167,6 +195,8 @@ impl CodeBuffer {
         self.pending_fixup_deadline = 0;
         self.pending_constants_size = 0;
         self.pending_constants.clear();
+        self.patch_blocks.clear();
+        self.patch_sites.clear();
     }
     pub fn env(&self) -> &Environment {
         &self.env
@@ -329,6 +359,102 @@ impl CodeBuffer {
             offset,
             target,
         })
+    }
+
+    pub fn reserve_patch_block(
+        &mut self,
+        size: CodeOffset,
+        align: CodeOffset,
+    ) -> Result<PatchBlockId, AsmError> {
+        let min_align = minimum_patch_alignment(self.env.arch());
+        let align = align.max(min_align);
+        if size == 0 || !align.is_power_of_two() {
+            return Err(AsmError::InvalidArgument);
+        }
+
+        self.align_to(align);
+        let arch = self.env.arch();
+        let offset = self.cur_offset();
+        let block = self.get_appended_space(size as usize);
+        fill_with_nops(arch, block)?;
+
+        let id = PatchBlockId::from_index(self.patch_blocks.len());
+        self.patch_blocks.push(PendingPatchBlock {
+            offset,
+            size,
+            align,
+        });
+        Ok(id)
+    }
+
+    pub fn record_patch_block(
+        &mut self,
+        offset: CodeOffset,
+        size: CodeOffset,
+        align: CodeOffset,
+    ) -> Result<PatchBlockId, AsmError> {
+        if size == 0 || align == 0 || !align.is_power_of_two() {
+            return Err(AsmError::InvalidArgument);
+        }
+
+        let end = offset as usize + size as usize;
+        if end > self.data.len() {
+            return Err(AsmError::InvalidArgument);
+        }
+
+        let id = PatchBlockId::from_index(self.patch_blocks.len());
+        self.patch_blocks.push(PendingPatchBlock {
+            offset,
+            size,
+            align,
+        });
+        Ok(id)
+    }
+
+    pub fn record_patch_site(
+        &mut self,
+        offset: CodeOffset,
+        kind: LabelUse,
+        target_offset: CodeOffset,
+    ) -> Result<PatchSiteId, AsmError> {
+        self.validate_patch_site_offset(offset, kind)?;
+        let id = PatchSiteId::from_index(self.patch_sites.len());
+        self.patch_sites.push(PendingPatchSite {
+            offset,
+            kind,
+            target: PendingPatchTarget::Offset(target_offset),
+            addend: 0,
+        });
+        Ok(id)
+    }
+
+    pub fn record_label_patch_site(
+        &mut self,
+        offset: CodeOffset,
+        label: Label,
+        kind: LabelUse,
+    ) -> Result<PatchSiteId, AsmError> {
+        self.validate_patch_site_offset(offset, kind)?;
+        let id = PatchSiteId::from_index(self.patch_sites.len());
+        self.patch_sites.push(PendingPatchSite {
+            offset,
+            kind,
+            target: PendingPatchTarget::Label(label),
+            addend: 0,
+        });
+        Ok(id)
+    }
+
+    fn validate_patch_site_offset(
+        &self,
+        offset: CodeOffset,
+        kind: LabelUse,
+    ) -> Result<(), AsmError> {
+        let end = offset as usize + kind.patch_size();
+        if end > self.data.len() {
+            return Err(AsmError::InvalidArgument);
+        }
+        Ok(())
     }
 
     fn handle_fixup(&mut self, fixup: AsmFixup) {
@@ -509,14 +635,68 @@ impl CodeBuffer {
         alignment as _
     }
 
+    fn resolve_patch_catalog(&self, validate_ranges: bool) -> Result<PatchCatalog, AsmError> {
+        let mut blocks = SmallVec::new();
+        let mut sites = SmallVec::new();
+
+        for block in &self.patch_blocks {
+            blocks.push(PatchBlock {
+                offset: block.offset,
+                size: block.size,
+                align: block.align,
+            });
+        }
+
+        for site in &self.patch_sites {
+            let target_offset = match site.target {
+                PendingPatchTarget::Offset(offset) => offset,
+                PendingPatchTarget::Label(label) => self.label_offset(label),
+            };
+
+            if target_offset == u32::MAX {
+                return Err(AsmError::InvalidState);
+            }
+
+            if validate_ranges && !site.kind.can_reach(site.offset, target_offset) {
+                return Err(AsmError::TooLarge);
+            }
+
+            sites.push(PatchSite {
+                offset: site.offset,
+                kind: site.kind,
+                current_target: target_offset,
+                addend: site.addend,
+            });
+        }
+
+        Ok(PatchCatalog::with_parts(self.env.arch(), blocks, sites))
+    }
+
+    pub fn finish_patched(mut self) -> Result<CodeBufferFinalized, AsmError> {
+        self.finish_emission_maybe_forcing_veneers();
+        let patch_catalog = self.resolve_patch_catalog(true)?;
+        let alignment = self.finish_constants();
+        Ok(CodeBufferFinalized {
+            data: self.data,
+            relocs: self.relocs,
+            symbols: self.symbols,
+            alignment,
+            patch_catalog,
+        })
+    }
+
     pub fn finish(mut self) -> CodeBufferFinalized {
         self.finish_emission_maybe_forcing_veneers();
+        let patch_catalog = self
+            .resolve_patch_catalog(false)
+            .expect("patch metadata must be validated at registration time");
         let alignment = self.finish_constants();
         CodeBufferFinalized {
             data: self.data,
             relocs: self.relocs,
             symbols: self.symbols,
             alignment,
+            patch_catalog,
         }
     }
 }
@@ -746,6 +926,34 @@ pub enum LabelUse {
 }
 
 impl LabelUse {
+    pub fn can_reach(&self, use_offset: CodeOffset, label_offset: CodeOffset) -> bool {
+        let delta = (label_offset as i64) - (use_offset as i64);
+
+        match self {
+            Self::X86JmpRel32 => {
+                let disp = delta - 4;
+                i32::try_from(disp).is_ok()
+            }
+            Self::RVJal20 => delta % 2 == 0 && (-(1 << 20)..=((1 << 20) - 2)).contains(&delta),
+            Self::RVB12 => delta % 2 == 0 && (-(1 << 12)..=((1 << 12) - 2)).contains(&delta),
+            Self::RVCJump => delta % 2 == 0 && (-(1 << 11)..=((1 << 11) - 2)).contains(&delta),
+            Self::RVCB9 => delta % 2 == 0 && (-(1 << 8)..=((1 << 8) - 2)).contains(&delta),
+            Self::RVPCRelHi20 | Self::RVPCRelLo12I | Self::RVPCRel32 => {
+                i32::try_from(delta).is_ok()
+            }
+            Self::A64Branch14 => delta % 4 == 0 && (-(1 << 15)..=((1 << 15) - 4)).contains(&delta),
+            Self::A64Branch19 | Self::A64Ldr19 => {
+                delta % 4 == 0 && (-(1 << 20)..=((1 << 20) - 4)).contains(&delta)
+            }
+            Self::A64Branch26 => delta % 4 == 0 && (-(1 << 27)..=((1 << 27) - 4)).contains(&delta),
+            Self::A64Adr21 => (-(1 << 20)..=((1 << 20) - 1)).contains(&delta),
+            Self::A64Adrp21 => {
+                let page_delta = ((label_offset & !0xfff) as i64) - ((use_offset & !0xfff) as i64);
+                page_delta % 4096 == 0 && (-(1 << 32)..=((1 << 32) - 4096)).contains(&page_delta)
+            }
+        }
+    }
+
     /// Maximum PC-relative range (positive), inclusive.
     pub const fn max_pos_range(self) -> CodeOffset {
         match self {
@@ -855,15 +1063,30 @@ impl LabelUse {
         }
     }
     pub fn patch(&self, buffer: &mut [u8], use_offset: CodeOffset, label_offset: CodeOffset) {
+        let addend = match self {
+            Self::X86JmpRel32 => i64::from(u32::from_le_bytes([
+                buffer[0], buffer[1], buffer[2], buffer[3],
+            ])),
+            _ => 0,
+        };
+
+        self.patch_with_addend(buffer, use_offset, label_offset, addend);
+    }
+
+    pub fn patch_with_addend(
+        &self,
+        buffer: &mut [u8],
+        use_offset: CodeOffset,
+        label_offset: CodeOffset,
+        addend: i64,
+    ) {
         let pc_reli = (label_offset as i64) - (use_offset as i64);
 
         let pc_rel = pc_reli as u32;
 
         match self {
             Self::X86JmpRel32 => {
-                let addend = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
-
-                let value = pc_rel.wrapping_add(addend).wrapping_sub(4);
+                let value = pc_rel.wrapping_add(addend as u32).wrapping_sub(4);
 
                 buffer.copy_from_slice(&value.to_le_bytes());
             }
@@ -943,7 +1166,63 @@ impl LabelUse {
                     .set_c_imm12(pc_rel as _);
                 buffer[0..2].clone_from_slice(&(insn.value as u16).to_le_bytes());
             }
-            _ => todo!(),
+
+            Self::RVCB9 => {
+                debug_assert!(pc_rel & 1 == 0);
+
+                let insn = riscv::Inst::new(riscv::Opcode::BEQZ)
+                    .encode()
+                    .set_c_bimm9lohi(pc_rel as _);
+                buffer[0..2].clone_from_slice(&(insn.value as u16).to_le_bytes());
+            }
+
+            Self::A64Branch14 => {
+                debug_assert!(pc_reli & 0b11 == 0);
+
+                let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
+                let imm14 = ((pc_reli >> 2) as i32 as u32) & 0x3fff;
+                let insn = (insn & !0x0007ffe0) | (imm14 << 5);
+                buffer[0..4].copy_from_slice(&insn.to_le_bytes());
+            }
+
+            Self::A64Branch19 | Self::A64Ldr19 => {
+                debug_assert!(pc_reli & 0b11 == 0);
+
+                let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
+                let imm19 = ((pc_reli >> 2) as i32 as u32) & 0x7ffff;
+                let insn = (insn & !0x00ffffe0) | (imm19 << 5);
+                buffer[0..4].copy_from_slice(&insn.to_le_bytes());
+            }
+
+            Self::A64Branch26 => {
+                debug_assert!(pc_reli & 0b11 == 0);
+
+                let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
+                let imm26 = ((pc_reli >> 2) as i32 as u32) & 0x03ff_ffff;
+                let insn = (insn & !0x03ff_ffff) | imm26;
+                buffer[0..4].copy_from_slice(&insn.to_le_bytes());
+            }
+
+            Self::A64Adr21 => {
+                let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
+                let imm21 = (pc_reli as i32 as u32) & 0x1f_ffff;
+                let immlo = imm21 & 0x3;
+                let immhi = (imm21 >> 2) & 0x7ffff;
+                let insn = (insn & !0x60ff_ffe0) | (immlo << 29) | (immhi << 5);
+                buffer[0..4].copy_from_slice(&insn.to_le_bytes());
+            }
+
+            Self::A64Adrp21 => {
+                let page_delta = ((label_offset & !0xfff) as i64) - ((use_offset & !0xfff) as i64);
+                debug_assert!(page_delta & 0xfff == 0);
+
+                let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
+                let imm21 = ((page_delta >> 12) as i32 as u32) & 0x1f_ffff;
+                let immlo = imm21 & 0x3;
+                let immhi = (imm21 >> 2) & 0x7ffff;
+                let insn = (insn & !0x60ff_ffe0) | (immlo << 29) | (immhi << 5);
+                buffer[0..4].copy_from_slice(&insn.to_le_bytes());
+            }
         }
     }
 }

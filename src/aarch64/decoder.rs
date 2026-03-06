@@ -2,7 +2,7 @@
 use super::opcodes::*;
 use derive_more::TryFrom;
 
-#[derive(Copy, Clone, PartialEq, Eq, Debug, TryFrom,)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug, TryFrom)]
 #[repr(u8)]
 #[try_from(repr)]
 pub enum Cond {
@@ -172,9 +172,7 @@ impl Default for Inst {
         Self {
             mnem: InstKind::Unknown,
             ops: [Op::default(); 5],
-            imm: Imm {
-                imm64: 0
-            }
+            imm: Imm { imm64: 0 },
         }
     }
 }
@@ -283,11 +281,14 @@ fn opreggpmaysp(maysp: u32, idx: u32, sf: u32) -> Op {
 
 fn opreggpprf(isprf: u32, idx: u32, sf: u32) -> Op {
     Op {
-        op_type: if isprf!= 0 { OpType::Prfop } else { OpType::RegGp },
+        op_type: if isprf != 0 {
+            OpType::Prfop
+        } else {
+            OpType::RegGp
+        },
         value: OpValue::Reg(idx as u8),
-        detail: OpDetail::Gp { sf: sf!= 0 },
+        detail: OpDetail::Gp { sf: sf != 0 },
     }
-    
 }
 
 fn opreggpext(idx: u32, sf: u32, ext: u32, shift: u32) -> Op {
@@ -295,12 +296,11 @@ fn opreggpext(idx: u32, sf: u32, ext: u32, shift: u32) -> Op {
         op_type: OpType::RegGpExt,
         value: OpValue::Reg(idx as u8),
         detail: OpDetail::GpPExt {
-            sf: sf!= 0,
+            sf: sf != 0,
             ext: Ext::try_from(ext as u8).unwrap(),
             shift: shift as u8,
         },
     }
-    
 }
 
 fn opregfp(idx: u32, size: u32) -> Op {
@@ -309,7 +309,6 @@ fn opregfp(idx: u32, size: u32) -> Op {
         value: OpValue::Reg(idx as u8),
         detail: OpDetail::Fp { size: size as u8 },
     }
-    
 }
 
 fn opregvec(idx: u32, esize: u32, q: u32) -> Op {
@@ -320,7 +319,6 @@ fn opregvec(idx: u32, esize: u32, q: u32) -> Op {
             va: VectorArrangement::try_from(((esize as u8) << 1) + q as u8).unwrap(),
         },
     }
-    
 }
 
 fn opregvidx(idx: u32, esize: u32, elem: u32) -> Op {
@@ -332,7 +330,6 @@ fn opregvidx(idx: u32, esize: u32, elem: u32) -> Op {
             elem: elem as u8,
         },
     }
-    
 }
 
 fn opregvtbl(idx: u32, esize: u32, q: u32, cnt: u32) -> Op {
@@ -344,7 +341,6 @@ fn opregvtbl(idx: u32, esize: u32, q: u32, cnt: u32) -> Op {
             cnt: cnt as u8,
         },
     }
-    
 }
 
 fn opregvtblidx(idx: u32, esize: u32, elem: u32, cnt: u32) -> Op {

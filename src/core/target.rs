@@ -71,4 +71,8 @@ impl Environment {
     pub fn pic(&self) -> bool {
         self.is_pic
     }
+
+    pub const fn arch(&self) -> Arch {
+        self.arch
+    }
 }

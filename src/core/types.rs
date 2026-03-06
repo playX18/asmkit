@@ -1,4 +1,4 @@
-/// Type identifier provides a minimalist type system used across AsmJit library.
+/// Type identifier provides a minimalist type system used across asmkit library.
 ///
 /// This is an additional information that can be used to describe a value-type of physical or virtual register. It's
 /// used mostly by BaseCompiler to describe register representation (the group of data stored in the register and the

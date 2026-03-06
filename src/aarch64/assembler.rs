@@ -1,13 +1,29 @@
 use crate::aarch64::opcodes::{Encoding, Opcode, INST_INFO};
 use crate::core::buffer::{LabelUse, Reloc, RelocTarget};
 use crate::core::operand::*;
-use crate::core::{buffer::CodeBuffer, emitter::Emitter};
+use crate::core::{buffer::CodeBuffer, emitter::Emitter, patch::PatchSiteId};
 use crate::AsmError;
 
 use super::emitter::A64EmitterExplicit;
 pub struct Assembler<'a> {
     pub buffer: &'a mut CodeBuffer,
     last_error: Option<AsmError>,
+}
+
+impl<'a> Assembler<'a> {
+    pub fn patchable_b(&mut self, label: Label) -> Result<PatchSiteId, AsmError> {
+        let offset = self.buffer.cur_offset();
+        self.b(label);
+        self.buffer
+            .record_label_patch_site(offset, label, LabelUse::A64Branch26)
+    }
+
+    pub fn patchable_call(&mut self, label: Label) -> Result<PatchSiteId, AsmError> {
+        let offset = self.buffer.cur_offset();
+        self.bl(label);
+        self.buffer
+            .record_label_patch_site(offset, label, LabelUse::A64Branch26)
+    }
 }
 
 fn imm_add(value: i64) -> u32 {
@@ -262,6 +278,18 @@ impl<'a> Emitter for Assembler<'a> {
                         .put4(info.val | ((imm & 0x7ffff) << 5) | ((cond & 0xf) << 0));
                     return;
                 } else {
+                }
+            }
+
+            Encoding::RelAddr26 => {
+                if isign3 == enc_ops1!(Label) {
+                    self.use_label(ops[0], LabelUse::A64Branch26);
+                    self.buffer.put4(info.val);
+                    return;
+                } else if isign3 == enc_ops1!(Imm) {
+                    let imm26 = ops[0].as_::<Imm>().value() as u32;
+                    self.buffer.put4(info.val | (imm26 & 0x03ff_ffff));
+                    return;
                 }
             }
 
@@ -2192,6 +2220,14 @@ impl<'a> Emitter for Assembler<'a> {
 
             Encoding::GpZeroGpConst0 => {
                 todo!()
+            }
+
+            Encoding::GpConst0 => {
+                if isign3 == enc_ops1!(Reg) {
+                    let rn = ops[0].id();
+                    self.buffer.put4(info.val | ((rn & 0x1f) << 5));
+                    return;
+                }
             }
 
             Encoding::GpGpGp => {

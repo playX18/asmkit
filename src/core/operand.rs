@@ -53,7 +53,7 @@ pub enum OperandType {
 }
 
 /// Register mask is a convenience typedef that describes a mask where each bit describes a physical register id
-/// in the same [RegGroup]. At the moment 32 bits are enough as AsmJit doesn't support any architecture that
+/// in the same [RegGroup]. At the moment 32 bits are enough as asmkit doesn't support any architecture that
 /// would provide more than 32 registers for a register group.
 pub type RegMask = u32;
 
@@ -394,9 +394,9 @@ pub const VIRT_ID_MIN: u32 = 400;
 pub const VIRT_ID_MAX: u32 = u32::MAX - 1;
 pub const VIRT_ID_COUNT: u32 = VIRT_ID_MAX - VIRT_ID_MIN + 1;
 
-/// Base struct representing an operand in AsmJit (non-default constructed version).
+/// Base struct representing an operand in asmkit.
 ///
-/// This struct is used internally and all types that are valid operands downscat to
+/// This struct is used internally and all types that are valid operands downcast to
 /// this type eventually and it's also possible to "upcast" it to a operand type e.g `Gp`.
 ///
 #[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
@@ -1319,4 +1319,219 @@ impl Imm {
 
 pub fn imm<T: Into<i64>>(val: T) -> Imm {
     Imm::from_value(val, 0)
+}
+
+// ============================================================================
+// Display Implementations
+// ============================================================================
+use core::fmt;
+
+impl fmt::Display for OperandType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            OperandType::None => write!(f, "None"),
+            OperandType::Reg => write!(f, "Reg"),
+            OperandType::Mem => write!(f, "Mem"),
+            OperandType::RegList => write!(f, "RegList"),
+            OperandType::Imm => write!(f, "Imm"),
+            OperandType::Label => write!(f, "Label"),
+            OperandType::Sym => write!(f, "Sym"),
+        }
+    }
+}
+
+impl fmt::Display for RegType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            RegType::None => write!(f, "None"),
+            RegType::LabelTag => write!(f, "LabelTag"),
+            RegType::SymTag => write!(f, "SymTag"),
+            RegType::PC => write!(f, "PC"),
+            RegType::Gp8Lo => write!(f, "Gp8Lo"),
+            RegType::Gp8Hi => write!(f, "Gp8Hi"),
+            RegType::Gp16 => write!(f, "Gp16"),
+            RegType::Gp32 => write!(f, "Gp32"),
+            RegType::Gp64 => write!(f, "Gp64"),
+            RegType::Vec8 => write!(f, "Vec8"),
+            RegType::Vec16 => write!(f, "Vec16"),
+            RegType::Vec32 => write!(f, "Vec32"),
+            RegType::Vec64 => write!(f, "Vec64"),
+            RegType::Vec128 => write!(f, "Vec128"),
+            RegType::Vec256 => write!(f, "Vec256"),
+            RegType::Vec512 => write!(f, "Vec512"),
+            RegType::VecNLen => write!(f, "VecNLen"),
+            RegType::Mask => write!(f, "Mask"),
+            RegType::Extra => write!(f, "Extra"),
+            RegType::X86SReg => write!(f, "X86SReg"),
+            RegType::X86CReg => write!(f, "X86CReg"),
+            RegType::X86DReg => write!(f, "X86DReg"),
+            RegType::X86St => write!(f, "X86St"),
+            RegType::X86Bnd => write!(f, "X86Bnd"),
+            RegType::X86Tmm => write!(f, "X86Tmm"),
+            RegType::MaxValue => write!(f, "MaxValue"),
+        }
+    }
+}
+
+impl fmt::Display for RegGroup {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            RegGroup::Gp => write!(f, "Gp"),
+            RegGroup::Vec => write!(f, "Vec"),
+            RegGroup::Mask => write!(f, "Mask"),
+            RegGroup::ExtraVirt3 => write!(f, "ExtraVirt3"),
+            RegGroup::PC => write!(f, "PC"),
+            RegGroup::X86SReg => write!(f, "sreg"),
+            RegGroup::X86CReg => write!(f, "creg"),
+            RegGroup::X86DReg => write!(f, "dreg"),
+            RegGroup::X86St => write!(f, "st"),
+            RegGroup::X86Bnd => write!(f, "bnd"),
+            RegGroup::X86Tmm => write!(f, "tmm"),
+        }
+    }
+}
+
+impl fmt::Display for Operand {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self.op_type() {
+            OperandType::None => write!(f, "None"),
+            OperandType::Reg => {
+                // Try to display as specific register type
+                let reg = self.as_::<BaseReg>();
+                write!(f, "{}", reg)
+            }
+            OperandType::Mem => {
+                let mem = self.as_::<BaseMem>();
+                write!(f, "{}", mem)
+            }
+            OperandType::RegList => write!(f, "RegList"),
+            OperandType::Imm => {
+                let imm = self.as_::<Imm>();
+                write!(f, "{}", imm)
+            }
+            OperandType::Label => {
+                let label = self.as_::<Label>();
+                write!(f, "{}", label)
+            }
+            OperandType::Sym => {
+                let sym = self.as_::<Sym>();
+                write!(f, "{}", sym)
+            }
+        }
+    }
+}
+
+impl fmt::Display for Label {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if self.is_valid() {
+            write!(f, "label{}", self.id())
+        } else {
+            write!(f, "label_invalid")
+        }
+    }
+}
+
+impl fmt::Display for Sym {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if self.is_valid() {
+            write!(f, "sym{}", self.id())
+        } else {
+            write!(f, "sym_invalid")
+        }
+    }
+}
+
+impl fmt::Display for BaseReg {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "reg_invalid");
+        }
+
+        // Display based on register type
+        match self.typ() {
+            RegType::Gp8Lo => write!(f, "gp8lo{}", self.id()),
+            RegType::Gp8Hi => write!(f, "gp8hi{}", self.id()),
+            RegType::Gp16 => write!(f, "gp16{}", self.id()),
+            RegType::Gp32 => write!(f, "gp32{}", self.id()),
+            RegType::Gp64 => write!(f, "gp64{}", self.id()),
+            RegType::Vec8 => write!(f, "vec8{}", self.id()),
+            RegType::Vec16 => write!(f, "vec16{}", self.id()),
+            RegType::Vec32 => write!(f, "vec32{}", self.id()),
+            RegType::Vec64 => write!(f, "vec64{}", self.id()),
+            RegType::Vec128 => write!(f, "vec128{}", self.id()),
+            RegType::Vec256 => write!(f, "vec256{}", self.id()),
+            RegType::Vec512 => write!(f, "vec512{}", self.id()),
+            RegType::VecNLen => write!(f, "vecnlen{}", self.id()),
+            RegType::Mask => write!(f, "mask{}", self.id()),
+            RegType::X86SReg => write!(f, "sreg{}", self.id()),
+            RegType::X86CReg => write!(f, "creg{}", self.id()),
+            RegType::X86DReg => write!(f, "dreg{}", self.id()),
+            RegType::X86St => write!(f, "st{}", self.id()),
+            RegType::X86Bnd => write!(f, "bnd{}", self.id()),
+            RegType::X86Tmm => write!(f, "tmm{}", self.id()),
+            RegType::PC => write!(f, "pc{}", self.id()),
+            RegType::Extra => write!(f, "extra{}", self.id()),
+            RegType::MaxValue => write!(f, "maxvalue"),
+            RegType::None | RegType::LabelTag | RegType::SymTag => {
+                write!(f, "reg{}", self.id())
+            }
+        }
+    }
+}
+
+impl fmt::Display for BaseMem {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        use alloc::format;
+        let mut parts = alloc::vec::Vec::new();
+
+        // Base
+        if self.has_base() {
+            if self.has_base_label() {
+                parts.push(format!("label{}", self.base_id()));
+            } else if self.has_base_sym() {
+                parts.push(format!("sym{}", self.base_id()));
+            } else if self.has_base_reg() {
+                // Use BaseReg directly instead of Reg
+                let base_reg = BaseReg::from_signature_and_id(
+                    OperandSignature::from_reg_type(self.base_type()),
+                    self.base_id(),
+                );
+                parts.push(format!("{}", base_reg));
+            }
+        }
+
+        // Index
+        if self.has_index() && self.has_index_reg() {
+            let index_reg = BaseReg::from_signature_and_id(
+                OperandSignature::from_reg_type(self.index_type()),
+                self.index_id(),
+            );
+            parts.push(format!("{}", index_reg));
+        }
+
+        // Offset
+        if self.has_offset() {
+            let offset = self.offset();
+            if offset >= 0 {
+                parts.push(format!("+{}", offset));
+            } else {
+                parts.push(format!("{}", offset));
+            }
+        }
+
+        if parts.is_empty() {
+            write!(f, "mem[0]")
+        } else {
+            write!(f, "mem[{}]", parts.join(" + "))
+        }
+    }
+}
+
+impl fmt::Display for Imm {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self.typ() {
+            ImmType::Int => write!(f, "{}", self.value()),
+            ImmType::Double => write!(f, "{}", self.value_f64()),
+        }
+    }
 }

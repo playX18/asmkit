@@ -1,6 +1,5 @@
 //! Formatter core functionality
 
-
 /// An output for formatter.
 
 pub trait FormatterOutput {
@@ -8,7 +7,7 @@ pub trait FormatterOutput {
     fn write_fmt(&mut self, args: core::fmt::Arguments<'_>);
 }
 
-impl FormatterOutput for String {
+impl FormatterOutput for alloc::string::String {
     fn write_str(&mut self, s: &str) {
         self.push_str(s);
     }
@@ -17,4 +16,3 @@ impl FormatterOutput for String {
         core::fmt::write(self, args).unwrap();
     }
 }
-
