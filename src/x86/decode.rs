@@ -905,7 +905,7 @@ impl<'a> Decoder<'a> {
             op_size_alt = op_size - (desc.opsize() as u8 & 3);
         }
 
-        let operand_sizes = [desc.size_fix1(), desc.size_fix2() + 2, op_size, op_size_alt];
+        let operand_sizes = [desc.size_fix1(), desc.size_fix2() + 1, op_size, op_size_alt];
         'skip_modrm: loop {
             if matches!(inst.typ, Opcode::MOV_CR | Opcode::MOV_DR) {
                 let modreg = (op_byte >> 3) & 0x7;
@@ -931,6 +931,7 @@ impl<'a> Decoder<'a> {
                 op_modrm.typ = OperandType::Reg;
                 op_modrm.size = op_size;
                 op_modrm.reg = modrm | if prefix_rex & PREFIX_REXB != 0 { 8 } else { 0 };
+                op_modrm.misc = RegType::Gpl as u8;
                 break 'skip_modrm;
             }
 
@@ -943,7 +944,8 @@ impl<'a> Decoder<'a> {
 
                 if reg_ty < 2 {
                     reg_idx += if prefix_rex & PREFIX_REXR != 0 { 8 } else { 0 };
-                } else if reg_idx == 7 && (prefix_rex & PREFIX_REXR != 0 || prefix_evex & 0x80 != 0)
+                } else if reg_ty == RegType::Mask as u8
+                    && (prefix_rex & PREFIX_REXR != 0 || prefix_evex & 0x80 != 0)
                 {
                     return self.invalid();
                 }
@@ -1012,7 +1014,6 @@ impl<'a> Decoder<'a> {
 
                         if addr_size == 1 {
                             assert!(!self.mode.is_64());
-                            /*
                             if desc.vsib() {
                                 return self.invalid();
                             }
@@ -1023,42 +1024,44 @@ impl<'a> Decoder<'a> {
                                 } else {
                                     Reg::SI as u8
                                 };
+                            } else {
+                                op_modrm.misc = Reg::None as u8;
+                            }
 
-                                if rm < 4 {
-                                    op_modrm.reg = if rm & 2 != 0 {
-                                        Reg::BP as u8
-                                    } else {
-                                        Reg::BX as u8
-                                    };
-                                } else if rm < 6 || op_byte & 0xc7 == 0x06 {
-                                    op_modrm.reg = Reg::None as u8;
+                            if rm < 4 {
+                                op_modrm.reg = if rm & 2 != 0 {
+                                    Reg::BP as u8
                                 } else {
-                                    op_modrm.reg = if rm == 6 {
-                                        Reg::BP as u8
-                                    } else {
-                                        Reg::BX as u8
-                                    };
+                                    Reg::BX as u8
+                                };
+                            } else if rm < 6 || (op_byte & 0xc7) == 0x06 {
+                                op_modrm.reg = Reg::None as u8;
+                            } else {
+                                op_modrm.reg = if rm == 6 {
+                                    Reg::BP as u8
+                                } else {
+                                    Reg::BX as u8
+                                };
+                            }
+
+                            let dispbase = &self.buf[self.cursor..];
+
+                            if op_byte & 0x40 != 0 {
+                                if self.cursor + 1 > self.buf.len() {
+                                    return self.partial();
+                                }
+                                self.read_u8();
+                                inst.disp = (load_le_1(dispbase) as i8 as i64) * (1 << dispscale);
+                            } else if op_byte & 0x80 != 0 || (op_byte & 0xc7) == 0x06 {
+                                if self.cursor + 2 > self.buf.len() {
+                                    return self.partial();
                                 }
 
-                                let dispbase = &self.buf[self.cursor..];
-
-                                if op_byte & 0x40 != 0 {
-                                    if self.cursor + 1 >= self.buf.len() {
-                                        return self.partial();
-                                    }
-                                    self.read_u8();
-
-                                    inst.disp = ((load_le_1(dispbase) as i8) << dispscale) as i64;
-                                } else if op_byte & 0x80 != 0 || op_byte & 0xc7 == 0x06 {
-                                    if self.cursor + 2 >= self.buf.len() {
-                                        return self.partial();
-                                    }
-
-                                    self.cursor += 2;
-                                    inst.disp = load_le_2(dispbase) as i16 as i64;
-                                } else {
-                                    inst.disp = 0;
-                                }*/
+                                self.cursor += 2;
+                                inst.disp = load_le_2(dispbase) as i16 as i64;
+                            } else {
+                                inst.disp = 0;
+                            }
                             break 'end_modrm;
                         }
 
@@ -1250,6 +1253,8 @@ impl<'a> Decoder<'a> {
                         (1 << op_size >> 1) + 2
                     } else if matches!(inst.typ, Opcode::ENTER) {
                         3
+                    } else if matches!(inst.typ, Opcode::MOVABS) {
+                        1 << op_size >> 1
                     } else {
                         if op_size == 2 {
                             2
@@ -1268,6 +1273,10 @@ impl<'a> Decoder<'a> {
                         inst.imm = load_le_3(&self.buf[self.cursor..]) as i32 as i64;
                     } else if imm_size == 4 {
                         inst.imm = load_le_4(&self.buf[self.cursor..]) as i32 as i64;
+                    } else if imm_size == 6 {
+                        inst.imm = (load_le_4(&self.buf[self.cursor..])
+                            | (load_le_2(&self.buf[self.cursor + 4..]) << 32))
+                            as i64;
                     } else if imm_size == 8 {
                         inst.imm = load_le_8(&self.buf[self.cursor..]) as i64;
                     }
@@ -1313,10 +1322,18 @@ impl<'a> Decoder<'a> {
             }
 
             if inst.typ == Opcode::XCHG_NOP {
-                if inst.operands[0].reg == 0 && inst.operands[1].reg == 0 {
+                if inst.operands[0].reg == 0 {
                     inst.operands[0].typ = OperandType::None;
                     inst.operands[1].typ = OperandType::None;
-                    inst.typ = Opcode::NOP;
+                    inst.typ = if inst.has_rep() {
+                        Opcode::PAUSE
+                    } else {
+                        Opcode::NOP
+                    };
+                } else if (inst.operands[0].reg & 7) == 0 && inst.has_rep() {
+                    inst.operands[0].typ = OperandType::None;
+                    inst.operands[1].typ = OperandType::None;
+                    inst.typ = Opcode::PAUSE;
                 } else {
                     inst.typ = Opcode::XCHG;
                 }
@@ -1338,13 +1355,12 @@ impl<'a> Decoder<'a> {
                 if (msk >> (opc3dn & 0x3f) & 1) == 0 {
                     return self.invalid();
                 }
-
-                inst.operandsz = if desc.instr_width() { op_size - 1 } else { 0 };
-            } else {
-                inst.operandsz = 0;
             }
+
+            inst.operandsz = if desc.instr_width() { op_size - 1 } else { 0 };
+        } else {
+            inst.operandsz = 0;
         }
-        inst.typ = desc.typ;
         inst.size = (self.cursor - start as usize) as u8;
     }
 

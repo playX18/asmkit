@@ -1,4 +1,3 @@
-
 use asmkit::core::jit_allocator::{JitAllocator, JitAllocatorOptions};
 
 fn main() {
@@ -45,6 +44,7 @@ fn main() {
             })
             .unwrap();
             let mut out = String::new();
+
             pretty_disassembler(&mut out, 64, result.data(), span.rx() as _).unwrap();
             println!("{}", out);
             #[cfg(target_arch = "x86_64")]
@@ -97,8 +97,7 @@ fn main() {
                 span.rw()
                     .copy_from_nonoverlapping(result.data().as_ptr(), result.data().len());
             })
-            .unwrap(); 
-            
+            .unwrap();
 
             let mut out = String::new();
             pretty_disassembler(&mut out, 64, result.data(), span.rx() as _).unwrap();

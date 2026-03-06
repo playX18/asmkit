@@ -1,5 +1,7 @@
 use super::decode::{Decoder, Instruction, OperandType, RegType};
-use super::decode_tab::{Opcode, MNEMONIC_LENS, MNEMONIC_OFFS, MNEMONIC_STR};
+use super::decode_tab::{
+    Opcode, STRTAB1 as MNEMONIC_STR, STRTAB2 as MNEMONIC_OFFS, STRTAB3 as MNEMONIC_LENS,
+};
 
 use core::fmt::{self, Write};
 
@@ -394,7 +396,7 @@ impl Formatter {
                     write!(out, "{}s:", b"ecsdfg\0"[seg as usize & 7] as char)?
                 }
 
-                write!(out, "[")?;
+                write!(out, " [")?;
 
                 let has_base = inst.op_base(i).is_some();
                 let has_idx = inst.op_index(i).is_some();
@@ -415,7 +417,7 @@ impl Formatter {
 
                     write!(out, "0{}", char::from_u32(1 << inst.op_scale(i)).unwrap())?;
                     write!(out, "*")?;
-                    
+
                     strpcatreg(out, idx_rt, inst.op_index(i).unwrap() as _, idx_sz)?;
                 }
 
@@ -437,8 +439,6 @@ impl Formatter {
                     if disp != 0 || (!has_base && !has_idx) {
                         strpcatnum(out, disp as _)?;
                     }
-
-                    
                 }
                 write!(out, "]")?;
             } else if op_type == OperandType::Imm || op_type == OperandType::Off {
@@ -516,7 +516,11 @@ pub fn pretty_disassembler<W: Write>(
 
         let mut outs = alloc::string::String::new();
         fmt.format(&mut outs, &inst)?;
-        write!(out, "{:<15.016x} {:<20} {}\n", inst.address, instr_bytes, outs)?;
+        write!(
+            out,
+            "{:<15.016x} {:<20} {}\n",
+            inst.address, instr_bytes, outs
+        )?;
     }
     Ok(())
 }

@@ -1,17 +1,15 @@
 /* Copyright (c) 2008-2024 The AsmJit Authors
 
-    This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
+   This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
 
-    Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+   Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
 
-    The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
-    Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
-    This notice may not be removed or altered from any source distribution.
+   The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
+   Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+   This notice may not be removed or altered from any source distribution.
 
- */
-//! X86 operands definition. 
-use core::ops::{Add, Deref, Mul};
-use derive_more::derive::{Deref, DerefMut};
+*/
+//! X86 operands definition.
 use crate::{
     core::{
         arch_traits::{Arch, ArchTraits},
@@ -20,6 +18,8 @@ use crate::{
     },
     define_abstract_reg, define_final_reg, define_operand_cast, define_reg_traits,
 };
+use core::ops::{Add, Deref, Mul};
+use derive_more::derive::{Deref, DerefMut};
 
 define_reg_traits!(X86Rip, RegGroup::X86Rip, 0, TypeId::Void);
 define_reg_traits!(X86GpbLo, RegGroup::Gp, 1, TypeId::Int8);
@@ -1524,4 +1524,408 @@ pub fn u64_ptr_index_abs(base: u64, index: impl Deref<Target = Gp>, shift: u32, 
         size,
         OperandSignature::from_value::<{ Mem::SIGNATURE_MEM_ADDR_TYPE_MASK }>(AddrType::Abs as _),
     )
+}
+
+// ============================================================================
+// Display Implementations for X86 Operand Types
+// ============================================================================
+use core::fmt;
+
+impl fmt::Display for Reg {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "reg_invalid");
+        }
+
+        // Display based on specific register type
+        if self.is_gpb_lo() {
+            write!(f, "{}", GpbLo::from_type_and_id(RegType::Gp8Lo, self.id()))
+        } else if self.is_gpb_hi() {
+            write!(f, "{}", GpbHi::from_type_and_id(RegType::Gp8Hi, self.id()))
+        } else if self.is_gpw() {
+            write!(f, "{}", Gpw::from_type_and_id(RegType::Gp16, self.id()))
+        } else if self.is_gpd() {
+            write!(f, "{}", Gpd::from_type_and_id(RegType::Gp32, self.id()))
+        } else if self.is_gpq() {
+            write!(f, "{}", Gpq::from_type_and_id(RegType::Gp64, self.id()))
+        } else if self.is_xmm() {
+            write!(f, "{}", Xmm::from_type_and_id(RegType::Vec128, self.id()))
+        } else if self.is_ymm() {
+            write!(f, "{}", Ymm::from_type_and_id(RegType::Vec256, self.id()))
+        } else if self.is_zmm() {
+            write!(f, "{}", Zmm::from_type_and_id(RegType::Vec512, self.id()))
+        } else if self.is_type(RegType::X86Mm) {
+            write!(f, "{}", Mm::from_type_and_id(RegType::X86Mm, self.id()))
+        } else if self.is_type(RegType::X86KReg) {
+            write!(f, "{}", KReg::from_type_and_id(RegType::X86KReg, self.id()))
+        } else if self.is_type(RegType::X86SReg) {
+            write!(f, "{}", SReg::from_type_and_id(RegType::X86SReg, self.id()))
+        } else if self.is_type(RegType::X86CReg) {
+            write!(f, "{}", CReg::from_type_and_id(RegType::X86CReg, self.id()))
+        } else if self.is_type(RegType::X86DReg) {
+            write!(f, "{}", DReg::from_type_and_id(RegType::X86DReg, self.id()))
+        } else if self.is_type(RegType::X86St) {
+            write!(f, "{}", St::from_type_and_id(RegType::X86St, self.id()))
+        } else if self.is_type(RegType::X86Bnd) {
+            write!(f, "{}", Bnd::from_type_and_id(RegType::X86Bnd, self.id()))
+        } else if self.is_type(RegType::X86Tmm) {
+            write!(f, "{}", Tmm::from_type_and_id(RegType::X86Tmm, self.id()))
+        } else if self.is_type(RegType::X86Rip) {
+            write!(f, "{}", Rip::from_type_and_id(RegType::X86Rip, self.id()))
+        } else {
+            write!(f, "reg{}", self.id())
+        }
+    }
+}
+
+impl fmt::Display for Gp {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "gp_invalid");
+        }
+
+        // Use common x86 register names for physical registers
+        if self.id() < 16 {
+            match self.size() {
+                1 => {
+                    // 8-bit registers
+                    if self.id() < 4 {
+                        // Low 8-bit: AL, CL, DL, BL
+                        let names = ["al", "cl", "dl", "bl"];
+                        write!(f, "{}", names[self.id() as usize])
+                    } else if self.id() < 8 {
+                        // High 8-bit: AH, CH, DH, BH
+                        let names = ["ah", "ch", "dh", "bh"];
+                        write!(f, "{}", names[(self.id() - 4) as usize])
+                    } else {
+                        // R8B-R15B
+                        write!(f, "r{}b", self.id() - 8)
+                    }
+                }
+                2 => {
+                    // 16-bit registers
+                    if self.id() < 8 {
+                        let names = ["ax", "cx", "dx", "bx", "sp", "bp", "si", "di"];
+                        write!(f, "{}", names[self.id() as usize])
+                    } else {
+                        write!(f, "r{}w", self.id() - 8)
+                    }
+                }
+                4 => {
+                    // 32-bit registers
+                    if self.id() < 8 {
+                        let names = ["eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi"];
+                        write!(f, "{}", names[self.id() as usize])
+                    } else {
+                        write!(f, "r{}d", self.id() - 8)
+                    }
+                }
+                8 => {
+                    // 64-bit registers
+                    if self.id() < 8 {
+                        let names = ["rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi"];
+                        write!(f, "{}", names[self.id() as usize])
+                    } else {
+                        write!(f, "r{}", self.id() - 8)
+                    }
+                }
+                _ => write!(f, "gp{}", self.id()),
+            }
+        } else {
+            write!(f, "gp{}", self.id())
+        }
+    }
+}
+
+impl fmt::Display for Vec {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "vec_invalid");
+        }
+        write!(f, "vec{}", self.id())
+    }
+}
+
+impl fmt::Display for SReg {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "sreg_invalid");
+        }
+
+        match self.id() {
+            SReg::ES => write!(f, "es"),
+            SReg::CS => write!(f, "cs"),
+            SReg::SS => write!(f, "ss"),
+            SReg::DS => write!(f, "ds"),
+            SReg::FS => write!(f, "fs"),
+            SReg::GS => write!(f, "gs"),
+            _ => write!(f, "sreg{}", self.id()),
+        }
+    }
+}
+
+impl fmt::Display for Gpb {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "{}", Reg::from_type_and_id(self.typ(), self.id()))
+    }
+}
+
+impl fmt::Display for GpbLo {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "gpblo_invalid");
+        }
+
+        if self.id() < 4 {
+            let names = ["al", "cl", "dl", "bl"];
+            write!(f, "{}", names[self.id() as usize])
+        } else if self.id() < 8 {
+            write!(f, "spl")
+        } else {
+            write!(f, "r{}b", self.id() - 8)
+        }
+    }
+}
+
+impl fmt::Display for GpbHi {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "gpbhi_invalid");
+        }
+
+        let names = ["ah", "ch", "dh", "bh"];
+        write!(f, "{}", names[self.id() as usize])
+    }
+}
+
+impl fmt::Display for Gpw {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "gpw_invalid");
+        }
+
+        if self.id() < 8 {
+            let names = ["ax", "cx", "dx", "bx", "sp", "bp", "si", "di"];
+            write!(f, "{}", names[self.id() as usize])
+        } else {
+            write!(f, "r{}w", self.id() - 8)
+        }
+    }
+}
+
+impl fmt::Display for Gpd {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "gpd_invalid");
+        }
+
+        if self.id() < 8 {
+            let names = ["eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi"];
+            write!(f, "{}", names[self.id() as usize])
+        } else {
+            write!(f, "r{}d", self.id() - 8)
+        }
+    }
+}
+
+impl fmt::Display for Gpq {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "gpq_invalid");
+        }
+
+        if self.id() < 8 {
+            let names = ["rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi"];
+            write!(f, "{}", names[self.id() as usize])
+        } else {
+            write!(f, "r{}", self.id() - 8)
+        }
+    }
+}
+
+impl fmt::Display for Xmm {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "xmm_invalid");
+        }
+        write!(f, "xmm{}", self.id())
+    }
+}
+
+impl fmt::Display for Ymm {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "ymm_invalid");
+        }
+        write!(f, "ymm{}", self.id())
+    }
+}
+
+impl fmt::Display for Zmm {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "zmm_invalid");
+        }
+        write!(f, "zmm{}", self.id())
+    }
+}
+
+impl fmt::Display for Mm {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "mm_invalid");
+        }
+        write!(f, "mm{}", self.id())
+    }
+}
+
+impl fmt::Display for KReg {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "kreg_invalid");
+        }
+        write!(f, "k{}", self.id())
+    }
+}
+
+impl fmt::Display for CReg {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "creg_invalid");
+        }
+        write!(f, "cr{}", self.id())
+    }
+}
+
+impl fmt::Display for DReg {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "dreg_invalid");
+        }
+        write!(f, "dr{}", self.id())
+    }
+}
+
+impl fmt::Display for St {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "st_invalid");
+        }
+        write!(f, "st{}", self.id())
+    }
+}
+
+impl fmt::Display for Bnd {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "bnd_invalid");
+        }
+        write!(f, "bnd{}", self.id())
+    }
+}
+
+impl fmt::Display for Tmm {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if !self.is_valid() {
+            return write!(f, "tmm_invalid");
+        }
+        write!(f, "tmm{}", self.id())
+    }
+}
+
+impl fmt::Display for Rip {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "rip")
+    }
+}
+
+impl fmt::Display for Mem {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        use alloc::format;
+        use alloc::string::ToString;
+        let mut output_parts = alloc::vec::Vec::new();
+
+        // Segment override
+        if self.has_segment() {
+            output_parts.push(format!("{}:", self.segment()));
+        }
+
+        // Base
+        if self.has_base() {
+            if self.has_base_label() {
+                output_parts.push(format!("label{}", self.base_id()));
+            } else if self.has_base_sym() {
+                output_parts.push(format!("sym{}", self.base_id()));
+            } else if self.has_base_reg() {
+                let base_reg = self.base_reg();
+                output_parts.push(format!("{}", base_reg));
+            }
+        }
+
+        // Index with shift
+        if self.has_index() && self.has_index_reg() {
+            let index_reg = self.index_reg();
+            if self.has_shift() {
+                output_parts.push(format!("{}*{}", index_reg, self.shift()));
+            } else {
+                output_parts.push(format!("{}", index_reg));
+            }
+        }
+
+        // Offset
+        if self.has_offset() {
+            let offset = self.offset();
+            if offset >= 0 {
+                if !output_parts.is_empty() {
+                    output_parts.push(format!("+{}", offset));
+                } else {
+                    output_parts.push(format!("{}", offset));
+                }
+            } else {
+                output_parts.push(format!("{}", offset));
+            }
+        }
+
+        // Broadcast
+        if self.has_broadcast() {
+            output_parts.push(format!(" {{{}}}", self.get_broadcast() as u32));
+        }
+
+        // Address type
+        match self.addr_type() {
+            AddrType::Abs => output_parts.push(" abs".to_string()),
+            AddrType::Rel => output_parts.push(" rel".to_string()),
+            AddrType::Default => {}
+        }
+
+        if output_parts.is_empty() {
+            write!(f, "byte ptr [0]")
+        } else {
+            write!(f, "[{}]", output_parts.join(" "))
+        }
+    }
+}
+
+impl fmt::Display for Broadcast {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Broadcast::None => write!(f, "none"),
+            Broadcast::B1To2 => write!(f, "1to2"),
+            Broadcast::B1To4 => write!(f, "1to4"),
+            Broadcast::B1To8 => write!(f, "1to8"),
+            Broadcast::B1To16 => write!(f, "1to16"),
+            Broadcast::B1To32 => write!(f, "1to32"),
+            Broadcast::B1To64 => write!(f, "1to64"),
+        }
+    }
+}
+
+impl fmt::Display for AddrType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            AddrType::Default => write!(f, "default"),
+            AddrType::Abs => write!(f, "abs"),
+            AddrType::Rel => write!(f, "rel"),
+        }
+    }
 }

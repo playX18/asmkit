@@ -19,8 +19,11 @@ fn main() {
             .add_symbol(ExternalName::Symbol("puts".into()), RelocDistance::Far);
 
         asm.lea64rm(RDI, ptr64_label(str_constant, 0));
-        asm.callm(ptr64_sym(puts_sym, 0));
+        asm.jmpm(ptr64_sym(puts_sym, 0));
         asm.ret();
+        let end = asm.get_label();
+        asm.bind_label(end);
+        let off = asm.buffer.label_offset(end);
 
         let result = buf.finish();
 
@@ -58,7 +61,7 @@ fn main() {
             })
             .unwrap();
 
-            let mut out = String::new();
+            /*let mut out = String::new();
             pretty_disassembler(
                 &mut out,
                 64,
@@ -67,7 +70,28 @@ fn main() {
             )
             .unwrap();
 
-            println!("{}", out);
+            println!("{}", out);*/
+
+            use capstone::prelude::*;
+            let cs = Capstone::new()
+                .x86()
+                .mode(arch::x86::ArchMode::Mode64)
+                .build()
+                .expect("Failed to create Capstone object");
+            let insns = cs
+                .disasm_all(
+                    std::slice::from_raw_parts(span.rx(), off as usize),
+                    span.rx() as u64,
+                )
+                .expect("Failed to disassemble");
+            for i in insns.iter() {
+                println!(
+                    "0x{:x}:\t{}\t{}",
+                    i.address(),
+                    i.mnemonic().unwrap_or(""),
+                    i.op_str().unwrap_or("")
+                );
+            }
             #[cfg(target_arch = "x86_64")]
             {
                 let f: extern "C" fn() = std::mem::transmute(span.rx());
@@ -76,7 +100,7 @@ fn main() {
             }
         }
     }
-
+    #[cfg(target_abi = "riscv64")]
     {
         use asmkit::riscv::*;
         use formatter::pretty_disassembler;
@@ -147,10 +171,9 @@ fn main() {
 
             println!("{}", out);
 
-
             #[cfg(target_arch = "riscv64")]
             {
-                let f: extern "C" fn()= std::mem::transmute(span.rx());
+                let f: extern "C" fn() = std::mem::transmute(span.rx());
 
                 f();
             }
