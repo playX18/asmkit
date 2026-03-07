@@ -37,14 +37,14 @@ impl<'a> Assembler<'a> {
         self.buffer.label_offset(label)
     }
 
-    pub fn patchable_j(&mut self, label: Label) -> Result<PatchSiteId, AsmError> {
+    pub fn patchable_j(&mut self, label: Label) -> PatchSiteId {
         let offset = self.buffer.cur_offset();
         self.j(label);
         self.buffer
             .record_label_patch_site(offset, label, LabelUse::RVJal20)
     }
 
-    pub fn patchable_call(&mut self, label: Label) -> Result<PatchSiteId, AsmError> {
+    pub fn patchable_call(&mut self, label: Label) -> PatchSiteId {
         let offset = self.buffer.cur_offset();
         self.jal(RA, label);
         self.buffer

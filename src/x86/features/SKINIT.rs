@@ -1,17 +1,14 @@
 pub trait X86SKINITEmitter: Emitter {
     /// Emits `CLGI`.
-    fn clgi(&mut self,) -> Result<(), AsmError> {
+    fn clgi(&mut self,) -> () {
         self.emit(CLGI, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SKINIT`.
-    fn skinit(&mut self,) -> Result<(), AsmError> {
+    fn skinit(&mut self,) -> () {
         self.emit(SKINIT, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `STGI`.
-    fn stgi(&mut self,) -> Result<(), AsmError> {
+    fn stgi(&mut self,) -> () {
         self.emit(STGI, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

@@ -1279,7 +1279,8 @@ def encode_table(entries, args):
         # Build the function
         func = Function(fn_name)
         func.self_mut()
-        func.ret("Result<(), AsmError>")
+        func.ret("()")
+        
 
         # Use doc from the first entry's canonical mnemonic
         canonical_mnemonic = group_entries[0]['canonical_mnemonic']
@@ -1309,7 +1310,6 @@ def encode_table(entries, args):
             opc = entry['mnem'].upper()
             op_args = "".join(f"op{i}.as_operand()," for i in range(nargs))
             block.line(f"self.emit({opc}, {op_args}{noreg_args});")
-            block.line(f"if let Some(err) = self.last_error() {{ Err(err) }} else {{ Ok(()) }}")
         else:
             # Multiple variants - generate dispatch based on operand types
             # Convert operands to Operand references first
@@ -1360,12 +1360,10 @@ def encode_table(entries, args):
             else:
                 if not first_cond:
                     block.line("} else {")
-                    block.line(f'    return Err(AsmError::X86(X86Error::InvalidOperandCombination {{ mnemonic: "{err_mnem}" }}));')
+                    block.line(f'    unreachable!("invalid operand types for {err_mnem}");')
 
             if not first_cond:
                 block.line("}")
-
-            block.line(f"if let Some(err) = self.last_error() {{ Err(err) }} else {{ Ok(()) }}")
 
         func.body(block)
         feature_sets[trait_name].items.append(func)

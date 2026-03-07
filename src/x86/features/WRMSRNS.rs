@@ -1,7 +1,6 @@
 pub trait X86WRMSRNSEmitter: Emitter {
     /// Emits `WRMSRNS`.
-    fn wrmsrns(&mut self,) -> Result<(), AsmError> {
+    fn wrmsrns(&mut self,) -> () {
         self.emit(WRMSRNS, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

@@ -1,12 +1,10 @@
 pub trait X86OSPKEEmitter: Emitter {
     /// Emits `RDPKRU`.
-    fn rdpkru(&mut self,) -> Result<(), AsmError> {
+    fn rdpkru(&mut self,) -> () {
         self.emit(RDPKRU, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `WRPKRU`.
-    fn wrpkru(&mut self,) -> Result<(), AsmError> {
+    fn wrpkru(&mut self,) -> () {
         self.emit(WRPKRU, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

@@ -1,16 +1,14 @@
 pub trait X86SSE2Emitter: Emitter {
     /// Emits `LFENCE`.
-    fn lfence(&mut self,) -> Result<(), AsmError> {
+    fn lfence(&mut self,) -> () {
         self.emit(LFENCE, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `MFENCE`.
-    fn mfence(&mut self,) -> Result<(), AsmError> {
+    fn mfence(&mut self,) -> () {
         self.emit(MFENCE, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `MMX_CVTPD2PI`.
-    fn mmx_cvtpd2pi(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn mmx_cvtpd2pi(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_reg_group_of(RegGroup::X86MM) && op1.is_vec() {
@@ -18,12 +16,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_reg_group_of(RegGroup::X86MM) && op1.is_mem() {
             self.emit(MMX_CVTPD2PIRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "MMX_CVTPD2PI" }));
+            unreachable!("invalid operand types for MMX_CVTPD2PI");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `MMX_CVTPI2PD`.
-    fn mmx_cvtpi2pd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn mmx_cvtpi2pd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_reg_group_of(RegGroup::X86MM) {
@@ -31,12 +28,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(MMX_CVTPI2PDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "MMX_CVTPI2PD" }));
+            unreachable!("invalid operand types for MMX_CVTPI2PD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `MMX_CVTPI2PS`.
-    fn mmx_cvtpi2ps(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn mmx_cvtpi2ps(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_reg_group_of(RegGroup::X86MM) {
@@ -44,12 +40,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(MMX_CVTPI2PSRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "MMX_CVTPI2PS" }));
+            unreachable!("invalid operand types for MMX_CVTPI2PS");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `MMX_CVTPS2PI`.
-    fn mmx_cvtps2pi(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn mmx_cvtps2pi(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_reg_group_of(RegGroup::X86MM) && op1.is_vec() {
@@ -57,12 +52,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_reg_group_of(RegGroup::X86MM) && op1.is_mem() {
             self.emit(MMX_CVTPS2PIRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "MMX_CVTPS2PI" }));
+            unreachable!("invalid operand types for MMX_CVTPS2PI");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `MMX_CVTTPD2PI`.
-    fn mmx_cvttpd2pi(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn mmx_cvttpd2pi(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_reg_group_of(RegGroup::X86MM) && op1.is_vec() {
@@ -70,12 +64,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_reg_group_of(RegGroup::X86MM) && op1.is_mem() {
             self.emit(MMX_CVTTPD2PIRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "MMX_CVTTPD2PI" }));
+            unreachable!("invalid operand types for MMX_CVTTPD2PI");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `MMX_CVTTPS2PI`.
-    fn mmx_cvttps2pi(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn mmx_cvttps2pi(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_reg_group_of(RegGroup::X86MM) && op1.is_vec() {
@@ -83,22 +76,19 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_reg_group_of(RegGroup::X86MM) && op1.is_mem() {
             self.emit(MMX_CVTTPS2PIRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "MMX_CVTTPS2PI" }));
+            unreachable!("invalid operand types for MMX_CVTTPS2PI");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `MOVNTI32MR`.
-    fn movnti32(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn movnti32(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(MOVNTI32MR, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `MOVNTI64MR`.
-    fn movnti64(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn movnti64(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(MOVNTI64MR, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_ADDPD`.
-    fn sse_addpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_addpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -106,12 +96,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_ADDPDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_ADDPD" }));
+            unreachable!("invalid operand types for SSE_ADDPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_ADDSD`.
-    fn sse_addsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_addsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -119,12 +108,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_ADDSDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_ADDSD" }));
+            unreachable!("invalid operand types for SSE_ADDSD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_ANDNPD`.
-    fn sse_andnpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_andnpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -132,12 +120,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_ANDNPDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_ANDNPD" }));
+            unreachable!("invalid operand types for SSE_ANDNPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_ANDPD`.
-    fn sse_andpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_andpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -145,12 +132,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_ANDPDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_ANDPD" }));
+            unreachable!("invalid operand types for SSE_ANDPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CMPPD`.
-    fn sse_cmppd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cmppd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -159,12 +145,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
             self.emit(SSE_CMPPDRMI, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CMPPD" }));
+            unreachable!("invalid operand types for SSE_CMPPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CMPSD`.
-    fn sse_cmpsd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cmpsd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -173,12 +158,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
             self.emit(SSE_CMPSDRMI, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CMPSD" }));
+            unreachable!("invalid operand types for SSE_CMPSD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_COMISD`.
-    fn sse_comisd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_comisd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -186,12 +170,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_COMISDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_COMISD" }));
+            unreachable!("invalid operand types for SSE_COMISD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CVTDQ2PD`.
-    fn sse_cvtdq2pd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cvtdq2pd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -199,12 +182,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_CVTDQ2PDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CVTDQ2PD" }));
+            unreachable!("invalid operand types for SSE_CVTDQ2PD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CVTDQ2PS`.
-    fn sse_cvtdq2ps(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cvtdq2ps(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -212,12 +194,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_CVTDQ2PSRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CVTDQ2PS" }));
+            unreachable!("invalid operand types for SSE_CVTDQ2PS");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CVTPD2DQ`.
-    fn sse_cvtpd2dq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cvtpd2dq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -225,12 +206,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_CVTPD2DQRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CVTPD2DQ" }));
+            unreachable!("invalid operand types for SSE_CVTPD2DQ");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CVTPD2PS`.
-    fn sse_cvtpd2ps(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cvtpd2ps(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -238,12 +218,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_CVTPD2PSRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CVTPD2PS" }));
+            unreachable!("invalid operand types for SSE_CVTPD2PS");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CVTPS2DQ`.
-    fn sse_cvtps2dq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cvtps2dq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -251,12 +230,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_CVTPS2DQRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CVTPS2DQ" }));
+            unreachable!("invalid operand types for SSE_CVTPS2DQ");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CVTPS2PD`.
-    fn sse_cvtps2pd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cvtps2pd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -264,12 +242,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_CVTPS2PDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CVTPS2PD" }));
+            unreachable!("invalid operand types for SSE_CVTPS2PD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CVTSD2SI32`.
-    fn sse_cvtsd2si32(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cvtsd2si32(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_gp() && op1.is_vec() {
@@ -277,12 +254,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_gp() && op1.is_mem() {
             self.emit(SSE_CVTSD2SI32RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CVTSD2SI32" }));
+            unreachable!("invalid operand types for SSE_CVTSD2SI32");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CVTSD2SI64`.
-    fn sse_cvtsd2si64(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cvtsd2si64(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_gp() && op1.is_vec() {
@@ -290,12 +266,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_gp() && op1.is_mem() {
             self.emit(SSE_CVTSD2SI64RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CVTSD2SI64" }));
+            unreachable!("invalid operand types for SSE_CVTSD2SI64");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CVTSD2SS`.
-    fn sse_cvtsd2ss(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cvtsd2ss(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -303,12 +278,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_CVTSD2SSRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CVTSD2SS" }));
+            unreachable!("invalid operand types for SSE_CVTSD2SS");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CVTSI2SD32`.
-    fn sse_cvtsi2sd32(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cvtsi2sd32(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_gp() {
@@ -316,12 +290,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_CVTSI2SD32RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CVTSI2SD32" }));
+            unreachable!("invalid operand types for SSE_CVTSI2SD32");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CVTSI2SD64`.
-    fn sse_cvtsi2sd64(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cvtsi2sd64(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_gp() {
@@ -329,12 +302,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_CVTSI2SD64RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CVTSI2SD64" }));
+            unreachable!("invalid operand types for SSE_CVTSI2SD64");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CVTSS2SD`.
-    fn sse_cvtss2sd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cvtss2sd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -342,12 +314,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_CVTSS2SDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CVTSS2SD" }));
+            unreachable!("invalid operand types for SSE_CVTSS2SD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CVTTPD2DQ`.
-    fn sse_cvttpd2dq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cvttpd2dq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -355,12 +326,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_CVTTPD2DQRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CVTTPD2DQ" }));
+            unreachable!("invalid operand types for SSE_CVTTPD2DQ");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CVTTPS2DQ`.
-    fn sse_cvttps2dq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cvttps2dq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -368,12 +338,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_CVTTPS2DQRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CVTTPS2DQ" }));
+            unreachable!("invalid operand types for SSE_CVTTPS2DQ");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CVTTSD2SI32`.
-    fn sse_cvttsd2si32(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cvttsd2si32(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_gp() && op1.is_vec() {
@@ -381,12 +350,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_gp() && op1.is_mem() {
             self.emit(SSE_CVTTSD2SI32RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CVTTSD2SI32" }));
+            unreachable!("invalid operand types for SSE_CVTTSD2SI32");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_CVTTSD2SI64`.
-    fn sse_cvttsd2si64(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_cvttsd2si64(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_gp() && op1.is_vec() {
@@ -394,12 +362,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_gp() && op1.is_mem() {
             self.emit(SSE_CVTTSD2SI64RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_CVTTSD2SI64" }));
+            unreachable!("invalid operand types for SSE_CVTTSD2SI64");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_DIVPD`.
-    fn sse_divpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_divpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -407,12 +374,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_DIVPDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_DIVPD" }));
+            unreachable!("invalid operand types for SSE_DIVPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_DIVSD`.
-    fn sse_divsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_divsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -420,17 +386,15 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_DIVSDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_DIVSD" }));
+            unreachable!("invalid operand types for SSE_DIVSD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MASKMOVDQURR`.
-    fn sse_maskmovdqu(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_maskmovdqu(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(SSE_MASKMOVDQURR, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MAXPD`.
-    fn sse_maxpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_maxpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -438,12 +402,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_MAXPDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MAXPD" }));
+            unreachable!("invalid operand types for SSE_MAXPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MAXSD`.
-    fn sse_maxsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_maxsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -451,12 +414,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_MAXSDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MAXSD" }));
+            unreachable!("invalid operand types for SSE_MAXSD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MINPD`.
-    fn sse_minpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_minpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -464,12 +426,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_MINPDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MINPD" }));
+            unreachable!("invalid operand types for SSE_MINPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MINSD`.
-    fn sse_minsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_minsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -477,12 +438,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_MINSDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MINSD" }));
+            unreachable!("invalid operand types for SSE_MINSD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MOVAPD`.
-    fn sse_movapd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_movapd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -492,12 +452,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() {
             self.emit(SSE_MOVAPDMR, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MOVAPD" }));
+            unreachable!("invalid operand types for SSE_MOVAPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MOVDQA`.
-    fn sse_movdqa(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_movdqa(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -507,12 +466,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() {
             self.emit(SSE_MOVDQAMR, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MOVDQA" }));
+            unreachable!("invalid operand types for SSE_MOVDQA");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MOVDQU`.
-    fn sse_movdqu(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_movdqu(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -522,12 +480,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() {
             self.emit(SSE_MOVDQUMR, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MOVDQU" }));
+            unreachable!("invalid operand types for SSE_MOVDQU");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MOVD_G2X`.
-    fn sse_movd_g2x(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_movd_g2x(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_gp() {
@@ -535,12 +492,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_MOVD_G2XRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MOVD_G2X" }));
+            unreachable!("invalid operand types for SSE_MOVD_G2X");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MOVD_X2G`.
-    fn sse_movd_x2g(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_movd_x2g(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_gp() && op1.is_vec() {
@@ -548,12 +504,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() {
             self.emit(SSE_MOVD_X2GMR, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MOVD_X2G" }));
+            unreachable!("invalid operand types for SSE_MOVD_X2G");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MOVHPD`.
-    fn sse_movhpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_movhpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_mem() {
@@ -561,12 +516,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() {
             self.emit(SSE_MOVHPDMR, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MOVHPD" }));
+            unreachable!("invalid operand types for SSE_MOVHPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MOVLPD`.
-    fn sse_movlpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_movlpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_mem() {
@@ -574,32 +528,27 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() {
             self.emit(SSE_MOVLPDMR, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MOVLPD" }));
+            unreachable!("invalid operand types for SSE_MOVLPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MOVMSKPDRR`.
-    fn sse_movmskpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_movmskpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(SSE_MOVMSKPDRR, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MOVNTDQMR`.
-    fn sse_movntdq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_movntdq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(SSE_MOVNTDQMR, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MOVNTPDMR`.
-    fn sse_movntpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_movntpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(SSE_MOVNTPDMR, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MOVNTSDMR`.
-    fn sse_movntsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_movntsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(SSE_MOVNTSDMR, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MOVQ`.
-    fn sse_movq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_movq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -609,12 +558,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() {
             self.emit(SSE_MOVQMR, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MOVQ" }));
+            unreachable!("invalid operand types for SSE_MOVQ");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MOVQ_G2X`.
-    fn sse_movq_g2x(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_movq_g2x(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_gp() {
@@ -622,12 +570,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_MOVQ_G2XRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MOVQ_G2X" }));
+            unreachable!("invalid operand types for SSE_MOVQ_G2X");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MOVQ_X2G`.
-    fn sse_movq_x2g(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_movq_x2g(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_gp() && op1.is_vec() {
@@ -635,12 +582,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() {
             self.emit(SSE_MOVQ_X2GMR, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MOVQ_X2G" }));
+            unreachable!("invalid operand types for SSE_MOVQ_X2G");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MOVSD`.
-    fn sse_movsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_movsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -650,12 +596,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() {
             self.emit(SSE_MOVSDMR, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MOVSD" }));
+            unreachable!("invalid operand types for SSE_MOVSD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MOVUPD`.
-    fn sse_movupd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_movupd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -665,12 +610,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() {
             self.emit(SSE_MOVUPDMR, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MOVUPD" }));
+            unreachable!("invalid operand types for SSE_MOVUPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MULPD`.
-    fn sse_mulpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_mulpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -678,12 +622,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_MULPDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MULPD" }));
+            unreachable!("invalid operand types for SSE_MULPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_MULSD`.
-    fn sse_mulsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_mulsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -691,12 +634,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_MULSDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_MULSD" }));
+            unreachable!("invalid operand types for SSE_MULSD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_ORPD`.
-    fn sse_orpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_orpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -704,12 +646,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_ORPDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_ORPD" }));
+            unreachable!("invalid operand types for SSE_ORPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PACKSSDW`.
-    fn sse_packssdw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_packssdw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -717,12 +658,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PACKSSDWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PACKSSDW" }));
+            unreachable!("invalid operand types for SSE_PACKSSDW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PACKSSWB`.
-    fn sse_packsswb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_packsswb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -730,12 +670,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PACKSSWBRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PACKSSWB" }));
+            unreachable!("invalid operand types for SSE_PACKSSWB");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PACKUSWB`.
-    fn sse_packuswb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_packuswb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -743,12 +682,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PACKUSWBRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PACKUSWB" }));
+            unreachable!("invalid operand types for SSE_PACKUSWB");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PADDB`.
-    fn sse_paddb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_paddb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -756,12 +694,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PADDBRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PADDB" }));
+            unreachable!("invalid operand types for SSE_PADDB");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PADDD`.
-    fn sse_paddd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_paddd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -769,12 +706,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PADDDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PADDD" }));
+            unreachable!("invalid operand types for SSE_PADDD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PADDQ`.
-    fn sse_paddq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_paddq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -782,12 +718,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PADDQRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PADDQ" }));
+            unreachable!("invalid operand types for SSE_PADDQ");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PADDSB`.
-    fn sse_paddsb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_paddsb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -795,12 +730,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PADDSBRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PADDSB" }));
+            unreachable!("invalid operand types for SSE_PADDSB");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PADDSW`.
-    fn sse_paddsw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_paddsw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -808,12 +742,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PADDSWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PADDSW" }));
+            unreachable!("invalid operand types for SSE_PADDSW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PADDUSB`.
-    fn sse_paddusb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_paddusb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -821,12 +754,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PADDUSBRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PADDUSB" }));
+            unreachable!("invalid operand types for SSE_PADDUSB");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PADDUSW`.
-    fn sse_paddusw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_paddusw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -834,12 +766,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PADDUSWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PADDUSW" }));
+            unreachable!("invalid operand types for SSE_PADDUSW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PADDW`.
-    fn sse_paddw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_paddw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -847,12 +778,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PADDWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PADDW" }));
+            unreachable!("invalid operand types for SSE_PADDW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PAND`.
-    fn sse_pand(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pand(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -860,12 +790,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PANDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PAND" }));
+            unreachable!("invalid operand types for SSE_PAND");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PANDN`.
-    fn sse_pandn(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pandn(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -873,12 +802,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PANDNRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PANDN" }));
+            unreachable!("invalid operand types for SSE_PANDN");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PAVGB`.
-    fn sse_pavgb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pavgb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -886,12 +814,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PAVGBRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PAVGB" }));
+            unreachable!("invalid operand types for SSE_PAVGB");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PAVGW`.
-    fn sse_pavgw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pavgw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -899,12 +826,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PAVGWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PAVGW" }));
+            unreachable!("invalid operand types for SSE_PAVGW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PCMPEQB`.
-    fn sse_pcmpeqb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pcmpeqb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -912,12 +838,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PCMPEQBRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PCMPEQB" }));
+            unreachable!("invalid operand types for SSE_PCMPEQB");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PCMPEQD`.
-    fn sse_pcmpeqd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pcmpeqd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -925,12 +850,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PCMPEQDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PCMPEQD" }));
+            unreachable!("invalid operand types for SSE_PCMPEQD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PCMPEQW`.
-    fn sse_pcmpeqw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pcmpeqw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -938,12 +862,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PCMPEQWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PCMPEQW" }));
+            unreachable!("invalid operand types for SSE_PCMPEQW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PCMPGTB`.
-    fn sse_pcmpgtb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pcmpgtb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -951,12 +874,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PCMPGTBRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PCMPGTB" }));
+            unreachable!("invalid operand types for SSE_PCMPGTB");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PCMPGTD`.
-    fn sse_pcmpgtd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pcmpgtd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -964,12 +886,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PCMPGTDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PCMPGTD" }));
+            unreachable!("invalid operand types for SSE_PCMPGTD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PCMPGTW`.
-    fn sse_pcmpgtw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pcmpgtw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -977,17 +898,15 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PCMPGTWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PCMPGTW" }));
+            unreachable!("invalid operand types for SSE_PCMPGTW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PEXTRWRRI`.
-    fn sse_pextrw(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pextrw(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         self.emit(SSE_PEXTRWRRI, op0.as_operand(),op1.as_operand(),op2.as_operand(),&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PINSRW`.
-    fn sse_pinsrw(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pinsrw(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -996,12 +915,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
             self.emit(SSE_PINSRWRMI, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PINSRW" }));
+            unreachable!("invalid operand types for SSE_PINSRW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PMADDWD`.
-    fn sse_pmaddwd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pmaddwd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1009,12 +927,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PMADDWDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PMADDWD" }));
+            unreachable!("invalid operand types for SSE_PMADDWD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PMAXSW`.
-    fn sse_pmaxsw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pmaxsw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1022,12 +939,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PMAXSWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PMAXSW" }));
+            unreachable!("invalid operand types for SSE_PMAXSW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PMAXUB`.
-    fn sse_pmaxub(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pmaxub(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1035,12 +951,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PMAXUBRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PMAXUB" }));
+            unreachable!("invalid operand types for SSE_PMAXUB");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PMINSW`.
-    fn sse_pminsw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pminsw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1048,12 +963,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PMINSWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PMINSW" }));
+            unreachable!("invalid operand types for SSE_PMINSW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PMINUB`.
-    fn sse_pminub(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pminub(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1061,17 +975,15 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PMINUBRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PMINUB" }));
+            unreachable!("invalid operand types for SSE_PMINUB");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PMOVMSKBRR`.
-    fn sse_pmovmskb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pmovmskb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(SSE_PMOVMSKBRR, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PMULHUW`.
-    fn sse_pmulhuw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pmulhuw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1079,12 +991,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PMULHUWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PMULHUW" }));
+            unreachable!("invalid operand types for SSE_PMULHUW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PMULHW`.
-    fn sse_pmulhw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pmulhw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1092,12 +1003,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PMULHWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PMULHW" }));
+            unreachable!("invalid operand types for SSE_PMULHW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PMULLW`.
-    fn sse_pmullw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pmullw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1105,12 +1015,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PMULLWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PMULLW" }));
+            unreachable!("invalid operand types for SSE_PMULLW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PMULUDQ`.
-    fn sse_pmuludq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pmuludq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1118,12 +1027,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PMULUDQRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PMULUDQ" }));
+            unreachable!("invalid operand types for SSE_PMULUDQ");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_POR`.
-    fn sse_por(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_por(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1131,12 +1039,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PORRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_POR" }));
+            unreachable!("invalid operand types for SSE_POR");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSADBW`.
-    fn sse_psadbw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_psadbw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1144,12 +1051,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PSADBWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSADBW" }));
+            unreachable!("invalid operand types for SSE_PSADBW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSHUFD`.
-    fn sse_pshufd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pshufd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1158,12 +1064,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
             self.emit(SSE_PSHUFDRMI, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSHUFD" }));
+            unreachable!("invalid operand types for SSE_PSHUFD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSHUFHW`.
-    fn sse_pshufhw(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pshufhw(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1172,12 +1077,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
             self.emit(SSE_PSHUFHWRMI, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSHUFHW" }));
+            unreachable!("invalid operand types for SSE_PSHUFHW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSHUFLW`.
-    fn sse_pshuflw(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pshuflw(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1186,12 +1090,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
             self.emit(SSE_PSHUFLWRMI, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSHUFLW" }));
+            unreachable!("invalid operand types for SSE_PSHUFLW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSLLD`.
-    fn sse_pslld(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pslld(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_imm() {
@@ -1201,17 +1104,15 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PSLLDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSLLD" }));
+            unreachable!("invalid operand types for SSE_PSLLD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSLLDQRI`.
-    fn sse_pslldq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pslldq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(SSE_PSLLDQRI, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSLLQ`.
-    fn sse_psllq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_psllq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_imm() {
@@ -1221,12 +1122,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PSLLQRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSLLQ" }));
+            unreachable!("invalid operand types for SSE_PSLLQ");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSLLW`.
-    fn sse_psllw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_psllw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_imm() {
@@ -1236,12 +1136,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PSLLWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSLLW" }));
+            unreachable!("invalid operand types for SSE_PSLLW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSRAD`.
-    fn sse_psrad(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_psrad(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_imm() {
@@ -1251,12 +1150,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PSRADRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSRAD" }));
+            unreachable!("invalid operand types for SSE_PSRAD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSRAW`.
-    fn sse_psraw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_psraw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_imm() {
@@ -1266,12 +1164,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PSRAWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSRAW" }));
+            unreachable!("invalid operand types for SSE_PSRAW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSRLD`.
-    fn sse_psrld(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_psrld(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_imm() {
@@ -1281,17 +1178,15 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PSRLDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSRLD" }));
+            unreachable!("invalid operand types for SSE_PSRLD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSRLDQRI`.
-    fn sse_psrldq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_psrldq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(SSE_PSRLDQRI, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSRLQ`.
-    fn sse_psrlq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_psrlq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_imm() {
@@ -1301,12 +1196,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PSRLQRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSRLQ" }));
+            unreachable!("invalid operand types for SSE_PSRLQ");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSRLW`.
-    fn sse_psrlw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_psrlw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_imm() {
@@ -1316,12 +1210,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PSRLWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSRLW" }));
+            unreachable!("invalid operand types for SSE_PSRLW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSUBB`.
-    fn sse_psubb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_psubb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1329,12 +1222,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PSUBBRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSUBB" }));
+            unreachable!("invalid operand types for SSE_PSUBB");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSUBD`.
-    fn sse_psubd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_psubd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1342,12 +1234,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PSUBDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSUBD" }));
+            unreachable!("invalid operand types for SSE_PSUBD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSUBQ`.
-    fn sse_psubq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_psubq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1355,12 +1246,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PSUBQRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSUBQ" }));
+            unreachable!("invalid operand types for SSE_PSUBQ");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSUBSB`.
-    fn sse_psubsb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_psubsb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1368,12 +1258,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PSUBSBRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSUBSB" }));
+            unreachable!("invalid operand types for SSE_PSUBSB");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSUBSW`.
-    fn sse_psubsw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_psubsw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1381,12 +1270,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PSUBSWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSUBSW" }));
+            unreachable!("invalid operand types for SSE_PSUBSW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSUBUSB`.
-    fn sse_psubusb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_psubusb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1394,12 +1282,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PSUBUSBRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSUBUSB" }));
+            unreachable!("invalid operand types for SSE_PSUBUSB");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSUBUSW`.
-    fn sse_psubusw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_psubusw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1407,12 +1294,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PSUBUSWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSUBUSW" }));
+            unreachable!("invalid operand types for SSE_PSUBUSW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PSUBW`.
-    fn sse_psubw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_psubw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1420,12 +1306,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PSUBWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PSUBW" }));
+            unreachable!("invalid operand types for SSE_PSUBW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PUNPCKHBW`.
-    fn sse_punpckhbw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_punpckhbw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1433,12 +1318,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PUNPCKHBWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PUNPCKHBW" }));
+            unreachable!("invalid operand types for SSE_PUNPCKHBW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PUNPCKHDQ`.
-    fn sse_punpckhdq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_punpckhdq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1446,12 +1330,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PUNPCKHDQRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PUNPCKHDQ" }));
+            unreachable!("invalid operand types for SSE_PUNPCKHDQ");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PUNPCKHQDQ`.
-    fn sse_punpckhqdq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_punpckhqdq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1459,12 +1342,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PUNPCKHQDQRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PUNPCKHQDQ" }));
+            unreachable!("invalid operand types for SSE_PUNPCKHQDQ");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PUNPCKHWD`.
-    fn sse_punpckhwd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_punpckhwd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1472,12 +1354,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PUNPCKHWDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PUNPCKHWD" }));
+            unreachable!("invalid operand types for SSE_PUNPCKHWD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PUNPCKLBW`.
-    fn sse_punpcklbw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_punpcklbw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1485,12 +1366,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PUNPCKLBWRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PUNPCKLBW" }));
+            unreachable!("invalid operand types for SSE_PUNPCKLBW");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PUNPCKLDQ`.
-    fn sse_punpckldq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_punpckldq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1498,12 +1378,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PUNPCKLDQRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PUNPCKLDQ" }));
+            unreachable!("invalid operand types for SSE_PUNPCKLDQ");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PUNPCKLQDQ`.
-    fn sse_punpcklqdq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_punpcklqdq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1511,12 +1390,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PUNPCKLQDQRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PUNPCKLQDQ" }));
+            unreachable!("invalid operand types for SSE_PUNPCKLQDQ");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PUNPCKLWD`.
-    fn sse_punpcklwd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_punpcklwd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1524,12 +1402,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PUNPCKLWDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PUNPCKLWD" }));
+            unreachable!("invalid operand types for SSE_PUNPCKLWD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_PXOR`.
-    fn sse_pxor(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_pxor(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1537,12 +1414,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_PXORRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PXOR" }));
+            unreachable!("invalid operand types for SSE_PXOR");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_SHUFPD`.
-    fn sse_shufpd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_shufpd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1551,12 +1427,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
             self.emit(SSE_SHUFPDRMI, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_SHUFPD" }));
+            unreachable!("invalid operand types for SSE_SHUFPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_SQRTPD`.
-    fn sse_sqrtpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_sqrtpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1564,12 +1439,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_SQRTPDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_SQRTPD" }));
+            unreachable!("invalid operand types for SSE_SQRTPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_SQRTSD`.
-    fn sse_sqrtsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_sqrtsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1577,12 +1451,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_SQRTSDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_SQRTSD" }));
+            unreachable!("invalid operand types for SSE_SQRTSD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_SUBPD`.
-    fn sse_subpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_subpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1590,12 +1463,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_SUBPDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_SUBPD" }));
+            unreachable!("invalid operand types for SSE_SUBPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_SUBSD`.
-    fn sse_subsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_subsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1603,12 +1475,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_SUBSDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_SUBSD" }));
+            unreachable!("invalid operand types for SSE_SUBSD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_UCOMISD`.
-    fn sse_ucomisd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_ucomisd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1616,12 +1487,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_UCOMISDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_UCOMISD" }));
+            unreachable!("invalid operand types for SSE_UCOMISD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_UNPCKHPD`.
-    fn sse_unpckhpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_unpckhpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1629,12 +1499,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_UNPCKHPDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_UNPCKHPD" }));
+            unreachable!("invalid operand types for SSE_UNPCKHPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_UNPCKLPD`.
-    fn sse_unpcklpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_unpcklpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1642,12 +1511,11 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_UNPCKLPDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_UNPCKLPD" }));
+            unreachable!("invalid operand types for SSE_UNPCKLPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SSE_XORPD`.
-    fn sse_xorpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn sse_xorpd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1655,8 +1523,7 @@ pub trait X86SSE2Emitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(SSE_XORPDRM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_XORPD" }));
+            unreachable!("invalid operand types for SSE_XORPD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

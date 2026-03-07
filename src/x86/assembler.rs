@@ -444,8 +444,8 @@ impl<'a> Assembler<'a> {
         self.buffer.label_offset(label)
     }
 
-    pub fn patchable_jmp(&mut self, label: Label) -> Result<PatchSiteId, crate::AsmError> {
-        self.jmp(label)?;
+    pub fn patchable_jmp(&mut self, label: Label) -> PatchSiteId {
+        self.jmp(label);
         let offset = self
             .buffer
             .cur_offset()
@@ -454,8 +454,8 @@ impl<'a> Assembler<'a> {
             .record_label_patch_site(offset, label, LabelUse::X86JmpRel32)
     }
 
-    pub fn patchable_call(&mut self, label: Label) -> Result<PatchSiteId, crate::AsmError> {
-        self.call(label)?;
+    pub fn patchable_call(&mut self, label: Label) -> PatchSiteId {
+        self.call(label);
         let offset = self
             .buffer
             .cur_offset()
@@ -464,28 +464,24 @@ impl<'a> Assembler<'a> {
             .record_label_patch_site(offset, label, LabelUse::X86JmpRel32)
     }
 
-    pub fn patchable_mov(
-        &mut self,
-        dst: impl OperandCast,
-        src: impl OperandCast,
-    ) -> Result<PatchBlockId, crate::AsmError> {
+    pub fn patchable_mov(&mut self, dst: impl OperandCast, src: impl OperandCast) -> PatchBlockId {
         let dst = *dst.as_operand();
         let src = *src.as_operand();
 
         if !src.is_imm() {
-            return Err(crate::AsmError::InvalidOperand);
+            unreachable!("patchable_mov currently only supports immediate sources");
         }
 
         if dst.is_reg_type_of(RegType::Gp64) {
-            self.mov64(dst, src)?;
+            self.mov64(dst, src);
             let offset = self.buffer.cur_offset().saturating_sub(8);
             self.buffer.record_patch_block(offset, 8, 1)
         } else if dst.is_reg_type_of(RegType::Gp32) {
-            self.mov32(dst, src)?;
+            self.mov32(dst, src);
             let offset = self.buffer.cur_offset().saturating_sub(4);
             self.buffer.record_patch_block(offset, 4, 1)
         } else {
-            Err(crate::AsmError::InvalidOperand)
+            unreachable!("patchable_mov currently only supports Gp64 and Gp32 destinations");
         }
     }
 

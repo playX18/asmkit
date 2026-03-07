@@ -11,14 +11,14 @@ pub struct Assembler<'a> {
 }
 
 impl<'a> Assembler<'a> {
-    pub fn patchable_b(&mut self, label: Label) -> Result<PatchSiteId, AsmError> {
+    pub fn patchable_b(&mut self, label: Label) -> PatchSiteId {
         let offset = self.buffer.cur_offset();
         self.b(label);
         self.buffer
             .record_label_patch_site(offset, label, LabelUse::A64Branch26)
     }
 
-    pub fn patchable_call(&mut self, label: Label) -> Result<PatchSiteId, AsmError> {
+    pub fn patchable_call(&mut self, label: Label) -> PatchSiteId {
         let offset = self.buffer.cur_offset();
         self.bl(label);
         self.buffer

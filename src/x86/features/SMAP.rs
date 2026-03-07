@@ -1,12 +1,10 @@
 pub trait X86SMAPEmitter: Emitter {
     /// Emits `CLAC`.
-    fn clac(&mut self,) -> Result<(), AsmError> {
+    fn clac(&mut self,) -> () {
         self.emit(CLAC, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `STAC`.
-    fn stac(&mut self,) -> Result<(), AsmError> {
+    fn stac(&mut self,) -> () {
         self.emit(STAC, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

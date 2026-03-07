@@ -1,27 +1,22 @@
 pub trait X86UINTREmitter: Emitter {
     /// Emits `CLUI`.
-    fn clui(&mut self,) -> Result<(), AsmError> {
+    fn clui(&mut self,) -> () {
         self.emit(CLUI, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `SENDUIPIR`.
-    fn senduipi(&mut self,op0: impl OperandCast) -> Result<(), AsmError> {
+    fn senduipi(&mut self,op0: impl OperandCast) -> () {
         self.emit(SENDUIPIR, op0.as_operand(),&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `STUI`.
-    fn stui(&mut self,) -> Result<(), AsmError> {
+    fn stui(&mut self,) -> () {
         self.emit(STUI, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `TESTUI`.
-    fn testui(&mut self,) -> Result<(), AsmError> {
+    fn testui(&mut self,) -> () {
         self.emit(TESTUI, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `UIRET`.
-    fn uiret(&mut self,) -> Result<(), AsmError> {
+    fn uiret(&mut self,) -> () {
         self.emit(UIRET, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

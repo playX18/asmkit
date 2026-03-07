@@ -9,7 +9,6 @@ use crate::{
         opcodes::{JCC, SETCC8R},
         *,
     },
-    AsmError,
 };
 
 pub struct MacroAssemblerX86<'a> {
@@ -41,117 +40,105 @@ impl<'a> MacroAssemblerX86<'a> {
         self.assembler.buffer.env().x86_feature(X86Feature::AVX512F)
     }
 
-    pub fn add32(
-        &mut self,
-        dst: impl OperandCast,
-        lhs: impl OperandCast,
-        rhs: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn add32(&mut self, dst: impl OperandCast, lhs: impl OperandCast, rhs: impl OperandCast) {
         let dst = dst.as_operand();
         let lhs = lhs.as_operand();
         let rhs = rhs.as_operand();
 
         if dst.is_gp() && lhs.is_gp() && rhs.is_gp() {
             self.assembler
-                .lea32(*dst, ptr64_index(&lhs.as_::<Gp>(), &rhs.as_::<Gp>(), 1, 0))?;
+                .lea32(*dst, ptr64_index(&lhs.as_::<Gp>(), &rhs.as_::<Gp>(), 1, 0));
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_imm() {
             self.assembler.lea32(
                 *dst,
                 ptr64(&lhs.as_::<Gp>(), rhs.as_::<Imm>().value() as i32),
-            )?;
+            );
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_mem() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.add32(*dst, *rhs)?;
+            self.assembler.add32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_gp() {
-            self.assembler.mov32(*dst, *lhs)?;
-            self.assembler.add32(*dst, *rhs)?;
+            self.assembler.mov32(*dst, *lhs);
+            self.assembler.add32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_imm() {
-            self.assembler.mov32(*dst, *lhs)?;
-            self.assembler.add32(*dst, *rhs)?;
+            self.assembler.mov32(*dst, *lhs);
+            self.assembler.add32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_gp() {
             assert_eq!(
                 dst.as_::<Mem>(),
                 rhs.as_::<Mem>(),
                 "Cannot add two memory operands"
             );
-            self.assembler.add32(*dst, *rhs)?;
+            self.assembler.add32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_imm() {
             assert_eq!(
                 dst.as_::<Mem>(),
                 rhs.as_::<Mem>(),
                 "Cannot add two memory operands"
             );
-            self.assembler.add32(*dst, *rhs)?;
+            self.assembler.add32(*dst, *rhs);
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_vec() {
             if self.supports_avx() {
-                self.assembler.vaddss(*dst, *lhs, *rhs)?;
+                self.assembler.vaddss(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_addss(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_addss(*dst, *rhs);
             }
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_mem() {
             if self.supports_avx() {
-                self.assembler.vaddss(*dst, *lhs, *rhs)?;
+                self.assembler.vaddss(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_addss(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_addss(*dst, *rhs);
             }
         } else {
             unimplemented!("Unsupported add combination");
         }
-
-        Ok(())
     }
 
-    pub fn add64(
-        &mut self,
-        dst: impl OperandCast,
-        lhs: impl OperandCast,
-        rhs: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn add64(&mut self, dst: impl OperandCast, lhs: impl OperandCast, rhs: impl OperandCast) {
         let dst = dst.as_operand();
         let lhs = lhs.as_operand();
         let rhs = rhs.as_operand();
 
         if dst.is_gp() && lhs.is_gp() && rhs.is_gp() {
             self.assembler
-                .lea64(*dst, ptr64_index(&lhs.as_::<Gp>(), &rhs.as_::<Gp>(), 1, 0))?;
+                .lea64(*dst, ptr64_index(&lhs.as_::<Gp>(), &rhs.as_::<Gp>(), 1, 0));
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_imm() {
             let imm = rhs.as_::<Imm>().value();
             if imm >= i32::MIN as i64 && imm <= i32::MAX as i64 {
                 self.assembler.lea64(
                     *dst,
                     ptr64(&lhs.as_::<Gp>(), rhs.as_::<Imm>().value() as i32),
-                )?;
+                );
             } else {
                 if dst.id() != lhs.id() {
-                    self.mov(*dst, *lhs)?;
+                    self.mov(*dst, *lhs);
                 }
 
-                self.assembler.add64(*dst, *rhs)?;
+                self.assembler.add64(*dst, *rhs);
             }
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_mem() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.add64(*dst, *rhs)?;
+            self.assembler.add64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_gp() {
-            self.assembler.mov64(*dst, *lhs)?;
-            self.assembler.add64(*dst, *rhs)?;
+            self.assembler.mov64(*dst, *lhs);
+            self.assembler.add64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_imm() {
-            self.assembler.mov64(*dst, *lhs)?;
-            self.assembler.add64(*dst, *rhs)?;
+            self.assembler.mov64(*dst, *lhs);
+            self.assembler.add64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_gp() {
             assert_eq!(
                 dst.as_::<Mem>(),
                 rhs.as_::<Mem>(),
                 "Cannot add two memory operands"
             );
-            self.assembler.add64(*dst, *rhs)?;
+            self.assembler.add64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_imm() {
             assert_eq!(
                 dst.as_::<Mem>(),
@@ -160,41 +147,39 @@ impl<'a> MacroAssemblerX86<'a> {
             );
             let imm = rhs.as_::<Imm>().value();
             if imm >= i32::MIN as i64 && imm <= i32::MAX as i64 {
-                self.assembler.add64(*dst, *rhs)?;
+                self.assembler.add64(*dst, *rhs);
             } else {
-                self.assembler.mov64(Self::scratch_register(), *rhs)?;
-                self.assembler.add64(*dst, Self::scratch_register())?;
+                self.assembler.mov64(Self::scratch_register(), *rhs);
+                self.assembler.add64(*dst, Self::scratch_register());
             }
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_vec() {
             if self.supports_avx() {
-                self.assembler.vaddsd(*dst, *lhs, *rhs)?;
+                self.assembler.vaddsd(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_addsd(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_addsd(*dst, *rhs);
             }
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_mem() {
             if self.supports_avx() {
-                self.assembler.vaddsd(*dst, *lhs, *rhs)?;
+                self.assembler.vaddsd(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_addsd(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_addsd(*dst, *rhs);
             }
         } else {
             unimplemented!("Unsupported add combination");
         }
-
-        Ok(())
     }
 
-    pub fn ret(&mut self) -> Result<(), AsmError> {
+    pub fn ret(&mut self) {
         self.assembler.ret()
     }
 
-    pub fn push(&mut self, op: impl OperandCast) -> Result<(), AsmError> {
+    pub fn push(&mut self, op: impl OperandCast) {
         self.assembler.push(*op.as_operand())
     }
 
-    pub fn pop(&mut self, op: impl OperandCast) -> Result<(), AsmError> {
+    pub fn pop(&mut self, op: impl OperandCast) {
         self.assembler.pop(*op.as_operand())
     }
 
@@ -202,116 +187,104 @@ impl<'a> MacroAssemblerX86<'a> {
         self.assembler.get_label()
     }
 
-    pub fn sub32(
-        &mut self,
-        dst: impl OperandCast,
-        lhs: impl OperandCast,
-        rhs: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn sub32(&mut self, dst: impl OperandCast, lhs: impl OperandCast, rhs: impl OperandCast) {
         let dst = dst.as_operand();
         let lhs = lhs.as_operand();
         let rhs = rhs.as_operand();
 
         if dst.is_gp() && lhs.is_gp() && rhs.is_gp() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.sub32(*dst, *rhs)?;
+            self.assembler.sub32(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_imm() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.sub32(*dst, *rhs)?;
+            self.assembler.sub32(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_mem() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.sub32(*dst, *rhs)?;
+            self.assembler.sub32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_gp() {
-            self.assembler.mov32(*dst, *lhs)?;
-            self.assembler.sub32(*dst, *rhs)?;
+            self.assembler.mov32(*dst, *lhs);
+            self.assembler.sub32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_imm() {
-            self.assembler.mov32(*dst, *lhs)?;
-            self.assembler.sub32(*dst, *rhs)?;
+            self.assembler.mov32(*dst, *lhs);
+            self.assembler.sub32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_gp() {
             assert_eq!(
                 dst.as_::<Mem>(),
                 lhs.as_::<Mem>(),
                 "Cannot sub two memory operands"
             );
-            self.assembler.sub32(*dst, *rhs)?;
+            self.assembler.sub32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_imm() {
             assert_eq!(
                 dst.as_::<Mem>(),
                 lhs.as_::<Mem>(),
                 "Cannot sub two memory operands"
             );
-            self.assembler.sub32(*dst, *rhs)?;
+            self.assembler.sub32(*dst, *rhs);
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_vec() {
             if self.supports_avx() {
-                self.assembler.vsubss(*dst, *lhs, *rhs)?;
+                self.assembler.vsubss(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_subss(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_subss(*dst, *rhs);
             }
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_mem() {
             if self.supports_avx() {
-                self.assembler.vsubss(*dst, *lhs, *rhs)?;
+                self.assembler.vsubss(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_subss(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_subss(*dst, *rhs);
             }
         } else {
             unimplemented!("Unsupported sub combination");
         }
-
-        Ok(())
     }
 
-    pub fn sub64(
-        &mut self,
-        dst: impl OperandCast,
-        lhs: impl OperandCast,
-        rhs: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn sub64(&mut self, dst: impl OperandCast, lhs: impl OperandCast, rhs: impl OperandCast) {
         let dst = dst.as_operand();
         let lhs = lhs.as_operand();
         let rhs = rhs.as_operand();
 
         if dst.is_gp() && lhs.is_gp() && rhs.is_gp() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.sub64(*dst, *rhs)?;
+            self.assembler.sub64(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_imm() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.sub64(*dst, *rhs)?;
+            self.assembler.sub64(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_mem() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.sub64(*dst, *rhs)?;
+            self.assembler.sub64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_gp() {
-            self.assembler.mov64(*dst, *lhs)?;
-            self.assembler.sub64(*dst, *rhs)?;
+            self.assembler.mov64(*dst, *lhs);
+            self.assembler.sub64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_imm() {
-            self.assembler.mov64(*dst, *lhs)?;
-            self.assembler.sub64(*dst, *rhs)?;
+            self.assembler.mov64(*dst, *lhs);
+            self.assembler.sub64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_gp() {
             assert_eq!(
                 dst.as_::<Mem>(),
                 lhs.as_::<Mem>(),
                 "Cannot sub two memory operands"
             );
-            self.assembler.sub64(*dst, *rhs)?;
+            self.assembler.sub64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_imm() {
             assert_eq!(
                 dst.as_::<Mem>(),
@@ -320,142 +293,128 @@ impl<'a> MacroAssemblerX86<'a> {
             );
             let imm = rhs.as_::<Imm>().value();
             if imm >= i32::MIN as i64 && imm <= i32::MAX as i64 {
-                self.assembler.sub64(*dst, *rhs)?;
+                self.assembler.sub64(*dst, *rhs);
             } else {
-                self.assembler.mov64(Self::scratch_register(), *rhs)?;
-                self.assembler.sub64(*dst, Self::scratch_register())?;
+                self.assembler.mov64(Self::scratch_register(), *rhs);
+                self.assembler.sub64(*dst, Self::scratch_register());
             }
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_vec() {
             if self.supports_avx() {
-                self.assembler.vsubsd(*dst, *lhs, *rhs)?;
+                self.assembler.vsubsd(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_subsd(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_subsd(*dst, *rhs);
             }
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_mem() {
             if self.supports_avx() {
-                self.assembler.vsubsd(*dst, *lhs, *rhs)?;
+                self.assembler.vsubsd(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_subsd(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_subsd(*dst, *rhs);
             }
         } else {
             unimplemented!("Unsupported sub combination");
         }
-
-        Ok(())
     }
 
-    pub fn and32(
-        &mut self,
-        dst: impl OperandCast,
-        lhs: impl OperandCast,
-        rhs: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn and32(&mut self, dst: impl OperandCast, lhs: impl OperandCast, rhs: impl OperandCast) {
         let dst = dst.as_operand();
         let lhs = lhs.as_operand();
         let rhs = rhs.as_operand();
 
         if dst.is_gp() && lhs.is_gp() && rhs.is_gp() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.and32(*dst, *rhs)?;
+            self.assembler.and32(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_imm() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.and32(*dst, *rhs)?;
+            self.assembler.and32(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_mem() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.and32(*dst, *rhs)?;
+            self.assembler.and32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_gp() {
-            self.assembler.mov32(*dst, *lhs)?;
-            self.assembler.and32(*dst, *rhs)?;
+            self.assembler.mov32(*dst, *lhs);
+            self.assembler.and32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_imm() {
-            self.assembler.mov32(*dst, *lhs)?;
-            self.assembler.and32(*dst, *rhs)?;
+            self.assembler.mov32(*dst, *lhs);
+            self.assembler.and32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_gp() {
             assert_eq!(
                 dst.as_::<Mem>(),
                 lhs.as_::<Mem>(),
                 "Cannot and two memory operands"
             );
-            self.assembler.and32(*dst, *rhs)?;
+            self.assembler.and32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_imm() {
             assert_eq!(
                 dst.as_::<Mem>(),
                 lhs.as_::<Mem>(),
                 "Cannot and two memory operands"
             );
-            self.assembler.and32(*dst, *rhs)?;
+            self.assembler.and32(*dst, *rhs);
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_vec() {
             if self.supports_avx() {
-                self.assembler.vandps128(*dst, *lhs, *rhs)?;
+                self.assembler.vandps128(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_andps(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_andps(*dst, *rhs);
             }
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_mem() {
             if self.supports_avx() {
-                self.assembler.vandps128(*dst, *lhs, *rhs)?;
+                self.assembler.vandps128(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_andps(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_andps(*dst, *rhs);
             }
         } else {
             unimplemented!("Unsupported and combination");
         }
-
-        Ok(())
     }
 
-    pub fn and64(
-        &mut self,
-        dst: impl OperandCast,
-        lhs: impl OperandCast,
-        rhs: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn and64(&mut self, dst: impl OperandCast, lhs: impl OperandCast, rhs: impl OperandCast) {
         let dst = dst.as_operand();
         let lhs = lhs.as_operand();
         let rhs = rhs.as_operand();
 
         if dst.is_gp() && lhs.is_gp() && rhs.is_gp() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.and64(*dst, *rhs)?;
+            self.assembler.and64(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_imm() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.and64(*dst, *rhs)?;
+            self.assembler.and64(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_mem() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.and64(*dst, *rhs)?;
+            self.assembler.and64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_gp() {
-            self.assembler.mov64(*dst, *lhs)?;
-            self.assembler.and64(*dst, *rhs)?;
+            self.assembler.mov64(*dst, *lhs);
+            self.assembler.and64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_imm() {
-            self.assembler.mov64(*dst, *lhs)?;
-            self.assembler.and64(*dst, *rhs)?;
+            self.assembler.mov64(*dst, *lhs);
+            self.assembler.and64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_gp() {
             assert_eq!(
                 dst.as_::<Mem>(),
                 lhs.as_::<Mem>(),
                 "Cannot and two memory operands"
             );
-            self.assembler.and64(*dst, *rhs)?;
+            self.assembler.and64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_imm() {
             assert_eq!(
                 dst.as_::<Mem>(),
@@ -464,142 +423,128 @@ impl<'a> MacroAssemblerX86<'a> {
             );
             let imm = rhs.as_::<Imm>().value();
             if imm >= i32::MIN as i64 && imm <= i32::MAX as i64 {
-                self.assembler.and64(*dst, *rhs)?;
+                self.assembler.and64(*dst, *rhs);
             } else {
-                self.assembler.mov64(Self::scratch_register(), *rhs)?;
-                self.assembler.and64(*dst, Self::scratch_register())?;
+                self.assembler.mov64(Self::scratch_register(), *rhs);
+                self.assembler.and64(*dst, Self::scratch_register());
             }
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_vec() {
             if self.supports_avx() {
-                self.assembler.vandpd128(*dst, *lhs, *rhs)?;
+                self.assembler.vandpd128(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_andpd(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_andpd(*dst, *rhs);
             }
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_mem() {
             if self.supports_avx() {
-                self.assembler.vandpd128(*dst, *lhs, *rhs)?;
+                self.assembler.vandpd128(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_andpd(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_andpd(*dst, *rhs);
             }
         } else {
             unimplemented!("Unsupported and combination");
         }
-
-        Ok(())
     }
 
-    pub fn or32(
-        &mut self,
-        dst: impl OperandCast,
-        lhs: impl OperandCast,
-        rhs: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn or32(&mut self, dst: impl OperandCast, lhs: impl OperandCast, rhs: impl OperandCast) {
         let dst = dst.as_operand();
         let lhs = lhs.as_operand();
         let rhs = rhs.as_operand();
 
         if dst.is_gp() && lhs.is_gp() && rhs.is_gp() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.or32(*dst, *rhs)?;
+            self.assembler.or32(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_imm() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.or32(*dst, *rhs)?;
+            self.assembler.or32(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_mem() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.or32(*dst, *rhs)?;
+            self.assembler.or32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_gp() {
-            self.assembler.mov32(*dst, *lhs)?;
-            self.assembler.or32(*dst, *rhs)?;
+            self.assembler.mov32(*dst, *lhs);
+            self.assembler.or32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_imm() {
-            self.assembler.mov32(*dst, *lhs)?;
-            self.assembler.or32(*dst, *rhs)?;
+            self.assembler.mov32(*dst, *lhs);
+            self.assembler.or32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_gp() {
             assert_eq!(
                 dst.as_::<Mem>(),
                 lhs.as_::<Mem>(),
                 "Cannot or two memory operands"
             );
-            self.assembler.or32(*dst, *rhs)?;
+            self.assembler.or32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_imm() {
             assert_eq!(
                 dst.as_::<Mem>(),
                 lhs.as_::<Mem>(),
                 "Cannot or two memory operands"
             );
-            self.assembler.or32(*dst, *rhs)?;
+            self.assembler.or32(*dst, *rhs);
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_vec() {
             if self.supports_avx() {
-                self.assembler.vorps128(*dst, *lhs, *rhs)?;
+                self.assembler.vorps128(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_orps(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_orps(*dst, *rhs);
             }
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_mem() {
             if self.supports_avx() {
-                self.assembler.vorps128(*dst, *lhs, *rhs)?;
+                self.assembler.vorps128(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_orps(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_orps(*dst, *rhs);
             }
         } else {
             unimplemented!("Unsupported or combination");
         }
-
-        Ok(())
     }
 
-    pub fn or64(
-        &mut self,
-        dst: impl OperandCast,
-        lhs: impl OperandCast,
-        rhs: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn or64(&mut self, dst: impl OperandCast, lhs: impl OperandCast, rhs: impl OperandCast) {
         let dst = dst.as_operand();
         let lhs = lhs.as_operand();
         let rhs = rhs.as_operand();
 
         if dst.is_gp() && lhs.is_gp() && rhs.is_gp() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.or64(*dst, *rhs)?;
+            self.assembler.or64(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_imm() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.or64(*dst, *rhs)?;
+            self.assembler.or64(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_mem() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.or64(*dst, *rhs)?;
+            self.assembler.or64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_gp() {
-            self.assembler.mov64(*dst, *lhs)?;
-            self.assembler.or64(*dst, *rhs)?;
+            self.assembler.mov64(*dst, *lhs);
+            self.assembler.or64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_imm() {
-            self.assembler.mov64(*dst, *lhs)?;
-            self.assembler.or64(*dst, *rhs)?;
+            self.assembler.mov64(*dst, *lhs);
+            self.assembler.or64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_gp() {
             assert_eq!(
                 dst.as_::<Mem>(),
                 lhs.as_::<Mem>(),
                 "Cannot or two memory operands"
             );
-            self.assembler.or64(*dst, *rhs)?;
+            self.assembler.or64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_imm() {
             assert_eq!(
                 dst.as_::<Mem>(),
@@ -608,142 +553,128 @@ impl<'a> MacroAssemblerX86<'a> {
             );
             let imm = rhs.as_::<Imm>().value();
             if imm >= i32::MIN as i64 && imm <= i32::MAX as i64 {
-                self.assembler.or64(*dst, *rhs)?;
+                self.assembler.or64(*dst, *rhs);
             } else {
-                self.assembler.mov64(Self::scratch_register(), *rhs)?;
-                self.assembler.or64(*dst, Self::scratch_register())?;
+                self.assembler.mov64(Self::scratch_register(), *rhs);
+                self.assembler.or64(*dst, Self::scratch_register());
             }
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_vec() {
             if self.supports_avx() {
-                self.assembler.vorpd128(*dst, *lhs, *rhs)?;
+                self.assembler.vorpd128(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_orpd(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_orpd(*dst, *rhs);
             }
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_mem() {
             if self.supports_avx() {
-                self.assembler.vorpd128(*dst, *lhs, *rhs)?;
+                self.assembler.vorpd128(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_orpd(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_orpd(*dst, *rhs);
             }
         } else {
             unimplemented!("Unsupported or combination");
         }
-
-        Ok(())
     }
 
-    pub fn xor32(
-        &mut self,
-        dst: impl OperandCast,
-        lhs: impl OperandCast,
-        rhs: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn xor32(&mut self, dst: impl OperandCast, lhs: impl OperandCast, rhs: impl OperandCast) {
         let dst = dst.as_operand();
         let lhs = lhs.as_operand();
         let rhs = rhs.as_operand();
 
         if dst.is_gp() && lhs.is_gp() && rhs.is_gp() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.xor32(*dst, *rhs)?;
+            self.assembler.xor32(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_imm() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.xor32(*dst, *rhs)?;
+            self.assembler.xor32(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_mem() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.xor32(*dst, *rhs)?;
+            self.assembler.xor32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_gp() {
-            self.assembler.mov32(*dst, *lhs)?;
-            self.assembler.xor32(*dst, *rhs)?;
+            self.assembler.mov32(*dst, *lhs);
+            self.assembler.xor32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_imm() {
-            self.assembler.mov32(*dst, *lhs)?;
-            self.assembler.xor32(*dst, *rhs)?;
+            self.assembler.mov32(*dst, *lhs);
+            self.assembler.xor32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_gp() {
             assert_eq!(
                 dst.as_::<Mem>(),
                 lhs.as_::<Mem>(),
                 "Cannot xor two memory operands"
             );
-            self.assembler.xor32(*dst, *rhs)?;
+            self.assembler.xor32(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_imm() {
             assert_eq!(
                 dst.as_::<Mem>(),
                 lhs.as_::<Mem>(),
                 "Cannot xor two memory operands"
             );
-            self.assembler.xor32(*dst, *rhs)?;
+            self.assembler.xor32(*dst, *rhs);
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_vec() {
             if self.supports_avx() {
-                self.assembler.vxorps128(*dst, *lhs, *rhs)?;
+                self.assembler.vxorps128(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_xorps(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_xorps(*dst, *rhs);
             }
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_mem() {
             if self.supports_avx() {
-                self.assembler.vxorps128(*dst, *lhs, *rhs)?;
+                self.assembler.vxorps128(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_xorps(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_xorps(*dst, *rhs);
             }
         } else {
             unimplemented!("Unsupported xor combination");
         }
-
-        Ok(())
     }
 
-    pub fn xor64(
-        &mut self,
-        dst: impl OperandCast,
-        lhs: impl OperandCast,
-        rhs: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn xor64(&mut self, dst: impl OperandCast, lhs: impl OperandCast, rhs: impl OperandCast) {
         let dst = dst.as_operand();
         let lhs = lhs.as_operand();
         let rhs = rhs.as_operand();
 
         if dst.is_gp() && lhs.is_gp() && rhs.is_gp() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.xor64(*dst, *rhs)?;
+            self.assembler.xor64(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_imm() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.xor64(*dst, *rhs)?;
+            self.assembler.xor64(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_mem() {
             if dst.id() != lhs.id() {
-                self.mov(*dst, *lhs)?;
+                self.mov(*dst, *lhs);
             }
 
-            self.assembler.xor64(*dst, *rhs)?;
+            self.assembler.xor64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_gp() {
-            self.assembler.mov64(*dst, *lhs)?;
-            self.assembler.xor64(*dst, *rhs)?;
+            self.assembler.mov64(*dst, *lhs);
+            self.assembler.xor64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_imm() {
-            self.assembler.mov64(*dst, *lhs)?;
-            self.assembler.xor64(*dst, *rhs)?;
+            self.assembler.mov64(*dst, *lhs);
+            self.assembler.xor64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_gp() {
             assert_eq!(
                 dst.as_::<Mem>(),
                 lhs.as_::<Mem>(),
                 "Cannot xor two memory operands"
             );
-            self.assembler.xor64(*dst, *rhs)?;
+            self.assembler.xor64(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_mem() && rhs.is_imm() {
             assert_eq!(
                 dst.as_::<Mem>(),
@@ -752,203 +683,183 @@ impl<'a> MacroAssemblerX86<'a> {
             );
             let imm = rhs.as_::<Imm>().value();
             if imm >= i32::MIN as i64 && imm <= i32::MAX as i64 {
-                self.assembler.xor64(*dst, *rhs)?;
+                self.assembler.xor64(*dst, *rhs);
             } else {
-                self.assembler.mov64(Self::scratch_register(), *rhs)?;
-                self.assembler.xor64(*dst, Self::scratch_register())?;
+                self.assembler.mov64(Self::scratch_register(), *rhs);
+                self.assembler.xor64(*dst, Self::scratch_register());
             }
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_vec() {
             if self.supports_avx() {
-                self.assembler.vxorpd128(*dst, *lhs, *rhs)?;
+                self.assembler.vxorpd128(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_xorpd(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_xorpd(*dst, *rhs);
             }
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_mem() {
             if self.supports_avx() {
-                self.assembler.vxorpd128(*dst, *lhs, *rhs)?;
+                self.assembler.vxorpd128(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_xorpd(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_xorpd(*dst, *rhs);
             }
         } else {
             unimplemented!("Unsupported xor combination");
         }
-        Ok(())
     }
 
-    pub fn mul32(
-        &mut self,
-        dst: impl OperandCast,
-        lhs: impl OperandCast,
-        rhs: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn mul32(&mut self, dst: impl OperandCast, lhs: impl OperandCast, rhs: impl OperandCast) {
         let dst = dst.as_operand();
         let lhs = lhs.as_operand();
         let rhs = rhs.as_operand();
 
         if dst.is_gp() && lhs.is_gp() && rhs.is_gp() {
             if dst.id() != lhs.id() {
-                self.assembler.mov32(*dst, *lhs)?;
+                self.assembler.mov32(*dst, *lhs);
             }
 
-            self.assembler.imul32_2(*dst, *rhs)?;
+            self.assembler.imul32_2(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_imm() {
             let imm = rhs.as_::<Imm>().value();
             if imm >= i32::MIN as i64 && imm <= i32::MAX as i64 {
-                self.assembler.imul32_3(*dst, *lhs, *rhs)?;
+                self.assembler.imul32_3(*dst, *lhs, *rhs);
             } else {
-                self.assembler.mov64(Self::scratch_register(), *rhs)?;
+                self.assembler.mov64(Self::scratch_register(), *rhs);
                 if dst.id() != lhs.id() {
-                    self.assembler.mov32(*dst, *lhs)?;
+                    self.assembler.mov32(*dst, *lhs);
                 }
-                self.assembler.imul32_2(*dst, Self::scratch_register())?;
+                self.assembler.imul32_2(*dst, Self::scratch_register());
             }
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_mem() {
             if dst.id() != lhs.id() {
-                self.assembler.mov32(*dst, *lhs)?;
+                self.assembler.mov32(*dst, *lhs);
             }
 
-            self.assembler.imul32_2(*dst, *rhs)?;
+            self.assembler.imul32_2(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_gp() {
-            self.assembler.mov32(Self::scratch_register(), *lhs)?;
-            self.assembler.imul32_2(Self::scratch_register(), *rhs)?;
-            self.assembler.mov32(*dst, Self::scratch_register())?;
+            self.assembler.mov32(Self::scratch_register(), *lhs);
+            self.assembler.imul32_2(Self::scratch_register(), *rhs);
+            self.assembler.mov32(*dst, Self::scratch_register());
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_imm() {
             let imm = rhs.as_::<Imm>().value();
             if imm >= i32::MIN as i64 && imm <= i32::MAX as i64 {
                 self.assembler
-                    .imul32_3(Self::scratch_register(), *lhs, *rhs)?;
+                    .imul32_3(Self::scratch_register(), *lhs, *rhs);
             } else {
-                self.assembler.mov64(Self::scratch_register(), *rhs)?;
-                self.assembler.imul32_2(Self::scratch_register(), *lhs)?;
+                self.assembler.mov64(Self::scratch_register(), *rhs);
+                self.assembler.imul32_2(Self::scratch_register(), *lhs);
             }
-            self.assembler.mov32(*dst, Self::scratch_register())?;
+            self.assembler.mov32(*dst, Self::scratch_register());
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_mem() {
-            self.assembler.mov32(Self::scratch_register(), *lhs)?;
-            self.assembler.imul32_2(Self::scratch_register(), *rhs)?;
-            self.assembler.mov32(*dst, Self::scratch_register())?;
+            self.assembler.mov32(Self::scratch_register(), *lhs);
+            self.assembler.imul32_2(Self::scratch_register(), *rhs);
+            self.assembler.mov32(*dst, Self::scratch_register());
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_vec() {
             if self.supports_avx() {
-                self.assembler.vmulss(*dst, *lhs, *rhs)?;
+                self.assembler.vmulss(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_mulss(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_mulss(*dst, *rhs);
             }
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_mem() {
             if self.supports_avx() {
-                self.assembler.vmulss(*dst, *lhs, *rhs)?;
+                self.assembler.vmulss(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_mulss(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_mulss(*dst, *rhs);
             }
         } else {
             unimplemented!("Unsupported mul combination");
         }
-
-        Ok(())
     }
 
-    pub fn mul64(
-        &mut self,
-        dst: impl OperandCast,
-        lhs: impl OperandCast,
-        rhs: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn mul64(&mut self, dst: impl OperandCast, lhs: impl OperandCast, rhs: impl OperandCast) {
         let dst = dst.as_operand();
         let lhs = lhs.as_operand();
         let rhs = rhs.as_operand();
 
         if dst.is_gp() && lhs.is_gp() && rhs.is_gp() {
             if dst.id() != lhs.id() {
-                self.assembler.mov64(*dst, *lhs)?;
+                self.assembler.mov64(*dst, *lhs);
             }
 
-            self.assembler.imul64_2(*dst, *rhs)?;
+            self.assembler.imul64_2(*dst, *rhs);
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_imm() {
             let imm = rhs.as_::<Imm>().value();
             if imm >= i32::MIN as i64 && imm <= i32::MAX as i64 {
-                self.assembler.imul64_3(*dst, *lhs, *rhs)?;
+                self.assembler.imul64_3(*dst, *lhs, *rhs);
             } else {
-                self.assembler.mov64(Self::scratch_register(), *rhs)?;
+                self.assembler.mov64(Self::scratch_register(), *rhs);
                 if dst.id() != lhs.id() {
-                    self.assembler.mov64(*dst, *lhs)?;
+                    self.assembler.mov64(*dst, *lhs);
                 }
-                self.assembler.imul64_2(*dst, Self::scratch_register())?;
+                self.assembler.imul64_2(*dst, Self::scratch_register());
             }
         } else if dst.is_gp() && lhs.is_gp() && rhs.is_mem() {
             if dst.id() != lhs.id() {
-                self.assembler.mov64(*dst, *lhs)?;
+                self.assembler.mov64(*dst, *lhs);
             }
 
-            self.assembler.imul64_2(*dst, *rhs)?;
+            self.assembler.imul64_2(*dst, *rhs);
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_gp() {
-            self.assembler.mov64(Self::scratch_register(), *lhs)?;
-            self.assembler.imul64_2(Self::scratch_register(), *rhs)?;
-            self.assembler.mov64(*dst, Self::scratch_register())?;
+            self.assembler.mov64(Self::scratch_register(), *lhs);
+            self.assembler.imul64_2(Self::scratch_register(), *rhs);
+            self.assembler.mov64(*dst, Self::scratch_register());
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_imm() {
             let imm = rhs.as_::<Imm>().value();
             if imm >= i32::MIN as i64 && imm <= i32::MAX as i64 {
                 self.assembler
-                    .imul64_3(Self::scratch_register(), *lhs, *rhs)?;
+                    .imul64_3(Self::scratch_register(), *lhs, *rhs);
             } else {
-                self.assembler.mov64(Self::scratch_register(), *rhs)?;
-                self.assembler.imul64_2(Self::scratch_register(), *lhs)?;
+                self.assembler.mov64(Self::scratch_register(), *rhs);
+                self.assembler.imul64_2(Self::scratch_register(), *lhs);
             }
-            self.assembler.mov64(*dst, Self::scratch_register())?;
+            self.assembler.mov64(*dst, Self::scratch_register());
         } else if dst.is_mem() && lhs.is_gp() && rhs.is_mem() {
-            self.assembler.mov64(Self::scratch_register(), *lhs)?;
-            self.assembler.imul64_2(Self::scratch_register(), *rhs)?;
-            self.assembler.mov64(*dst, Self::scratch_register())?;
+            self.assembler.mov64(Self::scratch_register(), *lhs);
+            self.assembler.imul64_2(Self::scratch_register(), *rhs);
+            self.assembler.mov64(*dst, Self::scratch_register());
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_vec() {
             if self.supports_avx() {
-                self.assembler.vmulsd(*dst, *lhs, *rhs)?;
+                self.assembler.vmulsd(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_mulsd(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_mulsd(*dst, *rhs);
             }
         } else if dst.is_vec() && lhs.is_vec() && rhs.is_mem() {
             if self.supports_avx() {
-                self.assembler.vmulsd(*dst, *lhs, *rhs)?;
+                self.assembler.vmulsd(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_mulsd(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_mulsd(*dst, *rhs);
             }
         } else {
             unimplemented!("Unsupported mul combination");
         }
-
-        Ok(())
     }
 
-    pub fn div32(
-        &mut self,
-        dst: impl OperandCast,
-        lhs: impl OperandCast,
-        rhs: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn div32(&mut self, dst: impl OperandCast, lhs: impl OperandCast, rhs: impl OperandCast) {
         let dst = dst.as_operand();
         let lhs = lhs.as_operand();
         let rhs = rhs.as_operand();
 
         if dst.is_vec() && lhs.is_vec() && rhs.is_vec() {
             if self.supports_avx() {
-                self.assembler.vdivss(*dst, *lhs, *rhs)?;
+                self.assembler.vdivss(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_divss(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_divss(*dst, *rhs);
             }
-            return Ok(());
+            return;
         }
 
         if dst.is_vec() && lhs.is_vec() && rhs.is_mem() {
             if self.supports_avx() {
-                self.assembler.vdivss(*dst, *lhs, *rhs)?;
+                self.assembler.vdivss(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_divss(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_divss(*dst, *rhs);
             }
-            return Ok(());
+            return;
         }
 
         if !((dst.is_gp() || dst.is_mem()) && (lhs.is_gp() || lhs.is_mem())) {
@@ -961,12 +872,12 @@ impl<'a> MacroAssemblerX86<'a> {
             && !(rhs.is_gp() && rhs.id() == dst.id());
 
         let divisor = if rhs.is_imm() {
-            self.assembler.mov64(Self::scratch_register(), *rhs)?;
+            self.assembler.mov64(Self::scratch_register(), *rhs);
             *Self::scratch_register().as_operand()
         } else if rhs.is_gp() {
             let rhs_gp = rhs.as_::<Gp>();
             if rhs_gp.id() == RAX.id() || rhs_gp.id() == RDX.id() {
-                self.assembler.mov64(Self::scratch_register(), *rhs)?;
+                self.assembler.mov64(Self::scratch_register(), *rhs);
                 *Self::scratch_register().as_operand()
             } else {
                 *rhs
@@ -978,61 +889,55 @@ impl<'a> MacroAssemblerX86<'a> {
         };
 
         if preserve_rax_via_dst {
-            self.assembler.xchg32(EAX, *dst)?;
+            self.assembler.xchg32(EAX, *dst);
         }
 
         if lhs.is_gp() {
             if !(preserve_rax_via_dst && lhs.id() == dst.id()) {
-                self.assembler.mov32(RAX, *lhs)?;
+                self.assembler.mov32(RAX, *lhs);
             }
         } else {
-            self.assembler.mov32(RAX, *lhs)?;
+            self.assembler.mov32(RAX, *lhs);
         }
 
-        self.assembler.cdq()?;
+        self.assembler.cdq();
 
-        self.assembler.idiv32(divisor)?;
+        self.assembler.idiv32(divisor);
 
         if dst.is_gp() {
             if preserve_rax_via_dst {
-                self.assembler.xchg32(EAX, *dst)?;
+                self.assembler.xchg32(EAX, *dst);
             } else {
-                self.assembler.mov32(*dst, RAX)?;
+                self.assembler.mov32(*dst, RAX);
             }
         } else {
-            self.assembler.mov32(*dst, RAX)?;
+            self.assembler.mov32(*dst, RAX);
         }
-        Ok(())
     }
 
-    pub fn div64(
-        &mut self,
-        dst: impl OperandCast,
-        lhs: impl OperandCast,
-        rhs: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn div64(&mut self, dst: impl OperandCast, lhs: impl OperandCast, rhs: impl OperandCast) {
         let dst = dst.as_operand();
         let lhs = lhs.as_operand();
         let rhs = rhs.as_operand();
 
         if dst.is_vec() && lhs.is_vec() && rhs.is_vec() {
             if self.supports_avx() {
-                self.assembler.vdivsd(*dst, *lhs, *rhs)?;
+                self.assembler.vdivsd(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_divsd(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_divsd(*dst, *rhs);
             }
-            return Ok(());
+            return;
         }
 
         if dst.is_vec() && lhs.is_vec() && rhs.is_mem() {
             if self.supports_avx() {
-                self.assembler.vdivsd(*dst, *lhs, *rhs)?;
+                self.assembler.vdivsd(*dst, *lhs, *rhs);
             } else {
-                self.mov(*dst, *lhs)?;
-                self.assembler.sse_divsd(*dst, *rhs)?;
+                self.mov(*dst, *lhs);
+                self.assembler.sse_divsd(*dst, *rhs);
             }
-            return Ok(());
+            return;
         }
 
         if !((dst.is_gp() || dst.is_mem()) && (lhs.is_gp() || lhs.is_mem())) {
@@ -1045,12 +950,12 @@ impl<'a> MacroAssemblerX86<'a> {
             && !(rhs.is_gp() && rhs.id() == dst.id());
 
         let divisor = if rhs.is_imm() {
-            self.assembler.mov64(Self::scratch_register(), *rhs)?;
+            self.assembler.mov64(Self::scratch_register(), *rhs);
             *Self::scratch_register().as_operand()
         } else if rhs.is_gp() {
             let rhs_gp = rhs.as_::<Gp>();
             if rhs_gp.id() == RAX.id() || rhs_gp.id() == RDX.id() {
-                self.assembler.mov64(Self::scratch_register(), *rhs)?;
+                self.assembler.mov64(Self::scratch_register(), *rhs);
                 *Self::scratch_register().as_operand()
             } else {
                 *rhs
@@ -1062,63 +967,59 @@ impl<'a> MacroAssemblerX86<'a> {
         };
 
         if preserve_rax_via_dst {
-            self.assembler.xchg64(RAX, *dst)?;
+            self.assembler.xchg64(RAX, *dst);
         }
 
         if lhs.is_gp() {
             if !(preserve_rax_via_dst && lhs.id() == dst.id()) {
-                self.assembler.mov64(RAX, *lhs)?;
+                self.assembler.mov64(RAX, *lhs);
             }
         } else {
-            self.assembler.mov64(RAX, *lhs)?;
+            self.assembler.mov64(RAX, *lhs);
         }
 
-        self.assembler.cqo()?;
+        self.assembler.cqo();
 
-        self.assembler.idiv64(divisor)?;
+        self.assembler.idiv64(divisor);
 
         if dst.is_gp() {
             if preserve_rax_via_dst {
-                self.assembler.xchg64(RAX, *dst)?;
+                self.assembler.xchg64(RAX, *dst);
             } else {
-                self.assembler.mov64(*dst, RAX)?;
+                self.assembler.mov64(*dst, RAX);
             }
         } else {
-            self.assembler.mov64(*dst, RAX)?;
+            self.assembler.mov64(*dst, RAX);
         }
-
-        Ok(())
     }
 
-    pub fn mov(&mut self, dst: impl OperandCast, src: impl OperandCast) -> Result<(), AsmError> {
+    pub fn mov(&mut self, dst: impl OperandCast, src: impl OperandCast) {
         let dst = dst.as_operand();
         let src = src.as_operand();
 
         if dst.is_gp() && src.is_gp() {
             if dst.id() != src.id() {
-                self.assembler.mov64(*dst, *src)?;
+                self.assembler.mov64(*dst, *src);
             }
         } else if dst.is_gp() && src.is_imm() {
-            self.assembler.mov64(*dst, *src)?;
+            self.assembler.mov64(*dst, *src);
         } else if dst.is_gp() && src.is_mem() {
-            self.assembler.mov64(*dst, *src)?;
+            self.assembler.mov64(*dst, *src);
         } else if dst.is_mem() && src.is_gp() {
-            self.assembler.mov64(*dst, *src)?;
+            self.assembler.mov64(*dst, *src);
         } else if dst.is_mem() && src.is_imm() {
-            self.assembler.mov64(*dst, *src)?;
+            self.assembler.mov64(*dst, *src);
         } else if dst.is_vec() && src.is_vec() {
             if dst.id() != src.id() {
                 if self.supports_avx() {
-                    self.assembler.vmovaps128(*dst, *src)?;
+                    self.assembler.vmovaps128(*dst, *src);
                 } else {
-                    self.assembler.sse_movaps(*dst, *src)?;
+                    self.assembler.sse_movaps(*dst, *src);
                 }
             }
         } else {
             unimplemented!("Unsupported mov combination");
         }
-
-        Ok(())
     }
 
     pub fn load8(
@@ -1126,7 +1027,7 @@ impl<'a> MacroAssemblerX86<'a> {
         dst: impl OperandCast,
         src: impl OperandCast,
         sign_extend: Option<ExtensionSize>,
-    ) -> Result<(), AsmError> {
+    ) {
         let dst = dst.as_operand();
         let src = src.as_operand();
 
@@ -1146,7 +1047,7 @@ impl<'a> MacroAssemblerX86<'a> {
         dst: impl OperandCast,
         src: impl OperandCast,
         sign_extend: Option<ExtensionSize>,
-    ) -> Result<(), AsmError> {
+    ) {
         let dst = dst.as_operand();
         let src = src.as_operand();
 
@@ -1166,7 +1067,7 @@ impl<'a> MacroAssemblerX86<'a> {
         dst: impl OperandCast,
         src: impl OperandCast,
         sign_extend: Option<ExtensionSize>,
-    ) -> Result<(), AsmError> {
+    ) {
         let dst = dst.as_operand();
         let src = src.as_operand();
 
@@ -1183,7 +1084,7 @@ impl<'a> MacroAssemblerX86<'a> {
                     if mem.is_abs() {
                         let addr = mem.absolute_address();
                         self.assembler
-                            .mov64(Self::scratch_register(), imm(addr as i64))?;
+                            .mov64(Self::scratch_register(), imm(addr as i64));
                         self.load32(*dst, ptr32(Self::scratch_register(), 0), None)
                     } else {
                         if self.supports_avx() {
@@ -1200,7 +1101,7 @@ impl<'a> MacroAssemblerX86<'a> {
         }
     }
 
-    pub fn load64(&mut self, dst: impl OperandCast, src: impl OperandCast) -> Result<(), AsmError> {
+    pub fn load64(&mut self, dst: impl OperandCast, src: impl OperandCast) {
         let dst = dst.as_operand();
         let src = src.as_operand();
 
@@ -1212,7 +1113,7 @@ impl<'a> MacroAssemblerX86<'a> {
             if mem.is_abs() {
                 let addr = mem.absolute_address();
                 self.assembler
-                    .mov64(Self::scratch_register(), imm(addr as i64))?;
+                    .mov64(Self::scratch_register(), imm(addr as i64));
                 self.load64(*dst, ptr64(Self::scratch_register(), 0))
             } else {
                 if self.supports_avx() {
@@ -1226,7 +1127,7 @@ impl<'a> MacroAssemblerX86<'a> {
         }
     }
 
-    pub fn store8(&mut self, dst: impl OperandCast, src: impl OperandCast) -> Result<(), AsmError> {
+    pub fn store8(&mut self, dst: impl OperandCast, src: impl OperandCast) {
         let dst = dst.as_operand();
         let src = src.as_operand();
 
@@ -1235,11 +1136,7 @@ impl<'a> MacroAssemblerX86<'a> {
         self.assembler.mov8(*dst, *src)
     }
 
-    pub fn store16(
-        &mut self,
-        dst: impl OperandCast,
-        src: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn store16(&mut self, dst: impl OperandCast, src: impl OperandCast) {
         let dst = dst.as_operand();
         let src = src.as_operand();
 
@@ -1248,11 +1145,7 @@ impl<'a> MacroAssemblerX86<'a> {
         self.assembler.mov16(*dst, *src)
     }
 
-    pub fn store32(
-        &mut self,
-        dst: impl OperandCast,
-        src: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn store32(&mut self, dst: impl OperandCast, src: impl OperandCast) {
         let dst = dst.as_operand();
         let src = src.as_operand();
 
@@ -1273,11 +1166,7 @@ impl<'a> MacroAssemblerX86<'a> {
         }
     }
 
-    pub fn store64(
-        &mut self,
-        dst: impl OperandCast,
-        src: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn store64(&mut self, dst: impl OperandCast, src: impl OperandCast) {
         let dst = dst.as_operand();
         let src = src.as_operand();
 
@@ -1298,11 +1187,7 @@ impl<'a> MacroAssemblerX86<'a> {
         }
     }
 
-    pub fn store128(
-        &mut self,
-        dst: impl OperandCast,
-        src: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn store128(&mut self, dst: impl OperandCast, src: impl OperandCast) {
         let dst = dst.as_operand();
         let src = src.as_operand();
 
@@ -1316,11 +1201,7 @@ impl<'a> MacroAssemblerX86<'a> {
         }
     }
 
-    pub fn store256(
-        &mut self,
-        dst: impl OperandCast,
-        src: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn store256(&mut self, dst: impl OperandCast, src: impl OperandCast) {
         let dst = dst.as_operand();
         let src = src.as_operand();
 
@@ -1330,17 +1211,11 @@ impl<'a> MacroAssemblerX86<'a> {
         if self.supports_avx2() {
             self.assembler.vmovaps256(*dst, *src)
         } else {
-            return Err(AsmError::UnsupportedInstruction {
-                reason: "store256 requires AVX2",
-            });
+            unreachable!("store256 requires AVX2")
         }
     }
 
-    pub fn store512(
-        &mut self,
-        dst: impl OperandCast,
-        src: impl OperandCast,
-    ) -> Result<(), AsmError> {
+    pub fn store512(&mut self, dst: impl OperandCast, src: impl OperandCast) {
         let dst = dst.as_operand();
         let src = src.as_operand();
 
@@ -1350,9 +1225,7 @@ impl<'a> MacroAssemblerX86<'a> {
         if self.supports_avx512f() {
             self.assembler.vmovaps512(*dst, *src)
         } else {
-            return Err(AsmError::UnsupportedInstruction {
-                reason: "store512 requires AVX-512F",
-            });
+            unreachable!("store512 requires AVX-512F")
         }
     }
 
@@ -1361,7 +1234,7 @@ impl<'a> MacroAssemblerX86<'a> {
         dst: impl OperandCast,
         src: impl OperandCast,
         size: ExtensionSize,
-    ) -> Result<(), AsmError> {
+    ) {
         let dst = dst.as_operand();
         let src = src.as_operand();
 
@@ -1382,7 +1255,7 @@ impl<'a> MacroAssemblerX86<'a> {
         dst: impl OperandCast,
         src: impl OperandCast,
         size: ExtensionSize,
-    ) -> Result<(), AsmError> {
+    ) {
         let dst = dst.as_operand();
         let src = src.as_operand();
 
@@ -1398,7 +1271,7 @@ impl<'a> MacroAssemblerX86<'a> {
         }
     }
 
-    pub fn swap32(&mut self, a: impl OperandCast, b: impl OperandCast) -> Result<(), AsmError> {
+    pub fn swap32(&mut self, a: impl OperandCast, b: impl OperandCast) {
         let a = a.as_operand();
         let b = b.as_operand();
 
@@ -1407,13 +1280,11 @@ impl<'a> MacroAssemblerX86<'a> {
         } else if a.is_mem() && b.is_gp() {
             self.assembler.xchg32(*a, *b)
         } else {
-            return Err(AsmError::UnsupportedInstruction {
-                reason: "Unsupported swap32 combination",
-            });
+            unreachable!("Unsupported swap32 combination");
         }
     }
 
-    pub fn swap64(&mut self, a: impl OperandCast, b: impl OperandCast) -> Result<(), AsmError> {
+    pub fn swap64(&mut self, a: impl OperandCast, b: impl OperandCast) {
         let a = a.as_operand();
         let b = b.as_operand();
 
@@ -1422,30 +1293,28 @@ impl<'a> MacroAssemblerX86<'a> {
         } else if a.is_mem() && b.is_gp() {
             self.assembler.xchg64(*a, *b)
         } else {
-            return Err(AsmError::UnsupportedInstruction {
-                reason: "Unsupported swap64 combination",
-            });
+            unreachable!("Unsupported swap64 combination");
         }
     }
 
-    pub fn call(&mut self, target: impl OperandCast) -> Result<(), AsmError> {
+    pub fn call(&mut self, target: impl OperandCast) {
         let target = target.as_operand();
 
         self.assembler.call(*target)
     }
 
-    pub fn jump(&mut self, target: impl OperandCast) -> Result<(), AsmError> {
+    pub fn jump(&mut self, target: impl OperandCast) {
         let target = target.as_operand();
 
         self.assembler.jmp(*target)
     }
 
-    pub fn branch(&mut self, cond: ResultCondition) -> Result<Label, AsmError> {
+    pub fn branch(&mut self, cond: ResultCondition) -> Label {
         let label = self.assembler.get_label();
         let op = JCC | cond.x86_condition() as i64;
 
         self.assembler.emit_n(op, &[&label]);
-        Ok(label)
+        label
     }
 
     pub fn branch_test32(
@@ -1453,32 +1322,32 @@ impl<'a> MacroAssemblerX86<'a> {
         value: impl OperandCast,
         mask: impl OperandCast,
         cond: ResultCondition,
-    ) -> Result<Label, AsmError> {
+    ) -> Label {
         let value = value.as_operand();
         let mask = mask.as_operand();
 
         if value.is_gp() && mask.is_gp() {
-            self.assembler.test32(*value, *mask)?;
+            self.assembler.test32(*value, *mask);
             self.branch(cond)
         } else if value.is_gp() && mask.is_imm() {
-            self.assembler.test32(*value, *mask)?;
+            self.assembler.test32(*value, *mask);
             self.branch(cond)
         } else if value.is_mem() && mask.is_imm() {
             let mem = value.as_::<Mem>();
             let mask = mask.as_::<Imm>().value();
             if mem.has_shift() || mem.has_index() {
                 if mask == -1 {
-                    self.assembler.cmp32(*value, imm(0))?;
+                    self.assembler.cmp32(*value, imm(0));
                 } else {
-                    self.assembler.test32(*value, imm(mask))?;
+                    self.assembler.test32(*value, imm(mask));
                 }
             } else if mem.is_abs() {
                 let addr = mem.absolute_address();
                 self.assembler
-                    .mov64(Self::scratch_register(), imm(addr as i64))?;
+                    .mov64(Self::scratch_register(), imm(addr as i64));
                 return self.branch_test32(ptr32(Self::scratch_register(), 0), imm(mask), cond);
             } else {
-                self.generate_test32(mem, mask as i32)?;
+                self.generate_test32(mem, mask as i32);
             }
             self.branch(cond)
         } else {
@@ -1491,15 +1360,15 @@ impl<'a> MacroAssemblerX86<'a> {
         value: impl OperandCast,
         mask: impl OperandCast,
         cond: ResultCondition,
-    ) -> Result<Label, AsmError> {
+    ) -> Label {
         let value = value.as_operand();
         let mask = mask.as_operand();
 
         if value.is_gp() && mask.is_gp() {
-            self.assembler.test8(*value, *mask)?;
+            self.assembler.test8(*value, *mask);
             self.branch(cond)
         } else if value.is_gp() && mask.is_imm() {
-            self.assembler.test8(*value, *mask)?;
+            self.assembler.test8(*value, *mask);
             self.branch(cond)
         } else if value.is_mem() && mask.is_imm() {
             let mem = value.as_::<Mem>();
@@ -1507,13 +1376,13 @@ impl<'a> MacroAssemblerX86<'a> {
             if mem.is_abs() {
                 let addr = mem.absolute_address();
                 self.assembler
-                    .mov64(Self::scratch_register(), imm(addr as i64))?;
+                    .mov64(Self::scratch_register(), imm(addr as i64));
                 return self.branch_test8(ptr8(Self::scratch_register(), 0), imm(mask), cond);
             } else {
                 if mask == -1 {
-                    self.assembler.cmp8(*value, imm(0))?;
+                    self.assembler.cmp8(*value, imm(0));
                 } else {
-                    self.assembler.test8(*value, imm(mask))?;
+                    self.assembler.test8(*value, imm(mask));
                 }
                 self.branch(cond)
             }
@@ -1527,15 +1396,15 @@ impl<'a> MacroAssemblerX86<'a> {
         value: impl OperandCast,
         mask: impl OperandCast,
         cond: ResultCondition,
-    ) -> Result<Label, AsmError> {
+    ) -> Label {
         let value = value.as_operand();
         let mask = mask.as_operand();
 
         if value.is_gp() && mask.is_gp() {
-            self.assembler.test16(*value, *mask)?;
+            self.assembler.test16(*value, *mask);
             self.branch(cond)
         } else if value.is_gp() && mask.is_imm() {
-            self.assembler.test16(*value, *mask)?;
+            self.assembler.test16(*value, *mask);
             self.branch(cond)
         } else if value.is_mem() && mask.is_imm() {
             let mem = value.as_::<Mem>();
@@ -1543,13 +1412,13 @@ impl<'a> MacroAssemblerX86<'a> {
             if mem.is_abs() {
                 let addr = mem.absolute_address();
                 self.assembler
-                    .mov64(Self::scratch_register(), imm(addr as i64))?;
+                    .mov64(Self::scratch_register(), imm(addr as i64));
                 return self.branch_test16(ptr16(Self::scratch_register(), 0), imm(mask), cond);
             } else {
                 if mask == -1 {
-                    self.assembler.cmp16(*value, imm(0))?;
+                    self.assembler.cmp16(*value, imm(0));
                 } else {
-                    self.assembler.test16(*value, imm(mask))?;
+                    self.assembler.test16(*value, imm(mask));
                 }
                 self.branch(cond)
             }
@@ -1558,22 +1427,20 @@ impl<'a> MacroAssemblerX86<'a> {
         }
     }
 
-    fn generate_test32(&mut self, ptr: Mem, mask: i32) -> Result<(), AsmError> {
+    fn generate_test32(&mut self, ptr: Mem, mask: i32) {
         if mask == -1 {
-            self.assembler.cmp32(ptr, imm(mask))?;
+            self.assembler.cmp32(ptr, imm(mask));
         } else if (mask & !0xff) == 0 {
-            self.assembler.test8(ptr, imm(mask))?;
+            self.assembler.test8(ptr, imm(mask));
         } else if (mask & !0xff00) == 0 {
-            self.assembler.test8(ptr + 1, imm(mask >> 8))?;
+            self.assembler.test8(ptr + 1, imm(mask >> 8));
         } else if (mask & !0xff0000) == 0 {
-            self.assembler.test8(ptr + 2, imm(mask >> 16))?;
+            self.assembler.test8(ptr + 2, imm(mask >> 16));
         } else if (mask & !(0xff000000u32 as i32)) == 0 {
-            self.assembler.test8(ptr + 3, imm(mask >> 24))?;
+            self.assembler.test8(ptr + 3, imm(mask >> 24));
         } else {
-            self.assembler.test32(ptr, imm(mask))?;
+            self.assembler.test32(ptr, imm(mask));
         }
-
-        Ok(())
     }
 
     pub fn branch_test64(
@@ -1581,21 +1448,21 @@ impl<'a> MacroAssemblerX86<'a> {
         value: impl OperandCast,
         mask: impl OperandCast,
         cond: ResultCondition,
-    ) -> Result<Label, AsmError> {
+    ) -> Label {
         let value = value.as_operand();
         let mask = mask.as_operand();
 
         if value.is_gp() && mask.is_gp() {
-            self.assembler.test64(*value, *mask)?;
+            self.assembler.test64(*value, *mask);
             self.branch(cond)
         } else if value.is_gp() && mask.is_imm() {
             let mask = mask.as_::<Imm>().value();
             if mask == -1 {
-                self.assembler.cmp64(*value, imm(0))?;
+                self.assembler.cmp64(*value, imm(0));
             } else if mask & !0x7f == 0 {
-                self.assembler.test8(*value, imm(mask))?;
+                self.assembler.test8(*value, imm(mask));
             } else {
-                self.assembler.test64(*value, imm(mask))?;
+                self.assembler.test64(*value, imm(mask));
             }
 
             self.branch(cond)
@@ -1605,15 +1472,15 @@ impl<'a> MacroAssemblerX86<'a> {
             if mem.is_abs() {
                 let addr = mem.absolute_address();
                 self.assembler
-                    .mov64(Self::scratch_register(), imm(addr as i64))?;
+                    .mov64(Self::scratch_register(), imm(addr as i64));
                 return self.branch_test64(ptr64(Self::scratch_register(), 0), imm(mask), cond);
             } else {
                 if mask == -1 {
-                    self.assembler.cmp64(*value, imm(0))?;
+                    self.assembler.cmp64(*value, imm(0));
                 } else if mask & !0x7f == 0 {
-                    self.assembler.test8(*value, imm(mask))?;
+                    self.assembler.test8(*value, imm(mask));
                 } else {
-                    self.assembler.test64(*value, imm(mask))?;
+                    self.assembler.test64(*value, imm(mask));
                 }
                 self.branch(cond)
             }
@@ -1627,31 +1494,31 @@ impl<'a> MacroAssemblerX86<'a> {
         test_value: impl OperandCast,
         bit: impl OperandCast,
         cond: ResultCondition,
-    ) -> Result<Label, AsmError> {
+    ) -> Label {
         let label = self.assembler.get_label();
 
         let test_value = test_value.as_operand();
         let bit = bit.as_operand();
 
         if test_value.is_gp() && bit.is_gp() {
-            self.assembler.bt64(*test_value, *bit)?;
+            self.assembler.bt64(*test_value, *bit);
         } else if test_value.is_mem() && bit.is_imm() {
-            self.assembler.bt64(*test_value, *bit)?;
+            self.assembler.bt64(*test_value, *bit);
         } else if test_value.is_gp() && bit.is_imm() {
-            self.assembler.bt64(*test_value, *bit)?;
+            self.assembler.bt64(*test_value, *bit);
         } else {
             unimplemented!("Unsupported branch_test_bit64 combination");
         }
 
         if cond == ResultCondition::NonZero {
-            self.assembler.jc(label)?;
+            self.assembler.jc(label);
         } else if cond == ResultCondition::Zero {
-            self.assembler.jnc(label)?;
+            self.assembler.jnc(label);
         } else {
             unimplemented!("Unsupported condition for branch_test_bit64");
         }
 
-        Ok(label)
+        label
     }
 
     pub fn branch_test_bit32(
@@ -1659,31 +1526,31 @@ impl<'a> MacroAssemblerX86<'a> {
         test_value: impl OperandCast,
         bit: impl OperandCast,
         cond: ResultCondition,
-    ) -> Result<Label, AsmError> {
+    ) -> Label {
         let label = self.assembler.get_label();
 
         let test_value = test_value.as_operand();
         let bit = bit.as_operand();
 
         if test_value.is_gp() && bit.is_gp() {
-            self.assembler.bt32(*test_value, *bit)?;
+            self.assembler.bt32(*test_value, *bit);
         } else if test_value.is_mem() && bit.is_imm() {
-            self.assembler.bt32(*test_value, *bit)?;
+            self.assembler.bt32(*test_value, *bit);
         } else if test_value.is_gp() && bit.is_imm() {
-            self.assembler.bt32(*test_value, *bit)?;
+            self.assembler.bt32(*test_value, *bit);
         } else {
             unimplemented!("Unsupported branch_test_bit32 combination");
         }
 
         if cond == ResultCondition::NonZero {
-            self.assembler.jc(label)?;
+            self.assembler.jc(label);
         } else if cond == ResultCondition::Zero {
-            self.assembler.jnc(label)?;
+            self.assembler.jnc(label);
         } else {
             unimplemented!("Unsupported condition for branch_test_bit32");
         }
 
-        Ok(label)
+        label
     }
 
     pub fn test32(
@@ -1692,24 +1559,24 @@ impl<'a> MacroAssemblerX86<'a> {
         value: impl OperandCast,
         mask: impl OperandCast,
         cond: ResultCondition,
-    ) -> Result<(), AsmError> {
+    ) {
         let value = value.as_operand();
         let mask = mask.as_operand();
 
         if value.is_gp() && mask.is_gp() {
-            self.assembler.test32(*value, *mask)?;
+            self.assembler.test32(*value, *mask);
         } else if value.is_gp() && mask.is_imm() {
-            self.assembler.test32(*value, *mask)?;
+            self.assembler.test32(*value, *mask);
         } else if value.is_mem() && mask.is_imm() {
             let mem = value.as_::<Mem>();
             let mask = mask.as_::<Imm>().value();
             if mem.is_abs() {
                 let addr = mem.absolute_address();
                 self.assembler
-                    .mov64(Self::scratch_register(), imm(addr as i64))?;
+                    .mov64(Self::scratch_register(), imm(addr as i64));
                 return self.test32(dest, ptr32(Self::scratch_register(), 0), imm(mask), cond);
             } else {
-                self.generate_test32(mem, mask as i32)?;
+                self.generate_test32(mem, mask as i32);
             }
         } else {
             unimplemented!("Unsupported test32 combination");
@@ -1724,20 +1591,20 @@ impl<'a> MacroAssemblerX86<'a> {
         value: impl OperandCast,
         mask: impl OperandCast,
         cond: ResultCondition,
-    ) -> Result<(), AsmError> {
+    ) {
         let value = value.as_operand();
         let mask = mask.as_operand();
 
         if value.is_gp() && mask.is_gp() {
-            self.assembler.test64(*value, *mask)?;
+            self.assembler.test64(*value, *mask);
         } else if value.is_gp() && mask.is_imm() {
             let mask = mask.as_::<Imm>().value();
             if mask == -1 {
-                self.assembler.cmp64(*value, imm(0))?;
+                self.assembler.cmp64(*value, imm(0));
             } else if mask & !0x7f == 0 {
-                self.assembler.test8(*value, imm(mask))?;
+                self.assembler.test8(*value, imm(mask));
             } else {
-                self.assembler.test64(*value, imm(mask))?;
+                self.assembler.test64(*value, imm(mask));
             }
         } else if value.is_mem() && mask.is_imm() {
             let mem = value.as_::<Mem>();
@@ -1745,15 +1612,15 @@ impl<'a> MacroAssemblerX86<'a> {
             if mem.is_abs() {
                 let addr = mem.absolute_address();
                 self.assembler
-                    .mov64(Self::scratch_register(), imm(addr as i64))?;
+                    .mov64(Self::scratch_register(), imm(addr as i64));
                 return self.test64(dest, ptr64(Self::scratch_register(), 0), imm(mask), cond);
             } else {
                 if mask == -1 {
-                    self.assembler.cmp64(*value, imm(0))?;
+                    self.assembler.cmp64(*value, imm(0));
                 } else if mask & !0x7f == 0 {
-                    self.assembler.test8(*value, imm(mask))?;
+                    self.assembler.test8(*value, imm(mask));
                 } else {
-                    self.assembler.test64(*value, imm(mask))?;
+                    self.assembler.test64(*value, imm(mask));
                 }
             }
         } else {
@@ -1763,7 +1630,7 @@ impl<'a> MacroAssemblerX86<'a> {
         self.set32(dest, cond)
     }
 
-    pub fn set32(&mut self, dest: impl OperandCast, cond: ResultCondition) -> Result<(), AsmError> {
+    pub fn set32(&mut self, dest: impl OperandCast, cond: ResultCondition) {
         let dest = dest.as_operand();
 
         assert!(dest.is_gp());
@@ -1780,7 +1647,7 @@ impl<'a> MacroAssemblerX86<'a> {
         right: Vec,
         dest: Gp,
         mut compare: impl FnMut(&mut Self, Vec, Vec),
-    ) -> Result<(), AsmError> {
+    ) {
         let (special, invert, cc) = cond.x86_condition();
         if special {
             if cond == DoubleCondition::EqualAndOrdered {
@@ -1788,17 +1655,17 @@ impl<'a> MacroAssemblerX86<'a> {
                     compare(self, left, right);
                     self.assembler
                         .emit_n(SETCC8R | CondCode::NP as i64, &[&dest.as_operand()]);
-                    return Ok(());
+                    return;
                 }
 
-                self.mov(dest, imm(0))?;
+                self.mov(dest, imm(0));
                 compare(self, right, left);
                 let is_unordered = self.assembler.get_label();
-                self.assembler.jp(is_unordered)?;
+                self.assembler.jp(is_unordered);
                 self.assembler
                     .emit_n(SETCC8R | CondCode::E as i64, &[&dest.as_operand()]);
                 self.assembler.bind_label(is_unordered);
-                return Ok(());
+                return;
             }
 
             if cond == DoubleCondition::NotEqualOrUnordered {
@@ -1806,17 +1673,17 @@ impl<'a> MacroAssemblerX86<'a> {
                     compare(self, left, right);
                     self.assembler
                         .emit_n(SETCC8R | CondCode::P as i64, &[&dest.as_operand()]);
-                    return Ok(());
+                    return;
                 }
 
-                self.mov(dest, imm(1))?;
+                self.mov(dest, imm(1));
                 compare(self, right, left);
                 let is_unordered = self.assembler.get_label();
-                self.assembler.jp(is_unordered)?;
+                self.assembler.jp(is_unordered);
                 self.assembler
                     .emit_n(SETCC8R | CondCode::NE as i64, &[&dest.as_operand()]);
                 self.assembler.bind_label(is_unordered);
-                return Ok(());
+                return;
             }
 
             unreachable!();
@@ -1830,8 +1697,6 @@ impl<'a> MacroAssemblerX86<'a> {
 
         self.assembler
             .emit_n(SETCC8R | cc as i64, &[&dest.as_operand()]);
-
-        Ok(())
     }
 
     fn jump_after_floating_point_compare(
@@ -1839,41 +1704,41 @@ impl<'a> MacroAssemblerX86<'a> {
         cond: DoubleCondition,
         left: Vec,
         right: Vec,
-    ) -> Result<Label, AsmError> {
+    ) -> Label {
         if cond == DoubleCondition::EqualAndOrdered {
             if left.id() == right.id() {
                 let label = self.assembler.get_label();
-                self.assembler.jnp(label)?;
-                return Ok(label);
+                self.assembler.jnp(label);
+                return label;
             }
             let is_unordered = self.assembler.get_label();
-            self.assembler.jp(is_unordered)?;
+            self.assembler.jp(is_unordered);
             let result = self.assembler.get_label();
-            self.assembler.jz(result)?;
+            self.assembler.jz(result);
             self.assembler.bind_label(is_unordered);
-            return Ok(result);
+            return result;
         }
 
         if cond == DoubleCondition::NotEqualOrUnordered {
             if left.id() == right.id() {
                 let label = self.assembler.get_label();
-                self.assembler.jp(label)?;
-                return Ok(label);
+                self.assembler.jp(label);
+                return label;
             }
             let is_unordered = self.assembler.get_label();
             let is_equal = self.assembler.get_label();
-            self.assembler.jp(is_unordered)?;
-            self.assembler.jz(is_equal)?;
+            self.assembler.jp(is_unordered);
+            self.assembler.jz(is_equal);
             self.assembler.bind_label(is_unordered);
             let result = self.assembler.get_label();
-            self.assembler.jmp(result)?;
+            self.assembler.jmp(result);
             self.assembler.bind_label(is_equal);
-            return Ok(result);
+            return result;
         }
         let (_, _, cc) = cond.x86_condition();
         let label = self.assembler.get_label();
         self.assembler.emit_n(JCC | cc as i64, &[&label]);
-        Ok(label)
+        label
     }
 }
 

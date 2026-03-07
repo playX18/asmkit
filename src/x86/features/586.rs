@@ -1,47 +1,38 @@
 pub trait X86586Emitter: Emitter {
     /// Emits `CMPXCHG16BM`.
-    fn cmpxchg16b(&mut self,op0: impl OperandCast) -> Result<(), AsmError> {
+    fn cmpxchg16b(&mut self,op0: impl OperandCast) -> () {
         self.emit(CMPXCHG16BM, op0.as_operand(),&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `CMPXCHG8BM`.
-    fn cmpxchg8b(&mut self,op0: impl OperandCast) -> Result<(), AsmError> {
+    fn cmpxchg8b(&mut self,op0: impl OperandCast) -> () {
         self.emit(CMPXCHG8BM, op0.as_operand(),&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `CMPXCHGD32M`.
-    fn cmpxchgd32(&mut self,op0: impl OperandCast) -> Result<(), AsmError> {
+    fn cmpxchgd32(&mut self,op0: impl OperandCast) -> () {
         self.emit(CMPXCHGD32M, op0.as_operand(),&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `CMPXCHGD64M`.
-    fn cmpxchgd64(&mut self,op0: impl OperandCast) -> Result<(), AsmError> {
+    fn cmpxchgd64(&mut self,op0: impl OperandCast) -> () {
         self.emit(CMPXCHGD64M, op0.as_operand(),&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `CPUID`.
-    fn cpuid(&mut self,) -> Result<(), AsmError> {
+    fn cpuid(&mut self,) -> () {
         self.emit(CPUID, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `RDMSR`.
-    fn rdmsr(&mut self,) -> Result<(), AsmError> {
+    fn rdmsr(&mut self,) -> () {
         self.emit(RDMSR, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `RDTSC`.
-    fn rdtsc(&mut self,) -> Result<(), AsmError> {
+    fn rdtsc(&mut self,) -> () {
         self.emit(RDTSC, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `RSM`.
-    fn rsm(&mut self,) -> Result<(), AsmError> {
+    fn rsm(&mut self,) -> () {
         self.emit(RSM, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `WRMSR`.
-    fn wrmsr(&mut self,) -> Result<(), AsmError> {
+    fn wrmsr(&mut self,) -> () {
         self.emit(WRMSR, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

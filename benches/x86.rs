@@ -1,6 +1,5 @@
 use asmkit::core::buffer::CodeBuffer;
 use criterion::{criterion_group, criterion_main, Criterion};
-use std::hint::black_box;
 
 fn emit_factorial_benchmark(c: &mut Criterion) {
     c.bench_function("asmkit", |b| {
@@ -13,21 +12,21 @@ fn emit_factorial_benchmark(c: &mut Criterion) {
             let fac = asm.get_label();
 
             asm.bind_label(fac);
-            asm.mov64ri(RAX, imm(1));
-            asm.test64rr(RDI, RDI);
+            asm.mov64(RAX, imm(1));
+            asm.test64(RDI, RDI);
             asm.jnz(label);
             asm.ret();
 
             {
                 asm.bind_label(label);
-                asm.pushr(RBX);
-                asm.mov64rr(RBX, RDI);
-                asm.lea64rm(RDI, ptr64(RDI, -1));
+                asm.push(RBX);
+                asm.mov64(RBX, RDI);
+                asm.lea64(RDI, ptr64(RDI, -1));
                 asm.call(fac);
-                asm.mov64rr(RDX, RAX);
-                asm.mov64rr(RAX, RBX);
-                asm.imul64rr(RAX, RDX);
-                asm.popr(RBX);
+                asm.mov64(RDX, RAX);
+                asm.mov64(RAX, RBX);
+                asm.imul64_2(RAX, RDX);
+                asm.pop(RBX);
                 asm.ret();
             }
 

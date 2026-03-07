@@ -1,7 +1,7 @@
 use asmkit::core::jit_allocator::{JitAllocator, JitAllocatorOptions};
 use asmkit::masm::*;
-use asmkit::AsmError;
-fn main() -> Result<(), AsmError> {
+
+fn main() {
     {
         use asmkit::core::buffer::CodeBuffer;
         use asmkit::x86::*;
@@ -13,21 +13,21 @@ fn main() -> Result<(), AsmError> {
         let fac = asm.get_label();
 
         asm.bind_label(fac);
-        asm.mov(RAX, imm(1))?;
-        let label = asm.branch_test64(RDI, RDI, ResultCondition::NonZero)?;
-        asm.ret()?;
+        asm.mov(RAX, imm(1));
+        let label = asm.branch_test64(RDI, RDI, ResultCondition::NonZero);
+        asm.ret();
 
         {
             asm.bind_label(label);
-            asm.push(RBX)?;
-            asm.mov(RBX, RDI)?;
-            asm.sub64(RDI, RDI, imm(1))?;
-            asm.call(fac)?;
-            asm.mov(RDX, RAX)?;
-            asm.mov(RAX, RBX)?;
-            asm.mul64(RAX, RAX, RDX)?;
-            asm.pop(RBX)?;
-            asm.ret()?;
+            asm.push(RBX);
+            asm.mov(RBX, RDI);
+            asm.sub64(RDI, RDI, imm(1));
+            asm.call(fac);
+            asm.mov(RDX, RAX);
+            asm.mov(RAX, RBX);
+            asm.mul64(RAX, RAX, RDX);
+            asm.pop(RBX);
+            asm.ret();
         }
 
         let result = buf.finish();
@@ -51,7 +51,7 @@ fn main() -> Result<(), AsmError> {
             {
                 let f: extern "C" fn(u64) -> u64 = std::mem::transmute(span.rx());
 
-                println!("X86 factorial(5) = {:?}", f(5));
+                println!("X86 factorial(5) = {:}", f(5));
             }
         }
     }
@@ -106,10 +106,8 @@ fn main() -> Result<(), AsmError> {
             {
                 let f: extern "C" fn(u64) -> u64 = std::mem::transmute(span.rx());
 
-                println!("RV64 factorial(5) = {:?}", f(5));
+                println!("RV64 factorial(5) = {:}", f(5));
             }
         }
     }
-
-    Ok(())
 }

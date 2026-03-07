@@ -1,12 +1,10 @@
 pub trait X86MONITOREmitter: Emitter {
     /// Emits `MONITOR`.
-    fn monitor(&mut self,) -> Result<(), AsmError> {
+    fn monitor(&mut self,) -> () {
         self.emit(MONITOR, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `MWAIT`.
-    fn mwait(&mut self,) -> Result<(), AsmError> {
+    fn mwait(&mut self,) -> () {
         self.emit(MWAIT, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

@@ -1,12 +1,10 @@
 pub trait X86INVLPGBEmitter: Emitter {
     /// Emits `INVLPGB`.
-    fn invlpgb(&mut self,) -> Result<(), AsmError> {
+    fn invlpgb(&mut self,) -> () {
         self.emit(INVLPGB, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `TLBSYNC`.
-    fn tlbsync(&mut self,) -> Result<(), AsmError> {
+    fn tlbsync(&mut self,) -> () {
         self.emit(TLBSYNC, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

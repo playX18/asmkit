@@ -1,6 +1,6 @@
 pub trait X86AVXEmitter: Emitter {
     /// Emits `VADDSUBPD128`.
-    fn vaddsubpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vaddsubpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -9,12 +9,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VADDSUBPD128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VADDSUBPD128" }));
+            unreachable!("invalid operand types for VADDSUBPD128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VADDSUBPD256`.
-    fn vaddsubpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vaddsubpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -23,12 +22,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VADDSUBPD256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VADDSUBPD256" }));
+            unreachable!("invalid operand types for VADDSUBPD256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VADDSUBPS128`.
-    fn vaddsubps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vaddsubps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -37,12 +35,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VADDSUBPS128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VADDSUBPS128" }));
+            unreachable!("invalid operand types for VADDSUBPS128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VADDSUBPS256`.
-    fn vaddsubps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vaddsubps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -51,12 +48,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VADDSUBPS256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VADDSUBPS256" }));
+            unreachable!("invalid operand types for VADDSUBPS256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VBLENDPD128`.
-    fn vblendpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vblendpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -66,12 +62,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VBLENDPD128RRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VBLENDPD128" }));
+            unreachable!("invalid operand types for VBLENDPD128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VBLENDPD256`.
-    fn vblendpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vblendpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -81,12 +76,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VBLENDPD256RRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VBLENDPD256" }));
+            unreachable!("invalid operand types for VBLENDPD256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VBLENDPS128`.
-    fn vblendps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vblendps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -96,12 +90,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VBLENDPS128RRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VBLENDPS128" }));
+            unreachable!("invalid operand types for VBLENDPS128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VBLENDPS256`.
-    fn vblendps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vblendps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -111,12 +104,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VBLENDPS256RRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VBLENDPS256" }));
+            unreachable!("invalid operand types for VBLENDPS256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VBLENDVPD128`.
-    fn vblendvpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vblendvpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -126,12 +118,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_vec() {
             self.emit(VBLENDVPD128RRMR, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VBLENDVPD128" }));
+            unreachable!("invalid operand types for VBLENDVPD128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VBLENDVPD256`.
-    fn vblendvpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vblendvpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -141,12 +132,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_vec() {
             self.emit(VBLENDVPD256RRMR, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VBLENDVPD256" }));
+            unreachable!("invalid operand types for VBLENDVPD256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VBLENDVPS128`.
-    fn vblendvps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vblendvps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -156,12 +146,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_vec() {
             self.emit(VBLENDVPS128RRMR, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VBLENDVPS128" }));
+            unreachable!("invalid operand types for VBLENDVPS128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VBLENDVPS256`.
-    fn vblendvps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vblendvps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -171,12 +160,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_vec() {
             self.emit(VBLENDVPS256RRMR, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VBLENDVPS256" }));
+            unreachable!("invalid operand types for VBLENDVPS256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VBROADCASTF128_256`.
-    fn vbroadcastf128_256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vbroadcastf128_256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -184,12 +172,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(VBROADCASTF128_256RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VBROADCASTF128_256" }));
+            unreachable!("invalid operand types for VBROADCASTF128_256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VCMPPD128`.
-    fn vcmppd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vcmppd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -199,12 +186,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VCMPPD128RRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VCMPPD128" }));
+            unreachable!("invalid operand types for VCMPPD128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VCMPPD256`.
-    fn vcmppd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vcmppd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -214,12 +200,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VCMPPD256RRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VCMPPD256" }));
+            unreachable!("invalid operand types for VCMPPD256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VCMPPS128`.
-    fn vcmpps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vcmpps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -229,12 +214,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VCMPPS128RRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VCMPPS128" }));
+            unreachable!("invalid operand types for VCMPPS128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VCMPPS256`.
-    fn vcmpps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vcmpps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -244,12 +228,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VCMPPS256RRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VCMPPS256" }));
+            unreachable!("invalid operand types for VCMPPS256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VCMPSD`.
-    fn vcmpsd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vcmpsd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -259,12 +242,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VCMPSDRRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VCMPSD" }));
+            unreachable!("invalid operand types for VCMPSD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VCMPSS`.
-    fn vcmpss(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vcmpss(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -274,12 +256,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VCMPSSRRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VCMPSS" }));
+            unreachable!("invalid operand types for VCMPSS");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VDPPD128`.
-    fn vdppd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vdppd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -289,12 +270,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VDPPD128RRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VDPPD128" }));
+            unreachable!("invalid operand types for VDPPD128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VDPPS128`.
-    fn vdpps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vdpps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -304,12 +284,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VDPPS128RRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VDPPS128" }));
+            unreachable!("invalid operand types for VDPPS128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VDPPS256`.
-    fn vdpps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vdpps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -319,12 +298,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VDPPS256RRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VDPPS256" }));
+            unreachable!("invalid operand types for VDPPS256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VEXTRACTF128`.
-    fn vextractf128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vextractf128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -333,12 +311,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() && op2.is_imm() {
             self.emit(VEXTRACTF128MRI, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VEXTRACTF128" }));
+            unreachable!("invalid operand types for VEXTRACTF128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VHADDPD128`.
-    fn vhaddpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vhaddpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -347,12 +324,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VHADDPD128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VHADDPD128" }));
+            unreachable!("invalid operand types for VHADDPD128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VHADDPD256`.
-    fn vhaddpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vhaddpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -361,12 +337,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VHADDPD256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VHADDPD256" }));
+            unreachable!("invalid operand types for VHADDPD256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VHADDPS128`.
-    fn vhaddps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vhaddps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -375,12 +350,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VHADDPS128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VHADDPS128" }));
+            unreachable!("invalid operand types for VHADDPS128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VHADDPS256`.
-    fn vhaddps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vhaddps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -389,12 +363,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VHADDPS256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VHADDPS256" }));
+            unreachable!("invalid operand types for VHADDPS256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VHSUBPD128`.
-    fn vhsubpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vhsubpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -403,12 +376,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VHSUBPD128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VHSUBPD128" }));
+            unreachable!("invalid operand types for VHSUBPD128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VHSUBPD256`.
-    fn vhsubpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vhsubpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -417,12 +389,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VHSUBPD256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VHSUBPD256" }));
+            unreachable!("invalid operand types for VHSUBPD256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VHSUBPS128`.
-    fn vhsubps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vhsubps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -431,12 +402,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VHSUBPS128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VHSUBPS128" }));
+            unreachable!("invalid operand types for VHSUBPS128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VHSUBPS256`.
-    fn vhsubps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vhsubps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -445,12 +415,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VHSUBPS256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VHSUBPS256" }));
+            unreachable!("invalid operand types for VHSUBPS256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VINSERTF128`.
-    fn vinsertf128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vinsertf128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -460,32 +429,27 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VINSERTF128RRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VINSERTF128" }));
+            unreachable!("invalid operand types for VINSERTF128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VLDDQU128RM`.
-    fn vlddqu128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vlddqu128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(VLDDQU128RM, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VLDDQU256RM`.
-    fn vlddqu256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vlddqu256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(VLDDQU256RM, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VLDMXCSRM`.
-    fn vldmxcsr(&mut self,op0: impl OperandCast) -> Result<(), AsmError> {
+    fn vldmxcsr(&mut self,op0: impl OperandCast) -> () {
         self.emit(VLDMXCSRM, op0.as_operand(),&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMASKMOVDQU128RR`.
-    fn vmaskmovdqu128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vmaskmovdqu128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(VMASKMOVDQU128RR, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMASKMOVPD128`.
-    fn vmaskmovpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vmaskmovpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -494,12 +458,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() && op2.is_vec() {
             self.emit(VMASKMOVPD128MRR, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VMASKMOVPD128" }));
+            unreachable!("invalid operand types for VMASKMOVPD128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMASKMOVPD256`.
-    fn vmaskmovpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vmaskmovpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -508,12 +471,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() && op2.is_vec() {
             self.emit(VMASKMOVPD256MRR, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VMASKMOVPD256" }));
+            unreachable!("invalid operand types for VMASKMOVPD256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMASKMOVPS128`.
-    fn vmaskmovps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vmaskmovps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -522,12 +484,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() && op2.is_vec() {
             self.emit(VMASKMOVPS128MRR, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VMASKMOVPS128" }));
+            unreachable!("invalid operand types for VMASKMOVPS128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMASKMOVPS256`.
-    fn vmaskmovps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vmaskmovps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -536,12 +497,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() && op2.is_vec() {
             self.emit(VMASKMOVPS256MRR, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VMASKMOVPS256" }));
+            unreachable!("invalid operand types for VMASKMOVPS256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMOVDQA128`.
-    fn vmovdqa128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vmovdqa128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -551,12 +511,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() {
             self.emit(VMOVDQA128MR, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VMOVDQA128" }));
+            unreachable!("invalid operand types for VMOVDQA128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMOVDQA256`.
-    fn vmovdqa256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vmovdqa256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -566,12 +525,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() {
             self.emit(VMOVDQA256MR, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VMOVDQA256" }));
+            unreachable!("invalid operand types for VMOVDQA256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMOVDQU128`.
-    fn vmovdqu128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vmovdqu128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -581,12 +539,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() {
             self.emit(VMOVDQU128MR, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VMOVDQU128" }));
+            unreachable!("invalid operand types for VMOVDQU128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMOVDQU256`.
-    fn vmovdqu256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vmovdqu256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -596,32 +553,27 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_mem() && op1.is_vec() {
             self.emit(VMOVDQU256MR, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VMOVDQU256" }));
+            unreachable!("invalid operand types for VMOVDQU256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMOVMSKPD128RR`.
-    fn vmovmskpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vmovmskpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(VMOVMSKPD128RR, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMOVMSKPD256RR`.
-    fn vmovmskpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vmovmskpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(VMOVMSKPD256RR, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMOVMSKPS128RR`.
-    fn vmovmskps128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vmovmskps128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(VMOVMSKPS128RR, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMOVMSKPS256RR`.
-    fn vmovmskps256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vmovmskps256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(VMOVMSKPS256RR, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMPSADBW128`.
-    fn vmpsadbw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vmpsadbw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -631,12 +583,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VMPSADBW128RRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VMPSADBW128" }));
+            unreachable!("invalid operand types for VMPSADBW128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMPSADBW256`.
-    fn vmpsadbw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vmpsadbw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -646,12 +597,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VMPSADBW256RRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VMPSADBW256" }));
+            unreachable!("invalid operand types for VMPSADBW256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPAND128`.
-    fn vpand128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpand128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -660,12 +610,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPAND128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPAND128" }));
+            unreachable!("invalid operand types for VPAND128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPAND256`.
-    fn vpand256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpand256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -674,12 +623,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPAND256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPAND256" }));
+            unreachable!("invalid operand types for VPAND256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPANDN128`.
-    fn vpandn128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpandn128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -688,12 +636,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPANDN128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPANDN128" }));
+            unreachable!("invalid operand types for VPANDN128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPANDN256`.
-    fn vpandn256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpandn256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -702,12 +649,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPANDN256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPANDN256" }));
+            unreachable!("invalid operand types for VPANDN256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPBLENDVB128`.
-    fn vpblendvb128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vpblendvb128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -717,12 +663,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_vec() {
             self.emit(VPBLENDVB128RRMR, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPBLENDVB128" }));
+            unreachable!("invalid operand types for VPBLENDVB128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPBLENDVB256`.
-    fn vpblendvb256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vpblendvb256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -732,12 +677,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_vec() {
             self.emit(VPBLENDVB256RRMR, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPBLENDVB256" }));
+            unreachable!("invalid operand types for VPBLENDVB256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPBLENDW128`.
-    fn vpblendw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vpblendw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -747,12 +691,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VPBLENDW128RRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPBLENDW128" }));
+            unreachable!("invalid operand types for VPBLENDW128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPBLENDW256`.
-    fn vpblendw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vpblendw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -762,12 +705,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VPBLENDW256RRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPBLENDW256" }));
+            unreachable!("invalid operand types for VPBLENDW256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPEQB128`.
-    fn vpcmpeqb128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpeqb128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -776,12 +718,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPCMPEQB128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPEQB128" }));
+            unreachable!("invalid operand types for VPCMPEQB128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPEQB256`.
-    fn vpcmpeqb256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpeqb256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -790,12 +731,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPCMPEQB256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPEQB256" }));
+            unreachable!("invalid operand types for VPCMPEQB256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPEQD128`.
-    fn vpcmpeqd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpeqd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -804,12 +744,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPCMPEQD128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPEQD128" }));
+            unreachable!("invalid operand types for VPCMPEQD128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPEQD256`.
-    fn vpcmpeqd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpeqd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -818,12 +757,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPCMPEQD256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPEQD256" }));
+            unreachable!("invalid operand types for VPCMPEQD256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPEQQ128`.
-    fn vpcmpeqq128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpeqq128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -832,12 +770,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPCMPEQQ128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPEQQ128" }));
+            unreachable!("invalid operand types for VPCMPEQQ128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPEQQ256`.
-    fn vpcmpeqq256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpeqq256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -846,12 +783,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPCMPEQQ256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPEQQ256" }));
+            unreachable!("invalid operand types for VPCMPEQQ256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPEQW128`.
-    fn vpcmpeqw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpeqw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -860,12 +796,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPCMPEQW128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPEQW128" }));
+            unreachable!("invalid operand types for VPCMPEQW128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPEQW256`.
-    fn vpcmpeqw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpeqw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -874,12 +809,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPCMPEQW256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPEQW256" }));
+            unreachable!("invalid operand types for VPCMPEQW256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPESTRI`.
-    fn vpcmpestri(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpestri(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -888,12 +822,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
             self.emit(VPCMPESTRIRMI, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPESTRI" }));
+            unreachable!("invalid operand types for VPCMPESTRI");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPESTRM`.
-    fn vpcmpestrm(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpestrm(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -902,12 +835,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
             self.emit(VPCMPESTRMRMI, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPESTRM" }));
+            unreachable!("invalid operand types for VPCMPESTRM");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPGTB128`.
-    fn vpcmpgtb128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpgtb128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -916,12 +848,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPCMPGTB128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPGTB128" }));
+            unreachable!("invalid operand types for VPCMPGTB128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPGTB256`.
-    fn vpcmpgtb256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpgtb256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -930,12 +861,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPCMPGTB256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPGTB256" }));
+            unreachable!("invalid operand types for VPCMPGTB256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPGTD128`.
-    fn vpcmpgtd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpgtd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -944,12 +874,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPCMPGTD128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPGTD128" }));
+            unreachable!("invalid operand types for VPCMPGTD128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPGTD256`.
-    fn vpcmpgtd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpgtd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -958,12 +887,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPCMPGTD256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPGTD256" }));
+            unreachable!("invalid operand types for VPCMPGTD256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPGTQ128`.
-    fn vpcmpgtq128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpgtq128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -972,12 +900,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPCMPGTQ128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPGTQ128" }));
+            unreachable!("invalid operand types for VPCMPGTQ128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPGTQ256`.
-    fn vpcmpgtq256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpgtq256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -986,12 +913,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPCMPGTQ256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPGTQ256" }));
+            unreachable!("invalid operand types for VPCMPGTQ256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPGTW128`.
-    fn vpcmpgtw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpgtw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1000,12 +926,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPCMPGTW128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPGTW128" }));
+            unreachable!("invalid operand types for VPCMPGTW128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPGTW256`.
-    fn vpcmpgtw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpgtw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1014,12 +939,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPCMPGTW256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPGTW256" }));
+            unreachable!("invalid operand types for VPCMPGTW256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPISTRI`.
-    fn vpcmpistri(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpistri(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1028,12 +952,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
             self.emit(VPCMPISTRIRMI, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPISTRI" }));
+            unreachable!("invalid operand types for VPCMPISTRI");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPCMPISTRM`.
-    fn vpcmpistrm(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpcmpistrm(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1042,12 +965,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
             self.emit(VPCMPISTRMRMI, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPCMPISTRM" }));
+            unreachable!("invalid operand types for VPCMPISTRM");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPERM2F128_256`.
-    fn vperm2f128_256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vperm2f128_256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1057,12 +979,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VPERM2F128_256RRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPERM2F128_256" }));
+            unreachable!("invalid operand types for VPERM2F128_256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPHADDD128`.
-    fn vphaddd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vphaddd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1071,12 +992,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPHADDD128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPHADDD128" }));
+            unreachable!("invalid operand types for VPHADDD128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPHADDD256`.
-    fn vphaddd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vphaddd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1085,12 +1005,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPHADDD256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPHADDD256" }));
+            unreachable!("invalid operand types for VPHADDD256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPHADDSW128`.
-    fn vphaddsw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vphaddsw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1099,12 +1018,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPHADDSW128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPHADDSW128" }));
+            unreachable!("invalid operand types for VPHADDSW128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPHADDSW256`.
-    fn vphaddsw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vphaddsw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1113,12 +1031,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPHADDSW256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPHADDSW256" }));
+            unreachable!("invalid operand types for VPHADDSW256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPHADDW128`.
-    fn vphaddw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vphaddw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1127,12 +1044,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPHADDW128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPHADDW128" }));
+            unreachable!("invalid operand types for VPHADDW128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPHADDW256`.
-    fn vphaddw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vphaddw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1141,12 +1057,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPHADDW256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPHADDW256" }));
+            unreachable!("invalid operand types for VPHADDW256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPHMINPOSUW128`.
-    fn vphminposuw128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vphminposuw128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1154,12 +1069,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(VPHMINPOSUW128RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPHMINPOSUW128" }));
+            unreachable!("invalid operand types for VPHMINPOSUW128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPHSUBD128`.
-    fn vphsubd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vphsubd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1168,12 +1082,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPHSUBD128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPHSUBD128" }));
+            unreachable!("invalid operand types for VPHSUBD128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPHSUBD256`.
-    fn vphsubd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vphsubd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1182,12 +1095,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPHSUBD256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPHSUBD256" }));
+            unreachable!("invalid operand types for VPHSUBD256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPHSUBSW128`.
-    fn vphsubsw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vphsubsw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1196,12 +1108,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPHSUBSW128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPHSUBSW128" }));
+            unreachable!("invalid operand types for VPHSUBSW128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPHSUBSW256`.
-    fn vphsubsw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vphsubsw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1210,12 +1121,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPHSUBSW256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPHSUBSW256" }));
+            unreachable!("invalid operand types for VPHSUBSW256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPHSUBW128`.
-    fn vphsubw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vphsubw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1224,12 +1134,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPHSUBW128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPHSUBW128" }));
+            unreachable!("invalid operand types for VPHSUBW128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPHSUBW256`.
-    fn vphsubw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vphsubw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1238,22 +1147,19 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPHSUBW256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPHSUBW256" }));
+            unreachable!("invalid operand types for VPHSUBW256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPMOVMSKB128RR`.
-    fn vpmovmskb128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vpmovmskb128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(VPMOVMSKB128RR, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPMOVMSKB256RR`.
-    fn vpmovmskb256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vpmovmskb256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         self.emit(VPMOVMSKB256RR, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPOR128`.
-    fn vpor128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpor128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1262,12 +1168,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPOR128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPOR128" }));
+            unreachable!("invalid operand types for VPOR128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPOR256`.
-    fn vpor256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpor256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1276,12 +1181,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPOR256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPOR256" }));
+            unreachable!("invalid operand types for VPOR256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPSIGNB128`.
-    fn vpsignb128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpsignb128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1290,12 +1194,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPSIGNB128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPSIGNB128" }));
+            unreachable!("invalid operand types for VPSIGNB128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPSIGNB256`.
-    fn vpsignb256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpsignb256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1304,12 +1207,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPSIGNB256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPSIGNB256" }));
+            unreachable!("invalid operand types for VPSIGNB256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPSIGND128`.
-    fn vpsignd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpsignd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1318,12 +1220,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPSIGND128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPSIGND128" }));
+            unreachable!("invalid operand types for VPSIGND128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPSIGND256`.
-    fn vpsignd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpsignd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1332,12 +1233,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPSIGND256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPSIGND256" }));
+            unreachable!("invalid operand types for VPSIGND256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPSIGNW128`.
-    fn vpsignw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpsignw128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1346,12 +1246,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPSIGNW128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPSIGNW128" }));
+            unreachable!("invalid operand types for VPSIGNW128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPSIGNW256`.
-    fn vpsignw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpsignw256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1360,12 +1259,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPSIGNW256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPSIGNW256" }));
+            unreachable!("invalid operand types for VPSIGNW256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPTEST128`.
-    fn vptest128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vptest128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1373,12 +1271,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(VPTEST128RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPTEST128" }));
+            unreachable!("invalid operand types for VPTEST128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPTEST256`.
-    fn vptest256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vptest256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1386,12 +1283,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(VPTEST256RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPTEST256" }));
+            unreachable!("invalid operand types for VPTEST256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPXOR128`.
-    fn vpxor128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpxor128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1400,12 +1296,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPXOR128RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPXOR128" }));
+            unreachable!("invalid operand types for VPXOR128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VPXOR256`.
-    fn vpxor256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vpxor256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1414,12 +1309,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VPXOR256RRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VPXOR256" }));
+            unreachable!("invalid operand types for VPXOR256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VRCPPS128`.
-    fn vrcpps128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vrcpps128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1427,12 +1321,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(VRCPPS128RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VRCPPS128" }));
+            unreachable!("invalid operand types for VRCPPS128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VRCPPS256`.
-    fn vrcpps256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vrcpps256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1440,12 +1333,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(VRCPPS256RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VRCPPS256" }));
+            unreachable!("invalid operand types for VRCPPS256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VRCPSS`.
-    fn vrcpss(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vrcpss(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1454,12 +1346,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VRCPSSRRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VRCPSS" }));
+            unreachable!("invalid operand types for VRCPSS");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VROUNDPD128`.
-    fn vroundpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vroundpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1468,12 +1359,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
             self.emit(VROUNDPD128RMI, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VROUNDPD128" }));
+            unreachable!("invalid operand types for VROUNDPD128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VROUNDPD256`.
-    fn vroundpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vroundpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1482,12 +1372,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
             self.emit(VROUNDPD256RMI, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VROUNDPD256" }));
+            unreachable!("invalid operand types for VROUNDPD256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VROUNDPS128`.
-    fn vroundps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vroundps128(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1496,12 +1385,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
             self.emit(VROUNDPS128RMI, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VROUNDPS128" }));
+            unreachable!("invalid operand types for VROUNDPS128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VROUNDPS256`.
-    fn vroundps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vroundps256(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1510,12 +1398,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
             self.emit(VROUNDPS256RMI, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VROUNDPS256" }));
+            unreachable!("invalid operand types for VROUNDPS256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VROUNDSD`.
-    fn vroundsd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vroundsd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1525,12 +1412,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VROUNDSDRRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VROUNDSD" }));
+            unreachable!("invalid operand types for VROUNDSD");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VROUNDSS`.
-    fn vroundss(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> Result<(), AsmError> {
+    fn vroundss(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast,op3: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1540,12 +1426,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() && op3.is_imm() {
             self.emit(VROUNDSSRRMI, op0,op1,op2,op3,);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VROUNDSS" }));
+            unreachable!("invalid operand types for VROUNDSS");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VRSQRTPS128`.
-    fn vrsqrtps128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vrsqrtps128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1553,12 +1438,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(VRSQRTPS128RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VRSQRTPS128" }));
+            unreachable!("invalid operand types for VRSQRTPS128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VRSQRTPS256`.
-    fn vrsqrtps256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vrsqrtps256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1566,12 +1450,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(VRSQRTPS256RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VRSQRTPS256" }));
+            unreachable!("invalid operand types for VRSQRTPS256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VRSQRTSS`.
-    fn vrsqrtss(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+    fn vrsqrtss(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         let op2 = op2.as_operand();
@@ -1580,17 +1463,15 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_vec() && op2.is_mem() {
             self.emit(VRSQRTSSRRM, op0,op1,op2,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VRSQRTSS" }));
+            unreachable!("invalid operand types for VRSQRTSS");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VSTMXCSRM`.
-    fn vstmxcsr(&mut self,op0: impl OperandCast) -> Result<(), AsmError> {
+    fn vstmxcsr(&mut self,op0: impl OperandCast) -> () {
         self.emit(VSTMXCSRM, op0.as_operand(),&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VTESTPD128`.
-    fn vtestpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vtestpd128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1598,12 +1479,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(VTESTPD128RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VTESTPD128" }));
+            unreachable!("invalid operand types for VTESTPD128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VTESTPD256`.
-    fn vtestpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vtestpd256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1611,12 +1491,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(VTESTPD256RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VTESTPD256" }));
+            unreachable!("invalid operand types for VTESTPD256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VTESTPS128`.
-    fn vtestps128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vtestps128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1624,12 +1503,11 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(VTESTPS128RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VTESTPS128" }));
+            unreachable!("invalid operand types for VTESTPS128");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VTESTPS256`.
-    fn vtestps256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+    fn vtestps256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
         let op0 = op0.as_operand();
         let op1 = op1.as_operand();
         if op0.is_vec() && op1.is_vec() {
@@ -1637,18 +1515,15 @@ pub trait X86AVXEmitter: Emitter {
         } else if op0.is_vec() && op1.is_mem() {
             self.emit(VTESTPS256RM, op0,op1,&NOREG,&NOREG);
         } else {
-            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VTESTPS256" }));
+            unreachable!("invalid operand types for VTESTPS256");
         }
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VZEROALL`.
-    fn vzeroall(&mut self,) -> Result<(), AsmError> {
+    fn vzeroall(&mut self,) -> () {
         self.emit(VZEROALL, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VZEROUPPER`.
-    fn vzeroupper(&mut self,) -> Result<(), AsmError> {
+    fn vzeroupper(&mut self,) -> () {
         self.emit(VZEROUPPER, &NOREG,&NOREG,&NOREG,&NOREG);
-        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

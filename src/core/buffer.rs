@@ -396,14 +396,17 @@ impl CodeBuffer {
         offset: CodeOffset,
         size: CodeOffset,
         align: CodeOffset,
-    ) -> Result<PatchBlockId, AsmError> {
+    ) -> PatchBlockId {
         if size == 0 || align == 0 || !align.is_power_of_two() {
-            return Err(AsmError::InvalidArgument);
+            unreachable!("invalid patch block with size {size} and align {align}");
         }
 
         let end = offset as usize + size as usize;
         if end > self.data.len() {
-            return Err(AsmError::InvalidArgument);
+            unreachable!(
+                "patch block at offset {offset} with size {size} exceeds code buffer size {}",
+                self.data.len()
+            );
         }
 
         let id = PatchBlockId::from_index(self.patch_blocks.len());
@@ -412,7 +415,7 @@ impl CodeBuffer {
             size,
             align,
         });
-        Ok(id)
+        id
     }
 
     pub fn record_patch_site(
@@ -420,8 +423,8 @@ impl CodeBuffer {
         offset: CodeOffset,
         kind: LabelUse,
         target_offset: CodeOffset,
-    ) -> Result<PatchSiteId, AsmError> {
-        self.validate_patch_site_offset(offset, kind)?;
+    ) -> PatchSiteId {
+        self.validate_patch_site_offset(offset, kind);
         let id = PatchSiteId::from_index(self.patch_sites.len());
         self.patch_sites.push(PendingPatchSite {
             offset,
@@ -429,7 +432,7 @@ impl CodeBuffer {
             target: PendingPatchTarget::Offset(target_offset),
             addend: 0,
         });
-        Ok(id)
+        id
     }
 
     pub fn record_label_patch_site(
@@ -437,8 +440,8 @@ impl CodeBuffer {
         offset: CodeOffset,
         label: Label,
         kind: LabelUse,
-    ) -> Result<PatchSiteId, AsmError> {
-        self.validate_patch_site_offset(offset, kind)?;
+    ) -> PatchSiteId {
+        self.validate_patch_site_offset(offset, kind);
         let id = PatchSiteId::from_index(self.patch_sites.len());
         self.patch_sites.push(PendingPatchSite {
             offset,
@@ -446,19 +449,18 @@ impl CodeBuffer {
             target: PendingPatchTarget::Label(label),
             addend: 0,
         });
-        Ok(id)
+        id
     }
 
-    fn validate_patch_site_offset(
-        &self,
-        offset: CodeOffset,
-        kind: LabelUse,
-    ) -> Result<(), AsmError> {
+    fn validate_patch_site_offset(&self, offset: CodeOffset, kind: LabelUse) {
         let end = offset as usize + kind.patch_size();
         if end > self.data.len() {
-            return Err(AsmError::InvalidArgument);
+            unreachable!(
+                "patch site at offset {offset} with size {} exceeds code buffer size {}",
+                kind.patch_size(),
+                self.data.len()
+            );
         }
-        Ok(())
     }
 
     fn handle_fixup(&mut self, fixup: AsmFixup) {

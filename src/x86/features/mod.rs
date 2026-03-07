@@ -1,8 +1,7 @@
-use crate::x86::assembler::*;
-use crate::{AsmError, X86Error};
 use super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
