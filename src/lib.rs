@@ -70,6 +70,7 @@ pub mod ppc;
 pub mod riscv;
 pub mod util;
 pub mod x86;
+pub mod masm;
 
 use ::core::fmt;
 

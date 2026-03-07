@@ -1,6 +1,6 @@
 #![allow(dead_code, clippy::all)]
 use super::opcodes::ALT_TAB;
-use super::{emitter::X86EmitterExplicit, operands::*};
+use super::{features::*, operands::*};
 use crate::{
     core::{
         buffer::{
@@ -625,142 +625,6 @@ impl<'a> Assembler<'a> {
         false
     }
 
-    fn encode_opcode(&mut self, opc: u64, epfx: u64) -> bool {
-        if opc & OPC_SEG_MSK != 0 {
-            self.buffer
-                .put1(((0x65643e362e2600u64 >> (8 * ((opc >> 29) & 7))) & 0xff) as u8);
-        }
-
-        if opc & OPC_67 != 0 {
-            self.buffer.put1(0x67);
-        }
-
-        if opc & OPC_EVEXL0 != 0 {
-            self.buffer.put1(0x62);
-            let mut b1 = (opc >> 16 & 7) as u8;
-            if (epfx & EPFX_REXR) == 0 {
-                b1 |= 0x80;
-            }
-            if (epfx & EPFX_REXX) == 0 {
-                b1 |= 0x40;
-            }
-            if (epfx & EPFX_REXB) == 0 {
-                b1 |= 0x20;
-            }
-            if (epfx & EPFX_REXR4) == 0 {
-                b1 |= 0x10;
-            }
-            if (epfx & EPFX_REXB4) != 0 {
-                b1 |= 0x08;
-            }
-            self.buffer.put1(b1);
-
-            let mut b2 = (opc >> 20 & 3) as u8;
-            if (epfx & EPFX_REXX4) == 0 {
-                b2 |= 0x04;
-            }
-            b2 |= ((!(epfx >> EPFX_VVVV_IDX) & 0xf) << 3) as u8;
-            if opc & OPC_REXW != 0 {
-                b2 |= 0x80;
-            }
-            self.buffer.put1(b2);
-
-            let mut b3 = (opc >> 33 & 7) as u8;
-            b3 |= ((!(epfx >> EPFX_VVVV_IDX) & 0x10) >> 1) as u8;
-            if opc & OPC_EVEXB != 0 {
-                b3 |= 0x10;
-            }
-            b3 |= ((opc >> 23 & 3) << 5) as u8;
-            if opc & OPC_EVEXZ != 0 {
-                b3 |= 0x80;
-            }
-            self.buffer.put1(b3);
-        } else if opc & OPC_VEXL0 != 0 {
-            if (epfx & (EPFX_REXR4 | EPFX_REXX4 | EPFX_REXB4 | (0x10 << EPFX_VVVV_IDX))) != 0 {
-                self.last_error = Some(X86Error::InvalidVEX {
-                    field: "prefix",
-                    reason: "VEX prefix has invalid extended register bits",
-                });
-                return true;
-            }
-
-            let vex3 = (opc & (OPC_REXW | 0x20000)) != 0 || (epfx & (EPFX_REXX | EPFX_REXB)) != 0;
-            let pp = (opc >> 20 & 3) as u8;
-            self.buffer.put1(0xc4 | !vex3 as u8);
-
-            let mut b2 = pp | if (opc & 0x800000) != 0 { 0x4 } else { 0 };
-
-            if vex3 {
-                let mut b1 = (opc >> 16 & 3) as u8;
-                if (epfx & EPFX_REXR) == 0 {
-                    b1 |= 0x80;
-                }
-                if (epfx & EPFX_REXX) == 0 {
-                    b1 |= 0x40;
-                }
-                if (epfx & EPFX_REXB) == 0 {
-                    b1 |= 0x20;
-                }
-                self.buffer.put1(b1);
-
-                if (opc & OPC_REXW) != 0 {
-                    b2 |= 0x80;
-                }
-            } else {
-                if (epfx & EPFX_REXR) == 0 {
-                    b2 |= 0x80;
-                }
-            }
-
-            b2 |= ((!(epfx >> EPFX_VVVV_IDX) & 0xf) << 3) as u8;
-            self.buffer.put1(b2);
-        } else {
-            if opc & OPC_LOCK != 0 {
-                self.buffer.put1(0xF0);
-            }
-            if opc & OPC_66 != 0 {
-                self.buffer.put1(0x66);
-            }
-            if opc & OPC_F2 != 0 {
-                self.buffer.put1(0xF2);
-            }
-            if opc & OPC_F3 != 0 {
-                self.buffer.put1(0xF3);
-            }
-            if opc & OPC_REXW != 0 || epfx & EPFX_REX_MSK != 0 {
-                let mut rex = 0x40;
-                if opc & OPC_REXW != 0 {
-                    rex |= 0x08;
-                }
-                if epfx & EPFX_REXR != 0 {
-                    rex |= 0x04;
-                }
-                if epfx & EPFX_REXX != 0 {
-                    rex |= 0x02;
-                }
-                if epfx & EPFX_REXB != 0 {
-                    rex |= 0x01;
-                }
-                self.buffer.put1(rex);
-            }
-            if opc & 0x30000 != 0 {
-                self.buffer.put1(0x0F);
-            }
-            if opc & 0x30000 == 0x20000 {
-                self.buffer.put1(0x38);
-            }
-            if opc & 0x30000 == 0x30000 {
-                self.buffer.put1(0x3A);
-            }
-        }
-
-        self.buffer.put1((opc & 0xff) as u8);
-        if (opc & 0x8000) != 0 {
-            self.buffer.put1(((opc >> 8) & 0xff) as u8);
-        }
-        false
-    }
-
     fn encode_imm(&mut self, imm: Operand, immsz: usize) -> bool {
         if !op_imm_n(imm, immsz) {
             self.last_error = Some(X86Error::InvalidImmediate {
@@ -779,25 +643,6 @@ impl<'a> Assembler<'a> {
     }
 
     fn enc_o(&mut self, opc: u64, mut epfx: u64, op0: Operand) -> bool {
-        /*if op0.id() & 0x8 != 0 {
-            epfx |= EPFX_REXB;
-        }
-
-        let has_rex = opc & OPC_REXW != 0 || (epfx & EPFX_REX_MSK) != 0;
-        if has_rex & op0.is_reg_type_of(RegType::Gp8Hi) {
-            self.last_error = Some(AsmError::InvalidOperand);
-            return;
-        }
-
-        let is_err = self.enc_opc(opc, epfx);
-        if is_err {
-            return;
-        }
-        let ix = self.buffer.cur_offset() as usize - 1;
-        let byte = self.buffer.data()[ix];
-
-        self.buffer.data_mut()[ix] = (byte & 0xf8) | (op0.id() & 0x7) as u8;*/
-
         if op0.id() & 0x8 != 0 {
             epfx |= EPFX_REXB;
         }
@@ -1284,184 +1129,68 @@ impl<'a> Emitter for Assembler<'a> {
 
             break;
         }
-
-        /*let mut opc = opcode as u64;
-        opc |= self.flags;
-        self.flags = 0;
-        let ops = &[*op0, *op1, *op2, *op3];
-
-        let mut epfx = 0;
-
-        if opc & OPC_GPH_OP0 != 0 && op0.is_reg() && op0.id() >= Gp::SP {
-            epfx |= EPFX_REX;
-        } else if opc & OPC_GPH_OP0 == 0 && op0.is_reg_type_of(RegType::Gp8Hi) {
-            self.last_error = Some(AsmError::InvalidOperand);
-            return;
-        }
-
-        if opc & OPC_GPH_OP1 != 0 && op1.is_reg() && op1.id() >= Gp::SP {
-            epfx |= EPFX_REX;
-        } else if opc & OPC_GPH_OP1 == 0 && op1.is_reg_type_of(RegType::Gp8Hi) {
-            self.last_error = Some(AsmError::InvalidOperand);
-            return;
-        }
-
-        loop {
-            macro_rules! next {
-                () => {
-                    let alt = opc >> 56;
-                    if alt != 0 {
-                        opc = ALT_TAB[alt as usize] as u64;
-                        continue;
-                    }
-                };
-                ($err: expr) => {
-                    let alt = opc >> 56;
-                    if alt != 0 {
-                        opc = ALT_TAB[alt as usize] as u64;
-                        continue;
-                    } else {
-                        self.last_error = Some($err);
-                        return;
-                    }
-                };
-            }
-            let enc = (opc >> 51) & 0x1f;
-            let ei = &ENCODING_INFOS[enc as usize];
-
-            let mut imm = 0xcc;
-            let mut immsz = (opc >> 47) & 0xf;
-
-            let mut label_use = None;
-            let mut reloc = None;
-            if ei.zregidx != 0 && ops[ei.zregidx as usize ^ 3].id() != ei.zregval as u32 {
-                next!();
-            }
-
-            if enc == Encoding::S as u64 {
-                if ((op0.id() << 3) as u64 & 0x20) != (opc & 0x20) {
-                    next!();
-                }
-
-                opc |= (op0.id() as u64) << 3;
-            }
-
-            if ei.immctl > 0 {
-                let i = ops[ei.immidx as usize];
-                imm = i.as_::<Imm>().value();
-
-                if ei.immctl == 2 {
-                    imm = i.as_::<Imm>().value() as i64;
-                    immsz = if opc & OPC_67 != 0 { 4 } else { 8 };
-
-                    if immsz == 4 {
-                        imm = i.as_::<Imm>().value() as i32 as i64;
-                    }
-                }
-
-                if ei.immctl == 3 {
-                    if !i.is_reg_type_of(RegType::Vec128) {
-                        self.last_error = Some(AsmError::InvalidOperand);
-                        return;
-                    }
-
-                    imm = ((i.id() as u64) << 4) as i64;
-                }
-
-                if ei.immctl == 6 {
-                    if i.is_label() {
-                        if immsz == 1 && opc >> 56 != 0 {
-                            next!();
-                        } else if immsz == 1 {
-                            self.last_error = Some(AsmError::InvalidInstruction);
-                            return;
-                        }
-                        label_use = Some((i.id(), LabelUse::X86JmpRel32));
-                    } else if i.is_sym() {
-                        let sym = i.as_::<Sym>();
-                        if immsz == 1 && opc >> 56 != 0 {
-                            next!();
-                        } else if immsz == 1 {
-                            self.last_error = Some(AsmError::InvalidInstruction);
-                            return;
-                        }
-                        let distance = self.buffer.symbol_distance(sym);
-                        reloc = Some((
-                            i.id(),
-                            if distance == RelocDistance::Near {
-                                Reloc::X86PCRel4
-                            } else {
-                                Reloc::X86GOTPCRel4
-                            },
-                        ));
-                    }
-                    if opc & LONG != 0 && opc >> 56 != 0 {
-                        next!();
-                    }
-                }
-
-                if ei.immctl == 1 && imm != 1 {
-                    next!();
-                }
-                if opc & LONG != 0 && ei.immctl == 4 && opc >> 56 != 0 && immsz == 1 {
-                    next!();
-                }
-                if ei.immctl >= 2
-                    && !op_imm_n(*crate::core::operand::imm(imm).as_operand(), immsz as _)
-                {
-                    next!();
-                } else {
-                }
-            }
-
-            if opc & 0xfffffff == 0x90 && ops[0].id() == 0 {
-                next!();
-            }
-
-            if enc == Encoding::R as u64 {
-                self.enc_mr(opc, epfx, Operand::new(), ops[0], immsz as _);
-            } else if ei.modrm != 0 {
-                let modreg = if ei.modreg != 0 {
-                    ops[ei.modreg as usize ^ 3]
-                } else {
-                    *Gpd::from_id(((opc & 0xff00) >> 8) as u32).as_operand()
-                };
-
-                if ei.vexreg != 0 {
-                    epfx |= (ops[ei.vexreg as usize ^ 3].id() as u64) << EPFX_VVVV_IDX;
-                }
-
-                if self.enc_mr(opc, epfx, ops[ei.modrm as usize ^ 3], modreg, 0) {
-                    next!(self.last_error.take().unwrap());
-                }
-            } else if ei.modreg != 0 {
-                self.encode_operand(opc, epfx, ops[ei.modreg as usize ^ 3]);
-            } else {
-                if self.encode_opcode(opc, epfx) {
-                    return;
-                }
-            }
-
-            if ei.immctl >= 2 {
-                let offset = self.buffer.cur_offset();
-                if let Some((sym, reloc)) = reloc {
-                    self.buffer.add_reloc_at_offset(
-                        offset,
-                        reloc,
-                        RelocTarget::Sym(Sym::from_id(sym)),
-                        -4,
-                    );
-                }
-                if let Some((label_id, label_use)) = label_use {
-                    self.buffer
-                        .use_label_at_offset(offset, Label::from_id(label_id), label_use);
-                }
-                self.encode_imm(*crate::core::operand::imm(imm).as_operand(), immsz as _);
-            }
-            self.flags = 0;
-            break;
-        }*/
     }
 }
 
-impl<'a> X86EmitterExplicit for Assembler<'a> {}
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CondCode {
+    O = 0x0,
+    NO = 0x1,
+    C = 0x2,
+    NC = 0x3,
+    Z = 0x4,
+    NZ = 0x5,
+    BE = 0x6,
+    A = 0x7,
+    S = 0x8,
+    NS = 0x9,
+    P = 0xa,
+
+    NP = 0xb,
+    L = 0xc,
+    GE = 0xd,
+    LE = 0xe,
+    G = 0xf,
+}
+
+impl CondCode {
+    pub const B: Self = Self::C;
+    pub const NAE: Self = Self::C;
+    pub const AE: Self = Self::NC;
+    pub const NB: Self = Self::NC;
+    pub const E: Self = Self::Z;
+    pub const NE: Self = Self::NZ;
+    pub const NA: Self = Self::BE;
+    pub const NBE: Self = Self::A;
+    pub const PO: Self = Self::NP;
+    pub const NGE: Self = Self::L;
+    pub const NL: Self = Self::GE;
+    pub const NG: Self = Self::LE;
+    pub const NLE: Self = Self::G;
+    pub const PE: Self = Self::P;
+
+    pub const fn code(self) -> u8 {
+        self as u8
+    }
+
+    pub fn invert(self) -> Self {
+        match self {
+            Self::O => Self::NO,
+            Self::NO => Self::O,
+            Self::C => Self::NC,
+            Self::NC => Self::C,
+            Self::Z => Self::NZ,
+            Self::NZ => Self::Z,
+            Self::BE => Self::A,
+            Self::A => Self::BE,
+            Self::S => Self::NS,
+            Self::NS => Self::S,
+            Self::P => Self::NP,
+            Self::NP => Self::P,
+            Self::L => Self::GE,
+            Self::GE => Self::L,
+            Self::LE => Self::G,
+            Self::G => Self::LE,
+        }
+    }
+}

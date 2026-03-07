@@ -176,7 +176,7 @@ impl RegGroup {
     pub const X86Rip: Self = Self::PC;
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, BitOr, BitAnd, BitXor)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, BitOr, BitAnd, BitXor)]
 pub struct OperandSignature {
     pub bits: u32,
 }
@@ -399,7 +399,7 @@ pub const VIRT_ID_COUNT: u32 = VIRT_ID_MAX - VIRT_ID_MIN + 1;
 /// This struct is used internally and all types that are valid operands downcast to
 /// this type eventually and it's also possible to "upcast" it to a operand type e.g `Gp`.
 ///
-#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash, Debug)]
 pub struct Operand {
     pub signature: OperandSignature,
     pub base_id: u32,
@@ -915,7 +915,7 @@ impl Operand {
     }
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash, Debug)]
 pub struct BaseMem(pub Operand);
 
 define_operand_cast!(BaseMem, Operand);

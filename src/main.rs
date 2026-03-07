@@ -12,7 +12,7 @@ fn main() {
 
     asm.sse_movdqurm(XMM0, ptr64(arg0, 0)); // load 4 ints from [arg0] to XMM0
     asm.sse_movdqurm(XMM1, ptr64(arg1, 0)); // load 4 ints from [arg1] to XMM1
-    asm.sse_paddwrr(XMM0, XMM1); // add the two vectors (4 16-bit integers each) and store the result in XMM0
+    asm.sse_paddwrm(XMM0, ptr64(arg1, 0)); // add the two vectors (4 16-bit integers each) and store the result in XMM0
     asm.sse_movdqumr(ptr64(dst, 0), XMM0); // store the result back to [dst]
     asm.ret();
     let buf = cbuf.finish();

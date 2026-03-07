@@ -157,6 +157,10 @@ impl CodeBufferFinalized {
         self.alignment
     }
 
+    /// Allocate this code buffer in executable memory and return a `Span` referring to it.
+    /// This will also write the code into the allocated memory. To execute
+    /// code you can simply use [`span.rx()`](Span::rx) to get a pointer to read+exec memory
+    /// and transmute that to a function pointer of the appropriate type.
     pub fn allocate(&self, jit_allocator: &mut JitAllocator) -> Result<Span, AsmError> {
         let mut span = jit_allocator.alloc(self.data().len())?;
 

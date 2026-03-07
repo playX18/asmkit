@@ -933,7 +933,7 @@ pub mod regs {
 }
 pub use regs::*;
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash, Debug)]
 pub struct Mem(pub BaseMem);
 
 define_operand_cast!(Mem, BaseMem);
@@ -1308,6 +1308,11 @@ impl Mem {
             0,
             (base & 0xFFFFFFF) as _,
         ))
+    }
+
+    pub fn absolute_address(self) -> u64 {
+        assert!(self.is_abs());
+        ((self.base_id() as u64) << 32) | (self.data[1] as u64)
     }
 }
 
