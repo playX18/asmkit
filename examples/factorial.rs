@@ -1,33 +1,33 @@
 use asmkit::core::jit_allocator::{JitAllocator, JitAllocatorOptions};
-
-fn main() {
+use asmkit::masm::*;
+use asmkit::AsmError;
+fn main() -> Result<(), AsmError> {
     {
         use asmkit::core::buffer::CodeBuffer;
         use asmkit::x86::*;
         use formatter::pretty_disassembler;
         let mut buf = CodeBuffer::new();
-        let mut asm = Assembler::new(&mut buf);
+        let asm = Assembler::new(&mut buf);
+        let mut asm = asmkit::masm::x86::MacroAssemblerX86::new(asm);
 
-        let label = asm.get_label();
         let fac = asm.get_label();
 
         asm.bind_label(fac);
-        asm.mov64ri(RAX, imm(1));
-        asm.test64rr(RDI, RDI);
-        asm.jnz(label);
-        asm.ret();
+        asm.mov(RAX, imm(1))?;
+        let label = asm.branch_test64(RDI, RDI, ResultCondition::NonZero)?;
+        asm.ret()?;
 
         {
             asm.bind_label(label);
-            asm.pushr(RBX);
-            asm.mov64rr(RBX, RDI);
-            asm.lea64rm(RDI, ptr64(RDI, -1));
-            asm.call(fac);
-            asm.mov64rr(RDX, RAX);
-            asm.mov64rr(RAX, RBX);
-            asm.imul64rr(RAX, RDX);
-            asm.popr(RBX);
-            asm.ret();
+            asm.push(RBX)?;
+            asm.mov(RBX, RDI)?;
+            asm.sub64(RDI, RDI, imm(1))?;
+            asm.call(fac)?;
+            asm.mov(RDX, RAX)?;
+            asm.mov(RAX, RBX)?;
+            asm.mul64(RAX, RAX, RDX)?;
+            asm.pop(RBX)?;
+            asm.ret()?;
         }
 
         let result = buf.finish();
@@ -110,4 +110,6 @@ fn main() {
             }
         }
     }
+
+    Ok(())
 }

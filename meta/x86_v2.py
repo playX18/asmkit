@@ -1024,6 +1024,35 @@ def get_instruction_feature_set(entries):
     
     return get_primary_feature
 
+def rust_operand_check(ot_char, kind, idx):
+    """Generate a Rust expression that checks if op{idx} is the correct operand type."""
+    if ot_char == 'm':
+        return f"op{idx}.is_mem()"
+    elif ot_char == 'b':
+        return f"op{idx}.is_mem()"
+    elif ot_char == 'i':
+        return f"op{idx}.is_imm()"
+    elif ot_char == 'k':
+        return f"op{idx}.is_mask()"
+    elif ot_char in ('o', 'a'):
+        return None  # no condition for label/address operands
+    elif ot_char == 'r':
+        # Use specific register group checks based on operand kind
+        checks = {
+            "GP":   f"op{idx}.is_gp()",
+            "XMM":  f"op{idx}.is_vec()",
+            "MMX":  f"op{idx}.is_reg_group_of(RegGroup::X86MM)",
+            "MASK": f"op{idx}.is_mask()",
+            "FPU":  f"op{idx}.is_reg_group_of(RegGroup::X86St)",
+            "SEG":  f"op{idx}.is_reg_group_of(RegGroup::X86SReg)",
+            "CR":   f"op{idx}.is_reg_group_of(RegGroup::X86CReg)",
+            "DR":   f"op{idx}.is_reg_group_of(RegGroup::X86DReg)",
+            "BND":  f"op{idx}.is_reg_group_of(RegGroup::X86Bnd)",
+            "TMM":  f"op{idx}.is_reg_group_of(RegGroup::X86Tmm)",
+        }
+        return checks.get(kind, f"op{idx}.is_reg()")
+    return None
+
 def encode_table(entries, args):
     mnemonics = encode_mnems(entries)
     mnemonics["NOP", 0, ""] = [EncodeVariant(Opcode.parse("90"), InstrDesc.parse("NP - - - - NOP"))]
@@ -1037,6 +1066,9 @@ def encode_table(entries, args):
     
     # Determine feature set for each instruction
     get_feature = get_instruction_feature_set(entries)
+
+    # Collect function entries for grouping
+    fn_entries = []
 
     for (mnem, opsize, ots), variants in mnemonics.items():
         supports_high_regs = []
@@ -1128,43 +1160,215 @@ def encode_table(entries, args):
 
         nargs = len(desc.operands)
         rem = 4 - nargs
-        if "MASK" in mnem or "MASKZ" in mnem or "LOCK_" in mnem or "REP_" in mnem or "REPNZ_" in mnem: 
-            print(mnem)
-            pass 
+        if "LOCK_" in mnem or "REP_" in mnem or "REPNZ_" in mnem or "REPZ_" in mnem:
+            pass
         else:
             # Determine feature set for this instruction
             variant_desc = variants[0].desc
             feature_flags = {flag for flag in variant_desc.flags if flag.startswith("F=")}
             feature_flags = {flag[2:] for flag in feature_flags}  # Remove "F=" prefix
             feature = get_feature(feature_flags) if feature_flags else "BASE"
-            
+
             # Create trait name based on feature
             trait_name = f"X86{feature}Emitter" if feature != "BASE" else "X86BaseEmitter"
             trait_name = trait_name.replace("_", "")
-            
-            # Get or create the trait for this feature set
-            if trait_name not in feature_sets:
-                feature_sets[trait_name] = Trait(f"{trait_name}: Emitter")
-                feature_set_names.add(trait_name)
-            
-            func = Function(mnem.lower())
-            canonical_mnemonic = canonicalize_doc_mnemonic(variants[0].desc.mnemonic)
-            doc = opcode_docs.get(canonical_mnemonic)
-            if doc:
-                func.doc(f"Emits `{mnem.upper()}` (`{canonical_mnemonic}`). {doc['tooltip']}")
-                func.doc(f"Reference: [Intel x86 docs for {canonical_mnemonic}]({doc['url']})")
+
+            has_separate_opsize = "ENC_SEPSZ" in variant_desc.flags
+
+            # Strip encoding suffixes (_mask, _maskz, _sae, _er) before
+            # computing the unified name, so that ots stripping doesn't
+            # corrupt them and variants are grouped correctly.
+            extra_suffix = ""
+            clean_mnem = mnem
+            for s in ("_sae", "_er"):
+                if clean_mnem.endswith(s):
+                    extra_suffix = s + extra_suffix
+                    clean_mnem = clean_mnem[:-len(s)]
+                    break
+            for s in ("_maskz", "_mask"):
+                if clean_mnem.endswith(s):
+                    extra_suffix = s + extra_suffix
+                    clean_mnem = clean_mnem[:-len(s)]
+                    break
+
+            # Compute unified name by stripping r/m/i from the operand-type suffix
+            ots_suffix = ots.replace("o", "")
+            if ots_suffix and not has_separate_opsize:
+                # Residual: non-dispatchable characters (k, b, a, etc.)
+                residual = "".join(c for c in ots_suffix if c not in ("r", "m", "i"))
+                base_name = clean_mnem[:-len(ots_suffix)]
+                unified_name = base_name + residual + extra_suffix
             else:
-                func.doc(f"Emits `{mnem.upper()}`.")
-            func.ret("()")
+                unified_name = clean_mnem + extra_suffix
+
+            canonical_mnemonic = canonicalize_doc_mnemonic(variants[0].desc.mnemonic)
+
+            # Capture operand kind info for richer type checks
+            op_kinds = []
             for i in range(nargs):
-                func.arg(Field(f"op{i}", "impl OperandCast"))
-            block = Block()
-            block.line(f"self.emit({mnem.upper()}, {"".join(f"op{i}.as_operand()," for i in range(nargs))}{",".join(f"&NOREG /* op{i + nargs} */" for i in range(rem))})")
-            func.self_mut()
-            func.body(block)
-            feature_sets[trait_name].items.append(func)
+                ot_char = ots[i] if i < len(ots) else ''
+                if ot_char in ('r', 'k'):
+                    op_kinds.append(variant_desc.operands[i].kind)
+                elif ot_char in ('m', 'b'):
+                    op_kinds.append('MEM')
+                elif ot_char == 'i':
+                    op_kinds.append('IMM')
+                else:
+                    op_kinds.append('UNKNOWN')
+
+            fn_entries.append({
+                'mnem': mnem,
+                'unified_name': unified_name,
+                'ots': ots,
+                'nargs': nargs,
+                'trait_name': trait_name,
+                'canonical_mnemonic': canonical_mnemonic,
+                'op_kinds': op_kinds,
+            })
 
         alt_table += enc_opcs[1:]
+
+    # Phase 2: Group function entries by (unified_name, nargs, trait_name)
+    fn_groups = defaultdict(list)
+    for entry in fn_entries:
+        key = (entry['unified_name'], entry['nargs'], entry['trait_name'])
+        fn_groups[key].append(entry)
+
+    # Phase 3: Detect nargs collisions within same (unified_name, trait_name)
+    base_nargs_map = defaultdict(set)
+    for (unified_name, nargs, trait_name) in fn_groups:
+        base_nargs_map[(unified_name, trait_name)].add(nargs)
+
+    # Phase 4: Generate grouped dispatch functions
+    for (unified_name, nargs, trait_name), group_entries in sorted(fn_groups.items()):
+        nargs_options = base_nargs_map[(unified_name, trait_name)]
+
+        # Determine function name
+        if len(nargs_options) > 1:
+            # Multiple arg counts for same unified name - disambiguate
+            # Keep the group with the most entries as the base name
+            group_sizes = {n: len(fn_groups[(unified_name, n, trait_name)]) for n in nargs_options}
+            primary_nargs = max(nargs_options, key=lambda n: (group_sizes[n], -n))
+            if nargs == primary_nargs:
+                fn_name = unified_name.lower()
+            else:
+                fn_name = f"{unified_name}_{nargs}".lower() if nargs > 0 else unified_name.lower()
+                # Avoid collisions with 0-arg primary
+                if nargs == 0 and primary_nargs != 0:
+                    fn_name = f"{unified_name}_0".lower()
+        else:
+            fn_name = unified_name.lower()
+
+        # Get or create the trait
+        if trait_name not in feature_sets:
+            feature_sets[trait_name] = Trait(f"{trait_name}: Emitter")
+            feature_set_names.add(trait_name)
+
+        # Deduplicate: if multiple entries have the same ots pattern, keep one
+        seen_ots = {}
+        deduped_entries = []
+        for entry in group_entries:
+            if entry['ots'] not in seen_ots:
+                seen_ots[entry['ots']] = entry
+                deduped_entries.append(entry)
+        group_entries = deduped_entries
+
+        rem = 4 - nargs
+        noreg_args = ",".join(f"&NOREG" for _ in range(rem))
+
+        # Build the function
+        func = Function(fn_name)
+        func.self_mut()
+        func.ret("Result<(), AsmError>")
+
+        # Use doc from the first entry's canonical mnemonic
+        canonical_mnemonic = group_entries[0]['canonical_mnemonic']
+        doc = opcode_docs.get(canonical_mnemonic)
+        if len(group_entries) == 1:
+            opc_name = group_entries[0]['mnem'].upper()
+            doc_name = opc_name
+        else:
+            doc_name = unified_name.upper()
+        if doc:
+            func.doc(f"Emits `{doc_name}` (`{canonical_mnemonic}`). {doc['tooltip']}")
+            func.doc(f"Reference: [Intel x86 docs for {canonical_mnemonic}]({doc['url']})")
+        else:
+            func.doc(f"Emits `{doc_name}`.")
+
+        for i in range(nargs):
+            func.arg(Field(f"op{i}", "impl OperandCast"))
+
+        block = Block()
+
+        # Escape the doc_name for use in error messages
+        err_mnem = doc_name.replace('"', '\\"')
+
+        if len(group_entries) == 1:
+            # Single variant - emit directly, no dispatch needed
+            entry = group_entries[0]
+            opc = entry['mnem'].upper()
+            op_args = "".join(f"op{i}.as_operand()," for i in range(nargs))
+            block.line(f"self.emit({opc}, {op_args}{noreg_args});")
+            block.line(f"if let Some(err) = self.last_error() {{ Err(err) }} else {{ Ok(()) }}")
+        else:
+            # Multiple variants - generate dispatch based on operand types
+            # Convert operands to Operand references first
+            for i in range(nargs):
+                block.line(f"let op{i} = op{i}.as_operand();")
+
+            # Sort entries: most specific first (more conditions), fallback last
+            def entry_specificity(e):
+                return sum(1 for c in e['ots'] if c not in ("o", " ", "a") and c != "")
+            sorted_entries = sorted(group_entries, key=entry_specificity, reverse=True)
+
+            first_cond = True
+            fallback_entry = None
+            for entry in sorted_entries:
+                ots = entry['ots']
+                opc = entry['mnem'].upper()
+                op_kinds = entry.get('op_kinds', [])
+
+                conditions = []
+                for i, c in enumerate(ots):
+                    kind = op_kinds[i] if i < len(op_kinds) else 'UNKNOWN'
+                    check = rust_operand_check(c, kind, i)
+                    if check is not None:
+                        conditions.append(check)
+
+                if not conditions:
+                    # No conditions - this is a fallback (e.g., label/symbol operand)
+                    fallback_entry = entry
+                    continue
+
+                cond_str = " && ".join(conditions)
+                if first_cond:
+                    block.line(f"if {cond_str} {{")
+                    first_cond = False
+                else:
+                    block.line(f"}} else if {cond_str} {{")
+                op_args = ",".join(f"op{i}" for i in range(nargs))
+                block.line(f"    self.emit({opc}, {op_args},{noreg_args});")
+
+            if fallback_entry:
+                opc = fallback_entry['mnem'].upper()
+                op_args = ",".join(f"op{i}" for i in range(nargs))
+                if not first_cond:
+                    block.line("} else {")
+                    block.line(f"    self.emit({opc}, {op_args},{noreg_args});")
+                else:
+                    block.line(f"self.emit({opc}, {op_args},{noreg_args});")
+            else:
+                if not first_cond:
+                    block.line("} else {")
+                    block.line(f'    return Err(AsmError::X86(X86Error::InvalidOperandCombination {{ mnemonic: "{err_mnem}" }}));')
+
+            if not first_cond:
+                block.line("}")
+
+            block.line(f"if let Some(err) = self.last_error() {{ Err(err) }} else {{ Ok(()) }}")
+
+        func.body(block)
+        feature_sets[trait_name].items.append(func)
 
     mnem_tab = "".join(f"pub const {m if not m.startswith('3') else '_' + m}: i64 = {v:#x}u64 as i64;\n" for m, v in mnem_map.items())
 
@@ -1172,14 +1376,14 @@ def encode_table(entries, args):
     for v in alt_table:
         alt_tab += f"{v:#x}u64 as i64,\n"
     alt_tab += "];"
-    
+
     # Generate all traits
     all_traits = []
     for trait_name in sorted(feature_set_names):
         trait = feature_sets[trait_name]
-        
+
         all_traits.append(trait)
-    
+
     return f"{mnem_tab}\n{alt_tab}", all_traits
 
 def unique(it):
@@ -1561,6 +1765,7 @@ if __name__ == "__main__":
         
         with open(f"{args.out_private}/mod.rs", "w") as mod_file:
             mod_file.write("use crate::x86::assembler::*;\n")
+            mod_file.write("use crate::{AsmError, X86Error};\n")
             mod_file.write("use super::opcodes::*;\n")
             mod_file.write("use crate::core::emitter::*;\n")
             mod_file.write("use crate::core::operand::*;\n\n")

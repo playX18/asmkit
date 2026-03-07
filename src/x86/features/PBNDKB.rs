@@ -1,6 +1,7 @@
 pub trait X86PBNDKBEmitter: Emitter {
     /// Emits `PBNDKB`.
-    fn pbndkb(&mut self,) -> () {
-        self.emit(PBNDKB, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    fn pbndkb(&mut self,) -> Result<(), AsmError> {
+        self.emit(PBNDKB, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

@@ -1,3 +1,5 @@
+use crate::AsmError;
+
 use super::operand::Operand;
 
 const NOREG: Operand = Operand::new();
@@ -15,5 +17,9 @@ pub trait Emitter {
             [op0, op1, op2, op3] => self.emit(opcode, op0, op1, op2, op3),
             _ => unreachable!(),
         }
+    }
+
+    fn last_error(&self) -> Option<AsmError> {
+        None
     }
 }

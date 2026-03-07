@@ -1,11 +1,12 @@
 use asmkit::core::buffer::{perform_relocations, CodeBuffer, ExternalName, RelocDistance};
 use asmkit::core::jit_allocator::JitAllocator;
+use asmkit::AsmError;
 
 extern "C" {
     fn puts(_: *const i8);
 }
 
-fn main() {
+fn main() -> Result<(), AsmError> {
     {
         use asmkit::x86::*;
         use formatter::pretty_disassembler;
@@ -18,9 +19,9 @@ fn main() {
             .buffer
             .add_symbol(ExternalName::Symbol("puts".into()), RelocDistance::Far);
 
-        asm.lea64rm(RDI, ptr64_label(str_constant, 0));
-        asm.callm(ptr64_sym(puts_sym, 0));
-        asm.ret();
+        asm.lea64(RDI, ptr64_label(str_constant, 0))?;
+        asm.call(ptr64_sym(puts_sym, 0))?;
+        asm.ret()?;
         let end = asm.get_label();
         asm.bind_label(end);
         let off = asm.buffer.label_offset(end);
@@ -162,4 +163,6 @@ fn main() {
             }
         }
     }
+
+    Ok(())
 }

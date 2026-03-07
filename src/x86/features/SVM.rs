@@ -1,22 +1,27 @@
 pub trait X86SVMEmitter: Emitter {
-    /// Emits `VMRUN`.
-    fn vmrun(&mut self,) -> () {
-        self.emit(VMRUN, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `VMMCALL`.
-    fn vmmcall(&mut self,) -> () {
-        self.emit(VMMCALL, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `INVLPGA`.
+    fn invlpga(&mut self,) -> Result<(), AsmError> {
+        self.emit(INVLPGA, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMLOAD`.
-    fn vmload(&mut self,) -> () {
-        self.emit(VMLOAD, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    fn vmload(&mut self,) -> Result<(), AsmError> {
+        self.emit(VMLOAD, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
+    }
+    /// Emits `VMMCALL`.
+    fn vmmcall(&mut self,) -> Result<(), AsmError> {
+        self.emit(VMMCALL, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
+    }
+    /// Emits `VMRUN`.
+    fn vmrun(&mut self,) -> Result<(), AsmError> {
+        self.emit(VMRUN, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMSAVE`.
-    fn vmsave(&mut self,) -> () {
-        self.emit(VMSAVE, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `INVLPGA`.
-    fn invlpga(&mut self,) -> () {
-        self.emit(INVLPGA, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    fn vmsave(&mut self,) -> Result<(), AsmError> {
+        self.emit(VMSAVE, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

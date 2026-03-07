@@ -1,62 +1,83 @@
 pub trait X86VMXEmitter: Emitter {
     /// Emits `INVEPTRM`.
-    fn inveptrm(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(INVEPTRM, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
+    fn invept(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        self.emit(INVEPTRM, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `INVVPIDRM`.
-    fn invvpidrm(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(INVVPIDRM, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
+    fn invvpid(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        self.emit(INVVPIDRM, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMCALL`.
-    fn vmcall(&mut self,) -> () {
-        self.emit(VMCALL, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    fn vmcall(&mut self,) -> Result<(), AsmError> {
+        self.emit(VMCALL, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMCLEARM`.
-    fn vmclearm(&mut self,op0: impl OperandCast) -> () {
-        self.emit(VMCLEARM, op0.as_operand(),&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    fn vmclear(&mut self,op0: impl OperandCast) -> Result<(), AsmError> {
+        self.emit(VMCLEARM, op0.as_operand(),&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMFUNC`.
-    fn vmfunc(&mut self,) -> () {
-        self.emit(VMFUNC, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    fn vmfunc(&mut self,) -> Result<(), AsmError> {
+        self.emit(VMFUNC, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMLAUNCH`.
-    fn vmlaunch(&mut self,) -> () {
-        self.emit(VMLAUNCH, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `VMRESUME`.
-    fn vmresume(&mut self,) -> () {
-        self.emit(VMRESUME, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    fn vmlaunch(&mut self,) -> Result<(), AsmError> {
+        self.emit(VMLAUNCH, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMPTRLDM`.
-    fn vmptrldm(&mut self,op0: impl OperandCast) -> () {
-        self.emit(VMPTRLDM, op0.as_operand(),&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    fn vmptrld(&mut self,op0: impl OperandCast) -> Result<(), AsmError> {
+        self.emit(VMPTRLDM, op0.as_operand(),&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMPTRSTM`.
-    fn vmptrstm(&mut self,op0: impl OperandCast) -> () {
-        self.emit(VMPTRSTM, op0.as_operand(),&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    fn vmptrst(&mut self,op0: impl OperandCast) -> Result<(), AsmError> {
+        self.emit(VMPTRSTM, op0.as_operand(),&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
-    /// Emits `VMREADRR`.
-    fn vmreadrr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VMREADRR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `VMREAD`.
+    fn vmread(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        if op0.is_gp() && op1.is_gp() {
+            self.emit(VMREADRR, op0,op1,&NOREG,&NOREG);
+        } else if op0.is_mem() && op1.is_gp() {
+            self.emit(VMREADMR, op0,op1,&NOREG,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VMREAD" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
-    /// Emits `VMREADMR`.
-    fn vmreadmr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VMREADMR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `VMRESUME`.
+    fn vmresume(&mut self,) -> Result<(), AsmError> {
+        self.emit(VMRESUME, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
-    /// Emits `VMWRITERR`.
-    fn vmwriterr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VMWRITERR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `VMWRITERM`.
-    fn vmwriterm(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VMWRITERM, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `VMWRITE`.
+    fn vmwrite(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        if op0.is_gp() && op1.is_gp() {
+            self.emit(VMWRITERR, op0,op1,&NOREG,&NOREG);
+        } else if op0.is_gp() && op1.is_mem() {
+            self.emit(VMWRITERM, op0,op1,&NOREG,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "VMWRITE" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMXOFF`.
-    fn vmxoff(&mut self,) -> () {
-        self.emit(VMXOFF, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    fn vmxoff(&mut self,) -> Result<(), AsmError> {
+        self.emit(VMXOFF, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `VMXONM`.
-    fn vmxonm(&mut self,op0: impl OperandCast) -> () {
-        self.emit(VMXONM, op0.as_operand(),&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    fn vmxon(&mut self,op0: impl OperandCast) -> Result<(), AsmError> {
+        self.emit(VMXONM, op0.as_operand(),&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

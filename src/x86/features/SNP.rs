@@ -1,18 +1,22 @@
 pub trait X86SNPEmitter: Emitter {
-    /// Emits `RMPADJUST`.
-    fn rmpadjust(&mut self,) -> () {
-        self.emit(RMPADJUST, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `RMPUPDATE`.
-    fn rmpupdate(&mut self,) -> () {
-        self.emit(RMPUPDATE, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
-    }
     /// Emits `PSMASH`.
-    fn psmash(&mut self,) -> () {
-        self.emit(PSMASH, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    fn psmash(&mut self,) -> Result<(), AsmError> {
+        self.emit(PSMASH, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `PVALIDATE`.
-    fn pvalidate(&mut self,) -> () {
-        self.emit(PVALIDATE, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    fn pvalidate(&mut self,) -> Result<(), AsmError> {
+        self.emit(PVALIDATE, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
+    }
+    /// Emits `RMPADJUST`.
+    fn rmpadjust(&mut self,) -> Result<(), AsmError> {
+        self.emit(RMPADJUST, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
+    }
+    /// Emits `RMPUPDATE`.
+    fn rmpupdate(&mut self,) -> Result<(), AsmError> {
+        self.emit(RMPUPDATE, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

@@ -1,10 +1,12 @@
 pub trait X86MONITORXEmitter: Emitter {
     /// Emits `MONITORX`.
-    fn monitorx(&mut self,) -> () {
-        self.emit(MONITORX, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    fn monitorx(&mut self,) -> Result<(), AsmError> {
+        self.emit(MONITORX, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
     /// Emits `MWAITX`.
-    fn mwaitx(&mut self,) -> () {
-        self.emit(MWAITX, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    fn mwaitx(&mut self,) -> Result<(), AsmError> {
+        self.emit(MWAITX, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

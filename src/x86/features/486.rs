@@ -1,111 +1,136 @@
 pub trait X86486Emitter: Emitter {
+    /// Emits `BSWAP16R`.
+    fn bswap16(&mut self,op0: impl OperandCast) -> Result<(), AsmError> {
+        self.emit(BSWAP16R, op0.as_operand(),&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
+    }
+    /// Emits `BSWAP32R`.
+    fn bswap32(&mut self,op0: impl OperandCast) -> Result<(), AsmError> {
+        self.emit(BSWAP32R, op0.as_operand(),&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
+    }
+    /// Emits `BSWAP64R`.
+    fn bswap64(&mut self,op0: impl OperandCast) -> Result<(), AsmError> {
+        self.emit(BSWAP64R, op0.as_operand(),&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
+    }
+    /// Emits `CMPXCHG16`.
+    fn cmpxchg16(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        if op0.is_gp() && op1.is_gp() {
+            self.emit(CMPXCHG16RR, op0,op1,&NOREG,&NOREG);
+        } else if op0.is_mem() && op1.is_gp() {
+            self.emit(CMPXCHG16MR, op0,op1,&NOREG,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "CMPXCHG16" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
+    }
+    /// Emits `CMPXCHG32`.
+    fn cmpxchg32(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        if op0.is_gp() && op1.is_gp() {
+            self.emit(CMPXCHG32RR, op0,op1,&NOREG,&NOREG);
+        } else if op0.is_mem() && op1.is_gp() {
+            self.emit(CMPXCHG32MR, op0,op1,&NOREG,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "CMPXCHG32" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
+    }
+    /// Emits `CMPXCHG64`.
+    fn cmpxchg64(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        if op0.is_gp() && op1.is_gp() {
+            self.emit(CMPXCHG64RR, op0,op1,&NOREG,&NOREG);
+        } else if op0.is_mem() && op1.is_gp() {
+            self.emit(CMPXCHG64MR, op0,op1,&NOREG,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "CMPXCHG64" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
+    }
+    /// Emits `CMPXCHG8`.
+    fn cmpxchg8(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        if op0.is_gp() && op1.is_gp() {
+            self.emit(CMPXCHG8RR, op0,op1,&NOREG,&NOREG);
+        } else if op0.is_mem() && op1.is_gp() {
+            self.emit(CMPXCHG8MR, op0,op1,&NOREG,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "CMPXCHG8" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
+    }
+    /// Emits `INVD`.
+    fn invd(&mut self,) -> Result<(), AsmError> {
+        self.emit(INVD, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
+    }
     /// Emits `INVLPG8M`.
-    fn invlpg8m(&mut self,op0: impl OperandCast) -> () {
-        self.emit(INVLPG8M, op0.as_operand(),&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    fn invlpg8(&mut self,op0: impl OperandCast) -> Result<(), AsmError> {
+        self.emit(INVLPG8M, op0.as_operand(),&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
-    /// Emits `INVD` (`INVD`). Invalidates (flushes) the processor’s internal caches and issues a special-function bus cycle that directs external caches to also flush themselves. Data held in internal caches is not written back to main memory.
-    /// Reference: [Intel x86 docs for INVD](https://www.felixcloutier.com/x86/INVD.html)
-    fn invd(&mut self,) -> () {
-        self.emit(INVD, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `WBINVD`.
+    fn wbinvd(&mut self,) -> Result<(), AsmError> {
+        self.emit(WBINVD, &NOREG,&NOREG,&NOREG,&NOREG);
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
-    /// Emits `WBINVD` (`WBINVD`). Writes back all modified cache lines in the processor’s internal cache to main memory and invalidates (flushes) the internal caches. The instruction then issues a special-function bus cycle that directs external caches to also write back modified data and another bus cycle to indicate that the external caches should be invalidated.
-    /// Reference: [Intel x86 docs for WBINVD](https://www.felixcloutier.com/x86/WBINVD.html)
-    fn wbinvd(&mut self,) -> () {
-        self.emit(WBINVD, &NOREG /* op0 */,&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `XADD16`.
+    fn xadd16(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        if op0.is_gp() && op1.is_gp() {
+            self.emit(XADD16RR, op0,op1,&NOREG,&NOREG);
+        } else if op0.is_mem() && op1.is_gp() {
+            self.emit(XADD16MR, op0,op1,&NOREG,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "XADD16" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
-    /// Emits `CMPXCHG8RR` (`CMPXCHG`). Compares the value in the AL, AX, EAX, or RAX register with the first operand (destination operand). If the two values are equal, the second operand (source operand) is loaded into the destination operand. Otherwise, the destination operand is loaded into the AL, AX, EAX or RAX register. RAX register is available only in 64-bit mode.
-    /// Reference: [Intel x86 docs for CMPXCHG](https://www.felixcloutier.com/x86/CMPXCHG.html)
-    fn cmpxchg8rr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(CMPXCHG8RR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `XADD32`.
+    fn xadd32(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        if op0.is_gp() && op1.is_gp() {
+            self.emit(XADD32RR, op0,op1,&NOREG,&NOREG);
+        } else if op0.is_mem() && op1.is_gp() {
+            self.emit(XADD32MR, op0,op1,&NOREG,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "XADD32" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
-    /// Emits `CMPXCHG8MR` (`CMPXCHG`). Compares the value in the AL, AX, EAX, or RAX register with the first operand (destination operand). If the two values are equal, the second operand (source operand) is loaded into the destination operand. Otherwise, the destination operand is loaded into the AL, AX, EAX or RAX register. RAX register is available only in 64-bit mode.
-    /// Reference: [Intel x86 docs for CMPXCHG](https://www.felixcloutier.com/x86/CMPXCHG.html)
-    fn cmpxchg8mr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(CMPXCHG8MR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `XADD64`.
+    fn xadd64(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        if op0.is_gp() && op1.is_gp() {
+            self.emit(XADD64RR, op0,op1,&NOREG,&NOREG);
+        } else if op0.is_mem() && op1.is_gp() {
+            self.emit(XADD64MR, op0,op1,&NOREG,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "XADD64" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
-    /// Emits `CMPXCHG16RR` (`CMPXCHG`). Compares the value in the AL, AX, EAX, or RAX register with the first operand (destination operand). If the two values are equal, the second operand (source operand) is loaded into the destination operand. Otherwise, the destination operand is loaded into the AL, AX, EAX or RAX register. RAX register is available only in 64-bit mode.
-    /// Reference: [Intel x86 docs for CMPXCHG](https://www.felixcloutier.com/x86/CMPXCHG.html)
-    fn cmpxchg16rr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(CMPXCHG16RR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `CMPXCHG16MR` (`CMPXCHG`). Compares the value in the AL, AX, EAX, or RAX register with the first operand (destination operand). If the two values are equal, the second operand (source operand) is loaded into the destination operand. Otherwise, the destination operand is loaded into the AL, AX, EAX or RAX register. RAX register is available only in 64-bit mode.
-    /// Reference: [Intel x86 docs for CMPXCHG](https://www.felixcloutier.com/x86/CMPXCHG.html)
-    fn cmpxchg16mr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(CMPXCHG16MR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `CMPXCHG32RR` (`CMPXCHG`). Compares the value in the AL, AX, EAX, or RAX register with the first operand (destination operand). If the two values are equal, the second operand (source operand) is loaded into the destination operand. Otherwise, the destination operand is loaded into the AL, AX, EAX or RAX register. RAX register is available only in 64-bit mode.
-    /// Reference: [Intel x86 docs for CMPXCHG](https://www.felixcloutier.com/x86/CMPXCHG.html)
-    fn cmpxchg32rr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(CMPXCHG32RR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `CMPXCHG32MR` (`CMPXCHG`). Compares the value in the AL, AX, EAX, or RAX register with the first operand (destination operand). If the two values are equal, the second operand (source operand) is loaded into the destination operand. Otherwise, the destination operand is loaded into the AL, AX, EAX or RAX register. RAX register is available only in 64-bit mode.
-    /// Reference: [Intel x86 docs for CMPXCHG](https://www.felixcloutier.com/x86/CMPXCHG.html)
-    fn cmpxchg32mr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(CMPXCHG32MR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `CMPXCHG64RR` (`CMPXCHG`). Compares the value in the AL, AX, EAX, or RAX register with the first operand (destination operand). If the two values are equal, the second operand (source operand) is loaded into the destination operand. Otherwise, the destination operand is loaded into the AL, AX, EAX or RAX register. RAX register is available only in 64-bit mode.
-    /// Reference: [Intel x86 docs for CMPXCHG](https://www.felixcloutier.com/x86/CMPXCHG.html)
-    fn cmpxchg64rr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(CMPXCHG64RR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `CMPXCHG64MR` (`CMPXCHG`). Compares the value in the AL, AX, EAX, or RAX register with the first operand (destination operand). If the two values are equal, the second operand (source operand) is loaded into the destination operand. Otherwise, the destination operand is loaded into the AL, AX, EAX or RAX register. RAX register is available only in 64-bit mode.
-    /// Reference: [Intel x86 docs for CMPXCHG](https://www.felixcloutier.com/x86/CMPXCHG.html)
-    fn cmpxchg64mr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(CMPXCHG64MR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `XADD8RR` (`XADD`). Exchanges the first operand (destination operand) with the second operand (source operand), then loads the sum of the two values into the destination operand. The destination operand can be a register or a memory location; the source operand is a register.
-    /// Reference: [Intel x86 docs for XADD](https://www.felixcloutier.com/x86/XADD.html)
-    fn xadd8rr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(XADD8RR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `XADD8MR` (`XADD`). Exchanges the first operand (destination operand) with the second operand (source operand), then loads the sum of the two values into the destination operand. The destination operand can be a register or a memory location; the source operand is a register.
-    /// Reference: [Intel x86 docs for XADD](https://www.felixcloutier.com/x86/XADD.html)
-    fn xadd8mr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(XADD8MR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `XADD16RR` (`XADD`). Exchanges the first operand (destination operand) with the second operand (source operand), then loads the sum of the two values into the destination operand. The destination operand can be a register or a memory location; the source operand is a register.
-    /// Reference: [Intel x86 docs for XADD](https://www.felixcloutier.com/x86/XADD.html)
-    fn xadd16rr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(XADD16RR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `XADD16MR` (`XADD`). Exchanges the first operand (destination operand) with the second operand (source operand), then loads the sum of the two values into the destination operand. The destination operand can be a register or a memory location; the source operand is a register.
-    /// Reference: [Intel x86 docs for XADD](https://www.felixcloutier.com/x86/XADD.html)
-    fn xadd16mr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(XADD16MR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `XADD32RR` (`XADD`). Exchanges the first operand (destination operand) with the second operand (source operand), then loads the sum of the two values into the destination operand. The destination operand can be a register or a memory location; the source operand is a register.
-    /// Reference: [Intel x86 docs for XADD](https://www.felixcloutier.com/x86/XADD.html)
-    fn xadd32rr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(XADD32RR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `XADD32MR` (`XADD`). Exchanges the first operand (destination operand) with the second operand (source operand), then loads the sum of the two values into the destination operand. The destination operand can be a register or a memory location; the source operand is a register.
-    /// Reference: [Intel x86 docs for XADD](https://www.felixcloutier.com/x86/XADD.html)
-    fn xadd32mr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(XADD32MR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `XADD64RR` (`XADD`). Exchanges the first operand (destination operand) with the second operand (source operand), then loads the sum of the two values into the destination operand. The destination operand can be a register or a memory location; the source operand is a register.
-    /// Reference: [Intel x86 docs for XADD](https://www.felixcloutier.com/x86/XADD.html)
-    fn xadd64rr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(XADD64RR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `XADD64MR` (`XADD`). Exchanges the first operand (destination operand) with the second operand (source operand), then loads the sum of the two values into the destination operand. The destination operand can be a register or a memory location; the source operand is a register.
-    /// Reference: [Intel x86 docs for XADD](https://www.felixcloutier.com/x86/XADD.html)
-    fn xadd64mr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(XADD64MR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `BSWAP16R` (`BSWAP`). Reverses the byte order of a 32-bit or 64-bit (destination) register. This instruction is provided for converting little-endian values to big-endian format and vice versa. To swap bytes in a word value (16-bit register), use the XCHG instruction. When the BSWAP instruction references a 16-bit register, the result is undefined.
-    /// Reference: [Intel x86 docs for BSWAP](https://www.felixcloutier.com/x86/BSWAP.html)
-    fn bswap16r(&mut self,op0: impl OperandCast) -> () {
-        self.emit(BSWAP16R, op0.as_operand(),&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `BSWAP32R` (`BSWAP`). Reverses the byte order of a 32-bit or 64-bit (destination) register. This instruction is provided for converting little-endian values to big-endian format and vice versa. To swap bytes in a word value (16-bit register), use the XCHG instruction. When the BSWAP instruction references a 16-bit register, the result is undefined.
-    /// Reference: [Intel x86 docs for BSWAP](https://www.felixcloutier.com/x86/BSWAP.html)
-    fn bswap32r(&mut self,op0: impl OperandCast) -> () {
-        self.emit(BSWAP32R, op0.as_operand(),&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `BSWAP64R` (`BSWAP`). Reverses the byte order of a 32-bit or 64-bit (destination) register. This instruction is provided for converting little-endian values to big-endian format and vice versa. To swap bytes in a word value (16-bit register), use the XCHG instruction. When the BSWAP instruction references a 16-bit register, the result is undefined.
-    /// Reference: [Intel x86 docs for BSWAP](https://www.felixcloutier.com/x86/BSWAP.html)
-    fn bswap64r(&mut self,op0: impl OperandCast) -> () {
-        self.emit(BSWAP64R, op0.as_operand(),&NOREG /* op1 */,&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `XADD8`.
+    fn xadd8(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        if op0.is_gp() && op1.is_gp() {
+            self.emit(XADD8RR, op0,op1,&NOREG,&NOREG);
+        } else if op0.is_mem() && op1.is_gp() {
+            self.emit(XADD8MR, op0,op1,&NOREG,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "XADD8" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

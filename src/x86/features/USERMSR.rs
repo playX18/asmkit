@@ -1,18 +1,28 @@
 pub trait X86USERMSREmitter: Emitter {
-    /// Emits `URDMSRRR`.
-    fn urdmsrrr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(URDMSRRR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `URDMSR`.
+    fn urdmsr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        if op0.is_gp() && op1.is_gp() {
+            self.emit(URDMSRRR, op0,op1,&NOREG,&NOREG);
+        } else if op0.is_gp() && op1.is_imm() {
+            self.emit(URDMSRRI, op0,op1,&NOREG,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "URDMSR" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
-    /// Emits `UWRMSRRR`.
-    fn uwrmsrrr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(UWRMSRRR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `URDMSRRI`.
-    fn urdmsrri(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(URDMSRRI, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `UWRMSRIR`.
-    fn uwrmsrir(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(UWRMSRIR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `UWRMSR`.
+    fn uwrmsr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        if op0.is_gp() && op1.is_gp() {
+            self.emit(UWRMSRRR, op0,op1,&NOREG,&NOREG);
+        } else if op0.is_imm() && op1.is_gp() {
+            self.emit(UWRMSRIR, op0,op1,&NOREG,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "UWRMSR" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

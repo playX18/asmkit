@@ -66,11 +66,11 @@ extern crate alloc;
 
 pub mod aarch64;
 pub mod core;
+pub mod masm;
 pub mod ppc;
 pub mod riscv;
 pub mod util;
 pub mod x86;
-pub mod masm;
 
 use ::core::fmt;
 
@@ -86,6 +86,7 @@ pub enum AsmError {
     FailedToOpenAnonymousMemory,
     TooLarge,
     X86(X86Error),
+    UnsupportedInstruction { reason: &'static str },
 }
 
 impl fmt::Display for AsmError {
@@ -103,6 +104,9 @@ impl fmt::Display for AsmError {
             }
             AsmError::TooLarge => write!(f, "too large"),
             AsmError::X86(e) => write!(f, "x86 error: {}", e),
+            AsmError::UnsupportedInstruction { reason } => {
+                write!(f, "unsupported instruction: {}", reason)
+            }
         }
     }
 }
@@ -209,6 +213,9 @@ pub enum X86Error {
     InvalidRelocation {
         reloc_type: &'static str,
         reason: &'static str,
+    },
+    InvalidOperandCombination {
+        mnemonic: &'static str,
     },
 }
 
@@ -321,6 +328,13 @@ impl fmt::Display for X86Error {
             }
             X86Error::InvalidRelocation { reloc_type, reason } => {
                 write!(f, "invalid relocation {}: {}", reloc_type, reason)
+            }
+            X86Error::InvalidOperandCombination { mnemonic } => {
+                write!(
+                    f,
+                    "invalid operand combination for instruction `{}`",
+                    mnemonic
+                )
             }
         }
     }

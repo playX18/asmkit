@@ -1,74 +1,110 @@
 pub trait X86SSE42Emitter: Emitter {
-    /// Emits `CRC32_8RR` (`CRC32`). Starting with an initial value in the first operand (destination operand), accumulates a CRC32 (polynomial 11EDC6F41H) value for the second operand (source operand) and stores the result in the destination operand. The source operand can be a register or a memory location. The destination operand must be an r32 or r64 register. If the destination is an r64 register, then the 32-bit result is stored in the least significant double word and 00000000H is stored in the most significant double word of the r64 register.
-    /// Reference: [Intel x86 docs for CRC32](https://www.felixcloutier.com/x86/CRC32.html)
-    fn crc32_8rr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(CRC32_8RR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `CRC32_16`.
+    fn crc32_16(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        if op0.is_gp() && op1.is_gp() {
+            self.emit(CRC32_16RR, op0,op1,&NOREG,&NOREG);
+        } else if op0.is_gp() && op1.is_mem() {
+            self.emit(CRC32_16RM, op0,op1,&NOREG,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "CRC32_16" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
-    /// Emits `CRC32_8RM` (`CRC32`). Starting with an initial value in the first operand (destination operand), accumulates a CRC32 (polynomial 11EDC6F41H) value for the second operand (source operand) and stores the result in the destination operand. The source operand can be a register or a memory location. The destination operand must be an r32 or r64 register. If the destination is an r64 register, then the 32-bit result is stored in the least significant double word and 00000000H is stored in the most significant double word of the r64 register.
-    /// Reference: [Intel x86 docs for CRC32](https://www.felixcloutier.com/x86/CRC32.html)
-    fn crc32_8rm(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(CRC32_8RM, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `CRC32_32`.
+    fn crc32_32(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        if op0.is_gp() && op1.is_gp() {
+            self.emit(CRC32_32RR, op0,op1,&NOREG,&NOREG);
+        } else if op0.is_gp() && op1.is_mem() {
+            self.emit(CRC32_32RM, op0,op1,&NOREG,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "CRC32_32" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
-    /// Emits `CRC32_16RR` (`CRC32`). Starting with an initial value in the first operand (destination operand), accumulates a CRC32 (polynomial 11EDC6F41H) value for the second operand (source operand) and stores the result in the destination operand. The source operand can be a register or a memory location. The destination operand must be an r32 or r64 register. If the destination is an r64 register, then the 32-bit result is stored in the least significant double word and 00000000H is stored in the most significant double word of the r64 register.
-    /// Reference: [Intel x86 docs for CRC32](https://www.felixcloutier.com/x86/CRC32.html)
-    fn crc32_16rr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(CRC32_16RR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `CRC32_64`.
+    fn crc32_64(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        if op0.is_gp() && op1.is_gp() {
+            self.emit(CRC32_64RR, op0,op1,&NOREG,&NOREG);
+        } else if op0.is_gp() && op1.is_mem() {
+            self.emit(CRC32_64RM, op0,op1,&NOREG,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "CRC32_64" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
-    /// Emits `CRC32_16RM` (`CRC32`). Starting with an initial value in the first operand (destination operand), accumulates a CRC32 (polynomial 11EDC6F41H) value for the second operand (source operand) and stores the result in the destination operand. The source operand can be a register or a memory location. The destination operand must be an r32 or r64 register. If the destination is an r64 register, then the 32-bit result is stored in the least significant double word and 00000000H is stored in the most significant double word of the r64 register.
-    /// Reference: [Intel x86 docs for CRC32](https://www.felixcloutier.com/x86/CRC32.html)
-    fn crc32_16rm(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(CRC32_16RM, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `CRC32_8`.
+    fn crc32_8(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        if op0.is_gp() && op1.is_gp() {
+            self.emit(CRC32_8RR, op0,op1,&NOREG,&NOREG);
+        } else if op0.is_gp() && op1.is_mem() {
+            self.emit(CRC32_8RM, op0,op1,&NOREG,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "CRC32_8" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
-    /// Emits `CRC32_32RR` (`CRC32`). Starting with an initial value in the first operand (destination operand), accumulates a CRC32 (polynomial 11EDC6F41H) value for the second operand (source operand) and stores the result in the destination operand. The source operand can be a register or a memory location. The destination operand must be an r32 or r64 register. If the destination is an r64 register, then the 32-bit result is stored in the least significant double word and 00000000H is stored in the most significant double word of the r64 register.
-    /// Reference: [Intel x86 docs for CRC32](https://www.felixcloutier.com/x86/CRC32.html)
-    fn crc32_32rr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(CRC32_32RR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `SSE_PCMPESTRI`.
+    fn sse_pcmpestri(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        let op2 = op2.as_operand();
+        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
+            self.emit(SSE_PCMPESTRIRRI, op0,op1,op2,&NOREG);
+        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
+            self.emit(SSE_PCMPESTRIRMI, op0,op1,op2,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PCMPESTRI" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
-    /// Emits `CRC32_32RM` (`CRC32`). Starting with an initial value in the first operand (destination operand), accumulates a CRC32 (polynomial 11EDC6F41H) value for the second operand (source operand) and stores the result in the destination operand. The source operand can be a register or a memory location. The destination operand must be an r32 or r64 register. If the destination is an r64 register, then the 32-bit result is stored in the least significant double word and 00000000H is stored in the most significant double word of the r64 register.
-    /// Reference: [Intel x86 docs for CRC32](https://www.felixcloutier.com/x86/CRC32.html)
-    fn crc32_32rm(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(CRC32_32RM, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `SSE_PCMPESTRM`.
+    fn sse_pcmpestrm(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        let op2 = op2.as_operand();
+        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
+            self.emit(SSE_PCMPESTRMRRI, op0,op1,op2,&NOREG);
+        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
+            self.emit(SSE_PCMPESTRMRMI, op0,op1,op2,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PCMPESTRM" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
-    /// Emits `CRC32_64RR` (`CRC32`). Starting with an initial value in the first operand (destination operand), accumulates a CRC32 (polynomial 11EDC6F41H) value for the second operand (source operand) and stores the result in the destination operand. The source operand can be a register or a memory location. The destination operand must be an r32 or r64 register. If the destination is an r64 register, then the 32-bit result is stored in the least significant double word and 00000000H is stored in the most significant double word of the r64 register.
-    /// Reference: [Intel x86 docs for CRC32](https://www.felixcloutier.com/x86/CRC32.html)
-    fn crc32_64rr(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(CRC32_64RR, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
+    /// Emits `SSE_PCMPISTRI`.
+    fn sse_pcmpistri(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        let op2 = op2.as_operand();
+        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
+            self.emit(SSE_PCMPISTRIRRI, op0,op1,op2,&NOREG);
+        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
+            self.emit(SSE_PCMPISTRIRMI, op0,op1,op2,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PCMPISTRI" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
-    /// Emits `CRC32_64RM` (`CRC32`). Starting with an initial value in the first operand (destination operand), accumulates a CRC32 (polynomial 11EDC6F41H) value for the second operand (source operand) and stores the result in the destination operand. The source operand can be a register or a memory location. The destination operand must be an r32 or r64 register. If the destination is an r64 register, then the 32-bit result is stored in the least significant double word and 00000000H is stored in the most significant double word of the r64 register.
-    /// Reference: [Intel x86 docs for CRC32](https://www.felixcloutier.com/x86/CRC32.html)
-    fn crc32_64rm(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(CRC32_64RM, op0.as_operand(),op1.as_operand(),&NOREG /* op2 */,&NOREG /* op3 */)
-    }
-    /// Emits `SSE_PCMPESTRMRRI`.
-    fn sse_pcmpestrmrri(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        self.emit(SSE_PCMPESTRMRRI, op0.as_operand(),op1.as_operand(),op2.as_operand(),&NOREG /* op3 */)
-    }
-    /// Emits `SSE_PCMPESTRMRMI`.
-    fn sse_pcmpestrmrmi(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        self.emit(SSE_PCMPESTRMRMI, op0.as_operand(),op1.as_operand(),op2.as_operand(),&NOREG /* op3 */)
-    }
-    /// Emits `SSE_PCMPESTRIRRI`.
-    fn sse_pcmpestrirri(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        self.emit(SSE_PCMPESTRIRRI, op0.as_operand(),op1.as_operand(),op2.as_operand(),&NOREG /* op3 */)
-    }
-    /// Emits `SSE_PCMPESTRIRMI`.
-    fn sse_pcmpestrirmi(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        self.emit(SSE_PCMPESTRIRMI, op0.as_operand(),op1.as_operand(),op2.as_operand(),&NOREG /* op3 */)
-    }
-    /// Emits `SSE_PCMPISTRMRRI`.
-    fn sse_pcmpistrmrri(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        self.emit(SSE_PCMPISTRMRRI, op0.as_operand(),op1.as_operand(),op2.as_operand(),&NOREG /* op3 */)
-    }
-    /// Emits `SSE_PCMPISTRMRMI`.
-    fn sse_pcmpistrmrmi(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        self.emit(SSE_PCMPISTRMRMI, op0.as_operand(),op1.as_operand(),op2.as_operand(),&NOREG /* op3 */)
-    }
-    /// Emits `SSE_PCMPISTRIRRI`.
-    fn sse_pcmpistrirri(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        self.emit(SSE_PCMPISTRIRRI, op0.as_operand(),op1.as_operand(),op2.as_operand(),&NOREG /* op3 */)
-    }
-    /// Emits `SSE_PCMPISTRIRMI`.
-    fn sse_pcmpistrirmi(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        self.emit(SSE_PCMPISTRIRMI, op0.as_operand(),op1.as_operand(),op2.as_operand(),&NOREG /* op3 */)
+    /// Emits `SSE_PCMPISTRM`.
+    fn sse_pcmpistrm(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> Result<(), AsmError> {
+        let op0 = op0.as_operand();
+        let op1 = op1.as_operand();
+        let op2 = op2.as_operand();
+        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
+            self.emit(SSE_PCMPISTRMRRI, op0,op1,op2,&NOREG);
+        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
+            self.emit(SSE_PCMPISTRMRMI, op0,op1,op2,&NOREG);
+        } else {
+            return Err(AsmError::X86(X86Error::InvalidOperandCombination { mnemonic: "SSE_PCMPISTRM" }));
+        }
+        if let Some(err) = self.last_error() { Err(err) } else { Ok(()) }
     }
 }

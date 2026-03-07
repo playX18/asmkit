@@ -445,7 +445,7 @@ impl<'a> Assembler<'a> {
     }
 
     pub fn patchable_jmp(&mut self, label: Label) -> Result<PatchSiteId, crate::AsmError> {
-        self.jmp(label);
+        self.jmp(label)?;
         let offset = self
             .buffer
             .cur_offset()
@@ -455,7 +455,7 @@ impl<'a> Assembler<'a> {
     }
 
     pub fn patchable_call(&mut self, label: Label) -> Result<PatchSiteId, crate::AsmError> {
-        self.call(label);
+        self.call(label)?;
         let offset = self
             .buffer
             .cur_offset()
@@ -477,11 +477,11 @@ impl<'a> Assembler<'a> {
         }
 
         if dst.is_reg_type_of(RegType::Gp64) {
-            self.mov64ri(dst, src);
+            self.mov64(dst, src)?;
             let offset = self.buffer.cur_offset().saturating_sub(8);
             self.buffer.record_patch_block(offset, 8, 1)
         } else if dst.is_reg_type_of(RegType::Gp32) {
-            self.mov32ri(dst, src);
+            self.mov32(dst, src)?;
             let offset = self.buffer.cur_offset().saturating_sub(4);
             self.buffer.record_patch_block(offset, 4, 1)
         } else {
