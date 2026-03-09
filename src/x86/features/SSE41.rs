@@ -1,606 +1,2888 @@
-pub trait X86SSE41Emitter: Emitter {
-    /// Emits `SSE_BLENDPD`.
-    fn sse_blendpd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_BLENDPDRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_BLENDPDRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_BLENDPD");
-        }
+use super::super::opcodes::*;
+use crate::core::emitter::*;
+use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
+
+/// A dummy operand that represents no register. Here just for simplicity.
+const NOREG: Operand = Operand::new();
+
+/// `SSE_BLENDPD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Mem, Imm |
+/// | 2 | Xmm, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SseBlendpdEmitter<A, B, C> {
+    fn sse_blendpd(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SseBlendpdEmitter<Xmm, Xmm, Imm> for Assembler<'a> {
+    fn sse_blendpd(&mut self, op0: Xmm, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_BLENDPDRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_BLENDPS`.
-    fn sse_blendps(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_BLENDPSRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_BLENDPSRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_BLENDPS");
-        }
+}
+
+impl<'a> SseBlendpdEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_blendpd(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_BLENDPDRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_BLENDVPD`.
-    fn sse_blendvpd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_vec() && op2.is_vec() {
-            self.emit(SSE_BLENDVPDRRR, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_vec() {
-            self.emit(SSE_BLENDVPDRMR, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_BLENDVPD");
-        }
+}
+
+/// `SSE_BLENDPS`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Mem, Imm |
+/// | 2 | Xmm, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SseBlendpsEmitter<A, B, C> {
+    fn sse_blendps(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SseBlendpsEmitter<Xmm, Xmm, Imm> for Assembler<'a> {
+    fn sse_blendps(&mut self, op0: Xmm, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_BLENDPSRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_BLENDVPS`.
-    fn sse_blendvps(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_vec() && op2.is_vec() {
-            self.emit(SSE_BLENDVPSRRR, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_vec() {
-            self.emit(SSE_BLENDVPSRMR, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_BLENDVPS");
-        }
+}
+
+impl<'a> SseBlendpsEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_blendps(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_BLENDPSRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_DPPD`.
-    fn sse_dppd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_DPPDRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_DPPDRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_DPPD");
-        }
+}
+
+/// `SSE_BLENDVPD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Mem, Xmm |
+/// | 2 | Xmm, Xmm, Xmm |
+/// +---+---------------+
+/// ```
+pub trait SseBlendvpdEmitter<A, B, C> {
+    fn sse_blendvpd(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SseBlendvpdEmitter<Xmm, Xmm, Xmm> for Assembler<'a> {
+    fn sse_blendvpd(&mut self, op0: Xmm, op1: Xmm, op2: Xmm) {
+        self.emit(
+            SSE_BLENDVPDRRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_DPPS`.
-    fn sse_dpps(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_DPPSRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_DPPSRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_DPPS");
-        }
+}
+
+impl<'a> SseBlendvpdEmitter<Xmm, Mem, Xmm> for Assembler<'a> {
+    fn sse_blendvpd(&mut self, op0: Xmm, op1: Mem, op2: Xmm) {
+        self.emit(
+            SSE_BLENDVPDRMR,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_EXTRACTPS`.
-    fn sse_extractps(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_gp() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_EXTRACTPSRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_mem() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_EXTRACTPSMRI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_EXTRACTPS");
-        }
+}
+
+/// `SSE_BLENDVPS`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Mem, Xmm |
+/// | 2 | Xmm, Xmm, Xmm |
+/// +---+---------------+
+/// ```
+pub trait SseBlendvpsEmitter<A, B, C> {
+    fn sse_blendvps(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SseBlendvpsEmitter<Xmm, Xmm, Xmm> for Assembler<'a> {
+    fn sse_blendvps(&mut self, op0: Xmm, op1: Xmm, op2: Xmm) {
+        self.emit(
+            SSE_BLENDVPSRRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_INSERTPS`.
-    fn sse_insertps(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_INSERTPSRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_INSERTPSRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_INSERTPS");
-        }
+}
+
+impl<'a> SseBlendvpsEmitter<Xmm, Mem, Xmm> for Assembler<'a> {
+    fn sse_blendvps(&mut self, op0: Xmm, op1: Mem, op2: Xmm) {
+        self.emit(
+            SSE_BLENDVPSRMR,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_MOVNTDQARM`.
-    fn sse_movntdqa(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(SSE_MOVNTDQARM, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
+}
+
+/// `SSE_DPPD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Mem, Imm |
+/// | 2 | Xmm, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SseDppdEmitter<A, B, C> {
+    fn sse_dppd(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SseDppdEmitter<Xmm, Xmm, Imm> for Assembler<'a> {
+    fn sse_dppd(&mut self, op0: Xmm, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_DPPDRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_MPSADBW`.
-    fn sse_mpsadbw(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_MPSADBWRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_MPSADBWRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_MPSADBW");
-        }
+}
+
+impl<'a> SseDppdEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_dppd(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_DPPDRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PACKUSDW`.
-    fn sse_packusdw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PACKUSDWRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PACKUSDWRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PACKUSDW");
-        }
+}
+
+/// `SSE_DPPS`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Mem, Imm |
+/// | 2 | Xmm, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SseDppsEmitter<A, B, C> {
+    fn sse_dpps(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SseDppsEmitter<Xmm, Xmm, Imm> for Assembler<'a> {
+    fn sse_dpps(&mut self, op0: Xmm, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_DPPSRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PBLENDVB`.
-    fn sse_pblendvb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PBLENDVBRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PBLENDVBRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PBLENDVB");
-        }
+}
+
+impl<'a> SseDppsEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_dpps(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_DPPSRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PBLENDW`.
-    fn sse_pblendw(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_PBLENDWRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_PBLENDWRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PBLENDW");
-        }
+}
+
+/// `SSE_EXTRACTPS`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Gpd, Xmm, Imm |
+/// | 2 | Mem, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SseExtractpsEmitter<A, B, C> {
+    fn sse_extractps(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SseExtractpsEmitter<Gpd, Xmm, Imm> for Assembler<'a> {
+    fn sse_extractps(&mut self, op0: Gpd, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_EXTRACTPSRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PCMPEQQ`.
-    fn sse_pcmpeqq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PCMPEQQRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PCMPEQQRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PCMPEQQ");
-        }
+}
+
+impl<'a> SseExtractpsEmitter<Mem, Xmm, Imm> for Assembler<'a> {
+    fn sse_extractps(&mut self, op0: Mem, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_EXTRACTPSMRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PCMPGTQ`.
-    fn sse_pcmpgtq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PCMPGTQRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PCMPGTQRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PCMPGTQ");
-        }
+}
+
+/// `SSE_INSERTPS`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Mem, Imm |
+/// | 2 | Xmm, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SseInsertpsEmitter<A, B, C> {
+    fn sse_insertps(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SseInsertpsEmitter<Xmm, Xmm, Imm> for Assembler<'a> {
+    fn sse_insertps(&mut self, op0: Xmm, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_INSERTPSRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PEXTRB`.
-    fn sse_pextrb(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_mem() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_PEXTRBMRI, op0,op1,op2,&NOREG);
-        } else if op0.is_gp() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_PEXTRBRRI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PEXTRB");
-        }
+}
+
+impl<'a> SseInsertpsEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_insertps(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_INSERTPSRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PEXTRD`.
-    fn sse_pextrd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_gp() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_PEXTRDRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_mem() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_PEXTRDMRI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PEXTRD");
-        }
+}
+
+/// `SSE_MOVNTDQA`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// +---+----------+
+/// ```
+pub trait SseMovntdqaEmitter<A, B> {
+    fn sse_movntdqa(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SseMovntdqaEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_movntdqa(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_MOVNTDQARM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PEXTRQ`.
-    fn sse_pextrq(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_gp() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_PEXTRQRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_mem() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_PEXTRQMRI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PEXTRQ");
-        }
+}
+
+/// `SSE_MPSADBW`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Mem, Imm |
+/// | 2 | Xmm, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SseMpsadbwEmitter<A, B, C> {
+    fn sse_mpsadbw(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SseMpsadbwEmitter<Xmm, Xmm, Imm> for Assembler<'a> {
+    fn sse_mpsadbw(&mut self, op0: Xmm, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_MPSADBWRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PEXTRWMRI`.
-    fn sse_pextrw(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        self.emit(SSE_PEXTRWMRI, op0.as_operand(),op1.as_operand(),op2.as_operand(),&NOREG);
+}
+
+impl<'a> SseMpsadbwEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_mpsadbw(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_MPSADBWRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PHMINPOSUW`.
-    fn sse_phminposuw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PHMINPOSUWRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PHMINPOSUWRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PHMINPOSUW");
-        }
+}
+
+/// `SSE_PACKUSDW`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePackusdwEmitter<A, B> {
+    fn sse_packusdw(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePackusdwEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_packusdw(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PACKUSDWRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PINSRB`.
-    fn sse_pinsrb(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_gp() && op2.is_imm() {
-            self.emit(SSE_PINSRBRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_PINSRBRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PINSRB");
-        }
+}
+
+impl<'a> SsePackusdwEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_packusdw(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PACKUSDWRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PINSRD`.
-    fn sse_pinsrd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_gp() && op2.is_imm() {
-            self.emit(SSE_PINSRDRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_PINSRDRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PINSRD");
-        }
+}
+
+/// `SSE_PBLENDVB`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePblendvbEmitter<A, B> {
+    fn sse_pblendvb(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePblendvbEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pblendvb(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PBLENDVBRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PINSRQ`.
-    fn sse_pinsrq(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_gp() && op2.is_imm() {
-            self.emit(SSE_PINSRQRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_PINSRQRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PINSRQ");
-        }
+}
+
+impl<'a> SsePblendvbEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pblendvb(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PBLENDVBRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMAXSB`.
-    fn sse_pmaxsb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMAXSBRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMAXSBRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMAXSB");
-        }
+}
+
+/// `SSE_PBLENDW`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Mem, Imm |
+/// | 2 | Xmm, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SsePblendwEmitter<A, B, C> {
+    fn sse_pblendw(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SsePblendwEmitter<Xmm, Xmm, Imm> for Assembler<'a> {
+    fn sse_pblendw(&mut self, op0: Xmm, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_PBLENDWRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMAXSD`.
-    fn sse_pmaxsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMAXSDRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMAXSDRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMAXSD");
-        }
+}
+
+impl<'a> SsePblendwEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_pblendw(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_PBLENDWRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMAXUD`.
-    fn sse_pmaxud(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMAXUDRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMAXUDRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMAXUD");
-        }
+}
+
+/// `SSE_PCMPEQQ`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePcmpeqqEmitter<A, B> {
+    fn sse_pcmpeqq(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePcmpeqqEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pcmpeqq(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PCMPEQQRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMAXUW`.
-    fn sse_pmaxuw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMAXUWRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMAXUWRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMAXUW");
-        }
+}
+
+impl<'a> SsePcmpeqqEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pcmpeqq(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PCMPEQQRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMINSB`.
-    fn sse_pminsb(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMINSBRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMINSBRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMINSB");
-        }
+}
+
+/// `SSE_PCMPGTQ`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePcmpgtqEmitter<A, B> {
+    fn sse_pcmpgtq(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePcmpgtqEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pcmpgtq(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PCMPGTQRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMINSD`.
-    fn sse_pminsd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMINSDRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMINSDRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMINSD");
-        }
+}
+
+impl<'a> SsePcmpgtqEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pcmpgtq(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PCMPGTQRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMINUD`.
-    fn sse_pminud(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMINUDRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMINUDRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMINUD");
-        }
+}
+
+/// `SSE_PEXTRB`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Gpd, Xmm, Imm |
+/// | 2 | Mem, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SsePextrbEmitter<A, B, C> {
+    fn sse_pextrb(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SsePextrbEmitter<Mem, Xmm, Imm> for Assembler<'a> {
+    fn sse_pextrb(&mut self, op0: Mem, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_PEXTRBMRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMINUW`.
-    fn sse_pminuw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMINUWRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMINUWRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMINUW");
-        }
+}
+
+impl<'a> SsePextrbEmitter<Gpd, Xmm, Imm> for Assembler<'a> {
+    fn sse_pextrb(&mut self, op0: Gpd, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_PEXTRBRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMOVSXBD`.
-    fn sse_pmovsxbd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMOVSXBDRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMOVSXBDRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMOVSXBD");
-        }
+}
+
+/// `SSE_PEXTRD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Gpd, Xmm, Imm |
+/// | 2 | Mem, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SsePextrdEmitter<A, B, C> {
+    fn sse_pextrd(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SsePextrdEmitter<Gpd, Xmm, Imm> for Assembler<'a> {
+    fn sse_pextrd(&mut self, op0: Gpd, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_PEXTRDRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMOVSXBQ`.
-    fn sse_pmovsxbq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMOVSXBQRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMOVSXBQRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMOVSXBQ");
-        }
+}
+
+impl<'a> SsePextrdEmitter<Mem, Xmm, Imm> for Assembler<'a> {
+    fn sse_pextrd(&mut self, op0: Mem, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_PEXTRDMRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMOVSXBW`.
-    fn sse_pmovsxbw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMOVSXBWRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMOVSXBWRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMOVSXBW");
-        }
+}
+
+/// `SSE_PEXTRQ`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Gpd, Xmm, Imm |
+/// | 2 | Mem, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SsePextrqEmitter<A, B, C> {
+    fn sse_pextrq(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SsePextrqEmitter<Gpd, Xmm, Imm> for Assembler<'a> {
+    fn sse_pextrq(&mut self, op0: Gpd, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_PEXTRQRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMOVSXDQ`.
-    fn sse_pmovsxdq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMOVSXDQRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMOVSXDQRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMOVSXDQ");
-        }
+}
+
+impl<'a> SsePextrqEmitter<Mem, Xmm, Imm> for Assembler<'a> {
+    fn sse_pextrq(&mut self, op0: Mem, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_PEXTRQMRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMOVSXWD`.
-    fn sse_pmovsxwd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMOVSXWDRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMOVSXWDRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMOVSXWD");
-        }
+}
+
+/// `SSE_PHMINPOSUW`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePhminposuwEmitter<A, B> {
+    fn sse_phminposuw(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePhminposuwEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_phminposuw(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PHMINPOSUWRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMOVSXWQ`.
-    fn sse_pmovsxwq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMOVSXWQRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMOVSXWQRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMOVSXWQ");
-        }
+}
+
+impl<'a> SsePhminposuwEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_phminposuw(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PHMINPOSUWRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMOVZXBD`.
-    fn sse_pmovzxbd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMOVZXBDRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMOVZXBDRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMOVZXBD");
-        }
+}
+
+/// `SSE_PINSRB`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Gpd, Imm |
+/// | 2 | Xmm, Mem, Imm |
+/// +---+---------------+
+/// ```
+pub trait SsePinsrbEmitter<A, B, C> {
+    fn sse_pinsrb(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SsePinsrbEmitter<Xmm, Gpd, Imm> for Assembler<'a> {
+    fn sse_pinsrb(&mut self, op0: Xmm, op1: Gpd, op2: Imm) {
+        self.emit(
+            SSE_PINSRBRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMOVZXBQ`.
-    fn sse_pmovzxbq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMOVZXBQRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMOVZXBQRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMOVZXBQ");
-        }
+}
+
+impl<'a> SsePinsrbEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_pinsrb(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_PINSRBRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMOVZXBW`.
-    fn sse_pmovzxbw(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMOVZXBWRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMOVZXBWRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMOVZXBW");
-        }
+}
+
+/// `SSE_PINSRD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Gpd, Imm |
+/// | 2 | Xmm, Mem, Imm |
+/// +---+---------------+
+/// ```
+pub trait SsePinsrdEmitter<A, B, C> {
+    fn sse_pinsrd(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SsePinsrdEmitter<Xmm, Gpd, Imm> for Assembler<'a> {
+    fn sse_pinsrd(&mut self, op0: Xmm, op1: Gpd, op2: Imm) {
+        self.emit(
+            SSE_PINSRDRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMOVZXDQ`.
-    fn sse_pmovzxdq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMOVZXDQRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMOVZXDQRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMOVZXDQ");
-        }
+}
+
+impl<'a> SsePinsrdEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_pinsrd(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_PINSRDRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMOVZXWD`.
-    fn sse_pmovzxwd(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMOVZXWDRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMOVZXWDRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMOVZXWD");
-        }
+}
+
+/// `SSE_PINSRQ`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Gpd, Imm |
+/// | 2 | Xmm, Mem, Imm |
+/// +---+---------------+
+/// ```
+pub trait SsePinsrqEmitter<A, B, C> {
+    fn sse_pinsrq(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SsePinsrqEmitter<Xmm, Gpd, Imm> for Assembler<'a> {
+    fn sse_pinsrq(&mut self, op0: Xmm, op1: Gpd, op2: Imm) {
+        self.emit(
+            SSE_PINSRQRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMOVZXWQ`.
-    fn sse_pmovzxwq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMOVZXWQRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMOVZXWQRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMOVZXWQ");
-        }
+}
+
+impl<'a> SsePinsrqEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_pinsrq(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_PINSRQRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMULDQ`.
-    fn sse_pmuldq(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMULDQRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMULDQRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMULDQ");
-        }
+}
+
+/// `SSE_PMAXSB`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmaxsbEmitter<A, B> {
+    fn sse_pmaxsb(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmaxsbEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmaxsb(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMAXSBRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PMULLD`.
-    fn sse_pmulld(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PMULLDRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PMULLDRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PMULLD");
-        }
+}
+
+impl<'a> SsePmaxsbEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmaxsb(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMAXSBRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PTEST`.
-    fn sse_ptest(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(SSE_PTESTRR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(SSE_PTESTRM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PTEST");
-        }
+}
+
+/// `SSE_PMAXSD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmaxsdEmitter<A, B> {
+    fn sse_pmaxsd(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmaxsdEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmaxsd(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMAXSDRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_ROUNDPD`.
-    fn sse_roundpd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_ROUNDPDRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_ROUNDPDRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_ROUNDPD");
-        }
+}
+
+impl<'a> SsePmaxsdEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmaxsd(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMAXSDRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_ROUNDPS`.
-    fn sse_roundps(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_ROUNDPSRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_ROUNDPSRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_ROUNDPS");
-        }
+}
+
+/// `SSE_PMAXUD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmaxudEmitter<A, B> {
+    fn sse_pmaxud(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmaxudEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmaxud(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMAXUDRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_ROUNDSD`.
-    fn sse_roundsd(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_ROUNDSDRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_ROUNDSDRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_ROUNDSD");
-        }
+}
+
+impl<'a> SsePmaxudEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmaxud(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMAXUDRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_ROUNDSS`.
-    fn sse_roundss(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_ROUNDSSRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_ROUNDSSRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_ROUNDSS");
-        }
+}
+
+/// `SSE_PMAXUW`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmaxuwEmitter<A, B> {
+    fn sse_pmaxuw(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmaxuwEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmaxuw(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMAXUWRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePmaxuwEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmaxuw(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMAXUWRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMINSB`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePminsbEmitter<A, B> {
+    fn sse_pminsb(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePminsbEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pminsb(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMINSBRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePminsbEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pminsb(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMINSBRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMINSD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePminsdEmitter<A, B> {
+    fn sse_pminsd(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePminsdEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pminsd(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMINSDRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePminsdEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pminsd(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMINSDRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMINUD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePminudEmitter<A, B> {
+    fn sse_pminud(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePminudEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pminud(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMINUDRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePminudEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pminud(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMINUDRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMINUW`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePminuwEmitter<A, B> {
+    fn sse_pminuw(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePminuwEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pminuw(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMINUWRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePminuwEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pminuw(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMINUWRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMOVSXBD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmovsxbdEmitter<A, B> {
+    fn sse_pmovsxbd(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmovsxbdEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmovsxbd(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMOVSXBDRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePmovsxbdEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmovsxbd(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMOVSXBDRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMOVSXBQ`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmovsxbqEmitter<A, B> {
+    fn sse_pmovsxbq(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmovsxbqEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmovsxbq(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMOVSXBQRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePmovsxbqEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmovsxbq(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMOVSXBQRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMOVSXBW`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmovsxbwEmitter<A, B> {
+    fn sse_pmovsxbw(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmovsxbwEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmovsxbw(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMOVSXBWRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePmovsxbwEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmovsxbw(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMOVSXBWRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMOVSXDQ`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmovsxdqEmitter<A, B> {
+    fn sse_pmovsxdq(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmovsxdqEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmovsxdq(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMOVSXDQRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePmovsxdqEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmovsxdq(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMOVSXDQRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMOVSXWD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmovsxwdEmitter<A, B> {
+    fn sse_pmovsxwd(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmovsxwdEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmovsxwd(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMOVSXWDRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePmovsxwdEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmovsxwd(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMOVSXWDRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMOVSXWQ`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmovsxwqEmitter<A, B> {
+    fn sse_pmovsxwq(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmovsxwqEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmovsxwq(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMOVSXWQRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePmovsxwqEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmovsxwq(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMOVSXWQRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMOVZXBD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmovzxbdEmitter<A, B> {
+    fn sse_pmovzxbd(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmovzxbdEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmovzxbd(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMOVZXBDRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePmovzxbdEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmovzxbd(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMOVZXBDRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMOVZXBQ`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmovzxbqEmitter<A, B> {
+    fn sse_pmovzxbq(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmovzxbqEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmovzxbq(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMOVZXBQRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePmovzxbqEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmovzxbq(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMOVZXBQRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMOVZXBW`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmovzxbwEmitter<A, B> {
+    fn sse_pmovzxbw(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmovzxbwEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmovzxbw(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMOVZXBWRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePmovzxbwEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmovzxbw(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMOVZXBWRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMOVZXDQ`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmovzxdqEmitter<A, B> {
+    fn sse_pmovzxdq(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmovzxdqEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmovzxdq(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMOVZXDQRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePmovzxdqEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmovzxdq(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMOVZXDQRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMOVZXWD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmovzxwdEmitter<A, B> {
+    fn sse_pmovzxwd(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmovzxwdEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmovzxwd(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMOVZXWDRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePmovzxwdEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmovzxwd(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMOVZXWDRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMOVZXWQ`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmovzxwqEmitter<A, B> {
+    fn sse_pmovzxwq(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmovzxwqEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmovzxwq(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMOVZXWQRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePmovzxwqEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmovzxwq(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMOVZXWQRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMULDQ`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmuldqEmitter<A, B> {
+    fn sse_pmuldq(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmuldqEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmuldq(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMULDQRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePmuldqEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmuldq(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMULDQRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PMULLD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePmulldEmitter<A, B> {
+    fn sse_pmulld(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePmulldEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_pmulld(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PMULLDRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePmulldEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_pmulld(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PMULLDRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PTEST`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// +---+----------+
+/// ```
+pub trait SsePtestEmitter<A, B> {
+    fn sse_ptest(&mut self, op0: A, op1: B);
+}
+
+impl<'a> SsePtestEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn sse_ptest(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            SSE_PTESTRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePtestEmitter<Xmm, Mem> for Assembler<'a> {
+    fn sse_ptest(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            SSE_PTESTRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_ROUNDPD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Mem, Imm |
+/// | 2 | Xmm, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SseRoundpdEmitter<A, B, C> {
+    fn sse_roundpd(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SseRoundpdEmitter<Xmm, Xmm, Imm> for Assembler<'a> {
+    fn sse_roundpd(&mut self, op0: Xmm, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_ROUNDPDRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SseRoundpdEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_roundpd(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_ROUNDPDRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_ROUNDPS`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Mem, Imm |
+/// | 2 | Xmm, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SseRoundpsEmitter<A, B, C> {
+    fn sse_roundps(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SseRoundpsEmitter<Xmm, Xmm, Imm> for Assembler<'a> {
+    fn sse_roundps(&mut self, op0: Xmm, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_ROUNDPSRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SseRoundpsEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_roundps(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_ROUNDPSRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_ROUNDSD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Mem, Imm |
+/// | 2 | Xmm, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SseRoundsdEmitter<A, B, C> {
+    fn sse_roundsd(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SseRoundsdEmitter<Xmm, Xmm, Imm> for Assembler<'a> {
+    fn sse_roundsd(&mut self, op0: Xmm, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_ROUNDSDRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SseRoundsdEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_roundsd(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_ROUNDSDRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_ROUNDSS`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Mem, Imm |
+/// | 2 | Xmm, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SseRoundssEmitter<A, B, C> {
+    fn sse_roundss(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SseRoundssEmitter<Xmm, Xmm, Imm> for Assembler<'a> {
+    fn sse_roundss(&mut self, op0: Xmm, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_ROUNDSSRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SseRoundssEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_roundss(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_ROUNDSSRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> Assembler<'a> {
+    /// `SSE_BLENDPD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Mem, Imm |
+    /// | 2 | Xmm, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_blendpd<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SseBlendpdEmitter<A, B, C>,
+    {
+        <Self as SseBlendpdEmitter<A, B, C>>::sse_blendpd(self, op0, op1, op2);
+    }
+    /// `SSE_BLENDPS`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Mem, Imm |
+    /// | 2 | Xmm, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_blendps<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SseBlendpsEmitter<A, B, C>,
+    {
+        <Self as SseBlendpsEmitter<A, B, C>>::sse_blendps(self, op0, op1, op2);
+    }
+    /// `SSE_BLENDVPD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Mem, Xmm |
+    /// | 2 | Xmm, Xmm, Xmm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_blendvpd<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SseBlendvpdEmitter<A, B, C>,
+    {
+        <Self as SseBlendvpdEmitter<A, B, C>>::sse_blendvpd(self, op0, op1, op2);
+    }
+    /// `SSE_BLENDVPS`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Mem, Xmm |
+    /// | 2 | Xmm, Xmm, Xmm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_blendvps<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SseBlendvpsEmitter<A, B, C>,
+    {
+        <Self as SseBlendvpsEmitter<A, B, C>>::sse_blendvps(self, op0, op1, op2);
+    }
+    /// `SSE_DPPD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Mem, Imm |
+    /// | 2 | Xmm, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_dppd<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SseDppdEmitter<A, B, C>,
+    {
+        <Self as SseDppdEmitter<A, B, C>>::sse_dppd(self, op0, op1, op2);
+    }
+    /// `SSE_DPPS`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Mem, Imm |
+    /// | 2 | Xmm, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_dpps<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SseDppsEmitter<A, B, C>,
+    {
+        <Self as SseDppsEmitter<A, B, C>>::sse_dpps(self, op0, op1, op2);
+    }
+    /// `SSE_EXTRACTPS`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Gpd, Xmm, Imm |
+    /// | 2 | Mem, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_extractps<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SseExtractpsEmitter<A, B, C>,
+    {
+        <Self as SseExtractpsEmitter<A, B, C>>::sse_extractps(self, op0, op1, op2);
+    }
+    /// `SSE_INSERTPS`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Mem, Imm |
+    /// | 2 | Xmm, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_insertps<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SseInsertpsEmitter<A, B, C>,
+    {
+        <Self as SseInsertpsEmitter<A, B, C>>::sse_insertps(self, op0, op1, op2);
+    }
+    /// `SSE_MOVNTDQA`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_movntdqa<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SseMovntdqaEmitter<A, B>,
+    {
+        <Self as SseMovntdqaEmitter<A, B>>::sse_movntdqa(self, op0, op1);
+    }
+    /// `SSE_MPSADBW`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Mem, Imm |
+    /// | 2 | Xmm, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_mpsadbw<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SseMpsadbwEmitter<A, B, C>,
+    {
+        <Self as SseMpsadbwEmitter<A, B, C>>::sse_mpsadbw(self, op0, op1, op2);
+    }
+    /// `SSE_PACKUSDW`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_packusdw<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePackusdwEmitter<A, B>,
+    {
+        <Self as SsePackusdwEmitter<A, B>>::sse_packusdw(self, op0, op1);
+    }
+    /// `SSE_PBLENDVB`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pblendvb<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePblendvbEmitter<A, B>,
+    {
+        <Self as SsePblendvbEmitter<A, B>>::sse_pblendvb(self, op0, op1);
+    }
+    /// `SSE_PBLENDW`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Mem, Imm |
+    /// | 2 | Xmm, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_pblendw<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SsePblendwEmitter<A, B, C>,
+    {
+        <Self as SsePblendwEmitter<A, B, C>>::sse_pblendw(self, op0, op1, op2);
+    }
+    /// `SSE_PCMPEQQ`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pcmpeqq<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePcmpeqqEmitter<A, B>,
+    {
+        <Self as SsePcmpeqqEmitter<A, B>>::sse_pcmpeqq(self, op0, op1);
+    }
+    /// `SSE_PCMPGTQ`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pcmpgtq<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePcmpgtqEmitter<A, B>,
+    {
+        <Self as SsePcmpgtqEmitter<A, B>>::sse_pcmpgtq(self, op0, op1);
+    }
+    /// `SSE_PEXTRB`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Gpd, Xmm, Imm |
+    /// | 2 | Mem, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_pextrb<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SsePextrbEmitter<A, B, C>,
+    {
+        <Self as SsePextrbEmitter<A, B, C>>::sse_pextrb(self, op0, op1, op2);
+    }
+    /// `SSE_PEXTRD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Gpd, Xmm, Imm |
+    /// | 2 | Mem, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_pextrd<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SsePextrdEmitter<A, B, C>,
+    {
+        <Self as SsePextrdEmitter<A, B, C>>::sse_pextrd(self, op0, op1, op2);
+    }
+    /// `SSE_PEXTRQ`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Gpd, Xmm, Imm |
+    /// | 2 | Mem, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_pextrq<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SsePextrqEmitter<A, B, C>,
+    {
+        <Self as SsePextrqEmitter<A, B, C>>::sse_pextrq(self, op0, op1, op2);
+    }
+    /// `SSE_PHMINPOSUW`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_phminposuw<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePhminposuwEmitter<A, B>,
+    {
+        <Self as SsePhminposuwEmitter<A, B>>::sse_phminposuw(self, op0, op1);
+    }
+    /// `SSE_PINSRB`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Gpd, Imm |
+    /// | 2 | Xmm, Mem, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_pinsrb<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SsePinsrbEmitter<A, B, C>,
+    {
+        <Self as SsePinsrbEmitter<A, B, C>>::sse_pinsrb(self, op0, op1, op2);
+    }
+    /// `SSE_PINSRD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Gpd, Imm |
+    /// | 2 | Xmm, Mem, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_pinsrd<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SsePinsrdEmitter<A, B, C>,
+    {
+        <Self as SsePinsrdEmitter<A, B, C>>::sse_pinsrd(self, op0, op1, op2);
+    }
+    /// `SSE_PINSRQ`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Gpd, Imm |
+    /// | 2 | Xmm, Mem, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_pinsrq<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SsePinsrqEmitter<A, B, C>,
+    {
+        <Self as SsePinsrqEmitter<A, B, C>>::sse_pinsrq(self, op0, op1, op2);
+    }
+    /// `SSE_PMAXSB`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmaxsb<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmaxsbEmitter<A, B>,
+    {
+        <Self as SsePmaxsbEmitter<A, B>>::sse_pmaxsb(self, op0, op1);
+    }
+    /// `SSE_PMAXSD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmaxsd<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmaxsdEmitter<A, B>,
+    {
+        <Self as SsePmaxsdEmitter<A, B>>::sse_pmaxsd(self, op0, op1);
+    }
+    /// `SSE_PMAXUD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmaxud<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmaxudEmitter<A, B>,
+    {
+        <Self as SsePmaxudEmitter<A, B>>::sse_pmaxud(self, op0, op1);
+    }
+    /// `SSE_PMAXUW`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmaxuw<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmaxuwEmitter<A, B>,
+    {
+        <Self as SsePmaxuwEmitter<A, B>>::sse_pmaxuw(self, op0, op1);
+    }
+    /// `SSE_PMINSB`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pminsb<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePminsbEmitter<A, B>,
+    {
+        <Self as SsePminsbEmitter<A, B>>::sse_pminsb(self, op0, op1);
+    }
+    /// `SSE_PMINSD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pminsd<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePminsdEmitter<A, B>,
+    {
+        <Self as SsePminsdEmitter<A, B>>::sse_pminsd(self, op0, op1);
+    }
+    /// `SSE_PMINUD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pminud<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePminudEmitter<A, B>,
+    {
+        <Self as SsePminudEmitter<A, B>>::sse_pminud(self, op0, op1);
+    }
+    /// `SSE_PMINUW`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pminuw<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePminuwEmitter<A, B>,
+    {
+        <Self as SsePminuwEmitter<A, B>>::sse_pminuw(self, op0, op1);
+    }
+    /// `SSE_PMOVSXBD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmovsxbd<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmovsxbdEmitter<A, B>,
+    {
+        <Self as SsePmovsxbdEmitter<A, B>>::sse_pmovsxbd(self, op0, op1);
+    }
+    /// `SSE_PMOVSXBQ`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmovsxbq<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmovsxbqEmitter<A, B>,
+    {
+        <Self as SsePmovsxbqEmitter<A, B>>::sse_pmovsxbq(self, op0, op1);
+    }
+    /// `SSE_PMOVSXBW`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmovsxbw<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmovsxbwEmitter<A, B>,
+    {
+        <Self as SsePmovsxbwEmitter<A, B>>::sse_pmovsxbw(self, op0, op1);
+    }
+    /// `SSE_PMOVSXDQ`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmovsxdq<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmovsxdqEmitter<A, B>,
+    {
+        <Self as SsePmovsxdqEmitter<A, B>>::sse_pmovsxdq(self, op0, op1);
+    }
+    /// `SSE_PMOVSXWD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmovsxwd<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmovsxwdEmitter<A, B>,
+    {
+        <Self as SsePmovsxwdEmitter<A, B>>::sse_pmovsxwd(self, op0, op1);
+    }
+    /// `SSE_PMOVSXWQ`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmovsxwq<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmovsxwqEmitter<A, B>,
+    {
+        <Self as SsePmovsxwqEmitter<A, B>>::sse_pmovsxwq(self, op0, op1);
+    }
+    /// `SSE_PMOVZXBD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmovzxbd<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmovzxbdEmitter<A, B>,
+    {
+        <Self as SsePmovzxbdEmitter<A, B>>::sse_pmovzxbd(self, op0, op1);
+    }
+    /// `SSE_PMOVZXBQ`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmovzxbq<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmovzxbqEmitter<A, B>,
+    {
+        <Self as SsePmovzxbqEmitter<A, B>>::sse_pmovzxbq(self, op0, op1);
+    }
+    /// `SSE_PMOVZXBW`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmovzxbw<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmovzxbwEmitter<A, B>,
+    {
+        <Self as SsePmovzxbwEmitter<A, B>>::sse_pmovzxbw(self, op0, op1);
+    }
+    /// `SSE_PMOVZXDQ`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmovzxdq<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmovzxdqEmitter<A, B>,
+    {
+        <Self as SsePmovzxdqEmitter<A, B>>::sse_pmovzxdq(self, op0, op1);
+    }
+    /// `SSE_PMOVZXWD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmovzxwd<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmovzxwdEmitter<A, B>,
+    {
+        <Self as SsePmovzxwdEmitter<A, B>>::sse_pmovzxwd(self, op0, op1);
+    }
+    /// `SSE_PMOVZXWQ`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmovzxwq<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmovzxwqEmitter<A, B>,
+    {
+        <Self as SsePmovzxwqEmitter<A, B>>::sse_pmovzxwq(self, op0, op1);
+    }
+    /// `SSE_PMULDQ`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmuldq<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmuldqEmitter<A, B>,
+    {
+        <Self as SsePmuldqEmitter<A, B>>::sse_pmuldq(self, op0, op1);
+    }
+    /// `SSE_PMULLD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_pmulld<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePmulldEmitter<A, B>,
+    {
+        <Self as SsePmulldEmitter<A, B>>::sse_pmulld(self, op0, op1);
+    }
+    /// `SSE_PTEST`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn sse_ptest<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: SsePtestEmitter<A, B>,
+    {
+        <Self as SsePtestEmitter<A, B>>::sse_ptest(self, op0, op1);
+    }
+    /// `SSE_ROUNDPD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Mem, Imm |
+    /// | 2 | Xmm, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_roundpd<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SseRoundpdEmitter<A, B, C>,
+    {
+        <Self as SseRoundpdEmitter<A, B, C>>::sse_roundpd(self, op0, op1, op2);
+    }
+    /// `SSE_ROUNDPS`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Mem, Imm |
+    /// | 2 | Xmm, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_roundps<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SseRoundpsEmitter<A, B, C>,
+    {
+        <Self as SseRoundpsEmitter<A, B, C>>::sse_roundps(self, op0, op1, op2);
+    }
+    /// `SSE_ROUNDSD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Mem, Imm |
+    /// | 2 | Xmm, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_roundsd<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SseRoundsdEmitter<A, B, C>,
+    {
+        <Self as SseRoundsdEmitter<A, B, C>>::sse_roundsd(self, op0, op1, op2);
+    }
+    /// `SSE_ROUNDSS`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Mem, Imm |
+    /// | 2 | Xmm, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_roundss<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SseRoundssEmitter<A, B, C>,
+    {
+        <Self as SseRoundssEmitter<A, B, C>>::sse_roundss(self, op0, op1, op2);
     }
 }

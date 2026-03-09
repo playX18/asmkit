@@ -1,10 +1,50 @@
-pub trait X86XSAVEOPTEmitter: Emitter {
-    /// Emits `XSAVEOPT32M`.
-    fn xsaveopt32(&mut self,op0: impl OperandCast) -> () {
-        self.emit(XSAVEOPT32M, op0.as_operand(),&NOREG,&NOREG,&NOREG);
+use super::super::opcodes::*;
+use crate::core::emitter::*;
+use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
+
+/// A dummy operand that represents no register. Here just for simplicity.
+const NOREG: Operand = Operand::new();
+
+/// `XSAVEOPT`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Mem      |
+/// +---+----------+
+/// ```
+pub trait XsaveoptEmitter<A> {
+    fn xsaveopt(&mut self, op0: A);
+}
+
+impl<'a> XsaveoptEmitter<Mem> for Assembler<'a> {
+    fn xsaveopt(&mut self, op0: Mem) {
+        self.emit(XSAVEOPT32M, op0.as_operand(), &NOREG, &NOREG, &NOREG);
     }
-    /// Emits `XSAVEOPT64M`.
-    fn xsaveopt64(&mut self,op0: impl OperandCast) -> () {
-        self.emit(XSAVEOPT64M, op0.as_operand(),&NOREG,&NOREG,&NOREG);
+}
+
+impl<'a> Assembler<'a> {
+    /// `XSAVEOPT`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Mem      |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn xsaveopt<A>(&mut self, op0: A)
+    where
+        Assembler<'a>: XsaveoptEmitter<A>,
+    {
+        <Self as XsaveoptEmitter<A>>::xsaveopt(self, op0);
     }
 }

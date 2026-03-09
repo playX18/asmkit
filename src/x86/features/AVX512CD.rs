@@ -1,602 +1,1537 @@
-pub trait X86AVX512CDEmitter: Emitter {
-    /// Emits `VPBROADCASTMB2Q128RK`.
-    fn vpbroadcastmb2q128k(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPBROADCASTMB2Q128RK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPBROADCASTMB2Q256RK`.
-    fn vpbroadcastmb2q256k(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPBROADCASTMB2Q256RK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPBROADCASTMB2Q512RK`.
-    fn vpbroadcastmb2q512k(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPBROADCASTMB2Q512RK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPBROADCASTMW2D128RK`.
-    fn vpbroadcastmw2d128k(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPBROADCASTMW2D128RK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPBROADCASTMW2D256RK`.
-    fn vpbroadcastmw2d256k(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPBROADCASTMW2D256RK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPBROADCASTMW2D512RK`.
-    fn vpbroadcastmw2d512k(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPBROADCASTMW2D512RK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTD128`.
-    fn vpconflictd128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTD128RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTD128RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTD128");
-        }
-    }
-    /// Emits `VPCONFLICTD128_MASK`.
-    fn vpconflictd128_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTD128RR_MASK, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTD128RM_MASK, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTD128_MASK");
-        }
-    }
-    /// Emits `VPCONFLICTD128_MASKZ`.
-    fn vpconflictd128_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTD128RR_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTD128RM_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTD128_MASKZ");
-        }
-    }
-    /// Emits `VPCONFLICTD128RB`.
-    fn vpconflictd128b(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTD128RB, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTD128RB_MASK`.
-    fn vpconflictd128b_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTD128RB_MASK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTD128RB_MASKZ`.
-    fn vpconflictd128b_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTD128RB_MASKZ, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTD256`.
-    fn vpconflictd256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTD256RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTD256RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTD256");
-        }
-    }
-    /// Emits `VPCONFLICTD256_MASK`.
-    fn vpconflictd256_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTD256RR_MASK, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTD256RM_MASK, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTD256_MASK");
-        }
-    }
-    /// Emits `VPCONFLICTD256_MASKZ`.
-    fn vpconflictd256_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTD256RR_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTD256RM_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTD256_MASKZ");
-        }
-    }
-    /// Emits `VPCONFLICTD256RB`.
-    fn vpconflictd256b(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTD256RB, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTD256RB_MASK`.
-    fn vpconflictd256b_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTD256RB_MASK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTD256RB_MASKZ`.
-    fn vpconflictd256b_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTD256RB_MASKZ, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTD512`.
-    fn vpconflictd512(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTD512RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTD512RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTD512");
-        }
-    }
-    /// Emits `VPCONFLICTD512_MASK`.
-    fn vpconflictd512_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTD512RR_MASK, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTD512RM_MASK, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTD512_MASK");
-        }
-    }
-    /// Emits `VPCONFLICTD512_MASKZ`.
-    fn vpconflictd512_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTD512RR_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTD512RM_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTD512_MASKZ");
-        }
-    }
-    /// Emits `VPCONFLICTD512RB`.
-    fn vpconflictd512b(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTD512RB, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTD512RB_MASK`.
-    fn vpconflictd512b_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTD512RB_MASK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTD512RB_MASKZ`.
-    fn vpconflictd512b_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTD512RB_MASKZ, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTQ128`.
-    fn vpconflictq128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTQ128RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTQ128RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTQ128");
-        }
-    }
-    /// Emits `VPCONFLICTQ128_MASK`.
-    fn vpconflictq128_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTQ128RR_MASK, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTQ128RM_MASK, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTQ128_MASK");
-        }
-    }
-    /// Emits `VPCONFLICTQ128_MASKZ`.
-    fn vpconflictq128_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTQ128RR_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTQ128RM_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTQ128_MASKZ");
-        }
-    }
-    /// Emits `VPCONFLICTQ128RB`.
-    fn vpconflictq128b(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTQ128RB, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTQ128RB_MASK`.
-    fn vpconflictq128b_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTQ128RB_MASK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTQ128RB_MASKZ`.
-    fn vpconflictq128b_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTQ128RB_MASKZ, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTQ256`.
-    fn vpconflictq256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTQ256RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTQ256RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTQ256");
-        }
-    }
-    /// Emits `VPCONFLICTQ256_MASK`.
-    fn vpconflictq256_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTQ256RR_MASK, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTQ256RM_MASK, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTQ256_MASK");
-        }
-    }
-    /// Emits `VPCONFLICTQ256_MASKZ`.
-    fn vpconflictq256_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTQ256RR_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTQ256RM_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTQ256_MASKZ");
-        }
-    }
-    /// Emits `VPCONFLICTQ256RB`.
-    fn vpconflictq256b(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTQ256RB, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTQ256RB_MASK`.
-    fn vpconflictq256b_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTQ256RB_MASK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTQ256RB_MASKZ`.
-    fn vpconflictq256b_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTQ256RB_MASKZ, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTQ512`.
-    fn vpconflictq512(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTQ512RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTQ512RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTQ512");
-        }
-    }
-    /// Emits `VPCONFLICTQ512_MASK`.
-    fn vpconflictq512_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTQ512RR_MASK, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTQ512RM_MASK, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTQ512_MASK");
-        }
-    }
-    /// Emits `VPCONFLICTQ512_MASKZ`.
-    fn vpconflictq512_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPCONFLICTQ512RR_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPCONFLICTQ512RM_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPCONFLICTQ512_MASKZ");
-        }
-    }
-    /// Emits `VPCONFLICTQ512RB`.
-    fn vpconflictq512b(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTQ512RB, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTQ512RB_MASK`.
-    fn vpconflictq512b_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTQ512RB_MASK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPCONFLICTQ512RB_MASKZ`.
-    fn vpconflictq512b_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPCONFLICTQ512RB_MASKZ, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTD128`.
-    fn vplzcntd128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTD128RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTD128RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTD128");
-        }
-    }
-    /// Emits `VPLZCNTD128_MASK`.
-    fn vplzcntd128_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTD128RR_MASK, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTD128RM_MASK, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTD128_MASK");
-        }
-    }
-    /// Emits `VPLZCNTD128_MASKZ`.
-    fn vplzcntd128_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTD128RR_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTD128RM_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTD128_MASKZ");
-        }
-    }
-    /// Emits `VPLZCNTD128RB`.
-    fn vplzcntd128b(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTD128RB, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTD128RB_MASK`.
-    fn vplzcntd128b_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTD128RB_MASK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTD128RB_MASKZ`.
-    fn vplzcntd128b_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTD128RB_MASKZ, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTD256`.
-    fn vplzcntd256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTD256RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTD256RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTD256");
-        }
-    }
-    /// Emits `VPLZCNTD256_MASK`.
-    fn vplzcntd256_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTD256RR_MASK, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTD256RM_MASK, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTD256_MASK");
-        }
-    }
-    /// Emits `VPLZCNTD256_MASKZ`.
-    fn vplzcntd256_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTD256RR_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTD256RM_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTD256_MASKZ");
-        }
-    }
-    /// Emits `VPLZCNTD256RB`.
-    fn vplzcntd256b(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTD256RB, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTD256RB_MASK`.
-    fn vplzcntd256b_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTD256RB_MASK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTD256RB_MASKZ`.
-    fn vplzcntd256b_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTD256RB_MASKZ, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTD512`.
-    fn vplzcntd512(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTD512RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTD512RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTD512");
-        }
-    }
-    /// Emits `VPLZCNTD512_MASK`.
-    fn vplzcntd512_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTD512RR_MASK, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTD512RM_MASK, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTD512_MASK");
-        }
-    }
-    /// Emits `VPLZCNTD512_MASKZ`.
-    fn vplzcntd512_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTD512RR_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTD512RM_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTD512_MASKZ");
-        }
-    }
-    /// Emits `VPLZCNTD512RB`.
-    fn vplzcntd512b(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTD512RB, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTD512RB_MASK`.
-    fn vplzcntd512b_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTD512RB_MASK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTD512RB_MASKZ`.
-    fn vplzcntd512b_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTD512RB_MASKZ, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTQ128`.
-    fn vplzcntq128(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTQ128RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTQ128RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTQ128");
-        }
-    }
-    /// Emits `VPLZCNTQ128_MASK`.
-    fn vplzcntq128_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTQ128RR_MASK, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTQ128RM_MASK, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTQ128_MASK");
-        }
-    }
-    /// Emits `VPLZCNTQ128_MASKZ`.
-    fn vplzcntq128_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTQ128RR_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTQ128RM_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTQ128_MASKZ");
-        }
-    }
-    /// Emits `VPLZCNTQ128RB`.
-    fn vplzcntq128b(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTQ128RB, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTQ128RB_MASK`.
-    fn vplzcntq128b_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTQ128RB_MASK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTQ128RB_MASKZ`.
-    fn vplzcntq128b_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTQ128RB_MASKZ, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTQ256`.
-    fn vplzcntq256(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTQ256RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTQ256RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTQ256");
-        }
-    }
-    /// Emits `VPLZCNTQ256_MASK`.
-    fn vplzcntq256_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTQ256RR_MASK, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTQ256RM_MASK, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTQ256_MASK");
-        }
-    }
-    /// Emits `VPLZCNTQ256_MASKZ`.
-    fn vplzcntq256_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTQ256RR_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTQ256RM_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTQ256_MASKZ");
-        }
-    }
-    /// Emits `VPLZCNTQ256RB`.
-    fn vplzcntq256b(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTQ256RB, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTQ256RB_MASK`.
-    fn vplzcntq256b_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTQ256RB_MASK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTQ256RB_MASKZ`.
-    fn vplzcntq256b_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTQ256RB_MASKZ, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTQ512`.
-    fn vplzcntq512(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTQ512RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTQ512RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTQ512");
-        }
-    }
-    /// Emits `VPLZCNTQ512_MASK`.
-    fn vplzcntq512_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTQ512RR_MASK, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTQ512RM_MASK, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTQ512_MASK");
-        }
-    }
-    /// Emits `VPLZCNTQ512_MASKZ`.
-    fn vplzcntq512_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_vec() && op1.is_vec() {
-            self.emit(VPLZCNTQ512RR_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() {
-            self.emit(VPLZCNTQ512RM_MASKZ, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for VPLZCNTQ512_MASKZ");
-        }
-    }
-    /// Emits `VPLZCNTQ512RB`.
-    fn vplzcntq512b(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTQ512RB, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTQ512RB_MASK`.
-    fn vplzcntq512b_mask(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTQ512RB_MASK, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
-    }
-    /// Emits `VPLZCNTQ512RB_MASKZ`.
-    fn vplzcntq512b_maskz(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        self.emit(VPLZCNTQ512RB_MASKZ, op0.as_operand(),op1.as_operand(),&NOREG,&NOREG);
+use super::super::opcodes::*;
+use crate::core::emitter::*;
+use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
+
+/// A dummy operand that represents no register. Here just for simplicity.
+const NOREG: Operand = Operand::new();
+
+/// `VPBROADCASTMB2Q`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+-----------+
+/// | # | Operands  |
+/// +---+-----------+
+/// | 1 | Xmm, KReg |
+/// | 2 | Ymm, KReg |
+/// | 3 | Zmm, KReg |
+/// +---+-----------+
+/// ```
+pub trait Vpbroadcastmb2qEmitter<A, B> {
+    fn vpbroadcastmb2q(&mut self, op0: A, op1: B);
+}
+
+impl<'a> Vpbroadcastmb2qEmitter<Xmm, KReg> for Assembler<'a> {
+    fn vpbroadcastmb2q(&mut self, op0: Xmm, op1: KReg) {
+        self.emit(
+            VPBROADCASTMB2Q128RK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> Vpbroadcastmb2qEmitter<Ymm, KReg> for Assembler<'a> {
+    fn vpbroadcastmb2q(&mut self, op0: Ymm, op1: KReg) {
+        self.emit(
+            VPBROADCASTMB2Q256RK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> Vpbroadcastmb2qEmitter<Zmm, KReg> for Assembler<'a> {
+    fn vpbroadcastmb2q(&mut self, op0: Zmm, op1: KReg) {
+        self.emit(
+            VPBROADCASTMB2Q512RK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `VPBROADCASTMW2D`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+-----------+
+/// | # | Operands  |
+/// +---+-----------+
+/// | 1 | Xmm, KReg |
+/// | 2 | Ymm, KReg |
+/// | 3 | Zmm, KReg |
+/// +---+-----------+
+/// ```
+pub trait Vpbroadcastmw2dEmitter<A, B> {
+    fn vpbroadcastmw2d(&mut self, op0: A, op1: B);
+}
+
+impl<'a> Vpbroadcastmw2dEmitter<Xmm, KReg> for Assembler<'a> {
+    fn vpbroadcastmw2d(&mut self, op0: Xmm, op1: KReg) {
+        self.emit(
+            VPBROADCASTMW2D128RK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> Vpbroadcastmw2dEmitter<Ymm, KReg> for Assembler<'a> {
+    fn vpbroadcastmw2d(&mut self, op0: Ymm, op1: KReg) {
+        self.emit(
+            VPBROADCASTMW2D256RK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> Vpbroadcastmw2dEmitter<Zmm, KReg> for Assembler<'a> {
+    fn vpbroadcastmw2d(&mut self, op0: Zmm, op1: KReg) {
+        self.emit(
+            VPBROADCASTMW2D512RK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `VPCONFLICTD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// | 3 | Ymm, Mem |
+/// | 4 | Ymm, Ymm |
+/// | 5 | Zmm, Mem |
+/// | 6 | Zmm, Zmm |
+/// +---+----------+
+/// ```
+pub trait VpconflictdEmitter<A, B> {
+    fn vpconflictd(&mut self, op0: A, op1: B);
+}
+
+impl<'a> VpconflictdEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn vpconflictd(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            VPCONFLICTD128RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictdEmitter<Xmm, Mem> for Assembler<'a> {
+    fn vpconflictd(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            VPCONFLICTD128RM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictdEmitter<Ymm, Ymm> for Assembler<'a> {
+    fn vpconflictd(&mut self, op0: Ymm, op1: Ymm) {
+        self.emit(
+            VPCONFLICTD256RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictdEmitter<Ymm, Mem> for Assembler<'a> {
+    fn vpconflictd(&mut self, op0: Ymm, op1: Mem) {
+        self.emit(
+            VPCONFLICTD256RM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictdEmitter<Zmm, Zmm> for Assembler<'a> {
+    fn vpconflictd(&mut self, op0: Zmm, op1: Zmm) {
+        self.emit(
+            VPCONFLICTD512RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictdEmitter<Zmm, Mem> for Assembler<'a> {
+    fn vpconflictd(&mut self, op0: Zmm, op1: Mem) {
+        self.emit(
+            VPCONFLICTD512RM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `VPCONFLICTD_MASK`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// | 3 | Ymm, Mem |
+/// | 4 | Ymm, Ymm |
+/// | 5 | Zmm, Mem |
+/// | 6 | Zmm, Zmm |
+/// +---+----------+
+/// ```
+pub trait VpconflictdMaskEmitter<A, B> {
+    fn vpconflictd_mask(&mut self, op0: A, op1: B);
+}
+
+impl<'a> VpconflictdMaskEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn vpconflictd_mask(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            VPCONFLICTD128RR_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictdMaskEmitter<Xmm, Mem> for Assembler<'a> {
+    fn vpconflictd_mask(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            VPCONFLICTD128RM_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictdMaskEmitter<Ymm, Ymm> for Assembler<'a> {
+    fn vpconflictd_mask(&mut self, op0: Ymm, op1: Ymm) {
+        self.emit(
+            VPCONFLICTD256RR_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictdMaskEmitter<Ymm, Mem> for Assembler<'a> {
+    fn vpconflictd_mask(&mut self, op0: Ymm, op1: Mem) {
+        self.emit(
+            VPCONFLICTD256RM_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictdMaskEmitter<Zmm, Zmm> for Assembler<'a> {
+    fn vpconflictd_mask(&mut self, op0: Zmm, op1: Zmm) {
+        self.emit(
+            VPCONFLICTD512RR_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictdMaskEmitter<Zmm, Mem> for Assembler<'a> {
+    fn vpconflictd_mask(&mut self, op0: Zmm, op1: Mem) {
+        self.emit(
+            VPCONFLICTD512RM_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `VPCONFLICTD_MASKZ`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// | 3 | Ymm, Mem |
+/// | 4 | Ymm, Ymm |
+/// | 5 | Zmm, Mem |
+/// | 6 | Zmm, Zmm |
+/// +---+----------+
+/// ```
+pub trait VpconflictdMaskzEmitter<A, B> {
+    fn vpconflictd_maskz(&mut self, op0: A, op1: B);
+}
+
+impl<'a> VpconflictdMaskzEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn vpconflictd_maskz(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            VPCONFLICTD128RR_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictdMaskzEmitter<Xmm, Mem> for Assembler<'a> {
+    fn vpconflictd_maskz(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            VPCONFLICTD128RM_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictdMaskzEmitter<Ymm, Ymm> for Assembler<'a> {
+    fn vpconflictd_maskz(&mut self, op0: Ymm, op1: Ymm) {
+        self.emit(
+            VPCONFLICTD256RR_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictdMaskzEmitter<Ymm, Mem> for Assembler<'a> {
+    fn vpconflictd_maskz(&mut self, op0: Ymm, op1: Mem) {
+        self.emit(
+            VPCONFLICTD256RM_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictdMaskzEmitter<Zmm, Zmm> for Assembler<'a> {
+    fn vpconflictd_maskz(&mut self, op0: Zmm, op1: Zmm) {
+        self.emit(
+            VPCONFLICTD512RR_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictdMaskzEmitter<Zmm, Mem> for Assembler<'a> {
+    fn vpconflictd_maskz(&mut self, op0: Zmm, op1: Mem) {
+        self.emit(
+            VPCONFLICTD512RM_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `VPCONFLICTQ`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// | 3 | Ymm, Mem |
+/// | 4 | Ymm, Ymm |
+/// | 5 | Zmm, Mem |
+/// | 6 | Zmm, Zmm |
+/// +---+----------+
+/// ```
+pub trait VpconflictqEmitter<A, B> {
+    fn vpconflictq(&mut self, op0: A, op1: B);
+}
+
+impl<'a> VpconflictqEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn vpconflictq(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            VPCONFLICTQ128RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictqEmitter<Xmm, Mem> for Assembler<'a> {
+    fn vpconflictq(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            VPCONFLICTQ128RM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictqEmitter<Ymm, Ymm> for Assembler<'a> {
+    fn vpconflictq(&mut self, op0: Ymm, op1: Ymm) {
+        self.emit(
+            VPCONFLICTQ256RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictqEmitter<Ymm, Mem> for Assembler<'a> {
+    fn vpconflictq(&mut self, op0: Ymm, op1: Mem) {
+        self.emit(
+            VPCONFLICTQ256RM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictqEmitter<Zmm, Zmm> for Assembler<'a> {
+    fn vpconflictq(&mut self, op0: Zmm, op1: Zmm) {
+        self.emit(
+            VPCONFLICTQ512RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictqEmitter<Zmm, Mem> for Assembler<'a> {
+    fn vpconflictq(&mut self, op0: Zmm, op1: Mem) {
+        self.emit(
+            VPCONFLICTQ512RM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `VPCONFLICTQ_MASK`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// | 3 | Ymm, Mem |
+/// | 4 | Ymm, Ymm |
+/// | 5 | Zmm, Mem |
+/// | 6 | Zmm, Zmm |
+/// +---+----------+
+/// ```
+pub trait VpconflictqMaskEmitter<A, B> {
+    fn vpconflictq_mask(&mut self, op0: A, op1: B);
+}
+
+impl<'a> VpconflictqMaskEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn vpconflictq_mask(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            VPCONFLICTQ128RR_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictqMaskEmitter<Xmm, Mem> for Assembler<'a> {
+    fn vpconflictq_mask(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            VPCONFLICTQ128RM_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictqMaskEmitter<Ymm, Ymm> for Assembler<'a> {
+    fn vpconflictq_mask(&mut self, op0: Ymm, op1: Ymm) {
+        self.emit(
+            VPCONFLICTQ256RR_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictqMaskEmitter<Ymm, Mem> for Assembler<'a> {
+    fn vpconflictq_mask(&mut self, op0: Ymm, op1: Mem) {
+        self.emit(
+            VPCONFLICTQ256RM_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictqMaskEmitter<Zmm, Zmm> for Assembler<'a> {
+    fn vpconflictq_mask(&mut self, op0: Zmm, op1: Zmm) {
+        self.emit(
+            VPCONFLICTQ512RR_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictqMaskEmitter<Zmm, Mem> for Assembler<'a> {
+    fn vpconflictq_mask(&mut self, op0: Zmm, op1: Mem) {
+        self.emit(
+            VPCONFLICTQ512RM_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `VPCONFLICTQ_MASKZ`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// | 3 | Ymm, Mem |
+/// | 4 | Ymm, Ymm |
+/// | 5 | Zmm, Mem |
+/// | 6 | Zmm, Zmm |
+/// +---+----------+
+/// ```
+pub trait VpconflictqMaskzEmitter<A, B> {
+    fn vpconflictq_maskz(&mut self, op0: A, op1: B);
+}
+
+impl<'a> VpconflictqMaskzEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn vpconflictq_maskz(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            VPCONFLICTQ128RR_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictqMaskzEmitter<Xmm, Mem> for Assembler<'a> {
+    fn vpconflictq_maskz(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            VPCONFLICTQ128RM_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictqMaskzEmitter<Ymm, Ymm> for Assembler<'a> {
+    fn vpconflictq_maskz(&mut self, op0: Ymm, op1: Ymm) {
+        self.emit(
+            VPCONFLICTQ256RR_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictqMaskzEmitter<Ymm, Mem> for Assembler<'a> {
+    fn vpconflictq_maskz(&mut self, op0: Ymm, op1: Mem) {
+        self.emit(
+            VPCONFLICTQ256RM_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictqMaskzEmitter<Zmm, Zmm> for Assembler<'a> {
+    fn vpconflictq_maskz(&mut self, op0: Zmm, op1: Zmm) {
+        self.emit(
+            VPCONFLICTQ512RR_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VpconflictqMaskzEmitter<Zmm, Mem> for Assembler<'a> {
+    fn vpconflictq_maskz(&mut self, op0: Zmm, op1: Mem) {
+        self.emit(
+            VPCONFLICTQ512RM_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `VPLZCNTD`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// | 3 | Ymm, Mem |
+/// | 4 | Ymm, Ymm |
+/// | 5 | Zmm, Mem |
+/// | 6 | Zmm, Zmm |
+/// +---+----------+
+/// ```
+pub trait VplzcntdEmitter<A, B> {
+    fn vplzcntd(&mut self, op0: A, op1: B);
+}
+
+impl<'a> VplzcntdEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn vplzcntd(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            VPLZCNTD128RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntdEmitter<Xmm, Mem> for Assembler<'a> {
+    fn vplzcntd(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            VPLZCNTD128RM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntdEmitter<Ymm, Ymm> for Assembler<'a> {
+    fn vplzcntd(&mut self, op0: Ymm, op1: Ymm) {
+        self.emit(
+            VPLZCNTD256RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntdEmitter<Ymm, Mem> for Assembler<'a> {
+    fn vplzcntd(&mut self, op0: Ymm, op1: Mem) {
+        self.emit(
+            VPLZCNTD256RM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntdEmitter<Zmm, Zmm> for Assembler<'a> {
+    fn vplzcntd(&mut self, op0: Zmm, op1: Zmm) {
+        self.emit(
+            VPLZCNTD512RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntdEmitter<Zmm, Mem> for Assembler<'a> {
+    fn vplzcntd(&mut self, op0: Zmm, op1: Mem) {
+        self.emit(
+            VPLZCNTD512RM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `VPLZCNTD_MASK`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// | 3 | Ymm, Mem |
+/// | 4 | Ymm, Ymm |
+/// | 5 | Zmm, Mem |
+/// | 6 | Zmm, Zmm |
+/// +---+----------+
+/// ```
+pub trait VplzcntdMaskEmitter<A, B> {
+    fn vplzcntd_mask(&mut self, op0: A, op1: B);
+}
+
+impl<'a> VplzcntdMaskEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn vplzcntd_mask(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            VPLZCNTD128RR_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntdMaskEmitter<Xmm, Mem> for Assembler<'a> {
+    fn vplzcntd_mask(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            VPLZCNTD128RM_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntdMaskEmitter<Ymm, Ymm> for Assembler<'a> {
+    fn vplzcntd_mask(&mut self, op0: Ymm, op1: Ymm) {
+        self.emit(
+            VPLZCNTD256RR_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntdMaskEmitter<Ymm, Mem> for Assembler<'a> {
+    fn vplzcntd_mask(&mut self, op0: Ymm, op1: Mem) {
+        self.emit(
+            VPLZCNTD256RM_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntdMaskEmitter<Zmm, Zmm> for Assembler<'a> {
+    fn vplzcntd_mask(&mut self, op0: Zmm, op1: Zmm) {
+        self.emit(
+            VPLZCNTD512RR_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntdMaskEmitter<Zmm, Mem> for Assembler<'a> {
+    fn vplzcntd_mask(&mut self, op0: Zmm, op1: Mem) {
+        self.emit(
+            VPLZCNTD512RM_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `VPLZCNTD_MASKZ`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// | 3 | Ymm, Mem |
+/// | 4 | Ymm, Ymm |
+/// | 5 | Zmm, Mem |
+/// | 6 | Zmm, Zmm |
+/// +---+----------+
+/// ```
+pub trait VplzcntdMaskzEmitter<A, B> {
+    fn vplzcntd_maskz(&mut self, op0: A, op1: B);
+}
+
+impl<'a> VplzcntdMaskzEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn vplzcntd_maskz(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            VPLZCNTD128RR_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntdMaskzEmitter<Xmm, Mem> for Assembler<'a> {
+    fn vplzcntd_maskz(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            VPLZCNTD128RM_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntdMaskzEmitter<Ymm, Ymm> for Assembler<'a> {
+    fn vplzcntd_maskz(&mut self, op0: Ymm, op1: Ymm) {
+        self.emit(
+            VPLZCNTD256RR_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntdMaskzEmitter<Ymm, Mem> for Assembler<'a> {
+    fn vplzcntd_maskz(&mut self, op0: Ymm, op1: Mem) {
+        self.emit(
+            VPLZCNTD256RM_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntdMaskzEmitter<Zmm, Zmm> for Assembler<'a> {
+    fn vplzcntd_maskz(&mut self, op0: Zmm, op1: Zmm) {
+        self.emit(
+            VPLZCNTD512RR_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntdMaskzEmitter<Zmm, Mem> for Assembler<'a> {
+    fn vplzcntd_maskz(&mut self, op0: Zmm, op1: Mem) {
+        self.emit(
+            VPLZCNTD512RM_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `VPLZCNTQ`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// | 3 | Ymm, Mem |
+/// | 4 | Ymm, Ymm |
+/// | 5 | Zmm, Mem |
+/// | 6 | Zmm, Zmm |
+/// +---+----------+
+/// ```
+pub trait VplzcntqEmitter<A, B> {
+    fn vplzcntq(&mut self, op0: A, op1: B);
+}
+
+impl<'a> VplzcntqEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn vplzcntq(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            VPLZCNTQ128RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntqEmitter<Xmm, Mem> for Assembler<'a> {
+    fn vplzcntq(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            VPLZCNTQ128RM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntqEmitter<Ymm, Ymm> for Assembler<'a> {
+    fn vplzcntq(&mut self, op0: Ymm, op1: Ymm) {
+        self.emit(
+            VPLZCNTQ256RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntqEmitter<Ymm, Mem> for Assembler<'a> {
+    fn vplzcntq(&mut self, op0: Ymm, op1: Mem) {
+        self.emit(
+            VPLZCNTQ256RM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntqEmitter<Zmm, Zmm> for Assembler<'a> {
+    fn vplzcntq(&mut self, op0: Zmm, op1: Zmm) {
+        self.emit(
+            VPLZCNTQ512RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntqEmitter<Zmm, Mem> for Assembler<'a> {
+    fn vplzcntq(&mut self, op0: Zmm, op1: Mem) {
+        self.emit(
+            VPLZCNTQ512RM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `VPLZCNTQ_MASK`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// | 3 | Ymm, Mem |
+/// | 4 | Ymm, Ymm |
+/// | 5 | Zmm, Mem |
+/// | 6 | Zmm, Zmm |
+/// +---+----------+
+/// ```
+pub trait VplzcntqMaskEmitter<A, B> {
+    fn vplzcntq_mask(&mut self, op0: A, op1: B);
+}
+
+impl<'a> VplzcntqMaskEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn vplzcntq_mask(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            VPLZCNTQ128RR_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntqMaskEmitter<Xmm, Mem> for Assembler<'a> {
+    fn vplzcntq_mask(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            VPLZCNTQ128RM_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntqMaskEmitter<Ymm, Ymm> for Assembler<'a> {
+    fn vplzcntq_mask(&mut self, op0: Ymm, op1: Ymm) {
+        self.emit(
+            VPLZCNTQ256RR_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntqMaskEmitter<Ymm, Mem> for Assembler<'a> {
+    fn vplzcntq_mask(&mut self, op0: Ymm, op1: Mem) {
+        self.emit(
+            VPLZCNTQ256RM_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntqMaskEmitter<Zmm, Zmm> for Assembler<'a> {
+    fn vplzcntq_mask(&mut self, op0: Zmm, op1: Zmm) {
+        self.emit(
+            VPLZCNTQ512RR_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntqMaskEmitter<Zmm, Mem> for Assembler<'a> {
+    fn vplzcntq_mask(&mut self, op0: Zmm, op1: Mem) {
+        self.emit(
+            VPLZCNTQ512RM_MASK,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+/// `VPLZCNTQ_MASKZ`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Xmm, Mem |
+/// | 2 | Xmm, Xmm |
+/// | 3 | Ymm, Mem |
+/// | 4 | Ymm, Ymm |
+/// | 5 | Zmm, Mem |
+/// | 6 | Zmm, Zmm |
+/// +---+----------+
+/// ```
+pub trait VplzcntqMaskzEmitter<A, B> {
+    fn vplzcntq_maskz(&mut self, op0: A, op1: B);
+}
+
+impl<'a> VplzcntqMaskzEmitter<Xmm, Xmm> for Assembler<'a> {
+    fn vplzcntq_maskz(&mut self, op0: Xmm, op1: Xmm) {
+        self.emit(
+            VPLZCNTQ128RR_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntqMaskzEmitter<Xmm, Mem> for Assembler<'a> {
+    fn vplzcntq_maskz(&mut self, op0: Xmm, op1: Mem) {
+        self.emit(
+            VPLZCNTQ128RM_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntqMaskzEmitter<Ymm, Ymm> for Assembler<'a> {
+    fn vplzcntq_maskz(&mut self, op0: Ymm, op1: Ymm) {
+        self.emit(
+            VPLZCNTQ256RR_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntqMaskzEmitter<Ymm, Mem> for Assembler<'a> {
+    fn vplzcntq_maskz(&mut self, op0: Ymm, op1: Mem) {
+        self.emit(
+            VPLZCNTQ256RM_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntqMaskzEmitter<Zmm, Zmm> for Assembler<'a> {
+    fn vplzcntq_maskz(&mut self, op0: Zmm, op1: Zmm) {
+        self.emit(
+            VPLZCNTQ512RR_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> VplzcntqMaskzEmitter<Zmm, Mem> for Assembler<'a> {
+    fn vplzcntq_maskz(&mut self, op0: Zmm, op1: Mem) {
+        self.emit(
+            VPLZCNTQ512RM_MASKZ,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> Assembler<'a> {
+    /// `VPBROADCASTMB2Q`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+-----------+
+    /// | # | Operands  |
+    /// +---+-----------+
+    /// | 1 | Xmm, KReg |
+    /// | 2 | Ymm, KReg |
+    /// | 3 | Zmm, KReg |
+    /// +---+-----------+
+    /// ```
+    #[inline]
+    pub fn vpbroadcastmb2q<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: Vpbroadcastmb2qEmitter<A, B>,
+    {
+        <Self as Vpbroadcastmb2qEmitter<A, B>>::vpbroadcastmb2q(self, op0, op1);
+    }
+    /// `VPBROADCASTMW2D`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+-----------+
+    /// | # | Operands  |
+    /// +---+-----------+
+    /// | 1 | Xmm, KReg |
+    /// | 2 | Ymm, KReg |
+    /// | 3 | Zmm, KReg |
+    /// +---+-----------+
+    /// ```
+    #[inline]
+    pub fn vpbroadcastmw2d<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: Vpbroadcastmw2dEmitter<A, B>,
+    {
+        <Self as Vpbroadcastmw2dEmitter<A, B>>::vpbroadcastmw2d(self, op0, op1);
+    }
+    /// `VPCONFLICTD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// | 3 | Ymm, Mem |
+    /// | 4 | Ymm, Ymm |
+    /// | 5 | Zmm, Mem |
+    /// | 6 | Zmm, Zmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn vpconflictd<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: VpconflictdEmitter<A, B>,
+    {
+        <Self as VpconflictdEmitter<A, B>>::vpconflictd(self, op0, op1);
+    }
+    /// `VPCONFLICTD_MASK`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// | 3 | Ymm, Mem |
+    /// | 4 | Ymm, Ymm |
+    /// | 5 | Zmm, Mem |
+    /// | 6 | Zmm, Zmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn vpconflictd_mask<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: VpconflictdMaskEmitter<A, B>,
+    {
+        <Self as VpconflictdMaskEmitter<A, B>>::vpconflictd_mask(self, op0, op1);
+    }
+    /// `VPCONFLICTD_MASKZ`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// | 3 | Ymm, Mem |
+    /// | 4 | Ymm, Ymm |
+    /// | 5 | Zmm, Mem |
+    /// | 6 | Zmm, Zmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn vpconflictd_maskz<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: VpconflictdMaskzEmitter<A, B>,
+    {
+        <Self as VpconflictdMaskzEmitter<A, B>>::vpconflictd_maskz(self, op0, op1);
+    }
+    /// `VPCONFLICTQ`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// | 3 | Ymm, Mem |
+    /// | 4 | Ymm, Ymm |
+    /// | 5 | Zmm, Mem |
+    /// | 6 | Zmm, Zmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn vpconflictq<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: VpconflictqEmitter<A, B>,
+    {
+        <Self as VpconflictqEmitter<A, B>>::vpconflictq(self, op0, op1);
+    }
+    /// `VPCONFLICTQ_MASK`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// | 3 | Ymm, Mem |
+    /// | 4 | Ymm, Ymm |
+    /// | 5 | Zmm, Mem |
+    /// | 6 | Zmm, Zmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn vpconflictq_mask<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: VpconflictqMaskEmitter<A, B>,
+    {
+        <Self as VpconflictqMaskEmitter<A, B>>::vpconflictq_mask(self, op0, op1);
+    }
+    /// `VPCONFLICTQ_MASKZ`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// | 3 | Ymm, Mem |
+    /// | 4 | Ymm, Ymm |
+    /// | 5 | Zmm, Mem |
+    /// | 6 | Zmm, Zmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn vpconflictq_maskz<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: VpconflictqMaskzEmitter<A, B>,
+    {
+        <Self as VpconflictqMaskzEmitter<A, B>>::vpconflictq_maskz(self, op0, op1);
+    }
+    /// `VPLZCNTD`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// | 3 | Ymm, Mem |
+    /// | 4 | Ymm, Ymm |
+    /// | 5 | Zmm, Mem |
+    /// | 6 | Zmm, Zmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn vplzcntd<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: VplzcntdEmitter<A, B>,
+    {
+        <Self as VplzcntdEmitter<A, B>>::vplzcntd(self, op0, op1);
+    }
+    /// `VPLZCNTD_MASK`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// | 3 | Ymm, Mem |
+    /// | 4 | Ymm, Ymm |
+    /// | 5 | Zmm, Mem |
+    /// | 6 | Zmm, Zmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn vplzcntd_mask<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: VplzcntdMaskEmitter<A, B>,
+    {
+        <Self as VplzcntdMaskEmitter<A, B>>::vplzcntd_mask(self, op0, op1);
+    }
+    /// `VPLZCNTD_MASKZ`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// | 3 | Ymm, Mem |
+    /// | 4 | Ymm, Ymm |
+    /// | 5 | Zmm, Mem |
+    /// | 6 | Zmm, Zmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn vplzcntd_maskz<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: VplzcntdMaskzEmitter<A, B>,
+    {
+        <Self as VplzcntdMaskzEmitter<A, B>>::vplzcntd_maskz(self, op0, op1);
+    }
+    /// `VPLZCNTQ`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// | 3 | Ymm, Mem |
+    /// | 4 | Ymm, Ymm |
+    /// | 5 | Zmm, Mem |
+    /// | 6 | Zmm, Zmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn vplzcntq<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: VplzcntqEmitter<A, B>,
+    {
+        <Self as VplzcntqEmitter<A, B>>::vplzcntq(self, op0, op1);
+    }
+    /// `VPLZCNTQ_MASK`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// | 3 | Ymm, Mem |
+    /// | 4 | Ymm, Ymm |
+    /// | 5 | Zmm, Mem |
+    /// | 6 | Zmm, Zmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn vplzcntq_mask<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: VplzcntqMaskEmitter<A, B>,
+    {
+        <Self as VplzcntqMaskEmitter<A, B>>::vplzcntq_mask(self, op0, op1);
+    }
+    /// `VPLZCNTQ_MASKZ`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Xmm, Mem |
+    /// | 2 | Xmm, Xmm |
+    /// | 3 | Ymm, Mem |
+    /// | 4 | Ymm, Ymm |
+    /// | 5 | Zmm, Mem |
+    /// | 6 | Zmm, Zmm |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn vplzcntq_maskz<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: VplzcntqMaskzEmitter<A, B>,
+    {
+        <Self as VplzcntqMaskzEmitter<A, B>>::vplzcntq_maskz(self, op0, op1);
     }
 }

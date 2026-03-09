@@ -768,7 +768,9 @@ def encode_mnems(entries):
     for weak, opcode, desc in entries:
         if "I64" in desc.flags or desc.mnemonic[:9] == "RESERVED_":
             continue
-        mnem_name = {"MOVABS": "MOV", "XCHG_NOP": "XCHG"}.get(desc.mnemonic, desc.mnemonic)
+        mnem_name = {"MOVABS": "MOV", "XCHG_NOP": "XCHG", 
+                     "MOV_CR2G": "MOV", "MOV_DR2G": "MOV", 
+                     "MOV_G2CR": "MOV", "MOV_G2DR": "MOV"}.get(desc.mnemonic, desc.mnemonic)
         mnem_name = mnem_name.replace("EVX_", "V")
 
         opsizes, vecsizes = {0}, {0}
@@ -1345,7 +1347,9 @@ def encode3(entries, args):
     mnemonics["NOP", "NOP", 0, ""] = [EncodeVariant(Opcode.parse("90"), InstrDesc.parse("NP - - - - NOP"))]
     opcode_docs = load_opcode_docs(args.docs_inputfolder)
 
-   
+    get_feature = get_instruction_feature_set(entries)
+    trait_feature = {}  # (base_mnem, nargs) -> feature name
+
     mnem_map = {}
     alt_table = [0]
 
@@ -1359,6 +1363,12 @@ def encode3(entries, args):
 
         desc = variants[0].desc
         nargs = len(desc.operands)
+
+        # Track feature for this (base_mnem, nargs) — first encountered wins
+        feature_key = (base_mnem, nargs)
+        if feature_key not in trait_feature:
+            feature_flags = {flag[2:] for flag in desc.flags if flag.startswith("F=")}
+            trait_feature[feature_key] = get_feature(feature_flags) if feature_flags else "BASE"
 
         supports_high_regs = []
         if desc.mnemonic in ("MOVSX", "MOVZX") or opsize == 8:
@@ -1495,8 +1505,8 @@ def encode3(entries, args):
     # Phase 2: Build traits, impls, and inherent forwarding methods
     # Group by (base_mnem, nargs). Each group gets one trait.
     # Deduplicate: same rust_types keeps one entry.
-    all_traits_code = []
-    all_forwarders = []
+    feature_code = defaultdict(list)  # feature_name -> [trait+impl code strings]
+    feature_forwarders = defaultdict(list)  # feature_name -> [forwarder strings]
 
     # Track trait names to disambiguate when same base_mnem has different nargs
     base_mnem_nargs = defaultdict(set)
@@ -1533,7 +1543,10 @@ def encode3(entries, args):
         # Disambiguate fn_name if same base_mnem has multiple nargs
         all_nargs = base_mnem_nargs[base_mnem]
         if len(all_nargs) > 1:
-            fn_name_suffix = f'_{nargs}'
+            if nargs == 0:
+                fn_name_suffix = ''
+            else: 
+                fn_name_suffix = f'_{nargs}'
         else:
             fn_name_suffix = ''
         full_fn_name = fn_name + fn_name_suffix
@@ -1648,7 +1661,8 @@ def encode3(entries, args):
             )
             impl_blocks.append(impl_block)
 
-        all_traits_code.append(trait_code + '\n' + '\n'.join(impl_blocks))
+        feature = trait_feature.get((base_mnem, nargs), "BASE")
+        feature_code[feature].append(trait_code + '\n' + '\n'.join(impl_blocks))
 
         # Build inherent forwarding method so users can call self.mov(...)
         # while still dispatching through trait implementations.
@@ -1676,7 +1690,7 @@ def encode3(entries, args):
                 f"    <Self as {trait_name}>::{full_fn_name}(self);\n"
                 f"}}\n"
             )
-        all_forwarders.append(forwarder)
+        feature_forwarders[feature].append(forwarder)
 
     # Build opcode constants
     mnem_tab = "".join(
@@ -1691,11 +1705,10 @@ def encode3(entries, args):
 
     public_str = f"{mnem_tab}\n{alt_tab}"
 
-    # Build private string with use statements and all traits/impls
-    private_preamble = (
+    feature_preamble = (
         "use crate::x86::assembler::*;\n"
         "use crate::x86::operands::*;\n"
-        "use super::opcodes::*;\n"
+        "use super::super::opcodes::*;\n"
         "use crate::core::emitter::*;\n"
         "use crate::core::operand::*;\n"
         "\n"
@@ -1703,10 +1716,14 @@ def encode3(entries, args):
         "const NOREG: Operand = Operand::new();\n"
         "\n"
     )
-    inherent_impl = "impl<'a> Assembler<'a> {\n" + ''.join(f"    {line}\n" if line else "\n" for fwd in all_forwarders for line in fwd.splitlines()) + "}\n"
-    private_str = private_preamble + '\n'.join(all_traits_code) + "\n\n" + inherent_impl
 
-    return public_str, private_str
+    per_feature_str = {}
+    for feature, code_list in feature_code.items():
+        fwds = feature_forwarders.get(feature, [])
+        inherent = "impl<'a> Assembler<'a> {\n" + ''.join(f"    {line}\n" if line else "\n" for fwd in fwds for line in fwd.splitlines()) + "}\n"
+        per_feature_str[feature] = feature_preamble + '\n'.join(code_list) + "\n\n" + inherent
+
+    return public_str, per_feature_str
 
 
 def get_instruction_feature_set(entries):
@@ -2504,6 +2521,25 @@ if __name__ == "__main__":
             for trait in traits: 
                 trait_name = trait.name.replace(": Emitter", "")
                 mod_file.write(f"impl<'a> {trait_name} for Assembler<'a> {{}}\n")
+    elif args.mode == "encode3":
+        import os
+        res_public, feature_code = generators[args.mode](entries, args)
+        out_public.write(res_public)
+        os.makedirs(args.out_private, exist_ok=True)
+        for feature_name, code in sorted(feature_code.items()):
+            with open(os.path.join(args.out_private, f"{feature_name}.rs"), "w") as f:
+                f.write(code)
+        with open(os.path.join(args.out_private, "mod.rs"), "w") as mod_file:
+            mod_file.write("#![allow(unused, non_camel_case_types)]\n")
+            for feature_name in sorted(feature_code.keys()):
+                # Rust module names must be valid identifiers (no digit prefix)
+                mod_name = feature_name.lower()
+                if mod_name[0].isdigit():
+                    mod_name = '_' + mod_name
+                if mod_name != feature_name:
+                    mod_file.write(f'#[path = "{feature_name}.rs"] pub mod {mod_name};\n')
+                else:
+                    mod_file.write(f'pub mod {mod_name};\n')
     else: 
         out_private = open(args.out_private, "w")
         res_public, res_private = generators[args.mode](entries, args)

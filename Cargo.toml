@@ -25,6 +25,7 @@ derive_more = { version = "1.0.0", features = [
     "try_from",
     "add",
 ] }
+capstone = "*"
 
 [target.'cfg(target_arch="riscv64")'.dependencies]
 wasmtime-jit-icache-coherence = { version = "26.0.1", optional = true }

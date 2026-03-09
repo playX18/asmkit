@@ -49,7 +49,7 @@ pub enum OperandType {
     /// Operand is a label
     Label = 5,
     /// Operand is a symbol
-    Sym,
+    Sym = 6,
 }
 
 /// Register mask is a convenience typedef that describes a mask where each bit describes a physical register id

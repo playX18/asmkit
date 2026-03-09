@@ -1419,12 +1419,12 @@ macro_rules! mem_ptr {
                 Mem::from_u64_and_index_shift_disp(base, index.deref(), shift, $size, 0.into())
             }
 
-            pub fn [<$name _u64_abs>](base: u64) -> Mem {
-                Mem::from_u64(base, $size, OperandSignature::from_value::<{ Mem::SIGNATURE_MEM_ADDR_TYPE_MASK }>(AddrType::Abs as _))
+            pub fn [<$name _u64_abs>](base: u64) -> AbsoluteAddress {
+                AbsoluteAddress(Mem::from_u64(base, $size, OperandSignature::from_value::<{ Mem::SIGNATURE_MEM_ADDR_TYPE_MASK }>(AddrType::Abs as _)))
             }
 
-            pub fn [<$name _u64_index_abs>](base: u64, index: impl Deref<Target = Gp>, shift: u32) -> Mem {
-                Mem::from_u64_and_index_shift_disp(base, index.deref(), shift, $size, OperandSignature::from_value::<{ Mem::SIGNATURE_MEM_ADDR_TYPE_MASK }>(AddrType::Abs as _))
+            pub fn [<$name _u64_index_abs>](base: u64, index: impl Deref<Target = Gp>, shift: u32) -> AbsoluteAddress {
+                AbsoluteAddress(Mem::from_u64_and_index_shift_disp(base, index.deref(), shift, $size, OperandSignature::from_value::<{ Mem::SIGNATURE_MEM_ADDR_TYPE_MASK }>(AddrType::Abs as _)))
             }
 
             pub fn [<$name _u64_rel>](base: u64) -> Mem {
@@ -1932,5 +1932,38 @@ impl fmt::Display for AddrType {
             AddrType::Abs => write!(f, "abs"),
             AddrType::Rel => write!(f, "rel"),
         }
+    }
+}
+
+pub struct AbsoluteAddress(Mem);
+
+impl AbsoluteAddress {
+    pub fn new(addr: u64, size: u32) -> Self {
+        Self(Mem::from_u64(
+            addr,
+            size,
+            OperandSignature::from_value::<{ Mem::SIGNATURE_MEM_ADDR_TYPE_MASK }>(
+                AddrType::Abs as _,
+            ),
+        ))
+    }
+
+    pub fn from_mem(mem: Mem) -> Self {
+        assert!(mem.is_abs());
+        Self(mem)
+    }
+
+    pub fn address(&self) -> u64 {
+        self.0.absolute_address()
+    }
+}
+
+impl OperandCast for AbsoluteAddress {
+    fn as_operand(&self) -> &Operand {
+        self.0.as_operand()
+    }
+
+    fn from_operand(op: &Operand) -> Self {
+        Self(op.as_::<Mem>())
     }
 }

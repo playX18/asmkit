@@ -1,38 +1,126 @@
-pub trait X86LZCNTEmitter: Emitter {
-    /// Emits `LZCNT16`.
-    fn lzcnt16(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_gp() && op1.is_gp() {
-            self.emit(LZCNT16RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_gp() && op1.is_mem() {
-            self.emit(LZCNT16RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for LZCNT16");
-        }
+use super::super::opcodes::*;
+use crate::core::emitter::*;
+use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
+
+/// A dummy operand that represents no register. Here just for simplicity.
+const NOREG: Operand = Operand::new();
+
+/// `LZCNT`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+----------+
+/// | # | Operands |
+/// +---+----------+
+/// | 1 | Gpd, Gpd |
+/// | 2 | Gpd, Mem |
+/// | 3 | Gpq, Gpq |
+/// | 4 | Gpq, Mem |
+/// | 5 | Gpw, Gpw |
+/// | 6 | Gpw, Mem |
+/// +---+----------+
+/// ```
+pub trait LzcntEmitter<A, B> {
+    fn lzcnt(&mut self, op0: A, op1: B);
+}
+
+impl<'a> LzcntEmitter<Gpw, Gpw> for Assembler<'a> {
+    fn lzcnt(&mut self, op0: Gpw, op1: Gpw) {
+        self.emit(
+            LZCNT16RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `LZCNT32`.
-    fn lzcnt32(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_gp() && op1.is_gp() {
-            self.emit(LZCNT32RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_gp() && op1.is_mem() {
-            self.emit(LZCNT32RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for LZCNT32");
-        }
+}
+
+impl<'a> LzcntEmitter<Gpw, Mem> for Assembler<'a> {
+    fn lzcnt(&mut self, op0: Gpw, op1: Mem) {
+        self.emit(
+            LZCNT16RM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `LZCNT64`.
-    fn lzcnt64(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_gp() && op1.is_gp() {
-            self.emit(LZCNT64RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_gp() && op1.is_mem() {
-            self.emit(LZCNT64RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for LZCNT64");
-        }
+}
+
+impl<'a> LzcntEmitter<Gpd, Gpd> for Assembler<'a> {
+    fn lzcnt(&mut self, op0: Gpd, op1: Gpd) {
+        self.emit(
+            LZCNT32RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> LzcntEmitter<Gpd, Mem> for Assembler<'a> {
+    fn lzcnt(&mut self, op0: Gpd, op1: Mem) {
+        self.emit(
+            LZCNT32RM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> LzcntEmitter<Gpq, Gpq> for Assembler<'a> {
+    fn lzcnt(&mut self, op0: Gpq, op1: Gpq) {
+        self.emit(
+            LZCNT64RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> LzcntEmitter<Gpq, Mem> for Assembler<'a> {
+    fn lzcnt(&mut self, op0: Gpq, op1: Mem) {
+        self.emit(
+            LZCNT64RM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> Assembler<'a> {
+    /// `LZCNT`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+----------+
+    /// | # | Operands |
+    /// +---+----------+
+    /// | 1 | Gpd, Gpd |
+    /// | 2 | Gpd, Mem |
+    /// | 3 | Gpq, Gpq |
+    /// | 4 | Gpq, Mem |
+    /// | 5 | Gpw, Gpw |
+    /// | 6 | Gpw, Mem |
+    /// +---+----------+
+    /// ```
+    #[inline]
+    pub fn lzcnt<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: LzcntEmitter<A, B>,
+    {
+        <Self as LzcntEmitter<A, B>>::lzcnt(self, op0, op1);
     }
 }

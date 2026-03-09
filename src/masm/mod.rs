@@ -8,7 +8,7 @@ use smallvec::SmallVec;
 
 use crate::{core::operand::Label, x86::CondCode};
 
-pub mod x86;
+//pub mod x86;
 
 pub enum ExtensionSize {
     I8ToI32,

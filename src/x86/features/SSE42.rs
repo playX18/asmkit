@@ -1,102 +1,348 @@
-pub trait X86SSE42Emitter: Emitter {
-    /// Emits `CRC32_16`.
-    fn crc32_16(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_gp() && op1.is_gp() {
-            self.emit(CRC32_16RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_gp() && op1.is_mem() {
-            self.emit(CRC32_16RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for CRC32_16");
-        }
+use super::super::opcodes::*;
+use crate::core::emitter::*;
+use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
+
+/// A dummy operand that represents no register. Here just for simplicity.
+const NOREG: Operand = Operand::new();
+
+/// `CRC32`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+------------+
+/// | # | Operands   |
+/// +---+------------+
+/// | 1 | Gpd, GpbLo |
+/// | 2 | Gpd, Gpd   |
+/// | 3 | Gpd, Gpq   |
+/// | 4 | Gpd, Gpw   |
+/// | 5 | Gpd, Mem   |
+/// +---+------------+
+/// ```
+pub trait Crc32Emitter<A, B> {
+    fn crc32(&mut self, op0: A, op1: B);
+}
+
+impl<'a> Crc32Emitter<Gpd, GpbLo> for Assembler<'a> {
+    fn crc32(&mut self, op0: Gpd, op1: GpbLo) {
+        self.emit(
+            CRC32_8RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `CRC32_32`.
-    fn crc32_32(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_gp() && op1.is_gp() {
-            self.emit(CRC32_32RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_gp() && op1.is_mem() {
-            self.emit(CRC32_32RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for CRC32_32");
-        }
+}
+
+impl<'a> Crc32Emitter<Gpd, Mem> for Assembler<'a> {
+    fn crc32(&mut self, op0: Gpd, op1: Mem) {
+        self.emit(
+            CRC32_8RM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `CRC32_64`.
-    fn crc32_64(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_gp() && op1.is_gp() {
-            self.emit(CRC32_64RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_gp() && op1.is_mem() {
-            self.emit(CRC32_64RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for CRC32_64");
-        }
+}
+
+impl<'a> Crc32Emitter<Gpd, Gpw> for Assembler<'a> {
+    fn crc32(&mut self, op0: Gpd, op1: Gpw) {
+        self.emit(
+            CRC32_16RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `CRC32_8`.
-    fn crc32_8(&mut self,op0: impl OperandCast,op1: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        if op0.is_gp() && op1.is_gp() {
-            self.emit(CRC32_8RR, op0,op1,&NOREG,&NOREG);
-        } else if op0.is_gp() && op1.is_mem() {
-            self.emit(CRC32_8RM, op0,op1,&NOREG,&NOREG);
-        } else {
-            unreachable!("invalid operand types for CRC32_8");
-        }
+}
+
+impl<'a> Crc32Emitter<Gpd, Gpd> for Assembler<'a> {
+    fn crc32(&mut self, op0: Gpd, op1: Gpd) {
+        self.emit(
+            CRC32_32RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PCMPESTRI`.
-    fn sse_pcmpestri(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_PCMPESTRIRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_PCMPESTRIRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PCMPESTRI");
-        }
+}
+
+impl<'a> Crc32Emitter<Gpd, Gpq> for Assembler<'a> {
+    fn crc32(&mut self, op0: Gpd, op1: Gpq) {
+        self.emit(
+            CRC32_64RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PCMPESTRM`.
-    fn sse_pcmpestrm(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_PCMPESTRMRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_PCMPESTRMRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PCMPESTRM");
-        }
+}
+
+/// `SSE_PCMPESTRI`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Mem, Imm |
+/// | 2 | Xmm, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SsePcmpestriEmitter<A, B, C> {
+    fn sse_pcmpestri(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SsePcmpestriEmitter<Xmm, Xmm, Imm> for Assembler<'a> {
+    fn sse_pcmpestri(&mut self, op0: Xmm, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_PCMPESTRIRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PCMPISTRI`.
-    fn sse_pcmpistri(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_PCMPISTRIRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_PCMPISTRIRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PCMPISTRI");
-        }
+}
+
+impl<'a> SsePcmpestriEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_pcmpestri(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_PCMPESTRIRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
-    /// Emits `SSE_PCMPISTRM`.
-    fn sse_pcmpistrm(&mut self,op0: impl OperandCast,op1: impl OperandCast,op2: impl OperandCast) -> () {
-        let op0 = op0.as_operand();
-        let op1 = op1.as_operand();
-        let op2 = op2.as_operand();
-        if op0.is_vec() && op1.is_vec() && op2.is_imm() {
-            self.emit(SSE_PCMPISTRMRRI, op0,op1,op2,&NOREG);
-        } else if op0.is_vec() && op1.is_mem() && op2.is_imm() {
-            self.emit(SSE_PCMPISTRMRMI, op0,op1,op2,&NOREG);
-        } else {
-            unreachable!("invalid operand types for SSE_PCMPISTRM");
-        }
+}
+
+/// `SSE_PCMPESTRM`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Mem, Imm |
+/// | 2 | Xmm, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SsePcmpestrmEmitter<A, B, C> {
+    fn sse_pcmpestrm(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SsePcmpestrmEmitter<Xmm, Xmm, Imm> for Assembler<'a> {
+    fn sse_pcmpestrm(&mut self, op0: Xmm, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_PCMPESTRMRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePcmpestrmEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_pcmpestrm(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_PCMPESTRMRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PCMPISTRI`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Mem, Imm |
+/// | 2 | Xmm, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SsePcmpistriEmitter<A, B, C> {
+    fn sse_pcmpistri(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SsePcmpistriEmitter<Xmm, Xmm, Imm> for Assembler<'a> {
+    fn sse_pcmpistri(&mut self, op0: Xmm, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_PCMPISTRIRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePcmpistriEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_pcmpistri(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_PCMPISTRIRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
+    }
+}
+
+/// `SSE_PCMPISTRM`.
+///
+/// Supported operand variants:
+///
+/// ```text
+/// +---+---------------+
+/// | # | Operands      |
+/// +---+---------------+
+/// | 1 | Xmm, Mem, Imm |
+/// | 2 | Xmm, Xmm, Imm |
+/// +---+---------------+
+/// ```
+pub trait SsePcmpistrmEmitter<A, B, C> {
+    fn sse_pcmpistrm(&mut self, op0: A, op1: B, op2: C);
+}
+
+impl<'a> SsePcmpistrmEmitter<Xmm, Xmm, Imm> for Assembler<'a> {
+    fn sse_pcmpistrm(&mut self, op0: Xmm, op1: Xmm, op2: Imm) {
+        self.emit(
+            SSE_PCMPISTRMRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> SsePcmpistrmEmitter<Xmm, Mem, Imm> for Assembler<'a> {
+    fn sse_pcmpistrm(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
+        self.emit(
+            SSE_PCMPISTRMRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
+    }
+}
+
+impl<'a> Assembler<'a> {
+    /// `CRC32`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+------------+
+    /// | # | Operands   |
+    /// +---+------------+
+    /// | 1 | Gpd, GpbLo |
+    /// | 2 | Gpd, Gpd   |
+    /// | 3 | Gpd, Gpq   |
+    /// | 4 | Gpd, Gpw   |
+    /// | 5 | Gpd, Mem   |
+    /// +---+------------+
+    /// ```
+    #[inline]
+    pub fn crc32<A, B>(&mut self, op0: A, op1: B)
+    where
+        Assembler<'a>: Crc32Emitter<A, B>,
+    {
+        <Self as Crc32Emitter<A, B>>::crc32(self, op0, op1);
+    }
+    /// `SSE_PCMPESTRI`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Mem, Imm |
+    /// | 2 | Xmm, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_pcmpestri<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SsePcmpestriEmitter<A, B, C>,
+    {
+        <Self as SsePcmpestriEmitter<A, B, C>>::sse_pcmpestri(self, op0, op1, op2);
+    }
+    /// `SSE_PCMPESTRM`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Mem, Imm |
+    /// | 2 | Xmm, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_pcmpestrm<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SsePcmpestrmEmitter<A, B, C>,
+    {
+        <Self as SsePcmpestrmEmitter<A, B, C>>::sse_pcmpestrm(self, op0, op1, op2);
+    }
+    /// `SSE_PCMPISTRI`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Mem, Imm |
+    /// | 2 | Xmm, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_pcmpistri<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SsePcmpistriEmitter<A, B, C>,
+    {
+        <Self as SsePcmpistriEmitter<A, B, C>>::sse_pcmpistri(self, op0, op1, op2);
+    }
+    /// `SSE_PCMPISTRM`.
+    ///
+    /// Supported operand variants:
+    ///
+    /// ```text
+    /// +---+---------------+
+    /// | # | Operands      |
+    /// +---+---------------+
+    /// | 1 | Xmm, Mem, Imm |
+    /// | 2 | Xmm, Xmm, Imm |
+    /// +---+---------------+
+    /// ```
+    #[inline]
+    pub fn sse_pcmpistrm<A, B, C>(&mut self, op0: A, op1: B, op2: C)
+    where
+        Assembler<'a>: SsePcmpistrmEmitter<A, B, C>,
+    {
+        <Self as SsePcmpistrmEmitter<A, B, C>>::sse_pcmpistrm(self, op0, op1, op2);
     }
 }

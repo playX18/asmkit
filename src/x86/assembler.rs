@@ -1,6 +1,7 @@
 #![allow(dead_code, clippy::all)]
+use super::features::base::MovEmitter;
 use super::opcodes::ALT_TAB;
-use super::{features::*, operands::*};
+use super::operands::*;
 use crate::{
     core::{
         buffer::{
@@ -464,20 +465,25 @@ impl<'a> Assembler<'a> {
             .record_label_patch_site(offset, label, LabelUse::X86JmpRel32)
     }
 
-    pub fn patchable_mov(&mut self, dst: impl OperandCast, src: impl OperandCast) -> PatchBlockId {
-        let dst = *dst.as_operand();
-        let src = *src.as_operand();
-
-        if !src.is_imm() {
+    pub fn patchable_mov<A, B>(&mut self, dst: A, src: B) -> PatchBlockId
+    where
+        A: OperandCast + Copy,
+        B: OperandCast + Copy,
+        Self: MovEmitter<A, B>,
+    {
+        let dst_op = *dst.as_operand();
+        let src_op = *src.as_operand();
+        if !src_op.is_imm() {
             unreachable!("patchable_mov currently only supports immediate sources");
         }
 
-        if dst.is_reg_type_of(RegType::Gp64) {
-            self.mov64(dst, src);
+        self.mov::<A, B>(dst, src);
+
+        if dst_op.is_reg_type_of(RegType::Gp64) {
             let offset = self.buffer.cur_offset().saturating_sub(8);
             self.buffer.record_patch_block(offset, 8, 1)
-        } else if dst.is_reg_type_of(RegType::Gp32) {
-            self.mov32(dst, src);
+        } else if dst_op.is_reg_type_of(RegType::Gp32) {
+            self.mov::<A, B>(dst, src);
             let offset = self.buffer.cur_offset().saturating_sub(4);
             self.buffer.record_patch_block(offset, 4, 1)
         } else {
