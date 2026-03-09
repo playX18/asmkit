@@ -1,5 +1,4 @@
 use asmkit::core::jit_allocator::{JitAllocator, JitAllocatorOptions};
-use asmkit::masm::*;
 
 fn main() {
     {

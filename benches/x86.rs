@@ -13,20 +13,20 @@ fn emit_factorial_benchmark(c: &mut Criterion) {
             let fac = asm.get_label();
 
             asm.bind_label(fac);
-            asm.mov64(RAX, imm(1));
-            asm.test64(RDI, RDI);
+            asm.mov(RAX, imm(1));
+            asm.test(RDI, RDI);
             asm.jnz(label);
             asm.ret();
 
             {
                 asm.bind_label(label);
                 asm.push(RBX);
-                asm.mov64(RBX, RDI);
-                asm.lea64(RDI, ptr64(RDI, -1));
+                asm.mov(RBX, RDI);
+                asm.lea(RDI, ptr64(RDI, -1));
                 asm.call(fac);
-                asm.mov64(RDX, RAX);
-                asm.mov64(RAX, RBX);
-                asm.imul64_2(RAX, RDX);
+                asm.mov(RDX, RAX);
+                asm.mov(RAX, RBX);
+                asm.imul_2(RAX, RDX);
                 asm.pop(RBX);
                 asm.ret();
             }

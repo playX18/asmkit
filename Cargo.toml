@@ -1,11 +1,11 @@
 [package]
 name = "asmkit-rs"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2021"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
 description = "Portable assembler toolkit: decoding and encoding of various architectures"
-repository = "https://github.com/playx18/asmkit"
+repository = "https://codeberg.org/playXE/asmkit"
 keywords = ["assembler", "asm", "jit", "riscv", "x86"]
 
 [lib]

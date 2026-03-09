@@ -31,7 +31,7 @@ checksum = "c042108f3ed77fd83760a5fd79b53be043192bb3b9dba91d8c574c0ada7850c8"
 
 [[package]]
 name = "asmkit-rs"
-version = "0.2.0"
+version = "0.2.1"
 dependencies = [
  "capstone",
  "cfgenius",

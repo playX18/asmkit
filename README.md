@@ -19,7 +19,7 @@ must not be dependent on platform we built `asmkit` on.
 
 
 # TODO
-- [ ] Add support for ARM64
+- [X] ~~Add support for ARM64~~ Works! Not everything is tested, so if errors occur please open an issue.
 - [ ] Add support for PPC64
 - [ ] Add support for OpenPOWER (POWER9/POWER10)
 - [ ] Add support for RW info and implicit operand info for all opcodes
