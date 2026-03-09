@@ -80,6 +80,7 @@ pub enum RelocDistance {
     Far,
 }
 
+#[derive(Clone, PartialEq, Eq)]
 pub(crate) struct SymData {
     name: ExternalName,
     distance: RelocDistance,
@@ -691,16 +692,16 @@ impl CodeBuffer {
         })
     }
 
-    pub fn finish(mut self) -> CodeBufferFinalized {
+    pub fn finish(&mut self) -> CodeBufferFinalized {
         self.finish_emission_maybe_forcing_veneers();
         let patch_catalog = self
             .resolve_patch_catalog(false)
             .expect("patch metadata must be validated at registration time");
         let alignment = self.finish_constants();
         CodeBufferFinalized {
-            data: self.data,
-            relocs: self.relocs,
-            symbols: self.symbols,
+            data: self.data.clone(),
+            relocs: self.relocs.clone(),
+            symbols: self.symbols.clone(),
             alignment,
             patch_catalog,
         }

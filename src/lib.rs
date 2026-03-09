@@ -34,10 +34,10 @@
 //!     let arg0 = RSI;
 //!     let arg1 = RDX;
 //!
-//!     asm.sse_movdqurm(XMM0, ptr64(arg0, 0)); // load 4 ints from [arg0] to XMM0
-//!     asm.sse_movdqurm(XMM1, ptr64(arg1, 0)); // load 4 ints from [arg1] to XMM1
-//!     asm.sse_paddwrr(XMM0, XMM1); // add 4 ints
-//!     asm.sse_movdqumr(ptr64(dst, 0), XMM0); // store result in [dst]
+//!     asm.sse_movdqu(XMM0, ptr64(arg0, 0)); // load 4 ints from [arg0] to XMM0
+//!     asm.sse_movdqu(XMM1, ptr64(arg1, 0)); // load 4 ints from [arg1] to XMM1
+//!     asm.sse_paddw(XMM0, XMM1); // add 4 ints
+//!     asm.sse_movdqu(ptr64(dst, 0), XMM0); // store result in [dst]
 //!     asm.ret(); // return from function
 //!
 //!     let result = buf.finish();

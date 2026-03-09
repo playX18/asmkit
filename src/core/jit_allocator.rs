@@ -576,7 +576,7 @@ impl JitAllocator {
         let vm_info = virtual_memory::info();
 
         let mut block_size = params.block_size;
-        let mut granularity = params.block_size;
+        let mut granularity = params.granularity;
 
         let mut pool_count = 1;
 

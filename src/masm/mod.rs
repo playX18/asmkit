@@ -4,7 +4,9 @@
 //!
 //! It is a best effort to provide a common API across all architectures, but some features may be architecture specific.
 
-use crate::x86::CondCode;
+use smallvec::SmallVec;
+
+use crate::{core::operand::Label, x86::CondCode};
 
 pub mod x86;
 
@@ -146,5 +148,30 @@ impl DoubleCondition {
             Self::LessThanOrUnordered => (false, false, CondCode::B),
             Self::LessThanOrEqualOrUnordered => (false, false, CondCode::BE),
         }
+    }
+}
+
+pub const fn imm_fits<const BITS: usize>(imm: i64) -> bool {
+    if BITS >= 64 {
+        return true;
+    }
+    let min = -(1i64 << (BITS - 1));
+    let max = (1i64 << (BITS - 1)) - 1;
+    imm >= min && imm <= max
+}
+
+pub struct JumpList {
+    pub labels: SmallVec<[Label; 4]>,
+}
+
+impl JumpList {
+    pub fn new() -> Self {
+        Self {
+            labels: SmallVec::new(),
+        }
+    }
+
+    pub fn push(&mut self, label: Label) {
+        self.labels.push(label);
     }
 }

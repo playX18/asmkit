@@ -1,36 +1,39 @@
-use asmkit::core::jit_allocator::JitAllocator;
+use asmkit::core::jit_allocator::{JitAllocator, JitAllocatorOptions};
+
+use asmkit::masm::x86::MacroAssemblerX86;
+
 use asmkit::x86::formatter::pretty_disassembler;
 use asmkit::x86::*;
 
 fn main() {
     let mut cbuf = asmkit::core::buffer::CodeBuffer::new();
-    let mut asm = asmkit::x86::Assembler::new(&mut cbuf);
+    let asm = Assembler::new(&mut cbuf);
+    let mut asm = MacroAssemblerX86::new(asm);
 
-    let dst = RDI;
-    let arg0 = RSI;
-    let arg1 = RDX;
-
-    asm.sse_movdqu(XMM0, ptr64(arg0, 0)); // load 4 ints from [arg0] to XMM0
-    asm.sse_movdqu(XMM1, ptr64(arg1, 0)); // load 4 ints from [arg1] to XMM1
-    asm.sse_paddw(XMM0, XMM1); // add the two vectors (4 16-bit integers each) and store the result in XMM0
-    asm.sse_movdqu(ptr64(dst, 0), XMM0); // store the result back to [dst]
+    asm.convert_uint64_to_double(XMM0, RDI, RDI);
     asm.ret();
-    let buf = cbuf.finish();
+
+    let code = cbuf.finish();
+    let mut jit_allocator = JitAllocator::new(JitAllocatorOptions {
+        use_multiple_pools: false,
+        granularity: 16,
+        ..Default::default()
+    });
+    let span = code.allocate(&mut jit_allocator).unwrap();
+
+    let func: extern "C" fn(u64) -> f64 = unsafe { std::mem::transmute(span.rx()) };
 
     let mut out = String::new();
-    pretty_disassembler(&mut out, 64, buf.data(), 0x1000).unwrap();
-    println!("{}", out);
-    let mut jit = JitAllocator::new(Default::default());
-    let span = buf
-        .allocate(&mut jit)
-        .expect("Failed to allocate JIT memory");
-    let f: extern "C" fn(*mut i16, *const i16, *const i16) =
-        unsafe { std::mem::transmute(span.rx()) };
-    let mut res = [0; 4];
-    f(
-        res.as_mut_ptr(),
-        [128, 128, 128, 128].as_ptr(),
-        [4, 3, 2, 1].as_ptr(),
-    );
-    println!("Result: {:?}", res);
+    pretty_disassembler(
+        &mut out,
+        64,
+        unsafe { std::slice::from_raw_parts(span.rx(), span.size()) },
+        span.rx() as u64,
+    )
+    .unwrap();
+
+    println!("Disassembly:\n{out}");
+
+    let result = func(1 << 56);
+    println!("Result of adding 1 and 2: {result}");
 }

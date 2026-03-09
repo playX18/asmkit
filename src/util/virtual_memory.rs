@@ -989,18 +989,7 @@ pub fn hardened_runtime_info() -> HardenedRuntimeInfo {
 /// This feature is only available on Apple hardware (AArch64) at the moment and and uses a non-portable
 /// `pthread_jit_write_protect_np()` call when available.
 ///
-/// This function must be called before and after a memory mapped with MAP_JIT flag is modified. Example:
-///
-/// ```mustfail,rust
-/// let code_ptr = ...;
-/// let code_size = ...;
-///
-/// protect_jit_memory(ProtectJitAccess::ReadWrite);
-/// copy_nonoverlapping(source, code_ptr, code_size);
-/// protect_jit_memory(ProtectJitAccess::ReadOnly);
-/// flush_instruction_cache(code_ptr, code_size);
-///
-/// ```
+/// This function must be called before and after a memory mapped with MAP_JIT flag is modified.
 pub fn protect_jit_memory(access: ProtectJitAccess) {
     #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
     {
