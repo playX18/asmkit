@@ -554,8 +554,7 @@ impl Immediate {
     pub const fn decode(&self, op: u32) -> i32 {
         let bit_count = self.position_in_opcode.0 - self.position_in_opcode.1 + 1;
         let mask = (1u32 << bit_count) - 1;
-        (((op >> self.position_in_opcode.1) & mask) << self.position_in_immediate.1)
-            as _
+        (((op >> self.position_in_opcode.1) & mask) << self.position_in_immediate.1) as _
     }
 
     pub const fn is_valid(&self, imm: i32) -> bool {

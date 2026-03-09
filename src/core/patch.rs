@@ -1,12 +1,12 @@
 use smallvec::SmallVec;
 
 use crate::{
+    AsmError,
     core::{
         arch_traits::Arch,
         buffer::{CodeBufferFinalized, CodeOffset, LabelUse},
         jit_allocator::{JitAllocator, Span},
     },
-    AsmError,
 };
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]

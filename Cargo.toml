@@ -33,6 +33,11 @@ default = ["jit", "riscv", "x86"]
 x86 = []
 riscv = []
 jit = ["wasmtime-jit-icache-coherence", "libc", "errno"]
+# Dynamic instruction construction API with runtime operand-type checking.
+x86-dyn = ["x86"]
+# Intel-syntax text assembler that parses mnemonics/operands and emits code.
+# Implies x86-dyn.
+x86-asm = ["x86-dyn"]
 
 
 [dev-dependencies]

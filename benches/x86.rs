@@ -1,5 +1,5 @@
 use asmkit::core::buffer::CodeBuffer;
-use criterion::{criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, criterion_group, criterion_main};
 
 fn emit_factorial_benchmark(c: &mut Criterion) {
     c.bench_function("asmkit::x86", |b| {

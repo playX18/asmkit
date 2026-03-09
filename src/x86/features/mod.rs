@@ -193,3 +193,15 @@ pub mod xsavec;
 pub mod xsaveopt;
 #[path = "XSS.rs"]
 pub mod xss;
+
+/// Dynamic instruction construction API with runtime operand-type checking.
+/// Enabled by the `x86-dyn` Cargo feature.
+#[cfg(feature = "x86-dyn")]
+#[path = "_DYN.rs"]
+pub mod dyn_emit;
+
+/// Text-assembler: parse Intel-syntax assembly lines and emit code.
+/// Enabled by the `x86-asm` Cargo feature (implies `x86-dyn`).
+#[cfg(feature = "x86-asm")]
+#[path = "_PARSER.rs"]
+pub mod text_asm;

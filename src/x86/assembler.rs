@@ -3,6 +3,7 @@ use super::features::base::MovEmitter;
 use super::opcodes::ALT_TAB;
 use super::operands::*;
 use crate::{
+    X86Error,
     core::{
         buffer::{
             CodeBuffer, CodeOffset, ConstantData, LabelUse, Reloc, RelocDistance, RelocTarget,
@@ -11,7 +12,6 @@ use crate::{
         operand::*,
         patch::{PatchBlockId, PatchSiteId},
     },
-    X86Error,
 };
 
 /// X86/X64 Assembler implementation.

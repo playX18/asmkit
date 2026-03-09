@@ -118,6 +118,32 @@ OPKIND_CANONICALIZE = {
     "T": "TMM",
     "Z": "BND",
 }
+# Mapping from Rust operand type name to a runtime check expression.
+# {i} is replaced with the operand parameter name (e.g. "op0", "op1", ...).
+DYN_OPTYPE_CHECK = {
+    'GpbLo':          'op{i}.is_reg_type_of(RegType::Gp8Lo)',
+    'GpbHi':          'op{i}.is_reg_type_of(RegType::Gp8Hi)',
+    'Gpw':            'op{i}.is_reg_type_of(RegType::Gp16)',
+    'Gpd':            'op{i}.is_gp32()',
+    'Gpq':            'op{i}.is_gp64()',
+    'Xmm':            'op{i}.is_vec128()',
+    'Ymm':            'op{i}.is_vec256()',
+    'Zmm':            'op{i}.is_vec512()',
+    'Mm':             'op{i}.is_reg_group_of(RegGroup::X86MM)',
+    'KReg':           'op{i}.is_mask()',
+    'CReg':           'op{i}.is_reg_group_of(RegGroup::X86CReg)',
+    'DReg':           'op{i}.is_reg_group_of(RegGroup::X86DReg)',
+    'St':             'op{i}.is_reg_group_of(RegGroup::X86St)',
+    'SReg':           'op{i}.is_reg_group_of(RegGroup::X86SReg)',
+    'Bnd':            'op{i}.is_reg_group_of(RegGroup::X86Bnd)',
+    'Tmm':            'op{i}.is_reg_group_of(RegGroup::X86Tmm)',
+    'Mem':            'op{i}.is_mem()',
+    'Imm':            'op{i}.is_imm()',
+    'Label':          'op{i}.is_label()',
+    'Sym':            'op{i}.is_sym()',
+    'AbsoluteAddress':'op{i}.is_mem()',
+}
+
 OPKIND_SIZES = {
     "b": 1,
     "w": 2,
@@ -1723,7 +1749,210 @@ def encode3(entries, args):
         inherent = "impl<'a> Assembler<'a> {\n" + ''.join(f"    {line}\n" if line else "\n" for fwd in fwds for line in fwd.splitlines()) + "}\n"
         per_feature_str[feature] = feature_preamble + '\n'.join(code_list) + "\n\n" + inherent
 
-    return public_str, per_feature_str
+    # =========================================================================
+    # Phase 3: Dynamic dispatch module (_DYN.rs) and text-assembler (_PARSER.rs)
+    # =========================================================================
+    _RUST_KW = {
+        'loop', 'in', 'out', 'move', 'mod', 'type', 'match', 'ref',
+        'return', 'break', 'continue', 'if', 'else', 'while', 'for',
+        'fn', 'let', 'mut', 'use', 'pub', 'self', 'super', 'crate',
+        'as', 'const', 'extern', 'impl', 'struct', 'enum', 'trait',
+        'where', 'async', 'await', 'dyn', 'static', 'union',
+        'unsafe', 'abstract', 'become', 'box', 'do', 'final',
+        'macro', 'override', 'priv', 'typeof', 'unsized',
+        'virtual', 'yield', 'try',
+    }
+
+    dyn_impl_methods = []      # List[str] — Instruction::xyz() methods
+    mnem_dispatch_arms = []    # List[str] — arms for Instruction::from_mnem
+    seen_dyn_keys = set()      # (dispatch_key, nargs) pairs already emitted
+
+    for (base_mnem, nargs) in sorted(trait_data.keys()):
+        entries_list = trait_data[(base_mnem, nargs)]
+        if not entries_list:
+            continue
+
+        # Replicate fn_name derivation from Phase 2
+        fn_name = base_mnem.lower()
+        if fn_name and fn_name[0].isdigit():
+            fn_name = '_' + fn_name
+        # For dyn builders we allow reserved words with trailing underscore
+        # (they live inside impl Instruction, so r# is not needed there)
+        if fn_name in _RUST_KW:
+            fn_name = fn_name + '_instr'
+
+        all_nargs_d = base_mnem_nargs[base_mnem]
+        fn_name_suffix = f'_{nargs}' if len(all_nargs_d) > 1 and nargs != 0 else ''
+        full_fn_name = fn_name + fn_name_suffix
+
+        # Collect unique type combinations (same dedupe as Phase 2)
+        seen_types_d = {}
+        unique_entries = []
+        for entry in entries_list:
+            key = entry['rust_types']
+            if key not in seen_types_d:
+                seen_types_d[key] = entry
+                unique_entries.append(entry)
+
+        if not unique_entries:
+            continue
+
+        # Build method body: runtime checks + Ok(Self{...}) or Err
+        body_lines = []
+        has_unconditional = False
+        for entry in unique_entries:
+            rust_types = entry['rust_types']
+            opc_name = entry['opc_name']
+            checks = []
+            for i, t in enumerate(rust_types):
+                tmpl = DYN_OPTYPE_CHECK.get(t)
+                if tmpl:
+                    checks.append(tmpl.replace('{i}', str(i)))
+
+            op_fields = ', '.join(f'op{i}: *op{i}' for i in range(nargs))
+            noreg_fields = ', '.join(f'op{i}: NOREG' for i in range(nargs, 4))
+            all_parts = [f'opcode: {opc_name}']
+            if op_fields:
+                all_parts.append(op_fields)
+            if noreg_fields:
+                all_parts.append(noreg_fields)
+            all_fields = ', '.join(all_parts)
+
+            if checks:
+                cond = ' && '.join(checks)
+                body_lines.append(
+                    f'        if {cond} {{\n'
+                    f'            return Ok(Self {{ {all_fields} }});\n'
+                    f'        }}'
+                )
+            else:
+                body_lines.append(
+                    f'        return Ok(Self {{ {all_fields} }});'
+                )
+                has_unconditional = True
+                break
+
+        if not has_unconditional:
+            body_lines.append('        Err(AsmError::InvalidOperand)')
+
+        body = '\n'.join(body_lines)
+
+        if nargs > 0:
+            params_str = ', '.join(f'op{i}: &Operand' for i in range(nargs))
+        else:
+            params_str = ''
+
+        doc_base = base_mnem.upper()
+        method = (
+            f'    /// Construct a dynamically typed `{doc_base}` instruction.\n'
+            f'    /// Checks operand types at runtime; returns `Err` if types do not match.\n'
+            f'    pub fn {full_fn_name}({params_str}) -> Result<Self, AsmError> {{\n'
+            f'{body}\n'
+            f'    }}\n'
+        )
+        dyn_impl_methods.append(method)
+
+        # dispatch key — lowercase mnemonic (without leading r#)
+        dispatch_key = base_mnem.lower()
+        if dispatch_key and dispatch_key[0].isdigit():
+            dispatch_key = '_' + dispatch_key
+
+        if (dispatch_key, nargs) not in seen_dyn_keys:
+            seen_dyn_keys.add((dispatch_key, nargs))
+            if nargs > 0:
+                call_args = ', '.join(f'&ops[{i}]' for i in range(nargs))
+                arm_body = (
+                    f'if ops.len() == {nargs} {{\n'
+                    f'                    Self::{full_fn_name}({call_args})\n'
+                    f'                }} else {{\n'
+                    f'                    Err(AsmError::InvalidOperand)\n'
+                    f'                }}'
+                )
+            else:
+                arm_body = (
+                    f'if ops.is_empty() {{\n'
+                    f'                    Self::{full_fn_name}()\n'
+                    f'                }} else {{\n'
+                    f'                    Err(AsmError::InvalidOperand)\n'
+                    f'                }}'
+                )
+            mnem_dispatch_arms.append(
+                f'            "{dispatch_key}" => {{\n'
+                f'                {arm_body}\n'
+                f'            }},\n'
+            )
+
+    # ------------------------------------------------------------------
+    # Generate _DYN.rs
+    # ------------------------------------------------------------------
+    dyn_methods_block = '\n'.join(dyn_impl_methods)
+    dispatch_block = ''.join(mnem_dispatch_arms)
+
+    dyn_str = (
+        '#![allow(unused_imports, dead_code, non_snake_case, clippy::all)]\n'
+        'extern crate alloc;\n'
+        'use crate::x86::assembler::Assembler;\n'
+        'use crate::x86::operands::*;\n'
+        'use super::super::opcodes::*;\n'
+        'use crate::core::emitter::*;\n'
+        'use crate::core::operand::*;\n'
+        'use crate::AsmError;\n'
+        '\n'
+        'const NOREG: Operand = Operand::new();\n'
+        '\n'
+        '/// A dynamically typed x86 instruction.\n'
+        '///\n'
+        '/// Build instructions with runtime operand-type checking via the associated\n'
+        '/// constructor methods (e.g. [`Instruction::mov`], [`Instruction::add`]),\n'
+        '/// or build from a mnemonic string with [`Instruction::from_mnem`].\n'
+        'pub struct Instruction {\n'
+        '    /// Encoded opcode constant (matches those in `opcodes.rs`).\n'
+        '    pub opcode: i64,\n'
+        '    pub op0: Operand,\n'
+        '    pub op1: Operand,\n'
+        '    pub op2: Operand,\n'
+        '    pub op3: Operand,\n'
+        '}\n'
+        '\n'
+        'impl Instruction {\n'
+        '    /// Emit this instruction into the given assembler.\n'
+        '    #[inline]\n'
+        '    pub fn emit(&self, asm: &mut Assembler<\'_>) {\n'
+        '        asm.emit(self.opcode, &self.op0, &self.op1, &self.op2, &self.op3);\n'
+        '    }\n'
+        '\n'
+        + dyn_methods_block + '\n'
+        '\n'
+        '    /// Build an instruction from a mnemonic string and a slice of operands,\n'
+        '    /// performing runtime operand-type checking.\n'
+        '    ///\n'
+        '    /// # Errors\n'
+        '    /// - [`AsmError::InvalidInstruction`] — unknown mnemonic.\n'
+        '    /// - [`AsmError::InvalidOperand`] — operand count or types do not match.\n'
+        '    pub fn from_mnem(mnem: &str, ops: &[Operand]) -> Result<Self, AsmError> {\n'
+        '        let mnem_l = mnem.to_ascii_lowercase();\n'
+        '        match mnem_l.as_str() {\n'
+        + dispatch_block
+        + '            _ => Err(AsmError::InvalidInstruction),\n'
+        '        }\n'
+        '    }\n'
+        '}\n'
+        '\n'
+        'impl<\'a> Assembler<\'a> {\n'
+        '    /// Emit an instruction identified by mnemonic string and operand slice.\n'
+        '    ///\n'
+        '    /// This performs runtime operand-type checking to select the correct encoding.\n'
+        '    /// Requires the `x86-dyn` Cargo feature.\n'
+        '    pub fn emit_dyn(&mut self, mnem: &str, ops: &[Operand]) -> Result<(), AsmError> {\n'
+        '        Instruction::from_mnem(mnem, ops)?.emit(self);\n'
+        '        Ok(())\n'
+        '    }\n'
+        '}\n'
+    )
+
+    
+
+    return public_str, per_feature_str, dyn_str
 
 
 def get_instruction_feature_set(entries):
@@ -2523,12 +2752,15 @@ if __name__ == "__main__":
                 mod_file.write(f"impl<'a> {trait_name} for Assembler<'a> {{}}\n")
     elif args.mode == "encode3":
         import os
-        res_public, feature_code = generators[args.mode](entries, args)
+        res_public, feature_code, dyn_str = generators[args.mode](entries, args)
         out_public.write(res_public)
         os.makedirs(args.out_private, exist_ok=True)
         for feature_name, code in sorted(feature_code.items()):
             with open(os.path.join(args.out_private, f"{feature_name}.rs"), "w") as f:
                 f.write(code)
+        # Write dynamic-dispatch module (_DYN.rs) and text-assembler module (_PARSER.rs)
+        with open(os.path.join(args.out_private, "_DYN.rs"), "w") as f:
+            f.write(dyn_str)
         with open(os.path.join(args.out_private, "mod.rs"), "w") as mod_file:
             mod_file.write("#![allow(unused, non_camel_case_types)]\n")
             for feature_name in sorted(feature_code.keys()):
@@ -2540,6 +2772,16 @@ if __name__ == "__main__":
                     mod_file.write(f'#[path = "{feature_name}.rs"] pub mod {mod_name};\n')
                 else:
                     mod_file.write(f'pub mod {mod_name};\n')
+            # Dynamic dispatch module — requires the `x86-dyn` Cargo feature
+            mod_file.write('\n')
+            mod_file.write('#[cfg(feature = "x86-dyn")]\n')
+            mod_file.write('#[path = "_DYN.rs"]\n')
+            mod_file.write('pub mod dyn_emit;\n')
+            # Text assembler module — requires the `x86-asm` Cargo feature (implies x86-dyn)
+            mod_file.write('\n')
+            mod_file.write('#[cfg(feature = "x86-asm")]\n')
+            mod_file.write('#[path = "_PARSER.rs"]\n')
+            mod_file.write('pub mod text_asm;\n')
     else: 
         out_private = open(args.out_private, "w")
         res_public, res_private = generators[args.mode](entries, args)
