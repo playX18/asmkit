@@ -988,6 +988,727 @@ def encode_mnems(entries):
 
     return dict(mnemonics)
 
+def _operand_rust_type(ot_char, op_kind, opsize, vecsize):
+    """Map an operand type character + OpKind + sizes to a concrete Rust type name.
+    
+    Returns None if the mapping is ambiguous or cannot be determined.
+    """
+    if ot_char in ('m', 'b'):
+        return 'Mem'
+    if ot_char == 'i':
+        return 'Imm'
+    if ot_char == 'o':
+        # Label/address/symbol operand — returns multiple types
+        return ['Imm', 'Sym', 'Label']
+    if ot_char == 'a':
+        return 'AbsoluteAddress'
+    if ot_char in ('r', 'k'):
+        kind = op_kind.kind if hasattr(op_kind, 'kind') else op_kind
+        if kind == 'GP':
+            sz = op_kind.abssize(opsize // 8) if hasattr(op_kind, 'abssize') and opsize else 0
+            return {1: 'GpbLo', 2: 'Gpw', 4: 'Gpd', 8: 'Gpq'}.get(sz, 'Gpd')
+        elif kind == 'XMM':
+            sz = 0
+            if hasattr(op_kind, 'abssize'):
+                try:
+                    sz = op_kind.abssize(opsize // 8 if opsize else None,
+                                        vecsize // 8 if vecsize else None)
+                except Exception:
+                    # Some legacy SSE forms have fixed vector width without
+                    # explicit opsize/vecsize in this generation phase.
+                    sz = 0
+
+            if sz == 0 and vecsize:
+                sz = vecsize // 8
+
+            if sz == 0 and hasattr(op_kind, 'sizestr'):
+                # Fallback for fixed-width vector forms when size context is
+                # not carried through encode3 (mostly legacy SSE forms).
+                fallback = {
+                    'x': 16, 'ps': 16, 'pd': 16, 'dq': 16,
+                    'ss': 16, 'sd': 16, 'q': 16, 'h': 16,
+                    'f': 16, 'e': 16, 'qq': 32, 'oq': 64,
+                    'y': 16,
+                }
+                sz = fallback.get(op_kind.sizestr, 0)
+
+            if sz == 0:
+                return None
+            if sz <= 16:
+                return 'Xmm'
+            elif sz <= 32:
+                return 'Ymm'
+            else:
+                return 'Zmm'
+        elif kind == 'MMX':
+            return 'Mm'
+        elif kind == 'MASK':
+            return 'KReg'
+        elif kind == 'CR':
+            return 'CReg'
+        elif kind == 'DR':
+            return 'DReg'
+        elif kind == 'FPU':
+            return 'St'
+        elif kind == 'SEG':
+            return 'SReg'
+        elif kind == 'BND':
+            return 'Bnd'
+        elif kind == 'TMM':
+            return 'Tmm'
+        elif kind == 'MEM':
+            return 'Mem'
+        elif kind == 'IMM':
+            return 'Imm'
+        else:
+            print(f"Unknown register kind: {kind} for operand with ot_char '{ot_char}'")
+            return None
+    print(f"Unknown operand type character: '{ot_char}'")
+    return None
+
+
+def _trait_name_for_mnemonic(base_mnem):
+    """Convert a base mnemonic name to a PascalCase trait-friendly name.
+    e.g. 'MOV' -> 'Mov', 'VADDPS' -> 'Vaddps', 'C_EX' -> 'CEx'
+    """
+    # Handle leading underscores or digits
+    prefix = ''
+    name = base_mnem
+    if name.startswith('_'):
+        prefix = '_'
+        name = name[1:]
+
+    parts = name.split('_')
+    result = ''
+    for part in parts:
+        if part:
+            result += part[0].upper() + part[1:].lower()
+    
+    full = prefix + result
+    # Ensure the result is a valid Rust identifier (cannot start with digit)
+    if full and full[0].isdigit():
+        full = '_' + full
+    return full
+
+
+def _compute_base_mnemonic(mnem, ots, opsize, desc, has_separate_opsize):
+    """Compute the base mnemonic name by stripping operand type suffixes and size suffixes.
+    
+    This groups variants like MOV64rr, MOV64rm, MOV32rr etc. under 'MOV64' or just 'MOV'.
+    """
+    # Strip encoding suffixes (_mask, _maskz, _sae, _er)
+    extra_suffix = ""
+    clean = mnem
+    for s in ("_sae", "_er"):
+        if clean.endswith(s):
+            extra_suffix = s + extra_suffix
+            clean = clean[:-len(s)]
+            break
+    for s in ("_maskz", "_mask"):
+        if clean.endswith(s):
+            extra_suffix = s + extra_suffix
+            clean = clean[:-len(s)]
+            break
+
+    # Strip the ots suffix
+    ots_suffix = ots.replace("o", "")
+    if ots_suffix and not has_separate_opsize and clean.endswith(ots_suffix):
+        clean = clean[:-len(ots_suffix)]
+
+    return clean + extra_suffix
+
+
+def encode_mnems3(entries):
+    # mapping from (base_mnem, mnem, opsize, ots) -> variants
+    mnemonics = defaultdict(list)
+    mnemonics["PAUSE", "PAUSE", 0, ""] = [EncodeVariant(Opcode.parse("F3.90"), InstrDesc.parse("NP - - - - NOP"))]
+
+    for weak, opcode, desc in entries:
+        if "I64" in desc.flags or desc.mnemonic[:9] == "RESERVED_":
+            continue
+
+        mnem_name = {"MOVABS": "MOV", "XCHG_NOP": "XCHG"}.get(desc.mnemonic, desc.mnemonic)
+        mnem_name = mnem_name.replace("EVX_", "V")
+
+        opsizes, vecsizes = {0}, {0}
+        prepend_opsize, prepend_vecsize = False, False
+        separate_opsize = "ENC_SEPSZ" in desc.flags
+
+        if "ENC_NOSZ" in desc.flags or not desc.dynsizes():
+            pass
+        elif OpKind.SZ_OP in desc.dynsizes():
+            if opcode.rexw is not None:
+                raise Exception(f"unexpected REXW specifier {desc}")
+            opsizes = {8} if "SZ8" in desc.flags else {16, 32, 64}
+            if opcode.prefix in ("NP", "66", "F2", "F3") and "U66" not in desc.flags:
+                opsizes -= {16}
+            if "I66" in desc.flags:
+                opsizes -= {16}
+            if "D64" in desc.flags:
+                opsizes -= {32}
+            prepend_opsize = not separate_opsize
+            if "F64" in desc.flags:
+                opsizes = {64}
+                prepend_opsize = False
+        elif opcode.vex and opcode.vexl != "IG":
+            vecsizes = {128, 256, 512} if opcode.vex == 2 else {128, 256}
+            if opcode.vexl:
+                vecsizes = {128 << int(c) for c in opcode.vexl}
+            prepend_vecsize = not separate_opsize
+
+        optypes_base = []
+        for i, opkind in enumerate(desc.operands):
+            reg = "k" if opkind.kind == "MASK" else "r"
+            opname = ENCODING_OPORDER[desc.encoding][i]
+            if opname == "modrm":
+                modrm_type = (opcode.modrm[0] or "rm").replace("r", reg)
+                if opcode.extended or desc.mnemonic in ("MOV_CR2G", "MOV_DR2G", "MOV_G2CR", "MOV_G2DR"):
+                    modrm_type = reg
+                if "BCST" in desc.flags:
+                    modrm_type += "b"
+                optypes_base.append(modrm_type)
+            elif opname == "modreg" or opname == "vexreg":
+                optypes_base.append(reg)
+            else:
+                optypes_base.append(" iariioo"[ENCODINGS[desc.encoding].imm_control])
+        optypes = ["".join(x) for x in product(*optypes_base)]
+
+        prefixes = [("", "")]
+        if "LOCK" in desc.flags:
+            prefixes.append(("LOCK_", "LOCK"))
+        if "ENC_REP" in desc.flags:
+            prefixes.append(("REP_", "F3"))
+        if "ENC_REPCC" in desc.flags:
+            prefixes.append(("REPNZ_", "F2"))
+            prefixes.append(("REPZ_", "F3"))
+
+        evexmasks = [0]
+        if "MASK" in desc.flags:
+            if "VSIB" in desc.flags:
+                evexmasks = [1]
+            else:
+                evexmasks.append(1)
+                if desc.operands[0].kind != "MASK":
+                    evexmasks.append(2)
+        evexsaes = [0]
+        if "SAE" in desc.flags:
+            evexsaes.append(1)
+        elif "ER" in desc.flags:
+            evexsaes.append(2)
+
+        keys = (opsizes, vecsizes, prefixes, optypes, evexmasks, evexsaes)
+        for opsize, vecsize, prefix, ots, evexmask, evexsae in product(*keys):
+            has_memory = "m" in ots or "b" in ots
+            if prefix[1] == "LOCK" and ots[0] != "m":
+                continue
+            if evexmask == 2 and ots[0] != "r":
+                continue
+            if evexsae and (vecsize not in (0, 512) or has_memory):
+                continue
+
+            spec_opcode = opcode
+            if prefix[1]:
+                spec_opcode = spec_opcode._replace(prefix=prefix[1])
+            if opsize == 64 and "D64" not in desc.flags and "F64" not in desc.flags:
+                spec_opcode = spec_opcode._replace(rexw="1")
+            if vecsize == 512:
+                spec_opcode = spec_opcode._replace(vexl="2")
+            if vecsize == 256:
+                spec_opcode = spec_opcode._replace(vexl="1")
+            if vecsize == 128:
+                spec_opcode = spec_opcode._replace(vexl="0")
+            if spec_opcode.vexl == "IG":
+                spec_opcode = spec_opcode._replace(vexl="0")
+            if ENCODINGS[desc.encoding].modrm_idx:
+                modrm = ("m" if has_memory else "r",) + spec_opcode.modrm[1:]
+                spec_opcode = spec_opcode._replace(modrm=modrm)
+            if ENCODINGS[desc.encoding].modrm or None not in opcode.modrm:
+                assert spec_opcode.modrm[0] in ("r", "m")
+
+            evexbcst = "b" in ots
+            evexdisp8scale = 0
+            if spec_opcode.vex == 2 and has_memory:
+                if not evexbcst:
+                    op = desc.operands[ENCODINGS[desc.encoding].modrm_idx ^ 3]
+                    size = op.abssize(opsize // 8, vecsize // 8)
+                    evexdisp8scale = size.bit_length() - 1
+                elif "BCST16" in desc.flags:
+                    evexdisp8scale = 1
+                else:
+                    evexdisp8scale = 2 if spec_opcode.rexw != "1" else 3
+
+            name = prefix[0] + mnem_name
+            local_prepend_opsize = prepend_opsize
+            local_opsize = opsize
+
+            if desc.mnemonic in ("EVX_MOV_G2X", "EVX_MOV_X2G"):
+                name = name[:-4] + "DQ"[local_opsize == 64] + name[-4:]
+                local_prepend_opsize, local_opsize = False, 0
+            if name in ("VMOVD_G2X", "VMOVD_X2G") and has_memory:
+                name = name.replace("_G2X", "").replace("_X2G", "")
+            if desc.mnemonic == "EVX_PEXTR":
+                name += " BW D   Q"[desc.operands[0].abssize(local_opsize // 8, vecsize // 8)]
+                local_prepend_opsize, local_opsize = False, 0
+            if desc.mnemonic == "EVX_PBROADCAST":
+                name += " BW D   Q"[desc.operands[1].abssize(local_opsize // 8, vecsize // 8)]
+                name += "_GP"
+                local_prepend_opsize, local_opsize = False, 0
+            if desc.mnemonic == "EVX_PINSR":
+                name += " BW D   Q"[desc.operands[2].abssize(local_opsize // 8, vecsize // 8)]
+                local_prepend_opsize, local_opsize = False, 0
+
+            base_name = name
+            full_name = name
+
+            if local_prepend_opsize and not ("D64" in desc.flags and local_opsize == 64):
+                full_name += f"_{local_opsize}"[full_name[-1] not in "0123456789":]
+            if prepend_vecsize:
+                full_name += f"_{vecsize}"[full_name[-1] not in "0123456789":]
+
+            for ot, op in zip(ots, desc.operands):
+                full_name += ot.replace("o", "")
+                if separate_opsize:
+                    full_name += f"{op.abssize(local_opsize // 8, vecsize // 8) * 8}"
+
+            if "VSIB" not in desc.flags:
+                mask_suffix = ["", "_mask", "_maskz"][evexmask]
+                base_name += mask_suffix
+                full_name += mask_suffix
+            sae_suffix = ["", "_sae", "_er"][evexsae]
+            base_name += sae_suffix
+            full_name += sae_suffix
+
+            variant = EncodeVariant(spec_opcode, desc, evexbcst, evexmask, evexsae, evexdisp8scale)
+            mnemonics[base_name, full_name, opsize, ots].append(variant)
+
+            altname = {
+                "C_EX16": "CBW", "C_EX32": "CWDE", "C_EX64": "CDQE",
+                "C_SEP16": "CWD", "C_SEP32": "CDQ", "C_SEP64": "CQO",
+                "CMPXCHGD32m": "CMPXCHG8Bm", "CMPXCHGD64m": "CMPXCHG16Bm",
+            }.get(full_name)
+            if altname:
+                mnemonics[altname, altname, opsize, ots].append(variant)
+
+            if "ENC_CC_BEGIN" in desc.flags:
+                ccname = "cc".join(full_name.rsplit("O", 1))
+                ccbase = "cc".join(base_name.rsplit("O", 1))
+                ccvariant = variant._replace(flexcc=True)
+                mnemonics[ccbase, ccname, opsize, ots].append(ccvariant)
+
+    for (base_mnem, mnem, opsize, ots), all_variants in mnemonics.items():
+        dedup = OrderedDict()
+        for i, variant in enumerate(all_variants):
+            PRIO = ["O", "OA", "AO", "AM", "MA", "IA", "OI"]
+            enc_prio = PRIO.index(variant.desc.encoding) if variant.desc.encoding in PRIO else len(PRIO)
+            unique = 0 if variant.desc.encoding != "S" else i
+            key = variant.desc.imm_size(opsize // 8), variant.opcode.vex, enc_prio, unique
+            if key not in dedup:
+                dedup[key] = variant
+        variants = [dedup[k] for k in sorted(dedup.keys())]
+        if len(variants) > 1 and any(v.opcode.vex for v in variants):
+            if len(variants) != 2:
+                raise Exception(f"VEX/EVEX mnemonic with more than two encodings {mnem} {opcode}")
+            if variants[0].opcode.vex == 2 or variants[1].opcode.vex != 2:
+                raise Exception(f"EVEX mnemonic not with non-EVEX pair {mnem} {opcode} {variants}")
+            no_evex, evex = variants[0], variants[1]
+            if (no_evex.opcode.prefix != evex.opcode.prefix or
+                no_evex.opcode.escape != evex.opcode.escape or
+                no_evex.opcode.opc != evex.opcode.opc or
+                no_evex.opcode.modrm[1:] != evex.opcode.modrm[1:] or
+                no_evex.opcode.vexl != evex.opcode.vexl or
+                no_evex.desc.encoding != evex.desc.encoding or
+                no_evex.desc.operands != evex.desc.operands):
+                print(mnem, no_evex)
+                print(mnem, evex)
+                raise Exception("cannot downgrade EVEX?")
+            else:
+                rexw_flip = (no_evex.opcode.rexw == "1") != (evex.opcode.rexw == "1")
+                variants = [evex._replace(downgrade=1 if not rexw_flip else 2)]
+        mnemonics[base_mnem, mnem, opsize, ots] = variants
+
+    return dict(mnemonics)
+
+
+def encode3(entries, args):
+    """Emit one trait per opcode with generic type parameters for operand types,
+    and one impl per concrete operand type combination.
+    
+    Example output:
+        pub trait MovEmitter<A, B> { fn mov(&mut self, op0: A, op1: B); }
+        impl MovEmitter<Gpq, Gpq> for Assembler<'_> {
+            fn mov(&mut self, op0: Gpq, op1: Gpq) {
+                self.emit(MOV64RR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+            }
+        }
+    """
+    mnemonics = encode_mnems3(entries)
+    mnemonics["NOP", "NOP", 0, ""] = [EncodeVariant(Opcode.parse("90"), InstrDesc.parse("NP - - - - NOP"))]
+    opcode_docs = load_opcode_docs(args.docs_inputfolder)
+
+   
+    mnem_map = {}
+    alt_table = [0]
+
+    # Phase 1: Build opcode constants and collect trait data
+    # trait_data: base_mnem -> list of (rust_types_tuple, opc_name, nargs, doc_info)
+    trait_data = defaultdict(list)
+
+    for (base_mnem, mnem, opsize, ots), variants in mnemonics.items():
+        if "LOCK_" in mnem or "REP_" in mnem or "REPNZ_" in mnem or "REPZ_" in mnem:
+            continue
+
+        desc = variants[0].desc
+        nargs = len(desc.operands)
+
+        supports_high_regs = []
+        if desc.mnemonic in ("MOVSX", "MOVZX") or opsize == 8:
+            for i, (ot, op) in enumerate(zip(ots, desc.operands)):
+                if ot == "r" and op.kind == "GP" and op.abssize(opsize // 8) == 1:
+                    supports_high_regs.append(i)
+
+        alt_indices = [i + len(alt_table) for i in range(len(variants) - 1)] + [0]
+
+        if desc.encoding == "D":
+            if len(variants) > 1:
+                variants = variants[:1]
+                alt_indices = [0xff]
+
+        enc_opcs = []
+        for alt, variant in zip(alt_indices, variants):
+            opcode, vdesc = variant.opcode, variant.desc
+            encoding = ENCODINGS[vdesc.encoding]
+            opc_i = opcode.opc
+            if None not in opcode.modrm:
+                opc_i |= 0xc000 | opcode.modrm[1] << 11 | opcode.modrm[2] << 8
+            elif opcode.modrm[1] is not None:
+                opc_i |= opcode.modrm[1] << 8
+            if opcode.modrm == ("m", None, 4):
+                opc_i |= 0x2000000000
+            if not opcode.vex:
+                assert opcode.escape < 4
+                opc_i |= opcode.escape * 0x10000
+                opc_i |= 0x80000 if opcode.prefix == "66" or opsize == 16 else 0
+                opc_i |= 0x100000 if opcode.prefix == "F2" else 0
+                opc_i |= 0x200000 if opcode.prefix == "F3" else 0
+            else:
+                assert opcode.escape < 8
+                opc_i |= opcode.escape * 0x10000
+                if opcode.prefix == "66" or opsize == 16:
+                    assert opcode.prefix not in ("F2", "F3")
+                    opc_i |= 0x100000
+                if opcode.prefix == "F3":
+                    opc_i |= 0x200000
+                elif opcode.prefix == "F2":
+                    opc_i |= 0x300000
+            opc_i |= 0x400000 if opcode.rexw == "1" else 0
+            if opcode.prefix == "LOCK":
+                opc_i |= 0x800000
+            elif opcode.vex == 1:
+                opc_i |= 0x1000000 + 0x800000 * int(opcode.vexl or 0)
+            elif opcode.vex == 2:
+                opc_i |= 0x2000000
+                if not variant.evexsae:
+                    opc_i |= 0x800000 * int(opcode.vexl or 0)
+            assert not (variant.evexsae and variant.evexbcst)
+            opc_i |= 0x4000000 if variant.evexsae or variant.evexbcst else 0
+            opc_i |= 0x8000000 if "VSIB" in vdesc.flags else 0
+            opc_i |= 0x1000000000 if variant.evexmask == 2 else 0
+            opc_i |= 0x4000000000 if variant.downgrade in (1, 2) else 0
+            opc_i |= 0x40000000000 if variant.downgrade == 2 else 0
+            opc_i |= 0x8000000000 * variant.evexdisp8scale
+            if alt >= 0x100:
+                raise Exception("encode alternate bits exhausted")
+            opc_i |= sum(1 << i for i in supports_high_regs) << 45
+            if encoding.imm_control >= 3:
+                opc_i |= vdesc.imm_size(opsize // 8) << 47
+            elif encoding.imm_control in (1, 2):
+                opc_i |= 1 << 47
+
+            enc_encoding = vdesc.encoding
+            if vdesc.encoding != "I" and vdesc.encoding.endswith("I"):
+                enc_encoding = vdesc.encoding[:-1]
+            elif vdesc.encoding == "IA":
+                enc_encoding = "A"
+            opc_i |= ["NP", "M", "R", "M1", "MC", "MR", "RM", "RMA", "MRC",
+                "AM", "MA", "I", "O", "OA", "S", "A", "D", "FD", "TD", "IM",
+                "RVM", "RVMR", "RMV", "VM", "MVR", "MRV",
+            ].index(enc_encoding) << 51
+            opc_i |= alt << 56
+            enc_opcs.append(opc_i)
+
+        opc_name = mnem.upper()
+        if opc_name.startswith('3'):
+            opc_name = '_' + opc_name
+        mnem_map[opc_name] = enc_opcs[0]
+        alt_table += enc_opcs[1:]
+
+        # Determine Rust types for each operand
+        vecsize = 0
+        # Re-derive vecsize from the variant
+        v0 = variants[0]
+        if v0.opcode.vex and v0.opcode.vexl:
+            try:
+                vecsize = 128 << int(v0.opcode.vexl)
+            except ValueError:
+                vecsize = 0
+
+        rust_type_options = []  # list of lists: each position has possible types
+        can_map = True
+        for i in range(nargs):
+            ot_char = ots[i] if i < len(ots) else ''
+            op_kind = desc.operands[i] if i < len(desc.operands) else None
+            if op_kind is None or not ot_char:
+                can_map = False
+                break
+            try:
+                rtype = _operand_rust_type(ot_char, op_kind, opsize, vecsize)
+            except Exception:
+                rtype = None
+            if rtype is None:
+                can_map = False
+                break
+            # Normalize to list
+            if isinstance(rtype, list):
+                rust_type_options.append(rtype)
+            else:
+                rust_type_options.append([rtype])
+
+        if not can_map:
+            print(f"Warning: cannot determine Rust types for {mnem} with ots={ots}, opsize={opsize}, desc={desc}")
+            continue
+
+        canonical_mnemonic = canonicalize_doc_mnemonic(desc.mnemonic)
+        doc = opcode_docs.get(canonical_mnemonic)
+        
+        # Generate cartesian product of all type combinations
+        for combo in product(*rust_type_options):
+            rust_types_tuple = tuple(combo)
+            trait_data[(base_mnem, nargs)].append({
+                'rust_types': rust_types_tuple,
+                'opc_name': opc_name,
+                'nargs': nargs,
+                'canonical_mnemonic': canonical_mnemonic,
+                'doc': doc,
+                'mnem': mnem,
+            })
+
+    # Phase 2: Build traits, impls, and inherent forwarding methods
+    # Group by (base_mnem, nargs). Each group gets one trait.
+    # Deduplicate: same rust_types keeps one entry.
+    all_traits_code = []
+    all_forwarders = []
+
+    # Track trait names to disambiguate when same base_mnem has different nargs
+    base_mnem_nargs = defaultdict(set)
+    for (base_mnem, nargs) in trait_data:
+        base_mnem_nargs[base_mnem].add(nargs)
+
+
+    for (base_mnem, nargs) in sorted(trait_data.keys()):
+        entries_list = trait_data[(base_mnem, nargs)]
+        if not entries_list:
+            continue
+
+        trait_base = _trait_name_for_mnemonic(base_mnem)
+        fn_name = base_mnem.lower()
+        # Ensure fn_name is a valid Rust identifier
+        if fn_name and fn_name[0].isdigit():
+            fn_name = '_' + fn_name
+        # Sanitize fn_name for Rust keywords
+        if fn_name in ('loop', 'in', 'out', 'move', 'mod', 'type', 'match', 'ref',
+                        'return', 'break', 'continue', 'if', 'else', 'while', 'for',
+                        'fn', 'let', 'mut', 'use', 'pub', 'self', 'super', 'crate',
+                        'as', 'const', 'extern', 'impl', 'struct', 'enum', 'trait',
+                        'where', 'async', 'await', 'dyn', 'static', 'union',
+                        'unsafe', 'abstract', 'become', 'box', 'do', 'final',
+                        'macro', 'override', 'priv', 'typeof', 'unsized',
+                        'virtual', 'yield', 'try'):
+            fn_name = f'r#{fn_name}'
+
+        # Get doc from first entry
+        first_entry = entries_list[0]
+        canonical_mnemonic = first_entry['canonical_mnemonic']
+        doc = first_entry['doc']
+
+        # Disambiguate fn_name if same base_mnem has multiple nargs
+        all_nargs = base_mnem_nargs[base_mnem]
+        if len(all_nargs) > 1:
+            fn_name_suffix = f'_{nargs}'
+        else:
+            fn_name_suffix = ''
+        full_fn_name = fn_name + fn_name_suffix
+
+        # Collect unique type combinations
+        seen_types = {}
+        unique_entries = []
+        for entry in entries_list:
+            key = entry['rust_types']
+            if key not in seen_types:
+                seen_types[key] = entry
+                unique_entries.append(entry)
+
+        if not unique_entries:
+            continue
+
+        # Generate generic type parameter names
+        type_params = [chr(ord('A') + i) for i in range(nargs)]
+        type_params_str = ', '.join(type_params)
+
+        # Build trait definition
+        trait_name = f"{trait_base}Emitter" + (fn_name_suffix.title() if fn_name_suffix else '')
+        if nargs > 0:
+            trait_decl = f"pub trait {trait_name}<{type_params_str}>"
+        else:
+            trait_decl = f"pub trait {trait_name}"
+
+        # Build fn signature for trait
+        args_str = ', '.join(f'op{i}: {type_params[i]}' for i in range(nargs))
+        if nargs > 0:
+            fn_sig = f"fn {full_fn_name}(&mut self, {args_str})"
+        else:
+            fn_sig = f"fn {full_fn_name}(&mut self)"
+
+        # Build a readable list of concrete operand variants.
+        variants_doc = []
+        for entry in unique_entries:
+            rust_types = entry['rust_types']
+            if rust_types:
+                sig = f"{full_fn_name}({', '.join(rust_types)})"
+            else:
+                sig = f"{full_fn_name}()"
+            variants_doc.append(sig)
+        variants_doc = sorted(set(variants_doc))
+
+        variants_operands = []
+        for entry in unique_entries:
+            rust_types = entry['rust_types']
+            variants_operands.append(', '.join(rust_types) if rust_types else '(none)')
+        variants_operands = sorted(set(variants_operands))
+
+        idx_width = max(1, len(str(len(variants_operands))))
+        ops_width = max(len("Operands"), *(len(v) for v in variants_operands))
+        sep = f"+-{'-' * idx_width}-+-{'-' * ops_width}-+"
+        header = f"| {'#'.ljust(idx_width)} | {'Operands'.ljust(ops_width)} |"
+        table_lines = [sep, header, sep]
+        for i, ops in enumerate(variants_operands, start=1):
+            table_lines.append(f"| {str(i).ljust(idx_width)} | {ops.ljust(ops_width)} |")
+        table_lines.append(sep)
+
+        # Doc for trait
+        trait_doc = ''
+        if doc:
+            trait_doc = f"/// `{base_mnem.upper()}` ({canonical_mnemonic}). {doc['tooltip']}\n"
+        else:
+            trait_doc = f"/// `{base_mnem.upper()}`.\n"
+        trait_doc += "///\n"
+        trait_doc += "/// Supported operand variants:\n"
+        trait_doc += "///\n"
+        trait_doc += "/// ```text\n"
+        for line in table_lines:
+            trait_doc += f"/// {line}\n"
+        trait_doc += "/// ```\n"
+
+        trait_code = f"{trait_doc}{trait_decl} {{\n    {fn_sig};\n}}\n"
+
+        # Build impl blocks
+        impl_blocks = []
+        rem = 4 - nargs
+        noreg_args = ', '.join('&NOREG' for _ in range(rem))
+
+        for entry in unique_entries:
+            rust_types = entry['rust_types']
+            opc_name = entry['opc_name']
+               
+            if nargs > 0:
+                concrete_types_str = ', '.join(rust_types)
+                impl_header = f"impl<'a> {trait_name}<{concrete_types_str}> for Assembler<'a>"
+            else:
+                impl_header = f"impl<'a> {trait_name} for Assembler<'a>"
+
+            concrete_args = ', '.join(f'op{i}: {rust_types[i]}' for i in range(nargs))
+            if nargs > 0:
+                concrete_fn_sig = f"fn {full_fn_name}(&mut self, {concrete_args})"
+            else:
+                concrete_fn_sig = f"fn {full_fn_name}(&mut self)"
+
+            op_args = ', '.join(f'op{i}.as_operand()' for i in range(nargs))
+            if op_args and noreg_args:
+                all_args = f'{op_args}, {noreg_args}'
+            elif op_args:
+                all_args = op_args
+            else:
+                all_args = noreg_args
+
+            impl_block = (
+                f"{impl_header} {{\n"
+                f"    {concrete_fn_sig} {{\n"
+                f"        self.emit({opc_name}, {all_args});\n"
+                f"    }}\n"
+                f"}}\n"
+            )
+            impl_blocks.append(impl_block)
+
+        all_traits_code.append(trait_code + '\n' + '\n'.join(impl_blocks))
+
+        # Build inherent forwarding method so users can call self.mov(...)
+        # while still dispatching through trait implementations.
+        fwd_doc = trait_doc
+        if nargs > 0:
+            fwd_type_params = [chr(ord('A') + i) for i in range(nargs)]
+            fwd_tp_str = ', '.join(fwd_type_params)
+            fwd_args = ', '.join(f'op{i}: {fwd_type_params[i]}' for i in range(nargs))
+            fwd_call_args = ', '.join(f'op{i}' for i in range(nargs))
+            fwd_where = f"where Assembler<'a>: {trait_name}<{fwd_tp_str}>"
+            forwarder = (
+                f"{fwd_doc}"
+                f"#[inline]\n"
+                f"pub fn {full_fn_name}<{fwd_tp_str}>(&mut self, {fwd_args})\n"
+                f"{fwd_where} {{\n"
+                f"    <Self as {trait_name}<{fwd_tp_str}>>::{full_fn_name}(self, {fwd_call_args});\n"
+                f"}}\n"
+            )
+        else:
+            forwarder = (
+                f"{fwd_doc}"
+                f"#[inline]\n"
+                f"pub fn {full_fn_name}(&mut self)\n"
+                f"where Assembler<'a>: {trait_name} {{\n"
+                f"    <Self as {trait_name}>::{full_fn_name}(self);\n"
+                f"}}\n"
+            )
+        all_forwarders.append(forwarder)
+
+    # Build opcode constants
+    mnem_tab = "".join(
+        f"pub const {m}: i64 = {v:#x}u64 as i64;\n"
+        for m, v in mnem_map.items()
+    )
+
+    alt_tab = f"pub static ALT_TAB: [i64; {len(alt_table)}] = [\n"
+    for v in alt_table:
+        alt_tab += f"    {v:#x}u64 as i64,\n"
+    alt_tab += "];\n"
+
+    public_str = f"{mnem_tab}\n{alt_tab}"
+
+    # Build private string with use statements and all traits/impls
+    private_preamble = (
+        "use crate::x86::assembler::*;\n"
+        "use crate::x86::operands::*;\n"
+        "use super::opcodes::*;\n"
+        "use crate::core::emitter::*;\n"
+        "use crate::core::operand::*;\n"
+        "\n"
+        "/// A dummy operand that represents no register. Here just for simplicity.\n"
+        "const NOREG: Operand = Operand::new();\n"
+        "\n"
+    )
+    inherent_impl = "impl<'a> Assembler<'a> {\n" + ''.join(f"    {line}\n" if line else "\n" for fwd in all_forwarders for line in fwd.splitlines()) + "}\n"
+    private_str = private_preamble + '\n'.join(all_traits_code) + "\n\n" + inherent_impl
+
+    return public_str, private_str
+
+
 def get_instruction_feature_set(entries):
     """Determine the feature set for an instruction based on its variants."""
     # Priority order for feature sets (most specific first)
@@ -1088,7 +1809,7 @@ def encode_table(entries, args):
                 assert variants[0][1].mnemonic[:1] == "J"
                 variants = variants[:1]
                 alt_indices = [0xff]
-
+        
         enc_opcs = []
         for alt, variant in zip(alt_indices, variants):
             opcode, desc = variant.opcode, variant.desc
@@ -1716,6 +2437,7 @@ if __name__ == "__main__":
         "decode": decode_table,
         "encode": encode_table,
         "encode2": encode2_table,
+        "encode3": encode3,
     }
 
     parser = argparse.ArgumentParser()
