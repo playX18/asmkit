@@ -7,25 +7,27 @@ fn main() {
         use asmkit::x86::*;
         use formatter::pretty_disassembler;
         let mut buf = CodeBuffer::new();
-        let asm = Assembler::new(&mut buf);
-        let mut asm = asmkit::masm::x86::MacroAssemblerX86::new(asm);
+        let mut asm = Assembler::new(&mut buf);
 
         let fac = asm.get_label();
 
         asm.bind_label(fac);
         asm.mov(RAX, imm(1));
-        let label = asm.branch_test64(RDI, RDI, ResultCondition::NonZero);
+        asm.test(RDI, RDI);
+        let label = asm.get_label();
+        asm.jnz(label);
+
         asm.ret();
 
         {
             asm.bind_label(label);
             asm.push(RBX);
             asm.mov(RBX, RDI);
-            asm.sub64(RDI, RDI, imm(1));
+            asm.sub(RDI, imm(1));
             asm.call(fac);
             asm.mov(RDX, RAX);
             asm.mov(RAX, RBX);
-            asm.mul64(RAX, RAX, RDX);
+            asm.imul_2(RAX, RDX);
             asm.pop(RBX);
             asm.ret();
         }

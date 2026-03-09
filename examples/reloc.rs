@@ -18,7 +18,7 @@ fn main() {
             .buffer
             .add_symbol(ExternalName::Symbol("puts".into()), RelocDistance::Far);
 
-        asm.lea64(RDI, ptr64_label(str_constant, 0));
+        asm.lea(RDI, ptr64_label(str_constant, 0));
         asm.call(ptr64_sym(puts_sym, 0));
         asm.ret();
         let end = asm.get_label();
