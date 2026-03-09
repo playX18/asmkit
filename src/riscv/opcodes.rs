@@ -305,7 +305,7 @@ pub const IMM3: &[Immediate] = &[];
 /// UNUSED FOR NOW!!!
 pub const IMM2: &[Immediate] = &[];
 
-pub const C_NZUIMM5: &[Immediate] = &C_NZUIMM6LOHI;
+pub const C_NZUIMM5: &[Immediate] = C_NZUIMM6LOHI;
 
 pub const C_NZIMM18LOHI: &[Immediate] = &[
     Immediate {
@@ -548,18 +548,18 @@ impl Immediate {
         let bit_count = self.position_in_immediate.0 - self.position_in_immediate.1 + 1;
         let mask = (1u32 << bit_count) - 1;
 
-        (((imm >> self.position_in_immediate.1) as u32 & mask) << self.position_in_opcode.1) as u32
+        ((imm >> self.position_in_immediate.1) & mask) << self.position_in_opcode.1
     }
 
     pub const fn decode(&self, op: u32) -> i32 {
         let bit_count = self.position_in_opcode.0 - self.position_in_opcode.1 + 1;
         let mask = (1u32 << bit_count) - 1;
-        (((op as u32 >> self.position_in_opcode.1) as u32 & mask) << self.position_in_immediate.1)
+        (((op >> self.position_in_opcode.1) & mask) << self.position_in_immediate.1)
             as _
     }
 
     pub const fn is_valid(&self, imm: i32) -> bool {
-        self.decode(self.encode(imm)) as i32 == imm
+        self.decode(self.encode(imm)) == imm
     }
 }
 
@@ -10782,7 +10782,7 @@ pub struct Inst {
 impl Inst {
     pub const fn encode(&self) -> InstructionValue {
         InstructionValue::new(
-            0 | (self.funct7 << 25)
+            (self.funct7 << 25)
                 | (self.rs2 << 20)
                 | (self.rs1 << 15)
                 | (self.funct3 << 12)
@@ -20844,371 +20844,371 @@ impl InstructionValue {
 
     /// imm20
     pub const fn imm20(self) -> i32 {
-        decode_immediate(&IMM20, self.value as _) as _
+        decode_immediate(IMM20, self.value as _) as _
     }
 
     pub const fn set_imm20(mut self, imm20: i32) -> Self {
-        self.value |= encode_immediate(&IMM20, imm20 as _);
+        self.value |= encode_immediate(IMM20, imm20 as _);
         self
     }
 
     /// jimm20
     pub const fn jimm20(self) -> i32 {
-        decode_immediate(&JIMM20, self.value as _) as _
+        decode_immediate(JIMM20, self.value as _) as _
     }
 
     pub const fn set_jimm20(mut self, jimm20: i32) -> Self {
-        self.value |= encode_immediate(&JIMM20, jimm20 as _);
+        self.value |= encode_immediate(JIMM20, jimm20 as _);
         self
     }
 
     /// imm12
     pub const fn imm12(self) -> i32 {
-        decode_immediate(&IMM12, self.value as _) as _
+        decode_immediate(IMM12, self.value as _) as _
     }
 
     pub const fn set_imm12(mut self, imm12: i32) -> Self {
-        self.value |= encode_immediate(&IMM12, imm12 as _);
+        self.value |= encode_immediate(IMM12, imm12 as _);
         self
     }
 
     /// imm12lohi
     pub const fn imm12lohi(self) -> i32 {
-        decode_immediate(&IMM12LOHI, self.value as _) as _
+        decode_immediate(IMM12LOHI, self.value as _) as _
     }
 
     pub const fn set_imm12lohi(mut self, imm12lohi: i32) -> Self {
-        self.value |= encode_immediate(&IMM12LOHI, imm12lohi as _);
+        self.value |= encode_immediate(IMM12LOHI, imm12lohi as _);
         self
     }
 
     /// bimm12lohi
     pub const fn bimm12lohi(self) -> i32 {
-        decode_immediate(&BIMM12LOHI, self.value as _) as _
+        decode_immediate(BIMM12LOHI, self.value as _) as _
     }
 
     pub const fn set_bimm12lohi(mut self, bimm12lohi: i32) -> Self {
-        self.value |= encode_immediate(&BIMM12LOHI, bimm12lohi as _);
+        self.value |= encode_immediate(BIMM12LOHI, bimm12lohi as _);
         self
     }
 
     /// imm2
     pub const fn imm2(self) -> i32 {
-        decode_immediate(&IMM2, self.value as _) as _
+        decode_immediate(IMM2, self.value as _) as _
     }
 
     pub const fn set_imm2(mut self, imm2: i32) -> Self {
-        self.value |= encode_immediate(&IMM2, imm2 as _);
+        self.value |= encode_immediate(IMM2, imm2 as _);
         self
     }
 
     /// imm3
     pub const fn imm3(self) -> i32 {
-        decode_immediate(&IMM3, self.value as _) as _
+        decode_immediate(IMM3, self.value as _) as _
     }
 
     pub const fn set_imm3(mut self, imm3: i32) -> Self {
-        self.value |= encode_immediate(&IMM3, imm3 as _);
+        self.value |= encode_immediate(IMM3, imm3 as _);
         self
     }
 
     /// imm4
     pub const fn imm4(self) -> i32 {
-        decode_immediate(&IMM4, self.value as _) as _
+        decode_immediate(IMM4, self.value as _) as _
     }
 
     pub const fn set_imm4(mut self, imm4: i32) -> Self {
-        self.value |= encode_immediate(&IMM4, imm4 as _);
+        self.value |= encode_immediate(IMM4, imm4 as _);
         self
     }
 
     /// imm5
     pub const fn imm5(self) -> i32 {
-        decode_immediate(&IMM5, self.value as _) as _
+        decode_immediate(IMM5, self.value as _) as _
     }
 
     pub const fn set_imm5(mut self, imm5: i32) -> Self {
-        self.value |= encode_immediate(&IMM5, imm5 as _);
+        self.value |= encode_immediate(IMM5, imm5 as _);
         self
     }
 
     /// imm6
     pub const fn imm6(self) -> i32 {
-        decode_immediate(&IMM6, self.value as _) as _
+        decode_immediate(IMM6, self.value as _) as _
     }
 
     pub const fn set_imm6(mut self, imm6: i32) -> Self {
-        self.value |= encode_immediate(&IMM6, imm6 as _);
+        self.value |= encode_immediate(IMM6, imm6 as _);
         self
     }
 
     /// zimm
     pub const fn zimm(self) -> i32 {
-        decode_immediate(&ZIMM, self.value as _) as _
+        decode_immediate(ZIMM, self.value as _) as _
     }
 
     pub const fn set_zimm(mut self, zimm: i32) -> Self {
-        self.value |= encode_immediate(&ZIMM, zimm as _);
+        self.value |= encode_immediate(ZIMM, zimm as _);
         self
     }
 
     /// simm5
     pub const fn simm5(self) -> i32 {
-        decode_immediate(&SIMM5, self.value as _) as _
+        decode_immediate(SIMM5, self.value as _) as _
     }
 
     pub const fn set_simm5(mut self, simm5: i32) -> Self {
-        self.value |= encode_immediate(&SIMM5, simm5 as _);
+        self.value |= encode_immediate(SIMM5, simm5 as _);
         self
     }
 
     /// zimm5
     pub const fn zimm5(self) -> i32 {
-        decode_immediate(&ZIMM5, self.value as _) as _
+        decode_immediate(ZIMM5, self.value as _) as _
     }
 
     pub const fn set_zimm5(mut self, zimm5: i32) -> Self {
-        self.value |= encode_immediate(&ZIMM5, zimm5 as _);
+        self.value |= encode_immediate(ZIMM5, zimm5 as _);
         self
     }
 
     /// zimm10
     pub const fn zimm10(self) -> i32 {
-        decode_immediate(&ZIMM10, self.value as _) as _
+        decode_immediate(ZIMM10, self.value as _) as _
     }
 
     pub const fn set_zimm10(mut self, zimm10: i32) -> Self {
-        self.value |= encode_immediate(&ZIMM10, zimm10 as _);
+        self.value |= encode_immediate(ZIMM10, zimm10 as _);
         self
     }
 
     /// zimm11
     pub const fn zimm11(self) -> i32 {
-        decode_immediate(&ZIMM11, self.value as _) as _
+        decode_immediate(ZIMM11, self.value as _) as _
     }
 
     pub const fn set_zimm11(mut self, zimm11: i32) -> Self {
-        self.value |= encode_immediate(&ZIMM11, zimm11 as _);
+        self.value |= encode_immediate(ZIMM11, zimm11 as _);
         self
     }
 
     /// zimm6lohi
     pub const fn zimm6lohi(self) -> i32 {
-        decode_immediate(&ZIMM6LOHI, self.value as _) as _
+        decode_immediate(ZIMM6LOHI, self.value as _) as _
     }
 
     pub const fn set_zimm6lohi(mut self, zimm6lohi: i32) -> Self {
-        self.value |= encode_immediate(&ZIMM6LOHI, zimm6lohi as _);
+        self.value |= encode_immediate(ZIMM6LOHI, zimm6lohi as _);
         self
     }
 
     /// c_nzuimm10
     pub const fn c_nzuimm10(self) -> u32 {
-        decode_immediate(&C_NZUIMM10, self.value as _) as _
+        decode_immediate(C_NZUIMM10, self.value as _) as _
     }
 
     pub const fn set_c_nzuimm10(mut self, c_nzuimm10: u32) -> Self {
-        self.value |= encode_immediate(&C_NZUIMM10, c_nzuimm10 as _);
+        self.value |= encode_immediate(C_NZUIMM10, c_nzuimm10 as _);
         self
     }
 
     /// c_uimm7lohi
     pub const fn c_uimm7lohi(self) -> u32 {
-        decode_immediate(&C_UIMM7LOHI, self.value as _) as _
+        decode_immediate(C_UIMM7LOHI, self.value as _) as _
     }
 
     pub const fn set_c_uimm7lohi(mut self, c_uimm7lohi: u32) -> Self {
-        self.value |= encode_immediate(&C_UIMM7LOHI, c_uimm7lohi as _);
+        self.value |= encode_immediate(C_UIMM7LOHI, c_uimm7lohi as _);
         self
     }
 
     /// c_uimm8lohi
     pub const fn c_uimm8lohi(self) -> u32 {
-        decode_immediate(&C_UIMM8LOHI, self.value as _) as _
+        decode_immediate(C_UIMM8LOHI, self.value as _) as _
     }
 
     pub const fn set_c_uimm8lohi(mut self, c_uimm8lohi: u32) -> Self {
-        self.value |= encode_immediate(&C_UIMM8LOHI, c_uimm8lohi as _);
+        self.value |= encode_immediate(C_UIMM8LOHI, c_uimm8lohi as _);
         self
     }
 
     /// c_uimm9lohi
     pub const fn c_uimm9lohi(self) -> u32 {
-        decode_immediate(&C_UIMM9LOHI, self.value as _) as _
+        decode_immediate(C_UIMM9LOHI, self.value as _) as _
     }
 
     pub const fn set_c_uimm9lohi(mut self, c_uimm9lohi: u32) -> Self {
-        self.value |= encode_immediate(&C_UIMM9LOHI, c_uimm9lohi as _);
+        self.value |= encode_immediate(C_UIMM9LOHI, c_uimm9lohi as _);
         self
     }
 
     /// c_nzimm6lohi
     pub const fn c_nzimm6lohi(self) -> i32 {
-        decode_immediate(&C_NZIMM6LOHI, self.value as _) as _
+        decode_immediate(C_NZIMM6LOHI, self.value as _) as _
     }
 
     pub const fn set_c_nzimm6lohi(mut self, c_nzimm6lohi: i32) -> Self {
-        self.value |= encode_immediate(&C_NZIMM6LOHI, c_nzimm6lohi as _);
+        self.value |= encode_immediate(C_NZIMM6LOHI, c_nzimm6lohi as _);
         self
     }
 
     /// c_imm6lohi
     pub const fn c_imm6lohi(self) -> i32 {
-        decode_immediate(&C_IMM6LOHI, self.value as _) as _
+        decode_immediate(C_IMM6LOHI, self.value as _) as _
     }
 
     pub const fn set_c_imm6lohi(mut self, c_imm6lohi: i32) -> Self {
-        self.value |= encode_immediate(&C_IMM6LOHI, c_imm6lohi as _);
+        self.value |= encode_immediate(C_IMM6LOHI, c_imm6lohi as _);
         self
     }
 
     /// c_nzimm10lohi
     pub const fn c_nzimm10lohi(self) -> i32 {
-        decode_immediate(&C_NZIMM10LOHI, self.value as _) as _
+        decode_immediate(C_NZIMM10LOHI, self.value as _) as _
     }
 
     pub const fn set_c_nzimm10lohi(mut self, c_nzimm10lohi: i32) -> Self {
-        self.value |= encode_immediate(&C_NZIMM10LOHI, c_nzimm10lohi as _);
+        self.value |= encode_immediate(C_NZIMM10LOHI, c_nzimm10lohi as _);
         self
     }
 
     /// c_nzimm18lohi
     pub const fn c_nzimm18lohi(self) -> i32 {
-        decode_immediate(&C_NZIMM18LOHI, self.value as _) as _
+        decode_immediate(C_NZIMM18LOHI, self.value as _) as _
     }
 
     pub const fn set_c_nzimm18lohi(mut self, c_nzimm18lohi: i32) -> Self {
-        self.value |= encode_immediate(&C_NZIMM18LOHI, c_nzimm18lohi as _);
+        self.value |= encode_immediate(C_NZIMM18LOHI, c_nzimm18lohi as _);
         self
     }
 
     /// c_imm12
     pub const fn c_imm12(self) -> i32 {
-        decode_immediate(&C_IMM12, self.value as _) as _
+        decode_immediate(C_IMM12, self.value as _) as _
     }
 
     pub const fn set_c_imm12(mut self, c_imm12: i32) -> Self {
-        self.value |= encode_immediate(&C_IMM12, c_imm12 as _);
+        self.value |= encode_immediate(C_IMM12, c_imm12 as _);
         self
     }
 
     /// c_bimm9lohi
     pub const fn c_bimm9lohi(self) -> i32 {
-        decode_immediate(&C_BIMM9LOHI, self.value as _) as _
+        decode_immediate(C_BIMM9LOHI, self.value as _) as _
     }
 
     pub const fn set_c_bimm9lohi(mut self, c_bimm9lohi: i32) -> Self {
-        self.value |= encode_immediate(&C_BIMM9LOHI, c_bimm9lohi as _);
+        self.value |= encode_immediate(C_BIMM9LOHI, c_bimm9lohi as _);
         self
     }
 
     /// c_nzuimm5
     pub const fn c_nzuimm5(self) -> u32 {
-        decode_immediate(&C_NZUIMM5, self.value as _) as _
+        decode_immediate(C_NZUIMM5, self.value as _) as _
     }
 
     pub const fn set_c_nzuimm5(mut self, c_nzuimm5: u32) -> Self {
-        self.value |= encode_immediate(&C_NZUIMM5, c_nzuimm5 as _);
+        self.value |= encode_immediate(C_NZUIMM5, c_nzuimm5 as _);
         self
     }
 
     /// c_nzuimm6lohi
     pub const fn c_nzuimm6lohi(self) -> u32 {
-        decode_immediate(&C_NZUIMM6LOHI, self.value as _) as _
+        decode_immediate(C_NZUIMM6LOHI, self.value as _) as _
     }
 
     pub const fn set_c_nzuimm6lohi(mut self, c_nzuimm6lohi: u32) -> Self {
-        self.value |= encode_immediate(&C_NZUIMM6LOHI, c_nzuimm6lohi as _);
+        self.value |= encode_immediate(C_NZUIMM6LOHI, c_nzuimm6lohi as _);
         self
     }
 
     /// c_uimm8splohi
     pub const fn c_uimm8splohi(self) -> u32 {
-        decode_immediate(&C_UIMM8SPLOHI, self.value as _) as _
+        decode_immediate(C_UIMM8SPLOHI, self.value as _) as _
     }
 
     pub const fn set_c_uimm8splohi(mut self, c_uimm8splohi: u32) -> Self {
-        self.value |= encode_immediate(&C_UIMM8SPLOHI, c_uimm8splohi as _);
+        self.value |= encode_immediate(C_UIMM8SPLOHI, c_uimm8splohi as _);
         self
     }
 
     /// c_uimm8sp_s
     pub const fn c_uimm8sp_s(self) -> u32 {
-        decode_immediate(&C_UIMM8SP_S, self.value as _) as _
+        decode_immediate(C_UIMM8SP_S, self.value as _) as _
     }
 
     pub const fn set_c_uimm8sp_s(mut self, c_uimm8sp_s: u32) -> Self {
-        self.value |= encode_immediate(&C_UIMM8SP_S, c_uimm8sp_s as _);
+        self.value |= encode_immediate(C_UIMM8SP_S, c_uimm8sp_s as _);
         self
     }
 
     /// c_uimm10splohi
     pub const fn c_uimm10splohi(self) -> u32 {
-        decode_immediate(&C_UIMM10SPLOHI, self.value as _) as _
+        decode_immediate(C_UIMM10SPLOHI, self.value as _) as _
     }
 
     pub const fn set_c_uimm10splohi(mut self, c_uimm10splohi: u32) -> Self {
-        self.value |= encode_immediate(&C_UIMM10SPLOHI, c_uimm10splohi as _);
+        self.value |= encode_immediate(C_UIMM10SPLOHI, c_uimm10splohi as _);
         self
     }
 
     /// c_uimm9splohi
     pub const fn c_uimm9splohi(self) -> u32 {
-        decode_immediate(&C_UIMM9SPLOHI, self.value as _) as _
+        decode_immediate(C_UIMM9SPLOHI, self.value as _) as _
     }
 
     pub const fn set_c_uimm9splohi(mut self, c_uimm9splohi: u32) -> Self {
-        self.value |= encode_immediate(&C_UIMM9SPLOHI, c_uimm9splohi as _);
+        self.value |= encode_immediate(C_UIMM9SPLOHI, c_uimm9splohi as _);
         self
     }
 
     /// c_uimm10sp_s
     pub const fn c_uimm10sp_s(self) -> u32 {
-        decode_immediate(&C_UIMM10SP_S, self.value as _) as _
+        decode_immediate(C_UIMM10SP_S, self.value as _) as _
     }
 
     pub const fn set_c_uimm10sp_s(mut self, c_uimm10sp_s: u32) -> Self {
-        self.value |= encode_immediate(&C_UIMM10SP_S, c_uimm10sp_s as _);
+        self.value |= encode_immediate(C_UIMM10SP_S, c_uimm10sp_s as _);
         self
     }
 
     /// c_uimm9sp_s
     pub const fn c_uimm9sp_s(self) -> u32 {
-        decode_immediate(&C_UIMM9SP_S, self.value as _) as _
+        decode_immediate(C_UIMM9SP_S, self.value as _) as _
     }
 
     pub const fn set_c_uimm9sp_s(mut self, c_uimm9sp_s: u32) -> Self {
-        self.value |= encode_immediate(&C_UIMM9SP_S, c_uimm9sp_s as _);
+        self.value |= encode_immediate(C_UIMM9SP_S, c_uimm9sp_s as _);
         self
     }
 
     /// c_uimm2
     pub const fn c_uimm2(self) -> u32 {
-        decode_immediate(&C_UIMM2, self.value as _) as _
+        decode_immediate(C_UIMM2, self.value as _) as _
     }
 
     pub const fn set_c_uimm2(mut self, c_uimm2: u32) -> Self {
-        self.value |= encode_immediate(&C_UIMM2, c_uimm2 as _);
+        self.value |= encode_immediate(C_UIMM2, c_uimm2 as _);
         self
     }
 
     /// c_uimm1
     pub const fn c_uimm1(self) -> u32 {
-        decode_immediate(&C_UIMM1, self.value as _) as _
+        decode_immediate(C_UIMM1, self.value as _) as _
     }
 
     pub const fn set_c_uimm1(mut self, c_uimm1: u32) -> Self {
-        self.value |= encode_immediate(&C_UIMM1, c_uimm1 as _);
+        self.value |= encode_immediate(C_UIMM1, c_uimm1 as _);
         self
     }
 
     /// c_spimm
     pub const fn c_spimm(self) -> i32 {
-        decode_immediate(&C_SPIMM, self.value as _) as _
+        decode_immediate(C_SPIMM, self.value as _) as _
     }
 
     pub const fn set_c_spimm(mut self, c_spimm: i32) -> Self {
-        self.value |= encode_immediate(&C_SPIMM, c_spimm as _);
+        self.value |= encode_immediate(C_SPIMM, c_spimm as _);
         self
     }
 }

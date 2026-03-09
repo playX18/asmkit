@@ -288,7 +288,7 @@ cfgenius::cond! {
 
 
         fn get_vm_info() -> Info {
-            extern "C" {
+            unsafe extern "C" {
                 fn getpagesize() -> c_int;
             }
 
@@ -345,7 +345,7 @@ cfgenius::cond! {
         #[cfg(not(target_os="freebsd"))]
         fn get_tmp_dir() -> String {
             unsafe{
-                let env = getenv(b"TMPDIR\0".as_ptr() as *const _);
+                let env = getenv(c"TMPDIR".as_ptr() as *const _);
 
                 if !env.is_null() {
                     CStr::from_ptr(env).to_string_lossy().into_owned()
@@ -389,7 +389,7 @@ cfgenius::cond! {
 
                         if !MEMFD_CREATE_NOT_SUPPORTED.load(Ordering::Relaxed) {
                             unsafe {
-                                self.fd = libc::syscall(libc::SYS_memfd_create, b"vmem\0".as_ptr(), libc::MFD_CLOEXEC) as i32;
+                                self.fd = libc::syscall(libc::SYS_memfd_create, c"vmem".as_ptr(), libc::MFD_CLOEXEC) as i32;
 
                                 if self.fd >= 0 {
 
@@ -902,7 +902,7 @@ pub fn flush_instruction_cache(p: *const u8, size: usize) {
             let _ = p;
             let _ = size;
         } else if cfg(target_vendor="apple") {
-            extern "C" {
+            unsafe extern "C" {
                 fn sys_icache_invalidate(p: *const u8, size: usize);
             }
 
@@ -910,7 +910,7 @@ pub fn flush_instruction_cache(p: *const u8, size: usize) {
                 sys_icache_invalidate(p, size);
             }
         } else if cfg(windows) {
-            extern "C" {
+            unsafe extern "C" {
                 fn GetCurrentProcess() -> *mut libc::c_void;
                 fn FlushInstructionCache(
                     proc: *mut libc::c_void,

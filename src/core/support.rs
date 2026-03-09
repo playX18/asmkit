@@ -1,6 +1,6 @@
 pub const fn lsb_mask_usize(n: usize) -> usize {
     if n != 0 {
-        usize::MAX >> (size_of::<usize>() * 8 - n)
+        usize::MAX >> (usize::BITS as usize - n)
     } else {
         0
     }
@@ -11,7 +11,7 @@ pub const fn lsb_mask32(n: u32) -> usize {
         (1 << n as usize) - 1
     } else {
         if n != 0 {
-            u32::MAX as usize >> (size_of::<u32>() * 8 - n as usize)
+            u32::MAX as usize >> (u32::BITS as usize - n as usize)
         } else {
             0
         }
@@ -23,7 +23,7 @@ pub const fn lsb_mask64(n: u64) -> usize {
         (1 << n as usize) - 1
     } else {
         if n != 0 {
-            u64::MAX as usize >> (size_of::<u64>() * 8 - n as usize)
+            u64::MAX as usize >> (u64::BITS as usize - n as usize)
         } else {
             0
         }

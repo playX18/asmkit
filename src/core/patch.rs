@@ -115,7 +115,7 @@ pub fn fill_with_nops(arch: Arch, buffer: &mut [u8]) -> Result<(), AsmError> {
         _ => return Err(AsmError::InvalidArgument),
     };
 
-    if pattern.len() > 1 && buffer.len() % pattern.len() != 0 {
+    if pattern.len() > 1 && !buffer.len().is_multiple_of(pattern.len()) {
         return Err(AsmError::InvalidArgument);
     }
 

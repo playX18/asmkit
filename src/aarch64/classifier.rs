@@ -2,126 +2,127 @@
 // UDF-UDF#0
 pub const fn classify_impl_1(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  return 0x200;
+  0x200
 }
 
 
 // MEMX-STXRB#0,MEMX-STLXRB#0
 pub const fn classify_impl_2(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x1680,
     0x1 => 0x1681,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // CASP-CASP#0,CASP-CASPL#0
 pub const fn classify_impl_3(inst: u32) -> u32 {
   if (inst&0x7c00) != 0x7c00 { return 0; }
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x6000,
     0x1 => 0x6001,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMX-LDXRB#0,MEMX-LDAXRB#0
 pub const fn classify_impl_4(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x1682,
     0x1 => 0x1683,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // CASP-CASPA#0,CASP-CASPAL#0
 pub const fn classify_impl_5(inst: u32) -> u32 {
   if (inst&0x7c00) != 0x7c00 { return 0; }
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x6002,
     0x1 => 0x6003,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMOR-STLLRB#0,MEMOR-STLRB#0
 pub const fn classify_impl_6(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x1600,
     0x1 => 0x1601,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // CAS-CASB#0,CAS-CASLB#0
 pub const fn classify_impl_7(inst: u32) -> u32 {
   if (inst&0x7c00) != 0x7c00 { return 0; }
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x5f80,
     0x1 => 0x5f81,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMOR-LDLARB#0,MEMOR-LDARB#0
 pub const fn classify_impl_8(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x1602,
     0x1 => 0x1603,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // CAS-CASAB#0,CAS-CASALB#0
 pub const fn classify_impl_9(inst: u32) -> u32 {
   if (inst&0x7c00) != 0x7c00 { return 0; }
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x5f82,
     0x1 => 0x5f83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ANDOREOR_SHIFT-AND_SHIFT#0
 pub const fn classify_impl_a(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x580;
+  0x580
 }
 
 
 // ANDOREOR_SHIFT-BIC_SHIFT#0
 pub const fn classify_impl_b(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x581;
+  0x581
 }
 
 
 // ADDSUB_SHIFT-ADD_SHIFT#0
 pub const fn classify_impl_c(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x400;
+  0x400
 }
 
 
 // ADDSUB_EXT-ADD_EXT#0,ADDSUB_EXT-ADD_EXT#1,ADDSUB_EXT-ADD_EXT#2,ADDSUB_EXT-ADD_EXT#3,ADDSUB_EXT-ADD_EXT#4
 pub const fn classify_impl_d(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x7 {
+  
+  match (inst >> 10) & 0x7 {
     0x0 => 0x300,
     0x1 => 0x300,
     0x2 => 0x300,
@@ -131,29 +132,29 @@ pub const fn classify_impl_d(inst: u32) -> u32 {
     0x6 => 0x0,
     0x7 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ADDSUB_SHIFT-ADD_SHIFT#1
 pub const fn classify_impl_e(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x400;
+  0x400
 }
 
 
 // ADDSUB_SHIFT-ADD_SHIFT#2
 pub const fn classify_impl_f(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x400;
+  0x400
 }
 
 
 // MEMSIMD_MULT-ST4#0,MEMSIMD_MULT-ST4#1,MEMSIMD_MULT-ST4#2,MEMSIMD_MULT-ST1_4#0,MEMSIMD_MULT-ST1_4#1,MEMSIMD_MULT-ST1_4#2,MEMSIMD_MULT-ST1_4#3,MEMSIMD_MULT-ST3#0,MEMSIMD_MULT-ST3#1,MEMSIMD_MULT-ST3#2,MEMSIMD_MULT-ST1_3#0,MEMSIMD_MULT-ST1_3#1,MEMSIMD_MULT-ST1_3#2,MEMSIMD_MULT-ST1_3#3,MEMSIMD_MULT-ST1_1#0,MEMSIMD_MULT-ST1_1#1,MEMSIMD_MULT-ST1_1#2,MEMSIMD_MULT-ST1_1#3,MEMSIMD_MULT-ST2#0,MEMSIMD_MULT-ST2#1,MEMSIMD_MULT-ST2#2,MEMSIMD_MULT-ST1_2#0,MEMSIMD_MULT-ST1_2#1,MEMSIMD_MULT-ST1_2#2,MEMSIMD_MULT-ST1_2#3
 pub const fn classify_impl_10(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x1c80,
     0x1 => 0x1c80,
     0x2 => 0x1c80,
@@ -219,15 +220,15 @@ pub const fn classify_impl_10(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMSIMD_MULT-LD4#0,MEMSIMD_MULT-LD4#1,MEMSIMD_MULT-LD4#2,MEMSIMD_MULT-LD1_4#0,MEMSIMD_MULT-LD1_4#1,MEMSIMD_MULT-LD1_4#2,MEMSIMD_MULT-LD1_4#3,MEMSIMD_MULT-LD3#0,MEMSIMD_MULT-LD3#1,MEMSIMD_MULT-LD3#2,MEMSIMD_MULT-LD1_3#0,MEMSIMD_MULT-LD1_3#1,MEMSIMD_MULT-LD1_3#2,MEMSIMD_MULT-LD1_3#3,MEMSIMD_MULT-LD1_1#0,MEMSIMD_MULT-LD1_1#1,MEMSIMD_MULT-LD1_1#2,MEMSIMD_MULT-LD1_1#3,MEMSIMD_MULT-LD2#0,MEMSIMD_MULT-LD2#1,MEMSIMD_MULT-LD2#2,MEMSIMD_MULT-LD1_2#0,MEMSIMD_MULT-LD1_2#1,MEMSIMD_MULT-LD1_2#2,MEMSIMD_MULT-LD1_2#3
 pub const fn classify_impl_11(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x1c87,
     0x1 => 0x1c87,
     0x2 => 0x1c87,
@@ -293,14 +294,14 @@ pub const fn classify_impl_11(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMSIMD_MULT_POST-ST4_POST#0,MEMSIMD_MULT_POST-ST4_POST#1,MEMSIMD_MULT_POST-ST4_POST#2,MEMSIMD_MULT_POST-ST1_4_POST#0,MEMSIMD_MULT_POST-ST1_4_POST#1,MEMSIMD_MULT_POST-ST1_4_POST#2,MEMSIMD_MULT_POST-ST1_4_POST#3,MEMSIMD_MULT_POST-ST3_POST#0,MEMSIMD_MULT_POST-ST3_POST#1,MEMSIMD_MULT_POST-ST3_POST#2,MEMSIMD_MULT_POST-ST1_3_POST#0,MEMSIMD_MULT_POST-ST1_3_POST#1,MEMSIMD_MULT_POST-ST1_3_POST#2,MEMSIMD_MULT_POST-ST1_3_POST#3,MEMSIMD_MULT_POST-ST1_1_POST#0,MEMSIMD_MULT_POST-ST1_1_POST#1,MEMSIMD_MULT_POST-ST1_1_POST#2,MEMSIMD_MULT_POST-ST1_1_POST#3,MEMSIMD_MULT_POST-ST2_POST#0,MEMSIMD_MULT_POST-ST2_POST#1,MEMSIMD_MULT_POST-ST2_POST#2,MEMSIMD_MULT_POST-ST1_2_POST#0,MEMSIMD_MULT_POST-ST1_2_POST#1,MEMSIMD_MULT_POST-ST1_2_POST#2,MEMSIMD_MULT_POST-ST1_2_POST#3
 pub const fn classify_impl_12(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x1d00,
     0x1 => 0x1d00,
     0x2 => 0x1d00,
@@ -366,14 +367,14 @@ pub const fn classify_impl_12(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMSIMD_MULT_POST-LD4_POST#0,MEMSIMD_MULT_POST-LD4_POST#1,MEMSIMD_MULT_POST-LD4_POST#2,MEMSIMD_MULT_POST-LD1_4_POST#0,MEMSIMD_MULT_POST-LD1_4_POST#1,MEMSIMD_MULT_POST-LD1_4_POST#2,MEMSIMD_MULT_POST-LD1_4_POST#3,MEMSIMD_MULT_POST-LD3_POST#0,MEMSIMD_MULT_POST-LD3_POST#1,MEMSIMD_MULT_POST-LD3_POST#2,MEMSIMD_MULT_POST-LD1_3_POST#0,MEMSIMD_MULT_POST-LD1_3_POST#1,MEMSIMD_MULT_POST-LD1_3_POST#2,MEMSIMD_MULT_POST-LD1_3_POST#3,MEMSIMD_MULT_POST-LD1_1_POST#0,MEMSIMD_MULT_POST-LD1_1_POST#1,MEMSIMD_MULT_POST-LD1_1_POST#2,MEMSIMD_MULT_POST-LD1_1_POST#3,MEMSIMD_MULT_POST-LD2_POST#0,MEMSIMD_MULT_POST-LD2_POST#1,MEMSIMD_MULT_POST-LD2_POST#2,MEMSIMD_MULT_POST-LD1_2_POST#0,MEMSIMD_MULT_POST-LD1_2_POST#1,MEMSIMD_MULT_POST-LD1_2_POST#2,MEMSIMD_MULT_POST-LD1_2_POST#3
 pub const fn classify_impl_13(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x1d07,
     0x1 => 0x1d07,
     0x2 => 0x1d07,
@@ -439,15 +440,15 @@ pub const fn classify_impl_13(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMSIMD_SINGLE-ST1B#0,MEMSIMD_SINGLE-ST1B#1,MEMSIMD_SINGLE-ST1B#2,MEMSIMD_SINGLE-ST1B#3,MEMSIMD_SINGLE-ST1B#4,MEMSIMD_SINGLE-ST1B#5,MEMSIMD_SINGLE-ST1B#6,MEMSIMD_SINGLE-ST1B#7,MEMSIMD_SINGLE-ST3B#0,MEMSIMD_SINGLE-ST3B#1,MEMSIMD_SINGLE-ST3B#2,MEMSIMD_SINGLE-ST3B#3,MEMSIMD_SINGLE-ST3B#4,MEMSIMD_SINGLE-ST3B#5,MEMSIMD_SINGLE-ST3B#6,MEMSIMD_SINGLE-ST3B#7,MEMSIMD_SINGLE-ST1H#0,MEMSIMD_SINGLE-ST1H#1,MEMSIMD_SINGLE-ST1H#2,MEMSIMD_SINGLE-ST1H#3,MEMSIMD_SINGLE-ST3H#0,MEMSIMD_SINGLE-ST3H#1,MEMSIMD_SINGLE-ST3H#2,MEMSIMD_SINGLE-ST3H#3,MEMSIMD_SINGLE-ST1S#0,MEMSIMD_SINGLE-ST1S#1,MEMSIMD_SINGLE-ST1D#0,MEMSIMD_SINGLE-ST3S#0,MEMSIMD_SINGLE-ST3S#1,MEMSIMD_SINGLE-ST3D#0
 pub const fn classify_impl_14(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x1d80,
     0x1 => 0x1d80,
     0x2 => 0x1d80,
@@ -513,15 +514,15 @@ pub const fn classify_impl_14(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMSIMD_SINGLE-ST2B#0,MEMSIMD_SINGLE-ST2B#1,MEMSIMD_SINGLE-ST2B#2,MEMSIMD_SINGLE-ST2B#3,MEMSIMD_SINGLE-ST2B#4,MEMSIMD_SINGLE-ST2B#5,MEMSIMD_SINGLE-ST2B#6,MEMSIMD_SINGLE-ST2B#7,MEMSIMD_SINGLE-ST4B#0,MEMSIMD_SINGLE-ST4B#1,MEMSIMD_SINGLE-ST4B#2,MEMSIMD_SINGLE-ST4B#3,MEMSIMD_SINGLE-ST4B#4,MEMSIMD_SINGLE-ST4B#5,MEMSIMD_SINGLE-ST4B#6,MEMSIMD_SINGLE-ST4B#7,MEMSIMD_SINGLE-ST2H#0,MEMSIMD_SINGLE-ST2H#1,MEMSIMD_SINGLE-ST2H#2,MEMSIMD_SINGLE-ST2H#3,MEMSIMD_SINGLE-ST4H#0,MEMSIMD_SINGLE-ST4H#1,MEMSIMD_SINGLE-ST4H#2,MEMSIMD_SINGLE-ST4H#3,MEMSIMD_SINGLE-ST2S#0,MEMSIMD_SINGLE-ST2S#1,MEMSIMD_SINGLE-ST2D#0,MEMSIMD_SINGLE-ST4S#0,MEMSIMD_SINGLE-ST4S#1,MEMSIMD_SINGLE-ST4D#0
 pub const fn classify_impl_15(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x1d88,
     0x1 => 0x1d88,
     0x2 => 0x1d88,
@@ -587,15 +588,15 @@ pub const fn classify_impl_15(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMSIMD_SINGLE-LD1B#0,MEMSIMD_SINGLE-LD1B#1,MEMSIMD_SINGLE-LD1B#2,MEMSIMD_SINGLE-LD1B#3,MEMSIMD_SINGLE-LD1B#4,MEMSIMD_SINGLE-LD1B#5,MEMSIMD_SINGLE-LD1B#6,MEMSIMD_SINGLE-LD1B#7,MEMSIMD_SINGLE-LD3B#0,MEMSIMD_SINGLE-LD3B#1,MEMSIMD_SINGLE-LD3B#2,MEMSIMD_SINGLE-LD3B#3,MEMSIMD_SINGLE-LD3B#4,MEMSIMD_SINGLE-LD3B#5,MEMSIMD_SINGLE-LD3B#6,MEMSIMD_SINGLE-LD3B#7,MEMSIMD_SINGLE-LD1H#0,MEMSIMD_SINGLE-LD1H#1,MEMSIMD_SINGLE-LD1H#2,MEMSIMD_SINGLE-LD1H#3,MEMSIMD_SINGLE-LD3H#0,MEMSIMD_SINGLE-LD3H#1,MEMSIMD_SINGLE-LD3H#2,MEMSIMD_SINGLE-LD3H#3,MEMSIMD_SINGLE-LD1S#0,MEMSIMD_SINGLE-LD1S#1,MEMSIMD_SINGLE-LD1D#0,MEMSIMD_SINGLE-LD3S#0,MEMSIMD_SINGLE-LD3S#1,MEMSIMD_SINGLE-LD3D#0,MEMSIMD_REP-LD1R#0,MEMSIMD_REP-LD3R#0
 pub const fn classify_impl_16(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x1d90,
     0x1 => 0x1d90,
     0x2 => 0x1d90,
@@ -661,15 +662,15 @@ pub const fn classify_impl_16(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMSIMD_SINGLE-LD2B#0,MEMSIMD_SINGLE-LD2B#1,MEMSIMD_SINGLE-LD2B#2,MEMSIMD_SINGLE-LD2B#3,MEMSIMD_SINGLE-LD2B#4,MEMSIMD_SINGLE-LD2B#5,MEMSIMD_SINGLE-LD2B#6,MEMSIMD_SINGLE-LD2B#7,MEMSIMD_SINGLE-LD4B#0,MEMSIMD_SINGLE-LD4B#1,MEMSIMD_SINGLE-LD4B#2,MEMSIMD_SINGLE-LD4B#3,MEMSIMD_SINGLE-LD4B#4,MEMSIMD_SINGLE-LD4B#5,MEMSIMD_SINGLE-LD4B#6,MEMSIMD_SINGLE-LD4B#7,MEMSIMD_SINGLE-LD2H#0,MEMSIMD_SINGLE-LD2H#1,MEMSIMD_SINGLE-LD2H#2,MEMSIMD_SINGLE-LD2H#3,MEMSIMD_SINGLE-LD4H#0,MEMSIMD_SINGLE-LD4H#1,MEMSIMD_SINGLE-LD4H#2,MEMSIMD_SINGLE-LD4H#3,MEMSIMD_SINGLE-LD2S#0,MEMSIMD_SINGLE-LD2S#1,MEMSIMD_SINGLE-LD2D#0,MEMSIMD_SINGLE-LD4S#0,MEMSIMD_SINGLE-LD4S#1,MEMSIMD_SINGLE-LD4D#0,MEMSIMD_REP-LD2R#0,MEMSIMD_REP-LD4R#0
 pub const fn classify_impl_17(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x1d98,
     0x1 => 0x1d98,
     0x2 => 0x1d98,
@@ -735,14 +736,14 @@ pub const fn classify_impl_17(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMSIMD_SINGLE_POST-ST1B_POST#0,MEMSIMD_SINGLE_POST-ST1B_POST#1,MEMSIMD_SINGLE_POST-ST1B_POST#2,MEMSIMD_SINGLE_POST-ST1B_POST#3,MEMSIMD_SINGLE_POST-ST1B_POST#4,MEMSIMD_SINGLE_POST-ST1B_POST#5,MEMSIMD_SINGLE_POST-ST1B_POST#6,MEMSIMD_SINGLE_POST-ST1B_POST#7,MEMSIMD_SINGLE_POST-ST3B_POST#0,MEMSIMD_SINGLE_POST-ST3B_POST#1,MEMSIMD_SINGLE_POST-ST3B_POST#2,MEMSIMD_SINGLE_POST-ST3B_POST#3,MEMSIMD_SINGLE_POST-ST3B_POST#4,MEMSIMD_SINGLE_POST-ST3B_POST#5,MEMSIMD_SINGLE_POST-ST3B_POST#6,MEMSIMD_SINGLE_POST-ST3B_POST#7,MEMSIMD_SINGLE_POST-ST1H_POST#0,MEMSIMD_SINGLE_POST-ST1H_POST#1,MEMSIMD_SINGLE_POST-ST1H_POST#2,MEMSIMD_SINGLE_POST-ST1H_POST#3,MEMSIMD_SINGLE_POST-ST3H_POST#0,MEMSIMD_SINGLE_POST-ST3H_POST#1,MEMSIMD_SINGLE_POST-ST3H_POST#2,MEMSIMD_SINGLE_POST-ST3H_POST#3,MEMSIMD_SINGLE_POST-ST1S_POST#0,MEMSIMD_SINGLE_POST-ST1S_POST#1,MEMSIMD_SINGLE_POST-ST1D_POST#0,MEMSIMD_SINGLE_POST-ST3S_POST#0,MEMSIMD_SINGLE_POST-ST3S_POST#1,MEMSIMD_SINGLE_POST-ST3D_POST#0
 pub const fn classify_impl_18(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x1e00,
     0x1 => 0x1e00,
     0x2 => 0x1e00,
@@ -808,14 +809,14 @@ pub const fn classify_impl_18(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMSIMD_SINGLE_POST-ST2B_POST#0,MEMSIMD_SINGLE_POST-ST2B_POST#1,MEMSIMD_SINGLE_POST-ST2B_POST#2,MEMSIMD_SINGLE_POST-ST2B_POST#3,MEMSIMD_SINGLE_POST-ST2B_POST#4,MEMSIMD_SINGLE_POST-ST2B_POST#5,MEMSIMD_SINGLE_POST-ST2B_POST#6,MEMSIMD_SINGLE_POST-ST2B_POST#7,MEMSIMD_SINGLE_POST-ST4B_POST#0,MEMSIMD_SINGLE_POST-ST4B_POST#1,MEMSIMD_SINGLE_POST-ST4B_POST#2,MEMSIMD_SINGLE_POST-ST4B_POST#3,MEMSIMD_SINGLE_POST-ST4B_POST#4,MEMSIMD_SINGLE_POST-ST4B_POST#5,MEMSIMD_SINGLE_POST-ST4B_POST#6,MEMSIMD_SINGLE_POST-ST4B_POST#7,MEMSIMD_SINGLE_POST-ST2H_POST#0,MEMSIMD_SINGLE_POST-ST2H_POST#1,MEMSIMD_SINGLE_POST-ST2H_POST#2,MEMSIMD_SINGLE_POST-ST2H_POST#3,MEMSIMD_SINGLE_POST-ST4H_POST#0,MEMSIMD_SINGLE_POST-ST4H_POST#1,MEMSIMD_SINGLE_POST-ST4H_POST#2,MEMSIMD_SINGLE_POST-ST4H_POST#3,MEMSIMD_SINGLE_POST-ST2S_POST#0,MEMSIMD_SINGLE_POST-ST2S_POST#1,MEMSIMD_SINGLE_POST-ST2D_POST#0,MEMSIMD_SINGLE_POST-ST4S_POST#0,MEMSIMD_SINGLE_POST-ST4S_POST#1,MEMSIMD_SINGLE_POST-ST4D_POST#0
 pub const fn classify_impl_19(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x1e08,
     0x1 => 0x1e08,
     0x2 => 0x1e08,
@@ -881,14 +882,14 @@ pub const fn classify_impl_19(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMSIMD_SINGLE_POST-LD1B_POST#0,MEMSIMD_SINGLE_POST-LD1B_POST#1,MEMSIMD_SINGLE_POST-LD1B_POST#2,MEMSIMD_SINGLE_POST-LD1B_POST#3,MEMSIMD_SINGLE_POST-LD1B_POST#4,MEMSIMD_SINGLE_POST-LD1B_POST#5,MEMSIMD_SINGLE_POST-LD1B_POST#6,MEMSIMD_SINGLE_POST-LD1B_POST#7,MEMSIMD_SINGLE_POST-LD3B_POST#0,MEMSIMD_SINGLE_POST-LD3B_POST#1,MEMSIMD_SINGLE_POST-LD3B_POST#2,MEMSIMD_SINGLE_POST-LD3B_POST#3,MEMSIMD_SINGLE_POST-LD3B_POST#4,MEMSIMD_SINGLE_POST-LD3B_POST#5,MEMSIMD_SINGLE_POST-LD3B_POST#6,MEMSIMD_SINGLE_POST-LD3B_POST#7,MEMSIMD_SINGLE_POST-LD1H_POST#0,MEMSIMD_SINGLE_POST-LD1H_POST#1,MEMSIMD_SINGLE_POST-LD1H_POST#2,MEMSIMD_SINGLE_POST-LD1H_POST#3,MEMSIMD_SINGLE_POST-LD3H_POST#0,MEMSIMD_SINGLE_POST-LD3H_POST#1,MEMSIMD_SINGLE_POST-LD3H_POST#2,MEMSIMD_SINGLE_POST-LD3H_POST#3,MEMSIMD_SINGLE_POST-LD1S_POST#0,MEMSIMD_SINGLE_POST-LD1S_POST#1,MEMSIMD_SINGLE_POST-LD1D_POST#0,MEMSIMD_SINGLE_POST-LD3S_POST#0,MEMSIMD_SINGLE_POST-LD3S_POST#1,MEMSIMD_SINGLE_POST-LD3D_POST#0,MEMSIMD_REP_POST-LD1R_POST#0,MEMSIMD_REP_POST-LD3R_POST#0
 pub const fn classify_impl_1a(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x1e10,
     0x1 => 0x1e10,
     0x2 => 0x1e10,
@@ -954,14 +955,14 @@ pub const fn classify_impl_1a(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMSIMD_SINGLE_POST-LD2B_POST#0,MEMSIMD_SINGLE_POST-LD2B_POST#1,MEMSIMD_SINGLE_POST-LD2B_POST#2,MEMSIMD_SINGLE_POST-LD2B_POST#3,MEMSIMD_SINGLE_POST-LD2B_POST#4,MEMSIMD_SINGLE_POST-LD2B_POST#5,MEMSIMD_SINGLE_POST-LD2B_POST#6,MEMSIMD_SINGLE_POST-LD2B_POST#7,MEMSIMD_SINGLE_POST-LD4B_POST#0,MEMSIMD_SINGLE_POST-LD4B_POST#1,MEMSIMD_SINGLE_POST-LD4B_POST#2,MEMSIMD_SINGLE_POST-LD4B_POST#3,MEMSIMD_SINGLE_POST-LD4B_POST#4,MEMSIMD_SINGLE_POST-LD4B_POST#5,MEMSIMD_SINGLE_POST-LD4B_POST#6,MEMSIMD_SINGLE_POST-LD4B_POST#7,MEMSIMD_SINGLE_POST-LD2H_POST#0,MEMSIMD_SINGLE_POST-LD2H_POST#1,MEMSIMD_SINGLE_POST-LD2H_POST#2,MEMSIMD_SINGLE_POST-LD2H_POST#3,MEMSIMD_SINGLE_POST-LD4H_POST#0,MEMSIMD_SINGLE_POST-LD4H_POST#1,MEMSIMD_SINGLE_POST-LD4H_POST#2,MEMSIMD_SINGLE_POST-LD4H_POST#3,MEMSIMD_SINGLE_POST-LD2S_POST#0,MEMSIMD_SINGLE_POST-LD2S_POST#1,MEMSIMD_SINGLE_POST-LD2D_POST#0,MEMSIMD_SINGLE_POST-LD4S_POST#0,MEMSIMD_SINGLE_POST-LD4S_POST#1,MEMSIMD_SINGLE_POST-LD4D_POST#0,MEMSIMD_REP_POST-LD2R_POST#0,MEMSIMD_REP_POST-LD4R_POST#0
 pub const fn classify_impl_1b(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x1e18,
     0x1 => 0x1e18,
     0x2 => 0x1e18,
@@ -1027,15 +1028,15 @@ pub const fn classify_impl_1b(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#0,ZIP-TRN1#0,ZIP-ZIP1#0,ZIP-UZP2#0,ZIP-TRN2#0,ZIP-ZIP2#0
 pub const fn classify_impl_1c_1(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 11) & 0xf {
+  
+  match (inst >> 11) & 0xf {
     0x0 => 0x2a00,
     0x1 => 0x0,
     0x2 => 0x2a01,
@@ -1053,14 +1054,14 @@ pub const fn classify_impl_1c_1(inst: u32) -> u32 {
     0xe => 0x2a07,
     0xf => 0x2a85,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#0,DUP_VEC-DUP_GP#0,MOV_TOGP-SMOV#0,MOV_TOGP-UMOV#0,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#0,ZIP-TRN1#0,ZIP-ZIP1#0,ZIP-UZP2#0,ZIP-TRN2#0,ZIP-ZIP2#0
 pub const fn classify_impl_1c_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -1094,14 +1095,14 @@ pub const fn classify_impl_1c_2(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#1,DUP_VEC-DUP_GP#1,MOV_TOGP-SMOV#1,MOV_TOGP-UMOV#1,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#0,ZIP-TRN1#0,ZIP-ZIP1#0,ZIP-UZP2#0,ZIP-TRN2#0,ZIP-ZIP2#0
 pub const fn classify_impl_1c_3(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -1135,14 +1136,14 @@ pub const fn classify_impl_1c_3(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#2,DUP_VEC-DUP_GP#2,MOV_TOGP-SMOV#2,MOV_TOGP-UMOV#2,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#0,ZIP-TRN1#0,ZIP-ZIP1#0,ZIP-UZP2#0,ZIP-TRN2#0,ZIP-ZIP2#0
 pub const fn classify_impl_1c_4(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -1176,14 +1177,14 @@ pub const fn classify_impl_1c_4(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#3,DUP_VEC-DUP_GP#3,MOV_TOGP-UMOV#3,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#0,ZIP-TRN1#0,ZIP-ZIP1#0,ZIP-UZP2#0,ZIP-TRN2#0,ZIP-ZIP2#0
 pub const fn classify_impl_1c_5(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -1217,14 +1218,14 @@ pub const fn classify_impl_1c_5(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#4,DUP_VEC-DUP_GP#4,MOV_TOGP-SMOV#3,MOV_TOGP-UMOV#4,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#0,ZIP-TRN1#0,ZIP-ZIP1#0,ZIP-UZP2#0,ZIP-TRN2#0,ZIP-ZIP2#0
 pub const fn classify_impl_1c_6(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -1258,14 +1259,14 @@ pub const fn classify_impl_1c_6(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#5,DUP_VEC-DUP_GP#5,MOV_TOGP-SMOV#4,MOV_TOGP-UMOV#5,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#0,ZIP-TRN1#0,ZIP-ZIP1#0,ZIP-UZP2#0,ZIP-TRN2#0,ZIP-ZIP2#0
 pub const fn classify_impl_1c_7(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -1299,14 +1300,14 @@ pub const fn classify_impl_1c_7(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#6,DUP_VEC-DUP_GP#6,MOV_TOGP-SMOV#5,MOV_TOGP-UMOV#6,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#0,ZIP-TRN1#0,ZIP-ZIP1#0,ZIP-UZP2#0,ZIP-TRN2#0,ZIP-ZIP2#0
 pub const fn classify_impl_1c_8(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -1340,14 +1341,14 @@ pub const fn classify_impl_1c_8(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#7,DUP_VEC-DUP_GP#7,MOV_TOGP-SMOV#6,MOV_TOGP-UMOV#7,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#0,ZIP-TRN1#0,ZIP-ZIP1#0,ZIP-UZP2#0,ZIP-TRN2#0,ZIP-ZIP2#0
 pub const fn classify_impl_1c_9(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -1381,14 +1382,14 @@ pub const fn classify_impl_1c_9(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#8,DUP_VEC-DUP_GP#8,MOV_TOGP-SMOV#7,MOV_TOGP-UMOV#8,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#0,ZIP-TRN1#0,ZIP-ZIP1#0,ZIP-UZP2#0,ZIP-TRN2#0,ZIP-ZIP2#0
 pub const fn classify_impl_1c_a(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -1422,14 +1423,14 @@ pub const fn classify_impl_1c_a(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#9,DUP_VEC-DUP_GP#9,MOV_TOGP-SMOV#8,MOV_TOGP-UMOV#9,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#0,ZIP-TRN1#0,ZIP-ZIP1#0,ZIP-UZP2#0,ZIP-TRN2#0,ZIP-ZIP2#0
 pub const fn classify_impl_1c_b(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -1463,14 +1464,14 @@ pub const fn classify_impl_1c_b(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#10,DUP_VEC-DUP_GP#10,MOV_TOGP-UMOV#10,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#0,ZIP-TRN1#0,ZIP-ZIP1#0,ZIP-UZP2#0,ZIP-TRN2#0,ZIP-ZIP2#0
 pub const fn classify_impl_1c_c(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -1504,14 +1505,14 @@ pub const fn classify_impl_1c_c(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#11,DUP_VEC-DUP_GP#11,MOV_TOGP-SMOV#9,MOV_TOGP-UMOV#11,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#0,ZIP-TRN1#0,ZIP-ZIP1#0,ZIP-UZP2#0,ZIP-TRN2#0,ZIP-ZIP2#0
 pub const fn classify_impl_1c_d(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -1545,14 +1546,14 @@ pub const fn classify_impl_1c_d(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#12,DUP_VEC-DUP_GP#12,MOV_TOGP-SMOV#10,MOV_TOGP-UMOV#12,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#0,ZIP-TRN1#0,ZIP-ZIP1#0,ZIP-UZP2#0,ZIP-TRN2#0,ZIP-ZIP2#0
 pub const fn classify_impl_1c_e(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -1586,14 +1587,14 @@ pub const fn classify_impl_1c_e(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#13,DUP_VEC-DUP_GP#13,MOV_TOGP-SMOV#11,MOV_TOGP-UMOV#13,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#0,ZIP-TRN1#0,ZIP-ZIP1#0,ZIP-UZP2#0,ZIP-TRN2#0,ZIP-ZIP2#0
 pub const fn classify_impl_1c_f(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -1627,8 +1628,7 @@ pub const fn classify_impl_1c_f(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // DUP_VEC-DUP_ELEM#0,DUP_VEC-DUP_ELEM#1,DUP_VEC-DUP_ELEM#2,DUP_VEC-DUP_ELEM#3,DUP_VEC-DUP_ELEM#4,DUP_VEC-DUP_ELEM#5,DUP_VEC-DUP_ELEM#6,DUP_VEC-DUP_ELEM#7,DUP_VEC-DUP_ELEM#8,DUP_VEC-DUP_ELEM#9,DUP_VEC-DUP_ELEM#10,DUP_VEC-DUP_ELEM#11,DUP_VEC-DUP_ELEM#12,DUP_VEC-DUP_ELEM#13,DUP_VEC-DUP_GP#0,DUP_VEC-DUP_GP#1,DUP_VEC-DUP_GP#2,DUP_VEC-DUP_GP#3,DUP_VEC-DUP_GP#4,DUP_VEC-DUP_GP#5,DUP_VEC-DUP_GP#6,DUP_VEC-DUP_GP#7,DUP_VEC-DUP_GP#8,DUP_VEC-DUP_GP#9,DUP_VEC-DUP_GP#10,DUP_VEC-DUP_GP#11,DUP_VEC-DUP_GP#12,DUP_VEC-DUP_GP#13,MOV_TOGP-SMOV#0,MOV_TOGP-SMOV#1,MOV_TOGP-SMOV#2,MOV_TOGP-SMOV#3,MOV_TOGP-SMOV#4,MOV_TOGP-SMOV#5,MOV_TOGP-SMOV#6,MOV_TOGP-SMOV#7,MOV_TOGP-SMOV#8,MOV_TOGP-SMOV#9,MOV_TOGP-SMOV#10,MOV_TOGP-SMOV#11,MOV_TOGP-UMOV#0,MOV_TOGP-UMOV#1,MOV_TOGP-UMOV#2,MOV_TOGP-UMOV#3,MOV_TOGP-UMOV#4,MOV_TOGP-UMOV#5,MOV_TOGP-UMOV#6,MOV_TOGP-UMOV#7,MOV_TOGP-UMOV#8,MOV_TOGP-UMOV#9,MOV_TOGP-UMOV#10,MOV_TOGP-UMOV#11,MOV_TOGP-UMOV#12,MOV_TOGP-UMOV#13,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#0,ZIP-TRN1#0,ZIP-ZIP1#0,ZIP-UZP2#0,ZIP-TRN2#0,ZIP-ZIP2#0
@@ -1671,175 +1671,175 @@ pub const fn classify_impl_1c(inst: u32) -> u32 {
     0xf => return classify_impl_1c_f(inst), // DUP_VEC-DUP_ELEM#13,DUP_VEC-DUP_GP#13,MOV_TOGP-SMOV#11,MOV_TOGP-UMOV#13,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#0,ZIP-TRN1#0,ZIP-ZIP1#0,ZIP-UZP2#0,ZIP-TRN2#0,ZIP-ZIP2#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // REV_VEC-REV64_VEC#0
 pub const fn classify_impl_1d_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3280;
+  0x3280
 }
 
 
 // REV_VEC-REV16_VEC#0
 pub const fn classify_impl_1d_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3281;
+  0x3281
 }
 
 
 // ADDLP_VEC-SADDLP#0
 pub const fn classify_impl_1d_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3100;
+  0x3100
 }
 
 
 // ARITH1_VEC-SUQADD_VEC#0
 pub const fn classify_impl_1d_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3080;
+  0x3080
 }
 
 
 // CLZ_VEC-CLS_VEC#0
 pub const fn classify_impl_1d_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3180;
+  0x3180
 }
 
 
 // BIT_VEC-CNT_VEC#0
 pub const fn classify_impl_1d_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3200;
+  0x3200
 }
 
 
 // ADDLP_VEC-SADALP#0
 pub const fn classify_impl_1d_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3101;
+  0x3101
 }
 
 
 // ARITH1_VEC-SQABS_VEC#0
 pub const fn classify_impl_1d_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3081;
+  0x3081
 }
 
 
 // CMZERO_VEC-CMGT_ZERO_VEC#0
 pub const fn classify_impl_1d_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f80;
+  0x2f80
 }
 
 
 // CMZERO_VEC-CMEQ_ZERO_VEC#0
 pub const fn classify_impl_1d_a(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f81;
+  0x2f81
 }
 
 
 // CMZERO_VEC-CMLT_ZERO_VEC#0
 pub const fn classify_impl_1d_b(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f82;
+  0x2f82
 }
 
 
 // ARITH1_VEC-ABS_VEC#0
 pub const fn classify_impl_1d_c(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3082;
+  0x3082
 }
 
 
 // XTN_VEC-XTN_VEC#0
 pub const fn classify_impl_1d_d(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3380;
+  0x3380
 }
 
 
 // XTN_VEC-SQXTN_VEC#0
 pub const fn classify_impl_1d_e(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3381;
+  0x3381
 }
 
 
 // FCVTN_VEC-FCVTN#0
 pub const fn classify_impl_1d_f(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5180;
+  0x5180
 }
 
 
 // FCVTL_VEC-FCVTL_VEC#0
 pub const fn classify_impl_1d_10(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f80;
+  0x4f80
 }
 
 
 // FRINT_VEC-FRINTN_VEC#0
 pub const fn classify_impl_1d_11(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5200;
+  0x5200
 }
 
 
 // FRINT_VEC-FRINTM_VEC#0
 pub const fn classify_impl_1d_12(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5201;
+  0x5201
 }
 
 
 // FCVT_VEC-FCVTNS_VEC#0
 pub const fn classify_impl_1d_13(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f00;
+  0x4f00
 }
 
 
 // FCVT_VEC-FCVTMS_VEC#0
 pub const fn classify_impl_1d_14(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f01;
+  0x4f01
 }
 
 
 // FCVT_VEC-FCVTAS_VEC#0
 pub const fn classify_impl_1d_15(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f02;
+  0x4f02
 }
 
 
 // FCVT_FROMINT_VEC-SCVTF_VEC#0
 pub const fn classify_impl_1d_16(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5080;
+  0x5080
 }
 
 
 // FRINTTS_VEC-FRINT32Z_VEC#0
 pub const fn classify_impl_1d_17(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5280;
+  0x5280
 }
 
 
 // FRINTTS_VEC-FRINT64Z_VEC#0
 pub const fn classify_impl_1d_18(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5281;
+  0x5281
 }
 
 // HADDSUB_VEC-SHADD#0,HADDSUB_VEC-SRHADD#0,HADDSUB_VEC-SHSUB#0,QADDSUB_VEC-SQADD#0,QADDSUB_VEC-SQSUB#0,CMGT_VEC-CMGTV#0,CMGT_VEC-CMGEV#0,CMEQ_VEC-CMTSTV#0,CMZERO_VEC-CMGT_ZERO_VEC#0,CMZERO_VEC-CMEQ_ZERO_VEC#0,CMZERO_VEC-CMLT_ZERO_VEC#0,ARITH1_VEC-SUQADD_VEC#0,ARITH1_VEC-SQABS_VEC#0,ARITH1_VEC-ABS_VEC#0,ADDLP_VEC-SADDLP#0,ADDLP_VEC-SADALP#0,CLZ_VEC-CLS_VEC#0,BIT_VEC-CNT_VEC#0,REV_VEC-REV64_VEC#0,REV_VEC-REV16_VEC#0,XTN_VEC-XTN_VEC#0,XTN_VEC-SQXTN_VEC#0,SHL_REG_VEC-SSHL#0,SHL_REG_VEC-SQSHL#0,SHL_REG_VEC-SRSHL#0,SHL_REG_VEC-SQRSHL#0,MINMAX_VEC-SMAX#0,MINMAX_VEC-SMIN#0,MINMAX_VEC-SMAXP#0,MINMAX_VEC-SMINP#0,ABD_VEC-SABD#0,ABD_VEC-SABA#0,ADDSUB_VEC-ADD_VEC#0,ADDP_VEC-ADDP#0,MUL_VEC-MLA_VEC#0,MUL_VEC-MUL_VEC#0,FMINMAX_VEC-FMAXNM_VEC#0,FMINMAX_VEC-FMAX_VEC#0,FCMP_REG_VEC-FCMEQ_VEC#0,FADDSUB_VEC-FADD_VEC#0,FRECP_STEP_VEC-FRECPSV#0,FMUL_VEC-FMULXV#0,FMLA_VEC-FMLAV#0,ANDOREOR_VEC-ANDV#0,ADDSUBL_VEC-SADDL#0,ADDSUBL_VEC-SSUBL#0,ADDSUBW_VEC-SADDW#0,ADDSUBW_VEC-SSUBW#0,ADDSUBHN_VEC-ADDHN#0,ADDSUBHN_VEC-SUBHN#0,ABDL_VEC-SABAL#0,ABDL_VEC-SABDL#0,MULL_VEC-SMLAL#0,MULL_VEC-SMLSL#0,MULL_VEC-SMULL#0,PMULL_VEC-PMULL#0,FCVT_VEC-FCVTNS_VEC#0,FCVT_VEC-FCVTMS_VEC#0,FCVT_VEC-FCVTAS_VEC#0,FCVTL_VEC-FCVTL_VEC#0,FCVT_FROMINT_VEC-SCVTF_VEC#0,FCVTN_VEC-FCVTN#0,FRINT_VEC-FRINTN_VEC#0,FRINT_VEC-FRINTM_VEC#0,FRINTTS_VEC-FRINT32Z_VEC#0,FRINTTS_VEC-FRINT64Z_VEC#0,FHM_VEC-FMLAL_VEC#0
@@ -2002,49 +2002,49 @@ pub const fn classify_impl_1d(inst: u32) -> u32 {
     0x18 => return classify_impl_1d_18(inst), // FRINTTS_VEC-FRINT64Z_VEC#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // INT_HORZ_VEC-SADDLV#0
 pub const fn classify_impl_1e_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5380;
+  0x5380
 }
 
 
 // INT_HORZ_VEC-SMAXV#0
 pub const fn classify_impl_1e_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5381;
+  0x5381
 }
 
 
 // FP_HORZ_VEC-FMAXNMV_FP16#0
 pub const fn classify_impl_1e_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5480;
+  0x5480
 }
 
 
 // FP_HORZ_VEC-FMAXV_FP16#0
 pub const fn classify_impl_1e_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5481;
+  0x5481
 }
 
 
 // INT_HORZ_VEC-SMINV#0
 pub const fn classify_impl_1e_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5382;
+  0x5382
 }
 
 
 // INT_HORZ_VEC-ADDV#0
 pub const fn classify_impl_1e_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5383;
+  0x5383
 }
 
 // HADDSUB_VEC-SHADD#0,HADDSUB_VEC-SRHADD#0,HADDSUB_VEC-SHSUB#0,QADDSUB_VEC-SQADD#0,QADDSUB_VEC-SQSUB#0,CMGT_VEC-CMGTV#0,CMGT_VEC-CMGEV#0,CMEQ_VEC-CMTSTV#0,SHL_REG_VEC-SSHL#0,SHL_REG_VEC-SQSHL#0,SHL_REG_VEC-SRSHL#0,SHL_REG_VEC-SQRSHL#0,MINMAX_VEC-SMAX#0,MINMAX_VEC-SMIN#0,MINMAX_VEC-SMAXP#0,MINMAX_VEC-SMINP#0,ABD_VEC-SABD#0,ABD_VEC-SABA#0,ADDSUB_VEC-ADD_VEC#0,ADDP_VEC-ADDP#0,MUL_VEC-MLA_VEC#0,MUL_VEC-MUL_VEC#0,FMINMAX_VEC-FMAXNM_VEC#0,FMINMAX_VEC-FMAX_VEC#0,FCMP_REG_VEC-FCMEQ_VEC#0,FADDSUB_VEC-FADD_VEC#0,FRECP_STEP_VEC-FRECPSV#0,FMUL_VEC-FMULXV#0,FMLA_VEC-FMLAV#0,ANDOREOR_VEC-ANDV#0,ADDSUBL_VEC-SADDL#0,ADDSUBL_VEC-SSUBL#0,ADDSUBW_VEC-SADDW#0,ADDSUBW_VEC-SSUBW#0,ADDSUBHN_VEC-ADDHN#0,ADDSUBHN_VEC-SUBHN#0,ABDL_VEC-SABAL#0,ABDL_VEC-SABDL#0,MULL_VEC-SMLAL#0,MULL_VEC-SMLSL#0,MULL_VEC-SMULL#0,PMULL_VEC-PMULL#0,INT_HORZ_VEC-SADDLV#0,INT_HORZ_VEC-SMAXV#0,INT_HORZ_VEC-SMINV#0,INT_HORZ_VEC-ADDV#0,FP_HORZ_VEC-FMAXNMV_FP16#0,FP_HORZ_VEC-FMAXV_FP16#0,FHM_VEC-FMLAL_VEC#0
@@ -2189,14 +2189,15 @@ pub const fn classify_impl_1e(inst: u32) -> u32 {
     0x6 => return classify_impl_1e_6(inst), // INT_HORZ_VEC-ADDV#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // ZIP-UZP1#1,ZIP-TRN1#1,ZIP-ZIP1#1,ZIP-UZP2#1,ZIP-TRN2#1,ZIP-ZIP2#1,FP16_3REG_VEC-FMAXNM_VEC_FP16#0,FP16_3REG_VEC-FMLA_VEC_FP16#0,FP16_3REG_VEC-FADD_VEC_FP16#0,FP16_3REG_VEC-FMULX_VEC_FP16#0,FP16_3REG_VEC-FCMEQ_VEC_FP16#0,FP16_3REG_VEC-FMAX_VEC_FP16#0,FP16_3REG_VEC-FRECPS_VEC_FP16#0
 pub const fn classify_impl_1f(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x0,
     0x1 => 0x4180,
     0x2 => 0x0,
@@ -2230,106 +2231,105 @@ pub const fn classify_impl_1f(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // REV_VEC-REV64_VEC#1
 pub const fn classify_impl_20_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3280;
+  0x3280
 }
 
 
 // ADDLP_VEC-SADDLP#1
 pub const fn classify_impl_20_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3100;
+  0x3100
 }
 
 
 // ARITH1_VEC-SUQADD_VEC#1
 pub const fn classify_impl_20_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3080;
+  0x3080
 }
 
 
 // CLZ_VEC-CLS_VEC#1
 pub const fn classify_impl_20_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3180;
+  0x3180
 }
 
 
 // ADDLP_VEC-SADALP#1
 pub const fn classify_impl_20_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3101;
+  0x3101
 }
 
 
 // ARITH1_VEC-SQABS_VEC#1
 pub const fn classify_impl_20_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3081;
+  0x3081
 }
 
 
 // CMZERO_VEC-CMGT_ZERO_VEC#1
 pub const fn classify_impl_20_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f80;
+  0x2f80
 }
 
 
 // CMZERO_VEC-CMEQ_ZERO_VEC#1
 pub const fn classify_impl_20_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f81;
+  0x2f81
 }
 
 
 // CMZERO_VEC-CMLT_ZERO_VEC#1
 pub const fn classify_impl_20_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f82;
+  0x2f82
 }
 
 
 // ARITH1_VEC-ABS_VEC#1
 pub const fn classify_impl_20_a(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3082;
+  0x3082
 }
 
 
 // XTN_VEC-XTN_VEC#1
 pub const fn classify_impl_20_b(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3380;
+  0x3380
 }
 
 
 // XTN_VEC-SQXTN_VEC#1
 pub const fn classify_impl_20_c(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3381;
+  0x3381
 }
 
 
 // FCVTN_VEC-FCVTN#1
 pub const fn classify_impl_20_d(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5180;
+  0x5180
 }
 
 
 // FCVTL_VEC-FCVTL_VEC#0
 pub const fn classify_impl_20_e(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f80;
+  0x4f80
 }
 
 // HADDSUB_VEC-SHADD#1,HADDSUB_VEC-SRHADD#1,HADDSUB_VEC-SHSUB#1,QADDSUB_VEC-SQADD#1,QADDSUB_VEC-SQSUB#1,CMGT_VEC-CMGTV#1,CMGT_VEC-CMGEV#1,CMEQ_VEC-CMTSTV#1,CMZERO_VEC-CMGT_ZERO_VEC#1,CMZERO_VEC-CMEQ_ZERO_VEC#1,CMZERO_VEC-CMLT_ZERO_VEC#1,ARITH1_VEC-SUQADD_VEC#1,ARITH1_VEC-SQABS_VEC#1,ARITH1_VEC-ABS_VEC#1,ADDLP_VEC-SADDLP#1,ADDLP_VEC-SADALP#1,CLZ_VEC-CLS_VEC#1,REV_VEC-REV64_VEC#1,XTN_VEC-XTN_VEC#1,XTN_VEC-SQXTN_VEC#1,SHL_REG_VEC-SSHL#1,SHL_REG_VEC-SQSHL#1,SHL_REG_VEC-SRSHL#1,SHL_REG_VEC-SQRSHL#1,MINMAX_VEC-SMAX#1,MINMAX_VEC-SMIN#1,MINMAX_VEC-SMAXP#1,MINMAX_VEC-SMINP#1,ABD_VEC-SABD#1,ABD_VEC-SABA#1,ADDSUB_VEC-ADD_VEC#1,ADDP_VEC-ADDP#1,MUL_VEC-MLA_VEC#1,MUL_VEC-MUL_VEC#1,SQDMULH_VEC-SQDMULH#0,ANDOREOR_VEC-BICV#0,ADDSUBL_VEC-SADDL#1,ADDSUBL_VEC-SSUBL#1,ADDSUBW_VEC-SADDW#1,ADDSUBW_VEC-SSUBW#1,ADDSUBHN_VEC-ADDHN#1,ADDSUBHN_VEC-SUBHN#1,ABDL_VEC-SABAL#1,ABDL_VEC-SABDL#1,MULL_VEC-SMLAL#1,MULL_VEC-SMLSL#1,MULL_VEC-SMULL#1,SQDMULL_VEC-SQDMLAL#0,SQDMULL_VEC-SQDMLSL#0,SQDMULL_VEC-SQDMULL#0,FCVTL_VEC-FCVTL_VEC#0,FCVTN_VEC-FCVTN#1
@@ -2482,35 +2482,35 @@ pub const fn classify_impl_20(inst: u32) -> u32 {
     0xe => return classify_impl_20_e(inst), // FCVTL_VEC-FCVTL_VEC#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // INT_HORZ_VEC-SADDLV#1
 pub const fn classify_impl_21_1_1(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5380;
+  0x5380
 }
 
 
 // INT_HORZ_VEC-SMAXV#1
 pub const fn classify_impl_21_1_2(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5381;
+  0x5381
 }
 
 
 // INT_HORZ_VEC-SMINV#1
 pub const fn classify_impl_21_1_3(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5382;
+  0x5382
 }
 
 
 // INT_HORZ_VEC-ADDV#1
 pub const fn classify_impl_21_1_4(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5383;
+  0x5383
 }
 
 // HADDSUB_VEC-SHADD#1,HADDSUB_VEC-SRHADD#1,HADDSUB_VEC-SHSUB#1,QADDSUB_VEC-SQADD#1,QADDSUB_VEC-SQSUB#1,CMGT_VEC-CMGTV#1,CMGT_VEC-CMGEV#1,CMEQ_VEC-CMTSTV#1,SHL_REG_VEC-SSHL#1,SHL_REG_VEC-SQSHL#1,SHL_REG_VEC-SRSHL#1,SHL_REG_VEC-SQRSHL#1,MINMAX_VEC-SMAX#1,MINMAX_VEC-SMIN#1,MINMAX_VEC-SMAXP#1,MINMAX_VEC-SMINP#1,ABD_VEC-SABD#1,ABD_VEC-SABA#1,ADDSUB_VEC-ADD_VEC#1,ADDP_VEC-ADDP#1,MUL_VEC-MLA_VEC#1,MUL_VEC-MUL_VEC#1,SQDMULH_VEC-SQDMULH#0,ANDOREOR_VEC-BICV#0,ADDSUBL_VEC-SADDL#1,ADDSUBL_VEC-SSUBL#1,ADDSUBW_VEC-SADDW#1,ADDSUBW_VEC-SSUBW#1,ADDSUBHN_VEC-ADDHN#1,ADDSUBHN_VEC-SUBHN#1,ABDL_VEC-SABAL#1,ABDL_VEC-SABDL#1,MULL_VEC-SMLAL#1,MULL_VEC-SMLSL#1,MULL_VEC-SMULL#1,SQDMULL_VEC-SQDMLAL#0,SQDMULL_VEC-SQDMLSL#0,SQDMULL_VEC-SQDMULL#0,INT_HORZ_VEC-SADDLV#1,INT_HORZ_VEC-SMAXV#1,INT_HORZ_VEC-SMINV#1,INT_HORZ_VEC-ADDV#1
@@ -2653,49 +2653,49 @@ pub const fn classify_impl_21_1(inst: u32) -> u32 {
     0x4 => return classify_impl_21_1_4(inst), // INT_HORZ_VEC-ADDV#1
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_2REG_VEC-FRINTN_VEC_FP16#0
 pub const fn classify_impl_21_2_1(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4280;
+  0x4280
 }
 
 
 // FP16_2REG_VEC-FRINTM_VEC_FP16#0
 pub const fn classify_impl_21_2_2(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4281;
+  0x4281
 }
 
 
 // FP16_2REG_VEC-FCVTNS_VEC_FP16#0
 pub const fn classify_impl_21_2_3(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4282;
+  0x4282
 }
 
 
 // FP16_2REG_VEC-FCVTMS_VEC_FP16#0
 pub const fn classify_impl_21_2_4(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4283;
+  0x4283
 }
 
 
 // FP16_2REG_VEC-FCVTAS_VEC_FP16#0
 pub const fn classify_impl_21_2_5(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4284;
+  0x4284
 }
 
 
 // FP16_2REG_VEC-SCVTF_VEC_FP16#0
 pub const fn classify_impl_21_2_6(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4285;
+  0x4285
 }
 
 // HADDSUB_VEC-SHADD#1,HADDSUB_VEC-SRHADD#1,HADDSUB_VEC-SHSUB#1,QADDSUB_VEC-SQADD#1,QADDSUB_VEC-SQSUB#1,CMGT_VEC-CMGTV#1,CMGT_VEC-CMGEV#1,CMEQ_VEC-CMTSTV#1,SHL_REG_VEC-SSHL#1,SHL_REG_VEC-SQSHL#1,SHL_REG_VEC-SRSHL#1,SHL_REG_VEC-SQRSHL#1,MINMAX_VEC-SMAX#1,MINMAX_VEC-SMIN#1,MINMAX_VEC-SMAXP#1,MINMAX_VEC-SMINP#1,ABD_VEC-SABD#1,ABD_VEC-SABA#1,ADDSUB_VEC-ADD_VEC#1,ADDP_VEC-ADDP#1,MUL_VEC-MLA_VEC#1,MUL_VEC-MUL_VEC#1,SQDMULH_VEC-SQDMULH#0,FP16_2REG_VEC-FRINTN_VEC_FP16#0,FP16_2REG_VEC-FRINTM_VEC_FP16#0,FP16_2REG_VEC-FCVTNS_VEC_FP16#0,FP16_2REG_VEC-FCVTMS_VEC_FP16#0,FP16_2REG_VEC-FCVTAS_VEC_FP16#0,FP16_2REG_VEC-SCVTF_VEC_FP16#0,ANDOREOR_VEC-BICV#0,ADDSUBL_VEC-SADDL#1,ADDSUBL_VEC-SSUBL#1,ADDSUBW_VEC-SADDW#1,ADDSUBW_VEC-SSUBW#1,ADDSUBHN_VEC-ADDHN#1,ADDSUBHN_VEC-SUBHN#1,ABDL_VEC-SABAL#1,ABDL_VEC-SABDL#1,MULL_VEC-SMLAL#1,MULL_VEC-SMLSL#1,MULL_VEC-SMULL#1,SQDMULL_VEC-SQDMLAL#0,SQDMULL_VEC-SQDMLSL#0,SQDMULL_VEC-SQDMULL#0
@@ -2776,7 +2776,7 @@ pub const fn classify_impl_21_2(inst: u32) -> u32 {
     0x6 => return classify_impl_21_2_6(inst), // FP16_2REG_VEC-SCVTF_VEC_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 // HADDSUB_VEC-SHADD#1,HADDSUB_VEC-SRHADD#1,HADDSUB_VEC-SHSUB#1,QADDSUB_VEC-SQADD#1,QADDSUB_VEC-SQSUB#1,CMGT_VEC-CMGTV#1,CMGT_VEC-CMGEV#1,CMEQ_VEC-CMTSTV#1,SHL_REG_VEC-SSHL#1,SHL_REG_VEC-SQSHL#1,SHL_REG_VEC-SRSHL#1,SHL_REG_VEC-SQRSHL#1,MINMAX_VEC-SMAX#1,MINMAX_VEC-SMIN#1,MINMAX_VEC-SMAXP#1,MINMAX_VEC-SMINP#1,ABD_VEC-SABD#1,ABD_VEC-SABA#1,ADDSUB_VEC-ADD_VEC#1,ADDP_VEC-ADDP#1,MUL_VEC-MLA_VEC#1,MUL_VEC-MUL_VEC#1,SQDMULH_VEC-SQDMULH#0,FP16_2REG_VEC-FRINTN_VEC_FP16#0,FP16_2REG_VEC-FRINTM_VEC_FP16#0,FP16_2REG_VEC-FCVTNS_VEC_FP16#0,FP16_2REG_VEC-FCVTMS_VEC_FP16#0,FP16_2REG_VEC-FCVTAS_VEC_FP16#0,FP16_2REG_VEC-SCVTF_VEC_FP16#0,ANDOREOR_VEC-BICV#0,ADDSUBL_VEC-SADDL#1,ADDSUBL_VEC-SSUBL#1,ADDSUBW_VEC-SADDW#1,ADDSUBW_VEC-SSUBW#1,ADDSUBHN_VEC-ADDHN#1,ADDSUBHN_VEC-SUBHN#1,ABDL_VEC-SABAL#1,ABDL_VEC-SABDL#1,MULL_VEC-SMLAL#1,MULL_VEC-SMLSL#1,MULL_VEC-SMULL#1,SQDMULL_VEC-SQDMLAL#0,SQDMULL_VEC-SQDMLSL#0,SQDMULL_VEC-SQDMULL#0,INT_HORZ_VEC-SADDLV#1,INT_HORZ_VEC-SMAXV#1,INT_HORZ_VEC-SMINV#1,INT_HORZ_VEC-ADDV#1
@@ -2791,13 +2791,14 @@ pub const fn classify_impl_21(inst: u32) -> u32 {
     0x2 => return classify_impl_21_2(inst), // HADDSUB_VEC-SHADD#1,HADDSUB_VEC-SRHADD#1,HADDSUB_VEC-SHSUB#1,QADDSUB_VEC-SQADD#1,QADDSUB_VEC-SQSUB#1,CMGT_VEC-CMGTV#1,CMGT_VEC-CMGEV#1,CMEQ_VEC-CMTSTV#1,SHL_REG_VEC-SSHL#1,SHL_REG_VEC-SQSHL#1,SHL_REG_VEC-SRSHL#1,SHL_REG_VEC-SQRSHL#1,MINMAX_VEC-SMAX#1,MINMAX_VEC-SMIN#1,MINMAX_VEC-SMAXP#1,MINMAX_VEC-SMINP#1,ABD_VEC-SABD#1,ABD_VEC-SABA#1,ADDSUB_VEC-ADD_VEC#1,ADDP_VEC-ADDP#1,MUL_VEC-MLA_VEC#1,MUL_VEC-MUL_VEC#1,SQDMULH_VEC-SQDMULH#0,FP16_2REG_VEC-FRINTN_VEC_FP16#0,FP16_2REG_VEC-FRINTM_VEC_FP16#0,FP16_2REG_VEC-FCVTNS_VEC_FP16#0,FP16_2REG_VEC-FCVTMS_VEC_FP16#0,FP16_2REG_VEC-FCVTAS_VEC_FP16#0,FP16_2REG_VEC-SCVTF_VEC_FP16#0,ANDOREOR_VEC-BICV#0,ADDSUBL_VEC-SADDL#1,ADDSUBL_VEC-SSUBL#1,ADDSUBW_VEC-SADDW#1,ADDSUBW_VEC-SSUBW#1,ADDSUBHN_VEC-ADDHN#1,ADDSUBHN_VEC-SUBHN#1,ABDL_VEC-SABAL#1,ABDL_VEC-SABDL#1,MULL_VEC-SMLAL#1,MULL_VEC-SMLSL#1,MULL_VEC-SMULL#1,SQDMULL_VEC-SQDMLAL#0,SQDMULL_VEC-SQDMLSL#0,SQDMULL_VEC-SQDMULL#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // ZIP-UZP1#2,ZIP-TRN1#2,ZIP-ZIP1#2,ZIP-UZP2#2,ZIP-TRN2#2,ZIP-ZIP2#2,DOT_VEC-SDOT_VEC#0,DOT_VEC-USDOT_VEC#0
 pub const fn classify_impl_22(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -2863,169 +2864,168 @@ pub const fn classify_impl_22(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // REV_VEC-REV64_VEC#2
 pub const fn classify_impl_23_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3280;
+  0x3280
 }
 
 
 // ADDLP_VEC-SADDLP#2
 pub const fn classify_impl_23_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3100;
+  0x3100
 }
 
 
 // ARITH1_VEC-SUQADD_VEC#2
 pub const fn classify_impl_23_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3080;
+  0x3080
 }
 
 
 // CLZ_VEC-CLS_VEC#2
 pub const fn classify_impl_23_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3180;
+  0x3180
 }
 
 
 // ADDLP_VEC-SADALP#2
 pub const fn classify_impl_23_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3101;
+  0x3101
 }
 
 
 // ARITH1_VEC-SQABS_VEC#2
 pub const fn classify_impl_23_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3081;
+  0x3081
 }
 
 
 // CMZERO_VEC-CMGT_ZERO_VEC#2
 pub const fn classify_impl_23_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f80;
+  0x2f80
 }
 
 
 // CMZERO_VEC-CMEQ_ZERO_VEC#2
 pub const fn classify_impl_23_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f81;
+  0x2f81
 }
 
 
 // CMZERO_VEC-CMLT_ZERO_VEC#2
 pub const fn classify_impl_23_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f82;
+  0x2f82
 }
 
 
 // ARITH1_VEC-ABS_VEC#2
 pub const fn classify_impl_23_a(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3082;
+  0x3082
 }
 
 
 // FCMP_ZERO_VEC-FCMGT_ZERO_VEC#0
 pub const fn classify_impl_23_b(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b00;
+  0x3b00
 }
 
 
 // FCMP_ZERO_VEC-FCMEQ_ZERO_VEC#0
 pub const fn classify_impl_23_c(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b01;
+  0x3b01
 }
 
 
 // FCMP_ZERO_VEC-FCMLT_ZERO_VEC#0
 pub const fn classify_impl_23_d(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b02;
+  0x3b02
 }
 
 
 // FARITH1_VEC-FABS_VEC#0
 pub const fn classify_impl_23_e(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b80;
+  0x3b80
 }
 
 
 // XTN_VEC-XTN_VEC#2
 pub const fn classify_impl_23_f(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3380;
+  0x3380
 }
 
 
 // XTN_VEC-SQXTN_VEC#2
 pub const fn classify_impl_23_10(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3381;
+  0x3381
 }
 
 
 // FCVTN_VEC-BFCVTN#0
 pub const fn classify_impl_23_11(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5181;
+  0x5181
 }
 
 
 // FRINT_VEC-FRINTP_VEC#0
 pub const fn classify_impl_23_12(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5202;
+  0x5202
 }
 
 
 // FRINT_VEC-FRINTZ_VEC#0
 pub const fn classify_impl_23_13(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5203;
+  0x5203
 }
 
 
 // FCVT_VEC-FCVTPS_VEC#0
 pub const fn classify_impl_23_14(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f03;
+  0x4f03
 }
 
 
 // FCVT_VEC-FCVTZS_VEC#0
 pub const fn classify_impl_23_15(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f04;
+  0x4f04
 }
 
 
 // FRECP_VEC-URECPE_VEC#0
 pub const fn classify_impl_23_16(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3d80;
+  0x3d80
 }
 
 
 // FRECP_VEC-FRECPE_VEC#0
 pub const fn classify_impl_23_17(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3d81;
+  0x3d81
 }
 
 // HADDSUB_VEC-SHADD#2,HADDSUB_VEC-SRHADD#2,HADDSUB_VEC-SHSUB#2,QADDSUB_VEC-SQADD#2,QADDSUB_VEC-SQSUB#2,CMGT_VEC-CMGTV#2,CMGT_VEC-CMGEV#2,CMEQ_VEC-CMTSTV#2,CMZERO_VEC-CMGT_ZERO_VEC#2,CMZERO_VEC-CMEQ_ZERO_VEC#2,CMZERO_VEC-CMLT_ZERO_VEC#2,ARITH1_VEC-SUQADD_VEC#2,ARITH1_VEC-SQABS_VEC#2,ARITH1_VEC-ABS_VEC#2,ADDLP_VEC-SADDLP#2,ADDLP_VEC-SADALP#2,CLZ_VEC-CLS_VEC#2,REV_VEC-REV64_VEC#2,XTN_VEC-XTN_VEC#2,XTN_VEC-SQXTN_VEC#2,SHL_REG_VEC-SSHL#2,SHL_REG_VEC-SQSHL#2,SHL_REG_VEC-SRSHL#2,SHL_REG_VEC-SQRSHL#2,MINMAX_VEC-SMAX#2,MINMAX_VEC-SMIN#2,MINMAX_VEC-SMAXP#2,MINMAX_VEC-SMINP#2,ABD_VEC-SABD#2,ABD_VEC-SABA#2,ADDSUB_VEC-ADD_VEC#2,ADDP_VEC-ADDP#2,MUL_VEC-MLA_VEC#2,MUL_VEC-MUL_VEC#2,SQDMULH_VEC-SQDMULH#1,FMINMAX_VEC-FMINNM_VEC#0,FMINMAX_VEC-FMIN_VEC#0,FCMP_ZERO_VEC-FCMGT_ZERO_VEC#0,FCMP_ZERO_VEC-FCMEQ_ZERO_VEC#0,FCMP_ZERO_VEC-FCMLT_ZERO_VEC#0,FARITH1_VEC-FABS_VEC#0,FADDSUB_VEC-FSUB_VEC#0,FRECP_VEC-URECPE_VEC#0,FRECP_VEC-FRECPE_VEC#0,FRECP_STEP_VEC-FRSQRTSV#0,FMLA_VEC-FMLSV#0,ANDOREOR_VEC-ORRV#0,ADDSUBL_VEC-SADDL#2,ADDSUBL_VEC-SSUBL#2,ADDSUBW_VEC-SADDW#2,ADDSUBW_VEC-SSUBW#2,ADDSUBHN_VEC-ADDHN#2,ADDSUBHN_VEC-SUBHN#2,ABDL_VEC-SABAL#2,ABDL_VEC-SABDL#2,MULL_VEC-SMLAL#2,MULL_VEC-SMLSL#2,MULL_VEC-SMULL#2,SQDMULL_VEC-SQDMLAL#1,SQDMULL_VEC-SQDMLSL#1,SQDMULL_VEC-SQDMULL#1,FCVT_VEC-FCVTPS_VEC#0,FCVT_VEC-FCVTZS_VEC#0,FCVTN_VEC-BFCVTN#0,FRINT_VEC-FRINTP_VEC#0,FRINT_VEC-FRINTZ_VEC#0,FHM_VEC-FMLSL_VEC#0
@@ -3187,21 +3187,21 @@ pub const fn classify_impl_23(inst: u32) -> u32 {
     0x17 => return classify_impl_23_17(inst), // FRECP_VEC-FRECPE_VEC#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP_HORZ_VEC-FMINNMV_FP16#0
 pub const fn classify_impl_24_1(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  return 0x5482;
+  0x5482
 }
 
 
 // FP_HORZ_VEC-FMINV_FP16#0
 pub const fn classify_impl_24_2(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  return 0x5483;
+  0x5483
 }
 
 // HADDSUB_VEC-SHADD#2,HADDSUB_VEC-SRHADD#2,HADDSUB_VEC-SHSUB#2,QADDSUB_VEC-SQADD#2,QADDSUB_VEC-SQSUB#2,CMGT_VEC-CMGTV#2,CMGT_VEC-CMGEV#2,CMEQ_VEC-CMTSTV#2,SHL_REG_VEC-SSHL#2,SHL_REG_VEC-SQSHL#2,SHL_REG_VEC-SRSHL#2,SHL_REG_VEC-SQRSHL#2,MINMAX_VEC-SMAX#2,MINMAX_VEC-SMIN#2,MINMAX_VEC-SMAXP#2,MINMAX_VEC-SMINP#2,ABD_VEC-SABD#2,ABD_VEC-SABA#2,ADDSUB_VEC-ADD_VEC#2,ADDP_VEC-ADDP#2,MUL_VEC-MLA_VEC#2,MUL_VEC-MUL_VEC#2,SQDMULH_VEC-SQDMULH#1,FMINMAX_VEC-FMINNM_VEC#0,FMINMAX_VEC-FMIN_VEC#0,FADDSUB_VEC-FSUB_VEC#0,FRECP_STEP_VEC-FRSQRTSV#0,FMLA_VEC-FMLSV#0,ANDOREOR_VEC-ORRV#0,ADDSUBL_VEC-SADDL#2,ADDSUBL_VEC-SSUBL#2,ADDSUBW_VEC-SADDW#2,ADDSUBW_VEC-SSUBW#2,ADDSUBHN_VEC-ADDHN#2,ADDSUBHN_VEC-SUBHN#2,ABDL_VEC-SABAL#2,ABDL_VEC-SABDL#2,MULL_VEC-SMLAL#2,MULL_VEC-SMLSL#2,MULL_VEC-SMULL#2,SQDMULL_VEC-SQDMLAL#1,SQDMULL_VEC-SQDMLSL#1,SQDMULL_VEC-SQDMULL#1,FP_HORZ_VEC-FMINNMV_FP16#0,FP_HORZ_VEC-FMINV_FP16#0,FHM_VEC-FMLSL_VEC#0
@@ -3278,14 +3278,15 @@ pub const fn classify_impl_24(inst: u32) -> u32 {
     0x2 => return classify_impl_24_2(inst), // FP_HORZ_VEC-FMINV_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_3REG_VEC-FMINNM_VEC_FP16#0,FP16_3REG_VEC-FMLS_VEC_FP16#0,FP16_3REG_VEC-FSUB_VEC_FP16#0,FP16_3REG_VEC-FMIN_VEC_FP16#0,FP16_3REG_VEC-FRSQRTS_VEC_FP16#0
 pub const fn classify_impl_25(inst: u32) -> u32 {
   if (inst&0xc400) != 0x400 { return 0; }
-  let idx = match (inst >> 11) & 0x7 {
+  
+  match (inst >> 11) & 0x7 {
     0x0 => 0x4187,
     0x1 => 0x4188,
     0x2 => 0x4189,
@@ -3295,14 +3296,14 @@ pub const fn classify_impl_25(inst: u32) -> u32 {
     0x6 => 0x418b,
     0x7 => 0x418c,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ANDOREOR_VEC-ORNV#0,PMULL_VEC-PMULL64#0
 pub const fn classify_impl_26(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -3368,71 +3369,70 @@ pub const fn classify_impl_26(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FP16_2REG_VEC-FCMGT_ZERO_VEC_FP16#0
 pub const fn classify_impl_27_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x4286;
+  0x4286
 }
 
 
 // FP16_2REG_VEC-FCMEQ_ZERO_VEC_FP16#0
 pub const fn classify_impl_27_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x4287;
+  0x4287
 }
 
 
 // FP16_2REG_VEC-FCMLT_ZERO_VEC_FP16#0
 pub const fn classify_impl_27_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x4288;
+  0x4288
 }
 
 
 // FP16_2REG_VEC-FABS_VEC_FP16#0
 pub const fn classify_impl_27_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x4289;
+  0x4289
 }
 
 
 // FP16_2REG_VEC-FRINTP_VEC_FP16#0
 pub const fn classify_impl_27_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x428a;
+  0x428a
 }
 
 
 // FP16_2REG_VEC-FRINTZ_VEC_FP16#0
 pub const fn classify_impl_27_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x428b;
+  0x428b
 }
 
 
 // FP16_2REG_VEC-FCVTPS_VEC_FP16#0
 pub const fn classify_impl_27_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x428c;
+  0x428c
 }
 
 
 // FP16_2REG_VEC-FCVTZS_VEC_FP16#0
 pub const fn classify_impl_27_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x428d;
+  0x428d
 }
 
 
 // FP16_2REG_VEC-FRECPE_VEC_FP16#0
 pub const fn classify_impl_27_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x428e;
+  0x428e
 }
 
 // FP16_2REG_VEC-FCMGT_ZERO_VEC_FP16#0,FP16_2REG_VEC-FCMEQ_ZERO_VEC_FP16#0,FP16_2REG_VEC-FCMLT_ZERO_VEC_FP16#0,FP16_2REG_VEC-FABS_VEC_FP16#0,FP16_2REG_VEC-FRINTP_VEC_FP16#0,FP16_2REG_VEC-FRINTZ_VEC_FP16#0,FP16_2REG_VEC-FCVTPS_VEC_FP16#0,FP16_2REG_VEC-FCVTZS_VEC_FP16#0,FP16_2REG_VEC-FRECPE_VEC_FP16#0,ANDOREOR_VEC-ORNV#0,PMULL_VEC-PMULL64#0
@@ -3580,13 +3580,14 @@ pub const fn classify_impl_27(inst: u32) -> u32 {
     0x9 => return classify_impl_27_9(inst), // FP16_2REG_VEC-FRECPE_VEC_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0,SIMD_IMM-MOVI32#0,SIMD_IMM-MOVI32#1,SIMD_IMM-MOVI32#2,SIMD_IMM-MOVI32#3,SIMD_IMM-ORRI32#0,SIMD_IMM-ORRI32#1,SIMD_IMM-ORRI32#2,SIMD_IMM-ORRI32#3,SIMD_IMM-MOVI16#0,SIMD_IMM-MOVI16#1,SIMD_IMM-ORRI16#0,SIMD_IMM-ORRI16#1,SIMD_IMM-MOVI32_MSL#0,SIMD_IMM-MOVI32_MSL#1,SIMD_IMM-MOVI8#0,SIMD_IMM-FMOV32#0,SIMD_IMM-FMOV16#0
 pub const fn classify_impl_28_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x5d00,
     0x2 => 0x0,
@@ -3652,14 +3653,14 @@ pub const fn classify_impl_28_1(inst: u32) -> u32 {
     0x3e => 0x5980,
     0x3f => 0x5d07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-SSHR#0,SHR_VEC_IMM-SSRA#0,SHR_VEC_IMM-SRSHR#0,SHR_VEC_IMM-SRSRA#0,QSHL_VEC_IMM-SQSHL_IMM#0,SHRN_VEC_IMM-SHRN#0,SHRN_VEC_IMM-RSHRN#0,SHRN_VEC_IMM-SQSHRN#0,SHRN_VEC_IMM-SQRSHRN#0,SHLL_VEC_IMM-SSHLL#0,SHIFT_VEC_IMM-SHL#0,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
 pub const fn classify_impl_28_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -3725,8 +3726,7 @@ pub const fn classify_impl_28_2(inst: u32) -> u32 {
     0x3e => 0x5980,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-SSHR#0,SHR_VEC_IMM-SSRA#0,SHR_VEC_IMM-SRSHR#0,SHR_VEC_IMM-SRSRA#0,QSHL_VEC_IMM-SQSHL_IMM#0,SHRN_VEC_IMM-SHRN#0,SHRN_VEC_IMM-RSHRN#0,SHRN_VEC_IMM-SQSHRN#0,SHRN_VEC_IMM-SQRSHRN#0,SHLL_VEC_IMM-SSHLL#0,SHIFT_VEC_IMM-SHL#0,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0,SIMD_IMM-MOVI32#0,SIMD_IMM-MOVI32#1,SIMD_IMM-MOVI32#2,SIMD_IMM-MOVI32#3,SIMD_IMM-ORRI32#0,SIMD_IMM-ORRI32#1,SIMD_IMM-ORRI32#2,SIMD_IMM-ORRI32#3,SIMD_IMM-MOVI16#0,SIMD_IMM-MOVI16#1,SIMD_IMM-ORRI16#0,SIMD_IMM-ORRI16#1,SIMD_IMM-MOVI32_MSL#0,SIMD_IMM-MOVI32_MSL#1,SIMD_IMM-MOVI8#0,SIMD_IMM-FMOV32#0,SIMD_IMM-FMOV16#0
@@ -3741,13 +3741,14 @@ pub const fn classify_impl_28(inst: u32) -> u32 {
     0x2 => return classify_impl_28_2(inst), // SHR_VEC_IMM-SSHR#0,SHR_VEC_IMM-SSRA#0,SHR_VEC_IMM-SRSHR#0,SHR_VEC_IMM-SRSRA#0,QSHL_VEC_IMM-SQSHL_IMM#0,SHRN_VEC_IMM-SHRN#0,SHRN_VEC_IMM-RSHRN#0,SHRN_VEC_IMM-SQSHRN#0,SHRN_VEC_IMM-SQRSHRN#0,SHLL_VEC_IMM-SSHLL#0,SHIFT_VEC_IMM-SHL#0,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-SSHR#1,SHR_VEC_IMM-SSRA#1,SHR_VEC_IMM-SRSHR#1,SHR_VEC_IMM-SRSRA#1,QSHL_VEC_IMM-SQSHL_IMM#1,SHRN_VEC_IMM-SHRN#1,SHRN_VEC_IMM-RSHRN#1,SHRN_VEC_IMM-SQSHRN#1,SHRN_VEC_IMM-SQRSHRN#1,SHLL_VEC_IMM-SSHLL#1,SHIFT_VEC_IMM-SHL#1,FCVT_VEC_FIXED-SCVTF_VEC_FIX_FP16#0,FCVT_VEC_FIXED-FCVTZS_VEC_FIX_FP16#0,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
 pub const fn classify_impl_29_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -3813,14 +3814,14 @@ pub const fn classify_impl_29_1(inst: u32) -> u32 {
     0x3e => 0x5980,
     0x3f => 0x4e01,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-SSHR#2,SHR_VEC_IMM-SSRA#2,SHR_VEC_IMM-SRSHR#2,SHR_VEC_IMM-SRSRA#2,QSHL_VEC_IMM-SQSHL_IMM#2,SHRN_VEC_IMM-SHRN#2,SHRN_VEC_IMM-RSHRN#2,SHRN_VEC_IMM-SQSHRN#2,SHRN_VEC_IMM-SQRSHRN#2,SHLL_VEC_IMM-SSHLL#2,SHIFT_VEC_IMM-SHL#2,FCVT_VEC_FIXED-SCVTF_VEC_FIX_FP16#1,FCVT_VEC_FIXED-FCVTZS_VEC_FIX_FP16#1,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
 pub const fn classify_impl_29_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -3886,8 +3887,7 @@ pub const fn classify_impl_29_2(inst: u32) -> u32 {
     0x3e => 0x5980,
     0x3f => 0x4e01,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-SSHR#1,SHR_VEC_IMM-SSHR#2,SHR_VEC_IMM-SSRA#1,SHR_VEC_IMM-SSRA#2,SHR_VEC_IMM-SRSHR#1,SHR_VEC_IMM-SRSHR#2,SHR_VEC_IMM-SRSRA#1,SHR_VEC_IMM-SRSRA#2,QSHL_VEC_IMM-SQSHL_IMM#1,QSHL_VEC_IMM-SQSHL_IMM#2,SHRN_VEC_IMM-SHRN#1,SHRN_VEC_IMM-SHRN#2,SHRN_VEC_IMM-RSHRN#1,SHRN_VEC_IMM-RSHRN#2,SHRN_VEC_IMM-SQSHRN#1,SHRN_VEC_IMM-SQSHRN#2,SHRN_VEC_IMM-SQRSHRN#1,SHRN_VEC_IMM-SQRSHRN#2,SHLL_VEC_IMM-SSHLL#1,SHLL_VEC_IMM-SSHLL#2,SHIFT_VEC_IMM-SHL#1,SHIFT_VEC_IMM-SHL#2,FCVT_VEC_FIXED-SCVTF_VEC_FIX_FP16#0,FCVT_VEC_FIXED-SCVTF_VEC_FIX_FP16#1,FCVT_VEC_FIXED-FCVTZS_VEC_FIX_FP16#0,FCVT_VEC_FIXED-FCVTZS_VEC_FIX_FP16#1,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
@@ -3902,13 +3902,14 @@ pub const fn classify_impl_29(inst: u32) -> u32 {
     0x2 => return classify_impl_29_2(inst), // SHR_VEC_IMM-SSHR#2,SHR_VEC_IMM-SSRA#2,SHR_VEC_IMM-SRSHR#2,SHR_VEC_IMM-SRSRA#2,QSHL_VEC_IMM-SQSHL_IMM#2,SHRN_VEC_IMM-SHRN#2,SHRN_VEC_IMM-RSHRN#2,SHRN_VEC_IMM-SQSHRN#2,SHRN_VEC_IMM-SQRSHRN#2,SHLL_VEC_IMM-SSHLL#2,SHIFT_VEC_IMM-SHL#2,FCVT_VEC_FIXED-SCVTF_VEC_FIX_FP16#1,FCVT_VEC_FIXED-FCVTZS_VEC_FIX_FP16#1,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-SSHR#3,SHR_VEC_IMM-SSRA#3,SHR_VEC_IMM-SRSHR#3,SHR_VEC_IMM-SRSRA#3,QSHL_VEC_IMM-SQSHL_IMM#3,SHRN_VEC_IMM-SHRN#3,SHRN_VEC_IMM-RSHRN#3,SHRN_VEC_IMM-SQSHRN#3,SHRN_VEC_IMM-SQRSHRN#3,SHLL_VEC_IMM-SSHLL#3,SHIFT_VEC_IMM-SHL#3,FCVT_VEC_FIXED-SCVTF_VEC_FIX#0,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#0,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
 pub const fn classify_impl_2a_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -3974,14 +3975,14 @@ pub const fn classify_impl_2a_1(inst: u32) -> u32 {
     0x3e => 0x5980,
     0x3f => 0x4e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-SSHR#4,SHR_VEC_IMM-SSRA#4,SHR_VEC_IMM-SRSHR#4,SHR_VEC_IMM-SRSRA#4,QSHL_VEC_IMM-SQSHL_IMM#4,SHRN_VEC_IMM-SHRN#4,SHRN_VEC_IMM-RSHRN#4,SHRN_VEC_IMM-SQSHRN#4,SHRN_VEC_IMM-SQRSHRN#4,SHLL_VEC_IMM-SSHLL#4,SHIFT_VEC_IMM-SHL#4,FCVT_VEC_FIXED-SCVTF_VEC_FIX#1,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#1,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
 pub const fn classify_impl_2a_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -4047,8 +4048,7 @@ pub const fn classify_impl_2a_2(inst: u32) -> u32 {
     0x3e => 0x5980,
     0x3f => 0x4e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-SSHR#3,SHR_VEC_IMM-SSHR#4,SHR_VEC_IMM-SSRA#3,SHR_VEC_IMM-SSRA#4,SHR_VEC_IMM-SRSHR#3,SHR_VEC_IMM-SRSHR#4,SHR_VEC_IMM-SRSRA#3,SHR_VEC_IMM-SRSRA#4,QSHL_VEC_IMM-SQSHL_IMM#3,QSHL_VEC_IMM-SQSHL_IMM#4,SHRN_VEC_IMM-SHRN#3,SHRN_VEC_IMM-SHRN#4,SHRN_VEC_IMM-RSHRN#3,SHRN_VEC_IMM-RSHRN#4,SHRN_VEC_IMM-SQSHRN#3,SHRN_VEC_IMM-SQSHRN#4,SHRN_VEC_IMM-SQRSHRN#3,SHRN_VEC_IMM-SQRSHRN#4,SHLL_VEC_IMM-SSHLL#3,SHLL_VEC_IMM-SSHLL#4,SHIFT_VEC_IMM-SHL#3,SHIFT_VEC_IMM-SHL#4,FCVT_VEC_FIXED-SCVTF_VEC_FIX#0,FCVT_VEC_FIXED-SCVTF_VEC_FIX#1,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#0,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#1,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
@@ -4063,13 +4063,14 @@ pub const fn classify_impl_2a(inst: u32) -> u32 {
     0x2 => return classify_impl_2a_2(inst), // SHR_VEC_IMM-SSHR#4,SHR_VEC_IMM-SSRA#4,SHR_VEC_IMM-SRSHR#4,SHR_VEC_IMM-SRSRA#4,QSHL_VEC_IMM-SQSHL_IMM#4,SHRN_VEC_IMM-SHRN#4,SHRN_VEC_IMM-RSHRN#4,SHRN_VEC_IMM-SQSHRN#4,SHRN_VEC_IMM-SQRSHRN#4,SHLL_VEC_IMM-SSHLL#4,SHIFT_VEC_IMM-SHL#4,FCVT_VEC_FIXED-SCVTF_VEC_FIX#1,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#1,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-SSHR#5,SHR_VEC_IMM-SSRA#5,SHR_VEC_IMM-SRSHR#5,SHR_VEC_IMM-SRSRA#5,QSHL_VEC_IMM-SQSHL_IMM#5,SHRN_VEC_IMM-SHRN#5,SHRN_VEC_IMM-RSHRN#5,SHRN_VEC_IMM-SQSHRN#5,SHRN_VEC_IMM-SQRSHRN#5,SHLL_VEC_IMM-SSHLL#5,SHIFT_VEC_IMM-SHL#5,FCVT_VEC_FIXED-SCVTF_VEC_FIX#2,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#2,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
 pub const fn classify_impl_2b_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -4135,14 +4136,14 @@ pub const fn classify_impl_2b_1(inst: u32) -> u32 {
     0x3e => 0x5980,
     0x3f => 0x4e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-SSHR#6,SHR_VEC_IMM-SSRA#6,SHR_VEC_IMM-SRSHR#6,SHR_VEC_IMM-SRSRA#6,QSHL_VEC_IMM-SQSHL_IMM#6,SHRN_VEC_IMM-SHRN#6,SHRN_VEC_IMM-RSHRN#6,SHRN_VEC_IMM-SQSHRN#6,SHRN_VEC_IMM-SQRSHRN#6,SHLL_VEC_IMM-SSHLL#6,SHIFT_VEC_IMM-SHL#6,FCVT_VEC_FIXED-SCVTF_VEC_FIX#3,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#3,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
 pub const fn classify_impl_2b_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -4208,8 +4209,7 @@ pub const fn classify_impl_2b_2(inst: u32) -> u32 {
     0x3e => 0x5980,
     0x3f => 0x4e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-SSHR#5,SHR_VEC_IMM-SSHR#6,SHR_VEC_IMM-SSRA#5,SHR_VEC_IMM-SSRA#6,SHR_VEC_IMM-SRSHR#5,SHR_VEC_IMM-SRSHR#6,SHR_VEC_IMM-SRSRA#5,SHR_VEC_IMM-SRSRA#6,QSHL_VEC_IMM-SQSHL_IMM#5,QSHL_VEC_IMM-SQSHL_IMM#6,SHRN_VEC_IMM-SHRN#5,SHRN_VEC_IMM-SHRN#6,SHRN_VEC_IMM-RSHRN#5,SHRN_VEC_IMM-RSHRN#6,SHRN_VEC_IMM-SQSHRN#5,SHRN_VEC_IMM-SQSHRN#6,SHRN_VEC_IMM-SQRSHRN#5,SHRN_VEC_IMM-SQRSHRN#6,SHLL_VEC_IMM-SSHLL#5,SHLL_VEC_IMM-SSHLL#6,SHIFT_VEC_IMM-SHL#5,SHIFT_VEC_IMM-SHL#6,FCVT_VEC_FIXED-SCVTF_VEC_FIX#2,FCVT_VEC_FIXED-SCVTF_VEC_FIX#3,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#2,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#3,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
@@ -4224,14 +4224,15 @@ pub const fn classify_impl_2b(inst: u32) -> u32 {
     0x2 => return classify_impl_2b_2(inst), // SHR_VEC_IMM-SSHR#6,SHR_VEC_IMM-SSRA#6,SHR_VEC_IMM-SRSHR#6,SHR_VEC_IMM-SRSRA#6,QSHL_VEC_IMM-SQSHL_IMM#6,SHRN_VEC_IMM-SHRN#6,SHRN_VEC_IMM-RSHRN#6,SHRN_VEC_IMM-SQSHRN#6,SHRN_VEC_IMM-SQRSHRN#6,SHLL_VEC_IMM-SSHLL#6,SHIFT_VEC_IMM-SHL#6,FCVT_VEC_FIXED-SCVTF_VEC_FIX#3,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#3,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // MUL_ELEM-MUL_ELEM#0,MUL_ELEM-SQDMULH_ELEM#0,MUL_ELEM-SQRDMULH_ELEM#0,MULL_ELEM-SMLAL_ELEM#0,MULL_ELEM-SQDMLAL_ELEM#0,MULL_ELEM-SMLSL_ELEM#0,MULL_ELEM-SQDMLSL_ELEM#0,MULL_ELEM-SMULL_ELEM#0,MULL_ELEM-SQDMULL_ELEM#0,DOT_ELEM-BFDOT_ELEM#0
 pub const fn classify_impl_2c(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 12) & 0xf {
+  
+  match (inst >> 12) & 0xf {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x5680,
@@ -4249,15 +4250,15 @@ pub const fn classify_impl_2c(inst: u32) -> u32 {
     0xe => 0x0,
     0xf => 0x5981,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MUL_ELEM-MUL_ELEM#1,MUL_ELEM-SQDMULH_ELEM#1,MUL_ELEM-SQRDMULH_ELEM#1,MULL_ELEM-SMLAL_ELEM#1,MULL_ELEM-SQDMLAL_ELEM#1,MULL_ELEM-SMLSL_ELEM#1,MULL_ELEM-SQDMLSL_ELEM#1,MULL_ELEM-SMULL_ELEM#1,MULL_ELEM-SQDMULL_ELEM#1,FMUL_ELEM-FMLA_ELEM#0,FMUL_ELEM-FMLS_ELEM#0,FMUL_ELEM-FMUL_ELEM#0,DOT_ELEM-SDOT_ELEM#0,DOT_ELEM-USDOT_ELEM#0,FHM_ELEM-FMLAL_ELEM#0,FHM_ELEM-FMLSL_ELEM#0
 pub const fn classify_impl_2d(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 12) & 0xf {
+  
+  match (inst >> 12) & 0xf {
     0x0 => 0x5b80,
     0x1 => 0x5800,
     0x2 => 0x5680,
@@ -4275,15 +4276,15 @@ pub const fn classify_impl_2d(inst: u32) -> u32 {
     0xe => 0x5982,
     0xf => 0x5983,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MUL_ELEM-MUL_ELEM#1,MUL_ELEM-SQDMULH_ELEM#1,MUL_ELEM-SQRDMULH_ELEM#1,MULL_ELEM-SMLAL_ELEM#1,MULL_ELEM-SQDMLAL_ELEM#1,MULL_ELEM-SMLSL_ELEM#1,MULL_ELEM-SQDMLSL_ELEM#1,MULL_ELEM-SMULL_ELEM#1,MULL_ELEM-SQDMULL_ELEM#1,FMUL_ELEM-FMLA_ELEM#1,FMUL_ELEM-FMLS_ELEM#1,FMUL_ELEM-FMUL_ELEM#1,DOT_ELEM-SDOT_ELEM#0,DOT_ELEM-USDOT_ELEM#0,FHM_ELEM-FMLAL_ELEM#0,FHM_ELEM-FMLSL_ELEM#0
 pub const fn classify_impl_2e(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 12) & 0xf {
+  
+  match (inst >> 12) & 0xf {
     0x0 => 0x5b80,
     0x1 => 0x5800,
     0x2 => 0x5680,
@@ -4301,34 +4302,34 @@ pub const fn classify_impl_2e(inst: u32) -> u32 {
     0xe => 0x5982,
     0xf => 0x5983,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMLAL_ELEM-BFMLALB_ELEM#0
 pub const fn classify_impl_2f(inst: u32) -> u32 {
   if (inst&0xf400) != 0xf000 { return 0; }
-  return 0x5a81;
+  0x5a81
 }
 
 
 // MINMAX_IMM-SMAX_GP_IMM#0,MINMAX_IMM-UMAX_GP_IMM#0,MINMAX_IMM-SMIN_GP_IMM#0,MINMAX_IMM-UMIN_GP_IMM#0
 pub const fn classify_impl_30(inst: u32) -> u32 {
-  let idx = match (inst >> 18) & 0x3 {
+  
+  match (inst >> 18) & 0x3 {
     0x0 => 0x1100,
     0x1 => 0x1101,
     0x2 => 0x1102,
     0x3 => 0x1103,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ANDOREOR_IMM-AND_IMM#0,ANDOREOR_IMM-AND_IMM#1,ANDOREOR_IMM-AND_IMM#2,ANDOREOR_IMM-AND_IMM#3,ANDOREOR_IMM-AND_IMM#4,ANDOREOR_IMM-AND_IMM#5,ANDOREOR_IMM-AND_IMM#6,ANDOREOR_IMM-AND_IMM#7,ANDOREOR_IMM-AND_IMM#8,ANDOREOR_IMM-AND_IMM#9,ANDOREOR_IMM-AND_IMM#10,ANDOREOR_IMM-AND_IMM#11,ANDOREOR_IMM-AND_IMM#12,ANDOREOR_IMM-AND_IMM#13,ANDOREOR_IMM-AND_IMM#14,ANDOREOR_IMM-AND_IMM#15,ANDOREOR_IMM-AND_IMM#16,ANDOREOR_IMM-AND_IMM#17,ANDOREOR_IMM-AND_IMM#18,ANDOREOR_IMM-AND_IMM#19,ANDOREOR_IMM-AND_IMM#20,ANDOREOR_IMM-AND_IMM#21,ANDOREOR_IMM-AND_IMM#22,ANDOREOR_IMM-AND_IMM#23,ANDOREOR_IMM-AND_IMM#24,ANDOREOR_IMM-AND_IMM#25,ANDOREOR_IMM-AND_IMM#26,ANDOREOR_IMM-AND_IMM#27,ANDOREOR_IMM-AND_IMM#28,ANDOREOR_IMM-AND_IMM#29,ANDOREOR_IMM-AND_IMM#30,ANDOREOR_IMM-AND_IMM#31,ANDOREOR_IMM-AND_IMM#32,ANDOREOR_IMM-AND_IMM#33,ANDOREOR_IMM-AND_IMM#34,ANDOREOR_IMM-AND_IMM#35,ANDOREOR_IMM-AND_IMM#36,ANDOREOR_IMM-AND_IMM#37,ANDOREOR_IMM-AND_IMM#38,ANDOREOR_IMM-AND_IMM#39,ANDOREOR_IMM-AND_IMM#40,ANDOREOR_IMM-AND_IMM#41,ANDOREOR_IMM-AND_IMM#42,ANDOREOR_IMM-AND_IMM#43,ANDOREOR_IMM-AND_IMM#44,ANDOREOR_IMM-AND_IMM#45,ANDOREOR_IMM-AND_IMM#46,ANDOREOR_IMM-AND_IMM#47,ANDOREOR_IMM-AND_IMM#48,ANDOREOR_IMM-AND_IMM#49,ANDOREOR_IMM-AND_IMM#50,ANDOREOR_IMM-AND_IMM#51,ANDOREOR_IMM-AND_IMM#52,ANDOREOR_IMM-AND_IMM#53,ANDOREOR_IMM-AND_IMM#54,ANDOREOR_IMM-AND_IMM#55,ANDOREOR_IMM-AND_IMM#56
 pub const fn classify_impl_31(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x500,
     0x1 => 0x500,
     0x2 => 0x500,
@@ -4394,198 +4395,197 @@ pub const fn classify_impl_31(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // BFM-SBFM#0
 pub const fn classify_impl_32(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x900;
+  0x900
 }
 
 
 // EXTR-EXTR#0
 pub const fn classify_impl_33(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x1280;
+  0x1280
 }
 
 
 // RCPCU-STLURB#0,CPY-CPYFP#0
 pub const fn classify_impl_34_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6180,
     0x1 => 0x6b80,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLURB#0,CPY-CPYFPWT#0
 pub const fn classify_impl_34_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6180,
     0x1 => 0x6b81,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLURB#0,CPY-CPYFPRT#0
 pub const fn classify_impl_34_3(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6180,
     0x1 => 0x6b82,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLURB#0,CPY-CPYFPT#0
 pub const fn classify_impl_34_4(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6180,
     0x1 => 0x6b83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLURB#0,CPY-CPYFPWN#0
 pub const fn classify_impl_34_5(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6180,
     0x1 => 0x6b84,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLURB#0,CPY-CPYFPWTWN#0
 pub const fn classify_impl_34_6(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6180,
     0x1 => 0x6b85,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLURB#0,CPY-CPYFPRTWN#0
 pub const fn classify_impl_34_7(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6180,
     0x1 => 0x6b86,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLURB#0,CPY-CPYFPTWN#0
 pub const fn classify_impl_34_8(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6180,
     0x1 => 0x6b87,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLURB#0,CPY-CPYFPRN#0
 pub const fn classify_impl_34_9(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6180,
     0x1 => 0x6b88,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLURB#0,CPY-CPYFPWTRN#0
 pub const fn classify_impl_34_a(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6180,
     0x1 => 0x6b89,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLURB#0,CPY-CPYFPRTRN#0
 pub const fn classify_impl_34_b(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6180,
     0x1 => 0x6b8a,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLURB#0,CPY-CPYFPTRN#0
 pub const fn classify_impl_34_c(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6180,
     0x1 => 0x6b8b,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLURB#0,CPY-CPYFPN#0
 pub const fn classify_impl_34_d(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6180,
     0x1 => 0x6b8c,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLURB#0,CPY-CPYFPWTN#0
 pub const fn classify_impl_34_e(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6180,
     0x1 => 0x6b8d,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLURB#0,CPY-CPYFPRTN#0
 pub const fn classify_impl_34_f(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6180,
     0x1 => 0x6b8e,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLURB#0,CPY-CPYFPTN#0
 pub const fn classify_impl_34_10(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6180,
     0x1 => 0x6b8f,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // RCPCU-STLURB#0,CPY-CPYFP#0,CPY-CPYFPWT#0,CPY-CPYFPRT#0,CPY-CPYFPT#0,CPY-CPYFPWN#0,CPY-CPYFPWTWN#0,CPY-CPYFPRTWN#0,CPY-CPYFPTWN#0,CPY-CPYFPRN#0,CPY-CPYFPWTRN#0,CPY-CPYFPRTRN#0,CPY-CPYFPTRN#0,CPY-CPYFPN#0,CPY-CPYFPWTN#0,CPY-CPYFPRTN#0,CPY-CPYFPTN#0
@@ -4629,183 +4629,183 @@ pub const fn classify_impl_34(inst: u32) -> u32 {
     0x10 => return classify_impl_34_10(inst), // RCPCU-STLURB#0,CPY-CPYFPTN#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // RCPCU-LDAPURB#0,CPY-CPYFM#0
 pub const fn classify_impl_35_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6181,
     0x1 => 0x6b90,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURB#0,CPY-CPYFMWT#0
 pub const fn classify_impl_35_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6181,
     0x1 => 0x6b91,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURB#0,CPY-CPYFMRT#0
 pub const fn classify_impl_35_3(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6181,
     0x1 => 0x6b92,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURB#0,CPY-CPYFMT#0
 pub const fn classify_impl_35_4(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6181,
     0x1 => 0x6b93,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURB#0,CPY-CPYFMWN#0
 pub const fn classify_impl_35_5(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6181,
     0x1 => 0x6b94,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURB#0,CPY-CPYFMWTWN#0
 pub const fn classify_impl_35_6(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6181,
     0x1 => 0x6b95,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURB#0,CPY-CPYFMRTWN#0
 pub const fn classify_impl_35_7(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6181,
     0x1 => 0x6b96,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURB#0,CPY-CPYFMTWN#0
 pub const fn classify_impl_35_8(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6181,
     0x1 => 0x6b97,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURB#0,CPY-CPYFMRN#0
 pub const fn classify_impl_35_9(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6181,
     0x1 => 0x6b98,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURB#0,CPY-CPYFMWTRN#0
 pub const fn classify_impl_35_a(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6181,
     0x1 => 0x6b99,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURB#0,CPY-CPYFMRTRN#0
 pub const fn classify_impl_35_b(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6181,
     0x1 => 0x6b9a,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURB#0,CPY-CPYFMTRN#0
 pub const fn classify_impl_35_c(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6181,
     0x1 => 0x6b9b,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURB#0,CPY-CPYFMN#0
 pub const fn classify_impl_35_d(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6181,
     0x1 => 0x6b9c,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURB#0,CPY-CPYFMWTN#0
 pub const fn classify_impl_35_e(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6181,
     0x1 => 0x6b9d,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURB#0,CPY-CPYFMRTN#0
 pub const fn classify_impl_35_f(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6181,
     0x1 => 0x6b9e,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURB#0,CPY-CPYFMTN#0
 pub const fn classify_impl_35_10(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6181,
     0x1 => 0x6b9f,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // RCPCU-LDAPURB#0,CPY-CPYFM#0,CPY-CPYFMWT#0,CPY-CPYFMRT#0,CPY-CPYFMT#0,CPY-CPYFMWN#0,CPY-CPYFMWTWN#0,CPY-CPYFMRTWN#0,CPY-CPYFMTWN#0,CPY-CPYFMRN#0,CPY-CPYFMWTRN#0,CPY-CPYFMRTRN#0,CPY-CPYFMTRN#0,CPY-CPYFMN#0,CPY-CPYFMWTN#0,CPY-CPYFMRTN#0,CPY-CPYFMTN#0
@@ -4849,183 +4849,183 @@ pub const fn classify_impl_35(inst: u32) -> u32 {
     0x10 => return classify_impl_35_10(inst), // RCPCU-LDAPURB#0,CPY-CPYFMTN#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // RCPCU-LDAPURSB#0,CPY-CPYFE#0
 pub const fn classify_impl_36_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6182,
     0x1 => 0x6ba0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSB#0,CPY-CPYFEWT#0
 pub const fn classify_impl_36_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6182,
     0x1 => 0x6ba1,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSB#0,CPY-CPYFERT#0
 pub const fn classify_impl_36_3(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6182,
     0x1 => 0x6ba2,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSB#0,CPY-CPYFET#0
 pub const fn classify_impl_36_4(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6182,
     0x1 => 0x6ba3,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSB#0,CPY-CPYFEWN#0
 pub const fn classify_impl_36_5(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6182,
     0x1 => 0x6ba4,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSB#0,CPY-CPYFEWTWN#0
 pub const fn classify_impl_36_6(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6182,
     0x1 => 0x6ba5,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSB#0,CPY-CPYFERTWN#0
 pub const fn classify_impl_36_7(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6182,
     0x1 => 0x6ba6,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSB#0,CPY-CPYFETWN#0
 pub const fn classify_impl_36_8(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6182,
     0x1 => 0x6ba7,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSB#0,CPY-CPYFERN#0
 pub const fn classify_impl_36_9(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6182,
     0x1 => 0x6ba8,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSB#0,CPY-CPYFEWTRN#0
 pub const fn classify_impl_36_a(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6182,
     0x1 => 0x6ba9,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSB#0,CPY-CPYFERTRN#0
 pub const fn classify_impl_36_b(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6182,
     0x1 => 0x6baa,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSB#0,CPY-CPYFETRN#0
 pub const fn classify_impl_36_c(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6182,
     0x1 => 0x6bab,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSB#0,CPY-CPYFEN#0
 pub const fn classify_impl_36_d(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6182,
     0x1 => 0x6bac,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSB#0,CPY-CPYFEWTN#0
 pub const fn classify_impl_36_e(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6182,
     0x1 => 0x6bad,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSB#0,CPY-CPYFERTN#0
 pub const fn classify_impl_36_f(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6182,
     0x1 => 0x6bae,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSB#0,CPY-CPYFETN#0
 pub const fn classify_impl_36_10(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6182,
     0x1 => 0x6baf,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // RCPCU-LDAPURSB#0,CPY-CPYFE#0,CPY-CPYFEWT#0,CPY-CPYFERT#0,CPY-CPYFET#0,CPY-CPYFEWN#0,CPY-CPYFEWTWN#0,CPY-CPYFERTWN#0,CPY-CPYFETWN#0,CPY-CPYFERN#0,CPY-CPYFEWTRN#0,CPY-CPYFERTRN#0,CPY-CPYFETRN#0,CPY-CPYFEN#0,CPY-CPYFEWTN#0,CPY-CPYFERTN#0,CPY-CPYFETN#0
@@ -5069,146 +5069,146 @@ pub const fn classify_impl_36(inst: u32) -> u32 {
     0x10 => return classify_impl_36_10(inst), // RCPCU-LDAPURSB#0,CPY-CPYFETN#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // RCPCU-LDAPURSBW#0,SET-SETP#0
 pub const fn classify_impl_37_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6183,
     0x1 => 0x6c00,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSBW#0,SET-SETPT#0
 pub const fn classify_impl_37_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6183,
     0x1 => 0x6c01,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSBW#0,SET-SETPN#0
 pub const fn classify_impl_37_3(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6183,
     0x1 => 0x6c02,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSBW#0,SET-SETPTN#0
 pub const fn classify_impl_37_4(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6183,
     0x1 => 0x6c03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSBW#0,SET-SETM#0
 pub const fn classify_impl_37_5(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6183,
     0x1 => 0x6c04,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSBW#0,SET-SETMT#0
 pub const fn classify_impl_37_6(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6183,
     0x1 => 0x6c05,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSBW#0,SET-SETMN#0
 pub const fn classify_impl_37_7(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6183,
     0x1 => 0x6c06,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSBW#0,SET-SETMTN#0
 pub const fn classify_impl_37_8(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6183,
     0x1 => 0x6c07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSBW#0,SET-SETE#0
 pub const fn classify_impl_37_9(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6183,
     0x1 => 0x6c08,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSBW#0,SET-SETET#0
 pub const fn classify_impl_37_a(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6183,
     0x1 => 0x6c09,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSBW#0,SET-SETEN#0
 pub const fn classify_impl_37_b(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6183,
     0x1 => 0x6c0a,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSBW#0,SET-SETETN#0
 pub const fn classify_impl_37_c(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6183,
     0x1 => 0x6c0b,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPURSBW#0
 pub const fn classify_impl_37_d(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6183;
+  0x6183
 }
 
 // RCPCU-LDAPURSBW#0,SET-SETP#0,SET-SETPT#0,SET-SETPN#0,SET-SETPTN#0,SET-SETM#0,SET-SETMT#0,SET-SETMN#0,SET-SETMTN#0,SET-SETE#0,SET-SETET#0,SET-SETEN#0,SET-SETETN#0
@@ -5249,33 +5249,34 @@ pub const fn classify_impl_37(inst: u32) -> u32 {
     0xd => return classify_impl_37_d(inst), // RCPCU-LDAPURSBW#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // ADCSBC-ADC#0
 pub const fn classify_impl_38(inst: u32) -> u32 {
   if (inst&0xfc00) != 0x0 { return 0; }
-  return 0x280;
+  0x280
 }
 
 
 // CSEL-CSEL#0,CSEL-CSINC#0
 pub const fn classify_impl_39(inst: u32) -> u32 {
   if (inst&0x800) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x1200,
     0x1 => 0x1201,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHIFTV-LSLV#0,SHIFTV-LSRV#0,SHIFTV-ASRV#0,SHIFTV-RORV#0,MINMAX_REG-SMAX_GP#0,MINMAX_REG-UMAX_GP#0,MINMAX_REG-SMIN_GP#0,MINMAX_REG-UMIN_GP#0,DIV-UDIV#0,DIV-SDIV#0,CRC32-CRC32B#0,CRC32-CRC32H#0,CRC32-CRC32W#0,CRC32-CRC32CB#0,CRC32-CRC32CH#0,CRC32-CRC32CW#0
 pub const fn classify_impl_3a(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x1580,
@@ -5309,26 +5310,26 @@ pub const fn classify_impl_3a(inst: u32) -> u32 {
     0x1e => 0x0,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MUL-MADD#0,MUL-MSUB#0
 pub const fn classify_impl_3b(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x680,
     0x1 => 0x681,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // CPY-CPYP#0,CPY-CPYPWT#0,CPY-CPYPRT#0,CPY-CPYPT#0,CPY-CPYPWN#0,CPY-CPYPWTWN#0,CPY-CPYPRTWN#0,CPY-CPYPTWN#0,CPY-CPYPRN#0,CPY-CPYPWTRN#0,CPY-CPYPRTRN#0,CPY-CPYPTRN#0,CPY-CPYPN#0,CPY-CPYPWTN#0,CPY-CPYPRTN#0,CPY-CPYPTN#0
 pub const fn classify_impl_3c(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  let idx = match (inst >> 12) & 0xf {
+  
+  match (inst >> 12) & 0xf {
     0x0 => 0x6bb0,
     0x1 => 0x6bb1,
     0x2 => 0x6bb2,
@@ -5346,15 +5347,15 @@ pub const fn classify_impl_3c(inst: u32) -> u32 {
     0xe => 0x6bbe,
     0xf => 0x6bbf,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // CPY-CPYM#0,CPY-CPYMWT#0,CPY-CPYMRT#0,CPY-CPYMT#0,CPY-CPYMWN#0,CPY-CPYMWTWN#0,CPY-CPYMRTWN#0,CPY-CPYMTWN#0,CPY-CPYMRN#0,CPY-CPYMWTRN#0,CPY-CPYMRTRN#0,CPY-CPYMTRN#0,CPY-CPYMN#0,CPY-CPYMWTN#0,CPY-CPYMRTN#0,CPY-CPYMTN#0
 pub const fn classify_impl_3d(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  let idx = match (inst >> 12) & 0xf {
+  
+  match (inst >> 12) & 0xf {
     0x0 => 0x6bc0,
     0x1 => 0x6bc1,
     0x2 => 0x6bc2,
@@ -5372,15 +5373,15 @@ pub const fn classify_impl_3d(inst: u32) -> u32 {
     0xe => 0x6bce,
     0xf => 0x6bcf,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // CPY-CPYE#0,CPY-CPYEWT#0,CPY-CPYERT#0,CPY-CPYET#0,CPY-CPYEWN#0,CPY-CPYEWTWN#0,CPY-CPYERTWN#0,CPY-CPYETWN#0,CPY-CPYERN#0,CPY-CPYEWTRN#0,CPY-CPYERTRN#0,CPY-CPYETRN#0,CPY-CPYEN#0,CPY-CPYEWTN#0,CPY-CPYERTN#0,CPY-CPYETN#0
 pub const fn classify_impl_3e(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  let idx = match (inst >> 12) & 0xf {
+  
+  match (inst >> 12) & 0xf {
     0x0 => 0x6bd0,
     0x1 => 0x6bd1,
     0x2 => 0x6bd2,
@@ -5398,15 +5399,15 @@ pub const fn classify_impl_3e(inst: u32) -> u32 {
     0xe => 0x6bde,
     0xf => 0x6bdf,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SET-SETGP#0,SET-SETGPT#0,SET-SETGPN#0,SET-SETGPTN#0,SET-SETGM#0,SET-SETGMT#0,SET-SETGMN#0,SET-SETGMTN#0,SET-SETGE#0,SET-SETGET#0,SET-SETGEN#0,SET-SETGETN#0
 pub const fn classify_impl_3f(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  let idx = match (inst >> 12) & 0xf {
+  
+  match (inst >> 12) & 0xf {
     0x0 => 0x6c0c,
     0x1 => 0x6c0d,
     0x2 => 0x6c0e,
@@ -5424,64 +5425,63 @@ pub const fn classify_impl_3f(inst: u32) -> u32 {
     0xe => 0x0,
     0xf => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_FROMFIXED-SCVTF_FIX#0,FCVT_FROMFIXED-UCVTF_FIX#0
 pub const fn classify_impl_40(inst: u32) -> u32 {
   if (inst&0xe8000) != 0x28000 { return 0; }
-  let idx = match (inst >> 16) & 0x1 {
+  
+  match (inst >> 16) & 0x1 {
     0x0 => 0x2000,
     0x1 => 0x2001,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOFIXED-FCVTZS_FIX#0,FCVT_TOFIXED-FCVTZU_FIX#0
 pub const fn classify_impl_41(inst: u32) -> u32 {
   if (inst&0xe8000) != 0x88000 { return 0; }
-  let idx = match (inst >> 16) & 0x1 {
+  
+  match (inst >> 16) & 0x1 {
     0x0 => 0x1f80,
     0x1 => 0x1f81,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCCMP-FCCMP#0,FCCMP-FCCMPE#0
 pub const fn classify_impl_42_1(inst: u32) -> u32 {
-  let idx = match (inst >> 4) & 0x1 {
+  
+  match (inst >> 4) & 0x1 {
     0x0 => 0x2680,
     0x1 => 0x2681,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMOV_IMM-FMOV_IMM#0
 pub const fn classify_impl_42_2(inst: u32) -> u32 {
   if (inst&0x3e0) != 0x0 { return 0; }
-  return 0x2500;
+  0x2500
 }
 
 
 // FCMP-FCMP#0,FCMP-FCMP_ZERO#0,FCMP-FCMPE#0,FCMP-FCMPE_ZERO#0
 pub const fn classify_impl_42_3(inst: u32) -> u32 {
   if (inst&0x7) != 0x0 { return 0; }
-  let idx = match (inst >> 3) & 0x3 {
+  
+  match (inst >> 3) & 0x3 {
     0x0 => 0x2600,
     0x1 => 0x2601,
     0x2 => 0x2602,
     0x3 => 0x2603,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // FCVT_TOINT-FCVTNS#0,FCVT_TOINT-FCVTNU#0,FCVT_TOINT-FCVTAS#0,FCVT_TOINT-FCVTAU#0,FCVT_TOINT-FCVTPS#0,FCVT_TOINT-FCVTPU#0,FCVT_FROMINT-SCVTF#0,FCVT_FROMINT-UCVTF#0,FMOV_TOGP-FMOV_TOGP#0,FMOV_FROMGP-FMOV_FROM#0,FCVT_FP-FCVT#0,FCVT_FP-FCVT#1,FRINT-FRINTN#0,FRINT-FRINTP#0,FRINT-FRINTM#0,FRINT-FRINTZ#0,FRINT-FRINTA#0,FRINT-FRINTX#0,FRINT-FRINTI#0,FRINTTS-FRINT32Z#0,FRINTTS-FRINT32X#0,FRINTTS-FRINT64Z#0,FRINTTS-FRINT64X#0,FARITH1-FMOV#0,FARITH1-FABS#0,FARITH1-FNEG#0,FARITH1-FSQRT#0,FMOV_IMM-FMOV_IMM#0,FARITH2-FMUL#0,FARITH2-FDIV#0,FARITH2-FADD#0,FARITH2-FSUB#0,FARITH2-FMAX#0,FARITH2-FMIN#0,FARITH2-FMAXNM#0,FARITH2-FMINNM#0,FARITH2-FNMUL#0,FCMP-FCMP#0,FCMP-FCMP_ZERO#0,FCMP-FCMPE#0,FCMP-FCMPE_ZERO#0,FCCMP-FCCMP#0,FCCMP-FCCMPE#0,FCSEL-FCSEL#0
@@ -6519,53 +6519,53 @@ pub const fn classify_impl_42(inst: u32) -> u32 {
     0x3 => return classify_impl_42_3(inst), // FCMP-FCMP#0,FCMP-FCMP_ZERO#0,FCMP-FCMPE#0,FCMP-FCMPE_ZERO#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FCVT_TOINT-FCVTMS#0
 pub const fn classify_impl_43_1_1(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x2086;
+  0x2086
 }
 
 
 // FCCMP-FCCMP#0,FCCMP-FCCMPE#0
 pub const fn classify_impl_43_1_2(inst: u32) -> u32 {
-  let idx = match (inst >> 4) & 0x1 {
+  
+  match (inst >> 4) & 0x1 {
     0x0 => 0x2680,
     0x1 => 0x2681,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMOV_IMM-FMOV_IMM#0
 pub const fn classify_impl_43_1_3(inst: u32) -> u32 {
   if (inst&0x3e0) != 0x0 { return 0; }
-  return 0x2500;
+  0x2500
 }
 
 
 // FCMP-FCMP#0,FCMP-FCMP_ZERO#0,FCMP-FCMPE#0,FCMP-FCMPE_ZERO#0
 pub const fn classify_impl_43_1_4(inst: u32) -> u32 {
   if (inst&0x7) != 0x0 { return 0; }
-  let idx = match (inst >> 3) & 0x3 {
+  
+  match (inst >> 3) & 0x3 {
     0x0 => 0x2600,
     0x1 => 0x2601,
     0x2 => 0x2602,
     0x3 => 0x2603,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOINT-FCVTMU#0
 pub const fn classify_impl_43_1_5(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x2087;
+  0x2087
 }
 
 // FCVT_TOINT-FCVTMS#0,FCVT_TOINT-FCVTMU#0,FMOV_IMM-FMOV_IMM#0,FARITH2-FMUL#0,FARITH2-FDIV#0,FARITH2-FADD#0,FARITH2-FSUB#0,FARITH2-FMAX#0,FARITH2-FMIN#0,FARITH2-FMAXNM#0,FARITH2-FMINNM#0,FARITH2-FNMUL#0,FCMP-FCMP#0,FCMP-FCMP_ZERO#0,FCMP-FCMPE#0,FCMP-FCMPE_ZERO#0,FCCMP-FCCMP#0,FCCMP-FCCMPE#0,FCSEL-FCSEL#0
@@ -6709,53 +6709,53 @@ pub const fn classify_impl_43_1(inst: u32) -> u32 {
     0x5 => return classify_impl_43_1_5(inst), // FCVT_TOINT-FCVTMU#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FCVT_TOINT-FCVTZS#0
 pub const fn classify_impl_43_2_1(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x2088;
+  0x2088
 }
 
 
 // FCCMP-FCCMP#0,FCCMP-FCCMPE#0
 pub const fn classify_impl_43_2_2(inst: u32) -> u32 {
-  let idx = match (inst >> 4) & 0x1 {
+  
+  match (inst >> 4) & 0x1 {
     0x0 => 0x2680,
     0x1 => 0x2681,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMOV_IMM-FMOV_IMM#0
 pub const fn classify_impl_43_2_3(inst: u32) -> u32 {
   if (inst&0x3e0) != 0x0 { return 0; }
-  return 0x2500;
+  0x2500
 }
 
 
 // FCMP-FCMP#0,FCMP-FCMP_ZERO#0,FCMP-FCMPE#0,FCMP-FCMPE_ZERO#0
 pub const fn classify_impl_43_2_4(inst: u32) -> u32 {
   if (inst&0x7) != 0x0 { return 0; }
-  let idx = match (inst >> 3) & 0x3 {
+  
+  match (inst >> 3) & 0x3 {
     0x0 => 0x2600,
     0x1 => 0x2601,
     0x2 => 0x2602,
     0x3 => 0x2603,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOINT-FCVTZU#0
 pub const fn classify_impl_43_2_5(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x2089;
+  0x2089
 }
 
 // FCVT_TOINT-FCVTZS#0,FCVT_TOINT-FCVTZU#0,FMOV_IMM-FMOV_IMM#0,FARITH2-FMUL#0,FARITH2-FDIV#0,FARITH2-FADD#0,FARITH2-FSUB#0,FARITH2-FMAX#0,FARITH2-FMIN#0,FARITH2-FMAXNM#0,FARITH2-FMINNM#0,FARITH2-FNMUL#0,FCMP-FCMP#0,FCMP-FCMP_ZERO#0,FCMP-FCMPE#0,FCMP-FCMPE_ZERO#0,FCCMP-FCCMP#0,FCCMP-FCCMPE#0,FCSEL-FCSEL#0
@@ -6899,7 +6899,7 @@ pub const fn classify_impl_43_2(inst: u32) -> u32 {
     0x5 => return classify_impl_43_2_5(inst), // FCVT_TOINT-FCVTZU#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 // FCVT_TOINT-FCVTMS#0,FCVT_TOINT-FCVTMU#0,FCVT_TOINT-FCVTZS#0,FCVT_TOINT-FCVTZU#0,FMOV_IMM-FMOV_IMM#0,FARITH2-FMUL#0,FARITH2-FDIV#0,FARITH2-FADD#0,FARITH2-FSUB#0,FARITH2-FMAX#0,FARITH2-FMIN#0,FARITH2-FMAXNM#0,FARITH2-FMINNM#0,FARITH2-FNMUL#0,FCMP-FCMP#0,FCMP-FCMP_ZERO#0,FCMP-FCMPE#0,FCMP-FCMPE_ZERO#0,FCCMP-FCCMP#0,FCCMP-FCCMPE#0,FCSEL-FCSEL#0
@@ -6914,63 +6914,63 @@ pub const fn classify_impl_43(inst: u32) -> u32 {
     0x2 => return classify_impl_43_2(inst), // FCVT_TOINT-FCVTZS#0,FCVT_TOINT-FCVTZU#0,FMOV_IMM-FMOV_IMM#0,FARITH2-FMUL#0,FARITH2-FDIV#0,FARITH2-FADD#0,FARITH2-FSUB#0,FARITH2-FMAX#0,FARITH2-FMIN#0,FARITH2-FMAXNM#0,FARITH2-FMINNM#0,FARITH2-FNMUL#0,FCMP-FCMP#0,FCMP-FCMP_ZERO#0,FCMP-FCMPE#0,FCMP-FCMPE_ZERO#0,FCCMP-FCCMP#0,FCCMP-FCCMPE#0,FCSEL-FCSEL#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FCVT_FROMFIXED-SCVTF_FIX#1,FCVT_FROMFIXED-UCVTF_FIX#1
 pub const fn classify_impl_44(inst: u32) -> u32 {
   if (inst&0xe8000) != 0x28000 { return 0; }
-  let idx = match (inst >> 16) & 0x1 {
+  
+  match (inst >> 16) & 0x1 {
     0x0 => 0x2000,
     0x1 => 0x2001,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOFIXED-FCVTZS_FIX#1,FCVT_TOFIXED-FCVTZU_FIX#1
 pub const fn classify_impl_45(inst: u32) -> u32 {
   if (inst&0xe8000) != 0x88000 { return 0; }
-  let idx = match (inst >> 16) & 0x1 {
+  
+  match (inst >> 16) & 0x1 {
     0x0 => 0x1f80,
     0x1 => 0x1f81,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCCMP-FCCMP#1,FCCMP-FCCMPE#1
 pub const fn classify_impl_46_1(inst: u32) -> u32 {
-  let idx = match (inst >> 4) & 0x1 {
+  
+  match (inst >> 4) & 0x1 {
     0x0 => 0x2680,
     0x1 => 0x2681,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMOV_IMM-FMOV_IMM#1
 pub const fn classify_impl_46_2(inst: u32) -> u32 {
   if (inst&0x3e0) != 0x0 { return 0; }
-  return 0x2500;
+  0x2500
 }
 
 
 // FCMP-FCMP#1,FCMP-FCMP_ZERO#1,FCMP-FCMPE#1,FCMP-FCMPE_ZERO#1
 pub const fn classify_impl_46_3(inst: u32) -> u32 {
   if (inst&0x7) != 0x0 { return 0; }
-  let idx = match (inst >> 3) & 0x3 {
+  
+  match (inst >> 3) & 0x3 {
     0x0 => 0x2600,
     0x1 => 0x2601,
     0x2 => 0x2602,
     0x3 => 0x2603,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // FCVT_TOINT-FCVTNS#1,FCVT_TOINT-FCVTNU#1,FCVT_TOINT-FCVTAS#1,FCVT_TOINT-FCVTAU#1,FCVT_TOINT-FCVTPS#1,FCVT_TOINT-FCVTPU#1,FCVT_FROMINT-SCVTF#1,FCVT_FROMINT-UCVTF#1,FCVT_FP-FCVT#2,FCVT_FP-FCVT#3,FCVT_FP-BFCVT#0,FRINT-FRINTN#1,FRINT-FRINTP#1,FRINT-FRINTM#1,FRINT-FRINTZ#1,FRINT-FRINTA#1,FRINT-FRINTX#1,FRINT-FRINTI#1,FRINTTS-FRINT32Z#1,FRINTTS-FRINT32X#1,FRINTTS-FRINT64Z#1,FRINTTS-FRINT64X#1,FARITH1-FMOV#1,FARITH1-FABS#1,FARITH1-FNEG#1,FARITH1-FSQRT#1,FMOV_IMM-FMOV_IMM#1,FARITH2-FMUL#1,FARITH2-FDIV#1,FARITH2-FADD#1,FARITH2-FSUB#1,FARITH2-FMAX#1,FARITH2-FMIN#1,FARITH2-FMAXNM#1,FARITH2-FMINNM#1,FARITH2-FNMUL#1,FCMP-FCMP#1,FCMP-FCMP_ZERO#1,FCMP-FCMPE#1,FCMP-FCMPE_ZERO#1,FCCMP-FCCMP#1,FCCMP-FCCMPE#1,FCSEL-FCSEL#1
@@ -8008,39 +8008,39 @@ pub const fn classify_impl_46(inst: u32) -> u32 {
     0x3 => return classify_impl_46_3(inst), // FCMP-FCMP#1,FCMP-FCMP_ZERO#1,FCMP-FCMPE#1,FCMP-FCMPE_ZERO#1
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FCCMP-FCCMP#1,FCCMP-FCCMPE#1
 pub const fn classify_impl_47_1(inst: u32) -> u32 {
-  let idx = match (inst >> 4) & 0x1 {
+  
+  match (inst >> 4) & 0x1 {
     0x0 => 0x2680,
     0x1 => 0x2681,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMOV_IMM-FMOV_IMM#1
 pub const fn classify_impl_47_2(inst: u32) -> u32 {
   if (inst&0x3e0) != 0x0 { return 0; }
-  return 0x2500;
+  0x2500
 }
 
 
 // FCMP-FCMP#1,FCMP-FCMP_ZERO#1,FCMP-FCMPE#1,FCMP-FCMPE_ZERO#1
 pub const fn classify_impl_47_3(inst: u32) -> u32 {
   if (inst&0x7) != 0x0 { return 0; }
-  let idx = match (inst >> 3) & 0x3 {
+  
+  match (inst >> 3) & 0x3 {
     0x0 => 0x2600,
     0x1 => 0x2601,
     0x2 => 0x2602,
     0x3 => 0x2603,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // FCVT_TOINT-FCVTMS#1,FCVT_TOINT-FCVTMU#1,FCVT_TOINT-FCVTZS#1,FCVT_TOINT-FCVTZU#1,FJCVTZS-FJCVTZS#0,FMOV_IMM-FMOV_IMM#1,FARITH2-FMUL#1,FARITH2-FDIV#1,FARITH2-FADD#1,FARITH2-FSUB#1,FARITH2-FMAX#1,FARITH2-FMIN#1,FARITH2-FMAXNM#1,FARITH2-FMINNM#1,FARITH2-FNMUL#1,FCMP-FCMP#1,FCMP-FCMP_ZERO#1,FCMP-FCMPE#1,FCMP-FCMPE_ZERO#1,FCCMP-FCCMP#1,FCCMP-FCCMPE#1,FCSEL-FCSEL#1
@@ -9078,63 +9078,63 @@ pub const fn classify_impl_47(inst: u32) -> u32 {
     0x3 => return classify_impl_47_3(inst), // FCMP-FCMP#1,FCMP-FCMP_ZERO#1,FCMP-FCMPE#1,FCMP-FCMPE_ZERO#1
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FCVT_FROMFIXED-SCVTF_FIX_FP16#0,FCVT_FROMFIXED-UCVTF_FIX_FP16#0
 pub const fn classify_impl_48(inst: u32) -> u32 {
   if (inst&0xe8000) != 0x28000 { return 0; }
-  let idx = match (inst >> 16) & 0x1 {
+  
+  match (inst >> 16) & 0x1 {
     0x0 => 0x2002,
     0x1 => 0x2003,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOFIXED-FCVTZS_FIX_FP16#0,FCVT_TOFIXED-FCVTZU_FIX_FP16#0
 pub const fn classify_impl_49(inst: u32) -> u32 {
   if (inst&0xe8000) != 0x88000 { return 0; }
-  let idx = match (inst >> 16) & 0x1 {
+  
+  match (inst >> 16) & 0x1 {
     0x0 => 0x1f82,
     0x1 => 0x1f83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCCMP-FCCMP_FP16#0,FCCMP-FCCMPE_FP16#0
 pub const fn classify_impl_4a_1(inst: u32) -> u32 {
-  let idx = match (inst >> 4) & 0x1 {
+  
+  match (inst >> 4) & 0x1 {
     0x0 => 0x2682,
     0x1 => 0x2683,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMOV_IMM-FMOV_IMM_FP16#0
 pub const fn classify_impl_4a_2(inst: u32) -> u32 {
   if (inst&0x3e0) != 0x0 { return 0; }
-  return 0x2501;
+  0x2501
 }
 
 
 // FCMP-FCMP_FP16#0,FCMP-FCMP_FP16_ZERO#0,FCMP-FCMPE_FP16#0,FCMP-FCMPE_FP16_ZERO#0
 pub const fn classify_impl_4a_3(inst: u32) -> u32 {
   if (inst&0x7) != 0x0 { return 0; }
-  let idx = match (inst >> 3) & 0x3 {
+  
+  match (inst >> 3) & 0x3 {
     0x0 => 0x2604,
     0x1 => 0x2605,
     0x2 => 0x2606,
     0x3 => 0x2607,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // FCVT_TOINT-FCVTNS_FP16#0,FCVT_TOINT-FCVTNU_FP16#0,FCVT_TOINT-FCVTAS_FP16#0,FCVT_TOINT-FCVTAU_FP16#0,FCVT_TOINT-FCVTPS_FP16#0,FCVT_TOINT-FCVTPU_FP16#0,FCVT_FROMINT-SCVTF_FP16#0,FCVT_FROMINT-UCVTF_FP16#0,FMOV_TOGP-FMOV_TOGP_FP16#0,FMOV_FROMGP-FMOV_FROM_FP16#0,FCVT_FP-FCVT#4,FCVT_FP-FCVT#5,FRINT-FRINTN_FP16#0,FRINT-FRINTP_FP16#0,FRINT-FRINTM_FP16#0,FRINT-FRINTZ_FP16#0,FRINT-FRINTA_FP16#0,FRINT-FRINTX_FP16#0,FRINT-FRINTI_FP16#0,FARITH1-FMOV_FP16#0,FARITH1-FABS_FP16#0,FARITH1-FNEG_FP16#0,FARITH1-FSQRT_FP16#0,FMOV_IMM-FMOV_IMM_FP16#0,FARITH2-FMUL_FP16#0,FARITH2-FDIV_FP16#0,FARITH2-FADD_FP16#0,FARITH2-FSUB_FP16#0,FARITH2-FMAX_FP16#0,FARITH2-FMIN_FP16#0,FARITH2-FMAXNM_FP16#0,FARITH2-FMINNM_FP16#0,FARITH2-FNMUL_FP16#0,FCMP-FCMP_FP16#0,FCMP-FCMP_FP16_ZERO#0,FCMP-FCMPE_FP16#0,FCMP-FCMPE_FP16_ZERO#0,FCCMP-FCCMP_FP16#0,FCCMP-FCCMPE_FP16#0,FCSEL-FCSEL_FP16#0
@@ -10172,53 +10172,53 @@ pub const fn classify_impl_4a(inst: u32) -> u32 {
     0x3 => return classify_impl_4a_3(inst), // FCMP-FCMP_FP16#0,FCMP-FCMP_FP16_ZERO#0,FCMP-FCMPE_FP16#0,FCMP-FCMPE_FP16_ZERO#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FCVT_TOINT-FCVTMS_FP16#0
 pub const fn classify_impl_4b_1_1(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x2090;
+  0x2090
 }
 
 
 // FCCMP-FCCMP_FP16#0,FCCMP-FCCMPE_FP16#0
 pub const fn classify_impl_4b_1_2(inst: u32) -> u32 {
-  let idx = match (inst >> 4) & 0x1 {
+  
+  match (inst >> 4) & 0x1 {
     0x0 => 0x2682,
     0x1 => 0x2683,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMOV_IMM-FMOV_IMM_FP16#0
 pub const fn classify_impl_4b_1_3(inst: u32) -> u32 {
   if (inst&0x3e0) != 0x0 { return 0; }
-  return 0x2501;
+  0x2501
 }
 
 
 // FCMP-FCMP_FP16#0,FCMP-FCMP_FP16_ZERO#0,FCMP-FCMPE_FP16#0,FCMP-FCMPE_FP16_ZERO#0
 pub const fn classify_impl_4b_1_4(inst: u32) -> u32 {
   if (inst&0x7) != 0x0 { return 0; }
-  let idx = match (inst >> 3) & 0x3 {
+  
+  match (inst >> 3) & 0x3 {
     0x0 => 0x2604,
     0x1 => 0x2605,
     0x2 => 0x2606,
     0x3 => 0x2607,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOINT-FCVTMU_FP16#0
 pub const fn classify_impl_4b_1_5(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x2091;
+  0x2091
 }
 
 // FCVT_TOINT-FCVTMS_FP16#0,FCVT_TOINT-FCVTMU_FP16#0,FMOV_IMM-FMOV_IMM_FP16#0,FARITH2-FMUL_FP16#0,FARITH2-FDIV_FP16#0,FARITH2-FADD_FP16#0,FARITH2-FSUB_FP16#0,FARITH2-FMAX_FP16#0,FARITH2-FMIN_FP16#0,FARITH2-FMAXNM_FP16#0,FARITH2-FMINNM_FP16#0,FARITH2-FNMUL_FP16#0,FCMP-FCMP_FP16#0,FCMP-FCMP_FP16_ZERO#0,FCMP-FCMPE_FP16#0,FCMP-FCMPE_FP16_ZERO#0,FCCMP-FCCMP_FP16#0,FCCMP-FCCMPE_FP16#0,FCSEL-FCSEL_FP16#0
@@ -10362,53 +10362,53 @@ pub const fn classify_impl_4b_1(inst: u32) -> u32 {
     0x5 => return classify_impl_4b_1_5(inst), // FCVT_TOINT-FCVTMU_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FCVT_TOINT-FCVTZS_FP16#0
 pub const fn classify_impl_4b_2_1(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x2092;
+  0x2092
 }
 
 
 // FCCMP-FCCMP_FP16#0,FCCMP-FCCMPE_FP16#0
 pub const fn classify_impl_4b_2_2(inst: u32) -> u32 {
-  let idx = match (inst >> 4) & 0x1 {
+  
+  match (inst >> 4) & 0x1 {
     0x0 => 0x2682,
     0x1 => 0x2683,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMOV_IMM-FMOV_IMM_FP16#0
 pub const fn classify_impl_4b_2_3(inst: u32) -> u32 {
   if (inst&0x3e0) != 0x0 { return 0; }
-  return 0x2501;
+  0x2501
 }
 
 
 // FCMP-FCMP_FP16#0,FCMP-FCMP_FP16_ZERO#0,FCMP-FCMPE_FP16#0,FCMP-FCMPE_FP16_ZERO#0
 pub const fn classify_impl_4b_2_4(inst: u32) -> u32 {
   if (inst&0x7) != 0x0 { return 0; }
-  let idx = match (inst >> 3) & 0x3 {
+  
+  match (inst >> 3) & 0x3 {
     0x0 => 0x2604,
     0x1 => 0x2605,
     0x2 => 0x2606,
     0x3 => 0x2607,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOINT-FCVTZU_FP16#0
 pub const fn classify_impl_4b_2_5(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x2093;
+  0x2093
 }
 
 // FCVT_TOINT-FCVTZS_FP16#0,FCVT_TOINT-FCVTZU_FP16#0,FMOV_IMM-FMOV_IMM_FP16#0,FARITH2-FMUL_FP16#0,FARITH2-FDIV_FP16#0,FARITH2-FADD_FP16#0,FARITH2-FSUB_FP16#0,FARITH2-FMAX_FP16#0,FARITH2-FMIN_FP16#0,FARITH2-FMAXNM_FP16#0,FARITH2-FMINNM_FP16#0,FARITH2-FNMUL_FP16#0,FCMP-FCMP_FP16#0,FCMP-FCMP_FP16_ZERO#0,FCMP-FCMPE_FP16#0,FCMP-FCMPE_FP16_ZERO#0,FCCMP-FCCMP_FP16#0,FCCMP-FCCMPE_FP16#0,FCSEL-FCSEL_FP16#0
@@ -10552,7 +10552,7 @@ pub const fn classify_impl_4b_2(inst: u32) -> u32 {
     0x5 => return classify_impl_4b_2_5(inst), // FCVT_TOINT-FCVTZU_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 // FCVT_TOINT-FCVTMS_FP16#0,FCVT_TOINT-FCVTMU_FP16#0,FCVT_TOINT-FCVTZS_FP16#0,FCVT_TOINT-FCVTZU_FP16#0,FMOV_IMM-FMOV_IMM_FP16#0,FARITH2-FMUL_FP16#0,FARITH2-FDIV_FP16#0,FARITH2-FADD_FP16#0,FARITH2-FSUB_FP16#0,FARITH2-FMAX_FP16#0,FARITH2-FMIN_FP16#0,FARITH2-FMAXNM_FP16#0,FARITH2-FMINNM_FP16#0,FARITH2-FNMUL_FP16#0,FCMP-FCMP_FP16#0,FCMP-FCMP_FP16_ZERO#0,FCMP-FCMPE_FP16#0,FCMP-FCMPE_FP16_ZERO#0,FCCMP-FCCMP_FP16#0,FCCMP-FCCMPE_FP16#0,FCSEL-FCSEL_FP16#0
@@ -10567,100 +10567,101 @@ pub const fn classify_impl_4b(inst: u32) -> u32 {
     0x2 => return classify_impl_4b_2(inst), // FCVT_TOINT-FCVTZS_FP16#0,FCVT_TOINT-FCVTZU_FP16#0,FMOV_IMM-FMOV_IMM_FP16#0,FARITH2-FMUL_FP16#0,FARITH2-FDIV_FP16#0,FARITH2-FADD_FP16#0,FARITH2-FSUB_FP16#0,FARITH2-FMAX_FP16#0,FARITH2-FMIN_FP16#0,FARITH2-FMAXNM_FP16#0,FARITH2-FMINNM_FP16#0,FARITH2-FNMUL_FP16#0,FCMP-FCMP_FP16#0,FCMP-FCMP_FP16_ZERO#0,FCMP-FCMPE_FP16#0,FCMP-FCMPE_FP16_ZERO#0,FCCMP-FCCMP_FP16#0,FCCMP-FCCMPE_FP16#0,FCSEL-FCSEL_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FMADD-FMADD#0,FMADD-FMSUB#0
 pub const fn classify_impl_4c(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x2780,
     0x1 => 0x2781,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMADD-FNMADD#0,FMADD-FNMSUB#0
 pub const fn classify_impl_4d(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x2782,
     0x1 => 0x2783,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMADD-FMADD#1,FMADD-FMSUB#1
 pub const fn classify_impl_4e(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x2780,
     0x1 => 0x2781,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMADD-FNMADD#1,FMADD-FNMSUB#1
 pub const fn classify_impl_4f(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x2782,
     0x1 => 0x2783,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMADD-FMADD_FP16#0,FMADD-FMSUB_FP16#0
 pub const fn classify_impl_50(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x2784,
     0x1 => 0x2785,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMADD-FNMADD_FP16#0,FMADD-FNMSUB_FP16#0
 pub const fn classify_impl_51(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x2786,
     0x1 => 0x2787,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ANDOREOR_SHIFT-ORR_SHIFT#0
 pub const fn classify_impl_52(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x582;
+  0x582
 }
 
 
 // ANDOREOR_SHIFT-ORN_SHIFT#0
 pub const fn classify_impl_53(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x583;
+  0x583
 }
 
 
 // ADDSUB_SHIFT-ADDS_SHIFT#0
 pub const fn classify_impl_54(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x401;
+  0x401
 }
 
 
 // ADDSUB_EXT-ADDS_EXT#0,ADDSUB_EXT-ADDS_EXT#1,ADDSUB_EXT-ADDS_EXT#2,ADDSUB_EXT-ADDS_EXT#3,ADDSUB_EXT-ADDS_EXT#4
 pub const fn classify_impl_55(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x7 {
+  
+  match (inst >> 10) & 0x7 {
     0x0 => 0x301,
     0x1 => 0x301,
     0x2 => 0x301,
@@ -10670,176 +10671,175 @@ pub const fn classify_impl_55(inst: u32) -> u32 {
     0x6 => 0x0,
     0x7 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ADDSUB_SHIFT-ADDS_SHIFT#1
 pub const fn classify_impl_56(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x401;
+  0x401
 }
 
 
 // ADDSUB_SHIFT-ADDS_SHIFT#2
 pub const fn classify_impl_57(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x401;
+  0x401
 }
 
 
 // EXT-EXT#0
 pub const fn classify_impl_58(inst: u32) -> u32 {
   if (inst&0xc400) != 0x0 { return 0; }
-  return 0x2b00;
+  0x2b00
 }
 
 
 // REV_VEC-REV32_VEC#0
 pub const fn classify_impl_59_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3282;
+  0x3282
 }
 
 
 // ADDLP_VEC-UADDLP#0
 pub const fn classify_impl_59_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3102;
+  0x3102
 }
 
 
 // ARITH1_VEC-USQADD_VEC#0
 pub const fn classify_impl_59_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3083;
+  0x3083
 }
 
 
 // CLZ_VEC-CLZ_VEC#0
 pub const fn classify_impl_59_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3181;
+  0x3181
 }
 
 
 // BIT_VEC-NOT_VEC#0
 pub const fn classify_impl_59_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3201;
+  0x3201
 }
 
 
 // ADDLP_VEC-UADALP#0
 pub const fn classify_impl_59_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3103;
+  0x3103
 }
 
 
 // ARITH1_VEC-SQNEG_VEC#0
 pub const fn classify_impl_59_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3084;
+  0x3084
 }
 
 
 // CMZERO_VEC-CMGE_ZERO_VEC#0
 pub const fn classify_impl_59_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f83;
+  0x2f83
 }
 
 
 // CMZERO_VEC-CMLE_ZERO_VEC#0
 pub const fn classify_impl_59_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f84;
+  0x2f84
 }
 
 
 // ARITH1_VEC-NEG_VEC#0
 pub const fn classify_impl_59_a(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3085;
+  0x3085
 }
 
 
 // XTN_VEC-SQXTUN_VEC#0
 pub const fn classify_impl_59_b(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3382;
+  0x3382
 }
 
 
 // SHLL_VEC_ESZ-SHLL_VEC_ESZ#0
 pub const fn classify_impl_59_c(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4c00;
+  0x4c00
 }
 
 
 // XTN_VEC-UQXTN_VEC#0
 pub const fn classify_impl_59_d(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3383;
+  0x3383
 }
 
 
 // FRINT_VEC-FRINTA_VEC#0
 pub const fn classify_impl_59_e(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5204;
+  0x5204
 }
 
 
 // FRINT_VEC-FRINTX_VEC#0
 pub const fn classify_impl_59_f(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5205;
+  0x5205
 }
 
 
 // FCVT_VEC-FCVTNU_VEC#0
 pub const fn classify_impl_59_10(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f05;
+  0x4f05
 }
 
 
 // FCVT_VEC-FCVTMU_VEC#0
 pub const fn classify_impl_59_11(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f06;
+  0x4f06
 }
 
 
 // FCVT_VEC-FCVTAU_VEC#0
 pub const fn classify_impl_59_12(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f07;
+  0x4f07
 }
 
 
 // FCVT_FROMINT_VEC-UCVTF_VEC#0
 pub const fn classify_impl_59_13(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5081;
+  0x5081
 }
 
 
 // FRINTTS_VEC-FRINT32X_VEC#0
 pub const fn classify_impl_59_14(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5282;
+  0x5282
 }
 
 
 // FRINTTS_VEC-FRINT64X_VEC#0
 pub const fn classify_impl_59_15(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5283;
+  0x5283
 }
 
 // HADDSUB_VEC-UHADD#0,HADDSUB_VEC-URHADD#0,HADDSUB_VEC-UHSUB#0,QADDSUB_VEC-UQADD#0,QADDSUB_VEC-UQSUB#0,CMGT_VEC-CMHIV#0,CMGT_VEC-CMHSV#0,CMEQ_VEC-CMEQV#0,CMZERO_VEC-CMGE_ZERO_VEC#0,CMZERO_VEC-CMLE_ZERO_VEC#0,ARITH1_VEC-USQADD_VEC#0,ARITH1_VEC-SQNEG_VEC#0,ARITH1_VEC-NEG_VEC#0,ADDLP_VEC-UADDLP#0,ADDLP_VEC-UADALP#0,CLZ_VEC-CLZ_VEC#0,BIT_VEC-NOT_VEC#0,REV_VEC-REV32_VEC#0,XTN_VEC-SQXTUN_VEC#0,XTN_VEC-UQXTN_VEC#0,SHL_REG_VEC-USHL#0,SHL_REG_VEC-UQSHL#0,SHL_REG_VEC-URSHL#0,SHL_REG_VEC-UQRSHL#0,MINMAX_VEC-UMAX#0,MINMAX_VEC-UMIN#0,MINMAX_VEC-UMAXP#0,MINMAX_VEC-UMINP#0,ABD_VEC-UABD#0,ABD_VEC-UABA#0,ADDSUB_VEC-SUB_VEC#0,MUL_VEC-MLS_VEC#0,MUL_VEC-PMUL_VEC#0,FMINMAX_VEC-FMAXNMP_VEC#0,FMINMAX_VEC-FMAXP_VEC#0,FCMP_REG_VEC-FCMGE_VEC#0,FCMP_REG_VEC-FACGE_VEC#0,FADDSUB_VEC-FADDP_VEC#0,FMUL_VEC-FMULV#0,FDIV_VEC-FDIVV#0,ANDOREOR_VEC-EORV#0,ADDSUBL_VEC-UADDL#0,ADDSUBL_VEC-USUBL#0,ADDSUBW_VEC-UADDW#0,ADDSUBW_VEC-USUBW#0,ADDSUBHN_VEC-RADDHN#0,ADDSUBHN_VEC-RSUBHN#0,ABDL_VEC-UABAL#0,ABDL_VEC-UABDL#0,MULL_VEC-UMLAL#0,MULL_VEC-UMLSL#0,MULL_VEC-UMULL#0,SHLL_VEC_ESZ-SHLL_VEC_ESZ#0,FCVT_VEC-FCVTNU_VEC#0,FCVT_VEC-FCVTMU_VEC#0,FCVT_VEC-FCVTAU_VEC#0,FCVT_FROMINT_VEC-UCVTF_VEC#0,FRINT_VEC-FRINTA_VEC#0,FRINT_VEC-FRINTX_VEC#0,FRINTTS_VEC-FRINT32X_VEC#0,FRINTTS_VEC-FRINT64X_VEC#0,FHM_VEC-FMLAL2_VEC#0
@@ -10999,28 +10999,28 @@ pub const fn classify_impl_59(inst: u32) -> u32 {
     0x15 => return classify_impl_59_15(inst), // FRINTTS_VEC-FRINT64X_VEC#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // INT_HORZ_VEC-UADDLV#0
 pub const fn classify_impl_5a_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5384;
+  0x5384
 }
 
 
 // INT_HORZ_VEC-UMAXV#0
 pub const fn classify_impl_5a_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5385;
+  0x5385
 }
 
 
 // INT_HORZ_VEC-UMINV#0
 pub const fn classify_impl_5a_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5386;
+  0x5386
 }
 
 // HADDSUB_VEC-UHADD#0,HADDSUB_VEC-URHADD#0,HADDSUB_VEC-UHSUB#0,QADDSUB_VEC-UQADD#0,QADDSUB_VEC-UQSUB#0,CMGT_VEC-CMHIV#0,CMGT_VEC-CMHSV#0,CMEQ_VEC-CMEQV#0,SHL_REG_VEC-USHL#0,SHL_REG_VEC-UQSHL#0,SHL_REG_VEC-URSHL#0,SHL_REG_VEC-UQRSHL#0,MINMAX_VEC-UMAX#0,MINMAX_VEC-UMIN#0,MINMAX_VEC-UMAXP#0,MINMAX_VEC-UMINP#0,ABD_VEC-UABD#0,ABD_VEC-UABA#0,ADDSUB_VEC-SUB_VEC#0,MUL_VEC-MLS_VEC#0,MUL_VEC-PMUL_VEC#0,FMINMAX_VEC-FMAXNMP_VEC#0,FMINMAX_VEC-FMAXP_VEC#0,FCMP_REG_VEC-FCMGE_VEC#0,FCMP_REG_VEC-FACGE_VEC#0,FADDSUB_VEC-FADDP_VEC#0,FMUL_VEC-FMULV#0,FDIV_VEC-FDIVV#0,ANDOREOR_VEC-EORV#0,ADDSUBL_VEC-UADDL#0,ADDSUBL_VEC-USUBL#0,ADDSUBW_VEC-UADDW#0,ADDSUBW_VEC-USUBW#0,ADDSUBHN_VEC-RADDHN#0,ADDSUBHN_VEC-RSUBHN#0,ABDL_VEC-UABAL#0,ABDL_VEC-UABDL#0,MULL_VEC-UMLAL#0,MULL_VEC-UMLSL#0,MULL_VEC-UMULL#0,INT_HORZ_VEC-UADDLV#0,INT_HORZ_VEC-UMAXV#0,INT_HORZ_VEC-UMINV#0,FHM_VEC-FMLAL2_VEC#0
@@ -11162,14 +11162,15 @@ pub const fn classify_impl_5a(inst: u32) -> u32 {
     0x3 => return classify_impl_5a_3(inst), // INT_HORZ_VEC-UMINV#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_3REG_VEC-FMAXNMP_VEC_FP16#0,FP16_3REG_VEC-FADDP_VEC_FP16#0,FP16_3REG_VEC-FMUL_VEC_FP16#0,FP16_3REG_VEC-FCMGE_VEC_FP16#0,FP16_3REG_VEC-FACGE_VEC_FP16#0,FP16_3REG_VEC-FMAXP_VEC_FP16#0,FP16_3REG_VEC-FDIV_VEC_FP16#0,SQRDMLAH_VEC-SQRDMLAH#0,SQRDMLAH_VEC-SQRDMLSH#0,DOT_VEC-BFDOT_VEC#0,FCMLA_VEC-FCMLA_VEC#0,FCMLA_VEC-FCMLA_VEC#1,FCMLA_VEC-FCADD_VEC#0
 pub const fn classify_impl_5b(inst: u32) -> u32 {
   if (inst&0x400) != 0x400 { return 0; }
-  let idx = match (inst >> 11) & 0x1f {
+  
+  match (inst >> 11) & 0x1f {
     0x0 => 0x418d,
     0x1 => 0x0,
     0x2 => 0x418e,
@@ -11203,106 +11204,105 @@ pub const fn classify_impl_5b(inst: u32) -> u32 {
     0x1e => 0x5c01,
     0x1f => 0x5902,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // REV_VEC-REV32_VEC#1
 pub const fn classify_impl_5c_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3282;
+  0x3282
 }
 
 
 // ADDLP_VEC-UADDLP#1
 pub const fn classify_impl_5c_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3102;
+  0x3102
 }
 
 
 // ARITH1_VEC-USQADD_VEC#1
 pub const fn classify_impl_5c_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3083;
+  0x3083
 }
 
 
 // CLZ_VEC-CLZ_VEC#1
 pub const fn classify_impl_5c_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3181;
+  0x3181
 }
 
 
 // BIT_VEC-RBIT_VEC#0
 pub const fn classify_impl_5c_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3202;
+  0x3202
 }
 
 
 // ADDLP_VEC-UADALP#1
 pub const fn classify_impl_5c_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3103;
+  0x3103
 }
 
 
 // ARITH1_VEC-SQNEG_VEC#1
 pub const fn classify_impl_5c_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3084;
+  0x3084
 }
 
 
 // CMZERO_VEC-CMGE_ZERO_VEC#1
 pub const fn classify_impl_5c_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f83;
+  0x2f83
 }
 
 
 // CMZERO_VEC-CMLE_ZERO_VEC#1
 pub const fn classify_impl_5c_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f84;
+  0x2f84
 }
 
 
 // ARITH1_VEC-NEG_VEC#1
 pub const fn classify_impl_5c_a(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3085;
+  0x3085
 }
 
 
 // XTN_VEC-SQXTUN_VEC#1
 pub const fn classify_impl_5c_b(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3382;
+  0x3382
 }
 
 
 // SHLL_VEC_ESZ-SHLL_VEC_ESZ#1
 pub const fn classify_impl_5c_c(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4c00;
+  0x4c00
 }
 
 
 // XTN_VEC-UQXTN_VEC#1
 pub const fn classify_impl_5c_d(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3383;
+  0x3383
 }
 
 
 // FCVTN_VEC-FCVTXN#0
 pub const fn classify_impl_5c_e(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5182;
+  0x5182
 }
 
 // HADDSUB_VEC-UHADD#1,HADDSUB_VEC-URHADD#1,HADDSUB_VEC-UHSUB#1,QADDSUB_VEC-UQADD#1,QADDSUB_VEC-UQSUB#1,CMGT_VEC-CMHIV#1,CMGT_VEC-CMHSV#1,CMEQ_VEC-CMEQV#1,CMZERO_VEC-CMGE_ZERO_VEC#1,CMZERO_VEC-CMLE_ZERO_VEC#1,ARITH1_VEC-USQADD_VEC#1,ARITH1_VEC-SQNEG_VEC#1,ARITH1_VEC-NEG_VEC#1,ADDLP_VEC-UADDLP#1,ADDLP_VEC-UADALP#1,CLZ_VEC-CLZ_VEC#1,BIT_VEC-RBIT_VEC#0,REV_VEC-REV32_VEC#1,XTN_VEC-SQXTUN_VEC#1,XTN_VEC-UQXTN_VEC#1,SHL_REG_VEC-USHL#1,SHL_REG_VEC-UQSHL#1,SHL_REG_VEC-URSHL#1,SHL_REG_VEC-UQRSHL#1,MINMAX_VEC-UMAX#1,MINMAX_VEC-UMIN#1,MINMAX_VEC-UMAXP#1,MINMAX_VEC-UMINP#1,ABD_VEC-UABD#1,ABD_VEC-UABA#1,ADDSUB_VEC-SUB_VEC#1,MUL_VEC-MLS_VEC#1,SQDMULH_VEC-SQRDMULH#0,ANDOREOR_VEC-BSLV#0,ADDSUBL_VEC-UADDL#1,ADDSUBL_VEC-USUBL#1,ADDSUBW_VEC-UADDW#1,ADDSUBW_VEC-USUBW#1,ADDSUBHN_VEC-RADDHN#1,ADDSUBHN_VEC-RSUBHN#1,ABDL_VEC-UABAL#1,ABDL_VEC-UABDL#1,MULL_VEC-UMLAL#1,MULL_VEC-UMLSL#1,MULL_VEC-UMULL#1,SHLL_VEC_ESZ-SHLL_VEC_ESZ#1,FCVTN_VEC-FCVTXN#0
@@ -11455,28 +11455,28 @@ pub const fn classify_impl_5c(inst: u32) -> u32 {
     0xe => return classify_impl_5c_e(inst), // FCVTN_VEC-FCVTXN#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // INT_HORZ_VEC-UADDLV#1
 pub const fn classify_impl_5d_1_1(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5384;
+  0x5384
 }
 
 
 // INT_HORZ_VEC-UMAXV#1
 pub const fn classify_impl_5d_1_2(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5385;
+  0x5385
 }
 
 
 // INT_HORZ_VEC-UMINV#1
 pub const fn classify_impl_5d_1_3(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5386;
+  0x5386
 }
 
 // HADDSUB_VEC-UHADD#1,HADDSUB_VEC-URHADD#1,HADDSUB_VEC-UHSUB#1,QADDSUB_VEC-UQADD#1,QADDSUB_VEC-UQSUB#1,CMGT_VEC-CMHIV#1,CMGT_VEC-CMHSV#1,CMEQ_VEC-CMEQV#1,SHL_REG_VEC-USHL#1,SHL_REG_VEC-UQSHL#1,SHL_REG_VEC-URSHL#1,SHL_REG_VEC-UQRSHL#1,MINMAX_VEC-UMAX#1,MINMAX_VEC-UMIN#1,MINMAX_VEC-UMAXP#1,MINMAX_VEC-UMINP#1,ABD_VEC-UABD#1,ABD_VEC-UABA#1,ADDSUB_VEC-SUB_VEC#1,MUL_VEC-MLS_VEC#1,SQDMULH_VEC-SQRDMULH#0,ANDOREOR_VEC-BSLV#0,ADDSUBL_VEC-UADDL#1,ADDSUBL_VEC-USUBL#1,ADDSUBW_VEC-UADDW#1,ADDSUBW_VEC-USUBW#1,ADDSUBHN_VEC-RADDHN#1,ADDSUBHN_VEC-RSUBHN#1,ABDL_VEC-UABAL#1,ABDL_VEC-UABDL#1,MULL_VEC-UMLAL#1,MULL_VEC-UMLSL#1,MULL_VEC-UMULL#1,INT_HORZ_VEC-UADDLV#1,INT_HORZ_VEC-UMAXV#1,INT_HORZ_VEC-UMINV#1
@@ -11618,49 +11618,49 @@ pub const fn classify_impl_5d_1(inst: u32) -> u32 {
     0x3 => return classify_impl_5d_1_3(inst), // INT_HORZ_VEC-UMINV#1
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_2REG_VEC-FRINTA_VEC_FP16#0
 pub const fn classify_impl_5d_2_1(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x428f;
+  0x428f
 }
 
 
 // FP16_2REG_VEC-FRINTX_VEC_FP16#0
 pub const fn classify_impl_5d_2_2(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4290;
+  0x4290
 }
 
 
 // FP16_2REG_VEC-FCVTNU_VEC_FP16#0
 pub const fn classify_impl_5d_2_3(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4291;
+  0x4291
 }
 
 
 // FP16_2REG_VEC-FCVTMU_VEC_FP16#0
 pub const fn classify_impl_5d_2_4(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4292;
+  0x4292
 }
 
 
 // FP16_2REG_VEC-FCVTAU_VEC_FP16#0
 pub const fn classify_impl_5d_2_5(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4293;
+  0x4293
 }
 
 
 // FP16_2REG_VEC-UCVTF_VEC_FP16#0
 pub const fn classify_impl_5d_2_6(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4294;
+  0x4294
 }
 
 // HADDSUB_VEC-UHADD#1,HADDSUB_VEC-URHADD#1,HADDSUB_VEC-UHSUB#1,QADDSUB_VEC-UQADD#1,QADDSUB_VEC-UQSUB#1,CMGT_VEC-CMHIV#1,CMGT_VEC-CMHSV#1,CMEQ_VEC-CMEQV#1,SHL_REG_VEC-USHL#1,SHL_REG_VEC-UQSHL#1,SHL_REG_VEC-URSHL#1,SHL_REG_VEC-UQRSHL#1,MINMAX_VEC-UMAX#1,MINMAX_VEC-UMIN#1,MINMAX_VEC-UMAXP#1,MINMAX_VEC-UMINP#1,ABD_VEC-UABD#1,ABD_VEC-UABA#1,ADDSUB_VEC-SUB_VEC#1,MUL_VEC-MLS_VEC#1,SQDMULH_VEC-SQRDMULH#0,FP16_2REG_VEC-FRINTA_VEC_FP16#0,FP16_2REG_VEC-FRINTX_VEC_FP16#0,FP16_2REG_VEC-FCVTNU_VEC_FP16#0,FP16_2REG_VEC-FCVTMU_VEC_FP16#0,FP16_2REG_VEC-FCVTAU_VEC_FP16#0,FP16_2REG_VEC-UCVTF_VEC_FP16#0,ANDOREOR_VEC-BSLV#0,ADDSUBL_VEC-UADDL#1,ADDSUBL_VEC-USUBL#1,ADDSUBW_VEC-UADDW#1,ADDSUBW_VEC-USUBW#1,ADDSUBHN_VEC-RADDHN#1,ADDSUBHN_VEC-RSUBHN#1,ABDL_VEC-UABAL#1,ABDL_VEC-UABDL#1,MULL_VEC-UMLAL#1,MULL_VEC-UMLSL#1,MULL_VEC-UMULL#1
@@ -11741,7 +11741,7 @@ pub const fn classify_impl_5d_2(inst: u32) -> u32 {
     0x6 => return classify_impl_5d_2_6(inst), // FP16_2REG_VEC-UCVTF_VEC_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 // HADDSUB_VEC-UHADD#1,HADDSUB_VEC-URHADD#1,HADDSUB_VEC-UHSUB#1,QADDSUB_VEC-UQADD#1,QADDSUB_VEC-UQSUB#1,CMGT_VEC-CMHIV#1,CMGT_VEC-CMHSV#1,CMEQ_VEC-CMEQV#1,SHL_REG_VEC-USHL#1,SHL_REG_VEC-UQSHL#1,SHL_REG_VEC-URSHL#1,SHL_REG_VEC-UQRSHL#1,MINMAX_VEC-UMAX#1,MINMAX_VEC-UMIN#1,MINMAX_VEC-UMAXP#1,MINMAX_VEC-UMINP#1,ABD_VEC-UABD#1,ABD_VEC-UABA#1,ADDSUB_VEC-SUB_VEC#1,MUL_VEC-MLS_VEC#1,SQDMULH_VEC-SQRDMULH#0,FP16_2REG_VEC-FRINTA_VEC_FP16#0,FP16_2REG_VEC-FRINTX_VEC_FP16#0,FP16_2REG_VEC-FCVTNU_VEC_FP16#0,FP16_2REG_VEC-FCVTMU_VEC_FP16#0,FP16_2REG_VEC-FCVTAU_VEC_FP16#0,FP16_2REG_VEC-UCVTF_VEC_FP16#0,ANDOREOR_VEC-BSLV#0,ADDSUBL_VEC-UADDL#1,ADDSUBL_VEC-USUBL#1,ADDSUBW_VEC-UADDW#1,ADDSUBW_VEC-USUBW#1,ADDSUBHN_VEC-RADDHN#1,ADDSUBHN_VEC-RSUBHN#1,ABDL_VEC-UABAL#1,ABDL_VEC-UABDL#1,MULL_VEC-UMLAL#1,MULL_VEC-UMLSL#1,MULL_VEC-UMULL#1,INT_HORZ_VEC-UADDLV#1,INT_HORZ_VEC-UMAXV#1,INT_HORZ_VEC-UMINV#1
@@ -11756,14 +11756,15 @@ pub const fn classify_impl_5d(inst: u32) -> u32 {
     0x2 => return classify_impl_5d_2(inst), // HADDSUB_VEC-UHADD#1,HADDSUB_VEC-URHADD#1,HADDSUB_VEC-UHSUB#1,QADDSUB_VEC-UQADD#1,QADDSUB_VEC-UQSUB#1,CMGT_VEC-CMHIV#1,CMGT_VEC-CMHSV#1,CMEQ_VEC-CMEQV#1,SHL_REG_VEC-USHL#1,SHL_REG_VEC-UQSHL#1,SHL_REG_VEC-URSHL#1,SHL_REG_VEC-UQRSHL#1,MINMAX_VEC-UMAX#1,MINMAX_VEC-UMIN#1,MINMAX_VEC-UMAXP#1,MINMAX_VEC-UMINP#1,ABD_VEC-UABD#1,ABD_VEC-UABA#1,ADDSUB_VEC-SUB_VEC#1,MUL_VEC-MLS_VEC#1,SQDMULH_VEC-SQRDMULH#0,FP16_2REG_VEC-FRINTA_VEC_FP16#0,FP16_2REG_VEC-FRINTX_VEC_FP16#0,FP16_2REG_VEC-FCVTNU_VEC_FP16#0,FP16_2REG_VEC-FCVTMU_VEC_FP16#0,FP16_2REG_VEC-FCVTAU_VEC_FP16#0,FP16_2REG_VEC-UCVTF_VEC_FP16#0,ANDOREOR_VEC-BSLV#0,ADDSUBL_VEC-UADDL#1,ADDSUBL_VEC-USUBL#1,ADDSUBW_VEC-UADDW#1,ADDSUBW_VEC-USUBW#1,ADDSUBHN_VEC-RADDHN#1,ADDSUBHN_VEC-RSUBHN#1,ABDL_VEC-UABAL#1,ABDL_VEC-UABDL#1,MULL_VEC-UMLAL#1,MULL_VEC-UMLSL#1,MULL_VEC-UMULL#1
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SQRDMLAH_VEC-SQRDMLAH#1,SQRDMLAH_VEC-SQRDMLSH#1,DOT_VEC-UDOT_VEC#0,FCMLA_VEC-FCMLA_VEC#2,FCMLA_VEC-FCMLA_VEC#3,FCMLA_VEC-FCADD_VEC#1
 pub const fn classify_impl_5e(inst: u32) -> u32 {
   if (inst&0x8400) != 0x8400 { return 0; }
-  let idx = match (inst >> 11) & 0xf {
+  
+  match (inst >> 11) & 0xf {
     0x0 => 0x4800,
     0x1 => 0x4801,
     0x2 => 0x5903,
@@ -11781,148 +11782,147 @@ pub const fn classify_impl_5e(inst: u32) -> u32 {
     0xe => 0x5c01,
     0xf => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ADDLP_VEC-UADDLP#2
 pub const fn classify_impl_5f_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3102;
+  0x3102
 }
 
 
 // ARITH1_VEC-USQADD_VEC#2
 pub const fn classify_impl_5f_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3083;
+  0x3083
 }
 
 
 // CLZ_VEC-CLZ_VEC#2
 pub const fn classify_impl_5f_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3181;
+  0x3181
 }
 
 
 // ADDLP_VEC-UADALP#2
 pub const fn classify_impl_5f_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3103;
+  0x3103
 }
 
 
 // ARITH1_VEC-SQNEG_VEC#2
 pub const fn classify_impl_5f_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3084;
+  0x3084
 }
 
 
 // CMZERO_VEC-CMGE_ZERO_VEC#2
 pub const fn classify_impl_5f_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f83;
+  0x2f83
 }
 
 
 // CMZERO_VEC-CMLE_ZERO_VEC#2
 pub const fn classify_impl_5f_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f84;
+  0x2f84
 }
 
 
 // ARITH1_VEC-NEG_VEC#2
 pub const fn classify_impl_5f_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3085;
+  0x3085
 }
 
 
 // FCMP_ZERO_VEC-FCMGE_ZERO_VEC#0
 pub const fn classify_impl_5f_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b03;
+  0x3b03
 }
 
 
 // FCMP_ZERO_VEC-FCMLE_ZERO_VEC#0
 pub const fn classify_impl_5f_a(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b04;
+  0x3b04
 }
 
 
 // FARITH1_VEC-FNEG_VEC#0
 pub const fn classify_impl_5f_b(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b81;
+  0x3b81
 }
 
 
 // XTN_VEC-SQXTUN_VEC#2
 pub const fn classify_impl_5f_c(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3382;
+  0x3382
 }
 
 
 // SHLL_VEC_ESZ-SHLL_VEC_ESZ#2
 pub const fn classify_impl_5f_d(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4c00;
+  0x4c00
 }
 
 
 // XTN_VEC-UQXTN_VEC#2
 pub const fn classify_impl_5f_e(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3383;
+  0x3383
 }
 
 
 // FRINT_VEC-FRINTI_VEC#0
 pub const fn classify_impl_5f_f(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5206;
+  0x5206
 }
 
 
 // FCVT_VEC-FCVTPU_VEC#0
 pub const fn classify_impl_5f_10(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f08;
+  0x4f08
 }
 
 
 // FCVT_VEC-FCVTZU_VEC#0
 pub const fn classify_impl_5f_11(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f09;
+  0x4f09
 }
 
 
 // FRECP_VEC-URSQRTE_VEC#0
 pub const fn classify_impl_5f_12(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3d82;
+  0x3d82
 }
 
 
 // FRECP_VEC-FRSQRTE_VEC#0
 pub const fn classify_impl_5f_13(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3d83;
+  0x3d83
 }
 
 
 // FARITH1_VEC-FSQRT_VEC#0
 pub const fn classify_impl_5f_14(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b82;
+  0x3b82
 }
 
 // HADDSUB_VEC-UHADD#2,HADDSUB_VEC-URHADD#2,HADDSUB_VEC-UHSUB#2,QADDSUB_VEC-UQADD#2,QADDSUB_VEC-UQSUB#2,CMGT_VEC-CMHIV#2,CMGT_VEC-CMHSV#2,CMEQ_VEC-CMEQV#2,CMZERO_VEC-CMGE_ZERO_VEC#2,CMZERO_VEC-CMLE_ZERO_VEC#2,ARITH1_VEC-USQADD_VEC#2,ARITH1_VEC-SQNEG_VEC#2,ARITH1_VEC-NEG_VEC#2,ADDLP_VEC-UADDLP#2,ADDLP_VEC-UADALP#2,CLZ_VEC-CLZ_VEC#2,XTN_VEC-SQXTUN_VEC#2,XTN_VEC-UQXTN_VEC#2,SHL_REG_VEC-USHL#2,SHL_REG_VEC-UQSHL#2,SHL_REG_VEC-URSHL#2,SHL_REG_VEC-UQRSHL#2,MINMAX_VEC-UMAX#2,MINMAX_VEC-UMIN#2,MINMAX_VEC-UMAXP#2,MINMAX_VEC-UMINP#2,ABD_VEC-UABD#2,ABD_VEC-UABA#2,ADDSUB_VEC-SUB_VEC#2,MUL_VEC-MLS_VEC#2,SQDMULH_VEC-SQRDMULH#1,FMINMAX_VEC-FMINNMP_VEC#0,FMINMAX_VEC-FMINP_VEC#0,FCMP_REG_VEC-FCMGT_VEC#0,FCMP_REG_VEC-FACGT_VEC#0,FCMP_ZERO_VEC-FCMGE_ZERO_VEC#0,FCMP_ZERO_VEC-FCMLE_ZERO_VEC#0,FARITH1_VEC-FNEG_VEC#0,FARITH1_VEC-FSQRT_VEC#0,FADDSUB_VEC-FABD_VEC#0,FRECP_VEC-URSQRTE_VEC#0,FRECP_VEC-FRSQRTE_VEC#0,ANDOREOR_VEC-BITV#0,ADDSUBL_VEC-UADDL#2,ADDSUBL_VEC-USUBL#2,ADDSUBW_VEC-UADDW#2,ADDSUBW_VEC-USUBW#2,ADDSUBHN_VEC-RADDHN#2,ADDSUBHN_VEC-RSUBHN#2,ABDL_VEC-UABAL#2,ABDL_VEC-UABDL#2,MULL_VEC-UMLAL#2,MULL_VEC-UMLSL#2,MULL_VEC-UMULL#2,SHLL_VEC_ESZ-SHLL_VEC_ESZ#2,FCVT_VEC-FCVTPU_VEC#0,FCVT_VEC-FCVTZU_VEC#0,FRINT_VEC-FRINTI_VEC#0,FHM_VEC-FMLSL2_VEC#0
@@ -12081,13 +12081,14 @@ pub const fn classify_impl_5f(inst: u32) -> u32 {
     0x14 => return classify_impl_5f_14(inst), // FARITH1_VEC-FSQRT_VEC#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // HADDSUB_VEC-UHADD#2,HADDSUB_VEC-URHADD#2,HADDSUB_VEC-UHSUB#2,QADDSUB_VEC-UQADD#2,QADDSUB_VEC-UQSUB#2,CMGT_VEC-CMHIV#2,CMGT_VEC-CMHSV#2,CMEQ_VEC-CMEQV#2,SHL_REG_VEC-USHL#2,SHL_REG_VEC-UQSHL#2,SHL_REG_VEC-URSHL#2,SHL_REG_VEC-UQRSHL#2,MINMAX_VEC-UMAX#2,MINMAX_VEC-UMIN#2,MINMAX_VEC-UMAXP#2,MINMAX_VEC-UMINP#2,ABD_VEC-UABD#2,ABD_VEC-UABA#2,ADDSUB_VEC-SUB_VEC#2,MUL_VEC-MLS_VEC#2,SQDMULH_VEC-SQRDMULH#1,FMINMAX_VEC-FMINNMP_VEC#0,FMINMAX_VEC-FMINP_VEC#0,FCMP_REG_VEC-FCMGT_VEC#0,FCMP_REG_VEC-FACGT_VEC#0,FADDSUB_VEC-FABD_VEC#0,ANDOREOR_VEC-BITV#0,ADDSUBL_VEC-UADDL#2,ADDSUBL_VEC-USUBL#2,ADDSUBW_VEC-UADDW#2,ADDSUBW_VEC-USUBW#2,ADDSUBHN_VEC-RADDHN#2,ADDSUBHN_VEC-RSUBHN#2,ABDL_VEC-UABAL#2,ABDL_VEC-UABDL#2,MULL_VEC-UMLAL#2,MULL_VEC-UMLSL#2,MULL_VEC-UMULL#2,FHM_VEC-FMLSL2_VEC#0
 pub const fn classify_impl_60(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x4382,
     0x1 => 0x2b83,
     0x2 => 0x0,
@@ -12153,15 +12154,15 @@ pub const fn classify_impl_60(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FP16_3REG_VEC-FMINNMP_VEC_FP16#0,FP16_3REG_VEC-FABD_VEC_FP16#0,FP16_3REG_VEC-FCMGT_VEC_FP16#0,FP16_3REG_VEC-FACGT_VEC_FP16#0,FP16_3REG_VEC-FMINP_VEC_FP16#0,FMLAL_VEC-BFMLALB_VEC#0
 pub const fn classify_impl_61(inst: u32) -> u32 {
   if (inst&0x400) != 0x400 { return 0; }
-  let idx = match (inst >> 11) & 0x1f {
+  
+  match (inst >> 11) & 0x1f {
     0x0 => 0x4194,
     0x1 => 0x0,
     0x2 => 0x4195,
@@ -12195,78 +12196,77 @@ pub const fn classify_impl_61(inst: u32) -> u32 {
     0x1e => 0x0,
     0x1f => 0x5a01,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ANDOREOR_VEC-BIFV#0
 pub const fn classify_impl_62(inst: u32) -> u32 {
   if (inst&0xfc00) != 0x1c00 { return 0; }
-  return 0x4307;
+  0x4307
 }
 
 
 // ANDOREOR_VEC-BIFV#0
 pub const fn classify_impl_63_1(inst: u32) -> u32 {
   if (inst&0x400) != 0x400 { return 0; }
-  return 0x4307;
+  0x4307
 }
 
 
 // FP16_2REG_VEC-FCMGE_ZERO_VEC_FP16#0
 pub const fn classify_impl_63_2(inst: u32) -> u32 {
   if (inst&0xe0400) != 0x80000 { return 0; }
-  return 0x4295;
+  0x4295
 }
 
 
 // FP16_2REG_VEC-FCMLE_ZERO_VEC_FP16#0
 pub const fn classify_impl_63_3(inst: u32) -> u32 {
   if (inst&0xe0400) != 0x80000 { return 0; }
-  return 0x4296;
+  0x4296
 }
 
 
 // FP16_2REG_VEC-FNEG_VEC_FP16#0
 pub const fn classify_impl_63_4(inst: u32) -> u32 {
   if (inst&0xe0400) != 0x80000 { return 0; }
-  return 0x4297;
+  0x4297
 }
 
 
 // FP16_2REG_VEC-FRINTI_VEC_FP16#0
 pub const fn classify_impl_63_5(inst: u32) -> u32 {
   if (inst&0xe0400) != 0x80000 { return 0; }
-  return 0x4298;
+  0x4298
 }
 
 
 // FP16_2REG_VEC-FCVTPU_VEC_FP16#0
 pub const fn classify_impl_63_6(inst: u32) -> u32 {
   if (inst&0xe0400) != 0x80000 { return 0; }
-  return 0x4299;
+  0x4299
 }
 
 
 // FP16_2REG_VEC-FCVTZU_VEC_FP16#0
 pub const fn classify_impl_63_7(inst: u32) -> u32 {
   if (inst&0xe0400) != 0x80000 { return 0; }
-  return 0x429a;
+  0x429a
 }
 
 
 // FP16_2REG_VEC-FRSQRTE_VEC_FP16#0
 pub const fn classify_impl_63_8(inst: u32) -> u32 {
   if (inst&0xe0400) != 0x80000 { return 0; }
-  return 0x429b;
+  0x429b
 }
 
 
 // FP16_2REG_VEC-FSQRT_VEC_FP16#0
 pub const fn classify_impl_63_9(inst: u32) -> u32 {
   if (inst&0xe0400) != 0x80000 { return 0; }
-  return 0x429c;
+  0x429c
 }
 
 // FP16_2REG_VEC-FCMGE_ZERO_VEC_FP16#0,FP16_2REG_VEC-FCMLE_ZERO_VEC_FP16#0,FP16_2REG_VEC-FNEG_VEC_FP16#0,FP16_2REG_VEC-FRINTI_VEC_FP16#0,FP16_2REG_VEC-FCVTPU_VEC_FP16#0,FP16_2REG_VEC-FCVTZU_VEC_FP16#0,FP16_2REG_VEC-FRSQRTE_VEC_FP16#0,FP16_2REG_VEC-FSQRT_VEC_FP16#0,ANDOREOR_VEC-BIFV#0
@@ -12319,77 +12319,77 @@ pub const fn classify_impl_63(inst: u32) -> u32 {
     0x9 => return classify_impl_63_9(inst), // FP16_2REG_VEC-FSQRT_VEC_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SIMD_IMM-MVNI32#0
 pub const fn classify_impl_64_1_1(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d08;
+  0x5d08
 }
 
 
 // SIMD_IMM-BICI32#0
 pub const fn classify_impl_64_1_2(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d09;
+  0x5d09
 }
 
 
 // SIMD_IMM-MVNI32#1
 pub const fn classify_impl_64_1_3(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d08;
+  0x5d08
 }
 
 
 // SIMD_IMM-BICI32#1
 pub const fn classify_impl_64_1_4(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d09;
+  0x5d09
 }
 
 
 // SIMD_IMM-MVNI32#2
 pub const fn classify_impl_64_1_5(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d08;
+  0x5d08
 }
 
 
 // SIMD_IMM-BICI32#2
 pub const fn classify_impl_64_1_6(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d09;
+  0x5d09
 }
 
 
 // SIMD_IMM-MVNI32#3
 pub const fn classify_impl_64_1_7(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d08;
+  0x5d08
 }
 
 
 // SIMD_IMM-BICI32#3
 pub const fn classify_impl_64_1_8(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d09;
+  0x5d09
 }
 
 
 // SIMD_IMM-MVNI16#0
 pub const fn classify_impl_64_1_9(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d0a;
+  0x5d0a
 }
 
 
 // SIMD_IMM-BICI16#0
 pub const fn classify_impl_64_1_a_1(inst: u32) -> u32 {
   if (inst&0x800) != 0x0 { return 0; }
-  return 0x5d0b;
+  0x5d0b
 }
 
 // FMUL_ELEM_FP16-FMULX_ELEM_FP16#0,SIMD_IMM-BICI16#0
@@ -12403,42 +12403,42 @@ pub const fn classify_impl_64_1_a(inst: u32) -> u32 {
     0x1 => return classify_impl_64_1_a_1(inst), // SIMD_IMM-BICI16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SIMD_IMM-MVNI16#1
 pub const fn classify_impl_64_1_b(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d0a;
+  0x5d0a
 }
 
 
 // SIMD_IMM-BICI16#1
 pub const fn classify_impl_64_1_c(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d0b;
+  0x5d0b
 }
 
 
 // SIMD_IMM-MVNI32_MSL#0
 pub const fn classify_impl_64_1_d(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d0c;
+  0x5d0c
 }
 
 
 // SIMD_IMM-MVNI32_MSL#1
 pub const fn classify_impl_64_1_e(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d0c;
+  0x5d0c
 }
 
 
 // SIMD_IMM-MOVI64#0
 pub const fn classify_impl_64_1_f(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d0d;
+  0x5d0d
 }
 
 // FMUL_ELEM_FP16-FMULX_ELEM_FP16#0,SIMD_IMM-MVNI32#0,SIMD_IMM-MVNI32#1,SIMD_IMM-MVNI32#2,SIMD_IMM-MVNI32#3,SIMD_IMM-BICI32#0,SIMD_IMM-BICI32#1,SIMD_IMM-BICI32#2,SIMD_IMM-BICI32#3,SIMD_IMM-MVNI16#0,SIMD_IMM-MVNI16#1,SIMD_IMM-BICI16#0,SIMD_IMM-BICI16#1,SIMD_IMM-MVNI32_MSL#0,SIMD_IMM-MVNI32_MSL#1,SIMD_IMM-MOVI64#0
@@ -12480,13 +12480,14 @@ pub const fn classify_impl_64_1(inst: u32) -> u32 {
     0xf => return classify_impl_64_1_f(inst), // SIMD_IMM-MOVI64#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-USHR#0,SHR_VEC_IMM-USRA#0,SHR_VEC_IMM-URSHR#0,SHR_VEC_IMM-URSRA#0,QSHL_VEC_IMM-SQSHLU_IMM#0,QSHL_VEC_IMM-UQSHL_IMM#0,SHRN_VEC_IMM-SQSHRUN#0,SHRN_VEC_IMM-SQRSHRUN#0,SHRN_VEC_IMM-UQSHRN#0,SHRN_VEC_IMM-UQRSHRN#0,SHLL_VEC_IMM-USHLL#0,SHIFT_VEC_IMM-SRI#0,SHIFT_VEC_IMM-SLI#0,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
 pub const fn classify_impl_64_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4904,
     0x2 => 0x0,
@@ -12552,8 +12553,7 @@ pub const fn classify_impl_64_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-USHR#0,SHR_VEC_IMM-USRA#0,SHR_VEC_IMM-URSHR#0,SHR_VEC_IMM-URSRA#0,QSHL_VEC_IMM-SQSHLU_IMM#0,QSHL_VEC_IMM-UQSHL_IMM#0,SHRN_VEC_IMM-SQSHRUN#0,SHRN_VEC_IMM-SQRSHRUN#0,SHRN_VEC_IMM-UQSHRN#0,SHRN_VEC_IMM-UQRSHRN#0,SHLL_VEC_IMM-USHLL#0,SHIFT_VEC_IMM-SRI#0,SHIFT_VEC_IMM-SLI#0,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0,SIMD_IMM-MVNI32#0,SIMD_IMM-MVNI32#1,SIMD_IMM-MVNI32#2,SIMD_IMM-MVNI32#3,SIMD_IMM-BICI32#0,SIMD_IMM-BICI32#1,SIMD_IMM-BICI32#2,SIMD_IMM-BICI32#3,SIMD_IMM-MVNI16#0,SIMD_IMM-MVNI16#1,SIMD_IMM-BICI16#0,SIMD_IMM-BICI16#1,SIMD_IMM-MVNI32_MSL#0,SIMD_IMM-MVNI32_MSL#1,SIMD_IMM-MOVI64#0
@@ -12568,13 +12568,14 @@ pub const fn classify_impl_64(inst: u32) -> u32 {
     0x2 => return classify_impl_64_2(inst), // SHR_VEC_IMM-USHR#0,SHR_VEC_IMM-USRA#0,SHR_VEC_IMM-URSHR#0,SHR_VEC_IMM-URSRA#0,QSHL_VEC_IMM-SQSHLU_IMM#0,QSHL_VEC_IMM-UQSHL_IMM#0,SHRN_VEC_IMM-SQSHRUN#0,SHRN_VEC_IMM-SQRSHRUN#0,SHRN_VEC_IMM-UQSHRN#0,SHRN_VEC_IMM-UQRSHRN#0,SHLL_VEC_IMM-USHLL#0,SHIFT_VEC_IMM-SRI#0,SHIFT_VEC_IMM-SLI#0,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-USHR#1,SHR_VEC_IMM-USRA#1,SHR_VEC_IMM-URSHR#1,SHR_VEC_IMM-URSRA#1,QSHL_VEC_IMM-SQSHLU_IMM#1,QSHL_VEC_IMM-UQSHL_IMM#1,SHRN_VEC_IMM-SQSHRUN#1,SHRN_VEC_IMM-SQRSHRUN#1,SHRN_VEC_IMM-UQSHRN#1,SHRN_VEC_IMM-UQRSHRN#1,SHLL_VEC_IMM-USHLL#1,SHIFT_VEC_IMM-SRI#1,SHIFT_VEC_IMM-SLI#1,FCVT_VEC_FIXED-UCVTF_VEC_FIX_FP16#0,FCVT_VEC_FIXED-FCVTZU_VEC_FIX_FP16#0,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
 pub const fn classify_impl_65_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4904,
     0x2 => 0x0,
@@ -12640,14 +12641,14 @@ pub const fn classify_impl_65_1(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4e05,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-USHR#2,SHR_VEC_IMM-USRA#2,SHR_VEC_IMM-URSHR#2,SHR_VEC_IMM-URSRA#2,QSHL_VEC_IMM-SQSHLU_IMM#2,QSHL_VEC_IMM-UQSHL_IMM#2,SHRN_VEC_IMM-SQSHRUN#2,SHRN_VEC_IMM-SQRSHRUN#2,SHRN_VEC_IMM-UQSHRN#2,SHRN_VEC_IMM-UQRSHRN#2,SHLL_VEC_IMM-USHLL#2,SHIFT_VEC_IMM-SRI#2,SHIFT_VEC_IMM-SLI#2,FCVT_VEC_FIXED-UCVTF_VEC_FIX_FP16#1,FCVT_VEC_FIXED-FCVTZU_VEC_FIX_FP16#1,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
 pub const fn classify_impl_65_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4904,
     0x2 => 0x0,
@@ -12713,8 +12714,7 @@ pub const fn classify_impl_65_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4e05,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-USHR#1,SHR_VEC_IMM-USHR#2,SHR_VEC_IMM-USRA#1,SHR_VEC_IMM-USRA#2,SHR_VEC_IMM-URSHR#1,SHR_VEC_IMM-URSHR#2,SHR_VEC_IMM-URSRA#1,SHR_VEC_IMM-URSRA#2,QSHL_VEC_IMM-SQSHLU_IMM#1,QSHL_VEC_IMM-SQSHLU_IMM#2,QSHL_VEC_IMM-UQSHL_IMM#1,QSHL_VEC_IMM-UQSHL_IMM#2,SHRN_VEC_IMM-SQSHRUN#1,SHRN_VEC_IMM-SQSHRUN#2,SHRN_VEC_IMM-SQRSHRUN#1,SHRN_VEC_IMM-SQRSHRUN#2,SHRN_VEC_IMM-UQSHRN#1,SHRN_VEC_IMM-UQSHRN#2,SHRN_VEC_IMM-UQRSHRN#1,SHRN_VEC_IMM-UQRSHRN#2,SHLL_VEC_IMM-USHLL#1,SHLL_VEC_IMM-USHLL#2,SHIFT_VEC_IMM-SRI#1,SHIFT_VEC_IMM-SRI#2,SHIFT_VEC_IMM-SLI#1,SHIFT_VEC_IMM-SLI#2,FCVT_VEC_FIXED-UCVTF_VEC_FIX_FP16#0,FCVT_VEC_FIXED-UCVTF_VEC_FIX_FP16#1,FCVT_VEC_FIXED-FCVTZU_VEC_FIX_FP16#0,FCVT_VEC_FIXED-FCVTZU_VEC_FIX_FP16#1,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
@@ -12729,13 +12729,14 @@ pub const fn classify_impl_65(inst: u32) -> u32 {
     0x2 => return classify_impl_65_2(inst), // SHR_VEC_IMM-USHR#2,SHR_VEC_IMM-USRA#2,SHR_VEC_IMM-URSHR#2,SHR_VEC_IMM-URSRA#2,QSHL_VEC_IMM-SQSHLU_IMM#2,QSHL_VEC_IMM-UQSHL_IMM#2,SHRN_VEC_IMM-SQSHRUN#2,SHRN_VEC_IMM-SQRSHRUN#2,SHRN_VEC_IMM-UQSHRN#2,SHRN_VEC_IMM-UQRSHRN#2,SHLL_VEC_IMM-USHLL#2,SHIFT_VEC_IMM-SRI#2,SHIFT_VEC_IMM-SLI#2,FCVT_VEC_FIXED-UCVTF_VEC_FIX_FP16#1,FCVT_VEC_FIXED-FCVTZU_VEC_FIX_FP16#1,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-USHR#3,SHR_VEC_IMM-USRA#3,SHR_VEC_IMM-URSHR#3,SHR_VEC_IMM-URSRA#3,QSHL_VEC_IMM-SQSHLU_IMM#3,QSHL_VEC_IMM-UQSHL_IMM#3,SHRN_VEC_IMM-SQSHRUN#3,SHRN_VEC_IMM-SQRSHRUN#3,SHRN_VEC_IMM-UQSHRN#3,SHRN_VEC_IMM-UQRSHRN#3,SHLL_VEC_IMM-USHLL#3,SHIFT_VEC_IMM-SRI#3,SHIFT_VEC_IMM-SLI#3,FCVT_VEC_FIXED-UCVTF_VEC_FIX#0,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#0,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
 pub const fn classify_impl_66_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4904,
     0x2 => 0x0,
@@ -12801,14 +12802,14 @@ pub const fn classify_impl_66_1(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4e07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-USHR#4,SHR_VEC_IMM-USRA#4,SHR_VEC_IMM-URSHR#4,SHR_VEC_IMM-URSRA#4,QSHL_VEC_IMM-SQSHLU_IMM#4,QSHL_VEC_IMM-UQSHL_IMM#4,SHRN_VEC_IMM-SQSHRUN#4,SHRN_VEC_IMM-SQRSHRUN#4,SHRN_VEC_IMM-UQSHRN#4,SHRN_VEC_IMM-UQRSHRN#4,SHLL_VEC_IMM-USHLL#4,SHIFT_VEC_IMM-SRI#4,SHIFT_VEC_IMM-SLI#4,FCVT_VEC_FIXED-UCVTF_VEC_FIX#1,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#1,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
 pub const fn classify_impl_66_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4904,
     0x2 => 0x0,
@@ -12874,8 +12875,7 @@ pub const fn classify_impl_66_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4e07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-USHR#3,SHR_VEC_IMM-USHR#4,SHR_VEC_IMM-USRA#3,SHR_VEC_IMM-USRA#4,SHR_VEC_IMM-URSHR#3,SHR_VEC_IMM-URSHR#4,SHR_VEC_IMM-URSRA#3,SHR_VEC_IMM-URSRA#4,QSHL_VEC_IMM-SQSHLU_IMM#3,QSHL_VEC_IMM-SQSHLU_IMM#4,QSHL_VEC_IMM-UQSHL_IMM#3,QSHL_VEC_IMM-UQSHL_IMM#4,SHRN_VEC_IMM-SQSHRUN#3,SHRN_VEC_IMM-SQSHRUN#4,SHRN_VEC_IMM-SQRSHRUN#3,SHRN_VEC_IMM-SQRSHRUN#4,SHRN_VEC_IMM-UQSHRN#3,SHRN_VEC_IMM-UQSHRN#4,SHRN_VEC_IMM-UQRSHRN#3,SHRN_VEC_IMM-UQRSHRN#4,SHLL_VEC_IMM-USHLL#3,SHLL_VEC_IMM-USHLL#4,SHIFT_VEC_IMM-SRI#3,SHIFT_VEC_IMM-SRI#4,SHIFT_VEC_IMM-SLI#3,SHIFT_VEC_IMM-SLI#4,FCVT_VEC_FIXED-UCVTF_VEC_FIX#0,FCVT_VEC_FIXED-UCVTF_VEC_FIX#1,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#0,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#1,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
@@ -12890,13 +12890,14 @@ pub const fn classify_impl_66(inst: u32) -> u32 {
     0x2 => return classify_impl_66_2(inst), // SHR_VEC_IMM-USHR#4,SHR_VEC_IMM-USRA#4,SHR_VEC_IMM-URSHR#4,SHR_VEC_IMM-URSRA#4,QSHL_VEC_IMM-SQSHLU_IMM#4,QSHL_VEC_IMM-UQSHL_IMM#4,SHRN_VEC_IMM-SQSHRUN#4,SHRN_VEC_IMM-SQRSHRUN#4,SHRN_VEC_IMM-UQSHRN#4,SHRN_VEC_IMM-UQRSHRN#4,SHLL_VEC_IMM-USHLL#4,SHIFT_VEC_IMM-SRI#4,SHIFT_VEC_IMM-SLI#4,FCVT_VEC_FIXED-UCVTF_VEC_FIX#1,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#1,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-USHR#5,SHR_VEC_IMM-USRA#5,SHR_VEC_IMM-URSHR#5,SHR_VEC_IMM-URSRA#5,QSHL_VEC_IMM-SQSHLU_IMM#5,QSHL_VEC_IMM-UQSHL_IMM#5,SHRN_VEC_IMM-SQSHRUN#5,SHRN_VEC_IMM-SQRSHRUN#5,SHRN_VEC_IMM-UQSHRN#5,SHRN_VEC_IMM-UQRSHRN#5,SHLL_VEC_IMM-USHLL#5,SHIFT_VEC_IMM-SRI#5,SHIFT_VEC_IMM-SLI#5,FCVT_VEC_FIXED-UCVTF_VEC_FIX#2,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#2,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
 pub const fn classify_impl_67_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4904,
     0x2 => 0x0,
@@ -12962,14 +12963,14 @@ pub const fn classify_impl_67_1(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4e07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-USHR#6,SHR_VEC_IMM-USRA#6,SHR_VEC_IMM-URSHR#6,SHR_VEC_IMM-URSRA#6,QSHL_VEC_IMM-SQSHLU_IMM#6,QSHL_VEC_IMM-UQSHL_IMM#6,SHRN_VEC_IMM-SQSHRUN#6,SHRN_VEC_IMM-SQRSHRUN#6,SHRN_VEC_IMM-UQSHRN#6,SHRN_VEC_IMM-UQRSHRN#6,SHLL_VEC_IMM-USHLL#6,SHIFT_VEC_IMM-SRI#6,SHIFT_VEC_IMM-SLI#6,FCVT_VEC_FIXED-UCVTF_VEC_FIX#3,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#3,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
 pub const fn classify_impl_67_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4904,
     0x2 => 0x0,
@@ -13035,8 +13036,7 @@ pub const fn classify_impl_67_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4e07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-USHR#5,SHR_VEC_IMM-USHR#6,SHR_VEC_IMM-USRA#5,SHR_VEC_IMM-USRA#6,SHR_VEC_IMM-URSHR#5,SHR_VEC_IMM-URSHR#6,SHR_VEC_IMM-URSRA#5,SHR_VEC_IMM-URSRA#6,QSHL_VEC_IMM-SQSHLU_IMM#5,QSHL_VEC_IMM-SQSHLU_IMM#6,QSHL_VEC_IMM-UQSHL_IMM#5,QSHL_VEC_IMM-UQSHL_IMM#6,SHRN_VEC_IMM-SQSHRUN#5,SHRN_VEC_IMM-SQSHRUN#6,SHRN_VEC_IMM-SQRSHRUN#5,SHRN_VEC_IMM-SQRSHRUN#6,SHRN_VEC_IMM-UQSHRN#5,SHRN_VEC_IMM-UQSHRN#6,SHRN_VEC_IMM-UQRSHRN#5,SHRN_VEC_IMM-UQRSHRN#6,SHLL_VEC_IMM-USHLL#5,SHLL_VEC_IMM-USHLL#6,SHIFT_VEC_IMM-SRI#5,SHIFT_VEC_IMM-SRI#6,SHIFT_VEC_IMM-SLI#5,SHIFT_VEC_IMM-SLI#6,FCVT_VEC_FIXED-UCVTF_VEC_FIX#2,FCVT_VEC_FIXED-UCVTF_VEC_FIX#3,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#2,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#3,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
@@ -13051,14 +13051,14 @@ pub const fn classify_impl_67(inst: u32) -> u32 {
     0x2 => return classify_impl_67_2(inst), // SHR_VEC_IMM-USHR#6,SHR_VEC_IMM-USRA#6,SHR_VEC_IMM-URSHR#6,SHR_VEC_IMM-URSRA#6,QSHL_VEC_IMM-SQSHLU_IMM#6,QSHL_VEC_IMM-UQSHL_IMM#6,SHRN_VEC_IMM-SQSHRUN#6,SHRN_VEC_IMM-SQRSHRUN#6,SHRN_VEC_IMM-UQSHRN#6,SHRN_VEC_IMM-UQRSHRN#6,SHLL_VEC_IMM-USHLL#6,SHIFT_VEC_IMM-SRI#6,SHIFT_VEC_IMM-SLI#6,FCVT_VEC_FIXED-UCVTF_VEC_FIX#3,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#3,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FCMLA_ELEM-FCMLA_ELEM#0
 pub const fn classify_impl_68_1(inst: u32) -> u32 {
   if (inst&0x800) != 0x0 { return 0; }
-  return 0x5c80;
+  0x5c80
 }
 
 // MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL_ELEM#0,MULL_ELEM-UMLSL_ELEM#0,MULL_ELEM-UMULL_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#0
@@ -13087,14 +13087,14 @@ pub const fn classify_impl_68(inst: u32) -> u32 {
     0x1 => return classify_impl_68_1(inst), // FCMLA_ELEM-FCMLA_ELEM#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FCMLA_ELEM-FCMLA_ELEM#1
 pub const fn classify_impl_69_1(inst: u32) -> u32 {
   if (inst&0x800) != 0x0 { return 0; }
-  return 0x5c80;
+  0x5c80
 }
 
 // MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL_ELEM#0,MULL_ELEM-UMLSL_ELEM#0,MULL_ELEM-UMULL_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#1
@@ -13123,14 +13123,15 @@ pub const fn classify_impl_69(inst: u32) -> u32 {
     0x1 => return classify_impl_69_1(inst), // FCMLA_ELEM-FCMLA_ELEM#1
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // MUL_ELEM-MLA_ELEM#1,MUL_ELEM-MLS_ELEM#1,MUL_ELEM-SQRDMLAH_ELEM#1,MUL_ELEM-SQRDMLSH_ELEM#1,MULL_ELEM-UMLAL_ELEM#1,MULL_ELEM-UMLSL_ELEM#1,MULL_ELEM-UMULL_ELEM#1,FMUL_ELEM-FMULX_ELEM#0,DOT_ELEM-UDOT_ELEM#0,FHM_ELEM-FMLAL2_ELEM#0,FHM_ELEM-FMLSL2_ELEM#0
 pub const fn classify_impl_6a(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 12) & 0xf {
+  
+  match (inst >> 12) & 0xf {
     0x0 => 0x5583,
     0x1 => 0x0,
     0x2 => 0x5686,
@@ -13148,15 +13149,15 @@ pub const fn classify_impl_6a(inst: u32) -> u32 {
     0xe => 0x5984,
     0xf => 0x5586,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MUL_ELEM-MLA_ELEM#1,MUL_ELEM-MLS_ELEM#1,MUL_ELEM-SQRDMLAH_ELEM#1,MUL_ELEM-SQRDMLSH_ELEM#1,MULL_ELEM-UMLAL_ELEM#1,MULL_ELEM-UMLSL_ELEM#1,MULL_ELEM-UMULL_ELEM#1,FMUL_ELEM-FMULX_ELEM#1,DOT_ELEM-UDOT_ELEM#0,FHM_ELEM-FMLAL2_ELEM#0,FHM_ELEM-FMLSL2_ELEM#0
 pub const fn classify_impl_6b(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 12) & 0xf {
+  
+  match (inst >> 12) & 0xf {
     0x0 => 0x5583,
     0x1 => 0x0,
     0x2 => 0x5686,
@@ -13174,14 +13175,14 @@ pub const fn classify_impl_6b(inst: u32) -> u32 {
     0xe => 0x5984,
     0xf => 0x5586,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ANDOREOR_IMM-ORR_IMM#0,ANDOREOR_IMM-ORR_IMM#1,ANDOREOR_IMM-ORR_IMM#2,ANDOREOR_IMM-ORR_IMM#3,ANDOREOR_IMM-ORR_IMM#4,ANDOREOR_IMM-ORR_IMM#5,ANDOREOR_IMM-ORR_IMM#6,ANDOREOR_IMM-ORR_IMM#7,ANDOREOR_IMM-ORR_IMM#8,ANDOREOR_IMM-ORR_IMM#9,ANDOREOR_IMM-ORR_IMM#10,ANDOREOR_IMM-ORR_IMM#11,ANDOREOR_IMM-ORR_IMM#12,ANDOREOR_IMM-ORR_IMM#13,ANDOREOR_IMM-ORR_IMM#14,ANDOREOR_IMM-ORR_IMM#15,ANDOREOR_IMM-ORR_IMM#16,ANDOREOR_IMM-ORR_IMM#17,ANDOREOR_IMM-ORR_IMM#18,ANDOREOR_IMM-ORR_IMM#19,ANDOREOR_IMM-ORR_IMM#20,ANDOREOR_IMM-ORR_IMM#21,ANDOREOR_IMM-ORR_IMM#22,ANDOREOR_IMM-ORR_IMM#23,ANDOREOR_IMM-ORR_IMM#24,ANDOREOR_IMM-ORR_IMM#25,ANDOREOR_IMM-ORR_IMM#26,ANDOREOR_IMM-ORR_IMM#27,ANDOREOR_IMM-ORR_IMM#28,ANDOREOR_IMM-ORR_IMM#29,ANDOREOR_IMM-ORR_IMM#30,ANDOREOR_IMM-ORR_IMM#31,ANDOREOR_IMM-ORR_IMM#32,ANDOREOR_IMM-ORR_IMM#33,ANDOREOR_IMM-ORR_IMM#34,ANDOREOR_IMM-ORR_IMM#35,ANDOREOR_IMM-ORR_IMM#36,ANDOREOR_IMM-ORR_IMM#37,ANDOREOR_IMM-ORR_IMM#38,ANDOREOR_IMM-ORR_IMM#39,ANDOREOR_IMM-ORR_IMM#40,ANDOREOR_IMM-ORR_IMM#41,ANDOREOR_IMM-ORR_IMM#42,ANDOREOR_IMM-ORR_IMM#43,ANDOREOR_IMM-ORR_IMM#44,ANDOREOR_IMM-ORR_IMM#45,ANDOREOR_IMM-ORR_IMM#46,ANDOREOR_IMM-ORR_IMM#47,ANDOREOR_IMM-ORR_IMM#48,ANDOREOR_IMM-ORR_IMM#49,ANDOREOR_IMM-ORR_IMM#50,ANDOREOR_IMM-ORR_IMM#51,ANDOREOR_IMM-ORR_IMM#52,ANDOREOR_IMM-ORR_IMM#53,ANDOREOR_IMM-ORR_IMM#54,ANDOREOR_IMM-ORR_IMM#55,ANDOREOR_IMM-ORR_IMM#56
 pub const fn classify_impl_6c(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x501,
     0x1 => 0x501,
     0x2 => 0x501,
@@ -13247,35 +13248,35 @@ pub const fn classify_impl_6c(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // BFM-BFM#0
 pub const fn classify_impl_6d(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x901;
+  0x901
 }
 
 
 // MEMU-STURB#0,MEMU-STRB_POST#0,MEMU-STTRB#0,MEMU-STRB_PRE#0
 pub const fn classify_impl_6e(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1800,
     0x1 => 0x1801,
     0x2 => 0x1802,
     0x3 => 0x1803,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG-STRB_REG#0,SWP-SWPB#0,LDATOMIC-LDADDB#0,LDATOMIC-LDCLRB#0,LDATOMIC-LDEORB#0,LDATOMIC-LDSETB#0,LDATOMIC-LDSMAXB#0,LDATOMIC-LDSMINB#0,LDATOMIC-LDUMAXB#0,LDATOMIC-LDUMINB#0
 pub const fn classify_impl_6f(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 11) & 0x1f {
+  
+  match (inst >> 11) & 0x1f {
     0x0 => 0x6100,
     0x1 => 0x0,
     0x2 => 0x6101,
@@ -13309,28 +13310,28 @@ pub const fn classify_impl_6f(inst: u32) -> u32 {
     0x1e => 0x0,
     0x1f => 0x1900,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMU-LDURB#0,MEMU-LDRB_POST#0,MEMU-LDTRB#0,MEMU-LDRB_PRE#0
 pub const fn classify_impl_70(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1804,
     0x1 => 0x1805,
     0x2 => 0x1806,
     0x3 => 0x1807,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG-LDRB_REG#0,SWP-SWPLB#0,LDATOMIC-LDADDLB#0,LDATOMIC-LDCLRLB#0,LDATOMIC-LDEORLB#0,LDATOMIC-LDSETLB#0,LDATOMIC-LDSMAXLB#0,LDATOMIC-LDSMINLB#0,LDATOMIC-LDUMAXLB#0,LDATOMIC-LDUMINLB#0
 pub const fn classify_impl_71(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 11) & 0x1f {
+  
+  match (inst >> 11) & 0x1f {
     0x0 => 0x6108,
     0x1 => 0x0,
     0x2 => 0x6109,
@@ -13364,28 +13365,28 @@ pub const fn classify_impl_71(inst: u32) -> u32 {
     0x1e => 0x0,
     0x1f => 0x1901,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMU-LDURSB#0,MEMU-LDRSB_POST#0,MEMU-LDTRSB#0,MEMU-LDRSB_PRE#0
 pub const fn classify_impl_72(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1808,
     0x1 => 0x1809,
     0x2 => 0x180a,
     0x3 => 0x180b,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG-LDRSB_REG#0,SWP-SWPAB#0,LDATOMIC-LDADDAB#0,LDATOMIC-LDCLRAB#0,LDATOMIC-LDEORAB#0,LDATOMIC-LDSETAB#0,LDATOMIC-LDSMAXAB#0,LDATOMIC-LDSMINAB#0,LDATOMIC-LDUMAXAB#0,LDATOMIC-LDUMINAB#0
 pub const fn classify_impl_73(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 11) & 0x1f {
+  
+  match (inst >> 11) & 0x1f {
     0x0 => 0x6110,
     0x1 => 0x0,
     0x2 => 0x6111,
@@ -13419,15 +13420,14 @@ pub const fn classify_impl_73(inst: u32) -> u32 {
     0x1e => 0x0,
     0x1f => 0x1902,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPC-LDAPRB#0
 pub const fn classify_impl_74_1(inst: u32) -> u32 {
   if (inst&0xf0000) != 0xf0000 { return 0; }
-  return 0x6200;
+  0x6200
 }
 
 // MEM_REG-LDRSB_REG#0,SWP-SWPAB#0,LDATOMIC-LDADDAB#0,LDATOMIC-LDCLRAB#0,LDATOMIC-LDEORAB#0,LDATOMIC-LDSETAB#0,LDATOMIC-LDSMAXAB#0,LDATOMIC-LDSMINAB#0,LDATOMIC-LDUMAXAB#0,LDATOMIC-LDUMINAB#0,RCPC-LDAPRB#0
@@ -13472,27 +13472,28 @@ pub const fn classify_impl_74(inst: u32) -> u32 {
     0x1 => return classify_impl_74_1(inst), // RCPC-LDAPRB#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // MEMU-LDURSBW#0,MEMU-LDRSBW_POST#0,MEMU-LDTRSBW#0,MEMU-LDRSBW_PRE#0
 pub const fn classify_impl_75(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x180c,
     0x1 => 0x180d,
     0x2 => 0x180e,
     0x3 => 0x180f,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG-LDRSBW_REG#0,SWP-SWPALB#0,LDATOMIC-LDADDALB#0,LDATOMIC-LDCLRALB#0,LDATOMIC-LDEORALB#0,LDATOMIC-LDSETALB#0,LDATOMIC-LDSMAXALB#0,LDATOMIC-LDSMINALB#0,LDATOMIC-LDUMAXALB#0,LDATOMIC-LDUMINALB#0
 pub const fn classify_impl_76(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 11) & 0x1f {
+  
+  match (inst >> 11) & 0x1f {
     0x0 => 0x6118,
     0x1 => 0x0,
     0x2 => 0x6119,
@@ -13526,15 +13527,14 @@ pub const fn classify_impl_76(inst: u32) -> u32 {
     0x1e => 0x0,
     0x1f => 0x1903,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SETF-SETF8#0
 pub const fn classify_impl_77_1_1(inst: u32) -> u32 {
   if (inst&0xf001f) != 0xd { return 0; }
-  return 0x6700;
+  0x6700
 }
 
 // ADCSBC-ADCS#0,SETF-SETF8#0
@@ -13548,14 +13548,14 @@ pub const fn classify_impl_77_1(inst: u32) -> u32 {
     0x1 => return classify_impl_77_1_1(inst), // SETF-SETF8#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SETF-SETF16#0
 pub const fn classify_impl_77_2(inst: u32) -> u32 {
   if (inst&0xf081f) != 0x80d { return 0; }
-  return 0x6701;
+  0x6701
 }
 
 // ADCSBC-ADCS#0,SETF-SETF8#0,SETF-SETF16#0
@@ -13571,201 +13571,202 @@ pub const fn classify_impl_77(inst: u32) -> u32 {
     0x2 => return classify_impl_77_2(inst), // SETF-SETF16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // ADCSBC-ADCS#0
 pub const fn classify_impl_78(inst: u32) -> u32 {
   if (inst&0xfc00) != 0x0 { return 0; }
-  return 0x281;
+  0x281
 }
 
 
 // CCMP_IMM-CCMN_IMM#0,CCMP_REG-CCMN_REG#0
 pub const fn classify_impl_79(inst: u32) -> u32 {
   if (inst&0x410) != 0x0 { return 0; }
-  let idx = match (inst >> 11) & 0x1 {
+  
+  match (inst >> 11) & 0x1 {
     0x0 => 0xc00,
     0x1 => 0xb80,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMU_FP-STUR_FP#0,MEMU_FP-STR_FP_POST#0,MEMU_FP-STR_FP_PRE#0
 pub const fn classify_impl_7a(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1a80,
     0x1 => 0x1a81,
     0x2 => 0x0,
     0x3 => 0x1a82,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG_FP-STR_REG_FP#0
 pub const fn classify_impl_7b(inst: u32) -> u32 {
   if (inst&0x4c00) != 0x4800 { return 0; }
-  return 0x1b80;
+  0x1b80
 }
 
 
 // MEMU_FP-LDUR_FP#0,MEMU_FP-LDR_FP_POST#0,MEMU_FP-LDR_FP_PRE#0
 pub const fn classify_impl_7c(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1a83,
     0x1 => 0x1a84,
     0x2 => 0x0,
     0x3 => 0x1a85,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG_FP-LDR_REG_FP#0
 pub const fn classify_impl_7d(inst: u32) -> u32 {
   if (inst&0x4c00) != 0x4800 { return 0; }
-  return 0x1b81;
+  0x1b81
 }
 
 
 // MEMU_FP-STUR_FP#1,MEMU_FP-STR_FP_POST#1,MEMU_FP-STR_FP_PRE#1
 pub const fn classify_impl_7e(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1a80,
     0x1 => 0x1a81,
     0x2 => 0x0,
     0x3 => 0x1a82,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG_FP-STR_REG_FP#1
 pub const fn classify_impl_7f(inst: u32) -> u32 {
   if (inst&0x4c00) != 0x4800 { return 0; }
-  return 0x1b80;
+  0x1b80
 }
 
 
 // MEMU_FP-LDUR_FP#1,MEMU_FP-LDR_FP_POST#1,MEMU_FP-LDR_FP_PRE#1
 pub const fn classify_impl_80(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1a83,
     0x1 => 0x1a84,
     0x2 => 0x0,
     0x3 => 0x1a85,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG_FP-LDR_REG_FP#1
 pub const fn classify_impl_81(inst: u32) -> u32 {
   if (inst&0x4c00) != 0x4800 { return 0; }
-  return 0x1b81;
+  0x1b81
 }
 
 
 // MEMX-STXRH#0,MEMX-STLXRH#0
 pub const fn classify_impl_82(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x1684,
     0x1 => 0x1685,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMX-LDXRH#0,MEMX-LDAXRH#0
 pub const fn classify_impl_83(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x1686,
     0x1 => 0x1687,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMOR-STLLRH#0,MEMOR-STLRH#0
 pub const fn classify_impl_84(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x1604,
     0x1 => 0x1605,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // CAS-CASH#0,CAS-CASLH#0
 pub const fn classify_impl_85(inst: u32) -> u32 {
   if (inst&0x7c00) != 0x7c00 { return 0; }
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x5f84,
     0x1 => 0x5f85,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMOR-LDLARH#0,MEMOR-LDARH#0
 pub const fn classify_impl_86(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x1606,
     0x1 => 0x1607,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // CAS-CASAH#0,CAS-CASALH#0
 pub const fn classify_impl_87(inst: u32) -> u32 {
   if (inst&0x7c00) != 0x7c00 { return 0; }
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x5f86,
     0x1 => 0x5f87,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ANDOREOR_SHIFT-EOR_SHIFT#0
 pub const fn classify_impl_88(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x584;
+  0x584
 }
 
 
 // ANDOREOR_SHIFT-EON_SHIFT#0
 pub const fn classify_impl_89(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x585;
+  0x585
 }
 
 
 // ADDSUB_SHIFT-SUB_SHIFT#0
 pub const fn classify_impl_8a(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x402;
+  0x402
 }
 
 
 // ADDSUB_EXT-SUB_EXT#0,ADDSUB_EXT-SUB_EXT#1,ADDSUB_EXT-SUB_EXT#2,ADDSUB_EXT-SUB_EXT#3,ADDSUB_EXT-SUB_EXT#4
 pub const fn classify_impl_8b(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x7 {
+  
+  match (inst >> 10) & 0x7 {
     0x0 => 0x302,
     0x1 => 0x302,
     0x2 => 0x302,
@@ -13775,29 +13776,29 @@ pub const fn classify_impl_8b(inst: u32) -> u32 {
     0x6 => 0x0,
     0x7 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ADDSUB_SHIFT-SUB_SHIFT#1
 pub const fn classify_impl_8c(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x402;
+  0x402
 }
 
 
 // ADDSUB_SHIFT-SUB_SHIFT#2
 pub const fn classify_impl_8d(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x402;
+  0x402
 }
 
 
 // MEMSIMD_MULT-ST4#3,MEMSIMD_MULT-ST4#4,MEMSIMD_MULT-ST4#5,MEMSIMD_MULT-ST4#6,MEMSIMD_MULT-ST1_4#4,MEMSIMD_MULT-ST1_4#5,MEMSIMD_MULT-ST1_4#6,MEMSIMD_MULT-ST1_4#7,MEMSIMD_MULT-ST3#3,MEMSIMD_MULT-ST3#4,MEMSIMD_MULT-ST3#5,MEMSIMD_MULT-ST3#6,MEMSIMD_MULT-ST1_3#4,MEMSIMD_MULT-ST1_3#5,MEMSIMD_MULT-ST1_3#6,MEMSIMD_MULT-ST1_3#7,MEMSIMD_MULT-ST1_1#4,MEMSIMD_MULT-ST1_1#5,MEMSIMD_MULT-ST1_1#6,MEMSIMD_MULT-ST1_1#7,MEMSIMD_MULT-ST2#3,MEMSIMD_MULT-ST2#4,MEMSIMD_MULT-ST2#5,MEMSIMD_MULT-ST2#6,MEMSIMD_MULT-ST1_2#4,MEMSIMD_MULT-ST1_2#5,MEMSIMD_MULT-ST1_2#6,MEMSIMD_MULT-ST1_2#7
 pub const fn classify_impl_8e(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x1c80,
     0x1 => 0x1c80,
     0x2 => 0x1c80,
@@ -13863,15 +13864,15 @@ pub const fn classify_impl_8e(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMSIMD_MULT-LD4#3,MEMSIMD_MULT-LD4#4,MEMSIMD_MULT-LD4#5,MEMSIMD_MULT-LD4#6,MEMSIMD_MULT-LD1_4#4,MEMSIMD_MULT-LD1_4#5,MEMSIMD_MULT-LD1_4#6,MEMSIMD_MULT-LD1_4#7,MEMSIMD_MULT-LD3#3,MEMSIMD_MULT-LD3#4,MEMSIMD_MULT-LD3#5,MEMSIMD_MULT-LD3#6,MEMSIMD_MULT-LD1_3#4,MEMSIMD_MULT-LD1_3#5,MEMSIMD_MULT-LD1_3#6,MEMSIMD_MULT-LD1_3#7,MEMSIMD_MULT-LD1_1#4,MEMSIMD_MULT-LD1_1#5,MEMSIMD_MULT-LD1_1#6,MEMSIMD_MULT-LD1_1#7,MEMSIMD_MULT-LD2#3,MEMSIMD_MULT-LD2#4,MEMSIMD_MULT-LD2#5,MEMSIMD_MULT-LD2#6,MEMSIMD_MULT-LD1_2#4,MEMSIMD_MULT-LD1_2#5,MEMSIMD_MULT-LD1_2#6,MEMSIMD_MULT-LD1_2#7
 pub const fn classify_impl_8f(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x1c87,
     0x1 => 0x1c87,
     0x2 => 0x1c87,
@@ -13937,14 +13938,14 @@ pub const fn classify_impl_8f(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMSIMD_MULT_POST-ST4_POST#3,MEMSIMD_MULT_POST-ST4_POST#4,MEMSIMD_MULT_POST-ST4_POST#5,MEMSIMD_MULT_POST-ST4_POST#6,MEMSIMD_MULT_POST-ST1_4_POST#4,MEMSIMD_MULT_POST-ST1_4_POST#5,MEMSIMD_MULT_POST-ST1_4_POST#6,MEMSIMD_MULT_POST-ST1_4_POST#7,MEMSIMD_MULT_POST-ST3_POST#3,MEMSIMD_MULT_POST-ST3_POST#4,MEMSIMD_MULT_POST-ST3_POST#5,MEMSIMD_MULT_POST-ST3_POST#6,MEMSIMD_MULT_POST-ST1_3_POST#4,MEMSIMD_MULT_POST-ST1_3_POST#5,MEMSIMD_MULT_POST-ST1_3_POST#6,MEMSIMD_MULT_POST-ST1_3_POST#7,MEMSIMD_MULT_POST-ST1_1_POST#4,MEMSIMD_MULT_POST-ST1_1_POST#5,MEMSIMD_MULT_POST-ST1_1_POST#6,MEMSIMD_MULT_POST-ST1_1_POST#7,MEMSIMD_MULT_POST-ST2_POST#3,MEMSIMD_MULT_POST-ST2_POST#4,MEMSIMD_MULT_POST-ST2_POST#5,MEMSIMD_MULT_POST-ST2_POST#6,MEMSIMD_MULT_POST-ST1_2_POST#4,MEMSIMD_MULT_POST-ST1_2_POST#5,MEMSIMD_MULT_POST-ST1_2_POST#6,MEMSIMD_MULT_POST-ST1_2_POST#7
 pub const fn classify_impl_90(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x1d00,
     0x1 => 0x1d00,
     0x2 => 0x1d00,
@@ -14010,14 +14011,14 @@ pub const fn classify_impl_90(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMSIMD_MULT_POST-LD4_POST#3,MEMSIMD_MULT_POST-LD4_POST#4,MEMSIMD_MULT_POST-LD4_POST#5,MEMSIMD_MULT_POST-LD4_POST#6,MEMSIMD_MULT_POST-LD1_4_POST#4,MEMSIMD_MULT_POST-LD1_4_POST#5,MEMSIMD_MULT_POST-LD1_4_POST#6,MEMSIMD_MULT_POST-LD1_4_POST#7,MEMSIMD_MULT_POST-LD3_POST#3,MEMSIMD_MULT_POST-LD3_POST#4,MEMSIMD_MULT_POST-LD3_POST#5,MEMSIMD_MULT_POST-LD3_POST#6,MEMSIMD_MULT_POST-LD1_3_POST#4,MEMSIMD_MULT_POST-LD1_3_POST#5,MEMSIMD_MULT_POST-LD1_3_POST#6,MEMSIMD_MULT_POST-LD1_3_POST#7,MEMSIMD_MULT_POST-LD1_1_POST#4,MEMSIMD_MULT_POST-LD1_1_POST#5,MEMSIMD_MULT_POST-LD1_1_POST#6,MEMSIMD_MULT_POST-LD1_1_POST#7,MEMSIMD_MULT_POST-LD2_POST#3,MEMSIMD_MULT_POST-LD2_POST#4,MEMSIMD_MULT_POST-LD2_POST#5,MEMSIMD_MULT_POST-LD2_POST#6,MEMSIMD_MULT_POST-LD1_2_POST#4,MEMSIMD_MULT_POST-LD1_2_POST#5,MEMSIMD_MULT_POST-LD1_2_POST#6,MEMSIMD_MULT_POST-LD1_2_POST#7
 pub const fn classify_impl_91(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x1d07,
     0x1 => 0x1d07,
     0x2 => 0x1d07,
@@ -14083,15 +14084,15 @@ pub const fn classify_impl_91(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
 pub const fn classify_impl_92_1(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 11) & 0xf {
+  
+  match (inst >> 11) & 0xf {
     0x0 => 0x2a00,
     0x1 => 0x0,
     0x2 => 0x2a01,
@@ -14109,14 +14110,14 @@ pub const fn classify_impl_92_1(inst: u32) -> u32 {
     0xe => 0x2a07,
     0xf => 0x2a85,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#14,DUP_VEC-DUP_GP#14,INS-INS_GP#0,MOV_TOGP-SMOV#12,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
 pub const fn classify_impl_92_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -14150,14 +14151,14 @@ pub const fn classify_impl_92_2(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#15,DUP_VEC-DUP_GP#15,INS-INS_GP#1,MOV_TOGP-SMOV#13,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
 pub const fn classify_impl_92_3(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -14191,14 +14192,14 @@ pub const fn classify_impl_92_3(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#16,DUP_VEC-DUP_GP#16,INS-INS_GP#2,MOV_TOGP-SMOV#14,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
 pub const fn classify_impl_92_4(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -14232,14 +14233,14 @@ pub const fn classify_impl_92_4(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#17,DUP_VEC-DUP_GP#17,INS-INS_GP#3,MOV_TOGP-SMOV#15,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
 pub const fn classify_impl_92_5(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -14273,14 +14274,14 @@ pub const fn classify_impl_92_5(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#18,DUP_VEC-DUP_GP#18,INS-INS_GP#4,MOV_TOGP-SMOV#16,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
 pub const fn classify_impl_92_6(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -14314,14 +14315,14 @@ pub const fn classify_impl_92_6(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#19,DUP_VEC-DUP_GP#19,INS-INS_GP#5,MOV_TOGP-SMOV#17,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
 pub const fn classify_impl_92_7(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -14355,14 +14356,14 @@ pub const fn classify_impl_92_7(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#20,DUP_VEC-DUP_GP#20,INS-INS_GP#6,MOV_TOGP-SMOV#18,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
 pub const fn classify_impl_92_8(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -14396,14 +14397,14 @@ pub const fn classify_impl_92_8(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#21,DUP_VEC-DUP_GP#21,INS-INS_GP#7,MOV_TOGP-UMOV#14,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
 pub const fn classify_impl_92_9(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -14437,14 +14438,14 @@ pub const fn classify_impl_92_9(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#22,DUP_VEC-DUP_GP#22,INS-INS_GP#8,MOV_TOGP-SMOV#19,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
 pub const fn classify_impl_92_a(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -14478,14 +14479,14 @@ pub const fn classify_impl_92_a(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#23,DUP_VEC-DUP_GP#23,INS-INS_GP#9,MOV_TOGP-SMOV#20,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
 pub const fn classify_impl_92_b(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -14519,14 +14520,14 @@ pub const fn classify_impl_92_b(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#24,DUP_VEC-DUP_GP#24,INS-INS_GP#10,MOV_TOGP-SMOV#21,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
 pub const fn classify_impl_92_c(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -14560,14 +14561,14 @@ pub const fn classify_impl_92_c(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#25,DUP_VEC-DUP_GP#25,INS-INS_GP#11,MOV_TOGP-SMOV#22,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
 pub const fn classify_impl_92_d(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -14601,14 +14602,14 @@ pub const fn classify_impl_92_d(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#26,DUP_VEC-DUP_GP#26,INS-INS_GP#12,MOV_TOGP-SMOV#23,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
 pub const fn classify_impl_92_e(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -14642,14 +14643,14 @@ pub const fn classify_impl_92_e(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#27,DUP_VEC-DUP_GP#27,INS-INS_GP#13,MOV_TOGP-SMOV#24,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
 pub const fn classify_impl_92_f(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -14683,14 +14684,14 @@ pub const fn classify_impl_92_f(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_VEC-DUP_ELEM#28,DUP_VEC-DUP_GP#28,INS-INS_GP#14,MOV_TOGP-SMOV#25,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
 pub const fn classify_impl_92_10(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2a00,
     0x1 => 0x2880,
     0x2 => 0x0,
@@ -14724,8 +14725,7 @@ pub const fn classify_impl_92_10(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // DUP_VEC-DUP_ELEM#14,DUP_VEC-DUP_ELEM#15,DUP_VEC-DUP_ELEM#16,DUP_VEC-DUP_ELEM#17,DUP_VEC-DUP_ELEM#18,DUP_VEC-DUP_ELEM#19,DUP_VEC-DUP_ELEM#20,DUP_VEC-DUP_ELEM#21,DUP_VEC-DUP_ELEM#22,DUP_VEC-DUP_ELEM#23,DUP_VEC-DUP_ELEM#24,DUP_VEC-DUP_ELEM#25,DUP_VEC-DUP_ELEM#26,DUP_VEC-DUP_ELEM#27,DUP_VEC-DUP_ELEM#28,DUP_VEC-DUP_GP#14,DUP_VEC-DUP_GP#15,DUP_VEC-DUP_GP#16,DUP_VEC-DUP_GP#17,DUP_VEC-DUP_GP#18,DUP_VEC-DUP_GP#19,DUP_VEC-DUP_GP#20,DUP_VEC-DUP_GP#21,DUP_VEC-DUP_GP#22,DUP_VEC-DUP_GP#23,DUP_VEC-DUP_GP#24,DUP_VEC-DUP_GP#25,DUP_VEC-DUP_GP#26,DUP_VEC-DUP_GP#27,DUP_VEC-DUP_GP#28,INS-INS_GP#0,INS-INS_GP#1,INS-INS_GP#2,INS-INS_GP#3,INS-INS_GP#4,INS-INS_GP#5,INS-INS_GP#6,INS-INS_GP#7,INS-INS_GP#8,INS-INS_GP#9,INS-INS_GP#10,INS-INS_GP#11,INS-INS_GP#12,INS-INS_GP#13,INS-INS_GP#14,MOV_TOGP-SMOV#12,MOV_TOGP-SMOV#13,MOV_TOGP-SMOV#14,MOV_TOGP-SMOV#15,MOV_TOGP-SMOV#16,MOV_TOGP-SMOV#17,MOV_TOGP-SMOV#18,MOV_TOGP-SMOV#19,MOV_TOGP-SMOV#20,MOV_TOGP-SMOV#21,MOV_TOGP-SMOV#22,MOV_TOGP-SMOV#23,MOV_TOGP-SMOV#24,MOV_TOGP-SMOV#25,MOV_TOGP-UMOV#14,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
@@ -14769,175 +14769,175 @@ pub const fn classify_impl_92(inst: u32) -> u32 {
     0x10 => return classify_impl_92_10(inst), // DUP_VEC-DUP_ELEM#28,DUP_VEC-DUP_GP#28,INS-INS_GP#14,MOV_TOGP-SMOV#25,TBL-TBL1#0,TBL-TBX1#0,TBL-TBL2#0,TBL-TBX2#0,TBL-TBL3#0,TBL-TBX3#0,TBL-TBL4#0,TBL-TBX4#0,ZIP-UZP1#3,ZIP-TRN1#3,ZIP-ZIP1#3,ZIP-UZP2#3,ZIP-TRN2#3,ZIP-ZIP2#3
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // REV_VEC-REV64_VEC#0
 pub const fn classify_impl_93_1_1(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x3280;
+  0x3280
 }
 
 
 // REV_VEC-REV16_VEC#0
 pub const fn classify_impl_93_1_2(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x3281;
+  0x3281
 }
 
 
 // ADDLP_VEC-SADDLP#0
 pub const fn classify_impl_93_1_3(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x3100;
+  0x3100
 }
 
 
 // ARITH1_VEC-SUQADD_VEC#3
 pub const fn classify_impl_93_1_4(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x3080;
+  0x3080
 }
 
 
 // CLZ_VEC-CLS_VEC#0
 pub const fn classify_impl_93_1_5(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x3180;
+  0x3180
 }
 
 
 // BIT_VEC-CNT_VEC#0
 pub const fn classify_impl_93_1_6(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x3200;
+  0x3200
 }
 
 
 // ADDLP_VEC-SADALP#0
 pub const fn classify_impl_93_1_7(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x3101;
+  0x3101
 }
 
 
 // ARITH1_VEC-SQABS_VEC#3
 pub const fn classify_impl_93_1_8(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x3081;
+  0x3081
 }
 
 
 // CMZERO_VEC-CMGT_ZERO_VEC#3
 pub const fn classify_impl_93_1_9(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x2f80;
+  0x2f80
 }
 
 
 // CMZERO_VEC-CMEQ_ZERO_VEC#3
 pub const fn classify_impl_93_1_a(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x2f81;
+  0x2f81
 }
 
 
 // CMZERO_VEC-CMLT_ZERO_VEC#3
 pub const fn classify_impl_93_1_b(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x2f82;
+  0x2f82
 }
 
 
 // ARITH1_VEC-ABS_VEC#3
 pub const fn classify_impl_93_1_c(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x3082;
+  0x3082
 }
 
 
 // XTN_VEC-XTN2_VEC#0
 pub const fn classify_impl_93_1_d(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x3384;
+  0x3384
 }
 
 
 // XTN_VEC-SQXTN2_VEC#0
 pub const fn classify_impl_93_1_e(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x3385;
+  0x3385
 }
 
 
 // FCVTN_VEC-FCVTN2#0
 pub const fn classify_impl_93_1_f(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5183;
+  0x5183
 }
 
 
 // FCVTL_VEC-FCVTL2_VEC#0
 pub const fn classify_impl_93_1_10(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x4f81;
+  0x4f81
 }
 
 
 // FRINT_VEC-FRINTN_VEC#1
 pub const fn classify_impl_93_1_11(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5200;
+  0x5200
 }
 
 
 // FRINT_VEC-FRINTM_VEC#1
 pub const fn classify_impl_93_1_12(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5201;
+  0x5201
 }
 
 
 // FCVT_VEC-FCVTNS_VEC#1
 pub const fn classify_impl_93_1_13(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x4f00;
+  0x4f00
 }
 
 
 // FCVT_VEC-FCVTMS_VEC#1
 pub const fn classify_impl_93_1_14(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x4f01;
+  0x4f01
 }
 
 
 // FCVT_VEC-FCVTAS_VEC#1
 pub const fn classify_impl_93_1_15(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x4f02;
+  0x4f02
 }
 
 
 // FCVT_FROMINT_VEC-SCVTF_VEC#1
 pub const fn classify_impl_93_1_16(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5080;
+  0x5080
 }
 
 
 // FRINTTS_VEC-FRINT32Z_VEC#1
 pub const fn classify_impl_93_1_17(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5280;
+  0x5280
 }
 
 
 // FRINTTS_VEC-FRINT64Z_VEC#1
 pub const fn classify_impl_93_1_18(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5281;
+  0x5281
 }
 
 // HADDSUB_VEC-SHADD#0,HADDSUB_VEC-SRHADD#0,HADDSUB_VEC-SHSUB#0,QADDSUB_VEC-SQADD#3,QADDSUB_VEC-SQSUB#3,CMGT_VEC-CMGTV#3,CMGT_VEC-CMGEV#3,CMEQ_VEC-CMTSTV#3,CMZERO_VEC-CMGT_ZERO_VEC#3,CMZERO_VEC-CMEQ_ZERO_VEC#3,CMZERO_VEC-CMLT_ZERO_VEC#3,ARITH1_VEC-SUQADD_VEC#3,ARITH1_VEC-SQABS_VEC#3,ARITH1_VEC-ABS_VEC#3,ADDLP_VEC-SADDLP#0,ADDLP_VEC-SADALP#0,CLZ_VEC-CLS_VEC#0,BIT_VEC-CNT_VEC#0,REV_VEC-REV64_VEC#0,REV_VEC-REV16_VEC#0,XTN_VEC-XTN2_VEC#0,XTN_VEC-SQXTN2_VEC#0,SHL_REG_VEC-SSHL#3,SHL_REG_VEC-SQSHL#3,SHL_REG_VEC-SRSHL#3,SHL_REG_VEC-SQRSHL#3,MINMAX_VEC-SMAX#0,MINMAX_VEC-SMIN#0,MINMAX_VEC-SMAXP#0,MINMAX_VEC-SMINP#0,ABD_VEC-SABD#0,ABD_VEC-SABA#0,ADDSUB_VEC-ADD_VEC#3,ADDP_VEC-ADDP#3,MUL_VEC-MLA_VEC#0,MUL_VEC-MUL_VEC#0,FMINMAX_VEC-FMAXNM_VEC#1,FMINMAX_VEC-FMAX_VEC#1,FCMP_REG_VEC-FCMEQ_VEC#1,FADDSUB_VEC-FADD_VEC#1,FRECP_STEP_VEC-FRECPSV#1,FMUL_VEC-FMULXV#1,FMLA_VEC-FMLAV#1,ANDOREOR_VEC-ANDV#0,ADDSUBL_VEC-SADDL2#0,ADDSUBL_VEC-SSUBL2#0,ADDSUBW_VEC-SADDW2#0,ADDSUBW_VEC-SSUBW2#0,ADDSUBHN_VEC-ADDHN2#0,ADDSUBHN_VEC-SUBHN2#0,ABDL_VEC-SABAL2#0,ABDL_VEC-SABDL2#0,MULL_VEC-SMLAL2#0,MULL_VEC-SMLSL2#0,MULL_VEC-SMULL2#0,PMULL_VEC-PMULL2#0,FCVT_VEC-FCVTNS_VEC#1,FCVT_VEC-FCVTMS_VEC#1,FCVT_VEC-FCVTAS_VEC#1,FCVTL_VEC-FCVTL2_VEC#0,FCVT_FROMINT_VEC-SCVTF_VEC#1,FCVTN_VEC-FCVTN2#0,FRINT_VEC-FRINTN_VEC#1,FRINT_VEC-FRINTM_VEC#1,FRINTTS_VEC-FRINT32Z_VEC#1,FRINTTS_VEC-FRINT64Z_VEC#1,FHM_VEC-FMLAL_VEC#0
@@ -15100,35 +15100,35 @@ pub const fn classify_impl_93_1(inst: u32) -> u32 {
     0x18 => return classify_impl_93_1_18(inst), // FRINTTS_VEC-FRINT64Z_VEC#1
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // AES-AESE#0
 pub const fn classify_impl_93_2_1(inst: u32) -> u32 {
   if (inst&0x70000) != 0x0 { return 0; }
-  return 0x6c80;
+  0x6c80
 }
 
 
 // AES-AESD#0
 pub const fn classify_impl_93_2_2(inst: u32) -> u32 {
   if (inst&0x70000) != 0x0 { return 0; }
-  return 0x6c81;
+  0x6c81
 }
 
 
 // AES-AESMC#0
 pub const fn classify_impl_93_2_3(inst: u32) -> u32 {
   if (inst&0x70000) != 0x0 { return 0; }
-  return 0x6c82;
+  0x6c82
 }
 
 
 // AES-AESIMC#0
 pub const fn classify_impl_93_2_4(inst: u32) -> u32 {
   if (inst&0x70000) != 0x0 { return 0; }
-  return 0x6c83;
+  0x6c83
 }
 
 // HADDSUB_VEC-SHADD#0,HADDSUB_VEC-SRHADD#0,HADDSUB_VEC-SHSUB#0,QADDSUB_VEC-SQADD#3,QADDSUB_VEC-SQSUB#3,CMGT_VEC-CMGTV#3,CMGT_VEC-CMGEV#3,CMEQ_VEC-CMTSTV#3,SHL_REG_VEC-SSHL#3,SHL_REG_VEC-SQSHL#3,SHL_REG_VEC-SRSHL#3,SHL_REG_VEC-SQRSHL#3,MINMAX_VEC-SMAX#0,MINMAX_VEC-SMIN#0,MINMAX_VEC-SMAXP#0,MINMAX_VEC-SMINP#0,ABD_VEC-SABD#0,ABD_VEC-SABA#0,ADDSUB_VEC-ADD_VEC#3,ADDP_VEC-ADDP#3,MUL_VEC-MLA_VEC#0,MUL_VEC-MUL_VEC#0,FMINMAX_VEC-FMAXNM_VEC#1,FMINMAX_VEC-FMAX_VEC#1,FCMP_REG_VEC-FCMEQ_VEC#1,FADDSUB_VEC-FADD_VEC#1,FRECP_STEP_VEC-FRECPSV#1,FMUL_VEC-FMULXV#1,FMLA_VEC-FMLAV#1,ANDOREOR_VEC-ANDV#0,ADDSUBL_VEC-SADDL2#0,ADDSUBL_VEC-SSUBL2#0,ADDSUBW_VEC-SADDW2#0,ADDSUBW_VEC-SSUBW2#0,ADDSUBHN_VEC-ADDHN2#0,ADDSUBHN_VEC-SUBHN2#0,ABDL_VEC-SABAL2#0,ABDL_VEC-SABDL2#0,MULL_VEC-SMLAL2#0,MULL_VEC-SMLSL2#0,MULL_VEC-SMULL2#0,PMULL_VEC-PMULL2#0,FHM_VEC-FMLAL_VEC#0,AES-AESE#0,AES-AESD#0,AES-AESMC#0,AES-AESIMC#0
@@ -15207,7 +15207,7 @@ pub const fn classify_impl_93_2(inst: u32) -> u32 {
     0x4 => return classify_impl_93_2_4(inst), // AES-AESIMC#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 // HADDSUB_VEC-SHADD#0,HADDSUB_VEC-SRHADD#0,HADDSUB_VEC-SHSUB#0,QADDSUB_VEC-SQADD#3,QADDSUB_VEC-SQSUB#3,CMGT_VEC-CMGTV#3,CMGT_VEC-CMGEV#3,CMEQ_VEC-CMTSTV#3,CMZERO_VEC-CMGT_ZERO_VEC#3,CMZERO_VEC-CMEQ_ZERO_VEC#3,CMZERO_VEC-CMLT_ZERO_VEC#3,ARITH1_VEC-SUQADD_VEC#3,ARITH1_VEC-SQABS_VEC#3,ARITH1_VEC-ABS_VEC#3,ADDLP_VEC-SADDLP#0,ADDLP_VEC-SADALP#0,CLZ_VEC-CLS_VEC#0,BIT_VEC-CNT_VEC#0,REV_VEC-REV64_VEC#0,REV_VEC-REV16_VEC#0,XTN_VEC-XTN2_VEC#0,XTN_VEC-SQXTN2_VEC#0,SHL_REG_VEC-SSHL#3,SHL_REG_VEC-SQSHL#3,SHL_REG_VEC-SRSHL#3,SHL_REG_VEC-SQRSHL#3,MINMAX_VEC-SMAX#0,MINMAX_VEC-SMIN#0,MINMAX_VEC-SMAXP#0,MINMAX_VEC-SMINP#0,ABD_VEC-SABD#0,ABD_VEC-SABA#0,ADDSUB_VEC-ADD_VEC#3,ADDP_VEC-ADDP#3,MUL_VEC-MLA_VEC#0,MUL_VEC-MUL_VEC#0,FMINMAX_VEC-FMAXNM_VEC#1,FMINMAX_VEC-FMAX_VEC#1,FCMP_REG_VEC-FCMEQ_VEC#1,FADDSUB_VEC-FADD_VEC#1,FRECP_STEP_VEC-FRECPSV#1,FMUL_VEC-FMULXV#1,FMLA_VEC-FMLAV#1,ANDOREOR_VEC-ANDV#0,ADDSUBL_VEC-SADDL2#0,ADDSUBL_VEC-SSUBL2#0,ADDSUBW_VEC-SADDW2#0,ADDSUBW_VEC-SSUBW2#0,ADDSUBHN_VEC-ADDHN2#0,ADDSUBHN_VEC-SUBHN2#0,ABDL_VEC-SABAL2#0,ABDL_VEC-SABDL2#0,MULL_VEC-SMLAL2#0,MULL_VEC-SMLSL2#0,MULL_VEC-SMULL2#0,PMULL_VEC-PMULL2#0,FCVT_VEC-FCVTNS_VEC#1,FCVT_VEC-FCVTMS_VEC#1,FCVT_VEC-FCVTAS_VEC#1,FCVTL_VEC-FCVTL2_VEC#0,FCVT_FROMINT_VEC-SCVTF_VEC#1,FCVTN_VEC-FCVTN2#0,FRINT_VEC-FRINTN_VEC#1,FRINT_VEC-FRINTM_VEC#1,FRINTTS_VEC-FRINT32Z_VEC#1,FRINTTS_VEC-FRINT64Z_VEC#1,FHM_VEC-FMLAL_VEC#0,AES-AESE#0,AES-AESD#0,AES-AESMC#0,AES-AESIMC#0
@@ -15222,49 +15222,49 @@ pub const fn classify_impl_93(inst: u32) -> u32 {
     0x2 => return classify_impl_93_2(inst), // HADDSUB_VEC-SHADD#0,HADDSUB_VEC-SRHADD#0,HADDSUB_VEC-SHSUB#0,QADDSUB_VEC-SQADD#3,QADDSUB_VEC-SQSUB#3,CMGT_VEC-CMGTV#3,CMGT_VEC-CMGEV#3,CMEQ_VEC-CMTSTV#3,SHL_REG_VEC-SSHL#3,SHL_REG_VEC-SQSHL#3,SHL_REG_VEC-SRSHL#3,SHL_REG_VEC-SQRSHL#3,MINMAX_VEC-SMAX#0,MINMAX_VEC-SMIN#0,MINMAX_VEC-SMAXP#0,MINMAX_VEC-SMINP#0,ABD_VEC-SABD#0,ABD_VEC-SABA#0,ADDSUB_VEC-ADD_VEC#3,ADDP_VEC-ADDP#3,MUL_VEC-MLA_VEC#0,MUL_VEC-MUL_VEC#0,FMINMAX_VEC-FMAXNM_VEC#1,FMINMAX_VEC-FMAX_VEC#1,FCMP_REG_VEC-FCMEQ_VEC#1,FADDSUB_VEC-FADD_VEC#1,FRECP_STEP_VEC-FRECPSV#1,FMUL_VEC-FMULXV#1,FMLA_VEC-FMLAV#1,ANDOREOR_VEC-ANDV#0,ADDSUBL_VEC-SADDL2#0,ADDSUBL_VEC-SSUBL2#0,ADDSUBW_VEC-SADDW2#0,ADDSUBW_VEC-SSUBW2#0,ADDSUBHN_VEC-ADDHN2#0,ADDSUBHN_VEC-SUBHN2#0,ABDL_VEC-SABAL2#0,ABDL_VEC-SABDL2#0,MULL_VEC-SMLAL2#0,MULL_VEC-SMLSL2#0,MULL_VEC-SMULL2#0,PMULL_VEC-PMULL2#0,FHM_VEC-FMLAL_VEC#0,AES-AESE#0,AES-AESD#0,AES-AESMC#0,AES-AESIMC#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // INT_HORZ_VEC-SADDLV#2
 pub const fn classify_impl_94_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5380;
+  0x5380
 }
 
 
 // INT_HORZ_VEC-SMAXV#2
 pub const fn classify_impl_94_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5381;
+  0x5381
 }
 
 
 // FP_HORZ_VEC-FMAXNMV_FP16#1
 pub const fn classify_impl_94_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5480;
+  0x5480
 }
 
 
 // FP_HORZ_VEC-FMAXV_FP16#1
 pub const fn classify_impl_94_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5481;
+  0x5481
 }
 
 
 // INT_HORZ_VEC-SMINV#2
 pub const fn classify_impl_94_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5382;
+  0x5382
 }
 
 
 // INT_HORZ_VEC-ADDV#2
 pub const fn classify_impl_94_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5383;
+  0x5383
 }
 
 // HADDSUB_VEC-SHADD#0,HADDSUB_VEC-SRHADD#0,HADDSUB_VEC-SHSUB#0,QADDSUB_VEC-SQADD#3,QADDSUB_VEC-SQSUB#3,CMGT_VEC-CMGTV#3,CMGT_VEC-CMGEV#3,CMEQ_VEC-CMTSTV#3,SHL_REG_VEC-SSHL#3,SHL_REG_VEC-SQSHL#3,SHL_REG_VEC-SRSHL#3,SHL_REG_VEC-SQRSHL#3,MINMAX_VEC-SMAX#0,MINMAX_VEC-SMIN#0,MINMAX_VEC-SMAXP#0,MINMAX_VEC-SMINP#0,ABD_VEC-SABD#0,ABD_VEC-SABA#0,ADDSUB_VEC-ADD_VEC#3,ADDP_VEC-ADDP#3,MUL_VEC-MLA_VEC#0,MUL_VEC-MUL_VEC#0,FMINMAX_VEC-FMAXNM_VEC#1,FMINMAX_VEC-FMAX_VEC#1,FCMP_REG_VEC-FCMEQ_VEC#1,FADDSUB_VEC-FADD_VEC#1,FRECP_STEP_VEC-FRECPSV#1,FMUL_VEC-FMULXV#1,FMLA_VEC-FMLAV#1,ANDOREOR_VEC-ANDV#0,ADDSUBL_VEC-SADDL2#0,ADDSUBL_VEC-SSUBL2#0,ADDSUBW_VEC-SADDW2#0,ADDSUBW_VEC-SSUBW2#0,ADDSUBHN_VEC-ADDHN2#0,ADDSUBHN_VEC-SUBHN2#0,ABDL_VEC-SABAL2#0,ABDL_VEC-SABDL2#0,MULL_VEC-SMLAL2#0,MULL_VEC-SMLSL2#0,MULL_VEC-SMULL2#0,PMULL_VEC-PMULL2#0,INT_HORZ_VEC-SADDLV#2,INT_HORZ_VEC-SMAXV#2,INT_HORZ_VEC-SMINV#2,INT_HORZ_VEC-ADDV#2,FP_HORZ_VEC-FMAXNMV_FP16#1,FP_HORZ_VEC-FMAXV_FP16#1,FHM_VEC-FMLAL_VEC#0
@@ -15409,14 +15409,15 @@ pub const fn classify_impl_94(inst: u32) -> u32 {
     0x6 => return classify_impl_94_6(inst), // INT_HORZ_VEC-ADDV#2
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // ZIP-UZP1#4,ZIP-TRN1#4,ZIP-ZIP1#4,ZIP-UZP2#4,ZIP-TRN2#4,ZIP-ZIP2#4,FP16_3REG_VEC-FMAXNM_VEC_FP16#0,FP16_3REG_VEC-FMLA_VEC_FP16#0,FP16_3REG_VEC-FADD_VEC_FP16#0,FP16_3REG_VEC-FMULX_VEC_FP16#0,FP16_3REG_VEC-FCMEQ_VEC_FP16#0,FP16_3REG_VEC-FMAX_VEC_FP16#0,FP16_3REG_VEC-FRECPS_VEC_FP16#0
 pub const fn classify_impl_95(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x0,
     0x1 => 0x4180,
     0x2 => 0x0,
@@ -15450,162 +15451,161 @@ pub const fn classify_impl_95(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // REV_VEC-REV64_VEC#1
 pub const fn classify_impl_96_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3280;
+  0x3280
 }
 
 
 // ADDLP_VEC-SADDLP#1
 pub const fn classify_impl_96_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3100;
+  0x3100
 }
 
 
 // ARITH1_VEC-SUQADD_VEC#4
 pub const fn classify_impl_96_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3080;
+  0x3080
 }
 
 
 // CLZ_VEC-CLS_VEC#1
 pub const fn classify_impl_96_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3180;
+  0x3180
 }
 
 
 // ADDLP_VEC-SADALP#1
 pub const fn classify_impl_96_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3101;
+  0x3101
 }
 
 
 // ARITH1_VEC-SQABS_VEC#4
 pub const fn classify_impl_96_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3081;
+  0x3081
 }
 
 
 // CMZERO_VEC-CMGT_ZERO_VEC#4
 pub const fn classify_impl_96_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f80;
+  0x2f80
 }
 
 
 // CMZERO_VEC-CMEQ_ZERO_VEC#4
 pub const fn classify_impl_96_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f81;
+  0x2f81
 }
 
 
 // CMZERO_VEC-CMLT_ZERO_VEC#4
 pub const fn classify_impl_96_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f82;
+  0x2f82
 }
 
 
 // ARITH1_VEC-ABS_VEC#4
 pub const fn classify_impl_96_a(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3082;
+  0x3082
 }
 
 
 // XTN_VEC-XTN2_VEC#1
 pub const fn classify_impl_96_b(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3384;
+  0x3384
 }
 
 
 // XTN_VEC-SQXTN2_VEC#1
 pub const fn classify_impl_96_c(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3385;
+  0x3385
 }
 
 
 // FCVTN_VEC-FCVTN2#1
 pub const fn classify_impl_96_d(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5183;
+  0x5183
 }
 
 
 // FCVTL_VEC-FCVTL2_VEC#0
 pub const fn classify_impl_96_e(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f81;
+  0x4f81
 }
 
 
 // FRINT_VEC-FRINTN_VEC#2
 pub const fn classify_impl_96_f(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5200;
+  0x5200
 }
 
 
 // FRINT_VEC-FRINTM_VEC#2
 pub const fn classify_impl_96_10(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5201;
+  0x5201
 }
 
 
 // FCVT_VEC-FCVTNS_VEC#2
 pub const fn classify_impl_96_11(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f00;
+  0x4f00
 }
 
 
 // FCVT_VEC-FCVTMS_VEC#2
 pub const fn classify_impl_96_12(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f01;
+  0x4f01
 }
 
 
 // FCVT_VEC-FCVTAS_VEC#2
 pub const fn classify_impl_96_13(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f02;
+  0x4f02
 }
 
 
 // FCVT_FROMINT_VEC-SCVTF_VEC#2
 pub const fn classify_impl_96_14(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5080;
+  0x5080
 }
 
 
 // FRINTTS_VEC-FRINT32Z_VEC#2
 pub const fn classify_impl_96_15(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5280;
+  0x5280
 }
 
 
 // FRINTTS_VEC-FRINT64Z_VEC#2
 pub const fn classify_impl_96_16(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5281;
+  0x5281
 }
 
 // HADDSUB_VEC-SHADD#1,HADDSUB_VEC-SRHADD#1,HADDSUB_VEC-SHSUB#1,QADDSUB_VEC-SQADD#4,QADDSUB_VEC-SQSUB#4,CMGT_VEC-CMGTV#4,CMGT_VEC-CMGEV#4,CMEQ_VEC-CMTSTV#4,CMZERO_VEC-CMGT_ZERO_VEC#4,CMZERO_VEC-CMEQ_ZERO_VEC#4,CMZERO_VEC-CMLT_ZERO_VEC#4,ARITH1_VEC-SUQADD_VEC#4,ARITH1_VEC-SQABS_VEC#4,ARITH1_VEC-ABS_VEC#4,ADDLP_VEC-SADDLP#1,ADDLP_VEC-SADALP#1,CLZ_VEC-CLS_VEC#1,REV_VEC-REV64_VEC#1,XTN_VEC-XTN2_VEC#1,XTN_VEC-SQXTN2_VEC#1,SHL_REG_VEC-SSHL#4,SHL_REG_VEC-SQSHL#4,SHL_REG_VEC-SRSHL#4,SHL_REG_VEC-SQRSHL#4,MINMAX_VEC-SMAX#1,MINMAX_VEC-SMIN#1,MINMAX_VEC-SMAXP#1,MINMAX_VEC-SMINP#1,ABD_VEC-SABD#1,ABD_VEC-SABA#1,ADDSUB_VEC-ADD_VEC#4,ADDP_VEC-ADDP#4,MUL_VEC-MLA_VEC#1,MUL_VEC-MUL_VEC#1,SQDMULH_VEC-SQDMULH#0,FMINMAX_VEC-FMAXNM_VEC#2,FMINMAX_VEC-FMAX_VEC#2,FCMP_REG_VEC-FCMEQ_VEC#2,FADDSUB_VEC-FADD_VEC#2,FRECP_STEP_VEC-FRECPSV#2,FMUL_VEC-FMULXV#2,FMLA_VEC-FMLAV#2,ANDOREOR_VEC-BICV#0,ADDSUBL_VEC-SADDL2#1,ADDSUBL_VEC-SSUBL2#1,ADDSUBW_VEC-SADDW2#1,ADDSUBW_VEC-SSUBW2#1,ADDSUBHN_VEC-ADDHN2#1,ADDSUBHN_VEC-SUBHN2#1,ABDL_VEC-SABAL2#1,ABDL_VEC-SABDL2#1,MULL_VEC-SMLAL2#1,MULL_VEC-SMLSL2#1,MULL_VEC-SMULL2#1,SQDMULL_VEC-SQDMLAL2#0,SQDMULL_VEC-SQDMLSL2#0,SQDMULL_VEC-SQDMULL2#0,FCVT_VEC-FCVTNS_VEC#2,FCVT_VEC-FCVTMS_VEC#2,FCVT_VEC-FCVTAS_VEC#2,FCVTL_VEC-FCVTL2_VEC#0,FCVT_FROMINT_VEC-SCVTF_VEC#2,FCVTN_VEC-FCVTN2#1,FRINT_VEC-FRINTN_VEC#2,FRINT_VEC-FRINTM_VEC#2,FRINTTS_VEC-FRINT32Z_VEC#2,FRINTTS_VEC-FRINT64Z_VEC#2
@@ -15766,35 +15766,35 @@ pub const fn classify_impl_96(inst: u32) -> u32 {
     0x16 => return classify_impl_96_16(inst), // FRINTTS_VEC-FRINT64Z_VEC#2
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // INT_HORZ_VEC-SADDLV#3
 pub const fn classify_impl_97_1_1(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5380;
+  0x5380
 }
 
 
 // INT_HORZ_VEC-SMAXV#3
 pub const fn classify_impl_97_1_2(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5381;
+  0x5381
 }
 
 
 // INT_HORZ_VEC-SMINV#3
 pub const fn classify_impl_97_1_3(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5382;
+  0x5382
 }
 
 
 // INT_HORZ_VEC-ADDV#3
 pub const fn classify_impl_97_1_4(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5383;
+  0x5383
 }
 
 // HADDSUB_VEC-SHADD#1,HADDSUB_VEC-SRHADD#1,HADDSUB_VEC-SHSUB#1,QADDSUB_VEC-SQADD#4,QADDSUB_VEC-SQSUB#4,CMGT_VEC-CMGTV#4,CMGT_VEC-CMGEV#4,CMEQ_VEC-CMTSTV#4,SHL_REG_VEC-SSHL#4,SHL_REG_VEC-SQSHL#4,SHL_REG_VEC-SRSHL#4,SHL_REG_VEC-SQRSHL#4,MINMAX_VEC-SMAX#1,MINMAX_VEC-SMIN#1,MINMAX_VEC-SMAXP#1,MINMAX_VEC-SMINP#1,ABD_VEC-SABD#1,ABD_VEC-SABA#1,ADDSUB_VEC-ADD_VEC#4,ADDP_VEC-ADDP#4,MUL_VEC-MLA_VEC#1,MUL_VEC-MUL_VEC#1,SQDMULH_VEC-SQDMULH#0,FMINMAX_VEC-FMAXNM_VEC#2,FMINMAX_VEC-FMAX_VEC#2,FCMP_REG_VEC-FCMEQ_VEC#2,FADDSUB_VEC-FADD_VEC#2,FRECP_STEP_VEC-FRECPSV#2,FMUL_VEC-FMULXV#2,FMLA_VEC-FMLAV#2,ANDOREOR_VEC-BICV#0,ADDSUBL_VEC-SADDL2#1,ADDSUBL_VEC-SSUBL2#1,ADDSUBW_VEC-SADDW2#1,ADDSUBW_VEC-SSUBW2#1,ADDSUBHN_VEC-ADDHN2#1,ADDSUBHN_VEC-SUBHN2#1,ABDL_VEC-SABAL2#1,ABDL_VEC-SABDL2#1,MULL_VEC-SMLAL2#1,MULL_VEC-SMLSL2#1,MULL_VEC-SMULL2#1,SQDMULL_VEC-SQDMLAL2#0,SQDMULL_VEC-SQDMLSL2#0,SQDMULL_VEC-SQDMULL2#0,INT_HORZ_VEC-SADDLV#3,INT_HORZ_VEC-SMAXV#3,INT_HORZ_VEC-SMINV#3,INT_HORZ_VEC-ADDV#3
@@ -15937,49 +15937,49 @@ pub const fn classify_impl_97_1(inst: u32) -> u32 {
     0x4 => return classify_impl_97_1_4(inst), // INT_HORZ_VEC-ADDV#3
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_2REG_VEC-FRINTN_VEC_FP16#0
 pub const fn classify_impl_97_2_1(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4280;
+  0x4280
 }
 
 
 // FP16_2REG_VEC-FRINTM_VEC_FP16#0
 pub const fn classify_impl_97_2_2(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4281;
+  0x4281
 }
 
 
 // FP16_2REG_VEC-FCVTNS_VEC_FP16#0
 pub const fn classify_impl_97_2_3(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4282;
+  0x4282
 }
 
 
 // FP16_2REG_VEC-FCVTMS_VEC_FP16#0
 pub const fn classify_impl_97_2_4(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4283;
+  0x4283
 }
 
 
 // FP16_2REG_VEC-FCVTAS_VEC_FP16#0
 pub const fn classify_impl_97_2_5(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4284;
+  0x4284
 }
 
 
 // FP16_2REG_VEC-SCVTF_VEC_FP16#0
 pub const fn classify_impl_97_2_6(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4285;
+  0x4285
 }
 
 // HADDSUB_VEC-SHADD#1,HADDSUB_VEC-SRHADD#1,HADDSUB_VEC-SHSUB#1,QADDSUB_VEC-SQADD#4,QADDSUB_VEC-SQSUB#4,CMGT_VEC-CMGTV#4,CMGT_VEC-CMGEV#4,CMEQ_VEC-CMTSTV#4,SHL_REG_VEC-SSHL#4,SHL_REG_VEC-SQSHL#4,SHL_REG_VEC-SRSHL#4,SHL_REG_VEC-SQRSHL#4,MINMAX_VEC-SMAX#1,MINMAX_VEC-SMIN#1,MINMAX_VEC-SMAXP#1,MINMAX_VEC-SMINP#1,ABD_VEC-SABD#1,ABD_VEC-SABA#1,ADDSUB_VEC-ADD_VEC#4,ADDP_VEC-ADDP#4,MUL_VEC-MLA_VEC#1,MUL_VEC-MUL_VEC#1,SQDMULH_VEC-SQDMULH#0,FMINMAX_VEC-FMAXNM_VEC#2,FMINMAX_VEC-FMAX_VEC#2,FCMP_REG_VEC-FCMEQ_VEC#2,FADDSUB_VEC-FADD_VEC#2,FRECP_STEP_VEC-FRECPSV#2,FMUL_VEC-FMULXV#2,FMLA_VEC-FMLAV#2,FP16_2REG_VEC-FRINTN_VEC_FP16#0,FP16_2REG_VEC-FRINTM_VEC_FP16#0,FP16_2REG_VEC-FCVTNS_VEC_FP16#0,FP16_2REG_VEC-FCVTMS_VEC_FP16#0,FP16_2REG_VEC-FCVTAS_VEC_FP16#0,FP16_2REG_VEC-SCVTF_VEC_FP16#0,ANDOREOR_VEC-BICV#0,ADDSUBL_VEC-SADDL2#1,ADDSUBL_VEC-SSUBL2#1,ADDSUBW_VEC-SADDW2#1,ADDSUBW_VEC-SSUBW2#1,ADDSUBHN_VEC-ADDHN2#1,ADDSUBHN_VEC-SUBHN2#1,ABDL_VEC-SABAL2#1,ABDL_VEC-SABDL2#1,MULL_VEC-SMLAL2#1,MULL_VEC-SMLSL2#1,MULL_VEC-SMULL2#1,SQDMULL_VEC-SQDMLAL2#0,SQDMULL_VEC-SQDMLSL2#0,SQDMULL_VEC-SQDMULL2#0
@@ -16060,7 +16060,7 @@ pub const fn classify_impl_97_2(inst: u32) -> u32 {
     0x6 => return classify_impl_97_2_6(inst), // FP16_2REG_VEC-SCVTF_VEC_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 // HADDSUB_VEC-SHADD#1,HADDSUB_VEC-SRHADD#1,HADDSUB_VEC-SHSUB#1,QADDSUB_VEC-SQADD#4,QADDSUB_VEC-SQSUB#4,CMGT_VEC-CMGTV#4,CMGT_VEC-CMGEV#4,CMEQ_VEC-CMTSTV#4,SHL_REG_VEC-SSHL#4,SHL_REG_VEC-SQSHL#4,SHL_REG_VEC-SRSHL#4,SHL_REG_VEC-SQRSHL#4,MINMAX_VEC-SMAX#1,MINMAX_VEC-SMIN#1,MINMAX_VEC-SMAXP#1,MINMAX_VEC-SMINP#1,ABD_VEC-SABD#1,ABD_VEC-SABA#1,ADDSUB_VEC-ADD_VEC#4,ADDP_VEC-ADDP#4,MUL_VEC-MLA_VEC#1,MUL_VEC-MUL_VEC#1,SQDMULH_VEC-SQDMULH#0,FMINMAX_VEC-FMAXNM_VEC#2,FMINMAX_VEC-FMAX_VEC#2,FCMP_REG_VEC-FCMEQ_VEC#2,FADDSUB_VEC-FADD_VEC#2,FRECP_STEP_VEC-FRECPSV#2,FMUL_VEC-FMULXV#2,FMLA_VEC-FMLAV#2,FP16_2REG_VEC-FRINTN_VEC_FP16#0,FP16_2REG_VEC-FRINTM_VEC_FP16#0,FP16_2REG_VEC-FCVTNS_VEC_FP16#0,FP16_2REG_VEC-FCVTMS_VEC_FP16#0,FP16_2REG_VEC-FCVTAS_VEC_FP16#0,FP16_2REG_VEC-SCVTF_VEC_FP16#0,ANDOREOR_VEC-BICV#0,ADDSUBL_VEC-SADDL2#1,ADDSUBL_VEC-SSUBL2#1,ADDSUBW_VEC-SADDW2#1,ADDSUBW_VEC-SSUBW2#1,ADDSUBHN_VEC-ADDHN2#1,ADDSUBHN_VEC-SUBHN2#1,ABDL_VEC-SABAL2#1,ABDL_VEC-SABDL2#1,MULL_VEC-SMLAL2#1,MULL_VEC-SMLSL2#1,MULL_VEC-SMULL2#1,SQDMULL_VEC-SQDMLAL2#0,SQDMULL_VEC-SQDMLSL2#0,SQDMULL_VEC-SQDMULL2#0,INT_HORZ_VEC-SADDLV#3,INT_HORZ_VEC-SMAXV#3,INT_HORZ_VEC-SMINV#3,INT_HORZ_VEC-ADDV#3
@@ -16075,13 +16075,14 @@ pub const fn classify_impl_97(inst: u32) -> u32 {
     0x2 => return classify_impl_97_2(inst), // HADDSUB_VEC-SHADD#1,HADDSUB_VEC-SRHADD#1,HADDSUB_VEC-SHSUB#1,QADDSUB_VEC-SQADD#4,QADDSUB_VEC-SQSUB#4,CMGT_VEC-CMGTV#4,CMGT_VEC-CMGEV#4,CMEQ_VEC-CMTSTV#4,SHL_REG_VEC-SSHL#4,SHL_REG_VEC-SQSHL#4,SHL_REG_VEC-SRSHL#4,SHL_REG_VEC-SQRSHL#4,MINMAX_VEC-SMAX#1,MINMAX_VEC-SMIN#1,MINMAX_VEC-SMAXP#1,MINMAX_VEC-SMINP#1,ABD_VEC-SABD#1,ABD_VEC-SABA#1,ADDSUB_VEC-ADD_VEC#4,ADDP_VEC-ADDP#4,MUL_VEC-MLA_VEC#1,MUL_VEC-MUL_VEC#1,SQDMULH_VEC-SQDMULH#0,FMINMAX_VEC-FMAXNM_VEC#2,FMINMAX_VEC-FMAX_VEC#2,FCMP_REG_VEC-FCMEQ_VEC#2,FADDSUB_VEC-FADD_VEC#2,FRECP_STEP_VEC-FRECPSV#2,FMUL_VEC-FMULXV#2,FMLA_VEC-FMLAV#2,FP16_2REG_VEC-FRINTN_VEC_FP16#0,FP16_2REG_VEC-FRINTM_VEC_FP16#0,FP16_2REG_VEC-FCVTNS_VEC_FP16#0,FP16_2REG_VEC-FCVTMS_VEC_FP16#0,FP16_2REG_VEC-FCVTAS_VEC_FP16#0,FP16_2REG_VEC-SCVTF_VEC_FP16#0,ANDOREOR_VEC-BICV#0,ADDSUBL_VEC-SADDL2#1,ADDSUBL_VEC-SSUBL2#1,ADDSUBW_VEC-SADDW2#1,ADDSUBW_VEC-SSUBW2#1,ADDSUBHN_VEC-ADDHN2#1,ADDSUBHN_VEC-SUBHN2#1,ABDL_VEC-SABAL2#1,ABDL_VEC-SABDL2#1,MULL_VEC-SMLAL2#1,MULL_VEC-SMLSL2#1,MULL_VEC-SMULL2#1,SQDMULL_VEC-SQDMLAL2#0,SQDMULL_VEC-SQDMLSL2#0,SQDMULL_VEC-SQDMULL2#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // ZIP-UZP1#5,ZIP-TRN1#5,ZIP-ZIP1#5,ZIP-UZP2#5,ZIP-TRN2#5,ZIP-ZIP2#5,DOT_VEC-SDOT_VEC#1,DOT_VEC-USDOT_VEC#1,DOT_VEC-SMMLA_VEC#0,DOT_VEC-USMMLA_VEC#0
 pub const fn classify_impl_98(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -16147,169 +16148,168 @@ pub const fn classify_impl_98(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // REV_VEC-REV64_VEC#2
 pub const fn classify_impl_99_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3280;
+  0x3280
 }
 
 
 // ADDLP_VEC-SADDLP#2
 pub const fn classify_impl_99_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3100;
+  0x3100
 }
 
 
 // ARITH1_VEC-SUQADD_VEC#5
 pub const fn classify_impl_99_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3080;
+  0x3080
 }
 
 
 // CLZ_VEC-CLS_VEC#2
 pub const fn classify_impl_99_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3180;
+  0x3180
 }
 
 
 // ADDLP_VEC-SADALP#2
 pub const fn classify_impl_99_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3101;
+  0x3101
 }
 
 
 // ARITH1_VEC-SQABS_VEC#5
 pub const fn classify_impl_99_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3081;
+  0x3081
 }
 
 
 // CMZERO_VEC-CMGT_ZERO_VEC#5
 pub const fn classify_impl_99_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f80;
+  0x2f80
 }
 
 
 // CMZERO_VEC-CMEQ_ZERO_VEC#5
 pub const fn classify_impl_99_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f81;
+  0x2f81
 }
 
 
 // CMZERO_VEC-CMLT_ZERO_VEC#5
 pub const fn classify_impl_99_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f82;
+  0x2f82
 }
 
 
 // ARITH1_VEC-ABS_VEC#5
 pub const fn classify_impl_99_a(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3082;
+  0x3082
 }
 
 
 // FCMP_ZERO_VEC-FCMGT_ZERO_VEC#1
 pub const fn classify_impl_99_b(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b00;
+  0x3b00
 }
 
 
 // FCMP_ZERO_VEC-FCMEQ_ZERO_VEC#1
 pub const fn classify_impl_99_c(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b01;
+  0x3b01
 }
 
 
 // FCMP_ZERO_VEC-FCMLT_ZERO_VEC#1
 pub const fn classify_impl_99_d(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b02;
+  0x3b02
 }
 
 
 // FARITH1_VEC-FABS_VEC#1
 pub const fn classify_impl_99_e(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b80;
+  0x3b80
 }
 
 
 // XTN_VEC-XTN2_VEC#2
 pub const fn classify_impl_99_f(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3384;
+  0x3384
 }
 
 
 // XTN_VEC-SQXTN2_VEC#2
 pub const fn classify_impl_99_10(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3385;
+  0x3385
 }
 
 
 // FCVTN_VEC-BFCVTN2#0
 pub const fn classify_impl_99_11(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5184;
+  0x5184
 }
 
 
 // FRINT_VEC-FRINTP_VEC#1
 pub const fn classify_impl_99_12(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5202;
+  0x5202
 }
 
 
 // FRINT_VEC-FRINTZ_VEC#1
 pub const fn classify_impl_99_13(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5203;
+  0x5203
 }
 
 
 // FCVT_VEC-FCVTPS_VEC#1
 pub const fn classify_impl_99_14(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f03;
+  0x4f03
 }
 
 
 // FCVT_VEC-FCVTZS_VEC#1
 pub const fn classify_impl_99_15(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f04;
+  0x4f04
 }
 
 
 // FRECP_VEC-URECPE_VEC#1
 pub const fn classify_impl_99_16(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3d80;
+  0x3d80
 }
 
 
 // FRECP_VEC-FRECPE_VEC#1
 pub const fn classify_impl_99_17(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3d81;
+  0x3d81
 }
 
 // HADDSUB_VEC-SHADD#2,HADDSUB_VEC-SRHADD#2,HADDSUB_VEC-SHSUB#2,QADDSUB_VEC-SQADD#5,QADDSUB_VEC-SQSUB#5,CMGT_VEC-CMGTV#5,CMGT_VEC-CMGEV#5,CMEQ_VEC-CMTSTV#5,CMZERO_VEC-CMGT_ZERO_VEC#5,CMZERO_VEC-CMEQ_ZERO_VEC#5,CMZERO_VEC-CMLT_ZERO_VEC#5,ARITH1_VEC-SUQADD_VEC#5,ARITH1_VEC-SQABS_VEC#5,ARITH1_VEC-ABS_VEC#5,ADDLP_VEC-SADDLP#2,ADDLP_VEC-SADALP#2,CLZ_VEC-CLS_VEC#2,REV_VEC-REV64_VEC#2,XTN_VEC-XTN2_VEC#2,XTN_VEC-SQXTN2_VEC#2,SHL_REG_VEC-SSHL#5,SHL_REG_VEC-SQSHL#5,SHL_REG_VEC-SRSHL#5,SHL_REG_VEC-SQRSHL#5,MINMAX_VEC-SMAX#2,MINMAX_VEC-SMIN#2,MINMAX_VEC-SMAXP#2,MINMAX_VEC-SMINP#2,ABD_VEC-SABD#2,ABD_VEC-SABA#2,ADDSUB_VEC-ADD_VEC#5,ADDP_VEC-ADDP#5,MUL_VEC-MLA_VEC#2,MUL_VEC-MUL_VEC#2,SQDMULH_VEC-SQDMULH#1,FMINMAX_VEC-FMINNM_VEC#1,FMINMAX_VEC-FMIN_VEC#1,FCMP_ZERO_VEC-FCMGT_ZERO_VEC#1,FCMP_ZERO_VEC-FCMEQ_ZERO_VEC#1,FCMP_ZERO_VEC-FCMLT_ZERO_VEC#1,FARITH1_VEC-FABS_VEC#1,FADDSUB_VEC-FSUB_VEC#1,FRECP_VEC-URECPE_VEC#1,FRECP_VEC-FRECPE_VEC#1,FRECP_STEP_VEC-FRSQRTSV#1,FMLA_VEC-FMLSV#1,ANDOREOR_VEC-ORRV#0,ADDSUBL_VEC-SADDL2#2,ADDSUBL_VEC-SSUBL2#2,ADDSUBW_VEC-SADDW2#2,ADDSUBW_VEC-SSUBW2#2,ADDSUBHN_VEC-ADDHN2#2,ADDSUBHN_VEC-SUBHN2#2,ABDL_VEC-SABAL2#2,ABDL_VEC-SABDL2#2,MULL_VEC-SMLAL2#2,MULL_VEC-SMLSL2#2,MULL_VEC-SMULL2#2,SQDMULL_VEC-SQDMLAL2#1,SQDMULL_VEC-SQDMLSL2#1,SQDMULL_VEC-SQDMULL2#1,FCVT_VEC-FCVTPS_VEC#1,FCVT_VEC-FCVTZS_VEC#1,FCVTN_VEC-BFCVTN2#0,FRINT_VEC-FRINTP_VEC#1,FRINT_VEC-FRINTZ_VEC#1,FHM_VEC-FMLSL_VEC#0
@@ -16471,49 +16471,49 @@ pub const fn classify_impl_99(inst: u32) -> u32 {
     0x17 => return classify_impl_99_17(inst), // FRECP_VEC-FRECPE_VEC#1
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // INT_HORZ_VEC-SADDLV#4
 pub const fn classify_impl_9a_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5380;
+  0x5380
 }
 
 
 // INT_HORZ_VEC-SMAXV#4
 pub const fn classify_impl_9a_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5381;
+  0x5381
 }
 
 
 // FP_HORZ_VEC-FMINNMV_FP16#1
 pub const fn classify_impl_9a_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5482;
+  0x5482
 }
 
 
 // FP_HORZ_VEC-FMINV_FP16#1
 pub const fn classify_impl_9a_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5483;
+  0x5483
 }
 
 
 // INT_HORZ_VEC-SMINV#4
 pub const fn classify_impl_9a_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5382;
+  0x5382
 }
 
 
 // INT_HORZ_VEC-ADDV#4
 pub const fn classify_impl_9a_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5383;
+  0x5383
 }
 
 // HADDSUB_VEC-SHADD#2,HADDSUB_VEC-SRHADD#2,HADDSUB_VEC-SHSUB#2,QADDSUB_VEC-SQADD#5,QADDSUB_VEC-SQSUB#5,CMGT_VEC-CMGTV#5,CMGT_VEC-CMGEV#5,CMEQ_VEC-CMTSTV#5,SHL_REG_VEC-SSHL#5,SHL_REG_VEC-SQSHL#5,SHL_REG_VEC-SRSHL#5,SHL_REG_VEC-SQRSHL#5,MINMAX_VEC-SMAX#2,MINMAX_VEC-SMIN#2,MINMAX_VEC-SMAXP#2,MINMAX_VEC-SMINP#2,ABD_VEC-SABD#2,ABD_VEC-SABA#2,ADDSUB_VEC-ADD_VEC#5,ADDP_VEC-ADDP#5,MUL_VEC-MLA_VEC#2,MUL_VEC-MUL_VEC#2,SQDMULH_VEC-SQDMULH#1,FMINMAX_VEC-FMINNM_VEC#1,FMINMAX_VEC-FMIN_VEC#1,FADDSUB_VEC-FSUB_VEC#1,FRECP_STEP_VEC-FRSQRTSV#1,FMLA_VEC-FMLSV#1,ANDOREOR_VEC-ORRV#0,ADDSUBL_VEC-SADDL2#2,ADDSUBL_VEC-SSUBL2#2,ADDSUBW_VEC-SADDW2#2,ADDSUBW_VEC-SSUBW2#2,ADDSUBHN_VEC-ADDHN2#2,ADDSUBHN_VEC-SUBHN2#2,ABDL_VEC-SABAL2#2,ABDL_VEC-SABDL2#2,MULL_VEC-SMLAL2#2,MULL_VEC-SMLSL2#2,MULL_VEC-SMULL2#2,SQDMULL_VEC-SQDMLAL2#1,SQDMULL_VEC-SQDMLSL2#1,SQDMULL_VEC-SQDMULL2#1,INT_HORZ_VEC-SADDLV#4,INT_HORZ_VEC-SMAXV#4,INT_HORZ_VEC-SMINV#4,INT_HORZ_VEC-ADDV#4,FP_HORZ_VEC-FMINNMV_FP16#1,FP_HORZ_VEC-FMINV_FP16#1,FHM_VEC-FMLSL_VEC#0
@@ -16658,14 +16658,15 @@ pub const fn classify_impl_9a(inst: u32) -> u32 {
     0x6 => return classify_impl_9a_6(inst), // INT_HORZ_VEC-ADDV#4
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // ZIP-UZP1#6,ZIP-TRN1#6,ZIP-ZIP1#6,ZIP-UZP2#6,ZIP-TRN2#6,ZIP-ZIP2#6,FP16_3REG_VEC-FMINNM_VEC_FP16#0,FP16_3REG_VEC-FMLS_VEC_FP16#0,FP16_3REG_VEC-FSUB_VEC_FP16#0,FP16_3REG_VEC-FMIN_VEC_FP16#0,FP16_3REG_VEC-FRSQRTS_VEC_FP16#0
 pub const fn classify_impl_9b(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x0,
     0x1 => 0x4187,
     0x2 => 0x0,
@@ -16699,113 +16700,112 @@ pub const fn classify_impl_9b(inst: u32) -> u32 {
     0x1e => 0x2a85,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ARITH1_VEC-SUQADD_VEC#6
 pub const fn classify_impl_9c_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3080;
+  0x3080
 }
 
 
 // ARITH1_VEC-SQABS_VEC#6
 pub const fn classify_impl_9c_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3081;
+  0x3081
 }
 
 
 // CMZERO_VEC-CMGT_ZERO_VEC#6
 pub const fn classify_impl_9c_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f80;
+  0x2f80
 }
 
 
 // CMZERO_VEC-CMEQ_ZERO_VEC#6
 pub const fn classify_impl_9c_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f81;
+  0x2f81
 }
 
 
 // CMZERO_VEC-CMLT_ZERO_VEC#6
 pub const fn classify_impl_9c_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f82;
+  0x2f82
 }
 
 
 // ARITH1_VEC-ABS_VEC#6
 pub const fn classify_impl_9c_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3082;
+  0x3082
 }
 
 
 // FCMP_ZERO_VEC-FCMGT_ZERO_VEC#2
 pub const fn classify_impl_9c_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b00;
+  0x3b00
 }
 
 
 // FCMP_ZERO_VEC-FCMEQ_ZERO_VEC#2
 pub const fn classify_impl_9c_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b01;
+  0x3b01
 }
 
 
 // FCMP_ZERO_VEC-FCMLT_ZERO_VEC#2
 pub const fn classify_impl_9c_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b02;
+  0x3b02
 }
 
 
 // FARITH1_VEC-FABS_VEC#2
 pub const fn classify_impl_9c_a(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b80;
+  0x3b80
 }
 
 
 // FRINT_VEC-FRINTP_VEC#2
 pub const fn classify_impl_9c_b(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5202;
+  0x5202
 }
 
 
 // FRINT_VEC-FRINTZ_VEC#2
 pub const fn classify_impl_9c_c(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5203;
+  0x5203
 }
 
 
 // FCVT_VEC-FCVTPS_VEC#2
 pub const fn classify_impl_9c_d(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f03;
+  0x4f03
 }
 
 
 // FCVT_VEC-FCVTZS_VEC#2
 pub const fn classify_impl_9c_e(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f04;
+  0x4f04
 }
 
 
 // FRECP_VEC-FRECPE_VEC#2
 pub const fn classify_impl_9c_f(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3d81;
+  0x3d81
 }
 
 // QADDSUB_VEC-SQADD#6,QADDSUB_VEC-SQSUB#6,CMGT_VEC-CMGTV#6,CMGT_VEC-CMGEV#6,CMEQ_VEC-CMTSTV#6,CMZERO_VEC-CMGT_ZERO_VEC#6,CMZERO_VEC-CMEQ_ZERO_VEC#6,CMZERO_VEC-CMLT_ZERO_VEC#6,ARITH1_VEC-SUQADD_VEC#6,ARITH1_VEC-SQABS_VEC#6,ARITH1_VEC-ABS_VEC#6,SHL_REG_VEC-SSHL#6,SHL_REG_VEC-SQSHL#6,SHL_REG_VEC-SRSHL#6,SHL_REG_VEC-SQRSHL#6,ADDSUB_VEC-ADD_VEC#6,ADDP_VEC-ADDP#6,FMINMAX_VEC-FMINNM_VEC#2,FMINMAX_VEC-FMIN_VEC#2,FCMP_ZERO_VEC-FCMGT_ZERO_VEC#2,FCMP_ZERO_VEC-FCMEQ_ZERO_VEC#2,FCMP_ZERO_VEC-FCMLT_ZERO_VEC#2,FARITH1_VEC-FABS_VEC#2,FADDSUB_VEC-FSUB_VEC#2,FRECP_VEC-FRECPE_VEC#2,FRECP_STEP_VEC-FRSQRTSV#2,FMLA_VEC-FMLSV#2,ANDOREOR_VEC-ORNV#0,PMULL_VEC-PMULL264#0,FCVT_VEC-FCVTPS_VEC#2,FCVT_VEC-FCVTZS_VEC#2,FRINT_VEC-FRINTP_VEC#2,FRINT_VEC-FRINTZ_VEC#2
@@ -16959,70 +16959,70 @@ pub const fn classify_impl_9c(inst: u32) -> u32 {
     0xf => return classify_impl_9c_f(inst), // FRECP_VEC-FRECPE_VEC#2
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_2REG_VEC-FCMGT_ZERO_VEC_FP16#0
 pub const fn classify_impl_9d_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x4286;
+  0x4286
 }
 
 
 // FP16_2REG_VEC-FCMEQ_ZERO_VEC_FP16#0
 pub const fn classify_impl_9d_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x4287;
+  0x4287
 }
 
 
 // FP16_2REG_VEC-FCMLT_ZERO_VEC_FP16#0
 pub const fn classify_impl_9d_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x4288;
+  0x4288
 }
 
 
 // FP16_2REG_VEC-FABS_VEC_FP16#0
 pub const fn classify_impl_9d_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x4289;
+  0x4289
 }
 
 
 // FP16_2REG_VEC-FRINTP_VEC_FP16#0
 pub const fn classify_impl_9d_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x428a;
+  0x428a
 }
 
 
 // FP16_2REG_VEC-FRINTZ_VEC_FP16#0
 pub const fn classify_impl_9d_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x428b;
+  0x428b
 }
 
 
 // FP16_2REG_VEC-FCVTPS_VEC_FP16#0
 pub const fn classify_impl_9d_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x428c;
+  0x428c
 }
 
 
 // FP16_2REG_VEC-FCVTZS_VEC_FP16#0
 pub const fn classify_impl_9d_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x428d;
+  0x428d
 }
 
 
 // FP16_2REG_VEC-FRECPE_VEC_FP16#0
 pub const fn classify_impl_9d_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x428e;
+  0x428e
 }
 
 // QADDSUB_VEC-SQADD#6,QADDSUB_VEC-SQSUB#6,CMGT_VEC-CMGTV#6,CMGT_VEC-CMGEV#6,CMEQ_VEC-CMTSTV#6,SHL_REG_VEC-SSHL#6,SHL_REG_VEC-SQSHL#6,SHL_REG_VEC-SRSHL#6,SHL_REG_VEC-SQRSHL#6,ADDSUB_VEC-ADD_VEC#6,ADDP_VEC-ADDP#6,FMINMAX_VEC-FMINNM_VEC#2,FMINMAX_VEC-FMIN_VEC#2,FADDSUB_VEC-FSUB_VEC#2,FRECP_STEP_VEC-FRSQRTSV#2,FMLA_VEC-FMLSV#2,FP16_2REG_VEC-FCMGT_ZERO_VEC_FP16#0,FP16_2REG_VEC-FCMEQ_ZERO_VEC_FP16#0,FP16_2REG_VEC-FCMLT_ZERO_VEC_FP16#0,FP16_2REG_VEC-FABS_VEC_FP16#0,FP16_2REG_VEC-FRINTP_VEC_FP16#0,FP16_2REG_VEC-FRINTZ_VEC_FP16#0,FP16_2REG_VEC-FCVTPS_VEC_FP16#0,FP16_2REG_VEC-FCVTZS_VEC_FP16#0,FP16_2REG_VEC-FRECPE_VEC_FP16#0,ANDOREOR_VEC-ORNV#0,PMULL_VEC-PMULL264#0
@@ -17170,13 +17170,14 @@ pub const fn classify_impl_9d(inst: u32) -> u32 {
     0x9 => return classify_impl_9d_9(inst), // FP16_2REG_VEC-FRECPE_VEC_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0,SIMD_IMM-MOVI32#4,SIMD_IMM-MOVI32#5,SIMD_IMM-MOVI32#6,SIMD_IMM-MOVI32#7,SIMD_IMM-ORRI32#4,SIMD_IMM-ORRI32#5,SIMD_IMM-ORRI32#6,SIMD_IMM-ORRI32#7,SIMD_IMM-MOVI16#2,SIMD_IMM-MOVI16#3,SIMD_IMM-ORRI16#2,SIMD_IMM-ORRI16#3,SIMD_IMM-MOVI32_MSL#2,SIMD_IMM-MOVI32_MSL#3,SIMD_IMM-MOVI8#1,SIMD_IMM-FMOV32#1,SIMD_IMM-FMOV16#1
 pub const fn classify_impl_9e_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x5d00,
     0x2 => 0x0,
@@ -17242,14 +17243,14 @@ pub const fn classify_impl_9e_1(inst: u32) -> u32 {
     0x3e => 0x5980,
     0x3f => 0x5d07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-SSHR#7,SHR_VEC_IMM-SSRA#7,SHR_VEC_IMM-SRSHR#7,SHR_VEC_IMM-SRSRA#7,QSHL_VEC_IMM-SQSHL_IMM#7,SHRN_VEC_IMM-SHRN2#0,SHRN_VEC_IMM-RSHRN2#0,SHRN_VEC_IMM-SQSHRN2#0,SHRN_VEC_IMM-SQRSHRN2#0,SHLL_VEC_IMM-SSHLL2#0,SHIFT_VEC_IMM-SHL#7,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
 pub const fn classify_impl_9e_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -17315,8 +17316,7 @@ pub const fn classify_impl_9e_2(inst: u32) -> u32 {
     0x3e => 0x5980,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-SSHR#7,SHR_VEC_IMM-SSRA#7,SHR_VEC_IMM-SRSHR#7,SHR_VEC_IMM-SRSRA#7,QSHL_VEC_IMM-SQSHL_IMM#7,SHRN_VEC_IMM-SHRN2#0,SHRN_VEC_IMM-RSHRN2#0,SHRN_VEC_IMM-SQSHRN2#0,SHRN_VEC_IMM-SQRSHRN2#0,SHLL_VEC_IMM-SSHLL2#0,SHIFT_VEC_IMM-SHL#7,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0,SIMD_IMM-MOVI32#4,SIMD_IMM-MOVI32#5,SIMD_IMM-MOVI32#6,SIMD_IMM-MOVI32#7,SIMD_IMM-ORRI32#4,SIMD_IMM-ORRI32#5,SIMD_IMM-ORRI32#6,SIMD_IMM-ORRI32#7,SIMD_IMM-MOVI16#2,SIMD_IMM-MOVI16#3,SIMD_IMM-ORRI16#2,SIMD_IMM-ORRI16#3,SIMD_IMM-MOVI32_MSL#2,SIMD_IMM-MOVI32_MSL#3,SIMD_IMM-MOVI8#1,SIMD_IMM-FMOV32#1,SIMD_IMM-FMOV16#1
@@ -17331,13 +17331,14 @@ pub const fn classify_impl_9e(inst: u32) -> u32 {
     0x2 => return classify_impl_9e_2(inst), // SHR_VEC_IMM-SSHR#7,SHR_VEC_IMM-SSRA#7,SHR_VEC_IMM-SRSHR#7,SHR_VEC_IMM-SRSRA#7,QSHL_VEC_IMM-SQSHL_IMM#7,SHRN_VEC_IMM-SHRN2#0,SHRN_VEC_IMM-RSHRN2#0,SHRN_VEC_IMM-SQSHRN2#0,SHRN_VEC_IMM-SQRSHRN2#0,SHLL_VEC_IMM-SSHLL2#0,SHIFT_VEC_IMM-SHL#7,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-SSHR#8,SHR_VEC_IMM-SSRA#8,SHR_VEC_IMM-SRSHR#8,SHR_VEC_IMM-SRSRA#8,QSHL_VEC_IMM-SQSHL_IMM#8,SHRN_VEC_IMM-SHRN2#1,SHRN_VEC_IMM-RSHRN2#1,SHRN_VEC_IMM-SQSHRN2#1,SHRN_VEC_IMM-SQRSHRN2#1,SHLL_VEC_IMM-SSHLL2#1,SHIFT_VEC_IMM-SHL#8,FCVT_VEC_FIXED-SCVTF_VEC_FIX_FP16#2,FCVT_VEC_FIXED-FCVTZS_VEC_FIX_FP16#2,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
 pub const fn classify_impl_9f_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -17403,14 +17404,14 @@ pub const fn classify_impl_9f_1(inst: u32) -> u32 {
     0x3e => 0x5980,
     0x3f => 0x4e01,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-SSHR#9,SHR_VEC_IMM-SSRA#9,SHR_VEC_IMM-SRSHR#9,SHR_VEC_IMM-SRSRA#9,QSHL_VEC_IMM-SQSHL_IMM#9,SHRN_VEC_IMM-SHRN2#2,SHRN_VEC_IMM-RSHRN2#2,SHRN_VEC_IMM-SQSHRN2#2,SHRN_VEC_IMM-SQRSHRN2#2,SHLL_VEC_IMM-SSHLL2#2,SHIFT_VEC_IMM-SHL#9,FCVT_VEC_FIXED-SCVTF_VEC_FIX_FP16#3,FCVT_VEC_FIXED-FCVTZS_VEC_FIX_FP16#3,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
 pub const fn classify_impl_9f_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -17476,8 +17477,7 @@ pub const fn classify_impl_9f_2(inst: u32) -> u32 {
     0x3e => 0x5980,
     0x3f => 0x4e01,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-SSHR#8,SHR_VEC_IMM-SSHR#9,SHR_VEC_IMM-SSRA#8,SHR_VEC_IMM-SSRA#9,SHR_VEC_IMM-SRSHR#8,SHR_VEC_IMM-SRSHR#9,SHR_VEC_IMM-SRSRA#8,SHR_VEC_IMM-SRSRA#9,QSHL_VEC_IMM-SQSHL_IMM#8,QSHL_VEC_IMM-SQSHL_IMM#9,SHRN_VEC_IMM-SHRN2#1,SHRN_VEC_IMM-SHRN2#2,SHRN_VEC_IMM-RSHRN2#1,SHRN_VEC_IMM-RSHRN2#2,SHRN_VEC_IMM-SQSHRN2#1,SHRN_VEC_IMM-SQSHRN2#2,SHRN_VEC_IMM-SQRSHRN2#1,SHRN_VEC_IMM-SQRSHRN2#2,SHLL_VEC_IMM-SSHLL2#1,SHLL_VEC_IMM-SSHLL2#2,SHIFT_VEC_IMM-SHL#8,SHIFT_VEC_IMM-SHL#9,FCVT_VEC_FIXED-SCVTF_VEC_FIX_FP16#2,FCVT_VEC_FIXED-SCVTF_VEC_FIX_FP16#3,FCVT_VEC_FIXED-FCVTZS_VEC_FIX_FP16#2,FCVT_VEC_FIXED-FCVTZS_VEC_FIX_FP16#3,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
@@ -17492,13 +17492,14 @@ pub const fn classify_impl_9f(inst: u32) -> u32 {
     0x2 => return classify_impl_9f_2(inst), // SHR_VEC_IMM-SSHR#9,SHR_VEC_IMM-SSRA#9,SHR_VEC_IMM-SRSHR#9,SHR_VEC_IMM-SRSRA#9,QSHL_VEC_IMM-SQSHL_IMM#9,SHRN_VEC_IMM-SHRN2#2,SHRN_VEC_IMM-RSHRN2#2,SHRN_VEC_IMM-SQSHRN2#2,SHRN_VEC_IMM-SQRSHRN2#2,SHLL_VEC_IMM-SSHLL2#2,SHIFT_VEC_IMM-SHL#9,FCVT_VEC_FIXED-SCVTF_VEC_FIX_FP16#3,FCVT_VEC_FIXED-FCVTZS_VEC_FIX_FP16#3,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-SSHR#10,SHR_VEC_IMM-SSRA#10,SHR_VEC_IMM-SRSHR#10,SHR_VEC_IMM-SRSRA#10,QSHL_VEC_IMM-SQSHL_IMM#10,SHRN_VEC_IMM-SHRN2#3,SHRN_VEC_IMM-RSHRN2#3,SHRN_VEC_IMM-SQSHRN2#3,SHRN_VEC_IMM-SQRSHRN2#3,SHLL_VEC_IMM-SSHLL2#3,SHIFT_VEC_IMM-SHL#10,FCVT_VEC_FIXED-SCVTF_VEC_FIX#4,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#4,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
 pub const fn classify_impl_a0_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -17564,14 +17565,14 @@ pub const fn classify_impl_a0_1(inst: u32) -> u32 {
     0x3e => 0x5980,
     0x3f => 0x4e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-SSHR#11,SHR_VEC_IMM-SSRA#11,SHR_VEC_IMM-SRSHR#11,SHR_VEC_IMM-SRSRA#11,QSHL_VEC_IMM-SQSHL_IMM#11,SHRN_VEC_IMM-SHRN2#4,SHRN_VEC_IMM-RSHRN2#4,SHRN_VEC_IMM-SQSHRN2#4,SHRN_VEC_IMM-SQRSHRN2#4,SHLL_VEC_IMM-SSHLL2#4,SHIFT_VEC_IMM-SHL#11,FCVT_VEC_FIXED-SCVTF_VEC_FIX#5,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#5,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
 pub const fn classify_impl_a0_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -17637,8 +17638,7 @@ pub const fn classify_impl_a0_2(inst: u32) -> u32 {
     0x3e => 0x5980,
     0x3f => 0x4e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-SSHR#10,SHR_VEC_IMM-SSHR#11,SHR_VEC_IMM-SSRA#10,SHR_VEC_IMM-SSRA#11,SHR_VEC_IMM-SRSHR#10,SHR_VEC_IMM-SRSHR#11,SHR_VEC_IMM-SRSRA#10,SHR_VEC_IMM-SRSRA#11,QSHL_VEC_IMM-SQSHL_IMM#10,QSHL_VEC_IMM-SQSHL_IMM#11,SHRN_VEC_IMM-SHRN2#3,SHRN_VEC_IMM-SHRN2#4,SHRN_VEC_IMM-RSHRN2#3,SHRN_VEC_IMM-RSHRN2#4,SHRN_VEC_IMM-SQSHRN2#3,SHRN_VEC_IMM-SQSHRN2#4,SHRN_VEC_IMM-SQRSHRN2#3,SHRN_VEC_IMM-SQRSHRN2#4,SHLL_VEC_IMM-SSHLL2#3,SHLL_VEC_IMM-SSHLL2#4,SHIFT_VEC_IMM-SHL#10,SHIFT_VEC_IMM-SHL#11,FCVT_VEC_FIXED-SCVTF_VEC_FIX#4,FCVT_VEC_FIXED-SCVTF_VEC_FIX#5,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#4,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#5,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
@@ -17653,13 +17653,14 @@ pub const fn classify_impl_a0(inst: u32) -> u32 {
     0x2 => return classify_impl_a0_2(inst), // SHR_VEC_IMM-SSHR#11,SHR_VEC_IMM-SSRA#11,SHR_VEC_IMM-SRSHR#11,SHR_VEC_IMM-SRSRA#11,QSHL_VEC_IMM-SQSHL_IMM#11,SHRN_VEC_IMM-SHRN2#4,SHRN_VEC_IMM-RSHRN2#4,SHRN_VEC_IMM-SQSHRN2#4,SHRN_VEC_IMM-SQRSHRN2#4,SHLL_VEC_IMM-SSHLL2#4,SHIFT_VEC_IMM-SHL#11,FCVT_VEC_FIXED-SCVTF_VEC_FIX#5,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#5,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-SSHR#12,SHR_VEC_IMM-SSRA#12,SHR_VEC_IMM-SRSHR#12,SHR_VEC_IMM-SRSRA#12,QSHL_VEC_IMM-SQSHL_IMM#12,SHRN_VEC_IMM-SHRN2#5,SHRN_VEC_IMM-RSHRN2#5,SHRN_VEC_IMM-SQSHRN2#5,SHRN_VEC_IMM-SQRSHRN2#5,SHLL_VEC_IMM-SSHLL2#5,SHIFT_VEC_IMM-SHL#12,FCVT_VEC_FIXED-SCVTF_VEC_FIX#6,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#6,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
 pub const fn classify_impl_a1_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -17725,14 +17726,14 @@ pub const fn classify_impl_a1_1(inst: u32) -> u32 {
     0x3e => 0x5980,
     0x3f => 0x4e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-SSHR#13,SHR_VEC_IMM-SSRA#13,SHR_VEC_IMM-SRSHR#13,SHR_VEC_IMM-SRSRA#13,QSHL_VEC_IMM-SQSHL_IMM#13,SHRN_VEC_IMM-SHRN2#6,SHRN_VEC_IMM-RSHRN2#6,SHRN_VEC_IMM-SQSHRN2#6,SHRN_VEC_IMM-SQRSHRN2#6,SHLL_VEC_IMM-SSHLL2#6,SHIFT_VEC_IMM-SHL#13,FCVT_VEC_FIXED-SCVTF_VEC_FIX#7,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#7,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
 pub const fn classify_impl_a1_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -17798,8 +17799,7 @@ pub const fn classify_impl_a1_2(inst: u32) -> u32 {
     0x3e => 0x5980,
     0x3f => 0x4e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-SSHR#12,SHR_VEC_IMM-SSHR#13,SHR_VEC_IMM-SSRA#12,SHR_VEC_IMM-SSRA#13,SHR_VEC_IMM-SRSHR#12,SHR_VEC_IMM-SRSHR#13,SHR_VEC_IMM-SRSRA#12,SHR_VEC_IMM-SRSRA#13,QSHL_VEC_IMM-SQSHL_IMM#12,QSHL_VEC_IMM-SQSHL_IMM#13,SHRN_VEC_IMM-SHRN2#5,SHRN_VEC_IMM-SHRN2#6,SHRN_VEC_IMM-RSHRN2#5,SHRN_VEC_IMM-RSHRN2#6,SHRN_VEC_IMM-SQSHRN2#5,SHRN_VEC_IMM-SQSHRN2#6,SHRN_VEC_IMM-SQRSHRN2#5,SHRN_VEC_IMM-SQRSHRN2#6,SHLL_VEC_IMM-SSHLL2#5,SHLL_VEC_IMM-SSHLL2#6,SHIFT_VEC_IMM-SHL#12,SHIFT_VEC_IMM-SHL#13,FCVT_VEC_FIXED-SCVTF_VEC_FIX#6,FCVT_VEC_FIXED-SCVTF_VEC_FIX#7,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#6,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#7,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
@@ -17814,13 +17814,14 @@ pub const fn classify_impl_a1(inst: u32) -> u32 {
     0x2 => return classify_impl_a1_2(inst), // SHR_VEC_IMM-SSHR#13,SHR_VEC_IMM-SSRA#13,SHR_VEC_IMM-SRSHR#13,SHR_VEC_IMM-SRSRA#13,QSHL_VEC_IMM-SQSHL_IMM#13,SHRN_VEC_IMM-SHRN2#6,SHRN_VEC_IMM-RSHRN2#6,SHRN_VEC_IMM-SQSHRN2#6,SHRN_VEC_IMM-SQRSHRN2#6,SHLL_VEC_IMM-SSHLL2#6,SHIFT_VEC_IMM-SHL#13,FCVT_VEC_FIXED-SCVTF_VEC_FIX#7,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#7,FMUL_ELEM_FP16-FMLA_ELEM_FP16#0,FMUL_ELEM_FP16-FMLS_ELEM_FP16#0,FMUL_ELEM_FP16-FMUL_ELEM_FP16#0,DOT_ELEM-SUDOT_ELEM#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-SSHR#14,SHR_VEC_IMM-SSRA#14,SHR_VEC_IMM-SRSHR#14,SHR_VEC_IMM-SRSRA#14,QSHL_VEC_IMM-SQSHL_IMM#14,SHIFT_VEC_IMM-SHL#14,FCVT_VEC_FIXED-SCVTF_VEC_FIX#8,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#8,MUL_ELEM-MUL_ELEM#0,MUL_ELEM-SQDMULH_ELEM#0,MUL_ELEM-SQRDMULH_ELEM#0,MULL_ELEM-SMLAL2_ELEM#0,MULL_ELEM-SQDMLAL2_ELEM#0,MULL_ELEM-SMLSL2_ELEM#0,MULL_ELEM-SQDMLSL2_ELEM#0,MULL_ELEM-SMULL2_ELEM#0,MULL_ELEM-SQDMULL2_ELEM#0,DOT_ELEM-BFDOT_ELEM#0
 pub const fn classify_impl_a2_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -17886,14 +17887,14 @@ pub const fn classify_impl_a2_1(inst: u32) -> u32 {
     0x3e => 0x5981,
     0x3f => 0x4e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-SSHR#15,SHR_VEC_IMM-SSRA#15,SHR_VEC_IMM-SRSHR#15,SHR_VEC_IMM-SRSRA#15,QSHL_VEC_IMM-SQSHL_IMM#15,SHIFT_VEC_IMM-SHL#15,FCVT_VEC_FIXED-SCVTF_VEC_FIX#9,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#9,MUL_ELEM-MUL_ELEM#0,MUL_ELEM-SQDMULH_ELEM#0,MUL_ELEM-SQRDMULH_ELEM#0,MULL_ELEM-SMLAL2_ELEM#0,MULL_ELEM-SQDMLAL2_ELEM#0,MULL_ELEM-SMLSL2_ELEM#0,MULL_ELEM-SQDMLSL2_ELEM#0,MULL_ELEM-SMULL2_ELEM#0,MULL_ELEM-SQDMULL2_ELEM#0,DOT_ELEM-BFDOT_ELEM#0
 pub const fn classify_impl_a2_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -17959,8 +17960,7 @@ pub const fn classify_impl_a2_2(inst: u32) -> u32 {
     0x3e => 0x5981,
     0x3f => 0x4e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-SSHR#14,SHR_VEC_IMM-SSHR#15,SHR_VEC_IMM-SSRA#14,SHR_VEC_IMM-SSRA#15,SHR_VEC_IMM-SRSHR#14,SHR_VEC_IMM-SRSHR#15,SHR_VEC_IMM-SRSRA#14,SHR_VEC_IMM-SRSRA#15,QSHL_VEC_IMM-SQSHL_IMM#14,QSHL_VEC_IMM-SQSHL_IMM#15,SHIFT_VEC_IMM-SHL#14,SHIFT_VEC_IMM-SHL#15,FCVT_VEC_FIXED-SCVTF_VEC_FIX#8,FCVT_VEC_FIXED-SCVTF_VEC_FIX#9,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#8,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#9,MUL_ELEM-MUL_ELEM#0,MUL_ELEM-SQDMULH_ELEM#0,MUL_ELEM-SQRDMULH_ELEM#0,MULL_ELEM-SMLAL2_ELEM#0,MULL_ELEM-SQDMLAL2_ELEM#0,MULL_ELEM-SMLSL2_ELEM#0,MULL_ELEM-SQDMLSL2_ELEM#0,MULL_ELEM-SMULL2_ELEM#0,MULL_ELEM-SQDMULL2_ELEM#0,DOT_ELEM-BFDOT_ELEM#0
@@ -17975,13 +17975,14 @@ pub const fn classify_impl_a2(inst: u32) -> u32 {
     0x2 => return classify_impl_a2_2(inst), // SHR_VEC_IMM-SSHR#15,SHR_VEC_IMM-SSRA#15,SHR_VEC_IMM-SRSHR#15,SHR_VEC_IMM-SRSRA#15,QSHL_VEC_IMM-SQSHL_IMM#15,SHIFT_VEC_IMM-SHL#15,FCVT_VEC_FIXED-SCVTF_VEC_FIX#9,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#9,MUL_ELEM-MUL_ELEM#0,MUL_ELEM-SQDMULH_ELEM#0,MUL_ELEM-SQRDMULH_ELEM#0,MULL_ELEM-SMLAL2_ELEM#0,MULL_ELEM-SQDMLAL2_ELEM#0,MULL_ELEM-SMLSL2_ELEM#0,MULL_ELEM-SQDMLSL2_ELEM#0,MULL_ELEM-SMULL2_ELEM#0,MULL_ELEM-SQDMULL2_ELEM#0,DOT_ELEM-BFDOT_ELEM#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-SSHR#16,SHR_VEC_IMM-SSRA#16,SHR_VEC_IMM-SRSHR#16,SHR_VEC_IMM-SRSRA#16,QSHL_VEC_IMM-SQSHL_IMM#16,SHIFT_VEC_IMM-SHL#16,FCVT_VEC_FIXED-SCVTF_VEC_FIX#10,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#10,MUL_ELEM-MUL_ELEM#0,MUL_ELEM-SQDMULH_ELEM#0,MUL_ELEM-SQRDMULH_ELEM#0,MULL_ELEM-SMLAL2_ELEM#0,MULL_ELEM-SQDMLAL2_ELEM#0,MULL_ELEM-SMLSL2_ELEM#0,MULL_ELEM-SQDMLSL2_ELEM#0,MULL_ELEM-SMULL2_ELEM#0,MULL_ELEM-SQDMULL2_ELEM#0,DOT_ELEM-BFDOT_ELEM#0
 pub const fn classify_impl_a3_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -18047,14 +18048,14 @@ pub const fn classify_impl_a3_1(inst: u32) -> u32 {
     0x3e => 0x5981,
     0x3f => 0x4e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-SSHR#17,SHR_VEC_IMM-SSRA#17,SHR_VEC_IMM-SRSHR#17,SHR_VEC_IMM-SRSRA#17,QSHL_VEC_IMM-SQSHL_IMM#17,SHIFT_VEC_IMM-SHL#17,FCVT_VEC_FIXED-SCVTF_VEC_FIX#11,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#11,MUL_ELEM-MUL_ELEM#0,MUL_ELEM-SQDMULH_ELEM#0,MUL_ELEM-SQRDMULH_ELEM#0,MULL_ELEM-SMLAL2_ELEM#0,MULL_ELEM-SQDMLAL2_ELEM#0,MULL_ELEM-SMLSL2_ELEM#0,MULL_ELEM-SQDMLSL2_ELEM#0,MULL_ELEM-SMULL2_ELEM#0,MULL_ELEM-SQDMULL2_ELEM#0,DOT_ELEM-BFDOT_ELEM#0
 pub const fn classify_impl_a3_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -18120,8 +18121,7 @@ pub const fn classify_impl_a3_2(inst: u32) -> u32 {
     0x3e => 0x5981,
     0x3f => 0x4e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-SSHR#16,SHR_VEC_IMM-SSHR#17,SHR_VEC_IMM-SSRA#16,SHR_VEC_IMM-SSRA#17,SHR_VEC_IMM-SRSHR#16,SHR_VEC_IMM-SRSHR#17,SHR_VEC_IMM-SRSRA#16,SHR_VEC_IMM-SRSRA#17,QSHL_VEC_IMM-SQSHL_IMM#16,QSHL_VEC_IMM-SQSHL_IMM#17,SHIFT_VEC_IMM-SHL#16,SHIFT_VEC_IMM-SHL#17,FCVT_VEC_FIXED-SCVTF_VEC_FIX#10,FCVT_VEC_FIXED-SCVTF_VEC_FIX#11,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#10,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#11,MUL_ELEM-MUL_ELEM#0,MUL_ELEM-SQDMULH_ELEM#0,MUL_ELEM-SQRDMULH_ELEM#0,MULL_ELEM-SMLAL2_ELEM#0,MULL_ELEM-SQDMLAL2_ELEM#0,MULL_ELEM-SMLSL2_ELEM#0,MULL_ELEM-SQDMLSL2_ELEM#0,MULL_ELEM-SMULL2_ELEM#0,MULL_ELEM-SQDMULL2_ELEM#0,DOT_ELEM-BFDOT_ELEM#0
@@ -18136,13 +18136,14 @@ pub const fn classify_impl_a3(inst: u32) -> u32 {
     0x2 => return classify_impl_a3_2(inst), // SHR_VEC_IMM-SSHR#17,SHR_VEC_IMM-SSRA#17,SHR_VEC_IMM-SRSHR#17,SHR_VEC_IMM-SRSRA#17,QSHL_VEC_IMM-SQSHL_IMM#17,SHIFT_VEC_IMM-SHL#17,FCVT_VEC_FIXED-SCVTF_VEC_FIX#11,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#11,MUL_ELEM-MUL_ELEM#0,MUL_ELEM-SQDMULH_ELEM#0,MUL_ELEM-SQRDMULH_ELEM#0,MULL_ELEM-SMLAL2_ELEM#0,MULL_ELEM-SQDMLAL2_ELEM#0,MULL_ELEM-SMLSL2_ELEM#0,MULL_ELEM-SQDMLSL2_ELEM#0,MULL_ELEM-SMULL2_ELEM#0,MULL_ELEM-SQDMULL2_ELEM#0,DOT_ELEM-BFDOT_ELEM#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-SSHR#18,SHR_VEC_IMM-SSRA#18,SHR_VEC_IMM-SRSHR#18,SHR_VEC_IMM-SRSRA#18,QSHL_VEC_IMM-SQSHL_IMM#18,SHIFT_VEC_IMM-SHL#18,FCVT_VEC_FIXED-SCVTF_VEC_FIX#12,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#12,MUL_ELEM-MUL_ELEM#0,MUL_ELEM-SQDMULH_ELEM#0,MUL_ELEM-SQRDMULH_ELEM#0,MULL_ELEM-SMLAL2_ELEM#0,MULL_ELEM-SQDMLAL2_ELEM#0,MULL_ELEM-SMLSL2_ELEM#0,MULL_ELEM-SQDMLSL2_ELEM#0,MULL_ELEM-SMULL2_ELEM#0,MULL_ELEM-SQDMULL2_ELEM#0,DOT_ELEM-BFDOT_ELEM#0
 pub const fn classify_impl_a4_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -18208,14 +18209,14 @@ pub const fn classify_impl_a4_1(inst: u32) -> u32 {
     0x3e => 0x5981,
     0x3f => 0x4e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-SSHR#19,SHR_VEC_IMM-SSRA#19,SHR_VEC_IMM-SRSHR#19,SHR_VEC_IMM-SRSRA#19,QSHL_VEC_IMM-SQSHL_IMM#19,SHIFT_VEC_IMM-SHL#19,FCVT_VEC_FIXED-SCVTF_VEC_FIX#13,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#13,MUL_ELEM-MUL_ELEM#0,MUL_ELEM-SQDMULH_ELEM#0,MUL_ELEM-SQRDMULH_ELEM#0,MULL_ELEM-SMLAL2_ELEM#0,MULL_ELEM-SQDMLAL2_ELEM#0,MULL_ELEM-SMLSL2_ELEM#0,MULL_ELEM-SQDMLSL2_ELEM#0,MULL_ELEM-SMULL2_ELEM#0,MULL_ELEM-SQDMULL2_ELEM#0,DOT_ELEM-BFDOT_ELEM#0
 pub const fn classify_impl_a4_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -18281,8 +18282,7 @@ pub const fn classify_impl_a4_2(inst: u32) -> u32 {
     0x3e => 0x5981,
     0x3f => 0x4e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-SSHR#18,SHR_VEC_IMM-SSHR#19,SHR_VEC_IMM-SSRA#18,SHR_VEC_IMM-SSRA#19,SHR_VEC_IMM-SRSHR#18,SHR_VEC_IMM-SRSHR#19,SHR_VEC_IMM-SRSRA#18,SHR_VEC_IMM-SRSRA#19,QSHL_VEC_IMM-SQSHL_IMM#18,QSHL_VEC_IMM-SQSHL_IMM#19,SHIFT_VEC_IMM-SHL#18,SHIFT_VEC_IMM-SHL#19,FCVT_VEC_FIXED-SCVTF_VEC_FIX#12,FCVT_VEC_FIXED-SCVTF_VEC_FIX#13,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#12,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#13,MUL_ELEM-MUL_ELEM#0,MUL_ELEM-SQDMULH_ELEM#0,MUL_ELEM-SQRDMULH_ELEM#0,MULL_ELEM-SMLAL2_ELEM#0,MULL_ELEM-SQDMLAL2_ELEM#0,MULL_ELEM-SMLSL2_ELEM#0,MULL_ELEM-SQDMLSL2_ELEM#0,MULL_ELEM-SMULL2_ELEM#0,MULL_ELEM-SQDMULL2_ELEM#0,DOT_ELEM-BFDOT_ELEM#0
@@ -18297,13 +18297,14 @@ pub const fn classify_impl_a4(inst: u32) -> u32 {
     0x2 => return classify_impl_a4_2(inst), // SHR_VEC_IMM-SSHR#19,SHR_VEC_IMM-SSRA#19,SHR_VEC_IMM-SRSHR#19,SHR_VEC_IMM-SRSRA#19,QSHL_VEC_IMM-SQSHL_IMM#19,SHIFT_VEC_IMM-SHL#19,FCVT_VEC_FIXED-SCVTF_VEC_FIX#13,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#13,MUL_ELEM-MUL_ELEM#0,MUL_ELEM-SQDMULH_ELEM#0,MUL_ELEM-SQRDMULH_ELEM#0,MULL_ELEM-SMLAL2_ELEM#0,MULL_ELEM-SQDMLAL2_ELEM#0,MULL_ELEM-SMLSL2_ELEM#0,MULL_ELEM-SQDMLSL2_ELEM#0,MULL_ELEM-SMULL2_ELEM#0,MULL_ELEM-SQDMULL2_ELEM#0,DOT_ELEM-BFDOT_ELEM#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-SSHR#20,SHR_VEC_IMM-SSRA#20,SHR_VEC_IMM-SRSHR#20,SHR_VEC_IMM-SRSRA#20,QSHL_VEC_IMM-SQSHL_IMM#20,SHIFT_VEC_IMM-SHL#20,FCVT_VEC_FIXED-SCVTF_VEC_FIX#14,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#14,MUL_ELEM-MUL_ELEM#0,MUL_ELEM-SQDMULH_ELEM#0,MUL_ELEM-SQRDMULH_ELEM#0,MULL_ELEM-SMLAL2_ELEM#0,MULL_ELEM-SQDMLAL2_ELEM#0,MULL_ELEM-SMLSL2_ELEM#0,MULL_ELEM-SQDMLSL2_ELEM#0,MULL_ELEM-SMULL2_ELEM#0,MULL_ELEM-SQDMULL2_ELEM#0,DOT_ELEM-BFDOT_ELEM#0
 pub const fn classify_impl_a5_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -18369,14 +18370,14 @@ pub const fn classify_impl_a5_1(inst: u32) -> u32 {
     0x3e => 0x5981,
     0x3f => 0x4e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-SSHR#21,SHR_VEC_IMM-SSRA#21,SHR_VEC_IMM-SRSHR#21,SHR_VEC_IMM-SRSRA#21,QSHL_VEC_IMM-SQSHL_IMM#21,SHIFT_VEC_IMM-SHL#21,FCVT_VEC_FIXED-SCVTF_VEC_FIX#15,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#15,MUL_ELEM-MUL_ELEM#0,MUL_ELEM-SQDMULH_ELEM#0,MUL_ELEM-SQRDMULH_ELEM#0,MULL_ELEM-SMLAL2_ELEM#0,MULL_ELEM-SQDMLAL2_ELEM#0,MULL_ELEM-SMLSL2_ELEM#0,MULL_ELEM-SQDMLSL2_ELEM#0,MULL_ELEM-SMULL2_ELEM#0,MULL_ELEM-SQDMULL2_ELEM#0,DOT_ELEM-BFDOT_ELEM#0
 pub const fn classify_impl_a5_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4900,
     0x2 => 0x0,
@@ -18442,8 +18443,7 @@ pub const fn classify_impl_a5_2(inst: u32) -> u32 {
     0x3e => 0x5981,
     0x3f => 0x4e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-SSHR#20,SHR_VEC_IMM-SSHR#21,SHR_VEC_IMM-SSRA#20,SHR_VEC_IMM-SSRA#21,SHR_VEC_IMM-SRSHR#20,SHR_VEC_IMM-SRSHR#21,SHR_VEC_IMM-SRSRA#20,SHR_VEC_IMM-SRSRA#21,QSHL_VEC_IMM-SQSHL_IMM#20,QSHL_VEC_IMM-SQSHL_IMM#21,SHIFT_VEC_IMM-SHL#20,SHIFT_VEC_IMM-SHL#21,FCVT_VEC_FIXED-SCVTF_VEC_FIX#14,FCVT_VEC_FIXED-SCVTF_VEC_FIX#15,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#14,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#15,MUL_ELEM-MUL_ELEM#0,MUL_ELEM-SQDMULH_ELEM#0,MUL_ELEM-SQRDMULH_ELEM#0,MULL_ELEM-SMLAL2_ELEM#0,MULL_ELEM-SQDMLAL2_ELEM#0,MULL_ELEM-SMLSL2_ELEM#0,MULL_ELEM-SQDMLSL2_ELEM#0,MULL_ELEM-SMULL2_ELEM#0,MULL_ELEM-SQDMULL2_ELEM#0,DOT_ELEM-BFDOT_ELEM#0
@@ -18458,14 +18458,15 @@ pub const fn classify_impl_a5(inst: u32) -> u32 {
     0x2 => return classify_impl_a5_2(inst), // SHR_VEC_IMM-SSHR#21,SHR_VEC_IMM-SSRA#21,SHR_VEC_IMM-SRSHR#21,SHR_VEC_IMM-SRSRA#21,QSHL_VEC_IMM-SQSHL_IMM#21,SHIFT_VEC_IMM-SHL#21,FCVT_VEC_FIXED-SCVTF_VEC_FIX#15,FCVT_VEC_FIXED-FCVTZS_VEC_FIX#15,MUL_ELEM-MUL_ELEM#0,MUL_ELEM-SQDMULH_ELEM#0,MUL_ELEM-SQRDMULH_ELEM#0,MULL_ELEM-SMLAL2_ELEM#0,MULL_ELEM-SQDMLAL2_ELEM#0,MULL_ELEM-SMLSL2_ELEM#0,MULL_ELEM-SQDMLSL2_ELEM#0,MULL_ELEM-SMULL2_ELEM#0,MULL_ELEM-SQDMULL2_ELEM#0,DOT_ELEM-BFDOT_ELEM#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // MUL_ELEM-MUL_ELEM#1,MUL_ELEM-SQDMULH_ELEM#1,MUL_ELEM-SQRDMULH_ELEM#1,MULL_ELEM-SMLAL2_ELEM#1,MULL_ELEM-SQDMLAL2_ELEM#1,MULL_ELEM-SMLSL2_ELEM#1,MULL_ELEM-SQDMLSL2_ELEM#1,MULL_ELEM-SMULL2_ELEM#1,MULL_ELEM-SQDMULL2_ELEM#1,FMUL_ELEM-FMLA_ELEM#2,FMUL_ELEM-FMLS_ELEM#2,FMUL_ELEM-FMUL_ELEM#2,DOT_ELEM-SDOT_ELEM#0,DOT_ELEM-USDOT_ELEM#0,FHM_ELEM-FMLAL_ELEM#0,FHM_ELEM-FMLSL_ELEM#0
 pub const fn classify_impl_a6(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 12) & 0xf {
+  
+  match (inst >> 12) & 0xf {
     0x0 => 0x5b80,
     0x1 => 0x5800,
     0x2 => 0x5689,
@@ -18483,15 +18484,15 @@ pub const fn classify_impl_a6(inst: u32) -> u32 {
     0xe => 0x5982,
     0xf => 0x5983,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MUL_ELEM-MUL_ELEM#1,MUL_ELEM-SQDMULH_ELEM#1,MUL_ELEM-SQRDMULH_ELEM#1,MULL_ELEM-SMLAL2_ELEM#1,MULL_ELEM-SQDMLAL2_ELEM#1,MULL_ELEM-SMLSL2_ELEM#1,MULL_ELEM-SQDMLSL2_ELEM#1,MULL_ELEM-SMULL2_ELEM#1,MULL_ELEM-SQDMULL2_ELEM#1,FMUL_ELEM-FMLA_ELEM#3,FMUL_ELEM-FMLS_ELEM#3,FMUL_ELEM-FMUL_ELEM#3,DOT_ELEM-SDOT_ELEM#0,DOT_ELEM-USDOT_ELEM#0,FHM_ELEM-FMLAL_ELEM#0,FHM_ELEM-FMLSL_ELEM#0
 pub const fn classify_impl_a7(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 12) & 0xf {
+  
+  match (inst >> 12) & 0xf {
     0x0 => 0x5b80,
     0x1 => 0x5800,
     0x2 => 0x5689,
@@ -18509,15 +18510,15 @@ pub const fn classify_impl_a7(inst: u32) -> u32 {
     0xe => 0x5982,
     0xf => 0x5983,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMUL_ELEM-FMLA_ELEM#4,FMUL_ELEM-FMLS_ELEM#4,FMUL_ELEM-FMUL_ELEM#4,FMLAL_ELEM-BFMLALT_ELEM#0
 pub const fn classify_impl_a8(inst: u32) -> u32 {
   if (inst&0x1400) != 0x1000 { return 0; }
-  let idx = match (inst >> 13) & 0x7 {
+  
+  match (inst >> 13) & 0x7 {
     0x0 => 0x5800,
     0x1 => 0x0,
     0x2 => 0x5801,
@@ -18527,21 +18528,21 @@ pub const fn classify_impl_a8(inst: u32) -> u32 {
     0x6 => 0x0,
     0x7 => 0x5a83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMLAL_ELEM-BFMLALT_ELEM#0
 pub const fn classify_impl_a9(inst: u32) -> u32 {
   if (inst&0xf400) != 0xf000 { return 0; }
-  return 0x5a83;
+  0x5a83
 }
 
 
 // ANDOREOR_IMM-EOR_IMM#0,ANDOREOR_IMM-EOR_IMM#1,ANDOREOR_IMM-EOR_IMM#2,ANDOREOR_IMM-EOR_IMM#3,ANDOREOR_IMM-EOR_IMM#4,ANDOREOR_IMM-EOR_IMM#5,ANDOREOR_IMM-EOR_IMM#6,ANDOREOR_IMM-EOR_IMM#7,ANDOREOR_IMM-EOR_IMM#8,ANDOREOR_IMM-EOR_IMM#9,ANDOREOR_IMM-EOR_IMM#10,ANDOREOR_IMM-EOR_IMM#11,ANDOREOR_IMM-EOR_IMM#12,ANDOREOR_IMM-EOR_IMM#13,ANDOREOR_IMM-EOR_IMM#14,ANDOREOR_IMM-EOR_IMM#15,ANDOREOR_IMM-EOR_IMM#16,ANDOREOR_IMM-EOR_IMM#17,ANDOREOR_IMM-EOR_IMM#18,ANDOREOR_IMM-EOR_IMM#19,ANDOREOR_IMM-EOR_IMM#20,ANDOREOR_IMM-EOR_IMM#21,ANDOREOR_IMM-EOR_IMM#22,ANDOREOR_IMM-EOR_IMM#23,ANDOREOR_IMM-EOR_IMM#24,ANDOREOR_IMM-EOR_IMM#25,ANDOREOR_IMM-EOR_IMM#26,ANDOREOR_IMM-EOR_IMM#27,ANDOREOR_IMM-EOR_IMM#28,ANDOREOR_IMM-EOR_IMM#29,ANDOREOR_IMM-EOR_IMM#30,ANDOREOR_IMM-EOR_IMM#31,ANDOREOR_IMM-EOR_IMM#32,ANDOREOR_IMM-EOR_IMM#33,ANDOREOR_IMM-EOR_IMM#34,ANDOREOR_IMM-EOR_IMM#35,ANDOREOR_IMM-EOR_IMM#36,ANDOREOR_IMM-EOR_IMM#37,ANDOREOR_IMM-EOR_IMM#38,ANDOREOR_IMM-EOR_IMM#39,ANDOREOR_IMM-EOR_IMM#40,ANDOREOR_IMM-EOR_IMM#41,ANDOREOR_IMM-EOR_IMM#42,ANDOREOR_IMM-EOR_IMM#43,ANDOREOR_IMM-EOR_IMM#44,ANDOREOR_IMM-EOR_IMM#45,ANDOREOR_IMM-EOR_IMM#46,ANDOREOR_IMM-EOR_IMM#47,ANDOREOR_IMM-EOR_IMM#48,ANDOREOR_IMM-EOR_IMM#49,ANDOREOR_IMM-EOR_IMM#50,ANDOREOR_IMM-EOR_IMM#51,ANDOREOR_IMM-EOR_IMM#52,ANDOREOR_IMM-EOR_IMM#53,ANDOREOR_IMM-EOR_IMM#54,ANDOREOR_IMM-EOR_IMM#55,ANDOREOR_IMM-EOR_IMM#56
 pub const fn classify_impl_aa(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x502,
     0x1 => 0x502,
     0x2 => 0x502,
@@ -18607,80 +18608,80 @@ pub const fn classify_impl_aa(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // BFM-UBFM#0
 pub const fn classify_impl_ab(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x902;
+  0x902
 }
 
 
 // BCOND-BCOND#0,BCOND-BCCOND#0
 pub const fn classify_impl_ac(inst: u32) -> u32 {
-  let idx = match (inst >> 4) & 0x1 {
+  
+  match (inst >> 4) & 0x1 {
     0x0 => 0x800,
     0x1 => 0x801,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLURH#0
 pub const fn classify_impl_ad(inst: u32) -> u32 {
   if (inst&0xc00) != 0x0 { return 0; }
-  return 0x6184;
+  0x6184
 }
 
 
 // RCPCU-LDAPURH#0
 pub const fn classify_impl_ae(inst: u32) -> u32 {
   if (inst&0xc00) != 0x0 { return 0; }
-  return 0x6185;
+  0x6185
 }
 
 
 // RCPCU-LDAPURSH#0
 pub const fn classify_impl_af(inst: u32) -> u32 {
   if (inst&0xc00) != 0x0 { return 0; }
-  return 0x6186;
+  0x6186
 }
 
 
 // RCPCU-LDAPURSHW#0
 pub const fn classify_impl_b0(inst: u32) -> u32 {
   if (inst&0xc00) != 0x0 { return 0; }
-  return 0x6187;
+  0x6187
 }
 
 
 // ADCSBC-SBC#0
 pub const fn classify_impl_b1(inst: u32) -> u32 {
   if (inst&0xfc00) != 0x0 { return 0; }
-  return 0x282;
+  0x282
 }
 
 
 // CSEL-CSINV#0,CSEL-CSNEG#0
 pub const fn classify_impl_b2(inst: u32) -> u32 {
   if (inst&0x800) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x1202,
     0x1 => 0x1203,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // CLZ-CLZ#0,CLZ-CLS#0,CLZ-CTZ#0,CLZ-CNT#0,CLZ-ABS#0,REV-RBIT#0,REV-REV16#0,REV-REV#0
 pub const fn classify_impl_b3(inst: u32) -> u32 {
   if (inst&0xfc000) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0xf {
+  
+  match (inst >> 10) & 0xf {
     0x0 => 0x1500,
     0x1 => 0x1501,
     0x2 => 0x1502,
@@ -18698,15 +18699,15 @@ pub const fn classify_impl_b3(inst: u32) -> u32 {
     0xe => 0x0,
     0xf => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
 pub const fn classify_impl_b4_1(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 12) & 0x7 {
+  
+  match (inst >> 12) & 0x7 {
     0x0 => 0x6d00,
     0x1 => 0x6d01,
     0x2 => 0x6d02,
@@ -18716,61 +18717,60 @@ pub const fn classify_impl_b4_1(inst: u32) -> u32 {
     0x6 => 0x6d06,
     0x7 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // DUP_SCALAR-DUP_SCALAR#0,SHA2_3REG-SHA1C#0
 pub const fn classify_impl_b4_2_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6d00,
     0x1 => 0x2800,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHA2_3REG-SHA1P#0
 pub const fn classify_impl_b4_2_2(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d01;
+  0x6d01
 }
 
 
 // SHA2_3REG-SHA1M#0
 pub const fn classify_impl_b4_2_3(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d02;
+  0x6d02
 }
 
 
 // SHA2_3REG-SHA1SU0#0
 pub const fn classify_impl_b4_2_4(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d03;
+  0x6d03
 }
 
 
 // SHA2_3REG-SHA256H#0
 pub const fn classify_impl_b4_2_5(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d04;
+  0x6d04
 }
 
 
 // SHA2_3REG-SHA256H2#0
 pub const fn classify_impl_b4_2_6(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d05;
+  0x6d05
 }
 
 
 // SHA2_3REG-SHA256SU1#0
 pub const fn classify_impl_b4_2_7(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d06;
+  0x6d06
 }
 
 // DUP_SCALAR-DUP_SCALAR#0,SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
@@ -18796,60 +18796,60 @@ pub const fn classify_impl_b4_2(inst: u32) -> u32 {
     0x7 => return classify_impl_b4_2_7(inst), // SHA2_3REG-SHA256SU1#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // DUP_SCALAR-DUP_SCALAR#1,SHA2_3REG-SHA1C#0
 pub const fn classify_impl_b4_3_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6d00,
     0x1 => 0x2800,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHA2_3REG-SHA1P#0
 pub const fn classify_impl_b4_3_2(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d01;
+  0x6d01
 }
 
 
 // SHA2_3REG-SHA1M#0
 pub const fn classify_impl_b4_3_3(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d02;
+  0x6d02
 }
 
 
 // SHA2_3REG-SHA1SU0#0
 pub const fn classify_impl_b4_3_4(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d03;
+  0x6d03
 }
 
 
 // SHA2_3REG-SHA256H#0
 pub const fn classify_impl_b4_3_5(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d04;
+  0x6d04
 }
 
 
 // SHA2_3REG-SHA256H2#0
 pub const fn classify_impl_b4_3_6(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d05;
+  0x6d05
 }
 
 
 // SHA2_3REG-SHA256SU1#0
 pub const fn classify_impl_b4_3_7(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d06;
+  0x6d06
 }
 
 // DUP_SCALAR-DUP_SCALAR#1,SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
@@ -18875,60 +18875,60 @@ pub const fn classify_impl_b4_3(inst: u32) -> u32 {
     0x7 => return classify_impl_b4_3_7(inst), // SHA2_3REG-SHA256SU1#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // DUP_SCALAR-DUP_SCALAR#2,SHA2_3REG-SHA1C#0
 pub const fn classify_impl_b4_4_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6d00,
     0x1 => 0x2800,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHA2_3REG-SHA1P#0
 pub const fn classify_impl_b4_4_2(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d01;
+  0x6d01
 }
 
 
 // SHA2_3REG-SHA1M#0
 pub const fn classify_impl_b4_4_3(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d02;
+  0x6d02
 }
 
 
 // SHA2_3REG-SHA1SU0#0
 pub const fn classify_impl_b4_4_4(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d03;
+  0x6d03
 }
 
 
 // SHA2_3REG-SHA256H#0
 pub const fn classify_impl_b4_4_5(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d04;
+  0x6d04
 }
 
 
 // SHA2_3REG-SHA256H2#0
 pub const fn classify_impl_b4_4_6(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d05;
+  0x6d05
 }
 
 
 // SHA2_3REG-SHA256SU1#0
 pub const fn classify_impl_b4_4_7(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d06;
+  0x6d06
 }
 
 // DUP_SCALAR-DUP_SCALAR#2,SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
@@ -18954,60 +18954,60 @@ pub const fn classify_impl_b4_4(inst: u32) -> u32 {
     0x7 => return classify_impl_b4_4_7(inst), // SHA2_3REG-SHA256SU1#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // DUP_SCALAR-DUP_SCALAR#3,SHA2_3REG-SHA1C#0
 pub const fn classify_impl_b4_5_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6d00,
     0x1 => 0x2800,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHA2_3REG-SHA1P#0
 pub const fn classify_impl_b4_5_2(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d01;
+  0x6d01
 }
 
 
 // SHA2_3REG-SHA1M#0
 pub const fn classify_impl_b4_5_3(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d02;
+  0x6d02
 }
 
 
 // SHA2_3REG-SHA1SU0#0
 pub const fn classify_impl_b4_5_4(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d03;
+  0x6d03
 }
 
 
 // SHA2_3REG-SHA256H#0
 pub const fn classify_impl_b4_5_5(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d04;
+  0x6d04
 }
 
 
 // SHA2_3REG-SHA256H2#0
 pub const fn classify_impl_b4_5_6(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d05;
+  0x6d05
 }
 
 
 // SHA2_3REG-SHA256SU1#0
 pub const fn classify_impl_b4_5_7(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d06;
+  0x6d06
 }
 
 // DUP_SCALAR-DUP_SCALAR#3,SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
@@ -19033,60 +19033,60 @@ pub const fn classify_impl_b4_5(inst: u32) -> u32 {
     0x7 => return classify_impl_b4_5_7(inst), // SHA2_3REG-SHA256SU1#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // DUP_SCALAR-DUP_SCALAR#4,SHA2_3REG-SHA1C#0
 pub const fn classify_impl_b4_6_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6d00,
     0x1 => 0x2800,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHA2_3REG-SHA1P#0
 pub const fn classify_impl_b4_6_2(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d01;
+  0x6d01
 }
 
 
 // SHA2_3REG-SHA1M#0
 pub const fn classify_impl_b4_6_3(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d02;
+  0x6d02
 }
 
 
 // SHA2_3REG-SHA1SU0#0
 pub const fn classify_impl_b4_6_4(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d03;
+  0x6d03
 }
 
 
 // SHA2_3REG-SHA256H#0
 pub const fn classify_impl_b4_6_5(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d04;
+  0x6d04
 }
 
 
 // SHA2_3REG-SHA256H2#0
 pub const fn classify_impl_b4_6_6(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d05;
+  0x6d05
 }
 
 
 // SHA2_3REG-SHA256SU1#0
 pub const fn classify_impl_b4_6_7(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d06;
+  0x6d06
 }
 
 // DUP_SCALAR-DUP_SCALAR#4,SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
@@ -19112,60 +19112,60 @@ pub const fn classify_impl_b4_6(inst: u32) -> u32 {
     0x7 => return classify_impl_b4_6_7(inst), // SHA2_3REG-SHA256SU1#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // DUP_SCALAR-DUP_SCALAR#5,SHA2_3REG-SHA1C#0
 pub const fn classify_impl_b4_7_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6d00,
     0x1 => 0x2800,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHA2_3REG-SHA1P#0
 pub const fn classify_impl_b4_7_2(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d01;
+  0x6d01
 }
 
 
 // SHA2_3REG-SHA1M#0
 pub const fn classify_impl_b4_7_3(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d02;
+  0x6d02
 }
 
 
 // SHA2_3REG-SHA1SU0#0
 pub const fn classify_impl_b4_7_4(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d03;
+  0x6d03
 }
 
 
 // SHA2_3REG-SHA256H#0
 pub const fn classify_impl_b4_7_5(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d04;
+  0x6d04
 }
 
 
 // SHA2_3REG-SHA256H2#0
 pub const fn classify_impl_b4_7_6(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d05;
+  0x6d05
 }
 
 
 // SHA2_3REG-SHA256SU1#0
 pub const fn classify_impl_b4_7_7(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d06;
+  0x6d06
 }
 
 // DUP_SCALAR-DUP_SCALAR#5,SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
@@ -19191,60 +19191,60 @@ pub const fn classify_impl_b4_7(inst: u32) -> u32 {
     0x7 => return classify_impl_b4_7_7(inst), // SHA2_3REG-SHA256SU1#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // DUP_SCALAR-DUP_SCALAR#6,SHA2_3REG-SHA1C#0
 pub const fn classify_impl_b4_8_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6d00,
     0x1 => 0x2800,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHA2_3REG-SHA1P#0
 pub const fn classify_impl_b4_8_2(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d01;
+  0x6d01
 }
 
 
 // SHA2_3REG-SHA1M#0
 pub const fn classify_impl_b4_8_3(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d02;
+  0x6d02
 }
 
 
 // SHA2_3REG-SHA1SU0#0
 pub const fn classify_impl_b4_8_4(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d03;
+  0x6d03
 }
 
 
 // SHA2_3REG-SHA256H#0
 pub const fn classify_impl_b4_8_5(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d04;
+  0x6d04
 }
 
 
 // SHA2_3REG-SHA256H2#0
 pub const fn classify_impl_b4_8_6(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d05;
+  0x6d05
 }
 
 
 // SHA2_3REG-SHA256SU1#0
 pub const fn classify_impl_b4_8_7(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d06;
+  0x6d06
 }
 
 // DUP_SCALAR-DUP_SCALAR#6,SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
@@ -19270,60 +19270,60 @@ pub const fn classify_impl_b4_8(inst: u32) -> u32 {
     0x7 => return classify_impl_b4_8_7(inst), // SHA2_3REG-SHA256SU1#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // DUP_SCALAR-DUP_SCALAR#7,SHA2_3REG-SHA1C#0
 pub const fn classify_impl_b4_9_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6d00,
     0x1 => 0x2800,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHA2_3REG-SHA1P#0
 pub const fn classify_impl_b4_9_2(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d01;
+  0x6d01
 }
 
 
 // SHA2_3REG-SHA1M#0
 pub const fn classify_impl_b4_9_3(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d02;
+  0x6d02
 }
 
 
 // SHA2_3REG-SHA1SU0#0
 pub const fn classify_impl_b4_9_4(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d03;
+  0x6d03
 }
 
 
 // SHA2_3REG-SHA256H#0
 pub const fn classify_impl_b4_9_5(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d04;
+  0x6d04
 }
 
 
 // SHA2_3REG-SHA256H2#0
 pub const fn classify_impl_b4_9_6(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d05;
+  0x6d05
 }
 
 
 // SHA2_3REG-SHA256SU1#0
 pub const fn classify_impl_b4_9_7(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d06;
+  0x6d06
 }
 
 // DUP_SCALAR-DUP_SCALAR#7,SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
@@ -19349,60 +19349,60 @@ pub const fn classify_impl_b4_9(inst: u32) -> u32 {
     0x7 => return classify_impl_b4_9_7(inst), // SHA2_3REG-SHA256SU1#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // DUP_SCALAR-DUP_SCALAR#8,SHA2_3REG-SHA1C#0
 pub const fn classify_impl_b4_a_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6d00,
     0x1 => 0x2800,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHA2_3REG-SHA1P#0
 pub const fn classify_impl_b4_a_2(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d01;
+  0x6d01
 }
 
 
 // SHA2_3REG-SHA1M#0
 pub const fn classify_impl_b4_a_3(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d02;
+  0x6d02
 }
 
 
 // SHA2_3REG-SHA1SU0#0
 pub const fn classify_impl_b4_a_4(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d03;
+  0x6d03
 }
 
 
 // SHA2_3REG-SHA256H#0
 pub const fn classify_impl_b4_a_5(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d04;
+  0x6d04
 }
 
 
 // SHA2_3REG-SHA256H2#0
 pub const fn classify_impl_b4_a_6(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d05;
+  0x6d05
 }
 
 
 // SHA2_3REG-SHA256SU1#0
 pub const fn classify_impl_b4_a_7(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d06;
+  0x6d06
 }
 
 // DUP_SCALAR-DUP_SCALAR#8,SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
@@ -19428,60 +19428,60 @@ pub const fn classify_impl_b4_a(inst: u32) -> u32 {
     0x7 => return classify_impl_b4_a_7(inst), // SHA2_3REG-SHA256SU1#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // DUP_SCALAR-DUP_SCALAR#9,SHA2_3REG-SHA1C#0
 pub const fn classify_impl_b4_b_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6d00,
     0x1 => 0x2800,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHA2_3REG-SHA1P#0
 pub const fn classify_impl_b4_b_2(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d01;
+  0x6d01
 }
 
 
 // SHA2_3REG-SHA1M#0
 pub const fn classify_impl_b4_b_3(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d02;
+  0x6d02
 }
 
 
 // SHA2_3REG-SHA1SU0#0
 pub const fn classify_impl_b4_b_4(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d03;
+  0x6d03
 }
 
 
 // SHA2_3REG-SHA256H#0
 pub const fn classify_impl_b4_b_5(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d04;
+  0x6d04
 }
 
 
 // SHA2_3REG-SHA256H2#0
 pub const fn classify_impl_b4_b_6(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d05;
+  0x6d05
 }
 
 
 // SHA2_3REG-SHA256SU1#0
 pub const fn classify_impl_b4_b_7(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d06;
+  0x6d06
 }
 
 // DUP_SCALAR-DUP_SCALAR#9,SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
@@ -19507,60 +19507,60 @@ pub const fn classify_impl_b4_b(inst: u32) -> u32 {
     0x7 => return classify_impl_b4_b_7(inst), // SHA2_3REG-SHA256SU1#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // DUP_SCALAR-DUP_SCALAR#10,SHA2_3REG-SHA1C#0
 pub const fn classify_impl_b4_c_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6d00,
     0x1 => 0x2800,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHA2_3REG-SHA1P#0
 pub const fn classify_impl_b4_c_2(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d01;
+  0x6d01
 }
 
 
 // SHA2_3REG-SHA1M#0
 pub const fn classify_impl_b4_c_3(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d02;
+  0x6d02
 }
 
 
 // SHA2_3REG-SHA1SU0#0
 pub const fn classify_impl_b4_c_4(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d03;
+  0x6d03
 }
 
 
 // SHA2_3REG-SHA256H#0
 pub const fn classify_impl_b4_c_5(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d04;
+  0x6d04
 }
 
 
 // SHA2_3REG-SHA256H2#0
 pub const fn classify_impl_b4_c_6(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d05;
+  0x6d05
 }
 
 
 // SHA2_3REG-SHA256SU1#0
 pub const fn classify_impl_b4_c_7(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d06;
+  0x6d06
 }
 
 // DUP_SCALAR-DUP_SCALAR#10,SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
@@ -19586,60 +19586,60 @@ pub const fn classify_impl_b4_c(inst: u32) -> u32 {
     0x7 => return classify_impl_b4_c_7(inst), // SHA2_3REG-SHA256SU1#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // DUP_SCALAR-DUP_SCALAR#11,SHA2_3REG-SHA1C#0
 pub const fn classify_impl_b4_d_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6d00,
     0x1 => 0x2800,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHA2_3REG-SHA1P#0
 pub const fn classify_impl_b4_d_2(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d01;
+  0x6d01
 }
 
 
 // SHA2_3REG-SHA1M#0
 pub const fn classify_impl_b4_d_3(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d02;
+  0x6d02
 }
 
 
 // SHA2_3REG-SHA1SU0#0
 pub const fn classify_impl_b4_d_4(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d03;
+  0x6d03
 }
 
 
 // SHA2_3REG-SHA256H#0
 pub const fn classify_impl_b4_d_5(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d04;
+  0x6d04
 }
 
 
 // SHA2_3REG-SHA256H2#0
 pub const fn classify_impl_b4_d_6(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d05;
+  0x6d05
 }
 
 
 // SHA2_3REG-SHA256SU1#0
 pub const fn classify_impl_b4_d_7(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d06;
+  0x6d06
 }
 
 // DUP_SCALAR-DUP_SCALAR#11,SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
@@ -19665,60 +19665,60 @@ pub const fn classify_impl_b4_d(inst: u32) -> u32 {
     0x7 => return classify_impl_b4_d_7(inst), // SHA2_3REG-SHA256SU1#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // DUP_SCALAR-DUP_SCALAR#12,SHA2_3REG-SHA1C#0
 pub const fn classify_impl_b4_e_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6d00,
     0x1 => 0x2800,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHA2_3REG-SHA1P#0
 pub const fn classify_impl_b4_e_2(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d01;
+  0x6d01
 }
 
 
 // SHA2_3REG-SHA1M#0
 pub const fn classify_impl_b4_e_3(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d02;
+  0x6d02
 }
 
 
 // SHA2_3REG-SHA1SU0#0
 pub const fn classify_impl_b4_e_4(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d03;
+  0x6d03
 }
 
 
 // SHA2_3REG-SHA256H#0
 pub const fn classify_impl_b4_e_5(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d04;
+  0x6d04
 }
 
 
 // SHA2_3REG-SHA256H2#0
 pub const fn classify_impl_b4_e_6(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d05;
+  0x6d05
 }
 
 
 // SHA2_3REG-SHA256SU1#0
 pub const fn classify_impl_b4_e_7(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d06;
+  0x6d06
 }
 
 // DUP_SCALAR-DUP_SCALAR#12,SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
@@ -19744,60 +19744,60 @@ pub const fn classify_impl_b4_e(inst: u32) -> u32 {
     0x7 => return classify_impl_b4_e_7(inst), // SHA2_3REG-SHA256SU1#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // DUP_SCALAR-DUP_SCALAR#13,SHA2_3REG-SHA1C#0
 pub const fn classify_impl_b4_f_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6d00,
     0x1 => 0x2800,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHA2_3REG-SHA1P#0
 pub const fn classify_impl_b4_f_2(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d01;
+  0x6d01
 }
 
 
 // SHA2_3REG-SHA1M#0
 pub const fn classify_impl_b4_f_3(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d02;
+  0x6d02
 }
 
 
 // SHA2_3REG-SHA1SU0#0
 pub const fn classify_impl_b4_f_4(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d03;
+  0x6d03
 }
 
 
 // SHA2_3REG-SHA256H#0
 pub const fn classify_impl_b4_f_5(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d04;
+  0x6d04
 }
 
 
 // SHA2_3REG-SHA256H2#0
 pub const fn classify_impl_b4_f_6(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d05;
+  0x6d05
 }
 
 
 // SHA2_3REG-SHA256SU1#0
 pub const fn classify_impl_b4_f_7(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d06;
+  0x6d06
 }
 
 // DUP_SCALAR-DUP_SCALAR#13,SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
@@ -19823,60 +19823,60 @@ pub const fn classify_impl_b4_f(inst: u32) -> u32 {
     0x7 => return classify_impl_b4_f_7(inst), // SHA2_3REG-SHA256SU1#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // DUP_SCALAR-DUP_SCALAR#14,SHA2_3REG-SHA1C#0
 pub const fn classify_impl_b4_10_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6d00,
     0x1 => 0x2800,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHA2_3REG-SHA1P#0
 pub const fn classify_impl_b4_10_2(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d01;
+  0x6d01
 }
 
 
 // SHA2_3REG-SHA1M#0
 pub const fn classify_impl_b4_10_3(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d02;
+  0x6d02
 }
 
 
 // SHA2_3REG-SHA1SU0#0
 pub const fn classify_impl_b4_10_4(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d03;
+  0x6d03
 }
 
 
 // SHA2_3REG-SHA256H#0
 pub const fn classify_impl_b4_10_5(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d04;
+  0x6d04
 }
 
 
 // SHA2_3REG-SHA256H2#0
 pub const fn classify_impl_b4_10_6(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d05;
+  0x6d05
 }
 
 
 // SHA2_3REG-SHA256SU1#0
 pub const fn classify_impl_b4_10_7(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x6d06;
+  0x6d06
 }
 
 // DUP_SCALAR-DUP_SCALAR#14,SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
@@ -19902,7 +19902,7 @@ pub const fn classify_impl_b4_10(inst: u32) -> u32 {
     0x7 => return classify_impl_b4_10_7(inst), // SHA2_3REG-SHA256SU1#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 // DUP_SCALAR-DUP_SCALAR#0,DUP_SCALAR-DUP_SCALAR#1,DUP_SCALAR-DUP_SCALAR#2,DUP_SCALAR-DUP_SCALAR#3,DUP_SCALAR-DUP_SCALAR#4,DUP_SCALAR-DUP_SCALAR#5,DUP_SCALAR-DUP_SCALAR#6,DUP_SCALAR-DUP_SCALAR#7,DUP_SCALAR-DUP_SCALAR#8,DUP_SCALAR-DUP_SCALAR#9,DUP_SCALAR-DUP_SCALAR#10,DUP_SCALAR-DUP_SCALAR#11,DUP_SCALAR-DUP_SCALAR#12,DUP_SCALAR-DUP_SCALAR#13,DUP_SCALAR-DUP_SCALAR#14,SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
@@ -19946,56 +19946,56 @@ pub const fn classify_impl_b4(inst: u32) -> u32 {
     0x10 => return classify_impl_b4_10(inst), // DUP_SCALAR-DUP_SCALAR#14,SHA2_3REG-SHA1C#0,SHA2_3REG-SHA1P#0,SHA2_3REG-SHA1M#0,SHA2_3REG-SHA1SU0#0,SHA2_3REG-SHA256H#0,SHA2_3REG-SHA256H2#0,SHA2_3REG-SHA256SU1#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // ARITH1_SCALAR-SUQADD_SCALAR#0
 pub const fn classify_impl_b5_1_1(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x3000;
+  0x3000
 }
 
 
 // ARITH1_SCALAR-SQABS_SCALAR#0
 pub const fn classify_impl_b5_1_2(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x3001;
+  0x3001
 }
 
 
 // XTN_SCALAR-SQXTN_SCALAR#0
 pub const fn classify_impl_b5_1_3(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x3300;
+  0x3300
 }
 
 
 // FCVT_SCALAR-FCVTNS_SCALAR#0
 pub const fn classify_impl_b5_1_4(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x4e80;
+  0x4e80
 }
 
 
 // FCVT_SCALAR-FCVTMS_SCALAR#0
 pub const fn classify_impl_b5_1_5(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x4e81;
+  0x4e81
 }
 
 
 // FCVT_SCALAR-FCVTAS_SCALAR#0
 pub const fn classify_impl_b5_1_6(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x4e82;
+  0x4e82
 }
 
 
 // FCVT_FROMINT_SCALAR-SCVTF_VEC_SCALAR#0
 pub const fn classify_impl_b5_1_7(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5000;
+  0x5000
 }
 
 // QADDSUB_SCALAR-SQADD_SCALAR#0,QADDSUB_SCALAR-SQSUB_SCALAR#0,ARITH1_SCALAR-SUQADD_SCALAR#0,ARITH1_SCALAR-SQABS_SCALAR#0,XTN_SCALAR-SQXTN_SCALAR#0,SHL_REG_SCALAR-SQSHL_SCALAR#0,SHL_REG_SCALAR-SQRSHL_SCALAR#0,FCMP_REG_SCALAR-FCMEQ#0,FRECP_STEP_SCALAR-FRECPS#0,FMULX_SCALAR-FMULX#0,FCVT_SCALAR-FCVTNS_SCALAR#0,FCVT_SCALAR-FCVTMS_SCALAR#0,FCVT_SCALAR-FCVTAS_SCALAR#0,FCVT_FROMINT_SCALAR-SCVTF_VEC_SCALAR#0
@@ -20141,28 +20141,28 @@ pub const fn classify_impl_b5_1(inst: u32) -> u32 {
     0x7 => return classify_impl_b5_1_7(inst), // FCVT_FROMINT_SCALAR-SCVTF_VEC_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHA2_2REG-SHA1H#0
 pub const fn classify_impl_b5_2_1(inst: u32) -> u32 {
   if (inst&0x70000) != 0x0 { return 0; }
-  return 0x6d80;
+  0x6d80
 }
 
 
 // SHA2_2REG-SHA1SU1#0
 pub const fn classify_impl_b5_2_2(inst: u32) -> u32 {
   if (inst&0x70000) != 0x0 { return 0; }
-  return 0x6d81;
+  0x6d81
 }
 
 
 // SHA2_2REG-SHA256SU0#0
 pub const fn classify_impl_b5_2_3(inst: u32) -> u32 {
   if (inst&0x70000) != 0x0 { return 0; }
-  return 0x6d82;
+  0x6d82
 }
 
 // QADDSUB_SCALAR-SQADD_SCALAR#0,QADDSUB_SCALAR-SQSUB_SCALAR#0,SHL_REG_SCALAR-SQSHL_SCALAR#0,SHL_REG_SCALAR-SQRSHL_SCALAR#0,FCMP_REG_SCALAR-FCMEQ#0,FRECP_STEP_SCALAR-FRECPS#0,FMULX_SCALAR-FMULX#0,SHA2_2REG-SHA1H#0,SHA2_2REG-SHA1SU1#0,SHA2_2REG-SHA256SU0#0
@@ -20240,7 +20240,7 @@ pub const fn classify_impl_b5_2(inst: u32) -> u32 {
     0x3 => return classify_impl_b5_2_3(inst), // SHA2_2REG-SHA256SU0#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 // QADDSUB_SCALAR-SQADD_SCALAR#0,QADDSUB_SCALAR-SQSUB_SCALAR#0,ARITH1_SCALAR-SUQADD_SCALAR#0,ARITH1_SCALAR-SQABS_SCALAR#0,XTN_SCALAR-SQXTN_SCALAR#0,SHL_REG_SCALAR-SQSHL_SCALAR#0,SHL_REG_SCALAR-SQRSHL_SCALAR#0,FCMP_REG_SCALAR-FCMEQ#0,FRECP_STEP_SCALAR-FRECPS#0,FMULX_SCALAR-FMULX#0,FCVT_SCALAR-FCVTNS_SCALAR#0,FCVT_SCALAR-FCVTMS_SCALAR#0,FCVT_SCALAR-FCVTAS_SCALAR#0,FCVT_FROMINT_SCALAR-SCVTF_VEC_SCALAR#0,SHA2_2REG-SHA1H#0,SHA2_2REG-SHA1SU1#0,SHA2_2REG-SHA256SU0#0
@@ -20255,28 +20255,28 @@ pub const fn classify_impl_b5(inst: u32) -> u32 {
     0x2 => return classify_impl_b5_2(inst), // QADDSUB_SCALAR-SQADD_SCALAR#0,QADDSUB_SCALAR-SQSUB_SCALAR#0,SHL_REG_SCALAR-SQSHL_SCALAR#0,SHL_REG_SCALAR-SQRSHL_SCALAR#0,FCMP_REG_SCALAR-FCMEQ#0,FRECP_STEP_SCALAR-FRECPS#0,FMULX_SCALAR-FMULX#0,SHA2_2REG-SHA1H#0,SHA2_2REG-SHA1SU1#0,SHA2_2REG-SHA256SU0#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP_HORZ_SCALAR-FMAXNMP_SCALAR_FP16#0
 pub const fn classify_impl_b6_1(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  return 0x5400;
+  0x5400
 }
 
 
 // FP_HORZ_SCALAR-FADDP_SCALAR_FP16#0
 pub const fn classify_impl_b6_2(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  return 0x5401;
+  0x5401
 }
 
 
 // FP_HORZ_SCALAR-FMAXP_SCALAR_FP16#0
 pub const fn classify_impl_b6_3(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  return 0x5402;
+  0x5402
 }
 
 // QADDSUB_SCALAR-SQADD_SCALAR#0,QADDSUB_SCALAR-SQSUB_SCALAR#0,SHL_REG_SCALAR-SQSHL_SCALAR#0,SHL_REG_SCALAR-SQRSHL_SCALAR#0,FCMP_REG_SCALAR-FCMEQ#0,FRECP_STEP_SCALAR-FRECPS#0,FMULX_SCALAR-FMULX#0,FP_HORZ_SCALAR-FMAXNMP_SCALAR_FP16#0,FP_HORZ_SCALAR-FADDP_SCALAR_FP16#0,FP_HORZ_SCALAR-FMAXP_SCALAR_FP16#0
@@ -20354,14 +20354,15 @@ pub const fn classify_impl_b6(inst: u32) -> u32 {
     0x3 => return classify_impl_b6_3(inst), // FP_HORZ_SCALAR-FMAXP_SCALAR_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_3REG_SCALAR-FMULX_SCALAR_FP16#0,FP16_3REG_SCALAR-FCMEQ_SCALAR_FP16#0,FP16_3REG_SCALAR-FRECPS_SCALAR_FP16#0
 pub const fn classify_impl_b7(inst: u32) -> u32 {
   if (inst&0xc400) != 0x400 { return 0; }
-  let idx = match (inst >> 11) & 0x7 {
+  
+  match (inst >> 11) & 0x7 {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -20371,57 +20372,56 @@ pub const fn classify_impl_b7(inst: u32) -> u32 {
     0x6 => 0x0,
     0x7 => 0x4102,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ARITH1_SCALAR-SUQADD_SCALAR#1
 pub const fn classify_impl_b8_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3000;
+  0x3000
 }
 
 
 // ARITH1_SCALAR-SQABS_SCALAR#1
 pub const fn classify_impl_b8_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3001;
+  0x3001
 }
 
 
 // XTN_SCALAR-SQXTN_SCALAR#1
 pub const fn classify_impl_b8_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3300;
+  0x3300
 }
 
 
 // FCVT_SCALAR-FCVTNS_SCALAR#0
 pub const fn classify_impl_b8_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4e80;
+  0x4e80
 }
 
 
 // FCVT_SCALAR-FCVTMS_SCALAR#0
 pub const fn classify_impl_b8_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4e81;
+  0x4e81
 }
 
 
 // FCVT_SCALAR-FCVTAS_SCALAR#0
 pub const fn classify_impl_b8_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4e82;
+  0x4e82
 }
 
 
 // FCVT_FROMINT_SCALAR-SCVTF_VEC_SCALAR#0
 pub const fn classify_impl_b8_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5000;
+  0x5000
 }
 
 // QADDSUB_SCALAR-SQADD_SCALAR#0,QADDSUB_SCALAR-SQSUB_SCALAR#0,ARITH1_SCALAR-SUQADD_SCALAR#1,ARITH1_SCALAR-SQABS_SCALAR#1,XTN_SCALAR-SQXTN_SCALAR#1,SHL_REG_SCALAR-SQSHL_SCALAR#1,SHL_REG_SCALAR-SQRSHL_SCALAR#1,SQDMULH_SCALAR-SQDMULH_SCALAR#0,FCMP_REG_SCALAR-FCMEQ#0,FRECP_STEP_SCALAR-FRECPS#0,FMULX_SCALAR-FMULX#0,SQDMULL_SCALAR-SQDMLAL_SCALAR#0,SQDMULL_SCALAR-SQDMLSL_SCALAR#0,SQDMULL_SCALAR-SQDMULL_SCALAR#0,FCVT_SCALAR-FCVTNS_SCALAR#0,FCVT_SCALAR-FCVTMS_SCALAR#0,FCVT_SCALAR-FCVTAS_SCALAR#0,FCVT_FROMINT_SCALAR-SCVTF_VEC_SCALAR#0
@@ -20567,35 +20567,35 @@ pub const fn classify_impl_b8(inst: u32) -> u32 {
     0x7 => return classify_impl_b8_7(inst), // FCVT_FROMINT_SCALAR-SCVTF_VEC_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_2REG_SCALAR-FCVTNS_SCALAR_FP16#0
 pub const fn classify_impl_b9_1(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x90000 { return 0; }
-  return 0x4200;
+  0x4200
 }
 
 
 // FP16_2REG_SCALAR-FCVTMS_SCALAR_FP16#0
 pub const fn classify_impl_b9_2(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x90000 { return 0; }
-  return 0x4201;
+  0x4201
 }
 
 
 // FP16_2REG_SCALAR-FCVTAS_SCALAR_FP16#0
 pub const fn classify_impl_b9_3(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x90000 { return 0; }
-  return 0x4202;
+  0x4202
 }
 
 
 // FP16_2REG_SCALAR-SCVTF_SCALAR_FP16#0
 pub const fn classify_impl_b9_4(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x90000 { return 0; }
-  return 0x4203;
+  0x4203
 }
 
 // QADDSUB_SCALAR-SQADD_SCALAR#0,QADDSUB_SCALAR-SQSUB_SCALAR#0,SHL_REG_SCALAR-SQSHL_SCALAR#1,SHL_REG_SCALAR-SQRSHL_SCALAR#1,SQDMULH_SCALAR-SQDMULH_SCALAR#0,FCMP_REG_SCALAR-FCMEQ#0,FRECP_STEP_SCALAR-FRECPS#0,FMULX_SCALAR-FMULX#0,FP16_2REG_SCALAR-FCVTNS_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTMS_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTAS_SCALAR_FP16#0,FP16_2REG_SCALAR-SCVTF_SCALAR_FP16#0,SQDMULL_SCALAR-SQDMLAL_SCALAR#0,SQDMULL_SCALAR-SQDMLSL_SCALAR#0,SQDMULL_SCALAR-SQDMULL_SCALAR#0
@@ -20674,77 +20674,77 @@ pub const fn classify_impl_b9(inst: u32) -> u32 {
     0x4 => return classify_impl_b9_4(inst), // FP16_2REG_SCALAR-SCVTF_SCALAR_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // ARITH1_SCALAR-SUQADD_SCALAR#2
 pub const fn classify_impl_ba_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3000;
+  0x3000
 }
 
 
 // ARITH1_SCALAR-SQABS_SCALAR#2
 pub const fn classify_impl_ba_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3001;
+  0x3001
 }
 
 
 // FCMP_ZERO_SCALAR-FCMGT_ZERO#0
 pub const fn classify_impl_ba_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3a00;
+  0x3a00
 }
 
 
 // FCMP_ZERO_SCALAR-FCMEQ_ZERO#0
 pub const fn classify_impl_ba_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3a01;
+  0x3a01
 }
 
 
 // FCMP_ZERO_SCALAR-FCMLT_ZERO#0
 pub const fn classify_impl_ba_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3a02;
+  0x3a02
 }
 
 
 // XTN_SCALAR-SQXTN_SCALAR#2
 pub const fn classify_impl_ba_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3300;
+  0x3300
 }
 
 
 // FCVT_SCALAR-FCVTPS_SCALAR#0
 pub const fn classify_impl_ba_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4e83;
+  0x4e83
 }
 
 
 // FCVT_SCALAR-FCVTZS_SCALAR#0
 pub const fn classify_impl_ba_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4e84;
+  0x4e84
 }
 
 
 // FRECP_SCALAR-FRECPE_SCALAR#0
 pub const fn classify_impl_ba_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3d00;
+  0x3d00
 }
 
 
 // FRECP_SCALAR-FRECPX_SCALAR#0
 pub const fn classify_impl_ba_a(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3d01;
+  0x3d01
 }
 
 // QADDSUB_SCALAR-SQADD_SCALAR#0,QADDSUB_SCALAR-SQSUB_SCALAR#0,ARITH1_SCALAR-SUQADD_SCALAR#2,ARITH1_SCALAR-SQABS_SCALAR#2,XTN_SCALAR-SQXTN_SCALAR#2,SHL_REG_SCALAR-SQSHL_SCALAR#2,SHL_REG_SCALAR-SQRSHL_SCALAR#2,SQDMULH_SCALAR-SQDMULH_SCALAR#1,FCMP_ZERO_SCALAR-FCMGT_ZERO#0,FCMP_ZERO_SCALAR-FCMEQ_ZERO#0,FCMP_ZERO_SCALAR-FCMLT_ZERO#0,FRECP_SCALAR-FRECPE_SCALAR#0,FRECP_SCALAR-FRECPX_SCALAR#0,FRECP_STEP_SCALAR-FRSQRTS#0,SQDMULL_SCALAR-SQDMLAL_SCALAR#1,SQDMULL_SCALAR-SQDMLSL_SCALAR#1,SQDMULL_SCALAR-SQDMULL_SCALAR#1,FCVT_SCALAR-FCVTPS_SCALAR#0,FCVT_SCALAR-FCVTZS_SCALAR#0
@@ -20893,21 +20893,21 @@ pub const fn classify_impl_ba(inst: u32) -> u32 {
     0xa => return classify_impl_ba_a(inst), // FRECP_SCALAR-FRECPX_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP_HORZ_SCALAR-FMINNMP_SCALAR_FP16#0
 pub const fn classify_impl_bb_1(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  return 0x5403;
+  0x5403
 }
 
 
 // FP_HORZ_SCALAR-FMINP_SCALAR_FP16#0
 pub const fn classify_impl_bb_2(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  return 0x5404;
+  0x5404
 }
 
 // QADDSUB_SCALAR-SQADD_SCALAR#0,QADDSUB_SCALAR-SQSUB_SCALAR#0,SHL_REG_SCALAR-SQSHL_SCALAR#2,SHL_REG_SCALAR-SQRSHL_SCALAR#2,SQDMULH_SCALAR-SQDMULH_SCALAR#1,FRECP_STEP_SCALAR-FRSQRTS#0,SQDMULL_SCALAR-SQDMLAL_SCALAR#1,SQDMULL_SCALAR-SQDMLSL_SCALAR#1,SQDMULL_SCALAR-SQDMULL_SCALAR#1,FP_HORZ_SCALAR-FMINNMP_SCALAR_FP16#0,FP_HORZ_SCALAR-FMINP_SCALAR_FP16#0
@@ -20984,105 +20984,105 @@ pub const fn classify_impl_bb(inst: u32) -> u32 {
     0x2 => return classify_impl_bb_2(inst), // FP_HORZ_SCALAR-FMINP_SCALAR_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_3REG_SCALAR-FRSQRTS_SCALAR_FP16#0
 pub const fn classify_impl_bc(inst: u32) -> u32 {
   if (inst&0xfc00) != 0x3c00 { return 0; }
-  return 0x4103;
+  0x4103
 }
 
 
 // ARITH1_SCALAR-SUQADD_SCALAR#3
 pub const fn classify_impl_bd_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3000;
+  0x3000
 }
 
 
 // ARITH1_SCALAR-SQABS_SCALAR#3
 pub const fn classify_impl_bd_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3001;
+  0x3001
 }
 
 
 // CMZERO_SCALAR-CMGT_ZERO#0
 pub const fn classify_impl_bd_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f00;
+  0x2f00
 }
 
 
 // CMZERO_SCALAR-CMEQ_ZERO#0
 pub const fn classify_impl_bd_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f01;
+  0x2f01
 }
 
 
 // CMZERO_SCALAR-CMLT_ZERO#0
 pub const fn classify_impl_bd_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f02;
+  0x2f02
 }
 
 
 // ARITH1_SCALAR-ABS_SCALAR#0
 pub const fn classify_impl_bd_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3002;
+  0x3002
 }
 
 
 // FCMP_ZERO_SCALAR-FCMGT_ZERO#0
 pub const fn classify_impl_bd_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3a00;
+  0x3a00
 }
 
 
 // FCMP_ZERO_SCALAR-FCMEQ_ZERO#0
 pub const fn classify_impl_bd_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3a01;
+  0x3a01
 }
 
 
 // FCMP_ZERO_SCALAR-FCMLT_ZERO#0
 pub const fn classify_impl_bd_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3a02;
+  0x3a02
 }
 
 
 // FCVT_SCALAR-FCVTPS_SCALAR#0
 pub const fn classify_impl_bd_a(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4e83;
+  0x4e83
 }
 
 
 // FCVT_SCALAR-FCVTZS_SCALAR#0
 pub const fn classify_impl_bd_b(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4e84;
+  0x4e84
 }
 
 
 // FRECP_SCALAR-FRECPE_SCALAR#0
 pub const fn classify_impl_bd_c(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3d00;
+  0x3d00
 }
 
 
 // FRECP_SCALAR-FRECPX_SCALAR#0
 pub const fn classify_impl_bd_d(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3d01;
+  0x3d01
 }
 
 // QADDSUB_SCALAR-SQADD_SCALAR#0,QADDSUB_SCALAR-SQSUB_SCALAR#0,CMGT_SCALAR-CMGT#0,CMGT_SCALAR-CMGE#0,CMEQ_SCALAR-CMTST#0,CMZERO_SCALAR-CMGT_ZERO#0,CMZERO_SCALAR-CMEQ_ZERO#0,CMZERO_SCALAR-CMLT_ZERO#0,ARITH1_SCALAR-SUQADD_SCALAR#3,ARITH1_SCALAR-SQABS_SCALAR#3,ARITH1_SCALAR-ABS_SCALAR#0,SHL_REG_SCALAR-SQSHL_SCALAR#3,SHL_REG_SCALAR-SQRSHL_SCALAR#3,SHL_REG_SCALAR-SSHL_SCALAR#0,SHL_REG_SCALAR-SRSHL_SCALAR#0,ADDSUB_SCALAR-ADD_SCALAR#0,FCMP_ZERO_SCALAR-FCMGT_ZERO#0,FCMP_ZERO_SCALAR-FCMEQ_ZERO#0,FCMP_ZERO_SCALAR-FCMLT_ZERO#0,FRECP_SCALAR-FRECPE_SCALAR#0,FRECP_SCALAR-FRECPX_SCALAR#0,FRECP_STEP_SCALAR-FRSQRTS#0,FCVT_SCALAR-FCVTPS_SCALAR#0,FCVT_SCALAR-FCVTZS_SCALAR#0
@@ -21234,14 +21234,14 @@ pub const fn classify_impl_bd(inst: u32) -> u32 {
     0xd => return classify_impl_bd_d(inst), // FRECP_SCALAR-FRECPX_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // INT_HORZ_SCALAR-ADDP_SCALAR#0
 pub const fn classify_impl_be_1_1(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x5300;
+  0x5300
 }
 
 // QADDSUB_SCALAR-SQADD_SCALAR#0,QADDSUB_SCALAR-SQSUB_SCALAR#0,CMGT_SCALAR-CMGT#0,CMGT_SCALAR-CMGE#0,CMEQ_SCALAR-CMTST#0,SHL_REG_SCALAR-SQSHL_SCALAR#3,SHL_REG_SCALAR-SQRSHL_SCALAR#3,SHL_REG_SCALAR-SSHL_SCALAR#0,SHL_REG_SCALAR-SRSHL_SCALAR#0,ADDSUB_SCALAR-ADD_SCALAR#0,FRECP_STEP_SCALAR-FRSQRTS#0,INT_HORZ_SCALAR-ADDP_SCALAR#0
@@ -21317,56 +21317,56 @@ pub const fn classify_impl_be_1(inst: u32) -> u32 {
     0x1 => return classify_impl_be_1_1(inst), // INT_HORZ_SCALAR-ADDP_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_2REG_SCALAR-FCMGT_ZERO_SCALAR_FP16#0
 pub const fn classify_impl_be_2_1(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x4204;
+  0x4204
 }
 
 
 // FP16_2REG_SCALAR-FCMEQ_ZERO_SCALAR_FP16#0
 pub const fn classify_impl_be_2_2(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x4205;
+  0x4205
 }
 
 
 // FP16_2REG_SCALAR-FCMLT_ZERO_SCALAR_FP16#0
 pub const fn classify_impl_be_2_3(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x4206;
+  0x4206
 }
 
 
 // FP16_2REG_SCALAR-FCVTPS_SCALAR_FP16#0
 pub const fn classify_impl_be_2_4(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x4207;
+  0x4207
 }
 
 
 // FP16_2REG_SCALAR-FCVTZS_SCALAR_FP16#0
 pub const fn classify_impl_be_2_5(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x4208;
+  0x4208
 }
 
 
 // FP16_2REG_SCALAR-FRECPE_SCALAR_FP16#0
 pub const fn classify_impl_be_2_6(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x4209;
+  0x4209
 }
 
 
 // FP16_2REG_SCALAR-FRECPX_SCALAR_FP16#0
 pub const fn classify_impl_be_2_7(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x420a;
+  0x420a
 }
 
 // QADDSUB_SCALAR-SQADD_SCALAR#0,QADDSUB_SCALAR-SQSUB_SCALAR#0,CMGT_SCALAR-CMGT#0,CMGT_SCALAR-CMGE#0,CMEQ_SCALAR-CMTST#0,SHL_REG_SCALAR-SQSHL_SCALAR#3,SHL_REG_SCALAR-SQRSHL_SCALAR#3,SHL_REG_SCALAR-SSHL_SCALAR#0,SHL_REG_SCALAR-SRSHL_SCALAR#0,ADDSUB_SCALAR-ADD_SCALAR#0,FRECP_STEP_SCALAR-FRSQRTS#0,FP16_2REG_SCALAR-FCMGT_ZERO_SCALAR_FP16#0,FP16_2REG_SCALAR-FCMEQ_ZERO_SCALAR_FP16#0,FP16_2REG_SCALAR-FCMLT_ZERO_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTPS_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTZS_SCALAR_FP16#0,FP16_2REG_SCALAR-FRECPE_SCALAR_FP16#0,FP16_2REG_SCALAR-FRECPX_SCALAR_FP16#0
@@ -21512,7 +21512,7 @@ pub const fn classify_impl_be_2(inst: u32) -> u32 {
     0x7 => return classify_impl_be_2_7(inst), // FP16_2REG_SCALAR-FRECPX_SCALAR_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 // QADDSUB_SCALAR-SQADD_SCALAR#0,QADDSUB_SCALAR-SQSUB_SCALAR#0,CMGT_SCALAR-CMGT#0,CMGT_SCALAR-CMGE#0,CMEQ_SCALAR-CMTST#0,SHL_REG_SCALAR-SQSHL_SCALAR#3,SHL_REG_SCALAR-SQRSHL_SCALAR#3,SHL_REG_SCALAR-SSHL_SCALAR#0,SHL_REG_SCALAR-SRSHL_SCALAR#0,ADDSUB_SCALAR-ADD_SCALAR#0,FRECP_STEP_SCALAR-FRSQRTS#0,FP16_2REG_SCALAR-FCMGT_ZERO_SCALAR_FP16#0,FP16_2REG_SCALAR-FCMEQ_ZERO_SCALAR_FP16#0,FP16_2REG_SCALAR-FCMLT_ZERO_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTPS_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTZS_SCALAR_FP16#0,FP16_2REG_SCALAR-FRECPE_SCALAR_FP16#0,FP16_2REG_SCALAR-FRECPX_SCALAR_FP16#0,INT_HORZ_SCALAR-ADDP_SCALAR#0
@@ -21527,42 +21527,42 @@ pub const fn classify_impl_be(inst: u32) -> u32 {
     0x2 => return classify_impl_be_2(inst), // QADDSUB_SCALAR-SQADD_SCALAR#0,QADDSUB_SCALAR-SQSUB_SCALAR#0,CMGT_SCALAR-CMGT#0,CMGT_SCALAR-CMGE#0,CMEQ_SCALAR-CMTST#0,SHL_REG_SCALAR-SQSHL_SCALAR#3,SHL_REG_SCALAR-SQRSHL_SCALAR#3,SHL_REG_SCALAR-SSHL_SCALAR#0,SHL_REG_SCALAR-SRSHL_SCALAR#0,ADDSUB_SCALAR-ADD_SCALAR#0,FRECP_STEP_SCALAR-FRSQRTS#0,FP16_2REG_SCALAR-FCMGT_ZERO_SCALAR_FP16#0,FP16_2REG_SCALAR-FCMEQ_ZERO_SCALAR_FP16#0,FP16_2REG_SCALAR-FCMLT_ZERO_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTPS_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTZS_SCALAR_FP16#0,FP16_2REG_SCALAR-FRECPE_SCALAR_FP16#0,FP16_2REG_SCALAR-FRECPX_SCALAR_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FMUL_ELEM_SCALAR_FP16-FMLA_ELEM_SCALAR_FP16#0
 pub const fn classify_impl_bf_1(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x5780;
+  0x5780
 }
 
 
 // FMUL_ELEM_SCALAR_FP16-FMLS_ELEM_SCALAR_FP16#0
 pub const fn classify_impl_bf_2(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x5781;
+  0x5781
 }
 
 
 // QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#0
 pub const fn classify_impl_bf_3(inst: u32) -> u32 {
   if (inst&0x80c00) != 0x80400 { return 0; }
-  return 0x4980;
+  0x4980
 }
 
 
 // SHRN_SCALAR_IMM-SQSHRN_SCALAR#0
 pub const fn classify_impl_bf_4_1(inst: u32) -> u32 {
   if (inst&0x80000) != 0x80000 { return 0; }
-  return 0x4a80;
+  0x4a80
 }
 
 
 // SHRN_SCALAR_IMM-SQRSHRN_SCALAR#0
 pub const fn classify_impl_bf_4_2(inst: u32) -> u32 {
   if (inst&0x80000) != 0x80000 { return 0; }
-  return 0x4a81;
+  0x4a81
 }
 
 // SHRN_SCALAR_IMM-SQSHRN_SCALAR#0,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#0,FMUL_ELEM_SCALAR_FP16-FMUL_ELEM_SCALAR_FP16#0
@@ -21579,7 +21579,7 @@ pub const fn classify_impl_bf_4(inst: u32) -> u32 {
     0x2 => return classify_impl_bf_4_2(inst), // SHRN_SCALAR_IMM-SQRSHRN_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 // QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#0,SHRN_SCALAR_IMM-SQSHRN_SCALAR#0,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#0,FMUL_ELEM_SCALAR_FP16-FMLA_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMLS_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMUL_ELEM_SCALAR_FP16#0
@@ -21603,13 +21603,14 @@ pub const fn classify_impl_bf(inst: u32) -> u32 {
     0x4 => return classify_impl_bf_4(inst), // SHRN_SCALAR_IMM-SQSHRN_SCALAR#0,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#0,FMUL_ELEM_SCALAR_FP16-FMUL_ELEM_SCALAR_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#1,SHRN_SCALAR_IMM-SQSHRN_SCALAR#1,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#1,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX_FP16#0,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX_FP16#0,FMUL_ELEM_SCALAR_FP16-FMLA_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMLS_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMUL_ELEM_SCALAR_FP16#0
 pub const fn classify_impl_c0_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -21675,14 +21676,14 @@ pub const fn classify_impl_c0_1(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d81,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#2,SHRN_SCALAR_IMM-SQSHRN_SCALAR#2,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#2,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX_FP16#1,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX_FP16#1,FMUL_ELEM_SCALAR_FP16-FMLA_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMLS_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMUL_ELEM_SCALAR_FP16#0
 pub const fn classify_impl_c0_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -21748,8 +21749,7 @@ pub const fn classify_impl_c0_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d81,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#1,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#2,SHRN_SCALAR_IMM-SQSHRN_SCALAR#1,SHRN_SCALAR_IMM-SQSHRN_SCALAR#2,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#1,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#2,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX_FP16#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX_FP16#1,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX_FP16#0,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX_FP16#1,FMUL_ELEM_SCALAR_FP16-FMLA_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMLS_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMUL_ELEM_SCALAR_FP16#0
@@ -21764,13 +21764,14 @@ pub const fn classify_impl_c0(inst: u32) -> u32 {
     0x2 => return classify_impl_c0_2(inst), // QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#2,SHRN_SCALAR_IMM-SQSHRN_SCALAR#2,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#2,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX_FP16#1,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX_FP16#1,FMUL_ELEM_SCALAR_FP16-FMLA_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMLS_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMUL_ELEM_SCALAR_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#3,SHRN_SCALAR_IMM-SQSHRN_SCALAR#3,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#3,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#0,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#0,FMUL_ELEM_SCALAR_FP16-FMLA_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMLS_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMUL_ELEM_SCALAR_FP16#0
 pub const fn classify_impl_c1_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -21836,14 +21837,14 @@ pub const fn classify_impl_c1_1(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#4,SHRN_SCALAR_IMM-SQSHRN_SCALAR#4,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#4,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#1,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#1,FMUL_ELEM_SCALAR_FP16-FMLA_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMLS_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMUL_ELEM_SCALAR_FP16#0
 pub const fn classify_impl_c1_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -21909,8 +21910,7 @@ pub const fn classify_impl_c1_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#3,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#4,SHRN_SCALAR_IMM-SQSHRN_SCALAR#3,SHRN_SCALAR_IMM-SQSHRN_SCALAR#4,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#3,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#4,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#1,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#0,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#1,FMUL_ELEM_SCALAR_FP16-FMLA_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMLS_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMUL_ELEM_SCALAR_FP16#0
@@ -21925,13 +21925,14 @@ pub const fn classify_impl_c1(inst: u32) -> u32 {
     0x2 => return classify_impl_c1_2(inst), // QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#4,SHRN_SCALAR_IMM-SQSHRN_SCALAR#4,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#4,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#1,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#1,FMUL_ELEM_SCALAR_FP16-FMLA_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMLS_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMUL_ELEM_SCALAR_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#5,SHRN_SCALAR_IMM-SQSHRN_SCALAR#5,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#5,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#2,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#2,FMUL_ELEM_SCALAR_FP16-FMLA_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMLS_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMUL_ELEM_SCALAR_FP16#0
 pub const fn classify_impl_c2_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -21997,14 +21998,14 @@ pub const fn classify_impl_c2_1(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#6,SHRN_SCALAR_IMM-SQSHRN_SCALAR#6,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#6,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#3,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#3,FMUL_ELEM_SCALAR_FP16-FMLA_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMLS_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMUL_ELEM_SCALAR_FP16#0
 pub const fn classify_impl_c2_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -22070,8 +22071,7 @@ pub const fn classify_impl_c2_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#5,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#6,SHRN_SCALAR_IMM-SQSHRN_SCALAR#5,SHRN_SCALAR_IMM-SQSHRN_SCALAR#6,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#5,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#6,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#2,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#3,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#2,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#3,FMUL_ELEM_SCALAR_FP16-FMLA_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMLS_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMUL_ELEM_SCALAR_FP16#0
@@ -22086,13 +22086,14 @@ pub const fn classify_impl_c2(inst: u32) -> u32 {
     0x2 => return classify_impl_c2_2(inst), // QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#6,SHRN_SCALAR_IMM-SQSHRN_SCALAR#6,SHRN_SCALAR_IMM-SQRSHRN_SCALAR#6,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#3,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#3,FMUL_ELEM_SCALAR_FP16-FMLA_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMLS_ELEM_SCALAR_FP16#0,FMUL_ELEM_SCALAR_FP16-FMUL_ELEM_SCALAR_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_SCALAR_IMM-SSHR_SCALAR#0,SHR_SCALAR_IMM-SSRA_SCALAR#0,SHR_SCALAR_IMM-SRSHR_SCALAR#0,SHR_SCALAR_IMM-SRSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#7,SHIFT_SCALAR_IMM-SHL_SCALAR#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#4,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#4,MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#0
 pub const fn classify_impl_c3_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4880,
     0x2 => 0x0,
@@ -22158,14 +22159,14 @@ pub const fn classify_impl_c3_1(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_SCALAR_IMM-SSHR_SCALAR#0,SHR_SCALAR_IMM-SSRA_SCALAR#0,SHR_SCALAR_IMM-SRSHR_SCALAR#0,SHR_SCALAR_IMM-SRSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#8,SHIFT_SCALAR_IMM-SHL_SCALAR#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#5,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#5,MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#0
 pub const fn classify_impl_c3_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4880,
     0x2 => 0x0,
@@ -22231,8 +22232,7 @@ pub const fn classify_impl_c3_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_SCALAR_IMM-SSHR_SCALAR#0,SHR_SCALAR_IMM-SSRA_SCALAR#0,SHR_SCALAR_IMM-SRSHR_SCALAR#0,SHR_SCALAR_IMM-SRSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#7,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#8,SHIFT_SCALAR_IMM-SHL_SCALAR#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#4,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#5,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#4,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#5,MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#0
@@ -22247,13 +22247,14 @@ pub const fn classify_impl_c3(inst: u32) -> u32 {
     0x2 => return classify_impl_c3_2(inst), // SHR_SCALAR_IMM-SSHR_SCALAR#0,SHR_SCALAR_IMM-SSRA_SCALAR#0,SHR_SCALAR_IMM-SRSHR_SCALAR#0,SHR_SCALAR_IMM-SRSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#8,SHIFT_SCALAR_IMM-SHL_SCALAR#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#5,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#5,MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_SCALAR_IMM-SSHR_SCALAR#0,SHR_SCALAR_IMM-SSRA_SCALAR#0,SHR_SCALAR_IMM-SRSHR_SCALAR#0,SHR_SCALAR_IMM-SRSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#9,SHIFT_SCALAR_IMM-SHL_SCALAR#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#6,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#6,MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#0
 pub const fn classify_impl_c4_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4880,
     0x2 => 0x0,
@@ -22319,14 +22320,14 @@ pub const fn classify_impl_c4_1(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_SCALAR_IMM-SSHR_SCALAR#0,SHR_SCALAR_IMM-SSRA_SCALAR#0,SHR_SCALAR_IMM-SRSHR_SCALAR#0,SHR_SCALAR_IMM-SRSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#10,SHIFT_SCALAR_IMM-SHL_SCALAR#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#7,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#7,MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#0
 pub const fn classify_impl_c4_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4880,
     0x2 => 0x0,
@@ -22392,8 +22393,7 @@ pub const fn classify_impl_c4_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_SCALAR_IMM-SSHR_SCALAR#0,SHR_SCALAR_IMM-SSRA_SCALAR#0,SHR_SCALAR_IMM-SRSHR_SCALAR#0,SHR_SCALAR_IMM-SRSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#9,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#10,SHIFT_SCALAR_IMM-SHL_SCALAR#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#6,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#7,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#6,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#7,MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#0
@@ -22408,13 +22408,14 @@ pub const fn classify_impl_c4(inst: u32) -> u32 {
     0x2 => return classify_impl_c4_2(inst), // SHR_SCALAR_IMM-SSHR_SCALAR#0,SHR_SCALAR_IMM-SSRA_SCALAR#0,SHR_SCALAR_IMM-SRSHR_SCALAR#0,SHR_SCALAR_IMM-SRSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#10,SHIFT_SCALAR_IMM-SHL_SCALAR#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#7,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#7,MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_SCALAR_IMM-SSHR_SCALAR#0,SHR_SCALAR_IMM-SSRA_SCALAR#0,SHR_SCALAR_IMM-SRSHR_SCALAR#0,SHR_SCALAR_IMM-SRSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#11,SHIFT_SCALAR_IMM-SHL_SCALAR#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#8,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#8,MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#0
 pub const fn classify_impl_c5_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4880,
     0x2 => 0x0,
@@ -22480,14 +22481,14 @@ pub const fn classify_impl_c5_1(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_SCALAR_IMM-SSHR_SCALAR#0,SHR_SCALAR_IMM-SSRA_SCALAR#0,SHR_SCALAR_IMM-SRSHR_SCALAR#0,SHR_SCALAR_IMM-SRSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#12,SHIFT_SCALAR_IMM-SHL_SCALAR#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#9,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#9,MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#0
 pub const fn classify_impl_c5_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4880,
     0x2 => 0x0,
@@ -22553,8 +22554,7 @@ pub const fn classify_impl_c5_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_SCALAR_IMM-SSHR_SCALAR#0,SHR_SCALAR_IMM-SSRA_SCALAR#0,SHR_SCALAR_IMM-SRSHR_SCALAR#0,SHR_SCALAR_IMM-SRSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#11,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#12,SHIFT_SCALAR_IMM-SHL_SCALAR#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#8,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#9,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#8,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#9,MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#0
@@ -22569,13 +22569,14 @@ pub const fn classify_impl_c5(inst: u32) -> u32 {
     0x2 => return classify_impl_c5_2(inst), // SHR_SCALAR_IMM-SSHR_SCALAR#0,SHR_SCALAR_IMM-SSRA_SCALAR#0,SHR_SCALAR_IMM-SRSHR_SCALAR#0,SHR_SCALAR_IMM-SRSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#12,SHIFT_SCALAR_IMM-SHL_SCALAR#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#9,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#9,MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_SCALAR_IMM-SSHR_SCALAR#0,SHR_SCALAR_IMM-SSRA_SCALAR#0,SHR_SCALAR_IMM-SRSHR_SCALAR#0,SHR_SCALAR_IMM-SRSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#13,SHIFT_SCALAR_IMM-SHL_SCALAR#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#10,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#10,MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#0
 pub const fn classify_impl_c6_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4880,
     0x2 => 0x0,
@@ -22641,14 +22642,14 @@ pub const fn classify_impl_c6_1(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_SCALAR_IMM-SSHR_SCALAR#0,SHR_SCALAR_IMM-SSRA_SCALAR#0,SHR_SCALAR_IMM-SRSHR_SCALAR#0,SHR_SCALAR_IMM-SRSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#14,SHIFT_SCALAR_IMM-SHL_SCALAR#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#11,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#11,MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#0
 pub const fn classify_impl_c6_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4880,
     0x2 => 0x0,
@@ -22714,8 +22715,7 @@ pub const fn classify_impl_c6_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_SCALAR_IMM-SSHR_SCALAR#0,SHR_SCALAR_IMM-SSRA_SCALAR#0,SHR_SCALAR_IMM-SRSHR_SCALAR#0,SHR_SCALAR_IMM-SRSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#13,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#14,SHIFT_SCALAR_IMM-SHL_SCALAR#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#10,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#11,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#10,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#11,MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#0
@@ -22730,14 +22730,15 @@ pub const fn classify_impl_c6(inst: u32) -> u32 {
     0x2 => return classify_impl_c6_2(inst), // SHR_SCALAR_IMM-SSHR_SCALAR#0,SHR_SCALAR_IMM-SSRA_SCALAR#0,SHR_SCALAR_IMM-SRSHR_SCALAR#0,SHR_SCALAR_IMM-SRSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHL_IMM_SCALAR#14,SHIFT_SCALAR_IMM-SHL_SCALAR#0,FCVT_SCALAR_FIXED-SCVTF_SCALAR_FIX#11,FCVT_SCALAR_FIXED-FCVTZS_SCALAR_FIX#11,MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#0,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#1,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#1,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#1,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#1,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#1,FMUL_ELEM_SCALAR-FMLA_ELEM_SCALAR#0,FMUL_ELEM_SCALAR-FMLS_ELEM_SCALAR#0,FMUL_ELEM_SCALAR-FMUL_ELEM_SCALAR#0
 pub const fn classify_impl_c7(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 12) & 0xf {
+  
+  match (inst >> 12) & 0xf {
     0x0 => 0x0,
     0x1 => 0x5700,
     0x2 => 0x0,
@@ -22755,15 +22756,15 @@ pub const fn classify_impl_c7(inst: u32) -> u32 {
     0xe => 0x0,
     0xf => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MUL_ELEM_SCALAR-SQDMULH_ELEM_SCALAR#1,MUL_ELEM_SCALAR-SQRDMULH_ELEM_SCALAR#1,MULL_ELEM_SCALAR-SQDMLAL_ELEM_SCALAR#1,MULL_ELEM_SCALAR-SQDMLSL_ELEM_SCALAR#1,MULL_ELEM_SCALAR-SQDMULL_ELEM_SCALAR#1,FMUL_ELEM_SCALAR-FMLA_ELEM_SCALAR#1,FMUL_ELEM_SCALAR-FMLS_ELEM_SCALAR#1,FMUL_ELEM_SCALAR-FMUL_ELEM_SCALAR#1
 pub const fn classify_impl_c8(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 12) & 0xf {
+  
+  match (inst >> 12) & 0xf {
     0x0 => 0x0,
     0x1 => 0x5700,
     0x2 => 0x0,
@@ -22781,49 +22782,49 @@ pub const fn classify_impl_c8(inst: u32) -> u32 {
     0xe => 0x0,
     0xf => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMUL_ELEM_SCALAR-FMLA_ELEM_SCALAR#2,FMUL_ELEM_SCALAR-FMLS_ELEM_SCALAR#2,FMUL_ELEM_SCALAR-FMUL_ELEM_SCALAR#2
 pub const fn classify_impl_c9(inst: u32) -> u32 {
   if (inst&0x3400) != 0x1000 { return 0; }
-  let idx = match (inst >> 14) & 0x3 {
+  
+  match (inst >> 14) & 0x3 {
     0x0 => 0x5700,
     0x1 => 0x5701,
     0x2 => 0x5702,
     0x3 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ANDOREOR_SHIFT-ANDS_SHIFT#0
 pub const fn classify_impl_ca(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x586;
+  0x586
 }
 
 
 // ANDOREOR_SHIFT-BICS_SHIFT#0
 pub const fn classify_impl_cb(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x587;
+  0x587
 }
 
 
 // ADDSUB_SHIFT-SUBS_SHIFT#0
 pub const fn classify_impl_cc(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x403;
+  0x403
 }
 
 
 // ADDSUB_EXT-SUBS_EXT#0,ADDSUB_EXT-SUBS_EXT#1,ADDSUB_EXT-SUBS_EXT#2,ADDSUB_EXT-SUBS_EXT#3,ADDSUB_EXT-SUBS_EXT#4
 pub const fn classify_impl_cd(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x7 {
+  
+  match (inst >> 10) & 0x7 {
     0x0 => 0x303,
     0x1 => 0x303,
     0x2 => 0x303,
@@ -22833,35 +22834,35 @@ pub const fn classify_impl_cd(inst: u32) -> u32 {
     0x6 => 0x0,
     0x7 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ADDSUB_SHIFT-SUBS_SHIFT#1
 pub const fn classify_impl_ce(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x403;
+  0x403
 }
 
 
 // ADDSUB_SHIFT-SUBS_SHIFT#2
 pub const fn classify_impl_cf(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x403;
+  0x403
 }
 
 
 // EXT-EXT#1,EXT-EXT#2
 pub const fn classify_impl_d0_1(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  return 0x2b00;
+  0x2b00
 }
 
 
 // INS-INS_ELEM#0,INS-INS_ELEM#1,INS-INS_ELEM#2,INS-INS_ELEM#3,INS-INS_ELEM#4,INS-INS_ELEM#5,INS-INS_ELEM#6,INS-INS_ELEM#7,INS-INS_ELEM#8,INS-INS_ELEM#9,INS-INS_ELEM#10,INS-INS_ELEM#11,INS-INS_ELEM#12,INS-INS_ELEM#13,INS-INS_ELEM#14,INS-INS_ELEM#15,EXT-EXT#1,EXT-EXT#2
 pub const fn classify_impl_d0_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2b00,
     0x1 => 0x2901,
     0x2 => 0x2b00,
@@ -22895,14 +22896,14 @@ pub const fn classify_impl_d0_2(inst: u32) -> u32 {
     0x1e => 0x2b00,
     0x1f => 0x2901,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // INS-INS_ELEM#16,INS-INS_ELEM#17,INS-INS_ELEM#18,INS-INS_ELEM#19,INS-INS_ELEM#20,INS-INS_ELEM#21,INS-INS_ELEM#22,INS-INS_ELEM#23,INS-INS_ELEM#24,INS-INS_ELEM#25,INS-INS_ELEM#26,INS-INS_ELEM#27,INS-INS_ELEM#28,INS-INS_ELEM#29,INS-INS_ELEM#30,INS-INS_ELEM#31,EXT-EXT#1,EXT-EXT#2
 pub const fn classify_impl_d0_3(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2b00,
     0x1 => 0x2901,
     0x2 => 0x2b00,
@@ -22936,14 +22937,14 @@ pub const fn classify_impl_d0_3(inst: u32) -> u32 {
     0x1e => 0x2b00,
     0x1f => 0x2901,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // INS-INS_ELEM#32,INS-INS_ELEM#33,INS-INS_ELEM#34,INS-INS_ELEM#35,INS-INS_ELEM#36,INS-INS_ELEM#37,INS-INS_ELEM#38,INS-INS_ELEM#39,INS-INS_ELEM#40,INS-INS_ELEM#41,INS-INS_ELEM#42,INS-INS_ELEM#43,INS-INS_ELEM#44,INS-INS_ELEM#45,INS-INS_ELEM#46,INS-INS_ELEM#47,EXT-EXT#1,EXT-EXT#2
 pub const fn classify_impl_d0_4(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2b00,
     0x1 => 0x2901,
     0x2 => 0x2b00,
@@ -22977,14 +22978,14 @@ pub const fn classify_impl_d0_4(inst: u32) -> u32 {
     0x1e => 0x2b00,
     0x1f => 0x2901,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // INS-INS_ELEM#48,INS-INS_ELEM#49,INS-INS_ELEM#50,INS-INS_ELEM#51,INS-INS_ELEM#52,INS-INS_ELEM#53,INS-INS_ELEM#54,INS-INS_ELEM#55,INS-INS_ELEM#56,INS-INS_ELEM#57,INS-INS_ELEM#58,INS-INS_ELEM#59,INS-INS_ELEM#60,INS-INS_ELEM#61,INS-INS_ELEM#62,INS-INS_ELEM#63,EXT-EXT#1,EXT-EXT#2
 pub const fn classify_impl_d0_5(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2b00,
     0x1 => 0x2901,
     0x2 => 0x2b00,
@@ -23018,14 +23019,14 @@ pub const fn classify_impl_d0_5(inst: u32) -> u32 {
     0x1e => 0x2b00,
     0x1f => 0x2901,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // INS-INS_ELEM#64,INS-INS_ELEM#65,INS-INS_ELEM#66,INS-INS_ELEM#67,INS-INS_ELEM#68,INS-INS_ELEM#69,INS-INS_ELEM#70,INS-INS_ELEM#71,INS-INS_ELEM#72,INS-INS_ELEM#73,INS-INS_ELEM#74,INS-INS_ELEM#75,INS-INS_ELEM#76,INS-INS_ELEM#77,INS-INS_ELEM#78,INS-INS_ELEM#79,EXT-EXT#1,EXT-EXT#2
 pub const fn classify_impl_d0_6(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2b00,
     0x1 => 0x2901,
     0x2 => 0x2b00,
@@ -23059,14 +23060,14 @@ pub const fn classify_impl_d0_6(inst: u32) -> u32 {
     0x1e => 0x2b00,
     0x1f => 0x2901,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // INS-INS_ELEM#80,INS-INS_ELEM#81,INS-INS_ELEM#82,INS-INS_ELEM#83,INS-INS_ELEM#84,INS-INS_ELEM#85,INS-INS_ELEM#86,INS-INS_ELEM#87,INS-INS_ELEM#88,INS-INS_ELEM#89,INS-INS_ELEM#90,INS-INS_ELEM#91,INS-INS_ELEM#92,INS-INS_ELEM#93,INS-INS_ELEM#94,INS-INS_ELEM#95,EXT-EXT#1,EXT-EXT#2
 pub const fn classify_impl_d0_7(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2b00,
     0x1 => 0x2901,
     0x2 => 0x2b00,
@@ -23100,14 +23101,14 @@ pub const fn classify_impl_d0_7(inst: u32) -> u32 {
     0x1e => 0x2b00,
     0x1f => 0x2901,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // INS-INS_ELEM#96,INS-INS_ELEM#97,INS-INS_ELEM#98,INS-INS_ELEM#99,INS-INS_ELEM#100,INS-INS_ELEM#101,INS-INS_ELEM#102,INS-INS_ELEM#103,INS-INS_ELEM#104,INS-INS_ELEM#105,INS-INS_ELEM#106,INS-INS_ELEM#107,INS-INS_ELEM#108,INS-INS_ELEM#109,INS-INS_ELEM#110,INS-INS_ELEM#111,EXT-EXT#1,EXT-EXT#2
 pub const fn classify_impl_d0_8(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2b00,
     0x1 => 0x2901,
     0x2 => 0x2b00,
@@ -23141,14 +23142,14 @@ pub const fn classify_impl_d0_8(inst: u32) -> u32 {
     0x1e => 0x2b00,
     0x1f => 0x2901,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // INS-INS_ELEM#112,INS-INS_ELEM#113,INS-INS_ELEM#114,INS-INS_ELEM#115,INS-INS_ELEM#116,INS-INS_ELEM#117,INS-INS_ELEM#118,INS-INS_ELEM#119,INS-INS_ELEM#120,INS-INS_ELEM#121,INS-INS_ELEM#122,INS-INS_ELEM#123,INS-INS_ELEM#124,INS-INS_ELEM#125,INS-INS_ELEM#126,INS-INS_ELEM#127,EXT-EXT#1,EXT-EXT#2
 pub const fn classify_impl_d0_9(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2b00,
     0x1 => 0x2901,
     0x2 => 0x2b00,
@@ -23182,14 +23183,14 @@ pub const fn classify_impl_d0_9(inst: u32) -> u32 {
     0x1e => 0x2b00,
     0x1f => 0x2901,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // INS-INS_ELEM#128,INS-INS_ELEM#129,INS-INS_ELEM#130,INS-INS_ELEM#131,INS-INS_ELEM#132,INS-INS_ELEM#133,INS-INS_ELEM#134,INS-INS_ELEM#135,INS-INS_ELEM#136,INS-INS_ELEM#137,INS-INS_ELEM#138,INS-INS_ELEM#139,INS-INS_ELEM#140,INS-INS_ELEM#141,INS-INS_ELEM#142,INS-INS_ELEM#143,EXT-EXT#1,EXT-EXT#2
 pub const fn classify_impl_d0_a(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2b00,
     0x1 => 0x2901,
     0x2 => 0x2b00,
@@ -23223,14 +23224,14 @@ pub const fn classify_impl_d0_a(inst: u32) -> u32 {
     0x1e => 0x2b00,
     0x1f => 0x2901,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // INS-INS_ELEM#144,INS-INS_ELEM#145,INS-INS_ELEM#146,INS-INS_ELEM#147,INS-INS_ELEM#148,INS-INS_ELEM#149,INS-INS_ELEM#150,INS-INS_ELEM#151,INS-INS_ELEM#152,INS-INS_ELEM#153,INS-INS_ELEM#154,INS-INS_ELEM#155,INS-INS_ELEM#156,INS-INS_ELEM#157,INS-INS_ELEM#158,INS-INS_ELEM#159,EXT-EXT#1,EXT-EXT#2
 pub const fn classify_impl_d0_b(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2b00,
     0x1 => 0x2901,
     0x2 => 0x2b00,
@@ -23264,14 +23265,14 @@ pub const fn classify_impl_d0_b(inst: u32) -> u32 {
     0x1e => 0x2b00,
     0x1f => 0x2901,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // INS-INS_ELEM#160,INS-INS_ELEM#161,INS-INS_ELEM#162,INS-INS_ELEM#163,INS-INS_ELEM#164,INS-INS_ELEM#165,INS-INS_ELEM#166,INS-INS_ELEM#167,INS-INS_ELEM#168,INS-INS_ELEM#169,INS-INS_ELEM#170,INS-INS_ELEM#171,INS-INS_ELEM#172,INS-INS_ELEM#173,INS-INS_ELEM#174,INS-INS_ELEM#175,EXT-EXT#1,EXT-EXT#2
 pub const fn classify_impl_d0_c(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2b00,
     0x1 => 0x2901,
     0x2 => 0x2b00,
@@ -23305,14 +23306,14 @@ pub const fn classify_impl_d0_c(inst: u32) -> u32 {
     0x1e => 0x2b00,
     0x1f => 0x2901,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // INS-INS_ELEM#176,INS-INS_ELEM#177,INS-INS_ELEM#178,INS-INS_ELEM#179,INS-INS_ELEM#180,INS-INS_ELEM#181,INS-INS_ELEM#182,INS-INS_ELEM#183,INS-INS_ELEM#184,INS-INS_ELEM#185,INS-INS_ELEM#186,INS-INS_ELEM#187,INS-INS_ELEM#188,INS-INS_ELEM#189,INS-INS_ELEM#190,INS-INS_ELEM#191,EXT-EXT#1,EXT-EXT#2
 pub const fn classify_impl_d0_d(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2b00,
     0x1 => 0x2901,
     0x2 => 0x2b00,
@@ -23346,14 +23347,14 @@ pub const fn classify_impl_d0_d(inst: u32) -> u32 {
     0x1e => 0x2b00,
     0x1f => 0x2901,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // INS-INS_ELEM#192,INS-INS_ELEM#193,INS-INS_ELEM#194,INS-INS_ELEM#195,INS-INS_ELEM#196,INS-INS_ELEM#197,INS-INS_ELEM#198,INS-INS_ELEM#199,INS-INS_ELEM#200,INS-INS_ELEM#201,INS-INS_ELEM#202,INS-INS_ELEM#203,INS-INS_ELEM#204,INS-INS_ELEM#205,INS-INS_ELEM#206,INS-INS_ELEM#207,EXT-EXT#1,EXT-EXT#2
 pub const fn classify_impl_d0_e(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2b00,
     0x1 => 0x2901,
     0x2 => 0x2b00,
@@ -23387,14 +23388,14 @@ pub const fn classify_impl_d0_e(inst: u32) -> u32 {
     0x1e => 0x2b00,
     0x1f => 0x2901,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // INS-INS_ELEM#208,INS-INS_ELEM#209,INS-INS_ELEM#210,INS-INS_ELEM#211,INS-INS_ELEM#212,INS-INS_ELEM#213,INS-INS_ELEM#214,INS-INS_ELEM#215,INS-INS_ELEM#216,INS-INS_ELEM#217,INS-INS_ELEM#218,INS-INS_ELEM#219,INS-INS_ELEM#220,INS-INS_ELEM#221,INS-INS_ELEM#222,INS-INS_ELEM#223,EXT-EXT#1,EXT-EXT#2
 pub const fn classify_impl_d0_f(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2b00,
     0x1 => 0x2901,
     0x2 => 0x2b00,
@@ -23428,14 +23429,14 @@ pub const fn classify_impl_d0_f(inst: u32) -> u32 {
     0x1e => 0x2b00,
     0x1f => 0x2901,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // INS-INS_ELEM#224,INS-INS_ELEM#225,INS-INS_ELEM#226,INS-INS_ELEM#227,INS-INS_ELEM#228,INS-INS_ELEM#229,INS-INS_ELEM#230,INS-INS_ELEM#231,INS-INS_ELEM#232,INS-INS_ELEM#233,INS-INS_ELEM#234,INS-INS_ELEM#235,INS-INS_ELEM#236,INS-INS_ELEM#237,INS-INS_ELEM#238,INS-INS_ELEM#239,EXT-EXT#1,EXT-EXT#2
 pub const fn classify_impl_d0_10(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x2b00,
     0x1 => 0x2901,
     0x2 => 0x2b00,
@@ -23469,8 +23470,7 @@ pub const fn classify_impl_d0_10(inst: u32) -> u32 {
     0x1e => 0x2b00,
     0x1f => 0x2901,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // INS-INS_ELEM#0,INS-INS_ELEM#1,INS-INS_ELEM#2,INS-INS_ELEM#3,INS-INS_ELEM#4,INS-INS_ELEM#5,INS-INS_ELEM#6,INS-INS_ELEM#7,INS-INS_ELEM#8,INS-INS_ELEM#9,INS-INS_ELEM#10,INS-INS_ELEM#11,INS-INS_ELEM#12,INS-INS_ELEM#13,INS-INS_ELEM#14,INS-INS_ELEM#15,INS-INS_ELEM#16,INS-INS_ELEM#17,INS-INS_ELEM#18,INS-INS_ELEM#19,INS-INS_ELEM#20,INS-INS_ELEM#21,INS-INS_ELEM#22,INS-INS_ELEM#23,INS-INS_ELEM#24,INS-INS_ELEM#25,INS-INS_ELEM#26,INS-INS_ELEM#27,INS-INS_ELEM#28,INS-INS_ELEM#29,INS-INS_ELEM#30,INS-INS_ELEM#31,INS-INS_ELEM#32,INS-INS_ELEM#33,INS-INS_ELEM#34,INS-INS_ELEM#35,INS-INS_ELEM#36,INS-INS_ELEM#37,INS-INS_ELEM#38,INS-INS_ELEM#39,INS-INS_ELEM#40,INS-INS_ELEM#41,INS-INS_ELEM#42,INS-INS_ELEM#43,INS-INS_ELEM#44,INS-INS_ELEM#45,INS-INS_ELEM#46,INS-INS_ELEM#47,INS-INS_ELEM#48,INS-INS_ELEM#49,INS-INS_ELEM#50,INS-INS_ELEM#51,INS-INS_ELEM#52,INS-INS_ELEM#53,INS-INS_ELEM#54,INS-INS_ELEM#55,INS-INS_ELEM#56,INS-INS_ELEM#57,INS-INS_ELEM#58,INS-INS_ELEM#59,INS-INS_ELEM#60,INS-INS_ELEM#61,INS-INS_ELEM#62,INS-INS_ELEM#63,INS-INS_ELEM#64,INS-INS_ELEM#65,INS-INS_ELEM#66,INS-INS_ELEM#67,INS-INS_ELEM#68,INS-INS_ELEM#69,INS-INS_ELEM#70,INS-INS_ELEM#71,INS-INS_ELEM#72,INS-INS_ELEM#73,INS-INS_ELEM#74,INS-INS_ELEM#75,INS-INS_ELEM#76,INS-INS_ELEM#77,INS-INS_ELEM#78,INS-INS_ELEM#79,INS-INS_ELEM#80,INS-INS_ELEM#81,INS-INS_ELEM#82,INS-INS_ELEM#83,INS-INS_ELEM#84,INS-INS_ELEM#85,INS-INS_ELEM#86,INS-INS_ELEM#87,INS-INS_ELEM#88,INS-INS_ELEM#89,INS-INS_ELEM#90,INS-INS_ELEM#91,INS-INS_ELEM#92,INS-INS_ELEM#93,INS-INS_ELEM#94,INS-INS_ELEM#95,INS-INS_ELEM#96,INS-INS_ELEM#97,INS-INS_ELEM#98,INS-INS_ELEM#99,INS-INS_ELEM#100,INS-INS_ELEM#101,INS-INS_ELEM#102,INS-INS_ELEM#103,INS-INS_ELEM#104,INS-INS_ELEM#105,INS-INS_ELEM#106,INS-INS_ELEM#107,INS-INS_ELEM#108,INS-INS_ELEM#109,INS-INS_ELEM#110,INS-INS_ELEM#111,INS-INS_ELEM#112,INS-INS_ELEM#113,INS-INS_ELEM#114,INS-INS_ELEM#115,INS-INS_ELEM#116,INS-INS_ELEM#117,INS-INS_ELEM#118,INS-INS_ELEM#119,INS-INS_ELEM#120,INS-INS_ELEM#121,INS-INS_ELEM#122,INS-INS_ELEM#123,INS-INS_ELEM#124,INS-INS_ELEM#125,INS-INS_ELEM#126,INS-INS_ELEM#127,INS-INS_ELEM#128,INS-INS_ELEM#129,INS-INS_ELEM#130,INS-INS_ELEM#131,INS-INS_ELEM#132,INS-INS_ELEM#133,INS-INS_ELEM#134,INS-INS_ELEM#135,INS-INS_ELEM#136,INS-INS_ELEM#137,INS-INS_ELEM#138,INS-INS_ELEM#139,INS-INS_ELEM#140,INS-INS_ELEM#141,INS-INS_ELEM#142,INS-INS_ELEM#143,INS-INS_ELEM#144,INS-INS_ELEM#145,INS-INS_ELEM#146,INS-INS_ELEM#147,INS-INS_ELEM#148,INS-INS_ELEM#149,INS-INS_ELEM#150,INS-INS_ELEM#151,INS-INS_ELEM#152,INS-INS_ELEM#153,INS-INS_ELEM#154,INS-INS_ELEM#155,INS-INS_ELEM#156,INS-INS_ELEM#157,INS-INS_ELEM#158,INS-INS_ELEM#159,INS-INS_ELEM#160,INS-INS_ELEM#161,INS-INS_ELEM#162,INS-INS_ELEM#163,INS-INS_ELEM#164,INS-INS_ELEM#165,INS-INS_ELEM#166,INS-INS_ELEM#167,INS-INS_ELEM#168,INS-INS_ELEM#169,INS-INS_ELEM#170,INS-INS_ELEM#171,INS-INS_ELEM#172,INS-INS_ELEM#173,INS-INS_ELEM#174,INS-INS_ELEM#175,INS-INS_ELEM#176,INS-INS_ELEM#177,INS-INS_ELEM#178,INS-INS_ELEM#179,INS-INS_ELEM#180,INS-INS_ELEM#181,INS-INS_ELEM#182,INS-INS_ELEM#183,INS-INS_ELEM#184,INS-INS_ELEM#185,INS-INS_ELEM#186,INS-INS_ELEM#187,INS-INS_ELEM#188,INS-INS_ELEM#189,INS-INS_ELEM#190,INS-INS_ELEM#191,INS-INS_ELEM#192,INS-INS_ELEM#193,INS-INS_ELEM#194,INS-INS_ELEM#195,INS-INS_ELEM#196,INS-INS_ELEM#197,INS-INS_ELEM#198,INS-INS_ELEM#199,INS-INS_ELEM#200,INS-INS_ELEM#201,INS-INS_ELEM#202,INS-INS_ELEM#203,INS-INS_ELEM#204,INS-INS_ELEM#205,INS-INS_ELEM#206,INS-INS_ELEM#207,INS-INS_ELEM#208,INS-INS_ELEM#209,INS-INS_ELEM#210,INS-INS_ELEM#211,INS-INS_ELEM#212,INS-INS_ELEM#213,INS-INS_ELEM#214,INS-INS_ELEM#215,INS-INS_ELEM#216,INS-INS_ELEM#217,INS-INS_ELEM#218,INS-INS_ELEM#219,INS-INS_ELEM#220,INS-INS_ELEM#221,INS-INS_ELEM#222,INS-INS_ELEM#223,INS-INS_ELEM#224,INS-INS_ELEM#225,INS-INS_ELEM#226,INS-INS_ELEM#227,INS-INS_ELEM#228,INS-INS_ELEM#229,INS-INS_ELEM#230,INS-INS_ELEM#231,INS-INS_ELEM#232,INS-INS_ELEM#233,INS-INS_ELEM#234,INS-INS_ELEM#235,INS-INS_ELEM#236,INS-INS_ELEM#237,INS-INS_ELEM#238,INS-INS_ELEM#239,EXT-EXT#1,EXT-EXT#2
@@ -23514,154 +23514,154 @@ pub const fn classify_impl_d0(inst: u32) -> u32 {
     0x10 => return classify_impl_d0_10(inst), // INS-INS_ELEM#224,INS-INS_ELEM#225,INS-INS_ELEM#226,INS-INS_ELEM#227,INS-INS_ELEM#228,INS-INS_ELEM#229,INS-INS_ELEM#230,INS-INS_ELEM#231,INS-INS_ELEM#232,INS-INS_ELEM#233,INS-INS_ELEM#234,INS-INS_ELEM#235,INS-INS_ELEM#236,INS-INS_ELEM#237,INS-INS_ELEM#238,INS-INS_ELEM#239,EXT-EXT#1,EXT-EXT#2
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // REV_VEC-REV32_VEC#0
 pub const fn classify_impl_d1_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3282;
+  0x3282
 }
 
 
 // ADDLP_VEC-UADDLP#0
 pub const fn classify_impl_d1_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3102;
+  0x3102
 }
 
 
 // ARITH1_VEC-USQADD_VEC#3
 pub const fn classify_impl_d1_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3083;
+  0x3083
 }
 
 
 // CLZ_VEC-CLZ_VEC#0
 pub const fn classify_impl_d1_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3181;
+  0x3181
 }
 
 
 // BIT_VEC-NOT_VEC#0
 pub const fn classify_impl_d1_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3201;
+  0x3201
 }
 
 
 // ADDLP_VEC-UADALP#0
 pub const fn classify_impl_d1_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3103;
+  0x3103
 }
 
 
 // ARITH1_VEC-SQNEG_VEC#3
 pub const fn classify_impl_d1_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3084;
+  0x3084
 }
 
 
 // CMZERO_VEC-CMGE_ZERO_VEC#3
 pub const fn classify_impl_d1_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f83;
+  0x2f83
 }
 
 
 // CMZERO_VEC-CMLE_ZERO_VEC#3
 pub const fn classify_impl_d1_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f84;
+  0x2f84
 }
 
 
 // ARITH1_VEC-NEG_VEC#3
 pub const fn classify_impl_d1_a(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3085;
+  0x3085
 }
 
 
 // XTN_VEC-SQXTUN2_VEC#0
 pub const fn classify_impl_d1_b(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3386;
+  0x3386
 }
 
 
 // SHLL_VEC_ESZ-SHLL2_VEC_ESZ#0
 pub const fn classify_impl_d1_c(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4c01;
+  0x4c01
 }
 
 
 // XTN_VEC-UQXTN2_VEC#0
 pub const fn classify_impl_d1_d(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3387;
+  0x3387
 }
 
 
 // FRINT_VEC-FRINTA_VEC#1
 pub const fn classify_impl_d1_e(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5204;
+  0x5204
 }
 
 
 // FRINT_VEC-FRINTX_VEC#1
 pub const fn classify_impl_d1_f(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5205;
+  0x5205
 }
 
 
 // FCVT_VEC-FCVTNU_VEC#1
 pub const fn classify_impl_d1_10(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f05;
+  0x4f05
 }
 
 
 // FCVT_VEC-FCVTMU_VEC#1
 pub const fn classify_impl_d1_11(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f06;
+  0x4f06
 }
 
 
 // FCVT_VEC-FCVTAU_VEC#1
 pub const fn classify_impl_d1_12(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f07;
+  0x4f07
 }
 
 
 // FCVT_FROMINT_VEC-UCVTF_VEC#1
 pub const fn classify_impl_d1_13(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5081;
+  0x5081
 }
 
 
 // FRINTTS_VEC-FRINT32X_VEC#1
 pub const fn classify_impl_d1_14(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5282;
+  0x5282
 }
 
 
 // FRINTTS_VEC-FRINT64X_VEC#1
 pub const fn classify_impl_d1_15(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5283;
+  0x5283
 }
 
 // HADDSUB_VEC-UHADD#0,HADDSUB_VEC-URHADD#0,HADDSUB_VEC-UHSUB#0,QADDSUB_VEC-UQADD#3,QADDSUB_VEC-UQSUB#3,CMGT_VEC-CMHIV#3,CMGT_VEC-CMHSV#3,CMEQ_VEC-CMEQV#3,CMZERO_VEC-CMGE_ZERO_VEC#3,CMZERO_VEC-CMLE_ZERO_VEC#3,ARITH1_VEC-USQADD_VEC#3,ARITH1_VEC-SQNEG_VEC#3,ARITH1_VEC-NEG_VEC#3,ADDLP_VEC-UADDLP#0,ADDLP_VEC-UADALP#0,CLZ_VEC-CLZ_VEC#0,BIT_VEC-NOT_VEC#0,REV_VEC-REV32_VEC#0,XTN_VEC-SQXTUN2_VEC#0,XTN_VEC-UQXTN2_VEC#0,SHL_REG_VEC-USHL#3,SHL_REG_VEC-UQSHL#3,SHL_REG_VEC-URSHL#3,SHL_REG_VEC-UQRSHL#3,MINMAX_VEC-UMAX#0,MINMAX_VEC-UMIN#0,MINMAX_VEC-UMAXP#0,MINMAX_VEC-UMINP#0,ABD_VEC-UABD#0,ABD_VEC-UABA#0,ADDSUB_VEC-SUB_VEC#3,MUL_VEC-MLS_VEC#0,MUL_VEC-PMUL_VEC#0,FMINMAX_VEC-FMAXNMP_VEC#1,FMINMAX_VEC-FMAXP_VEC#1,FCMP_REG_VEC-FCMGE_VEC#1,FCMP_REG_VEC-FACGE_VEC#1,FADDSUB_VEC-FADDP_VEC#1,FMUL_VEC-FMULV#1,FDIV_VEC-FDIVV#1,ANDOREOR_VEC-EORV#0,ADDSUBL_VEC-UADDL2#0,ADDSUBL_VEC-USUBL2#0,ADDSUBW_VEC-UADDW2#0,ADDSUBW_VEC-USUBW2#0,ADDSUBHN_VEC-RADDHN2#0,ADDSUBHN_VEC-RSUBHN2#0,ABDL_VEC-UABAL2#0,ABDL_VEC-UABDL2#0,MULL_VEC-UMLAL2#0,MULL_VEC-UMLSL2#0,MULL_VEC-UMULL2#0,SHLL_VEC_ESZ-SHLL2_VEC_ESZ#0,FCVT_VEC-FCVTNU_VEC#1,FCVT_VEC-FCVTMU_VEC#1,FCVT_VEC-FCVTAU_VEC#1,FCVT_FROMINT_VEC-UCVTF_VEC#1,FRINT_VEC-FRINTA_VEC#1,FRINT_VEC-FRINTX_VEC#1,FRINTTS_VEC-FRINT32X_VEC#1,FRINTTS_VEC-FRINT64X_VEC#1,FHM_VEC-FMLAL2_VEC#0
@@ -23821,42 +23821,42 @@ pub const fn classify_impl_d1(inst: u32) -> u32 {
     0x15 => return classify_impl_d1_15(inst), // FRINTTS_VEC-FRINT64X_VEC#1
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // INT_HORZ_VEC-UADDLV#2
 pub const fn classify_impl_d2_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5384;
+  0x5384
 }
 
 
 // INT_HORZ_VEC-UMAXV#2
 pub const fn classify_impl_d2_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5385;
+  0x5385
 }
 
 
 // FP_HORZ_VEC-FMAXNMV#0
 pub const fn classify_impl_d2_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5484;
+  0x5484
 }
 
 
 // FP_HORZ_VEC-FMAXV#0
 pub const fn classify_impl_d2_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5485;
+  0x5485
 }
 
 
 // INT_HORZ_VEC-UMINV#2
 pub const fn classify_impl_d2_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5386;
+  0x5386
 }
 
 // HADDSUB_VEC-UHADD#0,HADDSUB_VEC-URHADD#0,HADDSUB_VEC-UHSUB#0,QADDSUB_VEC-UQADD#3,QADDSUB_VEC-UQSUB#3,CMGT_VEC-CMHIV#3,CMGT_VEC-CMHSV#3,CMEQ_VEC-CMEQV#3,SHL_REG_VEC-USHL#3,SHL_REG_VEC-UQSHL#3,SHL_REG_VEC-URSHL#3,SHL_REG_VEC-UQRSHL#3,MINMAX_VEC-UMAX#0,MINMAX_VEC-UMIN#0,MINMAX_VEC-UMAXP#0,MINMAX_VEC-UMINP#0,ABD_VEC-UABD#0,ABD_VEC-UABA#0,ADDSUB_VEC-SUB_VEC#3,MUL_VEC-MLS_VEC#0,MUL_VEC-PMUL_VEC#0,FMINMAX_VEC-FMAXNMP_VEC#1,FMINMAX_VEC-FMAXP_VEC#1,FCMP_REG_VEC-FCMGE_VEC#1,FCMP_REG_VEC-FACGE_VEC#1,FADDSUB_VEC-FADDP_VEC#1,FMUL_VEC-FMULV#1,FDIV_VEC-FDIVV#1,ANDOREOR_VEC-EORV#0,ADDSUBL_VEC-UADDL2#0,ADDSUBL_VEC-USUBL2#0,ADDSUBW_VEC-UADDW2#0,ADDSUBW_VEC-USUBW2#0,ADDSUBHN_VEC-RADDHN2#0,ADDSUBHN_VEC-RSUBHN2#0,ABDL_VEC-UABAL2#0,ABDL_VEC-UABDL2#0,MULL_VEC-UMLAL2#0,MULL_VEC-UMLSL2#0,MULL_VEC-UMULL2#0,INT_HORZ_VEC-UADDLV#2,INT_HORZ_VEC-UMAXV#2,INT_HORZ_VEC-UMINV#2,FP_HORZ_VEC-FMAXNMV#0,FP_HORZ_VEC-FMAXV#0,FHM_VEC-FMLAL2_VEC#0
@@ -24000,14 +24000,15 @@ pub const fn classify_impl_d2(inst: u32) -> u32 {
     0x5 => return classify_impl_d2_5(inst), // INT_HORZ_VEC-UMINV#2
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_3REG_VEC-FMAXNMP_VEC_FP16#0,FP16_3REG_VEC-FADDP_VEC_FP16#0,FP16_3REG_VEC-FMUL_VEC_FP16#0,FP16_3REG_VEC-FCMGE_VEC_FP16#0,FP16_3REG_VEC-FACGE_VEC_FP16#0,FP16_3REG_VEC-FMAXP_VEC_FP16#0,FP16_3REG_VEC-FDIV_VEC_FP16#0,SQRDMLAH_VEC-SQRDMLAH#0,SQRDMLAH_VEC-SQRDMLSH#0,DOT_VEC-BFDOT_VEC#1,DOT_VEC-BFMMLA_VEC#0,FCMLA_VEC-FCMLA_VEC#4,FCMLA_VEC-FCMLA_VEC#5,FCMLA_VEC-FCADD_VEC#2
 pub const fn classify_impl_d3(inst: u32) -> u32 {
   if (inst&0x400) != 0x400 { return 0; }
-  let idx = match (inst >> 11) & 0x1f {
+  
+  match (inst >> 11) & 0x1f {
     0x0 => 0x418d,
     0x1 => 0x0,
     0x2 => 0x418e,
@@ -24041,162 +24042,161 @@ pub const fn classify_impl_d3(inst: u32) -> u32 {
     0x1e => 0x5c01,
     0x1f => 0x5902,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // REV_VEC-REV32_VEC#1
 pub const fn classify_impl_d4_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3282;
+  0x3282
 }
 
 
 // ADDLP_VEC-UADDLP#1
 pub const fn classify_impl_d4_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3102;
+  0x3102
 }
 
 
 // ARITH1_VEC-USQADD_VEC#4
 pub const fn classify_impl_d4_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3083;
+  0x3083
 }
 
 
 // CLZ_VEC-CLZ_VEC#1
 pub const fn classify_impl_d4_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3181;
+  0x3181
 }
 
 
 // BIT_VEC-RBIT_VEC#0
 pub const fn classify_impl_d4_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3202;
+  0x3202
 }
 
 
 // ADDLP_VEC-UADALP#1
 pub const fn classify_impl_d4_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3103;
+  0x3103
 }
 
 
 // ARITH1_VEC-SQNEG_VEC#4
 pub const fn classify_impl_d4_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3084;
+  0x3084
 }
 
 
 // CMZERO_VEC-CMGE_ZERO_VEC#4
 pub const fn classify_impl_d4_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f83;
+  0x2f83
 }
 
 
 // CMZERO_VEC-CMLE_ZERO_VEC#4
 pub const fn classify_impl_d4_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f84;
+  0x2f84
 }
 
 
 // ARITH1_VEC-NEG_VEC#4
 pub const fn classify_impl_d4_a(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3085;
+  0x3085
 }
 
 
 // XTN_VEC-SQXTUN2_VEC#1
 pub const fn classify_impl_d4_b(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3386;
+  0x3386
 }
 
 
 // SHLL_VEC_ESZ-SHLL2_VEC_ESZ#1
 pub const fn classify_impl_d4_c(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4c01;
+  0x4c01
 }
 
 
 // XTN_VEC-UQXTN2_VEC#1
 pub const fn classify_impl_d4_d(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3387;
+  0x3387
 }
 
 
 // FCVTN_VEC-FCVTXN2#0
 pub const fn classify_impl_d4_e(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5185;
+  0x5185
 }
 
 
 // FRINT_VEC-FRINTA_VEC#2
 pub const fn classify_impl_d4_f(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5204;
+  0x5204
 }
 
 
 // FRINT_VEC-FRINTX_VEC#2
 pub const fn classify_impl_d4_10(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5205;
+  0x5205
 }
 
 
 // FCVT_VEC-FCVTNU_VEC#2
 pub const fn classify_impl_d4_11(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f05;
+  0x4f05
 }
 
 
 // FCVT_VEC-FCVTMU_VEC#2
 pub const fn classify_impl_d4_12(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f06;
+  0x4f06
 }
 
 
 // FCVT_VEC-FCVTAU_VEC#2
 pub const fn classify_impl_d4_13(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f07;
+  0x4f07
 }
 
 
 // FCVT_FROMINT_VEC-UCVTF_VEC#2
 pub const fn classify_impl_d4_14(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5081;
+  0x5081
 }
 
 
 // FRINTTS_VEC-FRINT32X_VEC#2
 pub const fn classify_impl_d4_15(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5282;
+  0x5282
 }
 
 
 // FRINTTS_VEC-FRINT64X_VEC#2
 pub const fn classify_impl_d4_16(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5283;
+  0x5283
 }
 
 // HADDSUB_VEC-UHADD#1,HADDSUB_VEC-URHADD#1,HADDSUB_VEC-UHSUB#1,QADDSUB_VEC-UQADD#4,QADDSUB_VEC-UQSUB#4,CMGT_VEC-CMHIV#4,CMGT_VEC-CMHSV#4,CMEQ_VEC-CMEQV#4,CMZERO_VEC-CMGE_ZERO_VEC#4,CMZERO_VEC-CMLE_ZERO_VEC#4,ARITH1_VEC-USQADD_VEC#4,ARITH1_VEC-SQNEG_VEC#4,ARITH1_VEC-NEG_VEC#4,ADDLP_VEC-UADDLP#1,ADDLP_VEC-UADALP#1,CLZ_VEC-CLZ_VEC#1,BIT_VEC-RBIT_VEC#0,REV_VEC-REV32_VEC#1,XTN_VEC-SQXTUN2_VEC#1,XTN_VEC-UQXTN2_VEC#1,SHL_REG_VEC-USHL#4,SHL_REG_VEC-UQSHL#4,SHL_REG_VEC-URSHL#4,SHL_REG_VEC-UQRSHL#4,MINMAX_VEC-UMAX#1,MINMAX_VEC-UMIN#1,MINMAX_VEC-UMAXP#1,MINMAX_VEC-UMINP#1,ABD_VEC-UABD#1,ABD_VEC-UABA#1,ADDSUB_VEC-SUB_VEC#4,MUL_VEC-MLS_VEC#1,SQDMULH_VEC-SQRDMULH#0,FMINMAX_VEC-FMAXNMP_VEC#2,FMINMAX_VEC-FMAXP_VEC#2,FCMP_REG_VEC-FCMGE_VEC#2,FCMP_REG_VEC-FACGE_VEC#2,FADDSUB_VEC-FADDP_VEC#2,FMUL_VEC-FMULV#2,FDIV_VEC-FDIVV#2,ANDOREOR_VEC-BSLV#0,ADDSUBL_VEC-UADDL2#1,ADDSUBL_VEC-USUBL2#1,ADDSUBW_VEC-UADDW2#1,ADDSUBW_VEC-USUBW2#1,ADDSUBHN_VEC-RADDHN2#1,ADDSUBHN_VEC-RSUBHN2#1,ABDL_VEC-UABAL2#1,ABDL_VEC-UABDL2#1,MULL_VEC-UMLAL2#1,MULL_VEC-UMLSL2#1,MULL_VEC-UMULL2#1,SHLL_VEC_ESZ-SHLL2_VEC_ESZ#1,FCVT_VEC-FCVTNU_VEC#2,FCVT_VEC-FCVTMU_VEC#2,FCVT_VEC-FCVTAU_VEC#2,FCVT_FROMINT_VEC-UCVTF_VEC#2,FCVTN_VEC-FCVTXN2#0,FRINT_VEC-FRINTA_VEC#2,FRINT_VEC-FRINTX_VEC#2,FRINTTS_VEC-FRINT32X_VEC#2,FRINTTS_VEC-FRINT64X_VEC#2
@@ -24357,28 +24357,28 @@ pub const fn classify_impl_d4(inst: u32) -> u32 {
     0x16 => return classify_impl_d4_16(inst), // FRINTTS_VEC-FRINT64X_VEC#2
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // INT_HORZ_VEC-UADDLV#3
 pub const fn classify_impl_d5_1_1(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5384;
+  0x5384
 }
 
 
 // INT_HORZ_VEC-UMAXV#3
 pub const fn classify_impl_d5_1_2(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5385;
+  0x5385
 }
 
 
 // INT_HORZ_VEC-UMINV#3
 pub const fn classify_impl_d5_1_3(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x5386;
+  0x5386
 }
 
 // HADDSUB_VEC-UHADD#1,HADDSUB_VEC-URHADD#1,HADDSUB_VEC-UHSUB#1,QADDSUB_VEC-UQADD#4,QADDSUB_VEC-UQSUB#4,CMGT_VEC-CMHIV#4,CMGT_VEC-CMHSV#4,CMEQ_VEC-CMEQV#4,SHL_REG_VEC-USHL#4,SHL_REG_VEC-UQSHL#4,SHL_REG_VEC-URSHL#4,SHL_REG_VEC-UQRSHL#4,MINMAX_VEC-UMAX#1,MINMAX_VEC-UMIN#1,MINMAX_VEC-UMAXP#1,MINMAX_VEC-UMINP#1,ABD_VEC-UABD#1,ABD_VEC-UABA#1,ADDSUB_VEC-SUB_VEC#4,MUL_VEC-MLS_VEC#1,SQDMULH_VEC-SQRDMULH#0,FMINMAX_VEC-FMAXNMP_VEC#2,FMINMAX_VEC-FMAXP_VEC#2,FCMP_REG_VEC-FCMGE_VEC#2,FCMP_REG_VEC-FACGE_VEC#2,FADDSUB_VEC-FADDP_VEC#2,FMUL_VEC-FMULV#2,FDIV_VEC-FDIVV#2,ANDOREOR_VEC-BSLV#0,ADDSUBL_VEC-UADDL2#1,ADDSUBL_VEC-USUBL2#1,ADDSUBW_VEC-UADDW2#1,ADDSUBW_VEC-USUBW2#1,ADDSUBHN_VEC-RADDHN2#1,ADDSUBHN_VEC-RSUBHN2#1,ABDL_VEC-UABAL2#1,ABDL_VEC-UABDL2#1,MULL_VEC-UMLAL2#1,MULL_VEC-UMLSL2#1,MULL_VEC-UMULL2#1,INT_HORZ_VEC-UADDLV#3,INT_HORZ_VEC-UMAXV#3,INT_HORZ_VEC-UMINV#3
@@ -24520,49 +24520,49 @@ pub const fn classify_impl_d5_1(inst: u32) -> u32 {
     0x3 => return classify_impl_d5_1_3(inst), // INT_HORZ_VEC-UMINV#3
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_2REG_VEC-FRINTA_VEC_FP16#0
 pub const fn classify_impl_d5_2_1(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x428f;
+  0x428f
 }
 
 
 // FP16_2REG_VEC-FRINTX_VEC_FP16#0
 pub const fn classify_impl_d5_2_2(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4290;
+  0x4290
 }
 
 
 // FP16_2REG_VEC-FCVTNU_VEC_FP16#0
 pub const fn classify_impl_d5_2_3(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4291;
+  0x4291
 }
 
 
 // FP16_2REG_VEC-FCVTMU_VEC_FP16#0
 pub const fn classify_impl_d5_2_4(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4292;
+  0x4292
 }
 
 
 // FP16_2REG_VEC-FCVTAU_VEC_FP16#0
 pub const fn classify_impl_d5_2_5(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4293;
+  0x4293
 }
 
 
 // FP16_2REG_VEC-UCVTF_VEC_FP16#0
 pub const fn classify_impl_d5_2_6(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x4294;
+  0x4294
 }
 
 // HADDSUB_VEC-UHADD#1,HADDSUB_VEC-URHADD#1,HADDSUB_VEC-UHSUB#1,QADDSUB_VEC-UQADD#4,QADDSUB_VEC-UQSUB#4,CMGT_VEC-CMHIV#4,CMGT_VEC-CMHSV#4,CMEQ_VEC-CMEQV#4,SHL_REG_VEC-USHL#4,SHL_REG_VEC-UQSHL#4,SHL_REG_VEC-URSHL#4,SHL_REG_VEC-UQRSHL#4,MINMAX_VEC-UMAX#1,MINMAX_VEC-UMIN#1,MINMAX_VEC-UMAXP#1,MINMAX_VEC-UMINP#1,ABD_VEC-UABD#1,ABD_VEC-UABA#1,ADDSUB_VEC-SUB_VEC#4,MUL_VEC-MLS_VEC#1,SQDMULH_VEC-SQRDMULH#0,FMINMAX_VEC-FMAXNMP_VEC#2,FMINMAX_VEC-FMAXP_VEC#2,FCMP_REG_VEC-FCMGE_VEC#2,FCMP_REG_VEC-FACGE_VEC#2,FADDSUB_VEC-FADDP_VEC#2,FMUL_VEC-FMULV#2,FDIV_VEC-FDIVV#2,FP16_2REG_VEC-FRINTA_VEC_FP16#0,FP16_2REG_VEC-FRINTX_VEC_FP16#0,FP16_2REG_VEC-FCVTNU_VEC_FP16#0,FP16_2REG_VEC-FCVTMU_VEC_FP16#0,FP16_2REG_VEC-FCVTAU_VEC_FP16#0,FP16_2REG_VEC-UCVTF_VEC_FP16#0,ANDOREOR_VEC-BSLV#0,ADDSUBL_VEC-UADDL2#1,ADDSUBL_VEC-USUBL2#1,ADDSUBW_VEC-UADDW2#1,ADDSUBW_VEC-USUBW2#1,ADDSUBHN_VEC-RADDHN2#1,ADDSUBHN_VEC-RSUBHN2#1,ABDL_VEC-UABAL2#1,ABDL_VEC-UABDL2#1,MULL_VEC-UMLAL2#1,MULL_VEC-UMLSL2#1,MULL_VEC-UMULL2#1
@@ -24643,7 +24643,7 @@ pub const fn classify_impl_d5_2(inst: u32) -> u32 {
     0x6 => return classify_impl_d5_2_6(inst), // FP16_2REG_VEC-UCVTF_VEC_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 // HADDSUB_VEC-UHADD#1,HADDSUB_VEC-URHADD#1,HADDSUB_VEC-UHSUB#1,QADDSUB_VEC-UQADD#4,QADDSUB_VEC-UQSUB#4,CMGT_VEC-CMHIV#4,CMGT_VEC-CMHSV#4,CMEQ_VEC-CMEQV#4,SHL_REG_VEC-USHL#4,SHL_REG_VEC-UQSHL#4,SHL_REG_VEC-URSHL#4,SHL_REG_VEC-UQRSHL#4,MINMAX_VEC-UMAX#1,MINMAX_VEC-UMIN#1,MINMAX_VEC-UMAXP#1,MINMAX_VEC-UMINP#1,ABD_VEC-UABD#1,ABD_VEC-UABA#1,ADDSUB_VEC-SUB_VEC#4,MUL_VEC-MLS_VEC#1,SQDMULH_VEC-SQRDMULH#0,FMINMAX_VEC-FMAXNMP_VEC#2,FMINMAX_VEC-FMAXP_VEC#2,FCMP_REG_VEC-FCMGE_VEC#2,FCMP_REG_VEC-FACGE_VEC#2,FADDSUB_VEC-FADDP_VEC#2,FMUL_VEC-FMULV#2,FDIV_VEC-FDIVV#2,FP16_2REG_VEC-FRINTA_VEC_FP16#0,FP16_2REG_VEC-FRINTX_VEC_FP16#0,FP16_2REG_VEC-FCVTNU_VEC_FP16#0,FP16_2REG_VEC-FCVTMU_VEC_FP16#0,FP16_2REG_VEC-FCVTAU_VEC_FP16#0,FP16_2REG_VEC-UCVTF_VEC_FP16#0,ANDOREOR_VEC-BSLV#0,ADDSUBL_VEC-UADDL2#1,ADDSUBL_VEC-USUBL2#1,ADDSUBW_VEC-UADDW2#1,ADDSUBW_VEC-USUBW2#1,ADDSUBHN_VEC-RADDHN2#1,ADDSUBHN_VEC-RSUBHN2#1,ABDL_VEC-UABAL2#1,ABDL_VEC-UABDL2#1,MULL_VEC-UMLAL2#1,MULL_VEC-UMLSL2#1,MULL_VEC-UMULL2#1,INT_HORZ_VEC-UADDLV#3,INT_HORZ_VEC-UMAXV#3,INT_HORZ_VEC-UMINV#3
@@ -24658,14 +24658,15 @@ pub const fn classify_impl_d5(inst: u32) -> u32 {
     0x2 => return classify_impl_d5_2(inst), // HADDSUB_VEC-UHADD#1,HADDSUB_VEC-URHADD#1,HADDSUB_VEC-UHSUB#1,QADDSUB_VEC-UQADD#4,QADDSUB_VEC-UQSUB#4,CMGT_VEC-CMHIV#4,CMGT_VEC-CMHSV#4,CMEQ_VEC-CMEQV#4,SHL_REG_VEC-USHL#4,SHL_REG_VEC-UQSHL#4,SHL_REG_VEC-URSHL#4,SHL_REG_VEC-UQRSHL#4,MINMAX_VEC-UMAX#1,MINMAX_VEC-UMIN#1,MINMAX_VEC-UMAXP#1,MINMAX_VEC-UMINP#1,ABD_VEC-UABD#1,ABD_VEC-UABA#1,ADDSUB_VEC-SUB_VEC#4,MUL_VEC-MLS_VEC#1,SQDMULH_VEC-SQRDMULH#0,FMINMAX_VEC-FMAXNMP_VEC#2,FMINMAX_VEC-FMAXP_VEC#2,FCMP_REG_VEC-FCMGE_VEC#2,FCMP_REG_VEC-FACGE_VEC#2,FADDSUB_VEC-FADDP_VEC#2,FMUL_VEC-FMULV#2,FDIV_VEC-FDIVV#2,FP16_2REG_VEC-FRINTA_VEC_FP16#0,FP16_2REG_VEC-FRINTX_VEC_FP16#0,FP16_2REG_VEC-FCVTNU_VEC_FP16#0,FP16_2REG_VEC-FCVTMU_VEC_FP16#0,FP16_2REG_VEC-FCVTAU_VEC_FP16#0,FP16_2REG_VEC-UCVTF_VEC_FP16#0,ANDOREOR_VEC-BSLV#0,ADDSUBL_VEC-UADDL2#1,ADDSUBL_VEC-USUBL2#1,ADDSUBW_VEC-UADDW2#1,ADDSUBW_VEC-USUBW2#1,ADDSUBHN_VEC-RADDHN2#1,ADDSUBHN_VEC-RSUBHN2#1,ABDL_VEC-UABAL2#1,ABDL_VEC-UABDL2#1,MULL_VEC-UMLAL2#1,MULL_VEC-UMLSL2#1,MULL_VEC-UMULL2#1
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SQRDMLAH_VEC-SQRDMLAH#1,SQRDMLAH_VEC-SQRDMLSH#1,DOT_VEC-UDOT_VEC#1,DOT_VEC-UMMLA_VEC#0,FCMLA_VEC-FCMLA_VEC#6,FCMLA_VEC-FCMLA_VEC#7,FCMLA_VEC-FCADD_VEC#3
 pub const fn classify_impl_d6(inst: u32) -> u32 {
   if (inst&0x8400) != 0x8400 { return 0; }
-  let idx = match (inst >> 11) & 0xf {
+  
+  match (inst >> 11) & 0xf {
     0x0 => 0x4800,
     0x1 => 0x4801,
     0x2 => 0x5903,
@@ -24683,148 +24684,147 @@ pub const fn classify_impl_d6(inst: u32) -> u32 {
     0xe => 0x5c01,
     0xf => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ADDLP_VEC-UADDLP#2
 pub const fn classify_impl_d7_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3102;
+  0x3102
 }
 
 
 // ARITH1_VEC-USQADD_VEC#5
 pub const fn classify_impl_d7_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3083;
+  0x3083
 }
 
 
 // CLZ_VEC-CLZ_VEC#2
 pub const fn classify_impl_d7_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3181;
+  0x3181
 }
 
 
 // ADDLP_VEC-UADALP#2
 pub const fn classify_impl_d7_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3103;
+  0x3103
 }
 
 
 // ARITH1_VEC-SQNEG_VEC#5
 pub const fn classify_impl_d7_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3084;
+  0x3084
 }
 
 
 // CMZERO_VEC-CMGE_ZERO_VEC#5
 pub const fn classify_impl_d7_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f83;
+  0x2f83
 }
 
 
 // CMZERO_VEC-CMLE_ZERO_VEC#5
 pub const fn classify_impl_d7_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f84;
+  0x2f84
 }
 
 
 // ARITH1_VEC-NEG_VEC#5
 pub const fn classify_impl_d7_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3085;
+  0x3085
 }
 
 
 // FCMP_ZERO_VEC-FCMGE_ZERO_VEC#1
 pub const fn classify_impl_d7_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b03;
+  0x3b03
 }
 
 
 // FCMP_ZERO_VEC-FCMLE_ZERO_VEC#1
 pub const fn classify_impl_d7_a(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b04;
+  0x3b04
 }
 
 
 // FARITH1_VEC-FNEG_VEC#1
 pub const fn classify_impl_d7_b(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b81;
+  0x3b81
 }
 
 
 // XTN_VEC-SQXTUN2_VEC#2
 pub const fn classify_impl_d7_c(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3386;
+  0x3386
 }
 
 
 // SHLL_VEC_ESZ-SHLL2_VEC_ESZ#2
 pub const fn classify_impl_d7_d(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4c01;
+  0x4c01
 }
 
 
 // XTN_VEC-UQXTN2_VEC#2
 pub const fn classify_impl_d7_e(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3387;
+  0x3387
 }
 
 
 // FRINT_VEC-FRINTI_VEC#1
 pub const fn classify_impl_d7_f(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5206;
+  0x5206
 }
 
 
 // FCVT_VEC-FCVTPU_VEC#1
 pub const fn classify_impl_d7_10(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f08;
+  0x4f08
 }
 
 
 // FCVT_VEC-FCVTZU_VEC#1
 pub const fn classify_impl_d7_11(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f09;
+  0x4f09
 }
 
 
 // FRECP_VEC-URSQRTE_VEC#1
 pub const fn classify_impl_d7_12(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3d82;
+  0x3d82
 }
 
 
 // FRECP_VEC-FRSQRTE_VEC#1
 pub const fn classify_impl_d7_13(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3d83;
+  0x3d83
 }
 
 
 // FARITH1_VEC-FSQRT_VEC#1
 pub const fn classify_impl_d7_14(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b82;
+  0x3b82
 }
 
 // HADDSUB_VEC-UHADD#2,HADDSUB_VEC-URHADD#2,HADDSUB_VEC-UHSUB#2,QADDSUB_VEC-UQADD#5,QADDSUB_VEC-UQSUB#5,CMGT_VEC-CMHIV#5,CMGT_VEC-CMHSV#5,CMEQ_VEC-CMEQV#5,CMZERO_VEC-CMGE_ZERO_VEC#5,CMZERO_VEC-CMLE_ZERO_VEC#5,ARITH1_VEC-USQADD_VEC#5,ARITH1_VEC-SQNEG_VEC#5,ARITH1_VEC-NEG_VEC#5,ADDLP_VEC-UADDLP#2,ADDLP_VEC-UADALP#2,CLZ_VEC-CLZ_VEC#2,XTN_VEC-SQXTUN2_VEC#2,XTN_VEC-UQXTN2_VEC#2,SHL_REG_VEC-USHL#5,SHL_REG_VEC-UQSHL#5,SHL_REG_VEC-URSHL#5,SHL_REG_VEC-UQRSHL#5,MINMAX_VEC-UMAX#2,MINMAX_VEC-UMIN#2,MINMAX_VEC-UMAXP#2,MINMAX_VEC-UMINP#2,ABD_VEC-UABD#2,ABD_VEC-UABA#2,ADDSUB_VEC-SUB_VEC#5,MUL_VEC-MLS_VEC#2,SQDMULH_VEC-SQRDMULH#1,FMINMAX_VEC-FMINNMP_VEC#1,FMINMAX_VEC-FMINP_VEC#1,FCMP_REG_VEC-FCMGT_VEC#1,FCMP_REG_VEC-FACGT_VEC#1,FCMP_ZERO_VEC-FCMGE_ZERO_VEC#1,FCMP_ZERO_VEC-FCMLE_ZERO_VEC#1,FARITH1_VEC-FNEG_VEC#1,FARITH1_VEC-FSQRT_VEC#1,FADDSUB_VEC-FABD_VEC#1,FRECP_VEC-URSQRTE_VEC#1,FRECP_VEC-FRSQRTE_VEC#1,ANDOREOR_VEC-BITV#0,ADDSUBL_VEC-UADDL2#2,ADDSUBL_VEC-USUBL2#2,ADDSUBW_VEC-UADDW2#2,ADDSUBW_VEC-USUBW2#2,ADDSUBHN_VEC-RADDHN2#2,ADDSUBHN_VEC-RSUBHN2#2,ABDL_VEC-UABAL2#2,ABDL_VEC-UABDL2#2,MULL_VEC-UMLAL2#2,MULL_VEC-UMLSL2#2,MULL_VEC-UMULL2#2,SHLL_VEC_ESZ-SHLL2_VEC_ESZ#2,FCVT_VEC-FCVTPU_VEC#1,FCVT_VEC-FCVTZU_VEC#1,FRINT_VEC-FRINTI_VEC#1,FHM_VEC-FMLSL2_VEC#0
@@ -24983,42 +24983,42 @@ pub const fn classify_impl_d7(inst: u32) -> u32 {
     0x14 => return classify_impl_d7_14(inst), // FARITH1_VEC-FSQRT_VEC#1
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // INT_HORZ_VEC-UADDLV#4
 pub const fn classify_impl_d8_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5384;
+  0x5384
 }
 
 
 // INT_HORZ_VEC-UMAXV#4
 pub const fn classify_impl_d8_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5385;
+  0x5385
 }
 
 
 // FP_HORZ_VEC-FMINNMV#0
 pub const fn classify_impl_d8_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5486;
+  0x5486
 }
 
 
 // FP_HORZ_VEC-FMINV#0
 pub const fn classify_impl_d8_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5487;
+  0x5487
 }
 
 
 // INT_HORZ_VEC-UMINV#4
 pub const fn classify_impl_d8_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5386;
+  0x5386
 }
 
 // HADDSUB_VEC-UHADD#2,HADDSUB_VEC-URHADD#2,HADDSUB_VEC-UHSUB#2,QADDSUB_VEC-UQADD#5,QADDSUB_VEC-UQSUB#5,CMGT_VEC-CMHIV#5,CMGT_VEC-CMHSV#5,CMEQ_VEC-CMEQV#5,SHL_REG_VEC-USHL#5,SHL_REG_VEC-UQSHL#5,SHL_REG_VEC-URSHL#5,SHL_REG_VEC-UQRSHL#5,MINMAX_VEC-UMAX#2,MINMAX_VEC-UMIN#2,MINMAX_VEC-UMAXP#2,MINMAX_VEC-UMINP#2,ABD_VEC-UABD#2,ABD_VEC-UABA#2,ADDSUB_VEC-SUB_VEC#5,MUL_VEC-MLS_VEC#2,SQDMULH_VEC-SQRDMULH#1,FMINMAX_VEC-FMINNMP_VEC#1,FMINMAX_VEC-FMINP_VEC#1,FCMP_REG_VEC-FCMGT_VEC#1,FCMP_REG_VEC-FACGT_VEC#1,FADDSUB_VEC-FABD_VEC#1,ANDOREOR_VEC-BITV#0,ADDSUBL_VEC-UADDL2#2,ADDSUBL_VEC-USUBL2#2,ADDSUBW_VEC-UADDW2#2,ADDSUBW_VEC-USUBW2#2,ADDSUBHN_VEC-RADDHN2#2,ADDSUBHN_VEC-RSUBHN2#2,ABDL_VEC-UABAL2#2,ABDL_VEC-UABDL2#2,MULL_VEC-UMLAL2#2,MULL_VEC-UMLSL2#2,MULL_VEC-UMULL2#2,INT_HORZ_VEC-UADDLV#4,INT_HORZ_VEC-UMAXV#4,INT_HORZ_VEC-UMINV#4,FP_HORZ_VEC-FMINNMV#0,FP_HORZ_VEC-FMINV#0,FHM_VEC-FMLSL2_VEC#0
@@ -25162,14 +25162,15 @@ pub const fn classify_impl_d8(inst: u32) -> u32 {
     0x5 => return classify_impl_d8_5(inst), // INT_HORZ_VEC-UMINV#4
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_3REG_VEC-FMINNMP_VEC_FP16#0,FP16_3REG_VEC-FABD_VEC_FP16#0,FP16_3REG_VEC-FCMGT_VEC_FP16#0,FP16_3REG_VEC-FACGT_VEC_FP16#0,FP16_3REG_VEC-FMINP_VEC_FP16#0,FMLAL_VEC-BFMLALT_VEC#0,FCMLA_VEC-FCMLA_VEC#8,FCMLA_VEC-FCMLA_VEC#9,FCMLA_VEC-FCADD_VEC#4
 pub const fn classify_impl_d9(inst: u32) -> u32 {
   if (inst&0x400) != 0x400 { return 0; }
-  let idx = match (inst >> 11) & 0x1f {
+  
+  match (inst >> 11) & 0x1f {
     0x0 => 0x4194,
     0x1 => 0x0,
     0x2 => 0x4195,
@@ -25203,99 +25204,98 @@ pub const fn classify_impl_d9(inst: u32) -> u32 {
     0x1e => 0x5c01,
     0x1f => 0x5a03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ARITH1_VEC-USQADD_VEC#6
 pub const fn classify_impl_da_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3083;
+  0x3083
 }
 
 
 // ARITH1_VEC-SQNEG_VEC#6
 pub const fn classify_impl_da_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3084;
+  0x3084
 }
 
 
 // CMZERO_VEC-CMGE_ZERO_VEC#6
 pub const fn classify_impl_da_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f83;
+  0x2f83
 }
 
 
 // CMZERO_VEC-CMLE_ZERO_VEC#6
 pub const fn classify_impl_da_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f84;
+  0x2f84
 }
 
 
 // ARITH1_VEC-NEG_VEC#6
 pub const fn classify_impl_da_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3085;
+  0x3085
 }
 
 
 // FCMP_ZERO_VEC-FCMGE_ZERO_VEC#2
 pub const fn classify_impl_da_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b03;
+  0x3b03
 }
 
 
 // FCMP_ZERO_VEC-FCMLE_ZERO_VEC#2
 pub const fn classify_impl_da_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b04;
+  0x3b04
 }
 
 
 // FARITH1_VEC-FNEG_VEC#2
 pub const fn classify_impl_da_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b81;
+  0x3b81
 }
 
 
 // FRINT_VEC-FRINTI_VEC#2
 pub const fn classify_impl_da_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5206;
+  0x5206
 }
 
 
 // FCVT_VEC-FCVTPU_VEC#2
 pub const fn classify_impl_da_a(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f08;
+  0x4f08
 }
 
 
 // FCVT_VEC-FCVTZU_VEC#2
 pub const fn classify_impl_da_b(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4f09;
+  0x4f09
 }
 
 
 // FRECP_VEC-FRSQRTE_VEC#2
 pub const fn classify_impl_da_c(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3d83;
+  0x3d83
 }
 
 
 // FARITH1_VEC-FSQRT_VEC#2
 pub const fn classify_impl_da_d(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3b82;
+  0x3b82
 }
 
 // QADDSUB_VEC-UQADD#6,QADDSUB_VEC-UQSUB#6,CMGT_VEC-CMHIV#6,CMGT_VEC-CMHSV#6,CMEQ_VEC-CMEQV#6,CMZERO_VEC-CMGE_ZERO_VEC#6,CMZERO_VEC-CMLE_ZERO_VEC#6,ARITH1_VEC-USQADD_VEC#6,ARITH1_VEC-SQNEG_VEC#6,ARITH1_VEC-NEG_VEC#6,SHL_REG_VEC-USHL#6,SHL_REG_VEC-UQSHL#6,SHL_REG_VEC-URSHL#6,SHL_REG_VEC-UQRSHL#6,ADDSUB_VEC-SUB_VEC#6,FMINMAX_VEC-FMINNMP_VEC#2,FMINMAX_VEC-FMINP_VEC#2,FCMP_REG_VEC-FCMGT_VEC#2,FCMP_REG_VEC-FACGT_VEC#2,FCMP_ZERO_VEC-FCMGE_ZERO_VEC#2,FCMP_ZERO_VEC-FCMLE_ZERO_VEC#2,FARITH1_VEC-FNEG_VEC#2,FARITH1_VEC-FSQRT_VEC#2,FADDSUB_VEC-FABD_VEC#2,FRECP_VEC-FRSQRTE_VEC#2,ANDOREOR_VEC-BIFV#0,FCVT_VEC-FCVTPU_VEC#2,FCVT_VEC-FCVTZU_VEC#2,FRINT_VEC-FRINTI_VEC#2
@@ -25447,63 +25447,63 @@ pub const fn classify_impl_da(inst: u32) -> u32 {
     0xd => return classify_impl_da_d(inst), // FARITH1_VEC-FSQRT_VEC#2
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_2REG_VEC-FCMGE_ZERO_VEC_FP16#0
 pub const fn classify_impl_db_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x4295;
+  0x4295
 }
 
 
 // FP16_2REG_VEC-FCMLE_ZERO_VEC_FP16#0
 pub const fn classify_impl_db_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x4296;
+  0x4296
 }
 
 
 // FP16_2REG_VEC-FNEG_VEC_FP16#0
 pub const fn classify_impl_db_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x4297;
+  0x4297
 }
 
 
 // FP16_2REG_VEC-FRINTI_VEC_FP16#0
 pub const fn classify_impl_db_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x4298;
+  0x4298
 }
 
 
 // FP16_2REG_VEC-FCVTPU_VEC_FP16#0
 pub const fn classify_impl_db_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x4299;
+  0x4299
 }
 
 
 // FP16_2REG_VEC-FCVTZU_VEC_FP16#0
 pub const fn classify_impl_db_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x429a;
+  0x429a
 }
 
 
 // FP16_2REG_VEC-FRSQRTE_VEC_FP16#0
 pub const fn classify_impl_db_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x429b;
+  0x429b
 }
 
 
 // FP16_2REG_VEC-FSQRT_VEC_FP16#0
 pub const fn classify_impl_db_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  return 0x429c;
+  0x429c
 }
 
 // QADDSUB_VEC-UQADD#6,QADDSUB_VEC-UQSUB#6,CMGT_VEC-CMHIV#6,CMGT_VEC-CMHSV#6,CMEQ_VEC-CMEQV#6,SHL_REG_VEC-USHL#6,SHL_REG_VEC-UQSHL#6,SHL_REG_VEC-URSHL#6,SHL_REG_VEC-UQRSHL#6,ADDSUB_VEC-SUB_VEC#6,FMINMAX_VEC-FMINNMP_VEC#2,FMINMAX_VEC-FMINP_VEC#2,FCMP_REG_VEC-FCMGT_VEC#2,FCMP_REG_VEC-FACGT_VEC#2,FADDSUB_VEC-FABD_VEC#2,FP16_2REG_VEC-FCMGE_ZERO_VEC_FP16#0,FP16_2REG_VEC-FCMLE_ZERO_VEC_FP16#0,FP16_2REG_VEC-FNEG_VEC_FP16#0,FP16_2REG_VEC-FRINTI_VEC_FP16#0,FP16_2REG_VEC-FCVTPU_VEC_FP16#0,FP16_2REG_VEC-FCVTZU_VEC_FP16#0,FP16_2REG_VEC-FRSQRTE_VEC_FP16#0,FP16_2REG_VEC-FSQRT_VEC_FP16#0,ANDOREOR_VEC-BIFV#0
@@ -25650,77 +25650,77 @@ pub const fn classify_impl_db(inst: u32) -> u32 {
     0x8 => return classify_impl_db_8(inst), // FP16_2REG_VEC-FSQRT_VEC_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SIMD_IMM-MVNI32#4
 pub const fn classify_impl_dc_1_1(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d08;
+  0x5d08
 }
 
 
 // SIMD_IMM-BICI32#4
 pub const fn classify_impl_dc_1_2(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d09;
+  0x5d09
 }
 
 
 // SIMD_IMM-MVNI32#5
 pub const fn classify_impl_dc_1_3(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d08;
+  0x5d08
 }
 
 
 // SIMD_IMM-BICI32#5
 pub const fn classify_impl_dc_1_4(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d09;
+  0x5d09
 }
 
 
 // SIMD_IMM-MVNI32#6
 pub const fn classify_impl_dc_1_5(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d08;
+  0x5d08
 }
 
 
 // SIMD_IMM-BICI32#6
 pub const fn classify_impl_dc_1_6(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d09;
+  0x5d09
 }
 
 
 // SIMD_IMM-MVNI32#7
 pub const fn classify_impl_dc_1_7(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d08;
+  0x5d08
 }
 
 
 // SIMD_IMM-BICI32#7
 pub const fn classify_impl_dc_1_8(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d09;
+  0x5d09
 }
 
 
 // SIMD_IMM-MVNI16#2
 pub const fn classify_impl_dc_1_9(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d0a;
+  0x5d0a
 }
 
 
 // SIMD_IMM-BICI16#2
 pub const fn classify_impl_dc_1_a_1(inst: u32) -> u32 {
   if (inst&0x800) != 0x0 { return 0; }
-  return 0x5d0b;
+  0x5d0b
 }
 
 // FMUL_ELEM_FP16-FMULX_ELEM_FP16#0,SIMD_IMM-BICI16#2
@@ -25734,49 +25734,49 @@ pub const fn classify_impl_dc_1_a(inst: u32) -> u32 {
     0x1 => return classify_impl_dc_1_a_1(inst), // SIMD_IMM-BICI16#2
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SIMD_IMM-MVNI16#3
 pub const fn classify_impl_dc_1_b(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d0a;
+  0x5d0a
 }
 
 
 // SIMD_IMM-BICI16#3
 pub const fn classify_impl_dc_1_c(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d0b;
+  0x5d0b
 }
 
 
 // SIMD_IMM-MVNI32_MSL#2
 pub const fn classify_impl_dc_1_d(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d0c;
+  0x5d0c
 }
 
 
 // SIMD_IMM-MVNI32_MSL#3
 pub const fn classify_impl_dc_1_e(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d0c;
+  0x5d0c
 }
 
 
 // SIMD_IMM-MOVI64#1
 pub const fn classify_impl_dc_1_f(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d0d;
+  0x5d0d
 }
 
 
 // SIMD_IMM-FMOV64#0
 pub const fn classify_impl_dc_1_10(inst: u32) -> u32 {
   if (inst&0xc00) != 0x400 { return 0; }
-  return 0x5d0e;
+  0x5d0e
 }
 
 // FMUL_ELEM_FP16-FMULX_ELEM_FP16#0,SIMD_IMM-MVNI32#4,SIMD_IMM-MVNI32#5,SIMD_IMM-MVNI32#6,SIMD_IMM-MVNI32#7,SIMD_IMM-BICI32#4,SIMD_IMM-BICI32#5,SIMD_IMM-BICI32#6,SIMD_IMM-BICI32#7,SIMD_IMM-MVNI16#2,SIMD_IMM-MVNI16#3,SIMD_IMM-BICI16#2,SIMD_IMM-BICI16#3,SIMD_IMM-MVNI32_MSL#2,SIMD_IMM-MVNI32_MSL#3,SIMD_IMM-MOVI64#1,SIMD_IMM-FMOV64#0
@@ -25819,13 +25819,14 @@ pub const fn classify_impl_dc_1(inst: u32) -> u32 {
     0x10 => return classify_impl_dc_1_10(inst), // SIMD_IMM-FMOV64#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-USHR#7,SHR_VEC_IMM-USRA#7,SHR_VEC_IMM-URSHR#7,SHR_VEC_IMM-URSRA#7,QSHL_VEC_IMM-SQSHLU_IMM#7,QSHL_VEC_IMM-UQSHL_IMM#7,SHRN_VEC_IMM-SQSHRUN2#0,SHRN_VEC_IMM-SQRSHRUN2#0,SHRN_VEC_IMM-UQSHRN2#0,SHRN_VEC_IMM-UQRSHRN2#0,SHLL_VEC_IMM-USHLL2#0,SHIFT_VEC_IMM-SRI#7,SHIFT_VEC_IMM-SLI#7,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
 pub const fn classify_impl_dc_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4904,
     0x2 => 0x0,
@@ -25891,8 +25892,7 @@ pub const fn classify_impl_dc_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-USHR#7,SHR_VEC_IMM-USRA#7,SHR_VEC_IMM-URSHR#7,SHR_VEC_IMM-URSRA#7,QSHL_VEC_IMM-SQSHLU_IMM#7,QSHL_VEC_IMM-UQSHL_IMM#7,SHRN_VEC_IMM-SQSHRUN2#0,SHRN_VEC_IMM-SQRSHRUN2#0,SHRN_VEC_IMM-UQSHRN2#0,SHRN_VEC_IMM-UQRSHRN2#0,SHLL_VEC_IMM-USHLL2#0,SHIFT_VEC_IMM-SRI#7,SHIFT_VEC_IMM-SLI#7,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0,SIMD_IMM-MVNI32#4,SIMD_IMM-MVNI32#5,SIMD_IMM-MVNI32#6,SIMD_IMM-MVNI32#7,SIMD_IMM-BICI32#4,SIMD_IMM-BICI32#5,SIMD_IMM-BICI32#6,SIMD_IMM-BICI32#7,SIMD_IMM-MVNI16#2,SIMD_IMM-MVNI16#3,SIMD_IMM-BICI16#2,SIMD_IMM-BICI16#3,SIMD_IMM-MVNI32_MSL#2,SIMD_IMM-MVNI32_MSL#3,SIMD_IMM-MOVI64#1,SIMD_IMM-FMOV64#0
@@ -25907,13 +25907,14 @@ pub const fn classify_impl_dc(inst: u32) -> u32 {
     0x2 => return classify_impl_dc_2(inst), // SHR_VEC_IMM-USHR#7,SHR_VEC_IMM-USRA#7,SHR_VEC_IMM-URSHR#7,SHR_VEC_IMM-URSRA#7,QSHL_VEC_IMM-SQSHLU_IMM#7,QSHL_VEC_IMM-UQSHL_IMM#7,SHRN_VEC_IMM-SQSHRUN2#0,SHRN_VEC_IMM-SQRSHRUN2#0,SHRN_VEC_IMM-UQSHRN2#0,SHRN_VEC_IMM-UQRSHRN2#0,SHLL_VEC_IMM-USHLL2#0,SHIFT_VEC_IMM-SRI#7,SHIFT_VEC_IMM-SLI#7,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-USHR#8,SHR_VEC_IMM-USRA#8,SHR_VEC_IMM-URSHR#8,SHR_VEC_IMM-URSRA#8,QSHL_VEC_IMM-SQSHLU_IMM#8,QSHL_VEC_IMM-UQSHL_IMM#8,SHRN_VEC_IMM-SQSHRUN2#1,SHRN_VEC_IMM-SQRSHRUN2#1,SHRN_VEC_IMM-UQSHRN2#1,SHRN_VEC_IMM-UQRSHRN2#1,SHLL_VEC_IMM-USHLL2#1,SHIFT_VEC_IMM-SRI#8,SHIFT_VEC_IMM-SLI#8,FCVT_VEC_FIXED-UCVTF_VEC_FIX_FP16#2,FCVT_VEC_FIXED-FCVTZU_VEC_FIX_FP16#2,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
 pub const fn classify_impl_dd_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4904,
     0x2 => 0x0,
@@ -25979,14 +25980,14 @@ pub const fn classify_impl_dd_1(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4e05,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-USHR#9,SHR_VEC_IMM-USRA#9,SHR_VEC_IMM-URSHR#9,SHR_VEC_IMM-URSRA#9,QSHL_VEC_IMM-SQSHLU_IMM#9,QSHL_VEC_IMM-UQSHL_IMM#9,SHRN_VEC_IMM-SQSHRUN2#2,SHRN_VEC_IMM-SQRSHRUN2#2,SHRN_VEC_IMM-UQSHRN2#2,SHRN_VEC_IMM-UQRSHRN2#2,SHLL_VEC_IMM-USHLL2#2,SHIFT_VEC_IMM-SRI#9,SHIFT_VEC_IMM-SLI#9,FCVT_VEC_FIXED-UCVTF_VEC_FIX_FP16#3,FCVT_VEC_FIXED-FCVTZU_VEC_FIX_FP16#3,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
 pub const fn classify_impl_dd_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4904,
     0x2 => 0x0,
@@ -26052,8 +26053,7 @@ pub const fn classify_impl_dd_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4e05,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-USHR#8,SHR_VEC_IMM-USHR#9,SHR_VEC_IMM-USRA#8,SHR_VEC_IMM-USRA#9,SHR_VEC_IMM-URSHR#8,SHR_VEC_IMM-URSHR#9,SHR_VEC_IMM-URSRA#8,SHR_VEC_IMM-URSRA#9,QSHL_VEC_IMM-SQSHLU_IMM#8,QSHL_VEC_IMM-SQSHLU_IMM#9,QSHL_VEC_IMM-UQSHL_IMM#8,QSHL_VEC_IMM-UQSHL_IMM#9,SHRN_VEC_IMM-SQSHRUN2#1,SHRN_VEC_IMM-SQSHRUN2#2,SHRN_VEC_IMM-SQRSHRUN2#1,SHRN_VEC_IMM-SQRSHRUN2#2,SHRN_VEC_IMM-UQSHRN2#1,SHRN_VEC_IMM-UQSHRN2#2,SHRN_VEC_IMM-UQRSHRN2#1,SHRN_VEC_IMM-UQRSHRN2#2,SHLL_VEC_IMM-USHLL2#1,SHLL_VEC_IMM-USHLL2#2,SHIFT_VEC_IMM-SRI#8,SHIFT_VEC_IMM-SRI#9,SHIFT_VEC_IMM-SLI#8,SHIFT_VEC_IMM-SLI#9,FCVT_VEC_FIXED-UCVTF_VEC_FIX_FP16#2,FCVT_VEC_FIXED-UCVTF_VEC_FIX_FP16#3,FCVT_VEC_FIXED-FCVTZU_VEC_FIX_FP16#2,FCVT_VEC_FIXED-FCVTZU_VEC_FIX_FP16#3,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
@@ -26068,13 +26068,14 @@ pub const fn classify_impl_dd(inst: u32) -> u32 {
     0x2 => return classify_impl_dd_2(inst), // SHR_VEC_IMM-USHR#9,SHR_VEC_IMM-USRA#9,SHR_VEC_IMM-URSHR#9,SHR_VEC_IMM-URSRA#9,QSHL_VEC_IMM-SQSHLU_IMM#9,QSHL_VEC_IMM-UQSHL_IMM#9,SHRN_VEC_IMM-SQSHRUN2#2,SHRN_VEC_IMM-SQRSHRUN2#2,SHRN_VEC_IMM-UQSHRN2#2,SHRN_VEC_IMM-UQRSHRN2#2,SHLL_VEC_IMM-USHLL2#2,SHIFT_VEC_IMM-SRI#9,SHIFT_VEC_IMM-SLI#9,FCVT_VEC_FIXED-UCVTF_VEC_FIX_FP16#3,FCVT_VEC_FIXED-FCVTZU_VEC_FIX_FP16#3,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-USHR#10,SHR_VEC_IMM-USRA#10,SHR_VEC_IMM-URSHR#10,SHR_VEC_IMM-URSRA#10,QSHL_VEC_IMM-SQSHLU_IMM#10,QSHL_VEC_IMM-UQSHL_IMM#10,SHRN_VEC_IMM-SQSHRUN2#3,SHRN_VEC_IMM-SQRSHRUN2#3,SHRN_VEC_IMM-UQSHRN2#3,SHRN_VEC_IMM-UQRSHRN2#3,SHLL_VEC_IMM-USHLL2#3,SHIFT_VEC_IMM-SRI#10,SHIFT_VEC_IMM-SLI#10,FCVT_VEC_FIXED-UCVTF_VEC_FIX#4,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#4,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
 pub const fn classify_impl_de_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4904,
     0x2 => 0x0,
@@ -26140,14 +26141,14 @@ pub const fn classify_impl_de_1(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4e07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-USHR#11,SHR_VEC_IMM-USRA#11,SHR_VEC_IMM-URSHR#11,SHR_VEC_IMM-URSRA#11,QSHL_VEC_IMM-SQSHLU_IMM#11,QSHL_VEC_IMM-UQSHL_IMM#11,SHRN_VEC_IMM-SQSHRUN2#4,SHRN_VEC_IMM-SQRSHRUN2#4,SHRN_VEC_IMM-UQSHRN2#4,SHRN_VEC_IMM-UQRSHRN2#4,SHLL_VEC_IMM-USHLL2#4,SHIFT_VEC_IMM-SRI#11,SHIFT_VEC_IMM-SLI#11,FCVT_VEC_FIXED-UCVTF_VEC_FIX#5,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#5,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
 pub const fn classify_impl_de_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4904,
     0x2 => 0x0,
@@ -26213,8 +26214,7 @@ pub const fn classify_impl_de_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4e07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-USHR#10,SHR_VEC_IMM-USHR#11,SHR_VEC_IMM-USRA#10,SHR_VEC_IMM-USRA#11,SHR_VEC_IMM-URSHR#10,SHR_VEC_IMM-URSHR#11,SHR_VEC_IMM-URSRA#10,SHR_VEC_IMM-URSRA#11,QSHL_VEC_IMM-SQSHLU_IMM#10,QSHL_VEC_IMM-SQSHLU_IMM#11,QSHL_VEC_IMM-UQSHL_IMM#10,QSHL_VEC_IMM-UQSHL_IMM#11,SHRN_VEC_IMM-SQSHRUN2#3,SHRN_VEC_IMM-SQSHRUN2#4,SHRN_VEC_IMM-SQRSHRUN2#3,SHRN_VEC_IMM-SQRSHRUN2#4,SHRN_VEC_IMM-UQSHRN2#3,SHRN_VEC_IMM-UQSHRN2#4,SHRN_VEC_IMM-UQRSHRN2#3,SHRN_VEC_IMM-UQRSHRN2#4,SHLL_VEC_IMM-USHLL2#3,SHLL_VEC_IMM-USHLL2#4,SHIFT_VEC_IMM-SRI#10,SHIFT_VEC_IMM-SRI#11,SHIFT_VEC_IMM-SLI#10,SHIFT_VEC_IMM-SLI#11,FCVT_VEC_FIXED-UCVTF_VEC_FIX#4,FCVT_VEC_FIXED-UCVTF_VEC_FIX#5,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#4,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#5,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
@@ -26229,13 +26229,14 @@ pub const fn classify_impl_de(inst: u32) -> u32 {
     0x2 => return classify_impl_de_2(inst), // SHR_VEC_IMM-USHR#11,SHR_VEC_IMM-USRA#11,SHR_VEC_IMM-URSHR#11,SHR_VEC_IMM-URSRA#11,QSHL_VEC_IMM-SQSHLU_IMM#11,QSHL_VEC_IMM-UQSHL_IMM#11,SHRN_VEC_IMM-SQSHRUN2#4,SHRN_VEC_IMM-SQRSHRUN2#4,SHRN_VEC_IMM-UQSHRN2#4,SHRN_VEC_IMM-UQRSHRN2#4,SHLL_VEC_IMM-USHLL2#4,SHIFT_VEC_IMM-SRI#11,SHIFT_VEC_IMM-SLI#11,FCVT_VEC_FIXED-UCVTF_VEC_FIX#5,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#5,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-USHR#12,SHR_VEC_IMM-USRA#12,SHR_VEC_IMM-URSHR#12,SHR_VEC_IMM-URSRA#12,QSHL_VEC_IMM-SQSHLU_IMM#12,QSHL_VEC_IMM-UQSHL_IMM#12,SHRN_VEC_IMM-SQSHRUN2#5,SHRN_VEC_IMM-SQRSHRUN2#5,SHRN_VEC_IMM-UQSHRN2#5,SHRN_VEC_IMM-UQRSHRN2#5,SHLL_VEC_IMM-USHLL2#5,SHIFT_VEC_IMM-SRI#12,SHIFT_VEC_IMM-SLI#12,FCVT_VEC_FIXED-UCVTF_VEC_FIX#6,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#6,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
 pub const fn classify_impl_df_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4904,
     0x2 => 0x0,
@@ -26301,14 +26302,14 @@ pub const fn classify_impl_df_1(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4e07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-USHR#13,SHR_VEC_IMM-USRA#13,SHR_VEC_IMM-URSHR#13,SHR_VEC_IMM-URSRA#13,QSHL_VEC_IMM-SQSHLU_IMM#13,QSHL_VEC_IMM-UQSHL_IMM#13,SHRN_VEC_IMM-SQSHRUN2#6,SHRN_VEC_IMM-SQRSHRUN2#6,SHRN_VEC_IMM-UQSHRN2#6,SHRN_VEC_IMM-UQRSHRN2#6,SHLL_VEC_IMM-USHLL2#6,SHIFT_VEC_IMM-SRI#13,SHIFT_VEC_IMM-SLI#13,FCVT_VEC_FIXED-UCVTF_VEC_FIX#7,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#7,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
 pub const fn classify_impl_df_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4904,
     0x2 => 0x0,
@@ -26374,8 +26375,7 @@ pub const fn classify_impl_df_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4e07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-USHR#12,SHR_VEC_IMM-USHR#13,SHR_VEC_IMM-USRA#12,SHR_VEC_IMM-USRA#13,SHR_VEC_IMM-URSHR#12,SHR_VEC_IMM-URSHR#13,SHR_VEC_IMM-URSRA#12,SHR_VEC_IMM-URSRA#13,QSHL_VEC_IMM-SQSHLU_IMM#12,QSHL_VEC_IMM-SQSHLU_IMM#13,QSHL_VEC_IMM-UQSHL_IMM#12,QSHL_VEC_IMM-UQSHL_IMM#13,SHRN_VEC_IMM-SQSHRUN2#5,SHRN_VEC_IMM-SQSHRUN2#6,SHRN_VEC_IMM-SQRSHRUN2#5,SHRN_VEC_IMM-SQRSHRUN2#6,SHRN_VEC_IMM-UQSHRN2#5,SHRN_VEC_IMM-UQSHRN2#6,SHRN_VEC_IMM-UQRSHRN2#5,SHRN_VEC_IMM-UQRSHRN2#6,SHLL_VEC_IMM-USHLL2#5,SHLL_VEC_IMM-USHLL2#6,SHIFT_VEC_IMM-SRI#12,SHIFT_VEC_IMM-SRI#13,SHIFT_VEC_IMM-SLI#12,SHIFT_VEC_IMM-SLI#13,FCVT_VEC_FIXED-UCVTF_VEC_FIX#6,FCVT_VEC_FIXED-UCVTF_VEC_FIX#7,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#6,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#7,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
@@ -26390,13 +26390,14 @@ pub const fn classify_impl_df(inst: u32) -> u32 {
     0x2 => return classify_impl_df_2(inst), // SHR_VEC_IMM-USHR#13,SHR_VEC_IMM-USRA#13,SHR_VEC_IMM-URSHR#13,SHR_VEC_IMM-URSRA#13,QSHL_VEC_IMM-SQSHLU_IMM#13,QSHL_VEC_IMM-UQSHL_IMM#13,SHRN_VEC_IMM-SQSHRUN2#6,SHRN_VEC_IMM-SQRSHRUN2#6,SHRN_VEC_IMM-UQSHRN2#6,SHRN_VEC_IMM-UQRSHRN2#6,SHLL_VEC_IMM-USHLL2#6,SHIFT_VEC_IMM-SRI#13,SHIFT_VEC_IMM-SLI#13,FCVT_VEC_FIXED-UCVTF_VEC_FIX#7,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#7,FMUL_ELEM_FP16-FMULX_ELEM_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-USHR#14,SHR_VEC_IMM-USRA#14,SHR_VEC_IMM-URSHR#14,SHR_VEC_IMM-URSRA#14,QSHL_VEC_IMM-SQSHLU_IMM#14,QSHL_VEC_IMM-UQSHL_IMM#14,SHIFT_VEC_IMM-SRI#14,SHIFT_VEC_IMM-SLI#14,FCVT_VEC_FIXED-UCVTF_VEC_FIX#8,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#8,MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL2_ELEM#0,MULL_ELEM-UMLSL2_ELEM#0,MULL_ELEM-UMULL2_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#2,FCMLA_ELEM-FCMLA_ELEM#3
 pub const fn classify_impl_e0_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x5583,
     0x1 => 0x4904,
     0x2 => 0x5583,
@@ -26462,14 +26463,14 @@ pub const fn classify_impl_e0_1(inst: u32) -> u32 {
     0x3e => 0x5586,
     0x3f => 0x4e07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-USHR#15,SHR_VEC_IMM-USRA#15,SHR_VEC_IMM-URSHR#15,SHR_VEC_IMM-URSRA#15,QSHL_VEC_IMM-SQSHLU_IMM#15,QSHL_VEC_IMM-UQSHL_IMM#15,SHIFT_VEC_IMM-SRI#15,SHIFT_VEC_IMM-SLI#15,FCVT_VEC_FIXED-UCVTF_VEC_FIX#9,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#9,MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL2_ELEM#0,MULL_ELEM-UMLSL2_ELEM#0,MULL_ELEM-UMULL2_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#2,FCMLA_ELEM-FCMLA_ELEM#3
 pub const fn classify_impl_e0_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x5583,
     0x1 => 0x4904,
     0x2 => 0x5583,
@@ -26535,8 +26536,7 @@ pub const fn classify_impl_e0_2(inst: u32) -> u32 {
     0x3e => 0x5586,
     0x3f => 0x4e07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-USHR#14,SHR_VEC_IMM-USHR#15,SHR_VEC_IMM-USRA#14,SHR_VEC_IMM-USRA#15,SHR_VEC_IMM-URSHR#14,SHR_VEC_IMM-URSHR#15,SHR_VEC_IMM-URSRA#14,SHR_VEC_IMM-URSRA#15,QSHL_VEC_IMM-SQSHLU_IMM#14,QSHL_VEC_IMM-SQSHLU_IMM#15,QSHL_VEC_IMM-UQSHL_IMM#14,QSHL_VEC_IMM-UQSHL_IMM#15,SHIFT_VEC_IMM-SRI#14,SHIFT_VEC_IMM-SRI#15,SHIFT_VEC_IMM-SLI#14,SHIFT_VEC_IMM-SLI#15,FCVT_VEC_FIXED-UCVTF_VEC_FIX#8,FCVT_VEC_FIXED-UCVTF_VEC_FIX#9,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#8,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#9,MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL2_ELEM#0,MULL_ELEM-UMLSL2_ELEM#0,MULL_ELEM-UMULL2_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#2,FCMLA_ELEM-FCMLA_ELEM#3
@@ -26551,13 +26551,14 @@ pub const fn classify_impl_e0(inst: u32) -> u32 {
     0x2 => return classify_impl_e0_2(inst), // SHR_VEC_IMM-USHR#15,SHR_VEC_IMM-USRA#15,SHR_VEC_IMM-URSHR#15,SHR_VEC_IMM-URSRA#15,QSHL_VEC_IMM-SQSHLU_IMM#15,QSHL_VEC_IMM-UQSHL_IMM#15,SHIFT_VEC_IMM-SRI#15,SHIFT_VEC_IMM-SLI#15,FCVT_VEC_FIXED-UCVTF_VEC_FIX#9,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#9,MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL2_ELEM#0,MULL_ELEM-UMLSL2_ELEM#0,MULL_ELEM-UMULL2_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#2,FCMLA_ELEM-FCMLA_ELEM#3
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-USHR#16,SHR_VEC_IMM-USRA#16,SHR_VEC_IMM-URSHR#16,SHR_VEC_IMM-URSRA#16,QSHL_VEC_IMM-SQSHLU_IMM#16,QSHL_VEC_IMM-UQSHL_IMM#16,SHIFT_VEC_IMM-SRI#16,SHIFT_VEC_IMM-SLI#16,FCVT_VEC_FIXED-UCVTF_VEC_FIX#10,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#10,MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL2_ELEM#0,MULL_ELEM-UMLSL2_ELEM#0,MULL_ELEM-UMULL2_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#2,FCMLA_ELEM-FCMLA_ELEM#3
 pub const fn classify_impl_e1_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x5583,
     0x1 => 0x4904,
     0x2 => 0x5583,
@@ -26623,14 +26624,14 @@ pub const fn classify_impl_e1_1(inst: u32) -> u32 {
     0x3e => 0x5586,
     0x3f => 0x4e07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-USHR#17,SHR_VEC_IMM-USRA#17,SHR_VEC_IMM-URSHR#17,SHR_VEC_IMM-URSRA#17,QSHL_VEC_IMM-SQSHLU_IMM#17,QSHL_VEC_IMM-UQSHL_IMM#17,SHIFT_VEC_IMM-SRI#17,SHIFT_VEC_IMM-SLI#17,FCVT_VEC_FIXED-UCVTF_VEC_FIX#11,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#11,MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL2_ELEM#0,MULL_ELEM-UMLSL2_ELEM#0,MULL_ELEM-UMULL2_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#2,FCMLA_ELEM-FCMLA_ELEM#3
 pub const fn classify_impl_e1_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x5583,
     0x1 => 0x4904,
     0x2 => 0x5583,
@@ -26696,8 +26697,7 @@ pub const fn classify_impl_e1_2(inst: u32) -> u32 {
     0x3e => 0x5586,
     0x3f => 0x4e07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-USHR#16,SHR_VEC_IMM-USHR#17,SHR_VEC_IMM-USRA#16,SHR_VEC_IMM-USRA#17,SHR_VEC_IMM-URSHR#16,SHR_VEC_IMM-URSHR#17,SHR_VEC_IMM-URSRA#16,SHR_VEC_IMM-URSRA#17,QSHL_VEC_IMM-SQSHLU_IMM#16,QSHL_VEC_IMM-SQSHLU_IMM#17,QSHL_VEC_IMM-UQSHL_IMM#16,QSHL_VEC_IMM-UQSHL_IMM#17,SHIFT_VEC_IMM-SRI#16,SHIFT_VEC_IMM-SRI#17,SHIFT_VEC_IMM-SLI#16,SHIFT_VEC_IMM-SLI#17,FCVT_VEC_FIXED-UCVTF_VEC_FIX#10,FCVT_VEC_FIXED-UCVTF_VEC_FIX#11,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#10,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#11,MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL2_ELEM#0,MULL_ELEM-UMLSL2_ELEM#0,MULL_ELEM-UMULL2_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#2,FCMLA_ELEM-FCMLA_ELEM#3
@@ -26712,13 +26712,14 @@ pub const fn classify_impl_e1(inst: u32) -> u32 {
     0x2 => return classify_impl_e1_2(inst), // SHR_VEC_IMM-USHR#17,SHR_VEC_IMM-USRA#17,SHR_VEC_IMM-URSHR#17,SHR_VEC_IMM-URSRA#17,QSHL_VEC_IMM-SQSHLU_IMM#17,QSHL_VEC_IMM-UQSHL_IMM#17,SHIFT_VEC_IMM-SRI#17,SHIFT_VEC_IMM-SLI#17,FCVT_VEC_FIXED-UCVTF_VEC_FIX#11,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#11,MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL2_ELEM#0,MULL_ELEM-UMLSL2_ELEM#0,MULL_ELEM-UMULL2_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#2,FCMLA_ELEM-FCMLA_ELEM#3
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-USHR#18,SHR_VEC_IMM-USRA#18,SHR_VEC_IMM-URSHR#18,SHR_VEC_IMM-URSRA#18,QSHL_VEC_IMM-SQSHLU_IMM#18,QSHL_VEC_IMM-UQSHL_IMM#18,SHIFT_VEC_IMM-SRI#18,SHIFT_VEC_IMM-SLI#18,FCVT_VEC_FIXED-UCVTF_VEC_FIX#12,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#12,MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL2_ELEM#0,MULL_ELEM-UMLSL2_ELEM#0,MULL_ELEM-UMULL2_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#4,FCMLA_ELEM-FCMLA_ELEM#5
 pub const fn classify_impl_e2_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x5583,
     0x1 => 0x4904,
     0x2 => 0x5583,
@@ -26784,14 +26785,14 @@ pub const fn classify_impl_e2_1(inst: u32) -> u32 {
     0x3e => 0x5586,
     0x3f => 0x4e07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-USHR#19,SHR_VEC_IMM-USRA#19,SHR_VEC_IMM-URSHR#19,SHR_VEC_IMM-URSRA#19,QSHL_VEC_IMM-SQSHLU_IMM#19,QSHL_VEC_IMM-UQSHL_IMM#19,SHIFT_VEC_IMM-SRI#19,SHIFT_VEC_IMM-SLI#19,FCVT_VEC_FIXED-UCVTF_VEC_FIX#13,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#13,MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL2_ELEM#0,MULL_ELEM-UMLSL2_ELEM#0,MULL_ELEM-UMULL2_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#4,FCMLA_ELEM-FCMLA_ELEM#5
 pub const fn classify_impl_e2_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x5583,
     0x1 => 0x4904,
     0x2 => 0x5583,
@@ -26857,8 +26858,7 @@ pub const fn classify_impl_e2_2(inst: u32) -> u32 {
     0x3e => 0x5586,
     0x3f => 0x4e07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-USHR#18,SHR_VEC_IMM-USHR#19,SHR_VEC_IMM-USRA#18,SHR_VEC_IMM-USRA#19,SHR_VEC_IMM-URSHR#18,SHR_VEC_IMM-URSHR#19,SHR_VEC_IMM-URSRA#18,SHR_VEC_IMM-URSRA#19,QSHL_VEC_IMM-SQSHLU_IMM#18,QSHL_VEC_IMM-SQSHLU_IMM#19,QSHL_VEC_IMM-UQSHL_IMM#18,QSHL_VEC_IMM-UQSHL_IMM#19,SHIFT_VEC_IMM-SRI#18,SHIFT_VEC_IMM-SRI#19,SHIFT_VEC_IMM-SLI#18,SHIFT_VEC_IMM-SLI#19,FCVT_VEC_FIXED-UCVTF_VEC_FIX#12,FCVT_VEC_FIXED-UCVTF_VEC_FIX#13,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#12,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#13,MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL2_ELEM#0,MULL_ELEM-UMLSL2_ELEM#0,MULL_ELEM-UMULL2_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#4,FCMLA_ELEM-FCMLA_ELEM#5
@@ -26873,13 +26873,14 @@ pub const fn classify_impl_e2(inst: u32) -> u32 {
     0x2 => return classify_impl_e2_2(inst), // SHR_VEC_IMM-USHR#19,SHR_VEC_IMM-USRA#19,SHR_VEC_IMM-URSHR#19,SHR_VEC_IMM-URSRA#19,QSHL_VEC_IMM-SQSHLU_IMM#19,QSHL_VEC_IMM-UQSHL_IMM#19,SHIFT_VEC_IMM-SRI#19,SHIFT_VEC_IMM-SLI#19,FCVT_VEC_FIXED-UCVTF_VEC_FIX#13,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#13,MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL2_ELEM#0,MULL_ELEM-UMLSL2_ELEM#0,MULL_ELEM-UMULL2_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#4,FCMLA_ELEM-FCMLA_ELEM#5
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_VEC_IMM-USHR#20,SHR_VEC_IMM-USRA#20,SHR_VEC_IMM-URSHR#20,SHR_VEC_IMM-URSRA#20,QSHL_VEC_IMM-SQSHLU_IMM#20,QSHL_VEC_IMM-UQSHL_IMM#20,SHIFT_VEC_IMM-SRI#20,SHIFT_VEC_IMM-SLI#20,FCVT_VEC_FIXED-UCVTF_VEC_FIX#14,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#14,MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL2_ELEM#0,MULL_ELEM-UMLSL2_ELEM#0,MULL_ELEM-UMULL2_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#4,FCMLA_ELEM-FCMLA_ELEM#5
 pub const fn classify_impl_e3_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x5583,
     0x1 => 0x4904,
     0x2 => 0x5583,
@@ -26945,14 +26946,14 @@ pub const fn classify_impl_e3_1(inst: u32) -> u32 {
     0x3e => 0x5586,
     0x3f => 0x4e07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_VEC_IMM-USHR#21,SHR_VEC_IMM-USRA#21,SHR_VEC_IMM-URSHR#21,SHR_VEC_IMM-URSRA#21,QSHL_VEC_IMM-SQSHLU_IMM#21,QSHL_VEC_IMM-UQSHL_IMM#21,SHIFT_VEC_IMM-SRI#21,SHIFT_VEC_IMM-SLI#21,FCVT_VEC_FIXED-UCVTF_VEC_FIX#15,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#15,MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL2_ELEM#0,MULL_ELEM-UMLSL2_ELEM#0,MULL_ELEM-UMULL2_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#4,FCMLA_ELEM-FCMLA_ELEM#5
 pub const fn classify_impl_e3_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x5583,
     0x1 => 0x4904,
     0x2 => 0x5583,
@@ -27018,8 +27019,7 @@ pub const fn classify_impl_e3_2(inst: u32) -> u32 {
     0x3e => 0x5586,
     0x3f => 0x4e07,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_VEC_IMM-USHR#20,SHR_VEC_IMM-USHR#21,SHR_VEC_IMM-USRA#20,SHR_VEC_IMM-USRA#21,SHR_VEC_IMM-URSHR#20,SHR_VEC_IMM-URSHR#21,SHR_VEC_IMM-URSRA#20,SHR_VEC_IMM-URSRA#21,QSHL_VEC_IMM-SQSHLU_IMM#20,QSHL_VEC_IMM-SQSHLU_IMM#21,QSHL_VEC_IMM-UQSHL_IMM#20,QSHL_VEC_IMM-UQSHL_IMM#21,SHIFT_VEC_IMM-SRI#20,SHIFT_VEC_IMM-SRI#21,SHIFT_VEC_IMM-SLI#20,SHIFT_VEC_IMM-SLI#21,FCVT_VEC_FIXED-UCVTF_VEC_FIX#14,FCVT_VEC_FIXED-UCVTF_VEC_FIX#15,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#14,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#15,MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL2_ELEM#0,MULL_ELEM-UMLSL2_ELEM#0,MULL_ELEM-UMULL2_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#4,FCMLA_ELEM-FCMLA_ELEM#5
@@ -27034,14 +27034,15 @@ pub const fn classify_impl_e3(inst: u32) -> u32 {
     0x2 => return classify_impl_e3_2(inst), // SHR_VEC_IMM-USHR#21,SHR_VEC_IMM-USRA#21,SHR_VEC_IMM-URSHR#21,SHR_VEC_IMM-URSRA#21,QSHL_VEC_IMM-SQSHLU_IMM#21,QSHL_VEC_IMM-UQSHL_IMM#21,SHIFT_VEC_IMM-SRI#21,SHIFT_VEC_IMM-SLI#21,FCVT_VEC_FIXED-UCVTF_VEC_FIX#15,FCVT_VEC_FIXED-FCVTZU_VEC_FIX#15,MUL_ELEM-MLA_ELEM#0,MUL_ELEM-MLS_ELEM#0,MUL_ELEM-SQRDMLAH_ELEM#0,MUL_ELEM-SQRDMLSH_ELEM#0,MULL_ELEM-UMLAL2_ELEM#0,MULL_ELEM-UMLSL2_ELEM#0,MULL_ELEM-UMULL2_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#4,FCMLA_ELEM-FCMLA_ELEM#5
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // MUL_ELEM-MLA_ELEM#1,MUL_ELEM-MLS_ELEM#1,MUL_ELEM-SQRDMLAH_ELEM#1,MUL_ELEM-SQRDMLSH_ELEM#1,MULL_ELEM-UMLAL2_ELEM#1,MULL_ELEM-UMLSL2_ELEM#1,MULL_ELEM-UMULL2_ELEM#1,FMUL_ELEM-FMULX_ELEM#2,DOT_ELEM-UDOT_ELEM#0,FHM_ELEM-FMLAL2_ELEM#0,FHM_ELEM-FMLSL2_ELEM#0,FCMLA_ELEM-FCMLA_ELEM#6,FCMLA_ELEM-FCMLA_ELEM#7
 pub const fn classify_impl_e4(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 11) & 0x1f {
+  
+  match (inst >> 11) & 0x1f {
     0x0 => 0x5583,
     0x1 => 0x5583,
     0x2 => 0x5c80,
@@ -27075,15 +27076,15 @@ pub const fn classify_impl_e4(inst: u32) -> u32 {
     0x1e => 0x5586,
     0x1f => 0x5586,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MUL_ELEM-MLA_ELEM#1,MUL_ELEM-MLS_ELEM#1,MUL_ELEM-SQRDMLAH_ELEM#1,MUL_ELEM-SQRDMLSH_ELEM#1,MULL_ELEM-UMLAL2_ELEM#1,MULL_ELEM-UMLSL2_ELEM#1,MULL_ELEM-UMULL2_ELEM#1,FMUL_ELEM-FMULX_ELEM#3,DOT_ELEM-UDOT_ELEM#0,FHM_ELEM-FMLAL2_ELEM#0,FHM_ELEM-FMLSL2_ELEM#0
 pub const fn classify_impl_e5(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 12) & 0xf {
+  
+  match (inst >> 12) & 0xf {
     0x0 => 0x5583,
     0x1 => 0x0,
     0x2 => 0x568f,
@@ -27101,21 +27102,21 @@ pub const fn classify_impl_e5(inst: u32) -> u32 {
     0xe => 0x5984,
     0xf => 0x5586,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMUL_ELEM-FMULX_ELEM#4
 pub const fn classify_impl_e6(inst: u32) -> u32 {
   if (inst&0xf400) != 0x9000 { return 0; }
-  return 0x5803;
+  0x5803
 }
 
 
 // ANDOREOR_IMM-ANDS_IMM#0,ANDOREOR_IMM-ANDS_IMM#1,ANDOREOR_IMM-ANDS_IMM#2,ANDOREOR_IMM-ANDS_IMM#3,ANDOREOR_IMM-ANDS_IMM#4,ANDOREOR_IMM-ANDS_IMM#5,ANDOREOR_IMM-ANDS_IMM#6,ANDOREOR_IMM-ANDS_IMM#7,ANDOREOR_IMM-ANDS_IMM#8,ANDOREOR_IMM-ANDS_IMM#9,ANDOREOR_IMM-ANDS_IMM#10,ANDOREOR_IMM-ANDS_IMM#11,ANDOREOR_IMM-ANDS_IMM#12,ANDOREOR_IMM-ANDS_IMM#13,ANDOREOR_IMM-ANDS_IMM#14,ANDOREOR_IMM-ANDS_IMM#15,ANDOREOR_IMM-ANDS_IMM#16,ANDOREOR_IMM-ANDS_IMM#17,ANDOREOR_IMM-ANDS_IMM#18,ANDOREOR_IMM-ANDS_IMM#19,ANDOREOR_IMM-ANDS_IMM#20,ANDOREOR_IMM-ANDS_IMM#21,ANDOREOR_IMM-ANDS_IMM#22,ANDOREOR_IMM-ANDS_IMM#23,ANDOREOR_IMM-ANDS_IMM#24,ANDOREOR_IMM-ANDS_IMM#25,ANDOREOR_IMM-ANDS_IMM#26,ANDOREOR_IMM-ANDS_IMM#27,ANDOREOR_IMM-ANDS_IMM#28,ANDOREOR_IMM-ANDS_IMM#29,ANDOREOR_IMM-ANDS_IMM#30,ANDOREOR_IMM-ANDS_IMM#31,ANDOREOR_IMM-ANDS_IMM#32,ANDOREOR_IMM-ANDS_IMM#33,ANDOREOR_IMM-ANDS_IMM#34,ANDOREOR_IMM-ANDS_IMM#35,ANDOREOR_IMM-ANDS_IMM#36,ANDOREOR_IMM-ANDS_IMM#37,ANDOREOR_IMM-ANDS_IMM#38,ANDOREOR_IMM-ANDS_IMM#39,ANDOREOR_IMM-ANDS_IMM#40,ANDOREOR_IMM-ANDS_IMM#41,ANDOREOR_IMM-ANDS_IMM#42,ANDOREOR_IMM-ANDS_IMM#43,ANDOREOR_IMM-ANDS_IMM#44,ANDOREOR_IMM-ANDS_IMM#45,ANDOREOR_IMM-ANDS_IMM#46,ANDOREOR_IMM-ANDS_IMM#47,ANDOREOR_IMM-ANDS_IMM#48,ANDOREOR_IMM-ANDS_IMM#49,ANDOREOR_IMM-ANDS_IMM#50,ANDOREOR_IMM-ANDS_IMM#51,ANDOREOR_IMM-ANDS_IMM#52,ANDOREOR_IMM-ANDS_IMM#53,ANDOREOR_IMM-ANDS_IMM#54,ANDOREOR_IMM-ANDS_IMM#55,ANDOREOR_IMM-ANDS_IMM#56
 pub const fn classify_impl_e7(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x503,
     0x1 => 0x503,
     0x2 => 0x503,
@@ -27181,28 +27182,28 @@ pub const fn classify_impl_e7(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMU-STURH#0,MEMU-STRH_POST#0,MEMU-STTRH#0,MEMU-STRH_PRE#0
 pub const fn classify_impl_e8(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1810,
     0x1 => 0x1811,
     0x2 => 0x1812,
     0x3 => 0x1813,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG-STRH_REG#0,SWP-SWPH#0,LDATOMIC-LDADDH#0,LDATOMIC-LDCLRH#0,LDATOMIC-LDEORH#0,LDATOMIC-LDSETH#0,LDATOMIC-LDSMAXH#0,LDATOMIC-LDSMINH#0,LDATOMIC-LDUMAXH#0,LDATOMIC-LDUMINH#0
 pub const fn classify_impl_e9(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 11) & 0x1f {
+  
+  match (inst >> 11) & 0x1f {
     0x0 => 0x6120,
     0x1 => 0x0,
     0x2 => 0x6121,
@@ -27236,28 +27237,28 @@ pub const fn classify_impl_e9(inst: u32) -> u32 {
     0x1e => 0x0,
     0x1f => 0x1904,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMU-LDURH#0,MEMU-LDRH_POST#0,MEMU-LDTRH#0,MEMU-LDRH_PRE#0
 pub const fn classify_impl_ea(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1814,
     0x1 => 0x1815,
     0x2 => 0x1816,
     0x3 => 0x1817,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG-LDRH_REG#0,SWP-SWPLH#0,LDATOMIC-LDADDLH#0,LDATOMIC-LDCLRLH#0,LDATOMIC-LDEORLH#0,LDATOMIC-LDSETLH#0,LDATOMIC-LDSMAXLH#0,LDATOMIC-LDSMINLH#0,LDATOMIC-LDUMAXLH#0,LDATOMIC-LDUMINLH#0
 pub const fn classify_impl_eb(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 11) & 0x1f {
+  
+  match (inst >> 11) & 0x1f {
     0x0 => 0x6128,
     0x1 => 0x0,
     0x2 => 0x6129,
@@ -27291,28 +27292,28 @@ pub const fn classify_impl_eb(inst: u32) -> u32 {
     0x1e => 0x0,
     0x1f => 0x1905,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMU-LDURSH#0,MEMU-LDRSH_POST#0,MEMU-LDTRSH#0,MEMU-LDRSH_PRE#0
 pub const fn classify_impl_ec(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1818,
     0x1 => 0x1819,
     0x2 => 0x181a,
     0x3 => 0x181b,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG-LDRSH_REG#0,SWP-SWPAH#0,LDATOMIC-LDADDAH#0,LDATOMIC-LDCLRAH#0,LDATOMIC-LDEORAH#0,LDATOMIC-LDSETAH#0,LDATOMIC-LDSMAXAH#0,LDATOMIC-LDSMINAH#0,LDATOMIC-LDUMAXAH#0,LDATOMIC-LDUMINAH#0
 pub const fn classify_impl_ed(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 11) & 0x1f {
+  
+  match (inst >> 11) & 0x1f {
     0x0 => 0x6130,
     0x1 => 0x0,
     0x2 => 0x6131,
@@ -27346,15 +27347,14 @@ pub const fn classify_impl_ed(inst: u32) -> u32 {
     0x1e => 0x0,
     0x1f => 0x1906,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPC-LDAPRH#0
 pub const fn classify_impl_ee_1(inst: u32) -> u32 {
   if (inst&0xf0000) != 0xf0000 { return 0; }
-  return 0x6201;
+  0x6201
 }
 
 // MEM_REG-LDRSH_REG#0,SWP-SWPAH#0,LDATOMIC-LDADDAH#0,LDATOMIC-LDCLRAH#0,LDATOMIC-LDEORAH#0,LDATOMIC-LDSETAH#0,LDATOMIC-LDSMAXAH#0,LDATOMIC-LDSMINAH#0,LDATOMIC-LDUMAXAH#0,LDATOMIC-LDUMINAH#0,RCPC-LDAPRH#0
@@ -27399,27 +27399,28 @@ pub const fn classify_impl_ee(inst: u32) -> u32 {
     0x1 => return classify_impl_ee_1(inst), // RCPC-LDAPRH#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // MEMU-LDURSHW#0,MEMU-LDRSHW_POST#0,MEMU-LDTRSHW#0,MEMU-LDRSHW_PRE#0
 pub const fn classify_impl_ef(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x181c,
     0x1 => 0x181d,
     0x2 => 0x181e,
     0x3 => 0x181f,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG-LDRSHW_REG#0,SWP-SWPALH#0,LDATOMIC-LDADDALH#0,LDATOMIC-LDCLRALH#0,LDATOMIC-LDEORALH#0,LDATOMIC-LDSETALH#0,LDATOMIC-LDSMAXALH#0,LDATOMIC-LDSMINALH#0,LDATOMIC-LDUMAXALH#0,LDATOMIC-LDUMINALH#0
 pub const fn classify_impl_f0(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 11) & 0x1f {
+  
+  match (inst >> 11) & 0x1f {
     0x0 => 0x6138,
     0x1 => 0x0,
     0x2 => 0x6139,
@@ -27453,123 +27454,122 @@ pub const fn classify_impl_f0(inst: u32) -> u32 {
     0x1e => 0x0,
     0x1f => 0x1907,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ADCSBC-SBCS#0
 pub const fn classify_impl_f1(inst: u32) -> u32 {
   if (inst&0xfc00) != 0x0 { return 0; }
-  return 0x283;
+  0x283
 }
 
 
 // CCMP_IMM-CCMP_IMM#0,CCMP_REG-CCMP_REG#0
 pub const fn classify_impl_f2(inst: u32) -> u32 {
   if (inst&0x410) != 0x0 { return 0; }
-  let idx = match (inst >> 11) & 0x1 {
+  
+  match (inst >> 11) & 0x1 {
     0x0 => 0xc01,
     0x1 => 0xb81,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMU_FP-STUR_FP#2,MEMU_FP-STR_FP_POST#2,MEMU_FP-STR_FP_PRE#2
 pub const fn classify_impl_f3(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1a80,
     0x1 => 0x1a81,
     0x2 => 0x0,
     0x3 => 0x1a82,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG_FP-STR_REG_FP#2
 pub const fn classify_impl_f4(inst: u32) -> u32 {
   if (inst&0x4c00) != 0x4800 { return 0; }
-  return 0x1b80;
+  0x1b80
 }
 
 
 // MEMU_FP-LDUR_FP#2,MEMU_FP-LDR_FP_POST#2,MEMU_FP-LDR_FP_PRE#2
 pub const fn classify_impl_f5(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1a83,
     0x1 => 0x1a84,
     0x2 => 0x0,
     0x3 => 0x1a85,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG_FP-LDR_REG_FP#2
 pub const fn classify_impl_f6(inst: u32) -> u32 {
   if (inst&0x4c00) != 0x4800 { return 0; }
-  return 0x1b81;
+  0x1b81
 }
 
 
 // ARITH1_SCALAR-USQADD_SCALAR#0
 pub const fn classify_impl_f7_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3003;
+  0x3003
 }
 
 
 // ARITH1_SCALAR-SQNEG_SCALAR#0
 pub const fn classify_impl_f7_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3004;
+  0x3004
 }
 
 
 // XTN_SCALAR-SQXTUN_SCALAR#0
 pub const fn classify_impl_f7_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3301;
+  0x3301
 }
 
 
 // XTN_SCALAR-UQXTN_SCALAR#0
 pub const fn classify_impl_f7_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3302;
+  0x3302
 }
 
 
 // FCVT_SCALAR-FCVTNU_SCALAR#0
 pub const fn classify_impl_f7_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4e85;
+  0x4e85
 }
 
 
 // FCVT_SCALAR-FCVTMU_SCALAR#0
 pub const fn classify_impl_f7_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4e86;
+  0x4e86
 }
 
 
 // FCVT_SCALAR-FCVTAU_SCALAR#0
 pub const fn classify_impl_f7_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4e87;
+  0x4e87
 }
 
 
 // FCVT_FROMINT_SCALAR-UCVTF_VEC_SCALAR#0
 pub const fn classify_impl_f7_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5001;
+  0x5001
 }
 
 // QADDSUB_SCALAR-UQADD_SCALAR#0,QADDSUB_SCALAR-UQSUB_SCALAR#0,ARITH1_SCALAR-USQADD_SCALAR#0,ARITH1_SCALAR-SQNEG_SCALAR#0,XTN_SCALAR-SQXTUN_SCALAR#0,XTN_SCALAR-UQXTN_SCALAR#0,SHL_REG_SCALAR-UQSHL_SCALAR#0,SHL_REG_SCALAR-UQRSHL_SCALAR#0,FCMP_REG_SCALAR-FCMGE#0,FCMP_REG_SCALAR-FACGE#0,FCVT_SCALAR-FCVTNU_SCALAR#0,FCVT_SCALAR-FCVTMU_SCALAR#0,FCVT_SCALAR-FCVTAU_SCALAR#0,FCVT_FROMINT_SCALAR-UCVTF_VEC_SCALAR#0
@@ -27716,28 +27716,28 @@ pub const fn classify_impl_f7(inst: u32) -> u32 {
     0x8 => return classify_impl_f7_8(inst), // FCVT_FROMINT_SCALAR-UCVTF_VEC_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP_HORZ_SCALAR-FMAXNMP_SCALAR#0
 pub const fn classify_impl_f8_1(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  return 0x5405;
+  0x5405
 }
 
 
 // FP_HORZ_SCALAR-FADDP_SCALAR#0
 pub const fn classify_impl_f8_2(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  return 0x5406;
+  0x5406
 }
 
 
 // FP_HORZ_SCALAR-FMAXP_SCALAR#0
 pub const fn classify_impl_f8_3(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  return 0x5407;
+  0x5407
 }
 
 // QADDSUB_SCALAR-UQADD_SCALAR#0,QADDSUB_SCALAR-UQSUB_SCALAR#0,SHL_REG_SCALAR-UQSHL_SCALAR#0,SHL_REG_SCALAR-UQRSHL_SCALAR#0,FCMP_REG_SCALAR-FCMGE#0,FCMP_REG_SCALAR-FACGE#0,FP_HORZ_SCALAR-FMAXNMP_SCALAR#0,FP_HORZ_SCALAR-FADDP_SCALAR#0,FP_HORZ_SCALAR-FMAXP_SCALAR#0
@@ -27815,31 +27815,31 @@ pub const fn classify_impl_f8(inst: u32) -> u32 {
     0x3 => return classify_impl_f8_3(inst), // FP_HORZ_SCALAR-FMAXP_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_3REG_SCALAR-FCMGE_SCALAR_FP16#0,FP16_3REG_SCALAR-FACGE_SCALAR_FP16#0
 pub const fn classify_impl_f9_1(inst: u32) -> u32 {
   if (inst&0x2000) != 0x2000 { return 0; }
-  let idx = match (inst >> 11) & 0x1 {
+  
+  match (inst >> 11) & 0x1 {
     0x0 => 0x4104,
     0x1 => 0x4105,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SQRDMLAH_SCALAR-SQRDMLAH_SCALAR#0,SQRDMLAH_SCALAR-SQRDMLSH_SCALAR#0
 pub const fn classify_impl_f9_2(inst: u32) -> u32 {
   if (inst&0x2000) != 0x0 { return 0; }
-  let idx = match (inst >> 11) & 0x1 {
+  
+  match (inst >> 11) & 0x1 {
     0x0 => 0x4780,
     0x1 => 0x4781,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // FP16_3REG_SCALAR-FCMGE_SCALAR_FP16#0,FP16_3REG_SCALAR-FACGE_SCALAR_FP16#0,SQRDMLAH_SCALAR-SQRDMLAH_SCALAR#0,SQRDMLAH_SCALAR-SQRDMLSH_SCALAR#0
@@ -27855,70 +27855,70 @@ pub const fn classify_impl_f9(inst: u32) -> u32 {
     0x2 => return classify_impl_f9_2(inst), // SQRDMLAH_SCALAR-SQRDMLAH_SCALAR#0,SQRDMLAH_SCALAR-SQRDMLSH_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // ARITH1_SCALAR-USQADD_SCALAR#1
 pub const fn classify_impl_fa_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3003;
+  0x3003
 }
 
 
 // ARITH1_SCALAR-SQNEG_SCALAR#1
 pub const fn classify_impl_fa_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3004;
+  0x3004
 }
 
 
 // XTN_SCALAR-SQXTUN_SCALAR#1
 pub const fn classify_impl_fa_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3301;
+  0x3301
 }
 
 
 // XTN_SCALAR-UQXTN_SCALAR#1
 pub const fn classify_impl_fa_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3302;
+  0x3302
 }
 
 
 // FCVTN_SCALAR-FCVTXN_SCALAR#0
 pub const fn classify_impl_fa_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5100;
+  0x5100
 }
 
 
 // FCVT_SCALAR-FCVTNU_SCALAR#0
 pub const fn classify_impl_fa_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4e85;
+  0x4e85
 }
 
 
 // FCVT_SCALAR-FCVTMU_SCALAR#0
 pub const fn classify_impl_fa_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4e86;
+  0x4e86
 }
 
 
 // FCVT_SCALAR-FCVTAU_SCALAR#0
 pub const fn classify_impl_fa_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4e87;
+  0x4e87
 }
 
 
 // FCVT_FROMINT_SCALAR-UCVTF_VEC_SCALAR#0
 pub const fn classify_impl_fa_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x5001;
+  0x5001
 }
 
 // QADDSUB_SCALAR-UQADD_SCALAR#0,QADDSUB_SCALAR-UQSUB_SCALAR#0,ARITH1_SCALAR-USQADD_SCALAR#1,ARITH1_SCALAR-SQNEG_SCALAR#1,XTN_SCALAR-SQXTUN_SCALAR#1,XTN_SCALAR-UQXTN_SCALAR#1,SHL_REG_SCALAR-UQSHL_SCALAR#1,SHL_REG_SCALAR-UQRSHL_SCALAR#1,SQDMULH_SCALAR-SQRDMULH_SCALAR#0,FCMP_REG_SCALAR-FCMGE#0,FCMP_REG_SCALAR-FACGE#0,FCVT_SCALAR-FCVTNU_SCALAR#0,FCVT_SCALAR-FCVTMU_SCALAR#0,FCVT_SCALAR-FCVTAU_SCALAR#0,FCVT_FROMINT_SCALAR-UCVTF_VEC_SCALAR#0,FCVTN_SCALAR-FCVTXN_SCALAR#0
@@ -28066,28 +28066,28 @@ pub const fn classify_impl_fa(inst: u32) -> u32 {
     0x9 => return classify_impl_fa_9(inst), // FCVT_FROMINT_SCALAR-UCVTF_VEC_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP_HORZ_SCALAR-FMAXNMP_SCALAR#1
 pub const fn classify_impl_fb_1_1(inst: u32) -> u32 {
   if (inst&0x70000) != 0x0 { return 0; }
-  return 0x5405;
+  0x5405
 }
 
 
 // FP_HORZ_SCALAR-FADDP_SCALAR#1
 pub const fn classify_impl_fb_1_2(inst: u32) -> u32 {
   if (inst&0x70000) != 0x0 { return 0; }
-  return 0x5406;
+  0x5406
 }
 
 
 // FP_HORZ_SCALAR-FMAXP_SCALAR#1
 pub const fn classify_impl_fb_1_3(inst: u32) -> u32 {
   if (inst&0x70000) != 0x0 { return 0; }
-  return 0x5407;
+  0x5407
 }
 
 // QADDSUB_SCALAR-UQADD_SCALAR#0,QADDSUB_SCALAR-UQSUB_SCALAR#0,SHL_REG_SCALAR-UQSHL_SCALAR#1,SHL_REG_SCALAR-UQRSHL_SCALAR#1,SQDMULH_SCALAR-SQRDMULH_SCALAR#0,FCMP_REG_SCALAR-FCMGE#0,FCMP_REG_SCALAR-FACGE#0,FP_HORZ_SCALAR-FMAXNMP_SCALAR#1,FP_HORZ_SCALAR-FADDP_SCALAR#1,FP_HORZ_SCALAR-FMAXP_SCALAR#1
@@ -28165,35 +28165,35 @@ pub const fn classify_impl_fb_1(inst: u32) -> u32 {
     0x3 => return classify_impl_fb_1_3(inst), // FP_HORZ_SCALAR-FMAXP_SCALAR#1
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_2REG_SCALAR-FCVTNU_SCALAR_FP16#0
 pub const fn classify_impl_fb_2_1(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x420b;
+  0x420b
 }
 
 
 // FP16_2REG_SCALAR-FCVTMU_SCALAR_FP16#0
 pub const fn classify_impl_fb_2_2(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x420c;
+  0x420c
 }
 
 
 // FP16_2REG_SCALAR-FCVTAU_SCALAR_FP16#0
 pub const fn classify_impl_fb_2_3(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x420d;
+  0x420d
 }
 
 
 // FP16_2REG_SCALAR-UCVTF_SCALAR_FP16#0
 pub const fn classify_impl_fb_2_4(inst: u32) -> u32 {
   if (inst&0x70000) != 0x10000 { return 0; }
-  return 0x420e;
+  0x420e
 }
 
 // QADDSUB_SCALAR-UQADD_SCALAR#0,QADDSUB_SCALAR-UQSUB_SCALAR#0,SHL_REG_SCALAR-UQSHL_SCALAR#1,SHL_REG_SCALAR-UQRSHL_SCALAR#1,SQDMULH_SCALAR-SQRDMULH_SCALAR#0,FCMP_REG_SCALAR-FCMGE#0,FCMP_REG_SCALAR-FACGE#0,FP16_2REG_SCALAR-FCVTNU_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTMU_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTAU_SCALAR_FP16#0,FP16_2REG_SCALAR-UCVTF_SCALAR_FP16#0
@@ -28272,7 +28272,7 @@ pub const fn classify_impl_fb_2(inst: u32) -> u32 {
     0x4 => return classify_impl_fb_2_4(inst), // FP16_2REG_SCALAR-UCVTF_SCALAR_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 // QADDSUB_SCALAR-UQADD_SCALAR#0,QADDSUB_SCALAR-UQSUB_SCALAR#0,SHL_REG_SCALAR-UQSHL_SCALAR#1,SHL_REG_SCALAR-UQRSHL_SCALAR#1,SQDMULH_SCALAR-SQRDMULH_SCALAR#0,FCMP_REG_SCALAR-FCMGE#0,FCMP_REG_SCALAR-FACGE#0,FP16_2REG_SCALAR-FCVTNU_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTMU_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTAU_SCALAR_FP16#0,FP16_2REG_SCALAR-UCVTF_SCALAR_FP16#0,FP_HORZ_SCALAR-FMAXNMP_SCALAR#1,FP_HORZ_SCALAR-FADDP_SCALAR#1,FP_HORZ_SCALAR-FMAXP_SCALAR#1
@@ -28287,82 +28287,82 @@ pub const fn classify_impl_fb(inst: u32) -> u32 {
     0x2 => return classify_impl_fb_2(inst), // QADDSUB_SCALAR-UQADD_SCALAR#0,QADDSUB_SCALAR-UQSUB_SCALAR#0,SHL_REG_SCALAR-UQSHL_SCALAR#1,SHL_REG_SCALAR-UQRSHL_SCALAR#1,SQDMULH_SCALAR-SQRDMULH_SCALAR#0,FCMP_REG_SCALAR-FCMGE#0,FCMP_REG_SCALAR-FACGE#0,FP16_2REG_SCALAR-FCVTNU_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTMU_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTAU_SCALAR_FP16#0,FP16_2REG_SCALAR-UCVTF_SCALAR_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SQRDMLAH_SCALAR-SQRDMLAH_SCALAR#1,SQRDMLAH_SCALAR-SQRDMLSH_SCALAR#1
 pub const fn classify_impl_fc(inst: u32) -> u32 {
   if (inst&0xf400) != 0x8400 { return 0; }
-  let idx = match (inst >> 11) & 0x1 {
+  
+  match (inst >> 11) & 0x1 {
     0x0 => 0x4780,
     0x1 => 0x4781,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ARITH1_SCALAR-USQADD_SCALAR#2
 pub const fn classify_impl_fd_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3003;
+  0x3003
 }
 
 
 // ARITH1_SCALAR-SQNEG_SCALAR#2
 pub const fn classify_impl_fd_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3004;
+  0x3004
 }
 
 
 // FCMP_ZERO_SCALAR-FCMGE_ZERO#0
 pub const fn classify_impl_fd_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3a03;
+  0x3a03
 }
 
 
 // FCMP_ZERO_SCALAR-FCMLE_ZERO#0
 pub const fn classify_impl_fd_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3a04;
+  0x3a04
 }
 
 
 // XTN_SCALAR-SQXTUN_SCALAR#2
 pub const fn classify_impl_fd_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3301;
+  0x3301
 }
 
 
 // XTN_SCALAR-UQXTN_SCALAR#2
 pub const fn classify_impl_fd_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3302;
+  0x3302
 }
 
 
 // FCVT_SCALAR-FCVTPU_SCALAR#0
 pub const fn classify_impl_fd_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4e88;
+  0x4e88
 }
 
 
 // FCVT_SCALAR-FCVTZU_SCALAR#0
 pub const fn classify_impl_fd_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4e89;
+  0x4e89
 }
 
 
 // FRECP_SCALAR-FRSQRTE_SCALAR#0
 pub const fn classify_impl_fd_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3d02;
+  0x3d02
 }
 
 // QADDSUB_SCALAR-UQADD_SCALAR#0,QADDSUB_SCALAR-UQSUB_SCALAR#0,ARITH1_SCALAR-USQADD_SCALAR#2,ARITH1_SCALAR-SQNEG_SCALAR#2,XTN_SCALAR-SQXTUN_SCALAR#2,XTN_SCALAR-UQXTN_SCALAR#2,SHL_REG_SCALAR-UQSHL_SCALAR#2,SHL_REG_SCALAR-UQRSHL_SCALAR#2,SQDMULH_SCALAR-SQRDMULH_SCALAR#1,FCMP_REG_SCALAR-FCMGT#0,FCMP_REG_SCALAR-FACGT#0,FCMP_ZERO_SCALAR-FCMGE_ZERO#0,FCMP_ZERO_SCALAR-FCMLE_ZERO#0,FABD_SCALAR-FABD#0,FRECP_SCALAR-FRSQRTE_SCALAR#0,FCVT_SCALAR-FCVTPU_SCALAR#0,FCVT_SCALAR-FCVTZU_SCALAR#0
@@ -28510,21 +28510,21 @@ pub const fn classify_impl_fd(inst: u32) -> u32 {
     0x9 => return classify_impl_fd_9(inst), // FRECP_SCALAR-FRSQRTE_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP_HORZ_SCALAR-FMINNMP_SCALAR#0
 pub const fn classify_impl_fe_1(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  return 0x5408;
+  0x5408
 }
 
 
 // FP_HORZ_SCALAR-FMINP_SCALAR#0
 pub const fn classify_impl_fe_2(inst: u32) -> u32 {
   if (inst&0xf0000) != 0x0 { return 0; }
-  return 0x5409;
+  0x5409
 }
 
 // QADDSUB_SCALAR-UQADD_SCALAR#0,QADDSUB_SCALAR-UQSUB_SCALAR#0,SHL_REG_SCALAR-UQSHL_SCALAR#2,SHL_REG_SCALAR-UQRSHL_SCALAR#2,SQDMULH_SCALAR-SQRDMULH_SCALAR#1,FCMP_REG_SCALAR-FCMGT#0,FCMP_REG_SCALAR-FACGT#0,FABD_SCALAR-FABD#0,FP_HORZ_SCALAR-FMINNMP_SCALAR#0,FP_HORZ_SCALAR-FMINP_SCALAR#0
@@ -28601,14 +28601,15 @@ pub const fn classify_impl_fe(inst: u32) -> u32 {
     0x2 => return classify_impl_fe_2(inst), // FP_HORZ_SCALAR-FMINP_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_3REG_SCALAR-FABD_SCALAR_FP16#0,FP16_3REG_SCALAR-FCMGT_SCALAR_FP16#0,FP16_3REG_SCALAR-FACGT_SCALAR_FP16#0
 pub const fn classify_impl_ff(inst: u32) -> u32 {
   if (inst&0xc400) != 0x400 { return 0; }
-  let idx = match (inst >> 11) & 0x7 {
+  
+  match (inst >> 11) & 0x7 {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x4106,
@@ -28618,78 +28619,77 @@ pub const fn classify_impl_ff(inst: u32) -> u32 {
     0x6 => 0x0,
     0x7 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ARITH1_SCALAR-USQADD_SCALAR#3
 pub const fn classify_impl_100_1(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3003;
+  0x3003
 }
 
 
 // ARITH1_SCALAR-SQNEG_SCALAR#3
 pub const fn classify_impl_100_2(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3004;
+  0x3004
 }
 
 
 // CMZERO_SCALAR-CMGE_ZERO#0
 pub const fn classify_impl_100_3(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f03;
+  0x2f03
 }
 
 
 // CMZERO_SCALAR-CMLE_ZERO#0
 pub const fn classify_impl_100_4(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x2f04;
+  0x2f04
 }
 
 
 // ARITH1_SCALAR-NEG_SCALAR#0
 pub const fn classify_impl_100_5(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3005;
+  0x3005
 }
 
 
 // FCMP_ZERO_SCALAR-FCMGE_ZERO#0
 pub const fn classify_impl_100_6(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3a03;
+  0x3a03
 }
 
 
 // FCMP_ZERO_SCALAR-FCMLE_ZERO#0
 pub const fn classify_impl_100_7(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3a04;
+  0x3a04
 }
 
 
 // FCVT_SCALAR-FCVTPU_SCALAR#0
 pub const fn classify_impl_100_8(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4e88;
+  0x4e88
 }
 
 
 // FCVT_SCALAR-FCVTZU_SCALAR#0
 pub const fn classify_impl_100_9(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x4e89;
+  0x4e89
 }
 
 
 // FRECP_SCALAR-FRSQRTE_SCALAR#0
 pub const fn classify_impl_100_a(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x0 { return 0; }
-  return 0x3d02;
+  0x3d02
 }
 
 // QADDSUB_SCALAR-UQADD_SCALAR#0,QADDSUB_SCALAR-UQSUB_SCALAR#0,CMGT_SCALAR-CMHI#0,CMGT_SCALAR-CMHS#0,CMEQ_SCALAR-CMEQ#0,CMZERO_SCALAR-CMGE_ZERO#0,CMZERO_SCALAR-CMLE_ZERO#0,ARITH1_SCALAR-USQADD_SCALAR#3,ARITH1_SCALAR-SQNEG_SCALAR#3,ARITH1_SCALAR-NEG_SCALAR#0,SHL_REG_SCALAR-UQSHL_SCALAR#3,SHL_REG_SCALAR-UQRSHL_SCALAR#3,SHL_REG_SCALAR-USHL_SCALAR#0,SHL_REG_SCALAR-URSHL_SCALAR#0,ADDSUB_SCALAR-SUB_SCALAR#0,FCMP_REG_SCALAR-FCMGT#0,FCMP_REG_SCALAR-FACGT#0,FCMP_ZERO_SCALAR-FCMGE_ZERO#0,FCMP_ZERO_SCALAR-FCMLE_ZERO#0,FABD_SCALAR-FABD#0,FRECP_SCALAR-FRSQRTE_SCALAR#0,FCVT_SCALAR-FCVTPU_SCALAR#0,FCVT_SCALAR-FCVTZU_SCALAR#0
@@ -28838,21 +28838,21 @@ pub const fn classify_impl_100(inst: u32) -> u32 {
     0xa => return classify_impl_100_a(inst), // FRECP_SCALAR-FRSQRTE_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP_HORZ_SCALAR-FMINNMP_SCALAR#1
 pub const fn classify_impl_101_1_1(inst: u32) -> u32 {
   if (inst&0x70000) != 0x0 { return 0; }
-  return 0x5408;
+  0x5408
 }
 
 
 // FP_HORZ_SCALAR-FMINP_SCALAR#1
 pub const fn classify_impl_101_1_2(inst: u32) -> u32 {
   if (inst&0x70000) != 0x0 { return 0; }
-  return 0x5409;
+  0x5409
 }
 
 // QADDSUB_SCALAR-UQADD_SCALAR#0,QADDSUB_SCALAR-UQSUB_SCALAR#0,CMGT_SCALAR-CMHI#0,CMGT_SCALAR-CMHS#0,CMEQ_SCALAR-CMEQ#0,SHL_REG_SCALAR-UQSHL_SCALAR#3,SHL_REG_SCALAR-UQRSHL_SCALAR#3,SHL_REG_SCALAR-USHL_SCALAR#0,SHL_REG_SCALAR-URSHL_SCALAR#0,ADDSUB_SCALAR-SUB_SCALAR#0,FCMP_REG_SCALAR-FCMGT#0,FCMP_REG_SCALAR-FACGT#0,FABD_SCALAR-FABD#0,FP_HORZ_SCALAR-FMINNMP_SCALAR#1,FP_HORZ_SCALAR-FMINP_SCALAR#1
@@ -28929,42 +28929,42 @@ pub const fn classify_impl_101_1(inst: u32) -> u32 {
     0x2 => return classify_impl_101_1_2(inst), // FP_HORZ_SCALAR-FMINP_SCALAR#1
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FP16_2REG_SCALAR-FCMGE_ZERO_SCALAR_FP16#0
 pub const fn classify_impl_101_2_1(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x420f;
+  0x420f
 }
 
 
 // FP16_2REG_SCALAR-FCMLE_ZERO_SCALAR_FP16#0
 pub const fn classify_impl_101_2_2(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x4210;
+  0x4210
 }
 
 
 // FP16_2REG_SCALAR-FCVTPU_SCALAR_FP16#0
 pub const fn classify_impl_101_2_3(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x4211;
+  0x4211
 }
 
 
 // FP16_2REG_SCALAR-FCVTZU_SCALAR_FP16#0
 pub const fn classify_impl_101_2_4(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x4212;
+  0x4212
 }
 
 
 // FP16_2REG_SCALAR-FRSQRTE_SCALAR_FP16#0
 pub const fn classify_impl_101_2_5(inst: u32) -> u32 {
   if (inst&0x60000) != 0x0 { return 0; }
-  return 0x4213;
+  0x4213
 }
 
 // QADDSUB_SCALAR-UQADD_SCALAR#0,QADDSUB_SCALAR-UQSUB_SCALAR#0,CMGT_SCALAR-CMHI#0,CMGT_SCALAR-CMHS#0,CMEQ_SCALAR-CMEQ#0,SHL_REG_SCALAR-UQSHL_SCALAR#3,SHL_REG_SCALAR-UQRSHL_SCALAR#3,SHL_REG_SCALAR-USHL_SCALAR#0,SHL_REG_SCALAR-URSHL_SCALAR#0,ADDSUB_SCALAR-SUB_SCALAR#0,FCMP_REG_SCALAR-FCMGT#0,FCMP_REG_SCALAR-FACGT#0,FABD_SCALAR-FABD#0,FP16_2REG_SCALAR-FCMGE_ZERO_SCALAR_FP16#0,FP16_2REG_SCALAR-FCMLE_ZERO_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTPU_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTZU_SCALAR_FP16#0,FP16_2REG_SCALAR-FRSQRTE_SCALAR_FP16#0
@@ -29108,7 +29108,7 @@ pub const fn classify_impl_101_2(inst: u32) -> u32 {
     0x5 => return classify_impl_101_2_5(inst), // FP16_2REG_SCALAR-FRSQRTE_SCALAR_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 // QADDSUB_SCALAR-UQADD_SCALAR#0,QADDSUB_SCALAR-UQSUB_SCALAR#0,CMGT_SCALAR-CMHI#0,CMGT_SCALAR-CMHS#0,CMEQ_SCALAR-CMEQ#0,SHL_REG_SCALAR-UQSHL_SCALAR#3,SHL_REG_SCALAR-UQRSHL_SCALAR#3,SHL_REG_SCALAR-USHL_SCALAR#0,SHL_REG_SCALAR-URSHL_SCALAR#0,ADDSUB_SCALAR-SUB_SCALAR#0,FCMP_REG_SCALAR-FCMGT#0,FCMP_REG_SCALAR-FACGT#0,FABD_SCALAR-FABD#0,FP16_2REG_SCALAR-FCMGE_ZERO_SCALAR_FP16#0,FP16_2REG_SCALAR-FCMLE_ZERO_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTPU_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTZU_SCALAR_FP16#0,FP16_2REG_SCALAR-FRSQRTE_SCALAR_FP16#0,FP_HORZ_SCALAR-FMINNMP_SCALAR#1,FP_HORZ_SCALAR-FMINP_SCALAR#1
@@ -29123,49 +29123,49 @@ pub const fn classify_impl_101(inst: u32) -> u32 {
     0x2 => return classify_impl_101_2(inst), // QADDSUB_SCALAR-UQADD_SCALAR#0,QADDSUB_SCALAR-UQSUB_SCALAR#0,CMGT_SCALAR-CMHI#0,CMGT_SCALAR-CMHS#0,CMEQ_SCALAR-CMEQ#0,SHL_REG_SCALAR-UQSHL_SCALAR#3,SHL_REG_SCALAR-UQRSHL_SCALAR#3,SHL_REG_SCALAR-USHL_SCALAR#0,SHL_REG_SCALAR-URSHL_SCALAR#0,ADDSUB_SCALAR-SUB_SCALAR#0,FCMP_REG_SCALAR-FCMGT#0,FCMP_REG_SCALAR-FACGT#0,FABD_SCALAR-FABD#0,FP16_2REG_SCALAR-FCMGE_ZERO_SCALAR_FP16#0,FP16_2REG_SCALAR-FCMLE_ZERO_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTPU_SCALAR_FP16#0,FP16_2REG_SCALAR-FCVTZU_SCALAR_FP16#0,FP16_2REG_SCALAR-FRSQRTE_SCALAR_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#0
 pub const fn classify_impl_102_1(inst: u32) -> u32 {
   if (inst&0x80000) != 0x80000 { return 0; }
-  return 0x4981;
+  0x4981
 }
 
 
 // QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#0
 pub const fn classify_impl_102_2(inst: u32) -> u32 {
   if (inst&0x80000) != 0x80000 { return 0; }
-  return 0x4982;
+  0x4982
 }
 
 
 // SHRN_SCALAR_IMM-SQSHRUN_SCALAR#0
 pub const fn classify_impl_102_3(inst: u32) -> u32 {
   if (inst&0x80000) != 0x80000 { return 0; }
-  return 0x4a82;
+  0x4a82
 }
 
 
 // SHRN_SCALAR_IMM-SQRSHRUN_SCALAR#0
 pub const fn classify_impl_102_4(inst: u32) -> u32 {
   if (inst&0x80000) != 0x80000 { return 0; }
-  return 0x4a83;
+  0x4a83
 }
 
 
 // SHRN_SCALAR_IMM-UQSHRN_SCALAR#0
 pub const fn classify_impl_102_5(inst: u32) -> u32 {
   if (inst&0x80000) != 0x80000 { return 0; }
-  return 0x4a84;
+  0x4a84
 }
 
 
 // SHRN_SCALAR_IMM-UQRSHRN_SCALAR#0
 pub const fn classify_impl_102_6(inst: u32) -> u32 {
   if (inst&0x80000) != 0x80000 { return 0; }
-  return 0x4a85;
+  0x4a85
 }
 
 // QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#0,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#0,SHRN_SCALAR_IMM-SQSHRUN_SCALAR#0,SHRN_SCALAR_IMM-SQRSHRUN_SCALAR#0,SHRN_SCALAR_IMM-UQSHRN_SCALAR#0,SHRN_SCALAR_IMM-UQRSHRN_SCALAR#0,FMUL_ELEM_SCALAR_FP16-FMULX_ELEM_SCALAR_FP16#0
@@ -29246,13 +29246,14 @@ pub const fn classify_impl_102(inst: u32) -> u32 {
     0x6 => return classify_impl_102_6(inst), // SHRN_SCALAR_IMM-UQRSHRN_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#1,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#1,SHRN_SCALAR_IMM-SQSHRUN_SCALAR#1,SHRN_SCALAR_IMM-SQRSHRUN_SCALAR#1,SHRN_SCALAR_IMM-UQSHRN_SCALAR#1,SHRN_SCALAR_IMM-UQRSHRN_SCALAR#1,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX_FP16#0,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX_FP16#0,FMUL_ELEM_SCALAR_FP16-FMULX_ELEM_SCALAR_FP16#0
 pub const fn classify_impl_103_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -29318,14 +29319,14 @@ pub const fn classify_impl_103_1(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d85,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#2,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#2,SHRN_SCALAR_IMM-SQSHRUN_SCALAR#2,SHRN_SCALAR_IMM-SQRSHRUN_SCALAR#2,SHRN_SCALAR_IMM-UQSHRN_SCALAR#2,SHRN_SCALAR_IMM-UQRSHRN_SCALAR#2,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX_FP16#1,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX_FP16#1,FMUL_ELEM_SCALAR_FP16-FMULX_ELEM_SCALAR_FP16#0
 pub const fn classify_impl_103_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -29391,8 +29392,7 @@ pub const fn classify_impl_103_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d85,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#1,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#2,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#1,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#2,SHRN_SCALAR_IMM-SQSHRUN_SCALAR#1,SHRN_SCALAR_IMM-SQSHRUN_SCALAR#2,SHRN_SCALAR_IMM-SQRSHRUN_SCALAR#1,SHRN_SCALAR_IMM-SQRSHRUN_SCALAR#2,SHRN_SCALAR_IMM-UQSHRN_SCALAR#1,SHRN_SCALAR_IMM-UQSHRN_SCALAR#2,SHRN_SCALAR_IMM-UQRSHRN_SCALAR#1,SHRN_SCALAR_IMM-UQRSHRN_SCALAR#2,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX_FP16#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX_FP16#1,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX_FP16#0,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX_FP16#1,FMUL_ELEM_SCALAR_FP16-FMULX_ELEM_SCALAR_FP16#0
@@ -29407,13 +29407,14 @@ pub const fn classify_impl_103(inst: u32) -> u32 {
     0x2 => return classify_impl_103_2(inst), // QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#2,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#2,SHRN_SCALAR_IMM-SQSHRUN_SCALAR#2,SHRN_SCALAR_IMM-SQRSHRUN_SCALAR#2,SHRN_SCALAR_IMM-UQSHRN_SCALAR#2,SHRN_SCALAR_IMM-UQRSHRN_SCALAR#2,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX_FP16#1,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX_FP16#1,FMUL_ELEM_SCALAR_FP16-FMULX_ELEM_SCALAR_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#3,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#3,SHRN_SCALAR_IMM-SQSHRUN_SCALAR#3,SHRN_SCALAR_IMM-SQRSHRUN_SCALAR#3,SHRN_SCALAR_IMM-UQSHRN_SCALAR#3,SHRN_SCALAR_IMM-UQRSHRN_SCALAR#3,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#0,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#0,FMUL_ELEM_SCALAR_FP16-FMULX_ELEM_SCALAR_FP16#0
 pub const fn classify_impl_104_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -29479,14 +29480,14 @@ pub const fn classify_impl_104_1(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d87,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#4,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#4,SHRN_SCALAR_IMM-SQSHRUN_SCALAR#4,SHRN_SCALAR_IMM-SQRSHRUN_SCALAR#4,SHRN_SCALAR_IMM-UQSHRN_SCALAR#4,SHRN_SCALAR_IMM-UQRSHRN_SCALAR#4,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#1,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#1,FMUL_ELEM_SCALAR_FP16-FMULX_ELEM_SCALAR_FP16#0
 pub const fn classify_impl_104_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -29552,8 +29553,7 @@ pub const fn classify_impl_104_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d87,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#3,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#4,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#3,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#4,SHRN_SCALAR_IMM-SQSHRUN_SCALAR#3,SHRN_SCALAR_IMM-SQSHRUN_SCALAR#4,SHRN_SCALAR_IMM-SQRSHRUN_SCALAR#3,SHRN_SCALAR_IMM-SQRSHRUN_SCALAR#4,SHRN_SCALAR_IMM-UQSHRN_SCALAR#3,SHRN_SCALAR_IMM-UQSHRN_SCALAR#4,SHRN_SCALAR_IMM-UQRSHRN_SCALAR#3,SHRN_SCALAR_IMM-UQRSHRN_SCALAR#4,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#1,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#0,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#1,FMUL_ELEM_SCALAR_FP16-FMULX_ELEM_SCALAR_FP16#0
@@ -29568,13 +29568,14 @@ pub const fn classify_impl_104(inst: u32) -> u32 {
     0x2 => return classify_impl_104_2(inst), // QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#4,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#4,SHRN_SCALAR_IMM-SQSHRUN_SCALAR#4,SHRN_SCALAR_IMM-SQRSHRUN_SCALAR#4,SHRN_SCALAR_IMM-UQSHRN_SCALAR#4,SHRN_SCALAR_IMM-UQRSHRN_SCALAR#4,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#1,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#1,FMUL_ELEM_SCALAR_FP16-FMULX_ELEM_SCALAR_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#5,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#5,SHRN_SCALAR_IMM-SQSHRUN_SCALAR#5,SHRN_SCALAR_IMM-SQRSHRUN_SCALAR#5,SHRN_SCALAR_IMM-UQSHRN_SCALAR#5,SHRN_SCALAR_IMM-UQRSHRN_SCALAR#5,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#2,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#2,FMUL_ELEM_SCALAR_FP16-FMULX_ELEM_SCALAR_FP16#0
 pub const fn classify_impl_105_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -29640,14 +29641,14 @@ pub const fn classify_impl_105_1(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d87,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#6,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#6,SHRN_SCALAR_IMM-SQSHRUN_SCALAR#6,SHRN_SCALAR_IMM-SQRSHRUN_SCALAR#6,SHRN_SCALAR_IMM-UQSHRN_SCALAR#6,SHRN_SCALAR_IMM-UQRSHRN_SCALAR#6,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#3,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#3,FMUL_ELEM_SCALAR_FP16-FMULX_ELEM_SCALAR_FP16#0
 pub const fn classify_impl_105_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -29713,8 +29714,7 @@ pub const fn classify_impl_105_2(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x4d87,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#5,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#6,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#5,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#6,SHRN_SCALAR_IMM-SQSHRUN_SCALAR#5,SHRN_SCALAR_IMM-SQSHRUN_SCALAR#6,SHRN_SCALAR_IMM-SQRSHRUN_SCALAR#5,SHRN_SCALAR_IMM-SQRSHRUN_SCALAR#6,SHRN_SCALAR_IMM-UQSHRN_SCALAR#5,SHRN_SCALAR_IMM-UQSHRN_SCALAR#6,SHRN_SCALAR_IMM-UQRSHRN_SCALAR#5,SHRN_SCALAR_IMM-UQRSHRN_SCALAR#6,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#2,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#3,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#2,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#3,FMUL_ELEM_SCALAR_FP16-FMULX_ELEM_SCALAR_FP16#0
@@ -29729,13 +29729,14 @@ pub const fn classify_impl_105(inst: u32) -> u32 {
     0x2 => return classify_impl_105_2(inst), // QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#6,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#6,SHRN_SCALAR_IMM-SQSHRUN_SCALAR#6,SHRN_SCALAR_IMM-SQRSHRUN_SCALAR#6,SHRN_SCALAR_IMM-UQSHRN_SCALAR#6,SHRN_SCALAR_IMM-UQRSHRN_SCALAR#6,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#3,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#3,FMUL_ELEM_SCALAR_FP16-FMULX_ELEM_SCALAR_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_SCALAR_IMM-USHR_SCALAR#0,SHR_SCALAR_IMM-USRA_SCALAR#0,SHR_SCALAR_IMM-URSHR_SCALAR#0,SHR_SCALAR_IMM-URSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#7,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#7,SHIFT_SCALAR_IMM-SRI_SCALAR#0,SHIFT_SCALAR_IMM-SLI_SCALAR#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#4,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#4,MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#0
 pub const fn classify_impl_106_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4884,
     0x2 => 0x0,
@@ -29801,14 +29802,14 @@ pub const fn classify_impl_106_1(inst: u32) -> u32 {
     0x3e => 0x5503,
     0x3f => 0x4d87,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_SCALAR_IMM-USHR_SCALAR#0,SHR_SCALAR_IMM-USRA_SCALAR#0,SHR_SCALAR_IMM-URSHR_SCALAR#0,SHR_SCALAR_IMM-URSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#8,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#8,SHIFT_SCALAR_IMM-SRI_SCALAR#0,SHIFT_SCALAR_IMM-SLI_SCALAR#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#5,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#5,MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#0
 pub const fn classify_impl_106_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4884,
     0x2 => 0x0,
@@ -29874,8 +29875,7 @@ pub const fn classify_impl_106_2(inst: u32) -> u32 {
     0x3e => 0x5503,
     0x3f => 0x4d87,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_SCALAR_IMM-USHR_SCALAR#0,SHR_SCALAR_IMM-USRA_SCALAR#0,SHR_SCALAR_IMM-URSHR_SCALAR#0,SHR_SCALAR_IMM-URSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#7,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#8,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#7,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#8,SHIFT_SCALAR_IMM-SRI_SCALAR#0,SHIFT_SCALAR_IMM-SLI_SCALAR#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#4,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#5,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#4,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#5,MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#0
@@ -29890,13 +29890,14 @@ pub const fn classify_impl_106(inst: u32) -> u32 {
     0x2 => return classify_impl_106_2(inst), // SHR_SCALAR_IMM-USHR_SCALAR#0,SHR_SCALAR_IMM-USRA_SCALAR#0,SHR_SCALAR_IMM-URSHR_SCALAR#0,SHR_SCALAR_IMM-URSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#8,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#8,SHIFT_SCALAR_IMM-SRI_SCALAR#0,SHIFT_SCALAR_IMM-SLI_SCALAR#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#5,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#5,MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_SCALAR_IMM-USHR_SCALAR#0,SHR_SCALAR_IMM-USRA_SCALAR#0,SHR_SCALAR_IMM-URSHR_SCALAR#0,SHR_SCALAR_IMM-URSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#9,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#9,SHIFT_SCALAR_IMM-SRI_SCALAR#0,SHIFT_SCALAR_IMM-SLI_SCALAR#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#6,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#6,MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#0
 pub const fn classify_impl_107_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4884,
     0x2 => 0x0,
@@ -29962,14 +29963,14 @@ pub const fn classify_impl_107_1(inst: u32) -> u32 {
     0x3e => 0x5503,
     0x3f => 0x4d87,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_SCALAR_IMM-USHR_SCALAR#0,SHR_SCALAR_IMM-USRA_SCALAR#0,SHR_SCALAR_IMM-URSHR_SCALAR#0,SHR_SCALAR_IMM-URSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#10,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#10,SHIFT_SCALAR_IMM-SRI_SCALAR#0,SHIFT_SCALAR_IMM-SLI_SCALAR#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#7,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#7,MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#0
 pub const fn classify_impl_107_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4884,
     0x2 => 0x0,
@@ -30035,8 +30036,7 @@ pub const fn classify_impl_107_2(inst: u32) -> u32 {
     0x3e => 0x5503,
     0x3f => 0x4d87,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_SCALAR_IMM-USHR_SCALAR#0,SHR_SCALAR_IMM-USRA_SCALAR#0,SHR_SCALAR_IMM-URSHR_SCALAR#0,SHR_SCALAR_IMM-URSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#9,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#10,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#9,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#10,SHIFT_SCALAR_IMM-SRI_SCALAR#0,SHIFT_SCALAR_IMM-SLI_SCALAR#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#6,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#7,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#6,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#7,MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#0
@@ -30051,13 +30051,14 @@ pub const fn classify_impl_107(inst: u32) -> u32 {
     0x2 => return classify_impl_107_2(inst), // SHR_SCALAR_IMM-USHR_SCALAR#0,SHR_SCALAR_IMM-USRA_SCALAR#0,SHR_SCALAR_IMM-URSHR_SCALAR#0,SHR_SCALAR_IMM-URSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#10,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#10,SHIFT_SCALAR_IMM-SRI_SCALAR#0,SHIFT_SCALAR_IMM-SLI_SCALAR#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#7,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#7,MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_SCALAR_IMM-USHR_SCALAR#0,SHR_SCALAR_IMM-USRA_SCALAR#0,SHR_SCALAR_IMM-URSHR_SCALAR#0,SHR_SCALAR_IMM-URSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#11,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#11,SHIFT_SCALAR_IMM-SRI_SCALAR#0,SHIFT_SCALAR_IMM-SLI_SCALAR#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#8,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#8,MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#0
 pub const fn classify_impl_108_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4884,
     0x2 => 0x0,
@@ -30123,14 +30124,14 @@ pub const fn classify_impl_108_1(inst: u32) -> u32 {
     0x3e => 0x5503,
     0x3f => 0x4d87,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_SCALAR_IMM-USHR_SCALAR#0,SHR_SCALAR_IMM-USRA_SCALAR#0,SHR_SCALAR_IMM-URSHR_SCALAR#0,SHR_SCALAR_IMM-URSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#12,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#12,SHIFT_SCALAR_IMM-SRI_SCALAR#0,SHIFT_SCALAR_IMM-SLI_SCALAR#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#9,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#9,MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#0
 pub const fn classify_impl_108_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4884,
     0x2 => 0x0,
@@ -30196,8 +30197,7 @@ pub const fn classify_impl_108_2(inst: u32) -> u32 {
     0x3e => 0x5503,
     0x3f => 0x4d87,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_SCALAR_IMM-USHR_SCALAR#0,SHR_SCALAR_IMM-USRA_SCALAR#0,SHR_SCALAR_IMM-URSHR_SCALAR#0,SHR_SCALAR_IMM-URSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#11,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#12,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#11,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#12,SHIFT_SCALAR_IMM-SRI_SCALAR#0,SHIFT_SCALAR_IMM-SLI_SCALAR#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#8,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#9,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#8,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#9,MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#0
@@ -30212,13 +30212,14 @@ pub const fn classify_impl_108(inst: u32) -> u32 {
     0x2 => return classify_impl_108_2(inst), // SHR_SCALAR_IMM-USHR_SCALAR#0,SHR_SCALAR_IMM-USRA_SCALAR#0,SHR_SCALAR_IMM-URSHR_SCALAR#0,SHR_SCALAR_IMM-URSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#12,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#12,SHIFT_SCALAR_IMM-SRI_SCALAR#0,SHIFT_SCALAR_IMM-SLI_SCALAR#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#9,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#9,MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHR_SCALAR_IMM-USHR_SCALAR#0,SHR_SCALAR_IMM-USRA_SCALAR#0,SHR_SCALAR_IMM-URSHR_SCALAR#0,SHR_SCALAR_IMM-URSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#13,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#13,SHIFT_SCALAR_IMM-SRI_SCALAR#0,SHIFT_SCALAR_IMM-SLI_SCALAR#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#10,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#10,MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#0
 pub const fn classify_impl_109_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4884,
     0x2 => 0x0,
@@ -30284,14 +30285,14 @@ pub const fn classify_impl_109_1(inst: u32) -> u32 {
     0x3e => 0x5503,
     0x3f => 0x4d87,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHR_SCALAR_IMM-USHR_SCALAR#0,SHR_SCALAR_IMM-USRA_SCALAR#0,SHR_SCALAR_IMM-URSHR_SCALAR#0,SHR_SCALAR_IMM-URSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#14,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#14,SHIFT_SCALAR_IMM-SRI_SCALAR#0,SHIFT_SCALAR_IMM-SLI_SCALAR#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#11,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#11,MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#0
 pub const fn classify_impl_109_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x0,
     0x1 => 0x4884,
     0x2 => 0x0,
@@ -30357,8 +30358,7 @@ pub const fn classify_impl_109_2(inst: u32) -> u32 {
     0x3e => 0x5503,
     0x3f => 0x4d87,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHR_SCALAR_IMM-USHR_SCALAR#0,SHR_SCALAR_IMM-USRA_SCALAR#0,SHR_SCALAR_IMM-URSHR_SCALAR#0,SHR_SCALAR_IMM-URSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#13,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#14,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#13,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#14,SHIFT_SCALAR_IMM-SRI_SCALAR#0,SHIFT_SCALAR_IMM-SLI_SCALAR#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#10,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#11,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#10,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#11,MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#0
@@ -30373,145 +30373,146 @@ pub const fn classify_impl_109(inst: u32) -> u32 {
     0x2 => return classify_impl_109_2(inst), // SHR_SCALAR_IMM-USHR_SCALAR#0,SHR_SCALAR_IMM-USRA_SCALAR#0,SHR_SCALAR_IMM-URSHR_SCALAR#0,SHR_SCALAR_IMM-URSRA_SCALAR#0,QSHL_SCALAR_IMM-SQSHLU_IMM_SCALAR#14,QSHL_SCALAR_IMM-UQSHL_IMM_SCALAR#14,SHIFT_SCALAR_IMM-SRI_SCALAR#0,SHIFT_SCALAR_IMM-SLI_SCALAR#0,FCVT_SCALAR_FIXED-UCVTF_SCALAR_FIX#11,FCVT_SCALAR_FIXED-FCVTZU_SCALAR_FIX#11,MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#0,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#1,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#1,FMUL_ELEM_SCALAR-FMULX_ELEM_SCALAR#0
 pub const fn classify_impl_10a(inst: u32) -> u32 {
   if (inst&0x9400) != 0x9000 { return 0; }
-  let idx = match (inst >> 13) & 0x3 {
+  
+  match (inst >> 13) & 0x3 {
     0x0 => 0x5703,
     0x1 => 0x0,
     0x2 => 0x5502,
     0x3 => 0x5503,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MUL_ELEM_SCALAR-SQRDMLAH_ELEM_SCALAR#1,MUL_ELEM_SCALAR-SQRDMLSH_ELEM_SCALAR#1,FMUL_ELEM_SCALAR-FMULX_ELEM_SCALAR#1
 pub const fn classify_impl_10b(inst: u32) -> u32 {
   if (inst&0x9400) != 0x9000 { return 0; }
-  let idx = match (inst >> 13) & 0x3 {
+  
+  match (inst >> 13) & 0x3 {
     0x0 => 0x5703,
     0x1 => 0x0,
     0x2 => 0x5502,
     0x3 => 0x5503,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FMUL_ELEM_SCALAR-FMULX_ELEM_SCALAR#2
 pub const fn classify_impl_10c(inst: u32) -> u32 {
   if (inst&0xf400) != 0x9000 { return 0; }
-  return 0x5703;
+  0x5703
 }
 
 
 // MEMX-STXRW#0,MEMX-STLXRW#0
 pub const fn classify_impl_10d(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x1688,
     0x1 => 0x1689,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMX-STXPW#0,MEMX-STLXPW#0
 pub const fn classify_impl_10e(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x168a,
     0x1 => 0x168b,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMX-LDXRW#0,MEMX-LDAXRW#0
 pub const fn classify_impl_10f(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x168c,
     0x1 => 0x168d,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMX-LDXPW#0,MEMX-LDAXPW#0
 pub const fn classify_impl_110(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x168e,
     0x1 => 0x168f,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMOR-STLLRW#0,MEMOR-STLRW#0
 pub const fn classify_impl_111(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x1608,
     0x1 => 0x1609,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // CAS-CAS#0,CAS-CASL#0
 pub const fn classify_impl_112(inst: u32) -> u32 {
   if (inst&0x7c00) != 0x7c00 { return 0; }
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x5f88,
     0x1 => 0x5f89,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMOR-LDLARW#0,MEMOR-LDARW#0
 pub const fn classify_impl_113(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x160a,
     0x1 => 0x160b,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // CAS-CASA#0,CAS-CASAL#0
 pub const fn classify_impl_114(inst: u32) -> u32 {
   if (inst&0x7c00) != 0x7c00 { return 0; }
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x5f8a,
     0x1 => 0x5f8b,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ADDSUBG-ADDG#0
 pub const fn classify_impl_115(inst: u32) -> u32 {
   if (inst&0xc000) != 0x0 { return 0; }
-  return 0x6300;
+  0x6300
 }
 
 
 // ANDOREOR_IMM-AND_IMM#57,ANDOREOR_IMM-AND_IMM#58,ANDOREOR_IMM-AND_IMM#59,ANDOREOR_IMM-AND_IMM#60,ANDOREOR_IMM-AND_IMM#61,ANDOREOR_IMM-AND_IMM#62,ANDOREOR_IMM-AND_IMM#63,ANDOREOR_IMM-AND_IMM#64,ANDOREOR_IMM-AND_IMM#65,ANDOREOR_IMM-AND_IMM#66,ANDOREOR_IMM-AND_IMM#67,ANDOREOR_IMM-AND_IMM#68,ANDOREOR_IMM-AND_IMM#69,ANDOREOR_IMM-AND_IMM#70,ANDOREOR_IMM-AND_IMM#71,ANDOREOR_IMM-AND_IMM#72,ANDOREOR_IMM-AND_IMM#73,ANDOREOR_IMM-AND_IMM#74,ANDOREOR_IMM-AND_IMM#75,ANDOREOR_IMM-AND_IMM#76,ANDOREOR_IMM-AND_IMM#77,ANDOREOR_IMM-AND_IMM#78,ANDOREOR_IMM-AND_IMM#79,ANDOREOR_IMM-AND_IMM#80,ANDOREOR_IMM-AND_IMM#81,ANDOREOR_IMM-AND_IMM#82,ANDOREOR_IMM-AND_IMM#83,ANDOREOR_IMM-AND_IMM#84,ANDOREOR_IMM-AND_IMM#85,ANDOREOR_IMM-AND_IMM#86,ANDOREOR_IMM-AND_IMM#87,ANDOREOR_IMM-AND_IMM#88,ANDOREOR_IMM-AND_IMM#89,ANDOREOR_IMM-AND_IMM#90,ANDOREOR_IMM-AND_IMM#91,ANDOREOR_IMM-AND_IMM#92,ANDOREOR_IMM-AND_IMM#93,ANDOREOR_IMM-AND_IMM#94,ANDOREOR_IMM-AND_IMM#95,ANDOREOR_IMM-AND_IMM#96,ANDOREOR_IMM-AND_IMM#97,ANDOREOR_IMM-AND_IMM#98,ANDOREOR_IMM-AND_IMM#99,ANDOREOR_IMM-AND_IMM#100,ANDOREOR_IMM-AND_IMM#101,ANDOREOR_IMM-AND_IMM#102,ANDOREOR_IMM-AND_IMM#103,ANDOREOR_IMM-AND_IMM#104,ANDOREOR_IMM-AND_IMM#105,ANDOREOR_IMM-AND_IMM#106,ANDOREOR_IMM-AND_IMM#107,ANDOREOR_IMM-AND_IMM#108,ANDOREOR_IMM-AND_IMM#109,ANDOREOR_IMM-AND_IMM#110,ANDOREOR_IMM-AND_IMM#111,ANDOREOR_IMM-AND_IMM#112,ANDOREOR_IMM-AND_IMM#113
 pub const fn classify_impl_116(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x500,
     0x1 => 0x500,
     0x2 => 0x500,
@@ -30577,14 +30578,14 @@ pub const fn classify_impl_116(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ANDOREOR_IMM-AND_IMM#114,ANDOREOR_IMM-AND_IMM#115,ANDOREOR_IMM-AND_IMM#116,ANDOREOR_IMM-AND_IMM#117,ANDOREOR_IMM-AND_IMM#118,ANDOREOR_IMM-AND_IMM#119,ANDOREOR_IMM-AND_IMM#120,ANDOREOR_IMM-AND_IMM#121,ANDOREOR_IMM-AND_IMM#122,ANDOREOR_IMM-AND_IMM#123,ANDOREOR_IMM-AND_IMM#124,ANDOREOR_IMM-AND_IMM#125,ANDOREOR_IMM-AND_IMM#126,ANDOREOR_IMM-AND_IMM#127,ANDOREOR_IMM-AND_IMM#128,ANDOREOR_IMM-AND_IMM#129,ANDOREOR_IMM-AND_IMM#130,ANDOREOR_IMM-AND_IMM#131,ANDOREOR_IMM-AND_IMM#132,ANDOREOR_IMM-AND_IMM#133,ANDOREOR_IMM-AND_IMM#134,ANDOREOR_IMM-AND_IMM#135,ANDOREOR_IMM-AND_IMM#136,ANDOREOR_IMM-AND_IMM#137,ANDOREOR_IMM-AND_IMM#138,ANDOREOR_IMM-AND_IMM#139,ANDOREOR_IMM-AND_IMM#140,ANDOREOR_IMM-AND_IMM#141,ANDOREOR_IMM-AND_IMM#142,ANDOREOR_IMM-AND_IMM#143,ANDOREOR_IMM-AND_IMM#144,ANDOREOR_IMM-AND_IMM#145,ANDOREOR_IMM-AND_IMM#146,ANDOREOR_IMM-AND_IMM#147,ANDOREOR_IMM-AND_IMM#148,ANDOREOR_IMM-AND_IMM#149,ANDOREOR_IMM-AND_IMM#150,ANDOREOR_IMM-AND_IMM#151,ANDOREOR_IMM-AND_IMM#152,ANDOREOR_IMM-AND_IMM#153,ANDOREOR_IMM-AND_IMM#154,ANDOREOR_IMM-AND_IMM#155,ANDOREOR_IMM-AND_IMM#156,ANDOREOR_IMM-AND_IMM#157,ANDOREOR_IMM-AND_IMM#158,ANDOREOR_IMM-AND_IMM#159,ANDOREOR_IMM-AND_IMM#160,ANDOREOR_IMM-AND_IMM#161,ANDOREOR_IMM-AND_IMM#162,ANDOREOR_IMM-AND_IMM#163,ANDOREOR_IMM-AND_IMM#164,ANDOREOR_IMM-AND_IMM#165,ANDOREOR_IMM-AND_IMM#166,ANDOREOR_IMM-AND_IMM#167,ANDOREOR_IMM-AND_IMM#168,ANDOREOR_IMM-AND_IMM#169,ANDOREOR_IMM-AND_IMM#170,ANDOREOR_IMM-AND_IMM#171,ANDOREOR_IMM-AND_IMM#172,ANDOREOR_IMM-AND_IMM#173,ANDOREOR_IMM-AND_IMM#174,ANDOREOR_IMM-AND_IMM#175,ANDOREOR_IMM-AND_IMM#176
 pub const fn classify_impl_117(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x500,
     0x1 => 0x500,
     0x2 => 0x500,
@@ -30650,36 +30651,36 @@ pub const fn classify_impl_117(inst: u32) -> u32 {
     0x3e => 0x500,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLURW#0
 pub const fn classify_impl_118(inst: u32) -> u32 {
   if (inst&0xc00) != 0x0 { return 0; }
-  return 0x6188;
+  0x6188
 }
 
 
 // RCPCU-LDAPURW#0
 pub const fn classify_impl_119(inst: u32) -> u32 {
   if (inst&0xc00) != 0x0 { return 0; }
-  return 0x6189;
+  0x6189
 }
 
 
 // RCPCU-LDAPURSW#0
 pub const fn classify_impl_11a(inst: u32) -> u32 {
   if (inst&0xc00) != 0x0 { return 0; }
-  return 0x618a;
+  0x618a
 }
 
 
 // SHIFTV-LSLV#0,SHIFTV-LSRV#0,SHIFTV-ASRV#0,SHIFTV-RORV#0,MINMAX_REG-SMAX_GP#0,MINMAX_REG-UMAX_GP#0,MINMAX_REG-SMIN_GP#0,MINMAX_REG-UMIN_GP#0,DIV-UDIV#0,DIV-SDIV#0,PACGA-PACGA#0,CRC32-CRC32X#0,CRC32-CRC32CX#0,TAGINSERT-IRG#0,TAGINSERT-GMI#0,SUBP-SUBP#0
 pub const fn classify_impl_11b(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0x1f {
+  
+  match (inst >> 10) & 0x1f {
     0x0 => 0x6400,
     0x1 => 0x0,
     0x2 => 0x1580,
@@ -30713,79 +30714,79 @@ pub const fn classify_impl_11b(inst: u32) -> u32 {
     0x1e => 0x0,
     0x1f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MULL-SMADDL#0,MULL-SMSUBL#0
 pub const fn classify_impl_11c(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x700,
     0x1 => 0x701,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MULH-SMULH#0
 pub const fn classify_impl_11d(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x780;
+  0x780
 }
 
 
 // MULL-UMADDL#0,MULL-UMSUBL#0
 pub const fn classify_impl_11e(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x702,
     0x1 => 0x703,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MULH-UMULH#0
 pub const fn classify_impl_11f(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x781;
+  0x781
 }
 
 
 // FCVT_FROMFIXED-SCVTF_FIX#2,FCVT_FROMFIXED-SCVTF_FIX#3,FCVT_FROMFIXED-UCVTF_FIX#2,FCVT_FROMFIXED-UCVTF_FIX#3
 pub const fn classify_impl_120(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x20000 { return 0; }
-  let idx = match (inst >> 15) & 0x3 {
+  
+  match (inst >> 15) & 0x3 {
     0x0 => 0x2000,
     0x1 => 0x2000,
     0x2 => 0x2001,
     0x3 => 0x2001,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOFIXED-FCVTZS_FIX#2,FCVT_TOFIXED-FCVTZS_FIX#3,FCVT_TOFIXED-FCVTZU_FIX#2,FCVT_TOFIXED-FCVTZU_FIX#3
 pub const fn classify_impl_121(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  let idx = match (inst >> 15) & 0x3 {
+  
+  match (inst >> 15) & 0x3 {
     0x0 => 0x1f80,
     0x1 => 0x1f80,
     0x2 => 0x1f81,
     0x3 => 0x1f81,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOINT-FCVTNS#0,FCVT_TOINT-FCVTNU#0,FCVT_TOINT-FCVTAS#0,FCVT_TOINT-FCVTAU#0,FCVT_TOINT-FCVTPS#0,FCVT_TOINT-FCVTPU#0,FCVT_FROMINT-SCVTF#0,FCVT_FROMINT-UCVTF#0
 pub const fn classify_impl_122(inst: u32) -> u32 {
   if (inst&0xfc00) != 0x0 { return 0; }
-  let idx = match (inst >> 16) & 0xf {
+  
+  match (inst >> 16) & 0xf {
     0x0 => 0x2080,
     0x1 => 0x2081,
     0x2 => 0x2100,
@@ -30803,30 +30804,29 @@ pub const fn classify_impl_122(inst: u32) -> u32 {
     0xe => 0x0,
     0xf => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOINT-FCVTMS#0,FCVT_TOINT-FCVTMU#0
 pub const fn classify_impl_123_1(inst: u32) -> u32 {
-  let idx = match (inst >> 16) & 0x1 {
+  
+  match (inst >> 16) & 0x1 {
     0x0 => 0x2086,
     0x1 => 0x2087,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOINT-FCVTZS#0,FCVT_TOINT-FCVTZU#0
 pub const fn classify_impl_123_2(inst: u32) -> u32 {
-  let idx = match (inst >> 16) & 0x1 {
+  
+  match (inst >> 16) & 0x1 {
     0x0 => 0x2088,
     0x1 => 0x2089,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // FCVT_TOINT-FCVTMS#0,FCVT_TOINT-FCVTMU#0,FCVT_TOINT-FCVTZS#0,FCVT_TOINT-FCVTZU#0
@@ -30842,42 +30842,43 @@ pub const fn classify_impl_123(inst: u32) -> u32 {
     0x2 => return classify_impl_123_2(inst), // FCVT_TOINT-FCVTZS#0,FCVT_TOINT-FCVTZU#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FCVT_FROMFIXED-SCVTF_FIX#4,FCVT_FROMFIXED-SCVTF_FIX#5,FCVT_FROMFIXED-UCVTF_FIX#4,FCVT_FROMFIXED-UCVTF_FIX#5
 pub const fn classify_impl_124(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x20000 { return 0; }
-  let idx = match (inst >> 15) & 0x3 {
+  
+  match (inst >> 15) & 0x3 {
     0x0 => 0x2000,
     0x1 => 0x2000,
     0x2 => 0x2001,
     0x3 => 0x2001,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOFIXED-FCVTZS_FIX#4,FCVT_TOFIXED-FCVTZS_FIX#5,FCVT_TOFIXED-FCVTZU_FIX#4,FCVT_TOFIXED-FCVTZU_FIX#5
 pub const fn classify_impl_125(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  let idx = match (inst >> 15) & 0x3 {
+  
+  match (inst >> 15) & 0x3 {
     0x0 => 0x1f80,
     0x1 => 0x1f80,
     0x2 => 0x1f81,
     0x3 => 0x1f81,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOINT-FCVTNS#1,FCVT_TOINT-FCVTNU#1,FCVT_TOINT-FCVTAS#1,FCVT_TOINT-FCVTAU#1,FCVT_TOINT-FCVTPS#1,FCVT_TOINT-FCVTPU#1,FCVT_FROMINT-SCVTF#1,FCVT_FROMINT-UCVTF#1,FMOV_TOGP-FMOV_TOGP#1,FMOV_FROMGP-FMOV_FROM#1
 pub const fn classify_impl_126(inst: u32) -> u32 {
   if (inst&0xfc00) != 0x0 { return 0; }
-  let idx = match (inst >> 16) & 0xf {
+  
+  match (inst >> 16) & 0xf {
     0x0 => 0x2080,
     0x1 => 0x2081,
     0x2 => 0x2100,
@@ -30895,30 +30896,29 @@ pub const fn classify_impl_126(inst: u32) -> u32 {
     0xe => 0x0,
     0xf => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOINT-FCVTMS#1,FCVT_TOINT-FCVTMU#1
 pub const fn classify_impl_127_1(inst: u32) -> u32 {
-  let idx = match (inst >> 16) & 0x1 {
+  
+  match (inst >> 16) & 0x1 {
     0x0 => 0x2086,
     0x1 => 0x2087,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOINT-FCVTZS#1,FCVT_TOINT-FCVTZU#1
 pub const fn classify_impl_127_2(inst: u32) -> u32 {
-  let idx = match (inst >> 16) & 0x1 {
+  
+  match (inst >> 16) & 0x1 {
     0x0 => 0x2088,
     0x1 => 0x2089,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // FCVT_TOINT-FCVTMS#1,FCVT_TOINT-FCVTMU#1,FCVT_TOINT-FCVTZS#1,FCVT_TOINT-FCVTZU#1
@@ -30934,54 +30934,55 @@ pub const fn classify_impl_127(inst: u32) -> u32 {
     0x2 => return classify_impl_127_2(inst), // FCVT_TOINT-FCVTZS#1,FCVT_TOINT-FCVTZU#1
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // FMOV_TOGP-FMOV_TOGP_HIGH#0,FMOV_FROMGP-FMOV_FROM_HIGH#0
 pub const fn classify_impl_128(inst: u32) -> u32 {
   if (inst&0xefc00) != 0xe0000 { return 0; }
-  let idx = match (inst >> 16) & 0x1 {
+  
+  match (inst >> 16) & 0x1 {
     0x0 => 0x2182,
     0x1 => 0x2202,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_FROMFIXED-SCVTF_FIX_FP16#1,FCVT_FROMFIXED-SCVTF_FIX_FP16#2,FCVT_FROMFIXED-UCVTF_FIX_FP16#1,FCVT_FROMFIXED-UCVTF_FIX_FP16#2
 pub const fn classify_impl_129(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x20000 { return 0; }
-  let idx = match (inst >> 15) & 0x3 {
+  
+  match (inst >> 15) & 0x3 {
     0x0 => 0x2002,
     0x1 => 0x2002,
     0x2 => 0x2003,
     0x3 => 0x2003,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOFIXED-FCVTZS_FIX_FP16#1,FCVT_TOFIXED-FCVTZS_FIX_FP16#2,FCVT_TOFIXED-FCVTZU_FIX_FP16#1,FCVT_TOFIXED-FCVTZU_FIX_FP16#2
 pub const fn classify_impl_12a(inst: u32) -> u32 {
   if (inst&0xe0000) != 0x80000 { return 0; }
-  let idx = match (inst >> 15) & 0x3 {
+  
+  match (inst >> 15) & 0x3 {
     0x0 => 0x1f82,
     0x1 => 0x1f82,
     0x2 => 0x1f83,
     0x3 => 0x1f83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOINT-FCVTNS_FP16#0,FCVT_TOINT-FCVTNU_FP16#0,FCVT_TOINT-FCVTAS_FP16#0,FCVT_TOINT-FCVTAU_FP16#0,FCVT_TOINT-FCVTPS_FP16#0,FCVT_TOINT-FCVTPU_FP16#0,FCVT_FROMINT-SCVTF_FP16#0,FCVT_FROMINT-UCVTF_FP16#0,FMOV_TOGP-FMOV_TOGP_FP16#1,FMOV_FROMGP-FMOV_FROM_FP16#1
 pub const fn classify_impl_12b(inst: u32) -> u32 {
   if (inst&0xfc00) != 0x0 { return 0; }
-  let idx = match (inst >> 16) & 0xf {
+  
+  match (inst >> 16) & 0xf {
     0x0 => 0x208a,
     0x1 => 0x208b,
     0x2 => 0x2102,
@@ -30999,30 +31000,29 @@ pub const fn classify_impl_12b(inst: u32) -> u32 {
     0xe => 0x0,
     0xf => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOINT-FCVTMS_FP16#0,FCVT_TOINT-FCVTMU_FP16#0
 pub const fn classify_impl_12c_1(inst: u32) -> u32 {
-  let idx = match (inst >> 16) & 0x1 {
+  
+  match (inst >> 16) & 0x1 {
     0x0 => 0x2090,
     0x1 => 0x2091,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // FCVT_TOINT-FCVTZS_FP16#0,FCVT_TOINT-FCVTZU_FP16#0
 pub const fn classify_impl_12c_2(inst: u32) -> u32 {
-  let idx = match (inst >> 16) & 0x1 {
+  
+  match (inst >> 16) & 0x1 {
     0x0 => 0x2092,
     0x1 => 0x2093,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // FCVT_TOINT-FCVTMS_FP16#0,FCVT_TOINT-FCVTMU_FP16#0,FCVT_TOINT-FCVTZS_FP16#0,FCVT_TOINT-FCVTZU_FP16#0
@@ -31038,13 +31038,14 @@ pub const fn classify_impl_12c(inst: u32) -> u32 {
     0x2 => return classify_impl_12c_2(inst), // FCVT_TOINT-FCVTZS_FP16#0,FCVT_TOINT-FCVTZU_FP16#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // ANDOREOR_IMM-ORR_IMM#57,ANDOREOR_IMM-ORR_IMM#58,ANDOREOR_IMM-ORR_IMM#59,ANDOREOR_IMM-ORR_IMM#60,ANDOREOR_IMM-ORR_IMM#61,ANDOREOR_IMM-ORR_IMM#62,ANDOREOR_IMM-ORR_IMM#63,ANDOREOR_IMM-ORR_IMM#64,ANDOREOR_IMM-ORR_IMM#65,ANDOREOR_IMM-ORR_IMM#66,ANDOREOR_IMM-ORR_IMM#67,ANDOREOR_IMM-ORR_IMM#68,ANDOREOR_IMM-ORR_IMM#69,ANDOREOR_IMM-ORR_IMM#70,ANDOREOR_IMM-ORR_IMM#71,ANDOREOR_IMM-ORR_IMM#72,ANDOREOR_IMM-ORR_IMM#73,ANDOREOR_IMM-ORR_IMM#74,ANDOREOR_IMM-ORR_IMM#75,ANDOREOR_IMM-ORR_IMM#76,ANDOREOR_IMM-ORR_IMM#77,ANDOREOR_IMM-ORR_IMM#78,ANDOREOR_IMM-ORR_IMM#79,ANDOREOR_IMM-ORR_IMM#80,ANDOREOR_IMM-ORR_IMM#81,ANDOREOR_IMM-ORR_IMM#82,ANDOREOR_IMM-ORR_IMM#83,ANDOREOR_IMM-ORR_IMM#84,ANDOREOR_IMM-ORR_IMM#85,ANDOREOR_IMM-ORR_IMM#86,ANDOREOR_IMM-ORR_IMM#87,ANDOREOR_IMM-ORR_IMM#88,ANDOREOR_IMM-ORR_IMM#89,ANDOREOR_IMM-ORR_IMM#90,ANDOREOR_IMM-ORR_IMM#91,ANDOREOR_IMM-ORR_IMM#92,ANDOREOR_IMM-ORR_IMM#93,ANDOREOR_IMM-ORR_IMM#94,ANDOREOR_IMM-ORR_IMM#95,ANDOREOR_IMM-ORR_IMM#96,ANDOREOR_IMM-ORR_IMM#97,ANDOREOR_IMM-ORR_IMM#98,ANDOREOR_IMM-ORR_IMM#99,ANDOREOR_IMM-ORR_IMM#100,ANDOREOR_IMM-ORR_IMM#101,ANDOREOR_IMM-ORR_IMM#102,ANDOREOR_IMM-ORR_IMM#103,ANDOREOR_IMM-ORR_IMM#104,ANDOREOR_IMM-ORR_IMM#105,ANDOREOR_IMM-ORR_IMM#106,ANDOREOR_IMM-ORR_IMM#107,ANDOREOR_IMM-ORR_IMM#108,ANDOREOR_IMM-ORR_IMM#109,ANDOREOR_IMM-ORR_IMM#110,ANDOREOR_IMM-ORR_IMM#111,ANDOREOR_IMM-ORR_IMM#112,ANDOREOR_IMM-ORR_IMM#113
 pub const fn classify_impl_12d(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x501,
     0x1 => 0x501,
     0x2 => 0x501,
@@ -31110,14 +31111,14 @@ pub const fn classify_impl_12d(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ANDOREOR_IMM-ORR_IMM#114,ANDOREOR_IMM-ORR_IMM#115,ANDOREOR_IMM-ORR_IMM#116,ANDOREOR_IMM-ORR_IMM#117,ANDOREOR_IMM-ORR_IMM#118,ANDOREOR_IMM-ORR_IMM#119,ANDOREOR_IMM-ORR_IMM#120,ANDOREOR_IMM-ORR_IMM#121,ANDOREOR_IMM-ORR_IMM#122,ANDOREOR_IMM-ORR_IMM#123,ANDOREOR_IMM-ORR_IMM#124,ANDOREOR_IMM-ORR_IMM#125,ANDOREOR_IMM-ORR_IMM#126,ANDOREOR_IMM-ORR_IMM#127,ANDOREOR_IMM-ORR_IMM#128,ANDOREOR_IMM-ORR_IMM#129,ANDOREOR_IMM-ORR_IMM#130,ANDOREOR_IMM-ORR_IMM#131,ANDOREOR_IMM-ORR_IMM#132,ANDOREOR_IMM-ORR_IMM#133,ANDOREOR_IMM-ORR_IMM#134,ANDOREOR_IMM-ORR_IMM#135,ANDOREOR_IMM-ORR_IMM#136,ANDOREOR_IMM-ORR_IMM#137,ANDOREOR_IMM-ORR_IMM#138,ANDOREOR_IMM-ORR_IMM#139,ANDOREOR_IMM-ORR_IMM#140,ANDOREOR_IMM-ORR_IMM#141,ANDOREOR_IMM-ORR_IMM#142,ANDOREOR_IMM-ORR_IMM#143,ANDOREOR_IMM-ORR_IMM#144,ANDOREOR_IMM-ORR_IMM#145,ANDOREOR_IMM-ORR_IMM#146,ANDOREOR_IMM-ORR_IMM#147,ANDOREOR_IMM-ORR_IMM#148,ANDOREOR_IMM-ORR_IMM#149,ANDOREOR_IMM-ORR_IMM#150,ANDOREOR_IMM-ORR_IMM#151,ANDOREOR_IMM-ORR_IMM#152,ANDOREOR_IMM-ORR_IMM#153,ANDOREOR_IMM-ORR_IMM#154,ANDOREOR_IMM-ORR_IMM#155,ANDOREOR_IMM-ORR_IMM#156,ANDOREOR_IMM-ORR_IMM#157,ANDOREOR_IMM-ORR_IMM#158,ANDOREOR_IMM-ORR_IMM#159,ANDOREOR_IMM-ORR_IMM#160,ANDOREOR_IMM-ORR_IMM#161,ANDOREOR_IMM-ORR_IMM#162,ANDOREOR_IMM-ORR_IMM#163,ANDOREOR_IMM-ORR_IMM#164,ANDOREOR_IMM-ORR_IMM#165,ANDOREOR_IMM-ORR_IMM#166,ANDOREOR_IMM-ORR_IMM#167,ANDOREOR_IMM-ORR_IMM#168,ANDOREOR_IMM-ORR_IMM#169,ANDOREOR_IMM-ORR_IMM#170,ANDOREOR_IMM-ORR_IMM#171,ANDOREOR_IMM-ORR_IMM#172,ANDOREOR_IMM-ORR_IMM#173,ANDOREOR_IMM-ORR_IMM#174,ANDOREOR_IMM-ORR_IMM#175,ANDOREOR_IMM-ORR_IMM#176
 pub const fn classify_impl_12e(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x501,
     0x1 => 0x501,
     0x2 => 0x501,
@@ -31183,28 +31184,28 @@ pub const fn classify_impl_12e(inst: u32) -> u32 {
     0x3e => 0x501,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMU-STURW#0,MEMU-STRW_POST#0,MEMU-STTRW#0,MEMU-STRW_PRE#0
 pub const fn classify_impl_12f(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1820,
     0x1 => 0x1821,
     0x2 => 0x1822,
     0x3 => 0x1823,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG-STRW_REG#0,SWP-SWP#0,LDATOMIC-LDADDW#0,LDATOMIC-LDCLRW#0,LDATOMIC-LDEORW#0,LDATOMIC-LDSETW#0,LDATOMIC-LDSMAXW#0,LDATOMIC-LDSMINW#0,LDATOMIC-LDUMAXW#0,LDATOMIC-LDUMINW#0
 pub const fn classify_impl_130(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 11) & 0x1f {
+  
+  match (inst >> 11) & 0x1f {
     0x0 => 0x6140,
     0x1 => 0x0,
     0x2 => 0x6141,
@@ -31238,28 +31239,28 @@ pub const fn classify_impl_130(inst: u32) -> u32 {
     0x1e => 0x0,
     0x1f => 0x1908,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMU-LDURW#0,MEMU-LDRW_POST#0,MEMU-LDTRW#0,MEMU-LDRW_PRE#0
 pub const fn classify_impl_131(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1824,
     0x1 => 0x1825,
     0x2 => 0x1826,
     0x3 => 0x1827,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG-LDRW_REG#0,SWP-SWPL#0,LDATOMIC-LDADDLW#0,LDATOMIC-LDCLRLW#0,LDATOMIC-LDEORLW#0,LDATOMIC-LDSETLW#0,LDATOMIC-LDSMAXLW#0,LDATOMIC-LDSMINLW#0,LDATOMIC-LDUMAXLW#0,LDATOMIC-LDUMINLW#0
 pub const fn classify_impl_132(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 11) & 0x1f {
+  
+  match (inst >> 11) & 0x1f {
     0x0 => 0x6148,
     0x1 => 0x0,
     0x2 => 0x6149,
@@ -31293,28 +31294,28 @@ pub const fn classify_impl_132(inst: u32) -> u32 {
     0x1e => 0x0,
     0x1f => 0x1909,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMU-LDURSW#0,MEMU-LDRSW_POST#0,MEMU-LDTRSW#0,MEMU-LDRSW_PRE#0
 pub const fn classify_impl_133(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1828,
     0x1 => 0x1829,
     0x2 => 0x182a,
     0x3 => 0x182b,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG-LDRSW_REG#0,SWP-SWPA#0,LDATOMIC-LDADDAW#0,LDATOMIC-LDCLRAW#0,LDATOMIC-LDEORAW#0,LDATOMIC-LDSETAW#0,LDATOMIC-LDSMAXAW#0,LDATOMIC-LDSMINAW#0,LDATOMIC-LDUMAXAW#0,LDATOMIC-LDUMINAW#0
 pub const fn classify_impl_134(inst: u32) -> u32 {
   if (inst&0x400) != 0x0 { return 0; }
-  let idx = match (inst >> 11) & 0x1f {
+  
+  match (inst >> 11) & 0x1f {
     0x0 => 0x6150,
     0x1 => 0x0,
     0x2 => 0x6151,
@@ -31348,15 +31349,14 @@ pub const fn classify_impl_134(inst: u32) -> u32 {
     0x1e => 0x0,
     0x1f => 0x190a,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPC-LDAPRW#0
 pub const fn classify_impl_135_1(inst: u32) -> u32 {
   if (inst&0xf0000) != 0xf0000 { return 0; }
-  return 0x6202;
+  0x6202
 }
 
 // MEM_REG-LDRSW_REG#0,SWP-SWPA#0,LDATOMIC-LDADDAW#0,LDATOMIC-LDCLRAW#0,LDATOMIC-LDEORAW#0,LDATOMIC-LDSETAW#0,LDATOMIC-LDSMAXAW#0,LDATOMIC-LDSMINAW#0,LDATOMIC-LDUMAXAW#0,LDATOMIC-LDUMINAW#0,RCPC-LDAPRW#0
@@ -31401,14 +31401,15 @@ pub const fn classify_impl_135(inst: u32) -> u32 {
     0x1 => return classify_impl_135_1(inst), // RCPC-LDAPRW#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SWP-SWPAL#0,LDATOMIC-LDADDALW#0,LDATOMIC-LDCLRALW#0,LDATOMIC-LDEORALW#0,LDATOMIC-LDSETALW#0,LDATOMIC-LDSMAXALW#0,LDATOMIC-LDSMINALW#0,LDATOMIC-LDUMAXALW#0,LDATOMIC-LDUMINALW#0
 pub const fn classify_impl_136(inst: u32) -> u32 {
   if (inst&0xc00) != 0x0 { return 0; }
-  let idx = match (inst >> 12) & 0xf {
+  
+  match (inst >> 12) & 0xf {
     0x0 => 0x6158,
     0x1 => 0x6159,
     0x2 => 0x615a,
@@ -31426,22 +31427,21 @@ pub const fn classify_impl_136(inst: u32) -> u32 {
     0xe => 0x0,
     0xf => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ADCSBC-ADCS#0
 pub const fn classify_impl_137_1(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x281;
+  0x281
 }
 
 
 // RMIF-RMIF#0
 pub const fn classify_impl_137_2(inst: u32) -> u32 {
   if (inst&0x10) != 0x0 { return 0; }
-  return 0x6680;
+  0x6680
 }
 
 // ADCSBC-ADCS#0,RMIF-RMIF#0
@@ -31457,172 +31457,172 @@ pub const fn classify_impl_137(inst: u32) -> u32 {
     0x2 => return classify_impl_137_2(inst), // RMIF-RMIF#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SUBP-SUBPS#0
 pub const fn classify_impl_138(inst: u32) -> u32 {
   if (inst&0xfc00) != 0x0 { return 0; }
-  return 0x6401;
+  0x6401
 }
 
 
 // MEMU_FP-STUR_FP#3,MEMU_FP-STR_FP_POST#3,MEMU_FP-STR_FP_PRE#3
 pub const fn classify_impl_139(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1a80,
     0x1 => 0x1a81,
     0x2 => 0x0,
     0x3 => 0x1a82,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG_FP-STR_REG_FP#3
 pub const fn classify_impl_13a(inst: u32) -> u32 {
   if (inst&0x4c00) != 0x4800 { return 0; }
-  return 0x1b80;
+  0x1b80
 }
 
 
 // MEMU_FP-LDUR_FP#3,MEMU_FP-LDR_FP_POST#3,MEMU_FP-LDR_FP_PRE#3
 pub const fn classify_impl_13b(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1a83,
     0x1 => 0x1a84,
     0x2 => 0x0,
     0x3 => 0x1a85,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG_FP-LDR_REG_FP#3
 pub const fn classify_impl_13c(inst: u32) -> u32 {
   if (inst&0x4c00) != 0x4800 { return 0; }
-  return 0x1b81;
+  0x1b81
 }
 
 
 // MEMX-STXRX#0,MEMX-STLXRX#0
 pub const fn classify_impl_13d(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x1690,
     0x1 => 0x1691,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMX-STXPX#0,MEMX-STLXPX#0
 pub const fn classify_impl_13e(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x1692,
     0x1 => 0x1693,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMX-LDXRX#0,MEMX-LDAXRX#0
 pub const fn classify_impl_13f(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x1694,
     0x1 => 0x1695,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMX-LDXPX#0,MEMX-LDAXPX#0
 pub const fn classify_impl_140(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x1696,
     0x1 => 0x1697,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMOR-STLLR#0,MEMOR-STLR#0
 pub const fn classify_impl_141(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x160c,
     0x1 => 0x160d,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // CAS-CAS#1,CAS-CASL#1
 pub const fn classify_impl_142(inst: u32) -> u32 {
   if (inst&0x7c00) != 0x7c00 { return 0; }
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x5f88,
     0x1 => 0x5f89,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMOR-LDLAR#0,MEMOR-LDAR#0
 pub const fn classify_impl_143(inst: u32) -> u32 {
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x160e,
     0x1 => 0x160f,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // CAS-CASA#1,CAS-CASAL#1
 pub const fn classify_impl_144(inst: u32) -> u32 {
   if (inst&0x7c00) != 0x7c00 { return 0; }
-  let idx = match (inst >> 15) & 0x1 {
+  
+  match (inst >> 15) & 0x1 {
     0x0 => 0x5f8a,
     0x1 => 0x5f8b,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SHA3_4REG-EOR3#0
 pub const fn classify_impl_145(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x6e80;
+  0x6e80
 }
 
 
 // SHA3_4REG-BCAX#0
 pub const fn classify_impl_146(inst: u32) -> u32 {
   if (inst&0x8000) != 0x0 { return 0; }
-  return 0x6e81;
+  0x6e81
 }
 
 
 // SM3TT-SM3TT1A#0,SM3TT-SM3TT1B#0,SM3TT-SM3TT2A#0,SM3TT-SM3TT2B#0
 pub const fn classify_impl_147_1(inst: u32) -> u32 {
   if (inst&0x4000) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x6e00,
     0x1 => 0x6e01,
     0x2 => 0x6e02,
     0x3 => 0x6e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SM3TT-SM3TT1A#0,SM3TT-SM3TT1B#0,SM3TT-SM3TT2A#0,SM3TT-SM3TT2B#0,SHA3_4REG-SM3SS1#0
@@ -31636,33 +31636,33 @@ pub const fn classify_impl_147(inst: u32) -> u32 {
     0x1 => return classify_impl_147_1(inst), // SM3TT-SM3TT1A#0,SM3TT-SM3TT1B#0,SM3TT-SM3TT2A#0,SM3TT-SM3TT2B#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHA512_3REG-SHA512H#0,SHA512_3REG-SHA512H2#0,SHA512_3REG-SHA512SU1#0,SHA512_3REG-RAX1#0
 pub const fn classify_impl_148_1(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x6f80,
     0x1 => 0x6f81,
     0x2 => 0x6f82,
     0x3 => 0x6f83,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SM3_3REG-SM3PARTW1#0,SM3_3REG-SM3PARTW2#0,SM3_3REG-SM4EKEY#0
 pub const fn classify_impl_148_2(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x7000,
     0x1 => 0x7001,
     0x2 => 0x7002,
     0x3 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SHA512_3REG-SHA512H#0,SHA512_3REG-SHA512H2#0,SHA512_3REG-SHA512SU1#0,SHA512_3REG-RAX1#0,SM3_3REG-SM3PARTW1#0,SM3_3REG-SM3PARTW2#0,SM3_3REG-SM4EKEY#0
@@ -31678,32 +31678,33 @@ pub const fn classify_impl_148(inst: u32) -> u32 {
     0x2 => return classify_impl_148_2(inst), // SM3_3REG-SM3PARTW1#0,SM3_3REG-SM3PARTW2#0,SM3_3REG-SM4EKEY#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // SHA512_2REG-SHA512SU0#0,SHA512_2REG-SM4E#0
 pub const fn classify_impl_149(inst: u32) -> u32 {
   if (inst&0xff800) != 0x8000 { return 0; }
-  let idx = match (inst >> 10) & 0x1 {
+  
+  match (inst >> 10) & 0x1 {
     0x0 => 0x6f00,
     0x1 => 0x6f01,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ADDSUBG-SUBG#0
 pub const fn classify_impl_14a(inst: u32) -> u32 {
   if (inst&0xc000) != 0x0 { return 0; }
-  return 0x6301;
+  0x6301
 }
 
 
 // ANDOREOR_IMM-EOR_IMM#57,ANDOREOR_IMM-EOR_IMM#58,ANDOREOR_IMM-EOR_IMM#59,ANDOREOR_IMM-EOR_IMM#60,ANDOREOR_IMM-EOR_IMM#61,ANDOREOR_IMM-EOR_IMM#62,ANDOREOR_IMM-EOR_IMM#63,ANDOREOR_IMM-EOR_IMM#64,ANDOREOR_IMM-EOR_IMM#65,ANDOREOR_IMM-EOR_IMM#66,ANDOREOR_IMM-EOR_IMM#67,ANDOREOR_IMM-EOR_IMM#68,ANDOREOR_IMM-EOR_IMM#69,ANDOREOR_IMM-EOR_IMM#70,ANDOREOR_IMM-EOR_IMM#71,ANDOREOR_IMM-EOR_IMM#72,ANDOREOR_IMM-EOR_IMM#73,ANDOREOR_IMM-EOR_IMM#74,ANDOREOR_IMM-EOR_IMM#75,ANDOREOR_IMM-EOR_IMM#76,ANDOREOR_IMM-EOR_IMM#77,ANDOREOR_IMM-EOR_IMM#78,ANDOREOR_IMM-EOR_IMM#79,ANDOREOR_IMM-EOR_IMM#80,ANDOREOR_IMM-EOR_IMM#81,ANDOREOR_IMM-EOR_IMM#82,ANDOREOR_IMM-EOR_IMM#83,ANDOREOR_IMM-EOR_IMM#84,ANDOREOR_IMM-EOR_IMM#85,ANDOREOR_IMM-EOR_IMM#86,ANDOREOR_IMM-EOR_IMM#87,ANDOREOR_IMM-EOR_IMM#88,ANDOREOR_IMM-EOR_IMM#89,ANDOREOR_IMM-EOR_IMM#90,ANDOREOR_IMM-EOR_IMM#91,ANDOREOR_IMM-EOR_IMM#92,ANDOREOR_IMM-EOR_IMM#93,ANDOREOR_IMM-EOR_IMM#94,ANDOREOR_IMM-EOR_IMM#95,ANDOREOR_IMM-EOR_IMM#96,ANDOREOR_IMM-EOR_IMM#97,ANDOREOR_IMM-EOR_IMM#98,ANDOREOR_IMM-EOR_IMM#99,ANDOREOR_IMM-EOR_IMM#100,ANDOREOR_IMM-EOR_IMM#101,ANDOREOR_IMM-EOR_IMM#102,ANDOREOR_IMM-EOR_IMM#103,ANDOREOR_IMM-EOR_IMM#104,ANDOREOR_IMM-EOR_IMM#105,ANDOREOR_IMM-EOR_IMM#106,ANDOREOR_IMM-EOR_IMM#107,ANDOREOR_IMM-EOR_IMM#108,ANDOREOR_IMM-EOR_IMM#109,ANDOREOR_IMM-EOR_IMM#110,ANDOREOR_IMM-EOR_IMM#111,ANDOREOR_IMM-EOR_IMM#112,ANDOREOR_IMM-EOR_IMM#113
 pub const fn classify_impl_14b(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x502,
     0x1 => 0x502,
     0x2 => 0x502,
@@ -31769,14 +31770,14 @@ pub const fn classify_impl_14b(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ANDOREOR_IMM-EOR_IMM#114,ANDOREOR_IMM-EOR_IMM#115,ANDOREOR_IMM-EOR_IMM#116,ANDOREOR_IMM-EOR_IMM#117,ANDOREOR_IMM-EOR_IMM#118,ANDOREOR_IMM-EOR_IMM#119,ANDOREOR_IMM-EOR_IMM#120,ANDOREOR_IMM-EOR_IMM#121,ANDOREOR_IMM-EOR_IMM#122,ANDOREOR_IMM-EOR_IMM#123,ANDOREOR_IMM-EOR_IMM#124,ANDOREOR_IMM-EOR_IMM#125,ANDOREOR_IMM-EOR_IMM#126,ANDOREOR_IMM-EOR_IMM#127,ANDOREOR_IMM-EOR_IMM#128,ANDOREOR_IMM-EOR_IMM#129,ANDOREOR_IMM-EOR_IMM#130,ANDOREOR_IMM-EOR_IMM#131,ANDOREOR_IMM-EOR_IMM#132,ANDOREOR_IMM-EOR_IMM#133,ANDOREOR_IMM-EOR_IMM#134,ANDOREOR_IMM-EOR_IMM#135,ANDOREOR_IMM-EOR_IMM#136,ANDOREOR_IMM-EOR_IMM#137,ANDOREOR_IMM-EOR_IMM#138,ANDOREOR_IMM-EOR_IMM#139,ANDOREOR_IMM-EOR_IMM#140,ANDOREOR_IMM-EOR_IMM#141,ANDOREOR_IMM-EOR_IMM#142,ANDOREOR_IMM-EOR_IMM#143,ANDOREOR_IMM-EOR_IMM#144,ANDOREOR_IMM-EOR_IMM#145,ANDOREOR_IMM-EOR_IMM#146,ANDOREOR_IMM-EOR_IMM#147,ANDOREOR_IMM-EOR_IMM#148,ANDOREOR_IMM-EOR_IMM#149,ANDOREOR_IMM-EOR_IMM#150,ANDOREOR_IMM-EOR_IMM#151,ANDOREOR_IMM-EOR_IMM#152,ANDOREOR_IMM-EOR_IMM#153,ANDOREOR_IMM-EOR_IMM#154,ANDOREOR_IMM-EOR_IMM#155,ANDOREOR_IMM-EOR_IMM#156,ANDOREOR_IMM-EOR_IMM#157,ANDOREOR_IMM-EOR_IMM#158,ANDOREOR_IMM-EOR_IMM#159,ANDOREOR_IMM-EOR_IMM#160,ANDOREOR_IMM-EOR_IMM#161,ANDOREOR_IMM-EOR_IMM#162,ANDOREOR_IMM-EOR_IMM#163,ANDOREOR_IMM-EOR_IMM#164,ANDOREOR_IMM-EOR_IMM#165,ANDOREOR_IMM-EOR_IMM#166,ANDOREOR_IMM-EOR_IMM#167,ANDOREOR_IMM-EOR_IMM#168,ANDOREOR_IMM-EOR_IMM#169,ANDOREOR_IMM-EOR_IMM#170,ANDOREOR_IMM-EOR_IMM#171,ANDOREOR_IMM-EOR_IMM#172,ANDOREOR_IMM-EOR_IMM#173,ANDOREOR_IMM-EOR_IMM#174,ANDOREOR_IMM-EOR_IMM#175,ANDOREOR_IMM-EOR_IMM#176
 pub const fn classify_impl_14c(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x502,
     0x1 => 0x502,
     0x2 => 0x502,
@@ -31842,63 +31843,63 @@ pub const fn classify_impl_14c(inst: u32) -> u32 {
     0x3e => 0x502,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // SVC-SVC#0,SVC-HVC#0,SVC-SMC#0
 pub const fn classify_impl_14d(inst: u32) -> u32 {
   if (inst&0x1c) != 0x0 { return 0; }
-  let idx = match (inst >> 0) & 0x3 {
+  
+  match inst & 0x3 {
     0x0 => 0x0,
     0x1 => 0xe80,
     0x2 => 0xe81,
     0x3 => 0xe82,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // BRK-BRK#0
 pub const fn classify_impl_14e(inst: u32) -> u32 {
   if (inst&0x1f) != 0x0 { return 0; }
-  return 0xa00;
+  0xa00
 }
 
 
 // HLT-HLT#0
 pub const fn classify_impl_14f(inst: u32) -> u32 {
   if (inst&0x1f) != 0x0 { return 0; }
-  return 0xe00;
+  0xe00
 }
 
 
 // TCANCEL-TCANCEL#0
 pub const fn classify_impl_150(inst: u32) -> u32 {
   if (inst&0x1f) != 0x0 { return 0; }
-  return 0x6800;
+  0x6800
 }
 
 
 // DCPS-DCPS1#0,DCPS-DCPS2#0,DCPS-DCPS3#0
 pub const fn classify_impl_151(inst: u32) -> u32 {
   if (inst&0x1c) != 0x0 { return 0; }
-  let idx = match (inst >> 0) & 0x3 {
+  
+  match inst & 0x3 {
     0x0 => 0x0,
     0x1 => 0xf00,
     0x2 => 0xf01,
     0x3 => 0xf02,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MSR_IMM-MSR_UAO#0,MSR_IMM-MSR_PAN#0,MSR_IMM-MSR_SPSel#0,MSR_FLAGM-CFINV#0,MSR_FLAGM-XAFLAG#0,MSR_FLAGM-AXFLAG#0
 pub const fn classify_impl_152_1_1_1(inst: u32) -> u32 {
-  let idx = match (inst >> 5) & 0x7 {
+  
+  match (inst >> 5) & 0x7 {
     0x0 => 0x6600,
     0x1 => 0x6601,
     0x2 => 0x6602,
@@ -31908,14 +31909,14 @@ pub const fn classify_impl_152_1_1_1(inst: u32) -> u32 {
     0x6 => 0x0,
     0x7 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MSR_IMM-MSR_UAO#1,MSR_IMM-MSR_PAN#1,MSR_IMM-MSR_SPSel#1,MSR_FLAGM-CFINV#0,MSR_FLAGM-XAFLAG#0,MSR_FLAGM-AXFLAG#0
 pub const fn classify_impl_152_1_1_2(inst: u32) -> u32 {
-  let idx = match (inst >> 5) & 0x7 {
+  
+  match (inst >> 5) & 0x7 {
     0x0 => 0x6600,
     0x1 => 0x6601,
     0x2 => 0x6602,
@@ -31925,14 +31926,14 @@ pub const fn classify_impl_152_1_1_2(inst: u32) -> u32 {
     0x6 => 0x0,
     0x7 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MSR_IMM-MSR_UAO#2,MSR_IMM-MSR_PAN#2,MSR_IMM-MSR_SPSel#2,MSR_FLAGM-CFINV#0,MSR_FLAGM-XAFLAG#0,MSR_FLAGM-AXFLAG#0
 pub const fn classify_impl_152_1_1_3(inst: u32) -> u32 {
-  let idx = match (inst >> 5) & 0x7 {
+  
+  match (inst >> 5) & 0x7 {
     0x0 => 0x6600,
     0x1 => 0x6601,
     0x2 => 0x6602,
@@ -31942,14 +31943,14 @@ pub const fn classify_impl_152_1_1_3(inst: u32) -> u32 {
     0x6 => 0x0,
     0x7 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MSR_IMM-MSR_UAO#3,MSR_IMM-MSR_PAN#3,MSR_IMM-MSR_SPSel#3,MSR_FLAGM-CFINV#0,MSR_FLAGM-XAFLAG#0,MSR_FLAGM-AXFLAG#0
 pub const fn classify_impl_152_1_1_4(inst: u32) -> u32 {
-  let idx = match (inst >> 5) & 0x7 {
+  
+  match (inst >> 5) & 0x7 {
     0x0 => 0x6600,
     0x1 => 0x6601,
     0x2 => 0x6602,
@@ -31959,14 +31960,14 @@ pub const fn classify_impl_152_1_1_4(inst: u32) -> u32 {
     0x6 => 0x0,
     0x7 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MSR_IMM-MSR_UAO#4,MSR_IMM-MSR_PAN#4,MSR_IMM-MSR_SPSel#4,MSR_FLAGM-CFINV#0,MSR_FLAGM-XAFLAG#0,MSR_FLAGM-AXFLAG#0
 pub const fn classify_impl_152_1_1_5(inst: u32) -> u32 {
-  let idx = match (inst >> 5) & 0x7 {
+  
+  match (inst >> 5) & 0x7 {
     0x0 => 0x6600,
     0x1 => 0x6601,
     0x2 => 0x6602,
@@ -31976,14 +31977,14 @@ pub const fn classify_impl_152_1_1_5(inst: u32) -> u32 {
     0x6 => 0x0,
     0x7 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MSR_IMM-MSR_UAO#5,MSR_IMM-MSR_PAN#5,MSR_IMM-MSR_SPSel#5,MSR_FLAGM-CFINV#0,MSR_FLAGM-XAFLAG#0,MSR_FLAGM-AXFLAG#0
 pub const fn classify_impl_152_1_1_6(inst: u32) -> u32 {
-  let idx = match (inst >> 5) & 0x7 {
+  
+  match (inst >> 5) & 0x7 {
     0x0 => 0x6600,
     0x1 => 0x6601,
     0x2 => 0x6602,
@@ -31993,14 +31994,14 @@ pub const fn classify_impl_152_1_1_6(inst: u32) -> u32 {
     0x6 => 0x0,
     0x7 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MSR_IMM-MSR_UAO#6,MSR_IMM-MSR_PAN#6,MSR_IMM-MSR_SPSel#6,MSR_FLAGM-CFINV#0,MSR_FLAGM-XAFLAG#0,MSR_FLAGM-AXFLAG#0
 pub const fn classify_impl_152_1_1_7(inst: u32) -> u32 {
-  let idx = match (inst >> 5) & 0x7 {
+  
+  match (inst >> 5) & 0x7 {
     0x0 => 0x6600,
     0x1 => 0x6601,
     0x2 => 0x6602,
@@ -32010,14 +32011,14 @@ pub const fn classify_impl_152_1_1_7(inst: u32) -> u32 {
     0x6 => 0x0,
     0x7 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MSR_IMM-MSR_UAO#7,MSR_IMM-MSR_PAN#7,MSR_IMM-MSR_SPSel#7,MSR_FLAGM-CFINV#0,MSR_FLAGM-XAFLAG#0,MSR_FLAGM-AXFLAG#0
 pub const fn classify_impl_152_1_1_8(inst: u32) -> u32 {
-  let idx = match (inst >> 5) & 0x7 {
+  
+  match (inst >> 5) & 0x7 {
     0x0 => 0x6600,
     0x1 => 0x6601,
     0x2 => 0x6602,
@@ -32027,8 +32028,7 @@ pub const fn classify_impl_152_1_1_8(inst: u32) -> u32 {
     0x6 => 0x0,
     0x7 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // MSR_IMM-MSR_UAO#0,MSR_IMM-MSR_UAO#1,MSR_IMM-MSR_UAO#2,MSR_IMM-MSR_UAO#3,MSR_IMM-MSR_UAO#4,MSR_IMM-MSR_UAO#5,MSR_IMM-MSR_UAO#6,MSR_IMM-MSR_UAO#7,MSR_IMM-MSR_PAN#0,MSR_IMM-MSR_PAN#1,MSR_IMM-MSR_PAN#2,MSR_IMM-MSR_PAN#3,MSR_IMM-MSR_PAN#4,MSR_IMM-MSR_PAN#5,MSR_IMM-MSR_PAN#6,MSR_IMM-MSR_PAN#7,MSR_IMM-MSR_SPSel#0,MSR_IMM-MSR_SPSel#1,MSR_IMM-MSR_SPSel#2,MSR_IMM-MSR_SPSel#3,MSR_IMM-MSR_SPSel#4,MSR_IMM-MSR_SPSel#5,MSR_IMM-MSR_SPSel#6,MSR_IMM-MSR_SPSel#7,MSR_FLAGM-CFINV#0,MSR_FLAGM-XAFLAG#0,MSR_FLAGM-AXFLAG#0
@@ -32056,52 +32056,52 @@ pub const fn classify_impl_152_1_1(inst: u32) -> u32 {
     0x8 => return classify_impl_152_1_1_8(inst), // MSR_IMM-MSR_UAO#7,MSR_IMM-MSR_PAN#7,MSR_IMM-MSR_SPSel#7,MSR_FLAGM-CFINV#0,MSR_FLAGM-XAFLAG#0,MSR_FLAGM-AXFLAG#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // MSR_IMM-MSR_ALLINT#0,MSR_IMM-MSR_PM#0
 pub const fn classify_impl_152_1_2(inst: u32) -> u32 {
   if (inst&0x7cff) != 0x401f { return 0; }
-  let idx = match (inst >> 9) & 0x1 {
+  
+  match (inst >> 9) & 0x1 {
     0x0 => 0x1483,
     0x1 => 0x1484,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // WFXT-WFET#0,WFXT-WFIT#0
 pub const fn classify_impl_152_1_3_1(inst: u32) -> u32 {
   if (inst&0x1c0) != 0x0 { return 0; }
-  let idx = match (inst >> 5) & 0x1 {
+  
+  match (inst >> 5) & 0x1 {
     0x0 => 0x6a00,
     0x1 => 0x6a01,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // HINT-HINT#0
 pub const fn classify_impl_152_1_3_2(inst: u32) -> u32 {
   if (inst&0x1f) != 0x1f { return 0; }
-  return 0xd80;
+  0xd80
 }
 
 
 // TCOMMIT-TCOMMIT#0
 pub const fn classify_impl_152_1_3_3_1(inst: u32) -> u32 {
   if (inst&0x100) != 0x0 { return 0; }
-  return 0x6880;
+  0x6880
 }
 
 
 // SB-SB#0
 pub const fn classify_impl_152_1_3_3_2(inst: u32) -> u32 {
   if (inst&0x100) != 0x0 { return 0; }
-  return 0x6780;
+  0x6780
 }
 
 // CLREX-CLREX#0,DSB-DSB#0,DSB-DMB#0,DSB-ISB#0,SB-SB#0,TCOMMIT-TCOMMIT#0
@@ -32123,14 +32123,15 @@ pub const fn classify_impl_152_1_3_3(inst: u32) -> u32 {
     0x2 => return classify_impl_152_1_3_3_2(inst), // SB-SB#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // CLREX-CLREX#0,DSB-DSB#0,DSB-DMB#0,DSB-ISB#0
 pub const fn classify_impl_152_1_3_4(inst: u32) -> u32 {
   if (inst&0x1f) != 0x1f { return 0; }
-  let idx = match (inst >> 5) & 0x7 {
+  
+  match (inst >> 5) & 0x7 {
     0x0 => 0x0,
     0x1 => 0x0,
     0x2 => 0xc80,
@@ -32140,15 +32141,15 @@ pub const fn classify_impl_152_1_3_4(inst: u32) -> u32 {
     0x6 => 0xd02,
     0x7 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MSR_IMM-MSR_SSBS#0,MSR_IMM-MSR_DIT#0,MSR_IMM-MSR_TCO#0,MSR_IMM-MSR_DAIFSet#0,MSR_IMM-MSR_DAIFClr#0
 pub const fn classify_impl_152_1_3_5(inst: u32) -> u32 {
   if (inst&0x1f) != 0x1f { return 0; }
-  let idx = match (inst >> 5) & 0x7 {
+  
+  match (inst >> 5) & 0x7 {
     0x0 => 0x0,
     0x1 => 0x1485,
     0x2 => 0x1486,
@@ -32158,15 +32159,15 @@ pub const fn classify_impl_152_1_3_5(inst: u32) -> u32 {
     0x6 => 0x1488,
     0x7 => 0x1489,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MSR_IMM-MSR_SSBS#1,MSR_IMM-MSR_DIT#1,MSR_IMM-MSR_TCO#1,MSR_IMM-MSR_DAIFSet#1,MSR_IMM-MSR_DAIFClr#1
 pub const fn classify_impl_152_1_3_6(inst: u32) -> u32 {
   if (inst&0x1f) != 0x1f { return 0; }
-  let idx = match (inst >> 5) & 0x7 {
+  
+  match (inst >> 5) & 0x7 {
     0x0 => 0x0,
     0x1 => 0x1485,
     0x2 => 0x1486,
@@ -32176,15 +32177,15 @@ pub const fn classify_impl_152_1_3_6(inst: u32) -> u32 {
     0x6 => 0x1488,
     0x7 => 0x1489,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MSR_IMM-MSR_SSBS#2,MSR_IMM-MSR_DIT#2,MSR_IMM-MSR_TCO#2,MSR_IMM-MSR_DAIFSet#2,MSR_IMM-MSR_DAIFClr#2
 pub const fn classify_impl_152_1_3_7(inst: u32) -> u32 {
   if (inst&0x1f) != 0x1f { return 0; }
-  let idx = match (inst >> 5) & 0x7 {
+  
+  match (inst >> 5) & 0x7 {
     0x0 => 0x0,
     0x1 => 0x1485,
     0x2 => 0x1486,
@@ -32194,15 +32195,15 @@ pub const fn classify_impl_152_1_3_7(inst: u32) -> u32 {
     0x6 => 0x1488,
     0x7 => 0x1489,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MSR_IMM-MSR_SSBS#3,MSR_IMM-MSR_DIT#3,MSR_IMM-MSR_TCO#3,MSR_IMM-MSR_DAIFSet#3,MSR_IMM-MSR_DAIFClr#3
 pub const fn classify_impl_152_1_3_8(inst: u32) -> u32 {
   if (inst&0x1f) != 0x1f { return 0; }
-  let idx = match (inst >> 5) & 0x7 {
+  
+  match (inst >> 5) & 0x7 {
     0x0 => 0x0,
     0x1 => 0x1485,
     0x2 => 0x1486,
@@ -32212,15 +32213,15 @@ pub const fn classify_impl_152_1_3_8(inst: u32) -> u32 {
     0x6 => 0x1488,
     0x7 => 0x1489,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MSR_IMM-MSR_SSBS#4,MSR_IMM-MSR_DIT#4,MSR_IMM-MSR_TCO#4,MSR_IMM-MSR_DAIFSet#4,MSR_IMM-MSR_DAIFClr#4
 pub const fn classify_impl_152_1_3_9(inst: u32) -> u32 {
   if (inst&0x1f) != 0x1f { return 0; }
-  let idx = match (inst >> 5) & 0x7 {
+  
+  match (inst >> 5) & 0x7 {
     0x0 => 0x0,
     0x1 => 0x1485,
     0x2 => 0x1486,
@@ -32230,15 +32231,15 @@ pub const fn classify_impl_152_1_3_9(inst: u32) -> u32 {
     0x6 => 0x1488,
     0x7 => 0x1489,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MSR_IMM-MSR_SSBS#5,MSR_IMM-MSR_DIT#5,MSR_IMM-MSR_TCO#5,MSR_IMM-MSR_DAIFSet#5,MSR_IMM-MSR_DAIFClr#5
 pub const fn classify_impl_152_1_3_a(inst: u32) -> u32 {
   if (inst&0x1f) != 0x1f { return 0; }
-  let idx = match (inst >> 5) & 0x7 {
+  
+  match (inst >> 5) & 0x7 {
     0x0 => 0x0,
     0x1 => 0x1485,
     0x2 => 0x1486,
@@ -32248,15 +32249,15 @@ pub const fn classify_impl_152_1_3_a(inst: u32) -> u32 {
     0x6 => 0x1488,
     0x7 => 0x1489,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MSR_IMM-MSR_SSBS#6,MSR_IMM-MSR_DIT#6,MSR_IMM-MSR_TCO#6,MSR_IMM-MSR_DAIFSet#6,MSR_IMM-MSR_DAIFClr#6
 pub const fn classify_impl_152_1_3_b(inst: u32) -> u32 {
   if (inst&0x1f) != 0x1f { return 0; }
-  let idx = match (inst >> 5) & 0x7 {
+  
+  match (inst >> 5) & 0x7 {
     0x0 => 0x0,
     0x1 => 0x1485,
     0x2 => 0x1486,
@@ -32266,15 +32267,15 @@ pub const fn classify_impl_152_1_3_b(inst: u32) -> u32 {
     0x6 => 0x1488,
     0x7 => 0x1489,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MSR_IMM-MSR_SSBS#7,MSR_IMM-MSR_DIT#7,MSR_IMM-MSR_TCO#7,MSR_IMM-MSR_DAIFSet#7,MSR_IMM-MSR_DAIFClr#7
 pub const fn classify_impl_152_1_3_c(inst: u32) -> u32 {
   if (inst&0x1f) != 0x1f { return 0; }
-  let idx = match (inst >> 5) & 0x7 {
+  
+  match (inst >> 5) & 0x7 {
     0x0 => 0x0,
     0x1 => 0x1485,
     0x2 => 0x1486,
@@ -32284,8 +32285,7 @@ pub const fn classify_impl_152_1_3_c(inst: u32) -> u32 {
     0x6 => 0x1488,
     0x7 => 0x1489,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // CLREX-CLREX#0,DSB-DSB#0,DSB-DMB#0,DSB-ISB#0,HINT-HINT#0,MSR_IMM-MSR_SSBS#0,MSR_IMM-MSR_SSBS#1,MSR_IMM-MSR_SSBS#2,MSR_IMM-MSR_SSBS#3,MSR_IMM-MSR_SSBS#4,MSR_IMM-MSR_SSBS#5,MSR_IMM-MSR_SSBS#6,MSR_IMM-MSR_SSBS#7,MSR_IMM-MSR_DIT#0,MSR_IMM-MSR_DIT#1,MSR_IMM-MSR_DIT#2,MSR_IMM-MSR_DIT#3,MSR_IMM-MSR_DIT#4,MSR_IMM-MSR_DIT#5,MSR_IMM-MSR_DIT#6,MSR_IMM-MSR_DIT#7,MSR_IMM-MSR_TCO#0,MSR_IMM-MSR_TCO#1,MSR_IMM-MSR_TCO#2,MSR_IMM-MSR_TCO#3,MSR_IMM-MSR_TCO#4,MSR_IMM-MSR_TCO#5,MSR_IMM-MSR_TCO#6,MSR_IMM-MSR_TCO#7,MSR_IMM-MSR_DAIFSet#0,MSR_IMM-MSR_DAIFSet#1,MSR_IMM-MSR_DAIFSet#2,MSR_IMM-MSR_DAIFSet#3,MSR_IMM-MSR_DAIFSet#4,MSR_IMM-MSR_DAIFSet#5,MSR_IMM-MSR_DAIFSet#6,MSR_IMM-MSR_DAIFSet#7,MSR_IMM-MSR_DAIFClr#0,MSR_IMM-MSR_DAIFClr#1,MSR_IMM-MSR_DAIFClr#2,MSR_IMM-MSR_DAIFClr#3,MSR_IMM-MSR_DAIFClr#4,MSR_IMM-MSR_DAIFClr#5,MSR_IMM-MSR_DAIFClr#6,MSR_IMM-MSR_DAIFClr#7,SB-SB#0,TCOMMIT-TCOMMIT#0,WFXT-WFET#0,WFXT-WFIT#0
@@ -32372,7 +32372,7 @@ pub const fn classify_impl_152_1_3(inst: u32) -> u32 {
     0xc => return classify_impl_152_1_3_c(inst), // MSR_IMM-MSR_SSBS#7,MSR_IMM-MSR_DIT#7,MSR_IMM-MSR_TCO#7,MSR_IMM-MSR_DAIFSet#7,MSR_IMM-MSR_DAIFClr#7
     _ => idx
   };
-  return idx;
+  idx
 }
 
 // CLREX-CLREX#0,DSB-DSB#0,DSB-DMB#0,DSB-ISB#0,HINT-HINT#0,MSR_IMM-MSR_UAO#0,MSR_IMM-MSR_UAO#1,MSR_IMM-MSR_UAO#2,MSR_IMM-MSR_UAO#3,MSR_IMM-MSR_UAO#4,MSR_IMM-MSR_UAO#5,MSR_IMM-MSR_UAO#6,MSR_IMM-MSR_UAO#7,MSR_IMM-MSR_PAN#0,MSR_IMM-MSR_PAN#1,MSR_IMM-MSR_PAN#2,MSR_IMM-MSR_PAN#3,MSR_IMM-MSR_PAN#4,MSR_IMM-MSR_PAN#5,MSR_IMM-MSR_PAN#6,MSR_IMM-MSR_PAN#7,MSR_IMM-MSR_SPSel#0,MSR_IMM-MSR_SPSel#1,MSR_IMM-MSR_SPSel#2,MSR_IMM-MSR_SPSel#3,MSR_IMM-MSR_SPSel#4,MSR_IMM-MSR_SPSel#5,MSR_IMM-MSR_SPSel#6,MSR_IMM-MSR_SPSel#7,MSR_IMM-MSR_ALLINT#0,MSR_IMM-MSR_PM#0,MSR_IMM-MSR_SSBS#0,MSR_IMM-MSR_SSBS#1,MSR_IMM-MSR_SSBS#2,MSR_IMM-MSR_SSBS#3,MSR_IMM-MSR_SSBS#4,MSR_IMM-MSR_SSBS#5,MSR_IMM-MSR_SSBS#6,MSR_IMM-MSR_SSBS#7,MSR_IMM-MSR_DIT#0,MSR_IMM-MSR_DIT#1,MSR_IMM-MSR_DIT#2,MSR_IMM-MSR_DIT#3,MSR_IMM-MSR_DIT#4,MSR_IMM-MSR_DIT#5,MSR_IMM-MSR_DIT#6,MSR_IMM-MSR_DIT#7,MSR_IMM-MSR_TCO#0,MSR_IMM-MSR_TCO#1,MSR_IMM-MSR_TCO#2,MSR_IMM-MSR_TCO#3,MSR_IMM-MSR_TCO#4,MSR_IMM-MSR_TCO#5,MSR_IMM-MSR_TCO#6,MSR_IMM-MSR_TCO#7,MSR_IMM-MSR_DAIFSet#0,MSR_IMM-MSR_DAIFSet#1,MSR_IMM-MSR_DAIFSet#2,MSR_IMM-MSR_DAIFSet#3,MSR_IMM-MSR_DAIFSet#4,MSR_IMM-MSR_DAIFSet#5,MSR_IMM-MSR_DAIFSet#6,MSR_IMM-MSR_DAIFSet#7,MSR_IMM-MSR_DAIFClr#0,MSR_IMM-MSR_DAIFClr#1,MSR_IMM-MSR_DAIFClr#2,MSR_IMM-MSR_DAIFClr#3,MSR_IMM-MSR_DAIFClr#4,MSR_IMM-MSR_DAIFClr#5,MSR_IMM-MSR_DAIFClr#6,MSR_IMM-MSR_DAIFClr#7,MSR_FLAGM-CFINV#0,MSR_FLAGM-XAFLAG#0,MSR_FLAGM-AXFLAG#0,SB-SB#0,TCOMMIT-TCOMMIT#0,WFXT-WFET#0,WFXT-WFIT#0
@@ -32391,7 +32391,7 @@ pub const fn classify_impl_152_1(inst: u32) -> u32 {
     0x3 => return classify_impl_152_1_3(inst), // CLREX-CLREX#0,DSB-DSB#0,DSB-DMB#0,DSB-ISB#0,HINT-HINT#0,MSR_IMM-MSR_SSBS#0,MSR_IMM-MSR_SSBS#1,MSR_IMM-MSR_SSBS#2,MSR_IMM-MSR_SSBS#3,MSR_IMM-MSR_SSBS#4,MSR_IMM-MSR_SSBS#5,MSR_IMM-MSR_SSBS#6,MSR_IMM-MSR_SSBS#7,MSR_IMM-MSR_DIT#0,MSR_IMM-MSR_DIT#1,MSR_IMM-MSR_DIT#2,MSR_IMM-MSR_DIT#3,MSR_IMM-MSR_DIT#4,MSR_IMM-MSR_DIT#5,MSR_IMM-MSR_DIT#6,MSR_IMM-MSR_DIT#7,MSR_IMM-MSR_TCO#0,MSR_IMM-MSR_TCO#1,MSR_IMM-MSR_TCO#2,MSR_IMM-MSR_TCO#3,MSR_IMM-MSR_TCO#4,MSR_IMM-MSR_TCO#5,MSR_IMM-MSR_TCO#6,MSR_IMM-MSR_TCO#7,MSR_IMM-MSR_DAIFSet#0,MSR_IMM-MSR_DAIFSet#1,MSR_IMM-MSR_DAIFSet#2,MSR_IMM-MSR_DAIFSet#3,MSR_IMM-MSR_DAIFSet#4,MSR_IMM-MSR_DAIFSet#5,MSR_IMM-MSR_DAIFSet#6,MSR_IMM-MSR_DAIFSet#7,MSR_IMM-MSR_DAIFClr#0,MSR_IMM-MSR_DAIFClr#1,MSR_IMM-MSR_DAIFClr#2,MSR_IMM-MSR_DAIFClr#3,MSR_IMM-MSR_DAIFClr#4,MSR_IMM-MSR_DAIFClr#5,MSR_IMM-MSR_DAIFClr#6,MSR_IMM-MSR_DAIFClr#7,SB-SB#0,TCOMMIT-TCOMMIT#0,WFXT-WFET#0,WFXT-WFIT#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 // CLREX-CLREX#0,DSB-DSB#0,DSB-DMB#0,DSB-ISB#0,HINT-HINT#0,SYS-SYS#0,MSR_IMM-MSR_UAO#0,MSR_IMM-MSR_UAO#1,MSR_IMM-MSR_UAO#2,MSR_IMM-MSR_UAO#3,MSR_IMM-MSR_UAO#4,MSR_IMM-MSR_UAO#5,MSR_IMM-MSR_UAO#6,MSR_IMM-MSR_UAO#7,MSR_IMM-MSR_PAN#0,MSR_IMM-MSR_PAN#1,MSR_IMM-MSR_PAN#2,MSR_IMM-MSR_PAN#3,MSR_IMM-MSR_PAN#4,MSR_IMM-MSR_PAN#5,MSR_IMM-MSR_PAN#6,MSR_IMM-MSR_PAN#7,MSR_IMM-MSR_SPSel#0,MSR_IMM-MSR_SPSel#1,MSR_IMM-MSR_SPSel#2,MSR_IMM-MSR_SPSel#3,MSR_IMM-MSR_SPSel#4,MSR_IMM-MSR_SPSel#5,MSR_IMM-MSR_SPSel#6,MSR_IMM-MSR_SPSel#7,MSR_IMM-MSR_ALLINT#0,MSR_IMM-MSR_PM#0,MSR_IMM-MSR_SSBS#0,MSR_IMM-MSR_SSBS#1,MSR_IMM-MSR_SSBS#2,MSR_IMM-MSR_SSBS#3,MSR_IMM-MSR_SSBS#4,MSR_IMM-MSR_SSBS#5,MSR_IMM-MSR_SSBS#6,MSR_IMM-MSR_SSBS#7,MSR_IMM-MSR_DIT#0,MSR_IMM-MSR_DIT#1,MSR_IMM-MSR_DIT#2,MSR_IMM-MSR_DIT#3,MSR_IMM-MSR_DIT#4,MSR_IMM-MSR_DIT#5,MSR_IMM-MSR_DIT#6,MSR_IMM-MSR_DIT#7,MSR_IMM-MSR_TCO#0,MSR_IMM-MSR_TCO#1,MSR_IMM-MSR_TCO#2,MSR_IMM-MSR_TCO#3,MSR_IMM-MSR_TCO#4,MSR_IMM-MSR_TCO#5,MSR_IMM-MSR_TCO#6,MSR_IMM-MSR_TCO#7,MSR_IMM-MSR_DAIFSet#0,MSR_IMM-MSR_DAIFSet#1,MSR_IMM-MSR_DAIFSet#2,MSR_IMM-MSR_DAIFSet#3,MSR_IMM-MSR_DAIFSet#4,MSR_IMM-MSR_DAIFSet#5,MSR_IMM-MSR_DAIFSet#6,MSR_IMM-MSR_DAIFSet#7,MSR_IMM-MSR_DAIFClr#0,MSR_IMM-MSR_DAIFClr#1,MSR_IMM-MSR_DAIFClr#2,MSR_IMM-MSR_DAIFClr#3,MSR_IMM-MSR_DAIFClr#4,MSR_IMM-MSR_DAIFClr#5,MSR_IMM-MSR_DAIFClr#6,MSR_IMM-MSR_DAIFClr#7,MSR_FLAGM-CFINV#0,MSR_FLAGM-XAFLAG#0,MSR_FLAGM-AXFLAG#0,SB-SB#0,TCOMMIT-TCOMMIT#0,WFXT-WFET#0,WFXT-WFIT#0
@@ -32405,19 +32405,19 @@ pub const fn classify_impl_152(inst: u32) -> u32 {
     0x1 => return classify_impl_152_1(inst), // CLREX-CLREX#0,DSB-DSB#0,DSB-DMB#0,DSB-ISB#0,HINT-HINT#0,MSR_IMM-MSR_UAO#0,MSR_IMM-MSR_UAO#1,MSR_IMM-MSR_UAO#2,MSR_IMM-MSR_UAO#3,MSR_IMM-MSR_UAO#4,MSR_IMM-MSR_UAO#5,MSR_IMM-MSR_UAO#6,MSR_IMM-MSR_UAO#7,MSR_IMM-MSR_PAN#0,MSR_IMM-MSR_PAN#1,MSR_IMM-MSR_PAN#2,MSR_IMM-MSR_PAN#3,MSR_IMM-MSR_PAN#4,MSR_IMM-MSR_PAN#5,MSR_IMM-MSR_PAN#6,MSR_IMM-MSR_PAN#7,MSR_IMM-MSR_SPSel#0,MSR_IMM-MSR_SPSel#1,MSR_IMM-MSR_SPSel#2,MSR_IMM-MSR_SPSel#3,MSR_IMM-MSR_SPSel#4,MSR_IMM-MSR_SPSel#5,MSR_IMM-MSR_SPSel#6,MSR_IMM-MSR_SPSel#7,MSR_IMM-MSR_ALLINT#0,MSR_IMM-MSR_PM#0,MSR_IMM-MSR_SSBS#0,MSR_IMM-MSR_SSBS#1,MSR_IMM-MSR_SSBS#2,MSR_IMM-MSR_SSBS#3,MSR_IMM-MSR_SSBS#4,MSR_IMM-MSR_SSBS#5,MSR_IMM-MSR_SSBS#6,MSR_IMM-MSR_SSBS#7,MSR_IMM-MSR_DIT#0,MSR_IMM-MSR_DIT#1,MSR_IMM-MSR_DIT#2,MSR_IMM-MSR_DIT#3,MSR_IMM-MSR_DIT#4,MSR_IMM-MSR_DIT#5,MSR_IMM-MSR_DIT#6,MSR_IMM-MSR_DIT#7,MSR_IMM-MSR_TCO#0,MSR_IMM-MSR_TCO#1,MSR_IMM-MSR_TCO#2,MSR_IMM-MSR_TCO#3,MSR_IMM-MSR_TCO#4,MSR_IMM-MSR_TCO#5,MSR_IMM-MSR_TCO#6,MSR_IMM-MSR_TCO#7,MSR_IMM-MSR_DAIFSet#0,MSR_IMM-MSR_DAIFSet#1,MSR_IMM-MSR_DAIFSet#2,MSR_IMM-MSR_DAIFSet#3,MSR_IMM-MSR_DAIFSet#4,MSR_IMM-MSR_DAIFSet#5,MSR_IMM-MSR_DAIFSet#6,MSR_IMM-MSR_DAIFSet#7,MSR_IMM-MSR_DAIFClr#0,MSR_IMM-MSR_DAIFClr#1,MSR_IMM-MSR_DAIFClr#2,MSR_IMM-MSR_DAIFClr#3,MSR_IMM-MSR_DAIFClr#4,MSR_IMM-MSR_DAIFClr#5,MSR_IMM-MSR_DAIFClr#6,MSR_IMM-MSR_DAIFClr#7,MSR_FLAGM-CFINV#0,MSR_FLAGM-XAFLAG#0,MSR_FLAGM-AXFLAG#0,SB-SB#0,TCOMMIT-TCOMMIT#0,WFXT-WFET#0,WFXT-WFIT#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // TSTART-TSTART#0,TTEST-TTEST#0
 pub const fn classify_impl_153_1(inst: u32) -> u32 {
   if (inst&0x7fee0) != 0x33060 { return 0; }
-  let idx = match (inst >> 8) & 0x1 {
+  
+  match (inst >> 8) & 0x1 {
     0x0 => 0x6900,
     0x1 => 0x6980,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // SYS-SYSL#0,TSTART-TSTART#0,TTEST-TTEST#0
@@ -32431,14 +32431,15 @@ pub const fn classify_impl_153(inst: u32) -> u32 {
     0x1 => return classify_impl_153_1(inst), // TSTART-TSTART#0,TTEST-TTEST#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // BRANCHREG-BR#0,BRANCHREG-BR#1,BRANCHREG-BR#2,BRANCHREG-BR#3,BRANCHREG-BR#4,BRANCHREG-BR#5,BRANCHREG-BR#6,BRANCHREG-BR#7,BRANCHREG-BR#8,BRANCHREG-BR#9,BRANCHREG-BR#10,BRANCHREG-BR#11,BRANCHREG-BR#12,BRANCHREG-BR#13,BRANCHREG-BR#14,BRANCHREG-BR#15,BRANCHREG-BR#16,BRANCHREG-BR#17,BRANCHREG-BR#18,BRANCHREG-BR#19,BRANCHREG-BR#20,BRANCHREG-BR#21,BRANCHREG-BR#22,BRANCHREG-BR#23,BRANCHREG-BR#24,BRANCHREG-BR#25,BRANCHREG-BR#26,BRANCHREG-BR#27,BRANCHREG-BR#28,BRANCHREG-BR#29,BRANCHREG-BR#30,BRANCHREG-BR#31,BRANCHREG-BRAAZ#0,BRANCHREG-BRAAZ#1,BRANCHREG-BRAAZ#2,BRANCHREG-BRAAZ#3,BRANCHREG-BRAAZ#4,BRANCHREG-BRAAZ#5,BRANCHREG-BRAAZ#6,BRANCHREG-BRAAZ#7,BRANCHREG-BRAAZ#8,BRANCHREG-BRAAZ#9,BRANCHREG-BRAAZ#10,BRANCHREG-BRAAZ#11,BRANCHREG-BRAAZ#12,BRANCHREG-BRAAZ#13,BRANCHREG-BRAAZ#14,BRANCHREG-BRAAZ#15,BRANCHREG-BRAAZ#16,BRANCHREG-BRAAZ#17,BRANCHREG-BRAAZ#18,BRANCHREG-BRAAZ#19,BRANCHREG-BRAAZ#20,BRANCHREG-BRAAZ#21,BRANCHREG-BRAAZ#22,BRANCHREG-BRAAZ#23,BRANCHREG-BRAAZ#24,BRANCHREG-BRAAZ#25,BRANCHREG-BRAAZ#26,BRANCHREG-BRAAZ#27,BRANCHREG-BRAAZ#28,BRANCHREG-BRAAZ#29,BRANCHREG-BRAAZ#30,BRANCHREG-BRAAZ#31,BRANCHREG-BRABZ#0,BRANCHREG-BRABZ#1,BRANCHREG-BRABZ#2,BRANCHREG-BRABZ#3,BRANCHREG-BRABZ#4,BRANCHREG-BRABZ#5,BRANCHREG-BRABZ#6,BRANCHREG-BRABZ#7,BRANCHREG-BRABZ#8,BRANCHREG-BRABZ#9,BRANCHREG-BRABZ#10,BRANCHREG-BRABZ#11,BRANCHREG-BRABZ#12,BRANCHREG-BRABZ#13,BRANCHREG-BRABZ#14,BRANCHREG-BRABZ#15,BRANCHREG-BRABZ#16,BRANCHREG-BRABZ#17,BRANCHREG-BRABZ#18,BRANCHREG-BRABZ#19,BRANCHREG-BRABZ#20,BRANCHREG-BRABZ#21,BRANCHREG-BRABZ#22,BRANCHREG-BRABZ#23,BRANCHREG-BRABZ#24,BRANCHREG-BRABZ#25,BRANCHREG-BRABZ#26,BRANCHREG-BRABZ#27,BRANCHREG-BRABZ#28,BRANCHREG-BRABZ#29,BRANCHREG-BRABZ#30,BRANCHREG-BRABZ#31
 pub const fn classify_impl_154(inst: u32) -> u32 {
   if (inst&0xff000) != 0xf0000 { return 0; }
-  let idx = match (inst >> 0) & 0xfff {
+  
+  match inst & 0xfff {
     0x0 => 0x980,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -36536,15 +36537,15 @@ pub const fn classify_impl_154(inst: u32) -> u32 {
     0xffe => 0x0,
     0xfff => 0x982,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // BRANCHREG-BLR#0,BRANCHREG-BLR#1,BRANCHREG-BLR#2,BRANCHREG-BLR#3,BRANCHREG-BLR#4,BRANCHREG-BLR#5,BRANCHREG-BLR#6,BRANCHREG-BLR#7,BRANCHREG-BLR#8,BRANCHREG-BLR#9,BRANCHREG-BLR#10,BRANCHREG-BLR#11,BRANCHREG-BLR#12,BRANCHREG-BLR#13,BRANCHREG-BLR#14,BRANCHREG-BLR#15,BRANCHREG-BLR#16,BRANCHREG-BLR#17,BRANCHREG-BLR#18,BRANCHREG-BLR#19,BRANCHREG-BLR#20,BRANCHREG-BLR#21,BRANCHREG-BLR#22,BRANCHREG-BLR#23,BRANCHREG-BLR#24,BRANCHREG-BLR#25,BRANCHREG-BLR#26,BRANCHREG-BLR#27,BRANCHREG-BLR#28,BRANCHREG-BLR#29,BRANCHREG-BLR#30,BRANCHREG-BLR#31,BRANCHREG-BLRAAZ#0,BRANCHREG-BLRAAZ#1,BRANCHREG-BLRAAZ#2,BRANCHREG-BLRAAZ#3,BRANCHREG-BLRAAZ#4,BRANCHREG-BLRAAZ#5,BRANCHREG-BLRAAZ#6,BRANCHREG-BLRAAZ#7,BRANCHREG-BLRAAZ#8,BRANCHREG-BLRAAZ#9,BRANCHREG-BLRAAZ#10,BRANCHREG-BLRAAZ#11,BRANCHREG-BLRAAZ#12,BRANCHREG-BLRAAZ#13,BRANCHREG-BLRAAZ#14,BRANCHREG-BLRAAZ#15,BRANCHREG-BLRAAZ#16,BRANCHREG-BLRAAZ#17,BRANCHREG-BLRAAZ#18,BRANCHREG-BLRAAZ#19,BRANCHREG-BLRAAZ#20,BRANCHREG-BLRAAZ#21,BRANCHREG-BLRAAZ#22,BRANCHREG-BLRAAZ#23,BRANCHREG-BLRAAZ#24,BRANCHREG-BLRAAZ#25,BRANCHREG-BLRAAZ#26,BRANCHREG-BLRAAZ#27,BRANCHREG-BLRAAZ#28,BRANCHREG-BLRAAZ#29,BRANCHREG-BLRAAZ#30,BRANCHREG-BLRAAZ#31,BRANCHREG-BLRABZ#0,BRANCHREG-BLRABZ#1,BRANCHREG-BLRABZ#2,BRANCHREG-BLRABZ#3,BRANCHREG-BLRABZ#4,BRANCHREG-BLRABZ#5,BRANCHREG-BLRABZ#6,BRANCHREG-BLRABZ#7,BRANCHREG-BLRABZ#8,BRANCHREG-BLRABZ#9,BRANCHREG-BLRABZ#10,BRANCHREG-BLRABZ#11,BRANCHREG-BLRABZ#12,BRANCHREG-BLRABZ#13,BRANCHREG-BLRABZ#14,BRANCHREG-BLRABZ#15,BRANCHREG-BLRABZ#16,BRANCHREG-BLRABZ#17,BRANCHREG-BLRABZ#18,BRANCHREG-BLRABZ#19,BRANCHREG-BLRABZ#20,BRANCHREG-BLRABZ#21,BRANCHREG-BLRABZ#22,BRANCHREG-BLRABZ#23,BRANCHREG-BLRABZ#24,BRANCHREG-BLRABZ#25,BRANCHREG-BLRABZ#26,BRANCHREG-BLRABZ#27,BRANCHREG-BLRABZ#28,BRANCHREG-BLRABZ#29,BRANCHREG-BLRABZ#30,BRANCHREG-BLRABZ#31
 pub const fn classify_impl_155(inst: u32) -> u32 {
   if (inst&0xff000) != 0xf0000 { return 0; }
-  let idx = match (inst >> 0) & 0xfff {
+  
+  match inst & 0xfff {
     0x0 => 0x983,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -40642,15 +40643,15 @@ pub const fn classify_impl_155(inst: u32) -> u32 {
     0xffe => 0x0,
     0xfff => 0x985,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // BRANCHREG-RET#0,BRANCHREG-RET#1,BRANCHREG-RET#2,BRANCHREG-RET#3,BRANCHREG-RET#4,BRANCHREG-RET#5,BRANCHREG-RET#6,BRANCHREG-RET#7,BRANCHREG-RET#8,BRANCHREG-RET#9,BRANCHREG-RET#10,BRANCHREG-RET#11,BRANCHREG-RET#12,BRANCHREG-RET#13,BRANCHREG-RET#14,BRANCHREG-RET#15,BRANCHREG-RET#16,BRANCHREG-RET#17,BRANCHREG-RET#18,BRANCHREG-RET#19,BRANCHREG-RET#20,BRANCHREG-RET#21,BRANCHREG-RET#22,BRANCHREG-RET#23,BRANCHREG-RET#24,BRANCHREG-RET#25,BRANCHREG-RET#26,BRANCHREG-RET#27,BRANCHREG-RET#28,BRANCHREG-RET#29,BRANCHREG-RET#30,BRANCHREG-RET#31,BRANCHREG-RETAA#0,BRANCHREG-RETAB#0
 pub const fn classify_impl_156(inst: u32) -> u32 {
   if (inst&0xff000) != 0xf0000 { return 0; }
-  let idx = match (inst >> 0) & 0xfff {
+  
+  match inst & 0xfff {
     0x0 => 0x986,
     0x1 => 0x0,
     0x2 => 0x0,
@@ -44748,29 +44749,28 @@ pub const fn classify_impl_156(inst: u32) -> u32 {
     0xffe => 0x0,
     0xfff => 0x988,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ERET-ERET#0
 pub const fn classify_impl_157_1(inst: u32) -> u32 {
   if (inst&0x1f) != 0x0 { return 0; }
-  return 0xf80;
+  0xf80
 }
 
 
 // ERET-ERETAA#0
 pub const fn classify_impl_157_2(inst: u32) -> u32 {
   if (inst&0x1f) != 0x1f { return 0; }
-  return 0xf81;
+  0xf81
 }
 
 
 // ERET-ERETAB#0
 pub const fn classify_impl_157_3(inst: u32) -> u32 {
   if (inst&0x1f) != 0x1f { return 0; }
-  return 0xf82;
+  0xf82
 }
 
 // ERET-ERET#0,ERET-ERETAA#0,ERET-ERETAB#0
@@ -44789,21 +44789,22 @@ pub const fn classify_impl_157(inst: u32) -> u32 {
     0x3 => return classify_impl_157_3(inst), // ERET-ERETAB#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // DRPS-DRPS#0
 pub const fn classify_impl_158(inst: u32) -> u32 {
   if (inst&0xfffff) != 0xf03e0 { return 0; }
-  return 0x1000;
+  0x1000
 }
 
 
 // BRANCHREG-BRAA#0,BRANCHREG-BRAA#1,BRANCHREG-BRAA#2,BRANCHREG-BRAA#3,BRANCHREG-BRAA#4,BRANCHREG-BRAA#5,BRANCHREG-BRAA#6,BRANCHREG-BRAA#7,BRANCHREG-BRAA#8,BRANCHREG-BRAA#9,BRANCHREG-BRAA#10,BRANCHREG-BRAA#11,BRANCHREG-BRAA#12,BRANCHREG-BRAA#13,BRANCHREG-BRAA#14,BRANCHREG-BRAA#15,BRANCHREG-BRAA#16,BRANCHREG-BRAA#17,BRANCHREG-BRAA#18,BRANCHREG-BRAA#19,BRANCHREG-BRAA#20,BRANCHREG-BRAA#21,BRANCHREG-BRAA#22,BRANCHREG-BRAA#23,BRANCHREG-BRAA#24,BRANCHREG-BRAA#25,BRANCHREG-BRAA#26,BRANCHREG-BRAA#27,BRANCHREG-BRAA#28,BRANCHREG-BRAA#29,BRANCHREG-BRAA#30,BRANCHREG-BRAA#31,BRANCHREG-BRAA#32,BRANCHREG-BRAA#33,BRANCHREG-BRAA#34,BRANCHREG-BRAA#35,BRANCHREG-BRAA#36,BRANCHREG-BRAA#37,BRANCHREG-BRAA#38,BRANCHREG-BRAA#39,BRANCHREG-BRAA#40,BRANCHREG-BRAA#41,BRANCHREG-BRAA#42,BRANCHREG-BRAA#43,BRANCHREG-BRAA#44,BRANCHREG-BRAA#45,BRANCHREG-BRAA#46,BRANCHREG-BRAA#47,BRANCHREG-BRAA#48,BRANCHREG-BRAA#49,BRANCHREG-BRAA#50,BRANCHREG-BRAA#51,BRANCHREG-BRAA#52,BRANCHREG-BRAA#53,BRANCHREG-BRAA#54,BRANCHREG-BRAA#55,BRANCHREG-BRAA#56,BRANCHREG-BRAA#57,BRANCHREG-BRAA#58,BRANCHREG-BRAA#59,BRANCHREG-BRAA#60,BRANCHREG-BRAA#61,BRANCHREG-BRAA#62,BRANCHREG-BRAA#63,BRANCHREG-BRAA#64,BRANCHREG-BRAA#65,BRANCHREG-BRAA#66,BRANCHREG-BRAA#67,BRANCHREG-BRAA#68,BRANCHREG-BRAA#69,BRANCHREG-BRAA#70,BRANCHREG-BRAA#71,BRANCHREG-BRAA#72,BRANCHREG-BRAA#73,BRANCHREG-BRAA#74,BRANCHREG-BRAA#75,BRANCHREG-BRAA#76,BRANCHREG-BRAA#77,BRANCHREG-BRAA#78,BRANCHREG-BRAA#79,BRANCHREG-BRAA#80,BRANCHREG-BRAA#81,BRANCHREG-BRAA#82,BRANCHREG-BRAA#83,BRANCHREG-BRAA#84,BRANCHREG-BRAA#85,BRANCHREG-BRAA#86,BRANCHREG-BRAA#87,BRANCHREG-BRAA#88,BRANCHREG-BRAA#89,BRANCHREG-BRAA#90,BRANCHREG-BRAA#91,BRANCHREG-BRAA#92,BRANCHREG-BRAA#93,BRANCHREG-BRAA#94,BRANCHREG-BRAA#95,BRANCHREG-BRAA#96,BRANCHREG-BRAA#97,BRANCHREG-BRAA#98,BRANCHREG-BRAA#99,BRANCHREG-BRAA#100,BRANCHREG-BRAA#101,BRANCHREG-BRAA#102,BRANCHREG-BRAA#103,BRANCHREG-BRAA#104,BRANCHREG-BRAA#105,BRANCHREG-BRAA#106,BRANCHREG-BRAA#107,BRANCHREG-BRAA#108,BRANCHREG-BRAA#109,BRANCHREG-BRAA#110,BRANCHREG-BRAA#111,BRANCHREG-BRAA#112,BRANCHREG-BRAA#113,BRANCHREG-BRAA#114,BRANCHREG-BRAA#115,BRANCHREG-BRAA#116,BRANCHREG-BRAA#117,BRANCHREG-BRAA#118,BRANCHREG-BRAA#119,BRANCHREG-BRAA#120,BRANCHREG-BRAA#121,BRANCHREG-BRAA#122,BRANCHREG-BRAA#123,BRANCHREG-BRAA#124,BRANCHREG-BRAA#125,BRANCHREG-BRAA#126,BRANCHREG-BRAA#127,BRANCHREG-BRAA#128,BRANCHREG-BRAA#129,BRANCHREG-BRAA#130,BRANCHREG-BRAA#131,BRANCHREG-BRAA#132,BRANCHREG-BRAA#133,BRANCHREG-BRAA#134,BRANCHREG-BRAA#135,BRANCHREG-BRAA#136,BRANCHREG-BRAA#137,BRANCHREG-BRAA#138,BRANCHREG-BRAA#139,BRANCHREG-BRAA#140,BRANCHREG-BRAA#141,BRANCHREG-BRAA#142,BRANCHREG-BRAA#143,BRANCHREG-BRAA#144,BRANCHREG-BRAA#145,BRANCHREG-BRAA#146,BRANCHREG-BRAA#147,BRANCHREG-BRAA#148,BRANCHREG-BRAA#149,BRANCHREG-BRAA#150,BRANCHREG-BRAA#151,BRANCHREG-BRAA#152,BRANCHREG-BRAA#153,BRANCHREG-BRAA#154,BRANCHREG-BRAA#155,BRANCHREG-BRAA#156,BRANCHREG-BRAA#157,BRANCHREG-BRAA#158,BRANCHREG-BRAA#159,BRANCHREG-BRAA#160,BRANCHREG-BRAA#161,BRANCHREG-BRAA#162,BRANCHREG-BRAA#163,BRANCHREG-BRAA#164,BRANCHREG-BRAA#165,BRANCHREG-BRAA#166,BRANCHREG-BRAA#167,BRANCHREG-BRAA#168,BRANCHREG-BRAA#169,BRANCHREG-BRAA#170,BRANCHREG-BRAA#171,BRANCHREG-BRAA#172,BRANCHREG-BRAA#173,BRANCHREG-BRAA#174,BRANCHREG-BRAA#175,BRANCHREG-BRAA#176,BRANCHREG-BRAA#177,BRANCHREG-BRAA#178,BRANCHREG-BRAA#179,BRANCHREG-BRAA#180,BRANCHREG-BRAA#181,BRANCHREG-BRAA#182,BRANCHREG-BRAA#183,BRANCHREG-BRAA#184,BRANCHREG-BRAA#185,BRANCHREG-BRAA#186,BRANCHREG-BRAA#187,BRANCHREG-BRAA#188,BRANCHREG-BRAA#189,BRANCHREG-BRAA#190,BRANCHREG-BRAA#191,BRANCHREG-BRAA#192,BRANCHREG-BRAA#193,BRANCHREG-BRAA#194,BRANCHREG-BRAA#195,BRANCHREG-BRAA#196,BRANCHREG-BRAA#197,BRANCHREG-BRAA#198,BRANCHREG-BRAA#199,BRANCHREG-BRAA#200,BRANCHREG-BRAA#201,BRANCHREG-BRAA#202,BRANCHREG-BRAA#203,BRANCHREG-BRAA#204,BRANCHREG-BRAA#205,BRANCHREG-BRAA#206,BRANCHREG-BRAA#207,BRANCHREG-BRAA#208,BRANCHREG-BRAA#209,BRANCHREG-BRAA#210,BRANCHREG-BRAA#211,BRANCHREG-BRAA#212,BRANCHREG-BRAA#213,BRANCHREG-BRAA#214,BRANCHREG-BRAA#215,BRANCHREG-BRAA#216,BRANCHREG-BRAA#217,BRANCHREG-BRAA#218,BRANCHREG-BRAA#219,BRANCHREG-BRAA#220,BRANCHREG-BRAA#221,BRANCHREG-BRAA#222,BRANCHREG-BRAA#223,BRANCHREG-BRAA#224,BRANCHREG-BRAA#225,BRANCHREG-BRAA#226,BRANCHREG-BRAA#227,BRANCHREG-BRAA#228,BRANCHREG-BRAA#229,BRANCHREG-BRAA#230,BRANCHREG-BRAA#231,BRANCHREG-BRAA#232,BRANCHREG-BRAA#233,BRANCHREG-BRAA#234,BRANCHREG-BRAA#235,BRANCHREG-BRAA#236,BRANCHREG-BRAA#237,BRANCHREG-BRAA#238,BRANCHREG-BRAA#239,BRANCHREG-BRAA#240,BRANCHREG-BRAA#241,BRANCHREG-BRAA#242,BRANCHREG-BRAA#243,BRANCHREG-BRAA#244,BRANCHREG-BRAA#245,BRANCHREG-BRAA#246,BRANCHREG-BRAA#247,BRANCHREG-BRAA#248,BRANCHREG-BRAA#249,BRANCHREG-BRAA#250,BRANCHREG-BRAA#251,BRANCHREG-BRAA#252,BRANCHREG-BRAA#253,BRANCHREG-BRAA#254,BRANCHREG-BRAA#255,BRANCHREG-BRAA#256,BRANCHREG-BRAA#257,BRANCHREG-BRAA#258,BRANCHREG-BRAA#259,BRANCHREG-BRAA#260,BRANCHREG-BRAA#261,BRANCHREG-BRAA#262,BRANCHREG-BRAA#263,BRANCHREG-BRAA#264,BRANCHREG-BRAA#265,BRANCHREG-BRAA#266,BRANCHREG-BRAA#267,BRANCHREG-BRAA#268,BRANCHREG-BRAA#269,BRANCHREG-BRAA#270,BRANCHREG-BRAA#271,BRANCHREG-BRAA#272,BRANCHREG-BRAA#273,BRANCHREG-BRAA#274,BRANCHREG-BRAA#275,BRANCHREG-BRAA#276,BRANCHREG-BRAA#277,BRANCHREG-BRAA#278,BRANCHREG-BRAA#279,BRANCHREG-BRAA#280,BRANCHREG-BRAA#281,BRANCHREG-BRAA#282,BRANCHREG-BRAA#283,BRANCHREG-BRAA#284,BRANCHREG-BRAA#285,BRANCHREG-BRAA#286,BRANCHREG-BRAA#287,BRANCHREG-BRAA#288,BRANCHREG-BRAA#289,BRANCHREG-BRAA#290,BRANCHREG-BRAA#291,BRANCHREG-BRAA#292,BRANCHREG-BRAA#293,BRANCHREG-BRAA#294,BRANCHREG-BRAA#295,BRANCHREG-BRAA#296,BRANCHREG-BRAA#297,BRANCHREG-BRAA#298,BRANCHREG-BRAA#299,BRANCHREG-BRAA#300,BRANCHREG-BRAA#301,BRANCHREG-BRAA#302,BRANCHREG-BRAA#303,BRANCHREG-BRAA#304,BRANCHREG-BRAA#305,BRANCHREG-BRAA#306,BRANCHREG-BRAA#307,BRANCHREG-BRAA#308,BRANCHREG-BRAA#309,BRANCHREG-BRAA#310,BRANCHREG-BRAA#311,BRANCHREG-BRAA#312,BRANCHREG-BRAA#313,BRANCHREG-BRAA#314,BRANCHREG-BRAA#315,BRANCHREG-BRAA#316,BRANCHREG-BRAA#317,BRANCHREG-BRAA#318,BRANCHREG-BRAA#319,BRANCHREG-BRAA#320,BRANCHREG-BRAA#321,BRANCHREG-BRAA#322,BRANCHREG-BRAA#323,BRANCHREG-BRAA#324,BRANCHREG-BRAA#325,BRANCHREG-BRAA#326,BRANCHREG-BRAA#327,BRANCHREG-BRAA#328,BRANCHREG-BRAA#329,BRANCHREG-BRAA#330,BRANCHREG-BRAA#331,BRANCHREG-BRAA#332,BRANCHREG-BRAA#333,BRANCHREG-BRAA#334,BRANCHREG-BRAA#335,BRANCHREG-BRAA#336,BRANCHREG-BRAA#337,BRANCHREG-BRAA#338,BRANCHREG-BRAA#339,BRANCHREG-BRAA#340,BRANCHREG-BRAA#341,BRANCHREG-BRAA#342,BRANCHREG-BRAA#343,BRANCHREG-BRAA#344,BRANCHREG-BRAA#345,BRANCHREG-BRAA#346,BRANCHREG-BRAA#347,BRANCHREG-BRAA#348,BRANCHREG-BRAA#349,BRANCHREG-BRAA#350,BRANCHREG-BRAA#351,BRANCHREG-BRAA#352,BRANCHREG-BRAA#353,BRANCHREG-BRAA#354,BRANCHREG-BRAA#355,BRANCHREG-BRAA#356,BRANCHREG-BRAA#357,BRANCHREG-BRAA#358,BRANCHREG-BRAA#359,BRANCHREG-BRAA#360,BRANCHREG-BRAA#361,BRANCHREG-BRAA#362,BRANCHREG-BRAA#363,BRANCHREG-BRAA#364,BRANCHREG-BRAA#365,BRANCHREG-BRAA#366,BRANCHREG-BRAA#367,BRANCHREG-BRAA#368,BRANCHREG-BRAA#369,BRANCHREG-BRAA#370,BRANCHREG-BRAA#371,BRANCHREG-BRAA#372,BRANCHREG-BRAA#373,BRANCHREG-BRAA#374,BRANCHREG-BRAA#375,BRANCHREG-BRAA#376,BRANCHREG-BRAA#377,BRANCHREG-BRAA#378,BRANCHREG-BRAA#379,BRANCHREG-BRAA#380,BRANCHREG-BRAA#381,BRANCHREG-BRAA#382,BRANCHREG-BRAA#383,BRANCHREG-BRAA#384,BRANCHREG-BRAA#385,BRANCHREG-BRAA#386,BRANCHREG-BRAA#387,BRANCHREG-BRAA#388,BRANCHREG-BRAA#389,BRANCHREG-BRAA#390,BRANCHREG-BRAA#391,BRANCHREG-BRAA#392,BRANCHREG-BRAA#393,BRANCHREG-BRAA#394,BRANCHREG-BRAA#395,BRANCHREG-BRAA#396,BRANCHREG-BRAA#397,BRANCHREG-BRAA#398,BRANCHREG-BRAA#399,BRANCHREG-BRAA#400,BRANCHREG-BRAA#401,BRANCHREG-BRAA#402,BRANCHREG-BRAA#403,BRANCHREG-BRAA#404,BRANCHREG-BRAA#405,BRANCHREG-BRAA#406,BRANCHREG-BRAA#407,BRANCHREG-BRAA#408,BRANCHREG-BRAA#409,BRANCHREG-BRAA#410,BRANCHREG-BRAA#411,BRANCHREG-BRAA#412,BRANCHREG-BRAA#413,BRANCHREG-BRAA#414,BRANCHREG-BRAA#415,BRANCHREG-BRAA#416,BRANCHREG-BRAA#417,BRANCHREG-BRAA#418,BRANCHREG-BRAA#419,BRANCHREG-BRAA#420,BRANCHREG-BRAA#421,BRANCHREG-BRAA#422,BRANCHREG-BRAA#423,BRANCHREG-BRAA#424,BRANCHREG-BRAA#425,BRANCHREG-BRAA#426,BRANCHREG-BRAA#427,BRANCHREG-BRAA#428,BRANCHREG-BRAA#429,BRANCHREG-BRAA#430,BRANCHREG-BRAA#431,BRANCHREG-BRAA#432,BRANCHREG-BRAA#433,BRANCHREG-BRAA#434,BRANCHREG-BRAA#435,BRANCHREG-BRAA#436,BRANCHREG-BRAA#437,BRANCHREG-BRAA#438,BRANCHREG-BRAA#439,BRANCHREG-BRAA#440,BRANCHREG-BRAA#441,BRANCHREG-BRAA#442,BRANCHREG-BRAA#443,BRANCHREG-BRAA#444,BRANCHREG-BRAA#445,BRANCHREG-BRAA#446,BRANCHREG-BRAA#447,BRANCHREG-BRAA#448,BRANCHREG-BRAA#449,BRANCHREG-BRAA#450,BRANCHREG-BRAA#451,BRANCHREG-BRAA#452,BRANCHREG-BRAA#453,BRANCHREG-BRAA#454,BRANCHREG-BRAA#455,BRANCHREG-BRAA#456,BRANCHREG-BRAA#457,BRANCHREG-BRAA#458,BRANCHREG-BRAA#459,BRANCHREG-BRAA#460,BRANCHREG-BRAA#461,BRANCHREG-BRAA#462,BRANCHREG-BRAA#463,BRANCHREG-BRAA#464,BRANCHREG-BRAA#465,BRANCHREG-BRAA#466,BRANCHREG-BRAA#467,BRANCHREG-BRAA#468,BRANCHREG-BRAA#469,BRANCHREG-BRAA#470,BRANCHREG-BRAA#471,BRANCHREG-BRAA#472,BRANCHREG-BRAA#473,BRANCHREG-BRAA#474,BRANCHREG-BRAA#475,BRANCHREG-BRAA#476,BRANCHREG-BRAA#477,BRANCHREG-BRAA#478,BRANCHREG-BRAA#479,BRANCHREG-BRAA#480,BRANCHREG-BRAA#481,BRANCHREG-BRAA#482,BRANCHREG-BRAA#483,BRANCHREG-BRAA#484,BRANCHREG-BRAA#485,BRANCHREG-BRAA#486,BRANCHREG-BRAA#487,BRANCHREG-BRAA#488,BRANCHREG-BRAA#489,BRANCHREG-BRAA#490,BRANCHREG-BRAA#491,BRANCHREG-BRAA#492,BRANCHREG-BRAA#493,BRANCHREG-BRAA#494,BRANCHREG-BRAA#495,BRANCHREG-BRAA#496,BRANCHREG-BRAA#497,BRANCHREG-BRAA#498,BRANCHREG-BRAA#499,BRANCHREG-BRAA#500,BRANCHREG-BRAA#501,BRANCHREG-BRAA#502,BRANCHREG-BRAA#503,BRANCHREG-BRAA#504,BRANCHREG-BRAA#505,BRANCHREG-BRAA#506,BRANCHREG-BRAA#507,BRANCHREG-BRAA#508,BRANCHREG-BRAA#509,BRANCHREG-BRAA#510,BRANCHREG-BRAA#511,BRANCHREG-BRAA#512,BRANCHREG-BRAA#513,BRANCHREG-BRAA#514,BRANCHREG-BRAA#515,BRANCHREG-BRAA#516,BRANCHREG-BRAA#517,BRANCHREG-BRAA#518,BRANCHREG-BRAA#519,BRANCHREG-BRAA#520,BRANCHREG-BRAA#521,BRANCHREG-BRAA#522,BRANCHREG-BRAA#523,BRANCHREG-BRAA#524,BRANCHREG-BRAA#525,BRANCHREG-BRAA#526,BRANCHREG-BRAA#527,BRANCHREG-BRAA#528,BRANCHREG-BRAA#529,BRANCHREG-BRAA#530,BRANCHREG-BRAA#531,BRANCHREG-BRAA#532,BRANCHREG-BRAA#533,BRANCHREG-BRAA#534,BRANCHREG-BRAA#535,BRANCHREG-BRAA#536,BRANCHREG-BRAA#537,BRANCHREG-BRAA#538,BRANCHREG-BRAA#539,BRANCHREG-BRAA#540,BRANCHREG-BRAA#541,BRANCHREG-BRAA#542,BRANCHREG-BRAA#543,BRANCHREG-BRAA#544,BRANCHREG-BRAA#545,BRANCHREG-BRAA#546,BRANCHREG-BRAA#547,BRANCHREG-BRAA#548,BRANCHREG-BRAA#549,BRANCHREG-BRAA#550,BRANCHREG-BRAA#551,BRANCHREG-BRAA#552,BRANCHREG-BRAA#553,BRANCHREG-BRAA#554,BRANCHREG-BRAA#555,BRANCHREG-BRAA#556,BRANCHREG-BRAA#557,BRANCHREG-BRAA#558,BRANCHREG-BRAA#559,BRANCHREG-BRAA#560,BRANCHREG-BRAA#561,BRANCHREG-BRAA#562,BRANCHREG-BRAA#563,BRANCHREG-BRAA#564,BRANCHREG-BRAA#565,BRANCHREG-BRAA#566,BRANCHREG-BRAA#567,BRANCHREG-BRAA#568,BRANCHREG-BRAA#569,BRANCHREG-BRAA#570,BRANCHREG-BRAA#571,BRANCHREG-BRAA#572,BRANCHREG-BRAA#573,BRANCHREG-BRAA#574,BRANCHREG-BRAA#575,BRANCHREG-BRAA#576,BRANCHREG-BRAA#577,BRANCHREG-BRAA#578,BRANCHREG-BRAA#579,BRANCHREG-BRAA#580,BRANCHREG-BRAA#581,BRANCHREG-BRAA#582,BRANCHREG-BRAA#583,BRANCHREG-BRAA#584,BRANCHREG-BRAA#585,BRANCHREG-BRAA#586,BRANCHREG-BRAA#587,BRANCHREG-BRAA#588,BRANCHREG-BRAA#589,BRANCHREG-BRAA#590,BRANCHREG-BRAA#591,BRANCHREG-BRAA#592,BRANCHREG-BRAA#593,BRANCHREG-BRAA#594,BRANCHREG-BRAA#595,BRANCHREG-BRAA#596,BRANCHREG-BRAA#597,BRANCHREG-BRAA#598,BRANCHREG-BRAA#599,BRANCHREG-BRAA#600,BRANCHREG-BRAA#601,BRANCHREG-BRAA#602,BRANCHREG-BRAA#603,BRANCHREG-BRAA#604,BRANCHREG-BRAA#605,BRANCHREG-BRAA#606,BRANCHREG-BRAA#607,BRANCHREG-BRAA#608,BRANCHREG-BRAA#609,BRANCHREG-BRAA#610,BRANCHREG-BRAA#611,BRANCHREG-BRAA#612,BRANCHREG-BRAA#613,BRANCHREG-BRAA#614,BRANCHREG-BRAA#615,BRANCHREG-BRAA#616,BRANCHREG-BRAA#617,BRANCHREG-BRAA#618,BRANCHREG-BRAA#619,BRANCHREG-BRAA#620,BRANCHREG-BRAA#621,BRANCHREG-BRAA#622,BRANCHREG-BRAA#623,BRANCHREG-BRAA#624,BRANCHREG-BRAA#625,BRANCHREG-BRAA#626,BRANCHREG-BRAA#627,BRANCHREG-BRAA#628,BRANCHREG-BRAA#629,BRANCHREG-BRAA#630,BRANCHREG-BRAA#631,BRANCHREG-BRAA#632,BRANCHREG-BRAA#633,BRANCHREG-BRAA#634,BRANCHREG-BRAA#635,BRANCHREG-BRAA#636,BRANCHREG-BRAA#637,BRANCHREG-BRAA#638,BRANCHREG-BRAA#639,BRANCHREG-BRAA#640,BRANCHREG-BRAA#641,BRANCHREG-BRAA#642,BRANCHREG-BRAA#643,BRANCHREG-BRAA#644,BRANCHREG-BRAA#645,BRANCHREG-BRAA#646,BRANCHREG-BRAA#647,BRANCHREG-BRAA#648,BRANCHREG-BRAA#649,BRANCHREG-BRAA#650,BRANCHREG-BRAA#651,BRANCHREG-BRAA#652,BRANCHREG-BRAA#653,BRANCHREG-BRAA#654,BRANCHREG-BRAA#655,BRANCHREG-BRAA#656,BRANCHREG-BRAA#657,BRANCHREG-BRAA#658,BRANCHREG-BRAA#659,BRANCHREG-BRAA#660,BRANCHREG-BRAA#661,BRANCHREG-BRAA#662,BRANCHREG-BRAA#663,BRANCHREG-BRAA#664,BRANCHREG-BRAA#665,BRANCHREG-BRAA#666,BRANCHREG-BRAA#667,BRANCHREG-BRAA#668,BRANCHREG-BRAA#669,BRANCHREG-BRAA#670,BRANCHREG-BRAA#671,BRANCHREG-BRAA#672,BRANCHREG-BRAA#673,BRANCHREG-BRAA#674,BRANCHREG-BRAA#675,BRANCHREG-BRAA#676,BRANCHREG-BRAA#677,BRANCHREG-BRAA#678,BRANCHREG-BRAA#679,BRANCHREG-BRAA#680,BRANCHREG-BRAA#681,BRANCHREG-BRAA#682,BRANCHREG-BRAA#683,BRANCHREG-BRAA#684,BRANCHREG-BRAA#685,BRANCHREG-BRAA#686,BRANCHREG-BRAA#687,BRANCHREG-BRAA#688,BRANCHREG-BRAA#689,BRANCHREG-BRAA#690,BRANCHREG-BRAA#691,BRANCHREG-BRAA#692,BRANCHREG-BRAA#693,BRANCHREG-BRAA#694,BRANCHREG-BRAA#695,BRANCHREG-BRAA#696,BRANCHREG-BRAA#697,BRANCHREG-BRAA#698,BRANCHREG-BRAA#699,BRANCHREG-BRAA#700,BRANCHREG-BRAA#701,BRANCHREG-BRAA#702,BRANCHREG-BRAA#703,BRANCHREG-BRAA#704,BRANCHREG-BRAA#705,BRANCHREG-BRAA#706,BRANCHREG-BRAA#707,BRANCHREG-BRAA#708,BRANCHREG-BRAA#709,BRANCHREG-BRAA#710,BRANCHREG-BRAA#711,BRANCHREG-BRAA#712,BRANCHREG-BRAA#713,BRANCHREG-BRAA#714,BRANCHREG-BRAA#715,BRANCHREG-BRAA#716,BRANCHREG-BRAA#717,BRANCHREG-BRAA#718,BRANCHREG-BRAA#719,BRANCHREG-BRAA#720,BRANCHREG-BRAA#721,BRANCHREG-BRAA#722,BRANCHREG-BRAA#723,BRANCHREG-BRAA#724,BRANCHREG-BRAA#725,BRANCHREG-BRAA#726,BRANCHREG-BRAA#727,BRANCHREG-BRAA#728,BRANCHREG-BRAA#729,BRANCHREG-BRAA#730,BRANCHREG-BRAA#731,BRANCHREG-BRAA#732,BRANCHREG-BRAA#733,BRANCHREG-BRAA#734,BRANCHREG-BRAA#735,BRANCHREG-BRAA#736,BRANCHREG-BRAA#737,BRANCHREG-BRAA#738,BRANCHREG-BRAA#739,BRANCHREG-BRAA#740,BRANCHREG-BRAA#741,BRANCHREG-BRAA#742,BRANCHREG-BRAA#743,BRANCHREG-BRAA#744,BRANCHREG-BRAA#745,BRANCHREG-BRAA#746,BRANCHREG-BRAA#747,BRANCHREG-BRAA#748,BRANCHREG-BRAA#749,BRANCHREG-BRAA#750,BRANCHREG-BRAA#751,BRANCHREG-BRAA#752,BRANCHREG-BRAA#753,BRANCHREG-BRAA#754,BRANCHREG-BRAA#755,BRANCHREG-BRAA#756,BRANCHREG-BRAA#757,BRANCHREG-BRAA#758,BRANCHREG-BRAA#759,BRANCHREG-BRAA#760,BRANCHREG-BRAA#761,BRANCHREG-BRAA#762,BRANCHREG-BRAA#763,BRANCHREG-BRAA#764,BRANCHREG-BRAA#765,BRANCHREG-BRAA#766,BRANCHREG-BRAA#767,BRANCHREG-BRAA#768,BRANCHREG-BRAA#769,BRANCHREG-BRAA#770,BRANCHREG-BRAA#771,BRANCHREG-BRAA#772,BRANCHREG-BRAA#773,BRANCHREG-BRAA#774,BRANCHREG-BRAA#775,BRANCHREG-BRAA#776,BRANCHREG-BRAA#777,BRANCHREG-BRAA#778,BRANCHREG-BRAA#779,BRANCHREG-BRAA#780,BRANCHREG-BRAA#781,BRANCHREG-BRAA#782,BRANCHREG-BRAA#783,BRANCHREG-BRAA#784,BRANCHREG-BRAA#785,BRANCHREG-BRAA#786,BRANCHREG-BRAA#787,BRANCHREG-BRAA#788,BRANCHREG-BRAA#789,BRANCHREG-BRAA#790,BRANCHREG-BRAA#791,BRANCHREG-BRAA#792,BRANCHREG-BRAA#793,BRANCHREG-BRAA#794,BRANCHREG-BRAA#795,BRANCHREG-BRAA#796,BRANCHREG-BRAA#797,BRANCHREG-BRAA#798,BRANCHREG-BRAA#799,BRANCHREG-BRAA#800,BRANCHREG-BRAA#801,BRANCHREG-BRAA#802,BRANCHREG-BRAA#803,BRANCHREG-BRAA#804,BRANCHREG-BRAA#805,BRANCHREG-BRAA#806,BRANCHREG-BRAA#807,BRANCHREG-BRAA#808,BRANCHREG-BRAA#809,BRANCHREG-BRAA#810,BRANCHREG-BRAA#811,BRANCHREG-BRAA#812,BRANCHREG-BRAA#813,BRANCHREG-BRAA#814,BRANCHREG-BRAA#815,BRANCHREG-BRAA#816,BRANCHREG-BRAA#817,BRANCHREG-BRAA#818,BRANCHREG-BRAA#819,BRANCHREG-BRAA#820,BRANCHREG-BRAA#821,BRANCHREG-BRAA#822,BRANCHREG-BRAA#823,BRANCHREG-BRAA#824,BRANCHREG-BRAA#825,BRANCHREG-BRAA#826,BRANCHREG-BRAA#827,BRANCHREG-BRAA#828,BRANCHREG-BRAA#829,BRANCHREG-BRAA#830,BRANCHREG-BRAA#831,BRANCHREG-BRAA#832,BRANCHREG-BRAA#833,BRANCHREG-BRAA#834,BRANCHREG-BRAA#835,BRANCHREG-BRAA#836,BRANCHREG-BRAA#837,BRANCHREG-BRAA#838,BRANCHREG-BRAA#839,BRANCHREG-BRAA#840,BRANCHREG-BRAA#841,BRANCHREG-BRAA#842,BRANCHREG-BRAA#843,BRANCHREG-BRAA#844,BRANCHREG-BRAA#845,BRANCHREG-BRAA#846,BRANCHREG-BRAA#847,BRANCHREG-BRAA#848,BRANCHREG-BRAA#849,BRANCHREG-BRAA#850,BRANCHREG-BRAA#851,BRANCHREG-BRAA#852,BRANCHREG-BRAA#853,BRANCHREG-BRAA#854,BRANCHREG-BRAA#855,BRANCHREG-BRAA#856,BRANCHREG-BRAA#857,BRANCHREG-BRAA#858,BRANCHREG-BRAA#859,BRANCHREG-BRAA#860,BRANCHREG-BRAA#861,BRANCHREG-BRAA#862,BRANCHREG-BRAA#863,BRANCHREG-BRAA#864,BRANCHREG-BRAA#865,BRANCHREG-BRAA#866,BRANCHREG-BRAA#867,BRANCHREG-BRAA#868,BRANCHREG-BRAA#869,BRANCHREG-BRAA#870,BRANCHREG-BRAA#871,BRANCHREG-BRAA#872,BRANCHREG-BRAA#873,BRANCHREG-BRAA#874,BRANCHREG-BRAA#875,BRANCHREG-BRAA#876,BRANCHREG-BRAA#877,BRANCHREG-BRAA#878,BRANCHREG-BRAA#879,BRANCHREG-BRAA#880,BRANCHREG-BRAA#881,BRANCHREG-BRAA#882,BRANCHREG-BRAA#883,BRANCHREG-BRAA#884,BRANCHREG-BRAA#885,BRANCHREG-BRAA#886,BRANCHREG-BRAA#887,BRANCHREG-BRAA#888,BRANCHREG-BRAA#889,BRANCHREG-BRAA#890,BRANCHREG-BRAA#891,BRANCHREG-BRAA#892,BRANCHREG-BRAA#893,BRANCHREG-BRAA#894,BRANCHREG-BRAA#895,BRANCHREG-BRAA#896,BRANCHREG-BRAA#897,BRANCHREG-BRAA#898,BRANCHREG-BRAA#899,BRANCHREG-BRAA#900,BRANCHREG-BRAA#901,BRANCHREG-BRAA#902,BRANCHREG-BRAA#903,BRANCHREG-BRAA#904,BRANCHREG-BRAA#905,BRANCHREG-BRAA#906,BRANCHREG-BRAA#907,BRANCHREG-BRAA#908,BRANCHREG-BRAA#909,BRANCHREG-BRAA#910,BRANCHREG-BRAA#911,BRANCHREG-BRAA#912,BRANCHREG-BRAA#913,BRANCHREG-BRAA#914,BRANCHREG-BRAA#915,BRANCHREG-BRAA#916,BRANCHREG-BRAA#917,BRANCHREG-BRAA#918,BRANCHREG-BRAA#919,BRANCHREG-BRAA#920,BRANCHREG-BRAA#921,BRANCHREG-BRAA#922,BRANCHREG-BRAA#923,BRANCHREG-BRAA#924,BRANCHREG-BRAA#925,BRANCHREG-BRAA#926,BRANCHREG-BRAA#927,BRANCHREG-BRAA#928,BRANCHREG-BRAA#929,BRANCHREG-BRAA#930,BRANCHREG-BRAA#931,BRANCHREG-BRAA#932,BRANCHREG-BRAA#933,BRANCHREG-BRAA#934,BRANCHREG-BRAA#935,BRANCHREG-BRAA#936,BRANCHREG-BRAA#937,BRANCHREG-BRAA#938,BRANCHREG-BRAA#939,BRANCHREG-BRAA#940,BRANCHREG-BRAA#941,BRANCHREG-BRAA#942,BRANCHREG-BRAA#943,BRANCHREG-BRAA#944,BRANCHREG-BRAA#945,BRANCHREG-BRAA#946,BRANCHREG-BRAA#947,BRANCHREG-BRAA#948,BRANCHREG-BRAA#949,BRANCHREG-BRAA#950,BRANCHREG-BRAA#951,BRANCHREG-BRAA#952,BRANCHREG-BRAA#953,BRANCHREG-BRAA#954,BRANCHREG-BRAA#955,BRANCHREG-BRAA#956,BRANCHREG-BRAA#957,BRANCHREG-BRAA#958,BRANCHREG-BRAA#959,BRANCHREG-BRAA#960,BRANCHREG-BRAA#961,BRANCHREG-BRAA#962,BRANCHREG-BRAA#963,BRANCHREG-BRAA#964,BRANCHREG-BRAA#965,BRANCHREG-BRAA#966,BRANCHREG-BRAA#967,BRANCHREG-BRAA#968,BRANCHREG-BRAA#969,BRANCHREG-BRAA#970,BRANCHREG-BRAA#971,BRANCHREG-BRAA#972,BRANCHREG-BRAA#973,BRANCHREG-BRAA#974,BRANCHREG-BRAA#975,BRANCHREG-BRAA#976,BRANCHREG-BRAA#977,BRANCHREG-BRAA#978,BRANCHREG-BRAA#979,BRANCHREG-BRAA#980,BRANCHREG-BRAA#981,BRANCHREG-BRAA#982,BRANCHREG-BRAA#983,BRANCHREG-BRAA#984,BRANCHREG-BRAA#985,BRANCHREG-BRAA#986,BRANCHREG-BRAA#987,BRANCHREG-BRAA#988,BRANCHREG-BRAA#989,BRANCHREG-BRAA#990,BRANCHREG-BRAA#991,BRANCHREG-BRAA#992,BRANCHREG-BRAA#993,BRANCHREG-BRAA#994,BRANCHREG-BRAA#995,BRANCHREG-BRAA#996,BRANCHREG-BRAA#997,BRANCHREG-BRAA#998,BRANCHREG-BRAA#999,BRANCHREG-BRAA#1000,BRANCHREG-BRAA#1001,BRANCHREG-BRAA#1002,BRANCHREG-BRAA#1003,BRANCHREG-BRAA#1004,BRANCHREG-BRAA#1005,BRANCHREG-BRAA#1006,BRANCHREG-BRAA#1007,BRANCHREG-BRAA#1008,BRANCHREG-BRAA#1009,BRANCHREG-BRAA#1010,BRANCHREG-BRAA#1011,BRANCHREG-BRAA#1012,BRANCHREG-BRAA#1013,BRANCHREG-BRAA#1014,BRANCHREG-BRAA#1015,BRANCHREG-BRAA#1016,BRANCHREG-BRAA#1017,BRANCHREG-BRAA#1018,BRANCHREG-BRAA#1019,BRANCHREG-BRAA#1020,BRANCHREG-BRAA#1021,BRANCHREG-BRAA#1022,BRANCHREG-BRAA#1023,BRANCHREG-BRAB#0,BRANCHREG-BRAB#1,BRANCHREG-BRAB#2,BRANCHREG-BRAB#3,BRANCHREG-BRAB#4,BRANCHREG-BRAB#5,BRANCHREG-BRAB#6,BRANCHREG-BRAB#7,BRANCHREG-BRAB#8,BRANCHREG-BRAB#9,BRANCHREG-BRAB#10,BRANCHREG-BRAB#11,BRANCHREG-BRAB#12,BRANCHREG-BRAB#13,BRANCHREG-BRAB#14,BRANCHREG-BRAB#15,BRANCHREG-BRAB#16,BRANCHREG-BRAB#17,BRANCHREG-BRAB#18,BRANCHREG-BRAB#19,BRANCHREG-BRAB#20,BRANCHREG-BRAB#21,BRANCHREG-BRAB#22,BRANCHREG-BRAB#23,BRANCHREG-BRAB#24,BRANCHREG-BRAB#25,BRANCHREG-BRAB#26,BRANCHREG-BRAB#27,BRANCHREG-BRAB#28,BRANCHREG-BRAB#29,BRANCHREG-BRAB#30,BRANCHREG-BRAB#31,BRANCHREG-BRAB#32,BRANCHREG-BRAB#33,BRANCHREG-BRAB#34,BRANCHREG-BRAB#35,BRANCHREG-BRAB#36,BRANCHREG-BRAB#37,BRANCHREG-BRAB#38,BRANCHREG-BRAB#39,BRANCHREG-BRAB#40,BRANCHREG-BRAB#41,BRANCHREG-BRAB#42,BRANCHREG-BRAB#43,BRANCHREG-BRAB#44,BRANCHREG-BRAB#45,BRANCHREG-BRAB#46,BRANCHREG-BRAB#47,BRANCHREG-BRAB#48,BRANCHREG-BRAB#49,BRANCHREG-BRAB#50,BRANCHREG-BRAB#51,BRANCHREG-BRAB#52,BRANCHREG-BRAB#53,BRANCHREG-BRAB#54,BRANCHREG-BRAB#55,BRANCHREG-BRAB#56,BRANCHREG-BRAB#57,BRANCHREG-BRAB#58,BRANCHREG-BRAB#59,BRANCHREG-BRAB#60,BRANCHREG-BRAB#61,BRANCHREG-BRAB#62,BRANCHREG-BRAB#63,BRANCHREG-BRAB#64,BRANCHREG-BRAB#65,BRANCHREG-BRAB#66,BRANCHREG-BRAB#67,BRANCHREG-BRAB#68,BRANCHREG-BRAB#69,BRANCHREG-BRAB#70,BRANCHREG-BRAB#71,BRANCHREG-BRAB#72,BRANCHREG-BRAB#73,BRANCHREG-BRAB#74,BRANCHREG-BRAB#75,BRANCHREG-BRAB#76,BRANCHREG-BRAB#77,BRANCHREG-BRAB#78,BRANCHREG-BRAB#79,BRANCHREG-BRAB#80,BRANCHREG-BRAB#81,BRANCHREG-BRAB#82,BRANCHREG-BRAB#83,BRANCHREG-BRAB#84,BRANCHREG-BRAB#85,BRANCHREG-BRAB#86,BRANCHREG-BRAB#87,BRANCHREG-BRAB#88,BRANCHREG-BRAB#89,BRANCHREG-BRAB#90,BRANCHREG-BRAB#91,BRANCHREG-BRAB#92,BRANCHREG-BRAB#93,BRANCHREG-BRAB#94,BRANCHREG-BRAB#95,BRANCHREG-BRAB#96,BRANCHREG-BRAB#97,BRANCHREG-BRAB#98,BRANCHREG-BRAB#99,BRANCHREG-BRAB#100,BRANCHREG-BRAB#101,BRANCHREG-BRAB#102,BRANCHREG-BRAB#103,BRANCHREG-BRAB#104,BRANCHREG-BRAB#105,BRANCHREG-BRAB#106,BRANCHREG-BRAB#107,BRANCHREG-BRAB#108,BRANCHREG-BRAB#109,BRANCHREG-BRAB#110,BRANCHREG-BRAB#111,BRANCHREG-BRAB#112,BRANCHREG-BRAB#113,BRANCHREG-BRAB#114,BRANCHREG-BRAB#115,BRANCHREG-BRAB#116,BRANCHREG-BRAB#117,BRANCHREG-BRAB#118,BRANCHREG-BRAB#119,BRANCHREG-BRAB#120,BRANCHREG-BRAB#121,BRANCHREG-BRAB#122,BRANCHREG-BRAB#123,BRANCHREG-BRAB#124,BRANCHREG-BRAB#125,BRANCHREG-BRAB#126,BRANCHREG-BRAB#127,BRANCHREG-BRAB#128,BRANCHREG-BRAB#129,BRANCHREG-BRAB#130,BRANCHREG-BRAB#131,BRANCHREG-BRAB#132,BRANCHREG-BRAB#133,BRANCHREG-BRAB#134,BRANCHREG-BRAB#135,BRANCHREG-BRAB#136,BRANCHREG-BRAB#137,BRANCHREG-BRAB#138,BRANCHREG-BRAB#139,BRANCHREG-BRAB#140,BRANCHREG-BRAB#141,BRANCHREG-BRAB#142,BRANCHREG-BRAB#143,BRANCHREG-BRAB#144,BRANCHREG-BRAB#145,BRANCHREG-BRAB#146,BRANCHREG-BRAB#147,BRANCHREG-BRAB#148,BRANCHREG-BRAB#149,BRANCHREG-BRAB#150,BRANCHREG-BRAB#151,BRANCHREG-BRAB#152,BRANCHREG-BRAB#153,BRANCHREG-BRAB#154,BRANCHREG-BRAB#155,BRANCHREG-BRAB#156,BRANCHREG-BRAB#157,BRANCHREG-BRAB#158,BRANCHREG-BRAB#159,BRANCHREG-BRAB#160,BRANCHREG-BRAB#161,BRANCHREG-BRAB#162,BRANCHREG-BRAB#163,BRANCHREG-BRAB#164,BRANCHREG-BRAB#165,BRANCHREG-BRAB#166,BRANCHREG-BRAB#167,BRANCHREG-BRAB#168,BRANCHREG-BRAB#169,BRANCHREG-BRAB#170,BRANCHREG-BRAB#171,BRANCHREG-BRAB#172,BRANCHREG-BRAB#173,BRANCHREG-BRAB#174,BRANCHREG-BRAB#175,BRANCHREG-BRAB#176,BRANCHREG-BRAB#177,BRANCHREG-BRAB#178,BRANCHREG-BRAB#179,BRANCHREG-BRAB#180,BRANCHREG-BRAB#181,BRANCHREG-BRAB#182,BRANCHREG-BRAB#183,BRANCHREG-BRAB#184,BRANCHREG-BRAB#185,BRANCHREG-BRAB#186,BRANCHREG-BRAB#187,BRANCHREG-BRAB#188,BRANCHREG-BRAB#189,BRANCHREG-BRAB#190,BRANCHREG-BRAB#191,BRANCHREG-BRAB#192,BRANCHREG-BRAB#193,BRANCHREG-BRAB#194,BRANCHREG-BRAB#195,BRANCHREG-BRAB#196,BRANCHREG-BRAB#197,BRANCHREG-BRAB#198,BRANCHREG-BRAB#199,BRANCHREG-BRAB#200,BRANCHREG-BRAB#201,BRANCHREG-BRAB#202,BRANCHREG-BRAB#203,BRANCHREG-BRAB#204,BRANCHREG-BRAB#205,BRANCHREG-BRAB#206,BRANCHREG-BRAB#207,BRANCHREG-BRAB#208,BRANCHREG-BRAB#209,BRANCHREG-BRAB#210,BRANCHREG-BRAB#211,BRANCHREG-BRAB#212,BRANCHREG-BRAB#213,BRANCHREG-BRAB#214,BRANCHREG-BRAB#215,BRANCHREG-BRAB#216,BRANCHREG-BRAB#217,BRANCHREG-BRAB#218,BRANCHREG-BRAB#219,BRANCHREG-BRAB#220,BRANCHREG-BRAB#221,BRANCHREG-BRAB#222,BRANCHREG-BRAB#223,BRANCHREG-BRAB#224,BRANCHREG-BRAB#225,BRANCHREG-BRAB#226,BRANCHREG-BRAB#227,BRANCHREG-BRAB#228,BRANCHREG-BRAB#229,BRANCHREG-BRAB#230,BRANCHREG-BRAB#231,BRANCHREG-BRAB#232,BRANCHREG-BRAB#233,BRANCHREG-BRAB#234,BRANCHREG-BRAB#235,BRANCHREG-BRAB#236,BRANCHREG-BRAB#237,BRANCHREG-BRAB#238,BRANCHREG-BRAB#239,BRANCHREG-BRAB#240,BRANCHREG-BRAB#241,BRANCHREG-BRAB#242,BRANCHREG-BRAB#243,BRANCHREG-BRAB#244,BRANCHREG-BRAB#245,BRANCHREG-BRAB#246,BRANCHREG-BRAB#247,BRANCHREG-BRAB#248,BRANCHREG-BRAB#249,BRANCHREG-BRAB#250,BRANCHREG-BRAB#251,BRANCHREG-BRAB#252,BRANCHREG-BRAB#253,BRANCHREG-BRAB#254,BRANCHREG-BRAB#255,BRANCHREG-BRAB#256,BRANCHREG-BRAB#257,BRANCHREG-BRAB#258,BRANCHREG-BRAB#259,BRANCHREG-BRAB#260,BRANCHREG-BRAB#261,BRANCHREG-BRAB#262,BRANCHREG-BRAB#263,BRANCHREG-BRAB#264,BRANCHREG-BRAB#265,BRANCHREG-BRAB#266,BRANCHREG-BRAB#267,BRANCHREG-BRAB#268,BRANCHREG-BRAB#269,BRANCHREG-BRAB#270,BRANCHREG-BRAB#271,BRANCHREG-BRAB#272,BRANCHREG-BRAB#273,BRANCHREG-BRAB#274,BRANCHREG-BRAB#275,BRANCHREG-BRAB#276,BRANCHREG-BRAB#277,BRANCHREG-BRAB#278,BRANCHREG-BRAB#279,BRANCHREG-BRAB#280,BRANCHREG-BRAB#281,BRANCHREG-BRAB#282,BRANCHREG-BRAB#283,BRANCHREG-BRAB#284,BRANCHREG-BRAB#285,BRANCHREG-BRAB#286,BRANCHREG-BRAB#287,BRANCHREG-BRAB#288,BRANCHREG-BRAB#289,BRANCHREG-BRAB#290,BRANCHREG-BRAB#291,BRANCHREG-BRAB#292,BRANCHREG-BRAB#293,BRANCHREG-BRAB#294,BRANCHREG-BRAB#295,BRANCHREG-BRAB#296,BRANCHREG-BRAB#297,BRANCHREG-BRAB#298,BRANCHREG-BRAB#299,BRANCHREG-BRAB#300,BRANCHREG-BRAB#301,BRANCHREG-BRAB#302,BRANCHREG-BRAB#303,BRANCHREG-BRAB#304,BRANCHREG-BRAB#305,BRANCHREG-BRAB#306,BRANCHREG-BRAB#307,BRANCHREG-BRAB#308,BRANCHREG-BRAB#309,BRANCHREG-BRAB#310,BRANCHREG-BRAB#311,BRANCHREG-BRAB#312,BRANCHREG-BRAB#313,BRANCHREG-BRAB#314,BRANCHREG-BRAB#315,BRANCHREG-BRAB#316,BRANCHREG-BRAB#317,BRANCHREG-BRAB#318,BRANCHREG-BRAB#319,BRANCHREG-BRAB#320,BRANCHREG-BRAB#321,BRANCHREG-BRAB#322,BRANCHREG-BRAB#323,BRANCHREG-BRAB#324,BRANCHREG-BRAB#325,BRANCHREG-BRAB#326,BRANCHREG-BRAB#327,BRANCHREG-BRAB#328,BRANCHREG-BRAB#329,BRANCHREG-BRAB#330,BRANCHREG-BRAB#331,BRANCHREG-BRAB#332,BRANCHREG-BRAB#333,BRANCHREG-BRAB#334,BRANCHREG-BRAB#335,BRANCHREG-BRAB#336,BRANCHREG-BRAB#337,BRANCHREG-BRAB#338,BRANCHREG-BRAB#339,BRANCHREG-BRAB#340,BRANCHREG-BRAB#341,BRANCHREG-BRAB#342,BRANCHREG-BRAB#343,BRANCHREG-BRAB#344,BRANCHREG-BRAB#345,BRANCHREG-BRAB#346,BRANCHREG-BRAB#347,BRANCHREG-BRAB#348,BRANCHREG-BRAB#349,BRANCHREG-BRAB#350,BRANCHREG-BRAB#351,BRANCHREG-BRAB#352,BRANCHREG-BRAB#353,BRANCHREG-BRAB#354,BRANCHREG-BRAB#355,BRANCHREG-BRAB#356,BRANCHREG-BRAB#357,BRANCHREG-BRAB#358,BRANCHREG-BRAB#359,BRANCHREG-BRAB#360,BRANCHREG-BRAB#361,BRANCHREG-BRAB#362,BRANCHREG-BRAB#363,BRANCHREG-BRAB#364,BRANCHREG-BRAB#365,BRANCHREG-BRAB#366,BRANCHREG-BRAB#367,BRANCHREG-BRAB#368,BRANCHREG-BRAB#369,BRANCHREG-BRAB#370,BRANCHREG-BRAB#371,BRANCHREG-BRAB#372,BRANCHREG-BRAB#373,BRANCHREG-BRAB#374,BRANCHREG-BRAB#375,BRANCHREG-BRAB#376,BRANCHREG-BRAB#377,BRANCHREG-BRAB#378,BRANCHREG-BRAB#379,BRANCHREG-BRAB#380,BRANCHREG-BRAB#381,BRANCHREG-BRAB#382,BRANCHREG-BRAB#383,BRANCHREG-BRAB#384,BRANCHREG-BRAB#385,BRANCHREG-BRAB#386,BRANCHREG-BRAB#387,BRANCHREG-BRAB#388,BRANCHREG-BRAB#389,BRANCHREG-BRAB#390,BRANCHREG-BRAB#391,BRANCHREG-BRAB#392,BRANCHREG-BRAB#393,BRANCHREG-BRAB#394,BRANCHREG-BRAB#395,BRANCHREG-BRAB#396,BRANCHREG-BRAB#397,BRANCHREG-BRAB#398,BRANCHREG-BRAB#399,BRANCHREG-BRAB#400,BRANCHREG-BRAB#401,BRANCHREG-BRAB#402,BRANCHREG-BRAB#403,BRANCHREG-BRAB#404,BRANCHREG-BRAB#405,BRANCHREG-BRAB#406,BRANCHREG-BRAB#407,BRANCHREG-BRAB#408,BRANCHREG-BRAB#409,BRANCHREG-BRAB#410,BRANCHREG-BRAB#411,BRANCHREG-BRAB#412,BRANCHREG-BRAB#413,BRANCHREG-BRAB#414,BRANCHREG-BRAB#415,BRANCHREG-BRAB#416,BRANCHREG-BRAB#417,BRANCHREG-BRAB#418,BRANCHREG-BRAB#419,BRANCHREG-BRAB#420,BRANCHREG-BRAB#421,BRANCHREG-BRAB#422,BRANCHREG-BRAB#423,BRANCHREG-BRAB#424,BRANCHREG-BRAB#425,BRANCHREG-BRAB#426,BRANCHREG-BRAB#427,BRANCHREG-BRAB#428,BRANCHREG-BRAB#429,BRANCHREG-BRAB#430,BRANCHREG-BRAB#431,BRANCHREG-BRAB#432,BRANCHREG-BRAB#433,BRANCHREG-BRAB#434,BRANCHREG-BRAB#435,BRANCHREG-BRAB#436,BRANCHREG-BRAB#437,BRANCHREG-BRAB#438,BRANCHREG-BRAB#439,BRANCHREG-BRAB#440,BRANCHREG-BRAB#441,BRANCHREG-BRAB#442,BRANCHREG-BRAB#443,BRANCHREG-BRAB#444,BRANCHREG-BRAB#445,BRANCHREG-BRAB#446,BRANCHREG-BRAB#447,BRANCHREG-BRAB#448,BRANCHREG-BRAB#449,BRANCHREG-BRAB#450,BRANCHREG-BRAB#451,BRANCHREG-BRAB#452,BRANCHREG-BRAB#453,BRANCHREG-BRAB#454,BRANCHREG-BRAB#455,BRANCHREG-BRAB#456,BRANCHREG-BRAB#457,BRANCHREG-BRAB#458,BRANCHREG-BRAB#459,BRANCHREG-BRAB#460,BRANCHREG-BRAB#461,BRANCHREG-BRAB#462,BRANCHREG-BRAB#463,BRANCHREG-BRAB#464,BRANCHREG-BRAB#465,BRANCHREG-BRAB#466,BRANCHREG-BRAB#467,BRANCHREG-BRAB#468,BRANCHREG-BRAB#469,BRANCHREG-BRAB#470,BRANCHREG-BRAB#471,BRANCHREG-BRAB#472,BRANCHREG-BRAB#473,BRANCHREG-BRAB#474,BRANCHREG-BRAB#475,BRANCHREG-BRAB#476,BRANCHREG-BRAB#477,BRANCHREG-BRAB#478,BRANCHREG-BRAB#479,BRANCHREG-BRAB#480,BRANCHREG-BRAB#481,BRANCHREG-BRAB#482,BRANCHREG-BRAB#483,BRANCHREG-BRAB#484,BRANCHREG-BRAB#485,BRANCHREG-BRAB#486,BRANCHREG-BRAB#487,BRANCHREG-BRAB#488,BRANCHREG-BRAB#489,BRANCHREG-BRAB#490,BRANCHREG-BRAB#491,BRANCHREG-BRAB#492,BRANCHREG-BRAB#493,BRANCHREG-BRAB#494,BRANCHREG-BRAB#495,BRANCHREG-BRAB#496,BRANCHREG-BRAB#497,BRANCHREG-BRAB#498,BRANCHREG-BRAB#499,BRANCHREG-BRAB#500,BRANCHREG-BRAB#501,BRANCHREG-BRAB#502,BRANCHREG-BRAB#503,BRANCHREG-BRAB#504,BRANCHREG-BRAB#505,BRANCHREG-BRAB#506,BRANCHREG-BRAB#507,BRANCHREG-BRAB#508,BRANCHREG-BRAB#509,BRANCHREG-BRAB#510,BRANCHREG-BRAB#511,BRANCHREG-BRAB#512,BRANCHREG-BRAB#513,BRANCHREG-BRAB#514,BRANCHREG-BRAB#515,BRANCHREG-BRAB#516,BRANCHREG-BRAB#517,BRANCHREG-BRAB#518,BRANCHREG-BRAB#519,BRANCHREG-BRAB#520,BRANCHREG-BRAB#521,BRANCHREG-BRAB#522,BRANCHREG-BRAB#523,BRANCHREG-BRAB#524,BRANCHREG-BRAB#525,BRANCHREG-BRAB#526,BRANCHREG-BRAB#527,BRANCHREG-BRAB#528,BRANCHREG-BRAB#529,BRANCHREG-BRAB#530,BRANCHREG-BRAB#531,BRANCHREG-BRAB#532,BRANCHREG-BRAB#533,BRANCHREG-BRAB#534,BRANCHREG-BRAB#535,BRANCHREG-BRAB#536,BRANCHREG-BRAB#537,BRANCHREG-BRAB#538,BRANCHREG-BRAB#539,BRANCHREG-BRAB#540,BRANCHREG-BRAB#541,BRANCHREG-BRAB#542,BRANCHREG-BRAB#543,BRANCHREG-BRAB#544,BRANCHREG-BRAB#545,BRANCHREG-BRAB#546,BRANCHREG-BRAB#547,BRANCHREG-BRAB#548,BRANCHREG-BRAB#549,BRANCHREG-BRAB#550,BRANCHREG-BRAB#551,BRANCHREG-BRAB#552,BRANCHREG-BRAB#553,BRANCHREG-BRAB#554,BRANCHREG-BRAB#555,BRANCHREG-BRAB#556,BRANCHREG-BRAB#557,BRANCHREG-BRAB#558,BRANCHREG-BRAB#559,BRANCHREG-BRAB#560,BRANCHREG-BRAB#561,BRANCHREG-BRAB#562,BRANCHREG-BRAB#563,BRANCHREG-BRAB#564,BRANCHREG-BRAB#565,BRANCHREG-BRAB#566,BRANCHREG-BRAB#567,BRANCHREG-BRAB#568,BRANCHREG-BRAB#569,BRANCHREG-BRAB#570,BRANCHREG-BRAB#571,BRANCHREG-BRAB#572,BRANCHREG-BRAB#573,BRANCHREG-BRAB#574,BRANCHREG-BRAB#575,BRANCHREG-BRAB#576,BRANCHREG-BRAB#577,BRANCHREG-BRAB#578,BRANCHREG-BRAB#579,BRANCHREG-BRAB#580,BRANCHREG-BRAB#581,BRANCHREG-BRAB#582,BRANCHREG-BRAB#583,BRANCHREG-BRAB#584,BRANCHREG-BRAB#585,BRANCHREG-BRAB#586,BRANCHREG-BRAB#587,BRANCHREG-BRAB#588,BRANCHREG-BRAB#589,BRANCHREG-BRAB#590,BRANCHREG-BRAB#591,BRANCHREG-BRAB#592,BRANCHREG-BRAB#593,BRANCHREG-BRAB#594,BRANCHREG-BRAB#595,BRANCHREG-BRAB#596,BRANCHREG-BRAB#597,BRANCHREG-BRAB#598,BRANCHREG-BRAB#599,BRANCHREG-BRAB#600,BRANCHREG-BRAB#601,BRANCHREG-BRAB#602,BRANCHREG-BRAB#603,BRANCHREG-BRAB#604,BRANCHREG-BRAB#605,BRANCHREG-BRAB#606,BRANCHREG-BRAB#607,BRANCHREG-BRAB#608,BRANCHREG-BRAB#609,BRANCHREG-BRAB#610,BRANCHREG-BRAB#611,BRANCHREG-BRAB#612,BRANCHREG-BRAB#613,BRANCHREG-BRAB#614,BRANCHREG-BRAB#615,BRANCHREG-BRAB#616,BRANCHREG-BRAB#617,BRANCHREG-BRAB#618,BRANCHREG-BRAB#619,BRANCHREG-BRAB#620,BRANCHREG-BRAB#621,BRANCHREG-BRAB#622,BRANCHREG-BRAB#623,BRANCHREG-BRAB#624,BRANCHREG-BRAB#625,BRANCHREG-BRAB#626,BRANCHREG-BRAB#627,BRANCHREG-BRAB#628,BRANCHREG-BRAB#629,BRANCHREG-BRAB#630,BRANCHREG-BRAB#631,BRANCHREG-BRAB#632,BRANCHREG-BRAB#633,BRANCHREG-BRAB#634,BRANCHREG-BRAB#635,BRANCHREG-BRAB#636,BRANCHREG-BRAB#637,BRANCHREG-BRAB#638,BRANCHREG-BRAB#639,BRANCHREG-BRAB#640,BRANCHREG-BRAB#641,BRANCHREG-BRAB#642,BRANCHREG-BRAB#643,BRANCHREG-BRAB#644,BRANCHREG-BRAB#645,BRANCHREG-BRAB#646,BRANCHREG-BRAB#647,BRANCHREG-BRAB#648,BRANCHREG-BRAB#649,BRANCHREG-BRAB#650,BRANCHREG-BRAB#651,BRANCHREG-BRAB#652,BRANCHREG-BRAB#653,BRANCHREG-BRAB#654,BRANCHREG-BRAB#655,BRANCHREG-BRAB#656,BRANCHREG-BRAB#657,BRANCHREG-BRAB#658,BRANCHREG-BRAB#659,BRANCHREG-BRAB#660,BRANCHREG-BRAB#661,BRANCHREG-BRAB#662,BRANCHREG-BRAB#663,BRANCHREG-BRAB#664,BRANCHREG-BRAB#665,BRANCHREG-BRAB#666,BRANCHREG-BRAB#667,BRANCHREG-BRAB#668,BRANCHREG-BRAB#669,BRANCHREG-BRAB#670,BRANCHREG-BRAB#671,BRANCHREG-BRAB#672,BRANCHREG-BRAB#673,BRANCHREG-BRAB#674,BRANCHREG-BRAB#675,BRANCHREG-BRAB#676,BRANCHREG-BRAB#677,BRANCHREG-BRAB#678,BRANCHREG-BRAB#679,BRANCHREG-BRAB#680,BRANCHREG-BRAB#681,BRANCHREG-BRAB#682,BRANCHREG-BRAB#683,BRANCHREG-BRAB#684,BRANCHREG-BRAB#685,BRANCHREG-BRAB#686,BRANCHREG-BRAB#687,BRANCHREG-BRAB#688,BRANCHREG-BRAB#689,BRANCHREG-BRAB#690,BRANCHREG-BRAB#691,BRANCHREG-BRAB#692,BRANCHREG-BRAB#693,BRANCHREG-BRAB#694,BRANCHREG-BRAB#695,BRANCHREG-BRAB#696,BRANCHREG-BRAB#697,BRANCHREG-BRAB#698,BRANCHREG-BRAB#699,BRANCHREG-BRAB#700,BRANCHREG-BRAB#701,BRANCHREG-BRAB#702,BRANCHREG-BRAB#703,BRANCHREG-BRAB#704,BRANCHREG-BRAB#705,BRANCHREG-BRAB#706,BRANCHREG-BRAB#707,BRANCHREG-BRAB#708,BRANCHREG-BRAB#709,BRANCHREG-BRAB#710,BRANCHREG-BRAB#711,BRANCHREG-BRAB#712,BRANCHREG-BRAB#713,BRANCHREG-BRAB#714,BRANCHREG-BRAB#715,BRANCHREG-BRAB#716,BRANCHREG-BRAB#717,BRANCHREG-BRAB#718,BRANCHREG-BRAB#719,BRANCHREG-BRAB#720,BRANCHREG-BRAB#721,BRANCHREG-BRAB#722,BRANCHREG-BRAB#723,BRANCHREG-BRAB#724,BRANCHREG-BRAB#725,BRANCHREG-BRAB#726,BRANCHREG-BRAB#727,BRANCHREG-BRAB#728,BRANCHREG-BRAB#729,BRANCHREG-BRAB#730,BRANCHREG-BRAB#731,BRANCHREG-BRAB#732,BRANCHREG-BRAB#733,BRANCHREG-BRAB#734,BRANCHREG-BRAB#735,BRANCHREG-BRAB#736,BRANCHREG-BRAB#737,BRANCHREG-BRAB#738,BRANCHREG-BRAB#739,BRANCHREG-BRAB#740,BRANCHREG-BRAB#741,BRANCHREG-BRAB#742,BRANCHREG-BRAB#743,BRANCHREG-BRAB#744,BRANCHREG-BRAB#745,BRANCHREG-BRAB#746,BRANCHREG-BRAB#747,BRANCHREG-BRAB#748,BRANCHREG-BRAB#749,BRANCHREG-BRAB#750,BRANCHREG-BRAB#751,BRANCHREG-BRAB#752,BRANCHREG-BRAB#753,BRANCHREG-BRAB#754,BRANCHREG-BRAB#755,BRANCHREG-BRAB#756,BRANCHREG-BRAB#757,BRANCHREG-BRAB#758,BRANCHREG-BRAB#759,BRANCHREG-BRAB#760,BRANCHREG-BRAB#761,BRANCHREG-BRAB#762,BRANCHREG-BRAB#763,BRANCHREG-BRAB#764,BRANCHREG-BRAB#765,BRANCHREG-BRAB#766,BRANCHREG-BRAB#767,BRANCHREG-BRAB#768,BRANCHREG-BRAB#769,BRANCHREG-BRAB#770,BRANCHREG-BRAB#771,BRANCHREG-BRAB#772,BRANCHREG-BRAB#773,BRANCHREG-BRAB#774,BRANCHREG-BRAB#775,BRANCHREG-BRAB#776,BRANCHREG-BRAB#777,BRANCHREG-BRAB#778,BRANCHREG-BRAB#779,BRANCHREG-BRAB#780,BRANCHREG-BRAB#781,BRANCHREG-BRAB#782,BRANCHREG-BRAB#783,BRANCHREG-BRAB#784,BRANCHREG-BRAB#785,BRANCHREG-BRAB#786,BRANCHREG-BRAB#787,BRANCHREG-BRAB#788,BRANCHREG-BRAB#789,BRANCHREG-BRAB#790,BRANCHREG-BRAB#791,BRANCHREG-BRAB#792,BRANCHREG-BRAB#793,BRANCHREG-BRAB#794,BRANCHREG-BRAB#795,BRANCHREG-BRAB#796,BRANCHREG-BRAB#797,BRANCHREG-BRAB#798,BRANCHREG-BRAB#799,BRANCHREG-BRAB#800,BRANCHREG-BRAB#801,BRANCHREG-BRAB#802,BRANCHREG-BRAB#803,BRANCHREG-BRAB#804,BRANCHREG-BRAB#805,BRANCHREG-BRAB#806,BRANCHREG-BRAB#807,BRANCHREG-BRAB#808,BRANCHREG-BRAB#809,BRANCHREG-BRAB#810,BRANCHREG-BRAB#811,BRANCHREG-BRAB#812,BRANCHREG-BRAB#813,BRANCHREG-BRAB#814,BRANCHREG-BRAB#815,BRANCHREG-BRAB#816,BRANCHREG-BRAB#817,BRANCHREG-BRAB#818,BRANCHREG-BRAB#819,BRANCHREG-BRAB#820,BRANCHREG-BRAB#821,BRANCHREG-BRAB#822,BRANCHREG-BRAB#823,BRANCHREG-BRAB#824,BRANCHREG-BRAB#825,BRANCHREG-BRAB#826,BRANCHREG-BRAB#827,BRANCHREG-BRAB#828,BRANCHREG-BRAB#829,BRANCHREG-BRAB#830,BRANCHREG-BRAB#831,BRANCHREG-BRAB#832,BRANCHREG-BRAB#833,BRANCHREG-BRAB#834,BRANCHREG-BRAB#835,BRANCHREG-BRAB#836,BRANCHREG-BRAB#837,BRANCHREG-BRAB#838,BRANCHREG-BRAB#839,BRANCHREG-BRAB#840,BRANCHREG-BRAB#841,BRANCHREG-BRAB#842,BRANCHREG-BRAB#843,BRANCHREG-BRAB#844,BRANCHREG-BRAB#845,BRANCHREG-BRAB#846,BRANCHREG-BRAB#847,BRANCHREG-BRAB#848,BRANCHREG-BRAB#849,BRANCHREG-BRAB#850,BRANCHREG-BRAB#851,BRANCHREG-BRAB#852,BRANCHREG-BRAB#853,BRANCHREG-BRAB#854,BRANCHREG-BRAB#855,BRANCHREG-BRAB#856,BRANCHREG-BRAB#857,BRANCHREG-BRAB#858,BRANCHREG-BRAB#859,BRANCHREG-BRAB#860,BRANCHREG-BRAB#861,BRANCHREG-BRAB#862,BRANCHREG-BRAB#863,BRANCHREG-BRAB#864,BRANCHREG-BRAB#865,BRANCHREG-BRAB#866,BRANCHREG-BRAB#867,BRANCHREG-BRAB#868,BRANCHREG-BRAB#869,BRANCHREG-BRAB#870,BRANCHREG-BRAB#871,BRANCHREG-BRAB#872,BRANCHREG-BRAB#873,BRANCHREG-BRAB#874,BRANCHREG-BRAB#875,BRANCHREG-BRAB#876,BRANCHREG-BRAB#877,BRANCHREG-BRAB#878,BRANCHREG-BRAB#879,BRANCHREG-BRAB#880,BRANCHREG-BRAB#881,BRANCHREG-BRAB#882,BRANCHREG-BRAB#883,BRANCHREG-BRAB#884,BRANCHREG-BRAB#885,BRANCHREG-BRAB#886,BRANCHREG-BRAB#887,BRANCHREG-BRAB#888,BRANCHREG-BRAB#889,BRANCHREG-BRAB#890,BRANCHREG-BRAB#891,BRANCHREG-BRAB#892,BRANCHREG-BRAB#893,BRANCHREG-BRAB#894,BRANCHREG-BRAB#895,BRANCHREG-BRAB#896,BRANCHREG-BRAB#897,BRANCHREG-BRAB#898,BRANCHREG-BRAB#899,BRANCHREG-BRAB#900,BRANCHREG-BRAB#901,BRANCHREG-BRAB#902,BRANCHREG-BRAB#903,BRANCHREG-BRAB#904,BRANCHREG-BRAB#905,BRANCHREG-BRAB#906,BRANCHREG-BRAB#907,BRANCHREG-BRAB#908,BRANCHREG-BRAB#909,BRANCHREG-BRAB#910,BRANCHREG-BRAB#911,BRANCHREG-BRAB#912,BRANCHREG-BRAB#913,BRANCHREG-BRAB#914,BRANCHREG-BRAB#915,BRANCHREG-BRAB#916,BRANCHREG-BRAB#917,BRANCHREG-BRAB#918,BRANCHREG-BRAB#919,BRANCHREG-BRAB#920,BRANCHREG-BRAB#921,BRANCHREG-BRAB#922,BRANCHREG-BRAB#923,BRANCHREG-BRAB#924,BRANCHREG-BRAB#925,BRANCHREG-BRAB#926,BRANCHREG-BRAB#927,BRANCHREG-BRAB#928,BRANCHREG-BRAB#929,BRANCHREG-BRAB#930,BRANCHREG-BRAB#931,BRANCHREG-BRAB#932,BRANCHREG-BRAB#933,BRANCHREG-BRAB#934,BRANCHREG-BRAB#935,BRANCHREG-BRAB#936,BRANCHREG-BRAB#937,BRANCHREG-BRAB#938,BRANCHREG-BRAB#939,BRANCHREG-BRAB#940,BRANCHREG-BRAB#941,BRANCHREG-BRAB#942,BRANCHREG-BRAB#943,BRANCHREG-BRAB#944,BRANCHREG-BRAB#945,BRANCHREG-BRAB#946,BRANCHREG-BRAB#947,BRANCHREG-BRAB#948,BRANCHREG-BRAB#949,BRANCHREG-BRAB#950,BRANCHREG-BRAB#951,BRANCHREG-BRAB#952,BRANCHREG-BRAB#953,BRANCHREG-BRAB#954,BRANCHREG-BRAB#955,BRANCHREG-BRAB#956,BRANCHREG-BRAB#957,BRANCHREG-BRAB#958,BRANCHREG-BRAB#959,BRANCHREG-BRAB#960,BRANCHREG-BRAB#961,BRANCHREG-BRAB#962,BRANCHREG-BRAB#963,BRANCHREG-BRAB#964,BRANCHREG-BRAB#965,BRANCHREG-BRAB#966,BRANCHREG-BRAB#967,BRANCHREG-BRAB#968,BRANCHREG-BRAB#969,BRANCHREG-BRAB#970,BRANCHREG-BRAB#971,BRANCHREG-BRAB#972,BRANCHREG-BRAB#973,BRANCHREG-BRAB#974,BRANCHREG-BRAB#975,BRANCHREG-BRAB#976,BRANCHREG-BRAB#977,BRANCHREG-BRAB#978,BRANCHREG-BRAB#979,BRANCHREG-BRAB#980,BRANCHREG-BRAB#981,BRANCHREG-BRAB#982,BRANCHREG-BRAB#983,BRANCHREG-BRAB#984,BRANCHREG-BRAB#985,BRANCHREG-BRAB#986,BRANCHREG-BRAB#987,BRANCHREG-BRAB#988,BRANCHREG-BRAB#989,BRANCHREG-BRAB#990,BRANCHREG-BRAB#991,BRANCHREG-BRAB#992,BRANCHREG-BRAB#993,BRANCHREG-BRAB#994,BRANCHREG-BRAB#995,BRANCHREG-BRAB#996,BRANCHREG-BRAB#997,BRANCHREG-BRAB#998,BRANCHREG-BRAB#999,BRANCHREG-BRAB#1000,BRANCHREG-BRAB#1001,BRANCHREG-BRAB#1002,BRANCHREG-BRAB#1003,BRANCHREG-BRAB#1004,BRANCHREG-BRAB#1005,BRANCHREG-BRAB#1006,BRANCHREG-BRAB#1007,BRANCHREG-BRAB#1008,BRANCHREG-BRAB#1009,BRANCHREG-BRAB#1010,BRANCHREG-BRAB#1011,BRANCHREG-BRAB#1012,BRANCHREG-BRAB#1013,BRANCHREG-BRAB#1014,BRANCHREG-BRAB#1015,BRANCHREG-BRAB#1016,BRANCHREG-BRAB#1017,BRANCHREG-BRAB#1018,BRANCHREG-BRAB#1019,BRANCHREG-BRAB#1020,BRANCHREG-BRAB#1021,BRANCHREG-BRAB#1022,BRANCHREG-BRAB#1023
 pub const fn classify_impl_159(inst: u32) -> u32 {
   if (inst&0xff800) != 0xf0800 { return 0; }
-  let idx = match (inst >> 0) & 0x7ff {
+  
+  match inst & 0x7ff {
     0x0 => 0x989,
     0x1 => 0x989,
     0x2 => 0x989,
@@ -46853,15 +46854,15 @@ pub const fn classify_impl_159(inst: u32) -> u32 {
     0x7fe => 0x98a,
     0x7ff => 0x98a,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // BRANCHREG-BLRAA#0,BRANCHREG-BLRAA#1,BRANCHREG-BLRAA#2,BRANCHREG-BLRAA#3,BRANCHREG-BLRAA#4,BRANCHREG-BLRAA#5,BRANCHREG-BLRAA#6,BRANCHREG-BLRAA#7,BRANCHREG-BLRAA#8,BRANCHREG-BLRAA#9,BRANCHREG-BLRAA#10,BRANCHREG-BLRAA#11,BRANCHREG-BLRAA#12,BRANCHREG-BLRAA#13,BRANCHREG-BLRAA#14,BRANCHREG-BLRAA#15,BRANCHREG-BLRAA#16,BRANCHREG-BLRAA#17,BRANCHREG-BLRAA#18,BRANCHREG-BLRAA#19,BRANCHREG-BLRAA#20,BRANCHREG-BLRAA#21,BRANCHREG-BLRAA#22,BRANCHREG-BLRAA#23,BRANCHREG-BLRAA#24,BRANCHREG-BLRAA#25,BRANCHREG-BLRAA#26,BRANCHREG-BLRAA#27,BRANCHREG-BLRAA#28,BRANCHREG-BLRAA#29,BRANCHREG-BLRAA#30,BRANCHREG-BLRAA#31,BRANCHREG-BLRAA#32,BRANCHREG-BLRAA#33,BRANCHREG-BLRAA#34,BRANCHREG-BLRAA#35,BRANCHREG-BLRAA#36,BRANCHREG-BLRAA#37,BRANCHREG-BLRAA#38,BRANCHREG-BLRAA#39,BRANCHREG-BLRAA#40,BRANCHREG-BLRAA#41,BRANCHREG-BLRAA#42,BRANCHREG-BLRAA#43,BRANCHREG-BLRAA#44,BRANCHREG-BLRAA#45,BRANCHREG-BLRAA#46,BRANCHREG-BLRAA#47,BRANCHREG-BLRAA#48,BRANCHREG-BLRAA#49,BRANCHREG-BLRAA#50,BRANCHREG-BLRAA#51,BRANCHREG-BLRAA#52,BRANCHREG-BLRAA#53,BRANCHREG-BLRAA#54,BRANCHREG-BLRAA#55,BRANCHREG-BLRAA#56,BRANCHREG-BLRAA#57,BRANCHREG-BLRAA#58,BRANCHREG-BLRAA#59,BRANCHREG-BLRAA#60,BRANCHREG-BLRAA#61,BRANCHREG-BLRAA#62,BRANCHREG-BLRAA#63,BRANCHREG-BLRAA#64,BRANCHREG-BLRAA#65,BRANCHREG-BLRAA#66,BRANCHREG-BLRAA#67,BRANCHREG-BLRAA#68,BRANCHREG-BLRAA#69,BRANCHREG-BLRAA#70,BRANCHREG-BLRAA#71,BRANCHREG-BLRAA#72,BRANCHREG-BLRAA#73,BRANCHREG-BLRAA#74,BRANCHREG-BLRAA#75,BRANCHREG-BLRAA#76,BRANCHREG-BLRAA#77,BRANCHREG-BLRAA#78,BRANCHREG-BLRAA#79,BRANCHREG-BLRAA#80,BRANCHREG-BLRAA#81,BRANCHREG-BLRAA#82,BRANCHREG-BLRAA#83,BRANCHREG-BLRAA#84,BRANCHREG-BLRAA#85,BRANCHREG-BLRAA#86,BRANCHREG-BLRAA#87,BRANCHREG-BLRAA#88,BRANCHREG-BLRAA#89,BRANCHREG-BLRAA#90,BRANCHREG-BLRAA#91,BRANCHREG-BLRAA#92,BRANCHREG-BLRAA#93,BRANCHREG-BLRAA#94,BRANCHREG-BLRAA#95,BRANCHREG-BLRAA#96,BRANCHREG-BLRAA#97,BRANCHREG-BLRAA#98,BRANCHREG-BLRAA#99,BRANCHREG-BLRAA#100,BRANCHREG-BLRAA#101,BRANCHREG-BLRAA#102,BRANCHREG-BLRAA#103,BRANCHREG-BLRAA#104,BRANCHREG-BLRAA#105,BRANCHREG-BLRAA#106,BRANCHREG-BLRAA#107,BRANCHREG-BLRAA#108,BRANCHREG-BLRAA#109,BRANCHREG-BLRAA#110,BRANCHREG-BLRAA#111,BRANCHREG-BLRAA#112,BRANCHREG-BLRAA#113,BRANCHREG-BLRAA#114,BRANCHREG-BLRAA#115,BRANCHREG-BLRAA#116,BRANCHREG-BLRAA#117,BRANCHREG-BLRAA#118,BRANCHREG-BLRAA#119,BRANCHREG-BLRAA#120,BRANCHREG-BLRAA#121,BRANCHREG-BLRAA#122,BRANCHREG-BLRAA#123,BRANCHREG-BLRAA#124,BRANCHREG-BLRAA#125,BRANCHREG-BLRAA#126,BRANCHREG-BLRAA#127,BRANCHREG-BLRAA#128,BRANCHREG-BLRAA#129,BRANCHREG-BLRAA#130,BRANCHREG-BLRAA#131,BRANCHREG-BLRAA#132,BRANCHREG-BLRAA#133,BRANCHREG-BLRAA#134,BRANCHREG-BLRAA#135,BRANCHREG-BLRAA#136,BRANCHREG-BLRAA#137,BRANCHREG-BLRAA#138,BRANCHREG-BLRAA#139,BRANCHREG-BLRAA#140,BRANCHREG-BLRAA#141,BRANCHREG-BLRAA#142,BRANCHREG-BLRAA#143,BRANCHREG-BLRAA#144,BRANCHREG-BLRAA#145,BRANCHREG-BLRAA#146,BRANCHREG-BLRAA#147,BRANCHREG-BLRAA#148,BRANCHREG-BLRAA#149,BRANCHREG-BLRAA#150,BRANCHREG-BLRAA#151,BRANCHREG-BLRAA#152,BRANCHREG-BLRAA#153,BRANCHREG-BLRAA#154,BRANCHREG-BLRAA#155,BRANCHREG-BLRAA#156,BRANCHREG-BLRAA#157,BRANCHREG-BLRAA#158,BRANCHREG-BLRAA#159,BRANCHREG-BLRAA#160,BRANCHREG-BLRAA#161,BRANCHREG-BLRAA#162,BRANCHREG-BLRAA#163,BRANCHREG-BLRAA#164,BRANCHREG-BLRAA#165,BRANCHREG-BLRAA#166,BRANCHREG-BLRAA#167,BRANCHREG-BLRAA#168,BRANCHREG-BLRAA#169,BRANCHREG-BLRAA#170,BRANCHREG-BLRAA#171,BRANCHREG-BLRAA#172,BRANCHREG-BLRAA#173,BRANCHREG-BLRAA#174,BRANCHREG-BLRAA#175,BRANCHREG-BLRAA#176,BRANCHREG-BLRAA#177,BRANCHREG-BLRAA#178,BRANCHREG-BLRAA#179,BRANCHREG-BLRAA#180,BRANCHREG-BLRAA#181,BRANCHREG-BLRAA#182,BRANCHREG-BLRAA#183,BRANCHREG-BLRAA#184,BRANCHREG-BLRAA#185,BRANCHREG-BLRAA#186,BRANCHREG-BLRAA#187,BRANCHREG-BLRAA#188,BRANCHREG-BLRAA#189,BRANCHREG-BLRAA#190,BRANCHREG-BLRAA#191,BRANCHREG-BLRAA#192,BRANCHREG-BLRAA#193,BRANCHREG-BLRAA#194,BRANCHREG-BLRAA#195,BRANCHREG-BLRAA#196,BRANCHREG-BLRAA#197,BRANCHREG-BLRAA#198,BRANCHREG-BLRAA#199,BRANCHREG-BLRAA#200,BRANCHREG-BLRAA#201,BRANCHREG-BLRAA#202,BRANCHREG-BLRAA#203,BRANCHREG-BLRAA#204,BRANCHREG-BLRAA#205,BRANCHREG-BLRAA#206,BRANCHREG-BLRAA#207,BRANCHREG-BLRAA#208,BRANCHREG-BLRAA#209,BRANCHREG-BLRAA#210,BRANCHREG-BLRAA#211,BRANCHREG-BLRAA#212,BRANCHREG-BLRAA#213,BRANCHREG-BLRAA#214,BRANCHREG-BLRAA#215,BRANCHREG-BLRAA#216,BRANCHREG-BLRAA#217,BRANCHREG-BLRAA#218,BRANCHREG-BLRAA#219,BRANCHREG-BLRAA#220,BRANCHREG-BLRAA#221,BRANCHREG-BLRAA#222,BRANCHREG-BLRAA#223,BRANCHREG-BLRAA#224,BRANCHREG-BLRAA#225,BRANCHREG-BLRAA#226,BRANCHREG-BLRAA#227,BRANCHREG-BLRAA#228,BRANCHREG-BLRAA#229,BRANCHREG-BLRAA#230,BRANCHREG-BLRAA#231,BRANCHREG-BLRAA#232,BRANCHREG-BLRAA#233,BRANCHREG-BLRAA#234,BRANCHREG-BLRAA#235,BRANCHREG-BLRAA#236,BRANCHREG-BLRAA#237,BRANCHREG-BLRAA#238,BRANCHREG-BLRAA#239,BRANCHREG-BLRAA#240,BRANCHREG-BLRAA#241,BRANCHREG-BLRAA#242,BRANCHREG-BLRAA#243,BRANCHREG-BLRAA#244,BRANCHREG-BLRAA#245,BRANCHREG-BLRAA#246,BRANCHREG-BLRAA#247,BRANCHREG-BLRAA#248,BRANCHREG-BLRAA#249,BRANCHREG-BLRAA#250,BRANCHREG-BLRAA#251,BRANCHREG-BLRAA#252,BRANCHREG-BLRAA#253,BRANCHREG-BLRAA#254,BRANCHREG-BLRAA#255,BRANCHREG-BLRAA#256,BRANCHREG-BLRAA#257,BRANCHREG-BLRAA#258,BRANCHREG-BLRAA#259,BRANCHREG-BLRAA#260,BRANCHREG-BLRAA#261,BRANCHREG-BLRAA#262,BRANCHREG-BLRAA#263,BRANCHREG-BLRAA#264,BRANCHREG-BLRAA#265,BRANCHREG-BLRAA#266,BRANCHREG-BLRAA#267,BRANCHREG-BLRAA#268,BRANCHREG-BLRAA#269,BRANCHREG-BLRAA#270,BRANCHREG-BLRAA#271,BRANCHREG-BLRAA#272,BRANCHREG-BLRAA#273,BRANCHREG-BLRAA#274,BRANCHREG-BLRAA#275,BRANCHREG-BLRAA#276,BRANCHREG-BLRAA#277,BRANCHREG-BLRAA#278,BRANCHREG-BLRAA#279,BRANCHREG-BLRAA#280,BRANCHREG-BLRAA#281,BRANCHREG-BLRAA#282,BRANCHREG-BLRAA#283,BRANCHREG-BLRAA#284,BRANCHREG-BLRAA#285,BRANCHREG-BLRAA#286,BRANCHREG-BLRAA#287,BRANCHREG-BLRAA#288,BRANCHREG-BLRAA#289,BRANCHREG-BLRAA#290,BRANCHREG-BLRAA#291,BRANCHREG-BLRAA#292,BRANCHREG-BLRAA#293,BRANCHREG-BLRAA#294,BRANCHREG-BLRAA#295,BRANCHREG-BLRAA#296,BRANCHREG-BLRAA#297,BRANCHREG-BLRAA#298,BRANCHREG-BLRAA#299,BRANCHREG-BLRAA#300,BRANCHREG-BLRAA#301,BRANCHREG-BLRAA#302,BRANCHREG-BLRAA#303,BRANCHREG-BLRAA#304,BRANCHREG-BLRAA#305,BRANCHREG-BLRAA#306,BRANCHREG-BLRAA#307,BRANCHREG-BLRAA#308,BRANCHREG-BLRAA#309,BRANCHREG-BLRAA#310,BRANCHREG-BLRAA#311,BRANCHREG-BLRAA#312,BRANCHREG-BLRAA#313,BRANCHREG-BLRAA#314,BRANCHREG-BLRAA#315,BRANCHREG-BLRAA#316,BRANCHREG-BLRAA#317,BRANCHREG-BLRAA#318,BRANCHREG-BLRAA#319,BRANCHREG-BLRAA#320,BRANCHREG-BLRAA#321,BRANCHREG-BLRAA#322,BRANCHREG-BLRAA#323,BRANCHREG-BLRAA#324,BRANCHREG-BLRAA#325,BRANCHREG-BLRAA#326,BRANCHREG-BLRAA#327,BRANCHREG-BLRAA#328,BRANCHREG-BLRAA#329,BRANCHREG-BLRAA#330,BRANCHREG-BLRAA#331,BRANCHREG-BLRAA#332,BRANCHREG-BLRAA#333,BRANCHREG-BLRAA#334,BRANCHREG-BLRAA#335,BRANCHREG-BLRAA#336,BRANCHREG-BLRAA#337,BRANCHREG-BLRAA#338,BRANCHREG-BLRAA#339,BRANCHREG-BLRAA#340,BRANCHREG-BLRAA#341,BRANCHREG-BLRAA#342,BRANCHREG-BLRAA#343,BRANCHREG-BLRAA#344,BRANCHREG-BLRAA#345,BRANCHREG-BLRAA#346,BRANCHREG-BLRAA#347,BRANCHREG-BLRAA#348,BRANCHREG-BLRAA#349,BRANCHREG-BLRAA#350,BRANCHREG-BLRAA#351,BRANCHREG-BLRAA#352,BRANCHREG-BLRAA#353,BRANCHREG-BLRAA#354,BRANCHREG-BLRAA#355,BRANCHREG-BLRAA#356,BRANCHREG-BLRAA#357,BRANCHREG-BLRAA#358,BRANCHREG-BLRAA#359,BRANCHREG-BLRAA#360,BRANCHREG-BLRAA#361,BRANCHREG-BLRAA#362,BRANCHREG-BLRAA#363,BRANCHREG-BLRAA#364,BRANCHREG-BLRAA#365,BRANCHREG-BLRAA#366,BRANCHREG-BLRAA#367,BRANCHREG-BLRAA#368,BRANCHREG-BLRAA#369,BRANCHREG-BLRAA#370,BRANCHREG-BLRAA#371,BRANCHREG-BLRAA#372,BRANCHREG-BLRAA#373,BRANCHREG-BLRAA#374,BRANCHREG-BLRAA#375,BRANCHREG-BLRAA#376,BRANCHREG-BLRAA#377,BRANCHREG-BLRAA#378,BRANCHREG-BLRAA#379,BRANCHREG-BLRAA#380,BRANCHREG-BLRAA#381,BRANCHREG-BLRAA#382,BRANCHREG-BLRAA#383,BRANCHREG-BLRAA#384,BRANCHREG-BLRAA#385,BRANCHREG-BLRAA#386,BRANCHREG-BLRAA#387,BRANCHREG-BLRAA#388,BRANCHREG-BLRAA#389,BRANCHREG-BLRAA#390,BRANCHREG-BLRAA#391,BRANCHREG-BLRAA#392,BRANCHREG-BLRAA#393,BRANCHREG-BLRAA#394,BRANCHREG-BLRAA#395,BRANCHREG-BLRAA#396,BRANCHREG-BLRAA#397,BRANCHREG-BLRAA#398,BRANCHREG-BLRAA#399,BRANCHREG-BLRAA#400,BRANCHREG-BLRAA#401,BRANCHREG-BLRAA#402,BRANCHREG-BLRAA#403,BRANCHREG-BLRAA#404,BRANCHREG-BLRAA#405,BRANCHREG-BLRAA#406,BRANCHREG-BLRAA#407,BRANCHREG-BLRAA#408,BRANCHREG-BLRAA#409,BRANCHREG-BLRAA#410,BRANCHREG-BLRAA#411,BRANCHREG-BLRAA#412,BRANCHREG-BLRAA#413,BRANCHREG-BLRAA#414,BRANCHREG-BLRAA#415,BRANCHREG-BLRAA#416,BRANCHREG-BLRAA#417,BRANCHREG-BLRAA#418,BRANCHREG-BLRAA#419,BRANCHREG-BLRAA#420,BRANCHREG-BLRAA#421,BRANCHREG-BLRAA#422,BRANCHREG-BLRAA#423,BRANCHREG-BLRAA#424,BRANCHREG-BLRAA#425,BRANCHREG-BLRAA#426,BRANCHREG-BLRAA#427,BRANCHREG-BLRAA#428,BRANCHREG-BLRAA#429,BRANCHREG-BLRAA#430,BRANCHREG-BLRAA#431,BRANCHREG-BLRAA#432,BRANCHREG-BLRAA#433,BRANCHREG-BLRAA#434,BRANCHREG-BLRAA#435,BRANCHREG-BLRAA#436,BRANCHREG-BLRAA#437,BRANCHREG-BLRAA#438,BRANCHREG-BLRAA#439,BRANCHREG-BLRAA#440,BRANCHREG-BLRAA#441,BRANCHREG-BLRAA#442,BRANCHREG-BLRAA#443,BRANCHREG-BLRAA#444,BRANCHREG-BLRAA#445,BRANCHREG-BLRAA#446,BRANCHREG-BLRAA#447,BRANCHREG-BLRAA#448,BRANCHREG-BLRAA#449,BRANCHREG-BLRAA#450,BRANCHREG-BLRAA#451,BRANCHREG-BLRAA#452,BRANCHREG-BLRAA#453,BRANCHREG-BLRAA#454,BRANCHREG-BLRAA#455,BRANCHREG-BLRAA#456,BRANCHREG-BLRAA#457,BRANCHREG-BLRAA#458,BRANCHREG-BLRAA#459,BRANCHREG-BLRAA#460,BRANCHREG-BLRAA#461,BRANCHREG-BLRAA#462,BRANCHREG-BLRAA#463,BRANCHREG-BLRAA#464,BRANCHREG-BLRAA#465,BRANCHREG-BLRAA#466,BRANCHREG-BLRAA#467,BRANCHREG-BLRAA#468,BRANCHREG-BLRAA#469,BRANCHREG-BLRAA#470,BRANCHREG-BLRAA#471,BRANCHREG-BLRAA#472,BRANCHREG-BLRAA#473,BRANCHREG-BLRAA#474,BRANCHREG-BLRAA#475,BRANCHREG-BLRAA#476,BRANCHREG-BLRAA#477,BRANCHREG-BLRAA#478,BRANCHREG-BLRAA#479,BRANCHREG-BLRAA#480,BRANCHREG-BLRAA#481,BRANCHREG-BLRAA#482,BRANCHREG-BLRAA#483,BRANCHREG-BLRAA#484,BRANCHREG-BLRAA#485,BRANCHREG-BLRAA#486,BRANCHREG-BLRAA#487,BRANCHREG-BLRAA#488,BRANCHREG-BLRAA#489,BRANCHREG-BLRAA#490,BRANCHREG-BLRAA#491,BRANCHREG-BLRAA#492,BRANCHREG-BLRAA#493,BRANCHREG-BLRAA#494,BRANCHREG-BLRAA#495,BRANCHREG-BLRAA#496,BRANCHREG-BLRAA#497,BRANCHREG-BLRAA#498,BRANCHREG-BLRAA#499,BRANCHREG-BLRAA#500,BRANCHREG-BLRAA#501,BRANCHREG-BLRAA#502,BRANCHREG-BLRAA#503,BRANCHREG-BLRAA#504,BRANCHREG-BLRAA#505,BRANCHREG-BLRAA#506,BRANCHREG-BLRAA#507,BRANCHREG-BLRAA#508,BRANCHREG-BLRAA#509,BRANCHREG-BLRAA#510,BRANCHREG-BLRAA#511,BRANCHREG-BLRAA#512,BRANCHREG-BLRAA#513,BRANCHREG-BLRAA#514,BRANCHREG-BLRAA#515,BRANCHREG-BLRAA#516,BRANCHREG-BLRAA#517,BRANCHREG-BLRAA#518,BRANCHREG-BLRAA#519,BRANCHREG-BLRAA#520,BRANCHREG-BLRAA#521,BRANCHREG-BLRAA#522,BRANCHREG-BLRAA#523,BRANCHREG-BLRAA#524,BRANCHREG-BLRAA#525,BRANCHREG-BLRAA#526,BRANCHREG-BLRAA#527,BRANCHREG-BLRAA#528,BRANCHREG-BLRAA#529,BRANCHREG-BLRAA#530,BRANCHREG-BLRAA#531,BRANCHREG-BLRAA#532,BRANCHREG-BLRAA#533,BRANCHREG-BLRAA#534,BRANCHREG-BLRAA#535,BRANCHREG-BLRAA#536,BRANCHREG-BLRAA#537,BRANCHREG-BLRAA#538,BRANCHREG-BLRAA#539,BRANCHREG-BLRAA#540,BRANCHREG-BLRAA#541,BRANCHREG-BLRAA#542,BRANCHREG-BLRAA#543,BRANCHREG-BLRAA#544,BRANCHREG-BLRAA#545,BRANCHREG-BLRAA#546,BRANCHREG-BLRAA#547,BRANCHREG-BLRAA#548,BRANCHREG-BLRAA#549,BRANCHREG-BLRAA#550,BRANCHREG-BLRAA#551,BRANCHREG-BLRAA#552,BRANCHREG-BLRAA#553,BRANCHREG-BLRAA#554,BRANCHREG-BLRAA#555,BRANCHREG-BLRAA#556,BRANCHREG-BLRAA#557,BRANCHREG-BLRAA#558,BRANCHREG-BLRAA#559,BRANCHREG-BLRAA#560,BRANCHREG-BLRAA#561,BRANCHREG-BLRAA#562,BRANCHREG-BLRAA#563,BRANCHREG-BLRAA#564,BRANCHREG-BLRAA#565,BRANCHREG-BLRAA#566,BRANCHREG-BLRAA#567,BRANCHREG-BLRAA#568,BRANCHREG-BLRAA#569,BRANCHREG-BLRAA#570,BRANCHREG-BLRAA#571,BRANCHREG-BLRAA#572,BRANCHREG-BLRAA#573,BRANCHREG-BLRAA#574,BRANCHREG-BLRAA#575,BRANCHREG-BLRAA#576,BRANCHREG-BLRAA#577,BRANCHREG-BLRAA#578,BRANCHREG-BLRAA#579,BRANCHREG-BLRAA#580,BRANCHREG-BLRAA#581,BRANCHREG-BLRAA#582,BRANCHREG-BLRAA#583,BRANCHREG-BLRAA#584,BRANCHREG-BLRAA#585,BRANCHREG-BLRAA#586,BRANCHREG-BLRAA#587,BRANCHREG-BLRAA#588,BRANCHREG-BLRAA#589,BRANCHREG-BLRAA#590,BRANCHREG-BLRAA#591,BRANCHREG-BLRAA#592,BRANCHREG-BLRAA#593,BRANCHREG-BLRAA#594,BRANCHREG-BLRAA#595,BRANCHREG-BLRAA#596,BRANCHREG-BLRAA#597,BRANCHREG-BLRAA#598,BRANCHREG-BLRAA#599,BRANCHREG-BLRAA#600,BRANCHREG-BLRAA#601,BRANCHREG-BLRAA#602,BRANCHREG-BLRAA#603,BRANCHREG-BLRAA#604,BRANCHREG-BLRAA#605,BRANCHREG-BLRAA#606,BRANCHREG-BLRAA#607,BRANCHREG-BLRAA#608,BRANCHREG-BLRAA#609,BRANCHREG-BLRAA#610,BRANCHREG-BLRAA#611,BRANCHREG-BLRAA#612,BRANCHREG-BLRAA#613,BRANCHREG-BLRAA#614,BRANCHREG-BLRAA#615,BRANCHREG-BLRAA#616,BRANCHREG-BLRAA#617,BRANCHREG-BLRAA#618,BRANCHREG-BLRAA#619,BRANCHREG-BLRAA#620,BRANCHREG-BLRAA#621,BRANCHREG-BLRAA#622,BRANCHREG-BLRAA#623,BRANCHREG-BLRAA#624,BRANCHREG-BLRAA#625,BRANCHREG-BLRAA#626,BRANCHREG-BLRAA#627,BRANCHREG-BLRAA#628,BRANCHREG-BLRAA#629,BRANCHREG-BLRAA#630,BRANCHREG-BLRAA#631,BRANCHREG-BLRAA#632,BRANCHREG-BLRAA#633,BRANCHREG-BLRAA#634,BRANCHREG-BLRAA#635,BRANCHREG-BLRAA#636,BRANCHREG-BLRAA#637,BRANCHREG-BLRAA#638,BRANCHREG-BLRAA#639,BRANCHREG-BLRAA#640,BRANCHREG-BLRAA#641,BRANCHREG-BLRAA#642,BRANCHREG-BLRAA#643,BRANCHREG-BLRAA#644,BRANCHREG-BLRAA#645,BRANCHREG-BLRAA#646,BRANCHREG-BLRAA#647,BRANCHREG-BLRAA#648,BRANCHREG-BLRAA#649,BRANCHREG-BLRAA#650,BRANCHREG-BLRAA#651,BRANCHREG-BLRAA#652,BRANCHREG-BLRAA#653,BRANCHREG-BLRAA#654,BRANCHREG-BLRAA#655,BRANCHREG-BLRAA#656,BRANCHREG-BLRAA#657,BRANCHREG-BLRAA#658,BRANCHREG-BLRAA#659,BRANCHREG-BLRAA#660,BRANCHREG-BLRAA#661,BRANCHREG-BLRAA#662,BRANCHREG-BLRAA#663,BRANCHREG-BLRAA#664,BRANCHREG-BLRAA#665,BRANCHREG-BLRAA#666,BRANCHREG-BLRAA#667,BRANCHREG-BLRAA#668,BRANCHREG-BLRAA#669,BRANCHREG-BLRAA#670,BRANCHREG-BLRAA#671,BRANCHREG-BLRAA#672,BRANCHREG-BLRAA#673,BRANCHREG-BLRAA#674,BRANCHREG-BLRAA#675,BRANCHREG-BLRAA#676,BRANCHREG-BLRAA#677,BRANCHREG-BLRAA#678,BRANCHREG-BLRAA#679,BRANCHREG-BLRAA#680,BRANCHREG-BLRAA#681,BRANCHREG-BLRAA#682,BRANCHREG-BLRAA#683,BRANCHREG-BLRAA#684,BRANCHREG-BLRAA#685,BRANCHREG-BLRAA#686,BRANCHREG-BLRAA#687,BRANCHREG-BLRAA#688,BRANCHREG-BLRAA#689,BRANCHREG-BLRAA#690,BRANCHREG-BLRAA#691,BRANCHREG-BLRAA#692,BRANCHREG-BLRAA#693,BRANCHREG-BLRAA#694,BRANCHREG-BLRAA#695,BRANCHREG-BLRAA#696,BRANCHREG-BLRAA#697,BRANCHREG-BLRAA#698,BRANCHREG-BLRAA#699,BRANCHREG-BLRAA#700,BRANCHREG-BLRAA#701,BRANCHREG-BLRAA#702,BRANCHREG-BLRAA#703,BRANCHREG-BLRAA#704,BRANCHREG-BLRAA#705,BRANCHREG-BLRAA#706,BRANCHREG-BLRAA#707,BRANCHREG-BLRAA#708,BRANCHREG-BLRAA#709,BRANCHREG-BLRAA#710,BRANCHREG-BLRAA#711,BRANCHREG-BLRAA#712,BRANCHREG-BLRAA#713,BRANCHREG-BLRAA#714,BRANCHREG-BLRAA#715,BRANCHREG-BLRAA#716,BRANCHREG-BLRAA#717,BRANCHREG-BLRAA#718,BRANCHREG-BLRAA#719,BRANCHREG-BLRAA#720,BRANCHREG-BLRAA#721,BRANCHREG-BLRAA#722,BRANCHREG-BLRAA#723,BRANCHREG-BLRAA#724,BRANCHREG-BLRAA#725,BRANCHREG-BLRAA#726,BRANCHREG-BLRAA#727,BRANCHREG-BLRAA#728,BRANCHREG-BLRAA#729,BRANCHREG-BLRAA#730,BRANCHREG-BLRAA#731,BRANCHREG-BLRAA#732,BRANCHREG-BLRAA#733,BRANCHREG-BLRAA#734,BRANCHREG-BLRAA#735,BRANCHREG-BLRAA#736,BRANCHREG-BLRAA#737,BRANCHREG-BLRAA#738,BRANCHREG-BLRAA#739,BRANCHREG-BLRAA#740,BRANCHREG-BLRAA#741,BRANCHREG-BLRAA#742,BRANCHREG-BLRAA#743,BRANCHREG-BLRAA#744,BRANCHREG-BLRAA#745,BRANCHREG-BLRAA#746,BRANCHREG-BLRAA#747,BRANCHREG-BLRAA#748,BRANCHREG-BLRAA#749,BRANCHREG-BLRAA#750,BRANCHREG-BLRAA#751,BRANCHREG-BLRAA#752,BRANCHREG-BLRAA#753,BRANCHREG-BLRAA#754,BRANCHREG-BLRAA#755,BRANCHREG-BLRAA#756,BRANCHREG-BLRAA#757,BRANCHREG-BLRAA#758,BRANCHREG-BLRAA#759,BRANCHREG-BLRAA#760,BRANCHREG-BLRAA#761,BRANCHREG-BLRAA#762,BRANCHREG-BLRAA#763,BRANCHREG-BLRAA#764,BRANCHREG-BLRAA#765,BRANCHREG-BLRAA#766,BRANCHREG-BLRAA#767,BRANCHREG-BLRAA#768,BRANCHREG-BLRAA#769,BRANCHREG-BLRAA#770,BRANCHREG-BLRAA#771,BRANCHREG-BLRAA#772,BRANCHREG-BLRAA#773,BRANCHREG-BLRAA#774,BRANCHREG-BLRAA#775,BRANCHREG-BLRAA#776,BRANCHREG-BLRAA#777,BRANCHREG-BLRAA#778,BRANCHREG-BLRAA#779,BRANCHREG-BLRAA#780,BRANCHREG-BLRAA#781,BRANCHREG-BLRAA#782,BRANCHREG-BLRAA#783,BRANCHREG-BLRAA#784,BRANCHREG-BLRAA#785,BRANCHREG-BLRAA#786,BRANCHREG-BLRAA#787,BRANCHREG-BLRAA#788,BRANCHREG-BLRAA#789,BRANCHREG-BLRAA#790,BRANCHREG-BLRAA#791,BRANCHREG-BLRAA#792,BRANCHREG-BLRAA#793,BRANCHREG-BLRAA#794,BRANCHREG-BLRAA#795,BRANCHREG-BLRAA#796,BRANCHREG-BLRAA#797,BRANCHREG-BLRAA#798,BRANCHREG-BLRAA#799,BRANCHREG-BLRAA#800,BRANCHREG-BLRAA#801,BRANCHREG-BLRAA#802,BRANCHREG-BLRAA#803,BRANCHREG-BLRAA#804,BRANCHREG-BLRAA#805,BRANCHREG-BLRAA#806,BRANCHREG-BLRAA#807,BRANCHREG-BLRAA#808,BRANCHREG-BLRAA#809,BRANCHREG-BLRAA#810,BRANCHREG-BLRAA#811,BRANCHREG-BLRAA#812,BRANCHREG-BLRAA#813,BRANCHREG-BLRAA#814,BRANCHREG-BLRAA#815,BRANCHREG-BLRAA#816,BRANCHREG-BLRAA#817,BRANCHREG-BLRAA#818,BRANCHREG-BLRAA#819,BRANCHREG-BLRAA#820,BRANCHREG-BLRAA#821,BRANCHREG-BLRAA#822,BRANCHREG-BLRAA#823,BRANCHREG-BLRAA#824,BRANCHREG-BLRAA#825,BRANCHREG-BLRAA#826,BRANCHREG-BLRAA#827,BRANCHREG-BLRAA#828,BRANCHREG-BLRAA#829,BRANCHREG-BLRAA#830,BRANCHREG-BLRAA#831,BRANCHREG-BLRAA#832,BRANCHREG-BLRAA#833,BRANCHREG-BLRAA#834,BRANCHREG-BLRAA#835,BRANCHREG-BLRAA#836,BRANCHREG-BLRAA#837,BRANCHREG-BLRAA#838,BRANCHREG-BLRAA#839,BRANCHREG-BLRAA#840,BRANCHREG-BLRAA#841,BRANCHREG-BLRAA#842,BRANCHREG-BLRAA#843,BRANCHREG-BLRAA#844,BRANCHREG-BLRAA#845,BRANCHREG-BLRAA#846,BRANCHREG-BLRAA#847,BRANCHREG-BLRAA#848,BRANCHREG-BLRAA#849,BRANCHREG-BLRAA#850,BRANCHREG-BLRAA#851,BRANCHREG-BLRAA#852,BRANCHREG-BLRAA#853,BRANCHREG-BLRAA#854,BRANCHREG-BLRAA#855,BRANCHREG-BLRAA#856,BRANCHREG-BLRAA#857,BRANCHREG-BLRAA#858,BRANCHREG-BLRAA#859,BRANCHREG-BLRAA#860,BRANCHREG-BLRAA#861,BRANCHREG-BLRAA#862,BRANCHREG-BLRAA#863,BRANCHREG-BLRAA#864,BRANCHREG-BLRAA#865,BRANCHREG-BLRAA#866,BRANCHREG-BLRAA#867,BRANCHREG-BLRAA#868,BRANCHREG-BLRAA#869,BRANCHREG-BLRAA#870,BRANCHREG-BLRAA#871,BRANCHREG-BLRAA#872,BRANCHREG-BLRAA#873,BRANCHREG-BLRAA#874,BRANCHREG-BLRAA#875,BRANCHREG-BLRAA#876,BRANCHREG-BLRAA#877,BRANCHREG-BLRAA#878,BRANCHREG-BLRAA#879,BRANCHREG-BLRAA#880,BRANCHREG-BLRAA#881,BRANCHREG-BLRAA#882,BRANCHREG-BLRAA#883,BRANCHREG-BLRAA#884,BRANCHREG-BLRAA#885,BRANCHREG-BLRAA#886,BRANCHREG-BLRAA#887,BRANCHREG-BLRAA#888,BRANCHREG-BLRAA#889,BRANCHREG-BLRAA#890,BRANCHREG-BLRAA#891,BRANCHREG-BLRAA#892,BRANCHREG-BLRAA#893,BRANCHREG-BLRAA#894,BRANCHREG-BLRAA#895,BRANCHREG-BLRAA#896,BRANCHREG-BLRAA#897,BRANCHREG-BLRAA#898,BRANCHREG-BLRAA#899,BRANCHREG-BLRAA#900,BRANCHREG-BLRAA#901,BRANCHREG-BLRAA#902,BRANCHREG-BLRAA#903,BRANCHREG-BLRAA#904,BRANCHREG-BLRAA#905,BRANCHREG-BLRAA#906,BRANCHREG-BLRAA#907,BRANCHREG-BLRAA#908,BRANCHREG-BLRAA#909,BRANCHREG-BLRAA#910,BRANCHREG-BLRAA#911,BRANCHREG-BLRAA#912,BRANCHREG-BLRAA#913,BRANCHREG-BLRAA#914,BRANCHREG-BLRAA#915,BRANCHREG-BLRAA#916,BRANCHREG-BLRAA#917,BRANCHREG-BLRAA#918,BRANCHREG-BLRAA#919,BRANCHREG-BLRAA#920,BRANCHREG-BLRAA#921,BRANCHREG-BLRAA#922,BRANCHREG-BLRAA#923,BRANCHREG-BLRAA#924,BRANCHREG-BLRAA#925,BRANCHREG-BLRAA#926,BRANCHREG-BLRAA#927,BRANCHREG-BLRAA#928,BRANCHREG-BLRAA#929,BRANCHREG-BLRAA#930,BRANCHREG-BLRAA#931,BRANCHREG-BLRAA#932,BRANCHREG-BLRAA#933,BRANCHREG-BLRAA#934,BRANCHREG-BLRAA#935,BRANCHREG-BLRAA#936,BRANCHREG-BLRAA#937,BRANCHREG-BLRAA#938,BRANCHREG-BLRAA#939,BRANCHREG-BLRAA#940,BRANCHREG-BLRAA#941,BRANCHREG-BLRAA#942,BRANCHREG-BLRAA#943,BRANCHREG-BLRAA#944,BRANCHREG-BLRAA#945,BRANCHREG-BLRAA#946,BRANCHREG-BLRAA#947,BRANCHREG-BLRAA#948,BRANCHREG-BLRAA#949,BRANCHREG-BLRAA#950,BRANCHREG-BLRAA#951,BRANCHREG-BLRAA#952,BRANCHREG-BLRAA#953,BRANCHREG-BLRAA#954,BRANCHREG-BLRAA#955,BRANCHREG-BLRAA#956,BRANCHREG-BLRAA#957,BRANCHREG-BLRAA#958,BRANCHREG-BLRAA#959,BRANCHREG-BLRAA#960,BRANCHREG-BLRAA#961,BRANCHREG-BLRAA#962,BRANCHREG-BLRAA#963,BRANCHREG-BLRAA#964,BRANCHREG-BLRAA#965,BRANCHREG-BLRAA#966,BRANCHREG-BLRAA#967,BRANCHREG-BLRAA#968,BRANCHREG-BLRAA#969,BRANCHREG-BLRAA#970,BRANCHREG-BLRAA#971,BRANCHREG-BLRAA#972,BRANCHREG-BLRAA#973,BRANCHREG-BLRAA#974,BRANCHREG-BLRAA#975,BRANCHREG-BLRAA#976,BRANCHREG-BLRAA#977,BRANCHREG-BLRAA#978,BRANCHREG-BLRAA#979,BRANCHREG-BLRAA#980,BRANCHREG-BLRAA#981,BRANCHREG-BLRAA#982,BRANCHREG-BLRAA#983,BRANCHREG-BLRAA#984,BRANCHREG-BLRAA#985,BRANCHREG-BLRAA#986,BRANCHREG-BLRAA#987,BRANCHREG-BLRAA#988,BRANCHREG-BLRAA#989,BRANCHREG-BLRAA#990,BRANCHREG-BLRAA#991,BRANCHREG-BLRAA#992,BRANCHREG-BLRAA#993,BRANCHREG-BLRAA#994,BRANCHREG-BLRAA#995,BRANCHREG-BLRAA#996,BRANCHREG-BLRAA#997,BRANCHREG-BLRAA#998,BRANCHREG-BLRAA#999,BRANCHREG-BLRAA#1000,BRANCHREG-BLRAA#1001,BRANCHREG-BLRAA#1002,BRANCHREG-BLRAA#1003,BRANCHREG-BLRAA#1004,BRANCHREG-BLRAA#1005,BRANCHREG-BLRAA#1006,BRANCHREG-BLRAA#1007,BRANCHREG-BLRAA#1008,BRANCHREG-BLRAA#1009,BRANCHREG-BLRAA#1010,BRANCHREG-BLRAA#1011,BRANCHREG-BLRAA#1012,BRANCHREG-BLRAA#1013,BRANCHREG-BLRAA#1014,BRANCHREG-BLRAA#1015,BRANCHREG-BLRAA#1016,BRANCHREG-BLRAA#1017,BRANCHREG-BLRAA#1018,BRANCHREG-BLRAA#1019,BRANCHREG-BLRAA#1020,BRANCHREG-BLRAA#1021,BRANCHREG-BLRAA#1022,BRANCHREG-BLRAA#1023,BRANCHREG-BLRAB#0,BRANCHREG-BLRAB#1,BRANCHREG-BLRAB#2,BRANCHREG-BLRAB#3,BRANCHREG-BLRAB#4,BRANCHREG-BLRAB#5,BRANCHREG-BLRAB#6,BRANCHREG-BLRAB#7,BRANCHREG-BLRAB#8,BRANCHREG-BLRAB#9,BRANCHREG-BLRAB#10,BRANCHREG-BLRAB#11,BRANCHREG-BLRAB#12,BRANCHREG-BLRAB#13,BRANCHREG-BLRAB#14,BRANCHREG-BLRAB#15,BRANCHREG-BLRAB#16,BRANCHREG-BLRAB#17,BRANCHREG-BLRAB#18,BRANCHREG-BLRAB#19,BRANCHREG-BLRAB#20,BRANCHREG-BLRAB#21,BRANCHREG-BLRAB#22,BRANCHREG-BLRAB#23,BRANCHREG-BLRAB#24,BRANCHREG-BLRAB#25,BRANCHREG-BLRAB#26,BRANCHREG-BLRAB#27,BRANCHREG-BLRAB#28,BRANCHREG-BLRAB#29,BRANCHREG-BLRAB#30,BRANCHREG-BLRAB#31,BRANCHREG-BLRAB#32,BRANCHREG-BLRAB#33,BRANCHREG-BLRAB#34,BRANCHREG-BLRAB#35,BRANCHREG-BLRAB#36,BRANCHREG-BLRAB#37,BRANCHREG-BLRAB#38,BRANCHREG-BLRAB#39,BRANCHREG-BLRAB#40,BRANCHREG-BLRAB#41,BRANCHREG-BLRAB#42,BRANCHREG-BLRAB#43,BRANCHREG-BLRAB#44,BRANCHREG-BLRAB#45,BRANCHREG-BLRAB#46,BRANCHREG-BLRAB#47,BRANCHREG-BLRAB#48,BRANCHREG-BLRAB#49,BRANCHREG-BLRAB#50,BRANCHREG-BLRAB#51,BRANCHREG-BLRAB#52,BRANCHREG-BLRAB#53,BRANCHREG-BLRAB#54,BRANCHREG-BLRAB#55,BRANCHREG-BLRAB#56,BRANCHREG-BLRAB#57,BRANCHREG-BLRAB#58,BRANCHREG-BLRAB#59,BRANCHREG-BLRAB#60,BRANCHREG-BLRAB#61,BRANCHREG-BLRAB#62,BRANCHREG-BLRAB#63,BRANCHREG-BLRAB#64,BRANCHREG-BLRAB#65,BRANCHREG-BLRAB#66,BRANCHREG-BLRAB#67,BRANCHREG-BLRAB#68,BRANCHREG-BLRAB#69,BRANCHREG-BLRAB#70,BRANCHREG-BLRAB#71,BRANCHREG-BLRAB#72,BRANCHREG-BLRAB#73,BRANCHREG-BLRAB#74,BRANCHREG-BLRAB#75,BRANCHREG-BLRAB#76,BRANCHREG-BLRAB#77,BRANCHREG-BLRAB#78,BRANCHREG-BLRAB#79,BRANCHREG-BLRAB#80,BRANCHREG-BLRAB#81,BRANCHREG-BLRAB#82,BRANCHREG-BLRAB#83,BRANCHREG-BLRAB#84,BRANCHREG-BLRAB#85,BRANCHREG-BLRAB#86,BRANCHREG-BLRAB#87,BRANCHREG-BLRAB#88,BRANCHREG-BLRAB#89,BRANCHREG-BLRAB#90,BRANCHREG-BLRAB#91,BRANCHREG-BLRAB#92,BRANCHREG-BLRAB#93,BRANCHREG-BLRAB#94,BRANCHREG-BLRAB#95,BRANCHREG-BLRAB#96,BRANCHREG-BLRAB#97,BRANCHREG-BLRAB#98,BRANCHREG-BLRAB#99,BRANCHREG-BLRAB#100,BRANCHREG-BLRAB#101,BRANCHREG-BLRAB#102,BRANCHREG-BLRAB#103,BRANCHREG-BLRAB#104,BRANCHREG-BLRAB#105,BRANCHREG-BLRAB#106,BRANCHREG-BLRAB#107,BRANCHREG-BLRAB#108,BRANCHREG-BLRAB#109,BRANCHREG-BLRAB#110,BRANCHREG-BLRAB#111,BRANCHREG-BLRAB#112,BRANCHREG-BLRAB#113,BRANCHREG-BLRAB#114,BRANCHREG-BLRAB#115,BRANCHREG-BLRAB#116,BRANCHREG-BLRAB#117,BRANCHREG-BLRAB#118,BRANCHREG-BLRAB#119,BRANCHREG-BLRAB#120,BRANCHREG-BLRAB#121,BRANCHREG-BLRAB#122,BRANCHREG-BLRAB#123,BRANCHREG-BLRAB#124,BRANCHREG-BLRAB#125,BRANCHREG-BLRAB#126,BRANCHREG-BLRAB#127,BRANCHREG-BLRAB#128,BRANCHREG-BLRAB#129,BRANCHREG-BLRAB#130,BRANCHREG-BLRAB#131,BRANCHREG-BLRAB#132,BRANCHREG-BLRAB#133,BRANCHREG-BLRAB#134,BRANCHREG-BLRAB#135,BRANCHREG-BLRAB#136,BRANCHREG-BLRAB#137,BRANCHREG-BLRAB#138,BRANCHREG-BLRAB#139,BRANCHREG-BLRAB#140,BRANCHREG-BLRAB#141,BRANCHREG-BLRAB#142,BRANCHREG-BLRAB#143,BRANCHREG-BLRAB#144,BRANCHREG-BLRAB#145,BRANCHREG-BLRAB#146,BRANCHREG-BLRAB#147,BRANCHREG-BLRAB#148,BRANCHREG-BLRAB#149,BRANCHREG-BLRAB#150,BRANCHREG-BLRAB#151,BRANCHREG-BLRAB#152,BRANCHREG-BLRAB#153,BRANCHREG-BLRAB#154,BRANCHREG-BLRAB#155,BRANCHREG-BLRAB#156,BRANCHREG-BLRAB#157,BRANCHREG-BLRAB#158,BRANCHREG-BLRAB#159,BRANCHREG-BLRAB#160,BRANCHREG-BLRAB#161,BRANCHREG-BLRAB#162,BRANCHREG-BLRAB#163,BRANCHREG-BLRAB#164,BRANCHREG-BLRAB#165,BRANCHREG-BLRAB#166,BRANCHREG-BLRAB#167,BRANCHREG-BLRAB#168,BRANCHREG-BLRAB#169,BRANCHREG-BLRAB#170,BRANCHREG-BLRAB#171,BRANCHREG-BLRAB#172,BRANCHREG-BLRAB#173,BRANCHREG-BLRAB#174,BRANCHREG-BLRAB#175,BRANCHREG-BLRAB#176,BRANCHREG-BLRAB#177,BRANCHREG-BLRAB#178,BRANCHREG-BLRAB#179,BRANCHREG-BLRAB#180,BRANCHREG-BLRAB#181,BRANCHREG-BLRAB#182,BRANCHREG-BLRAB#183,BRANCHREG-BLRAB#184,BRANCHREG-BLRAB#185,BRANCHREG-BLRAB#186,BRANCHREG-BLRAB#187,BRANCHREG-BLRAB#188,BRANCHREG-BLRAB#189,BRANCHREG-BLRAB#190,BRANCHREG-BLRAB#191,BRANCHREG-BLRAB#192,BRANCHREG-BLRAB#193,BRANCHREG-BLRAB#194,BRANCHREG-BLRAB#195,BRANCHREG-BLRAB#196,BRANCHREG-BLRAB#197,BRANCHREG-BLRAB#198,BRANCHREG-BLRAB#199,BRANCHREG-BLRAB#200,BRANCHREG-BLRAB#201,BRANCHREG-BLRAB#202,BRANCHREG-BLRAB#203,BRANCHREG-BLRAB#204,BRANCHREG-BLRAB#205,BRANCHREG-BLRAB#206,BRANCHREG-BLRAB#207,BRANCHREG-BLRAB#208,BRANCHREG-BLRAB#209,BRANCHREG-BLRAB#210,BRANCHREG-BLRAB#211,BRANCHREG-BLRAB#212,BRANCHREG-BLRAB#213,BRANCHREG-BLRAB#214,BRANCHREG-BLRAB#215,BRANCHREG-BLRAB#216,BRANCHREG-BLRAB#217,BRANCHREG-BLRAB#218,BRANCHREG-BLRAB#219,BRANCHREG-BLRAB#220,BRANCHREG-BLRAB#221,BRANCHREG-BLRAB#222,BRANCHREG-BLRAB#223,BRANCHREG-BLRAB#224,BRANCHREG-BLRAB#225,BRANCHREG-BLRAB#226,BRANCHREG-BLRAB#227,BRANCHREG-BLRAB#228,BRANCHREG-BLRAB#229,BRANCHREG-BLRAB#230,BRANCHREG-BLRAB#231,BRANCHREG-BLRAB#232,BRANCHREG-BLRAB#233,BRANCHREG-BLRAB#234,BRANCHREG-BLRAB#235,BRANCHREG-BLRAB#236,BRANCHREG-BLRAB#237,BRANCHREG-BLRAB#238,BRANCHREG-BLRAB#239,BRANCHREG-BLRAB#240,BRANCHREG-BLRAB#241,BRANCHREG-BLRAB#242,BRANCHREG-BLRAB#243,BRANCHREG-BLRAB#244,BRANCHREG-BLRAB#245,BRANCHREG-BLRAB#246,BRANCHREG-BLRAB#247,BRANCHREG-BLRAB#248,BRANCHREG-BLRAB#249,BRANCHREG-BLRAB#250,BRANCHREG-BLRAB#251,BRANCHREG-BLRAB#252,BRANCHREG-BLRAB#253,BRANCHREG-BLRAB#254,BRANCHREG-BLRAB#255,BRANCHREG-BLRAB#256,BRANCHREG-BLRAB#257,BRANCHREG-BLRAB#258,BRANCHREG-BLRAB#259,BRANCHREG-BLRAB#260,BRANCHREG-BLRAB#261,BRANCHREG-BLRAB#262,BRANCHREG-BLRAB#263,BRANCHREG-BLRAB#264,BRANCHREG-BLRAB#265,BRANCHREG-BLRAB#266,BRANCHREG-BLRAB#267,BRANCHREG-BLRAB#268,BRANCHREG-BLRAB#269,BRANCHREG-BLRAB#270,BRANCHREG-BLRAB#271,BRANCHREG-BLRAB#272,BRANCHREG-BLRAB#273,BRANCHREG-BLRAB#274,BRANCHREG-BLRAB#275,BRANCHREG-BLRAB#276,BRANCHREG-BLRAB#277,BRANCHREG-BLRAB#278,BRANCHREG-BLRAB#279,BRANCHREG-BLRAB#280,BRANCHREG-BLRAB#281,BRANCHREG-BLRAB#282,BRANCHREG-BLRAB#283,BRANCHREG-BLRAB#284,BRANCHREG-BLRAB#285,BRANCHREG-BLRAB#286,BRANCHREG-BLRAB#287,BRANCHREG-BLRAB#288,BRANCHREG-BLRAB#289,BRANCHREG-BLRAB#290,BRANCHREG-BLRAB#291,BRANCHREG-BLRAB#292,BRANCHREG-BLRAB#293,BRANCHREG-BLRAB#294,BRANCHREG-BLRAB#295,BRANCHREG-BLRAB#296,BRANCHREG-BLRAB#297,BRANCHREG-BLRAB#298,BRANCHREG-BLRAB#299,BRANCHREG-BLRAB#300,BRANCHREG-BLRAB#301,BRANCHREG-BLRAB#302,BRANCHREG-BLRAB#303,BRANCHREG-BLRAB#304,BRANCHREG-BLRAB#305,BRANCHREG-BLRAB#306,BRANCHREG-BLRAB#307,BRANCHREG-BLRAB#308,BRANCHREG-BLRAB#309,BRANCHREG-BLRAB#310,BRANCHREG-BLRAB#311,BRANCHREG-BLRAB#312,BRANCHREG-BLRAB#313,BRANCHREG-BLRAB#314,BRANCHREG-BLRAB#315,BRANCHREG-BLRAB#316,BRANCHREG-BLRAB#317,BRANCHREG-BLRAB#318,BRANCHREG-BLRAB#319,BRANCHREG-BLRAB#320,BRANCHREG-BLRAB#321,BRANCHREG-BLRAB#322,BRANCHREG-BLRAB#323,BRANCHREG-BLRAB#324,BRANCHREG-BLRAB#325,BRANCHREG-BLRAB#326,BRANCHREG-BLRAB#327,BRANCHREG-BLRAB#328,BRANCHREG-BLRAB#329,BRANCHREG-BLRAB#330,BRANCHREG-BLRAB#331,BRANCHREG-BLRAB#332,BRANCHREG-BLRAB#333,BRANCHREG-BLRAB#334,BRANCHREG-BLRAB#335,BRANCHREG-BLRAB#336,BRANCHREG-BLRAB#337,BRANCHREG-BLRAB#338,BRANCHREG-BLRAB#339,BRANCHREG-BLRAB#340,BRANCHREG-BLRAB#341,BRANCHREG-BLRAB#342,BRANCHREG-BLRAB#343,BRANCHREG-BLRAB#344,BRANCHREG-BLRAB#345,BRANCHREG-BLRAB#346,BRANCHREG-BLRAB#347,BRANCHREG-BLRAB#348,BRANCHREG-BLRAB#349,BRANCHREG-BLRAB#350,BRANCHREG-BLRAB#351,BRANCHREG-BLRAB#352,BRANCHREG-BLRAB#353,BRANCHREG-BLRAB#354,BRANCHREG-BLRAB#355,BRANCHREG-BLRAB#356,BRANCHREG-BLRAB#357,BRANCHREG-BLRAB#358,BRANCHREG-BLRAB#359,BRANCHREG-BLRAB#360,BRANCHREG-BLRAB#361,BRANCHREG-BLRAB#362,BRANCHREG-BLRAB#363,BRANCHREG-BLRAB#364,BRANCHREG-BLRAB#365,BRANCHREG-BLRAB#366,BRANCHREG-BLRAB#367,BRANCHREG-BLRAB#368,BRANCHREG-BLRAB#369,BRANCHREG-BLRAB#370,BRANCHREG-BLRAB#371,BRANCHREG-BLRAB#372,BRANCHREG-BLRAB#373,BRANCHREG-BLRAB#374,BRANCHREG-BLRAB#375,BRANCHREG-BLRAB#376,BRANCHREG-BLRAB#377,BRANCHREG-BLRAB#378,BRANCHREG-BLRAB#379,BRANCHREG-BLRAB#380,BRANCHREG-BLRAB#381,BRANCHREG-BLRAB#382,BRANCHREG-BLRAB#383,BRANCHREG-BLRAB#384,BRANCHREG-BLRAB#385,BRANCHREG-BLRAB#386,BRANCHREG-BLRAB#387,BRANCHREG-BLRAB#388,BRANCHREG-BLRAB#389,BRANCHREG-BLRAB#390,BRANCHREG-BLRAB#391,BRANCHREG-BLRAB#392,BRANCHREG-BLRAB#393,BRANCHREG-BLRAB#394,BRANCHREG-BLRAB#395,BRANCHREG-BLRAB#396,BRANCHREG-BLRAB#397,BRANCHREG-BLRAB#398,BRANCHREG-BLRAB#399,BRANCHREG-BLRAB#400,BRANCHREG-BLRAB#401,BRANCHREG-BLRAB#402,BRANCHREG-BLRAB#403,BRANCHREG-BLRAB#404,BRANCHREG-BLRAB#405,BRANCHREG-BLRAB#406,BRANCHREG-BLRAB#407,BRANCHREG-BLRAB#408,BRANCHREG-BLRAB#409,BRANCHREG-BLRAB#410,BRANCHREG-BLRAB#411,BRANCHREG-BLRAB#412,BRANCHREG-BLRAB#413,BRANCHREG-BLRAB#414,BRANCHREG-BLRAB#415,BRANCHREG-BLRAB#416,BRANCHREG-BLRAB#417,BRANCHREG-BLRAB#418,BRANCHREG-BLRAB#419,BRANCHREG-BLRAB#420,BRANCHREG-BLRAB#421,BRANCHREG-BLRAB#422,BRANCHREG-BLRAB#423,BRANCHREG-BLRAB#424,BRANCHREG-BLRAB#425,BRANCHREG-BLRAB#426,BRANCHREG-BLRAB#427,BRANCHREG-BLRAB#428,BRANCHREG-BLRAB#429,BRANCHREG-BLRAB#430,BRANCHREG-BLRAB#431,BRANCHREG-BLRAB#432,BRANCHREG-BLRAB#433,BRANCHREG-BLRAB#434,BRANCHREG-BLRAB#435,BRANCHREG-BLRAB#436,BRANCHREG-BLRAB#437,BRANCHREG-BLRAB#438,BRANCHREG-BLRAB#439,BRANCHREG-BLRAB#440,BRANCHREG-BLRAB#441,BRANCHREG-BLRAB#442,BRANCHREG-BLRAB#443,BRANCHREG-BLRAB#444,BRANCHREG-BLRAB#445,BRANCHREG-BLRAB#446,BRANCHREG-BLRAB#447,BRANCHREG-BLRAB#448,BRANCHREG-BLRAB#449,BRANCHREG-BLRAB#450,BRANCHREG-BLRAB#451,BRANCHREG-BLRAB#452,BRANCHREG-BLRAB#453,BRANCHREG-BLRAB#454,BRANCHREG-BLRAB#455,BRANCHREG-BLRAB#456,BRANCHREG-BLRAB#457,BRANCHREG-BLRAB#458,BRANCHREG-BLRAB#459,BRANCHREG-BLRAB#460,BRANCHREG-BLRAB#461,BRANCHREG-BLRAB#462,BRANCHREG-BLRAB#463,BRANCHREG-BLRAB#464,BRANCHREG-BLRAB#465,BRANCHREG-BLRAB#466,BRANCHREG-BLRAB#467,BRANCHREG-BLRAB#468,BRANCHREG-BLRAB#469,BRANCHREG-BLRAB#470,BRANCHREG-BLRAB#471,BRANCHREG-BLRAB#472,BRANCHREG-BLRAB#473,BRANCHREG-BLRAB#474,BRANCHREG-BLRAB#475,BRANCHREG-BLRAB#476,BRANCHREG-BLRAB#477,BRANCHREG-BLRAB#478,BRANCHREG-BLRAB#479,BRANCHREG-BLRAB#480,BRANCHREG-BLRAB#481,BRANCHREG-BLRAB#482,BRANCHREG-BLRAB#483,BRANCHREG-BLRAB#484,BRANCHREG-BLRAB#485,BRANCHREG-BLRAB#486,BRANCHREG-BLRAB#487,BRANCHREG-BLRAB#488,BRANCHREG-BLRAB#489,BRANCHREG-BLRAB#490,BRANCHREG-BLRAB#491,BRANCHREG-BLRAB#492,BRANCHREG-BLRAB#493,BRANCHREG-BLRAB#494,BRANCHREG-BLRAB#495,BRANCHREG-BLRAB#496,BRANCHREG-BLRAB#497,BRANCHREG-BLRAB#498,BRANCHREG-BLRAB#499,BRANCHREG-BLRAB#500,BRANCHREG-BLRAB#501,BRANCHREG-BLRAB#502,BRANCHREG-BLRAB#503,BRANCHREG-BLRAB#504,BRANCHREG-BLRAB#505,BRANCHREG-BLRAB#506,BRANCHREG-BLRAB#507,BRANCHREG-BLRAB#508,BRANCHREG-BLRAB#509,BRANCHREG-BLRAB#510,BRANCHREG-BLRAB#511,BRANCHREG-BLRAB#512,BRANCHREG-BLRAB#513,BRANCHREG-BLRAB#514,BRANCHREG-BLRAB#515,BRANCHREG-BLRAB#516,BRANCHREG-BLRAB#517,BRANCHREG-BLRAB#518,BRANCHREG-BLRAB#519,BRANCHREG-BLRAB#520,BRANCHREG-BLRAB#521,BRANCHREG-BLRAB#522,BRANCHREG-BLRAB#523,BRANCHREG-BLRAB#524,BRANCHREG-BLRAB#525,BRANCHREG-BLRAB#526,BRANCHREG-BLRAB#527,BRANCHREG-BLRAB#528,BRANCHREG-BLRAB#529,BRANCHREG-BLRAB#530,BRANCHREG-BLRAB#531,BRANCHREG-BLRAB#532,BRANCHREG-BLRAB#533,BRANCHREG-BLRAB#534,BRANCHREG-BLRAB#535,BRANCHREG-BLRAB#536,BRANCHREG-BLRAB#537,BRANCHREG-BLRAB#538,BRANCHREG-BLRAB#539,BRANCHREG-BLRAB#540,BRANCHREG-BLRAB#541,BRANCHREG-BLRAB#542,BRANCHREG-BLRAB#543,BRANCHREG-BLRAB#544,BRANCHREG-BLRAB#545,BRANCHREG-BLRAB#546,BRANCHREG-BLRAB#547,BRANCHREG-BLRAB#548,BRANCHREG-BLRAB#549,BRANCHREG-BLRAB#550,BRANCHREG-BLRAB#551,BRANCHREG-BLRAB#552,BRANCHREG-BLRAB#553,BRANCHREG-BLRAB#554,BRANCHREG-BLRAB#555,BRANCHREG-BLRAB#556,BRANCHREG-BLRAB#557,BRANCHREG-BLRAB#558,BRANCHREG-BLRAB#559,BRANCHREG-BLRAB#560,BRANCHREG-BLRAB#561,BRANCHREG-BLRAB#562,BRANCHREG-BLRAB#563,BRANCHREG-BLRAB#564,BRANCHREG-BLRAB#565,BRANCHREG-BLRAB#566,BRANCHREG-BLRAB#567,BRANCHREG-BLRAB#568,BRANCHREG-BLRAB#569,BRANCHREG-BLRAB#570,BRANCHREG-BLRAB#571,BRANCHREG-BLRAB#572,BRANCHREG-BLRAB#573,BRANCHREG-BLRAB#574,BRANCHREG-BLRAB#575,BRANCHREG-BLRAB#576,BRANCHREG-BLRAB#577,BRANCHREG-BLRAB#578,BRANCHREG-BLRAB#579,BRANCHREG-BLRAB#580,BRANCHREG-BLRAB#581,BRANCHREG-BLRAB#582,BRANCHREG-BLRAB#583,BRANCHREG-BLRAB#584,BRANCHREG-BLRAB#585,BRANCHREG-BLRAB#586,BRANCHREG-BLRAB#587,BRANCHREG-BLRAB#588,BRANCHREG-BLRAB#589,BRANCHREG-BLRAB#590,BRANCHREG-BLRAB#591,BRANCHREG-BLRAB#592,BRANCHREG-BLRAB#593,BRANCHREG-BLRAB#594,BRANCHREG-BLRAB#595,BRANCHREG-BLRAB#596,BRANCHREG-BLRAB#597,BRANCHREG-BLRAB#598,BRANCHREG-BLRAB#599,BRANCHREG-BLRAB#600,BRANCHREG-BLRAB#601,BRANCHREG-BLRAB#602,BRANCHREG-BLRAB#603,BRANCHREG-BLRAB#604,BRANCHREG-BLRAB#605,BRANCHREG-BLRAB#606,BRANCHREG-BLRAB#607,BRANCHREG-BLRAB#608,BRANCHREG-BLRAB#609,BRANCHREG-BLRAB#610,BRANCHREG-BLRAB#611,BRANCHREG-BLRAB#612,BRANCHREG-BLRAB#613,BRANCHREG-BLRAB#614,BRANCHREG-BLRAB#615,BRANCHREG-BLRAB#616,BRANCHREG-BLRAB#617,BRANCHREG-BLRAB#618,BRANCHREG-BLRAB#619,BRANCHREG-BLRAB#620,BRANCHREG-BLRAB#621,BRANCHREG-BLRAB#622,BRANCHREG-BLRAB#623,BRANCHREG-BLRAB#624,BRANCHREG-BLRAB#625,BRANCHREG-BLRAB#626,BRANCHREG-BLRAB#627,BRANCHREG-BLRAB#628,BRANCHREG-BLRAB#629,BRANCHREG-BLRAB#630,BRANCHREG-BLRAB#631,BRANCHREG-BLRAB#632,BRANCHREG-BLRAB#633,BRANCHREG-BLRAB#634,BRANCHREG-BLRAB#635,BRANCHREG-BLRAB#636,BRANCHREG-BLRAB#637,BRANCHREG-BLRAB#638,BRANCHREG-BLRAB#639,BRANCHREG-BLRAB#640,BRANCHREG-BLRAB#641,BRANCHREG-BLRAB#642,BRANCHREG-BLRAB#643,BRANCHREG-BLRAB#644,BRANCHREG-BLRAB#645,BRANCHREG-BLRAB#646,BRANCHREG-BLRAB#647,BRANCHREG-BLRAB#648,BRANCHREG-BLRAB#649,BRANCHREG-BLRAB#650,BRANCHREG-BLRAB#651,BRANCHREG-BLRAB#652,BRANCHREG-BLRAB#653,BRANCHREG-BLRAB#654,BRANCHREG-BLRAB#655,BRANCHREG-BLRAB#656,BRANCHREG-BLRAB#657,BRANCHREG-BLRAB#658,BRANCHREG-BLRAB#659,BRANCHREG-BLRAB#660,BRANCHREG-BLRAB#661,BRANCHREG-BLRAB#662,BRANCHREG-BLRAB#663,BRANCHREG-BLRAB#664,BRANCHREG-BLRAB#665,BRANCHREG-BLRAB#666,BRANCHREG-BLRAB#667,BRANCHREG-BLRAB#668,BRANCHREG-BLRAB#669,BRANCHREG-BLRAB#670,BRANCHREG-BLRAB#671,BRANCHREG-BLRAB#672,BRANCHREG-BLRAB#673,BRANCHREG-BLRAB#674,BRANCHREG-BLRAB#675,BRANCHREG-BLRAB#676,BRANCHREG-BLRAB#677,BRANCHREG-BLRAB#678,BRANCHREG-BLRAB#679,BRANCHREG-BLRAB#680,BRANCHREG-BLRAB#681,BRANCHREG-BLRAB#682,BRANCHREG-BLRAB#683,BRANCHREG-BLRAB#684,BRANCHREG-BLRAB#685,BRANCHREG-BLRAB#686,BRANCHREG-BLRAB#687,BRANCHREG-BLRAB#688,BRANCHREG-BLRAB#689,BRANCHREG-BLRAB#690,BRANCHREG-BLRAB#691,BRANCHREG-BLRAB#692,BRANCHREG-BLRAB#693,BRANCHREG-BLRAB#694,BRANCHREG-BLRAB#695,BRANCHREG-BLRAB#696,BRANCHREG-BLRAB#697,BRANCHREG-BLRAB#698,BRANCHREG-BLRAB#699,BRANCHREG-BLRAB#700,BRANCHREG-BLRAB#701,BRANCHREG-BLRAB#702,BRANCHREG-BLRAB#703,BRANCHREG-BLRAB#704,BRANCHREG-BLRAB#705,BRANCHREG-BLRAB#706,BRANCHREG-BLRAB#707,BRANCHREG-BLRAB#708,BRANCHREG-BLRAB#709,BRANCHREG-BLRAB#710,BRANCHREG-BLRAB#711,BRANCHREG-BLRAB#712,BRANCHREG-BLRAB#713,BRANCHREG-BLRAB#714,BRANCHREG-BLRAB#715,BRANCHREG-BLRAB#716,BRANCHREG-BLRAB#717,BRANCHREG-BLRAB#718,BRANCHREG-BLRAB#719,BRANCHREG-BLRAB#720,BRANCHREG-BLRAB#721,BRANCHREG-BLRAB#722,BRANCHREG-BLRAB#723,BRANCHREG-BLRAB#724,BRANCHREG-BLRAB#725,BRANCHREG-BLRAB#726,BRANCHREG-BLRAB#727,BRANCHREG-BLRAB#728,BRANCHREG-BLRAB#729,BRANCHREG-BLRAB#730,BRANCHREG-BLRAB#731,BRANCHREG-BLRAB#732,BRANCHREG-BLRAB#733,BRANCHREG-BLRAB#734,BRANCHREG-BLRAB#735,BRANCHREG-BLRAB#736,BRANCHREG-BLRAB#737,BRANCHREG-BLRAB#738,BRANCHREG-BLRAB#739,BRANCHREG-BLRAB#740,BRANCHREG-BLRAB#741,BRANCHREG-BLRAB#742,BRANCHREG-BLRAB#743,BRANCHREG-BLRAB#744,BRANCHREG-BLRAB#745,BRANCHREG-BLRAB#746,BRANCHREG-BLRAB#747,BRANCHREG-BLRAB#748,BRANCHREG-BLRAB#749,BRANCHREG-BLRAB#750,BRANCHREG-BLRAB#751,BRANCHREG-BLRAB#752,BRANCHREG-BLRAB#753,BRANCHREG-BLRAB#754,BRANCHREG-BLRAB#755,BRANCHREG-BLRAB#756,BRANCHREG-BLRAB#757,BRANCHREG-BLRAB#758,BRANCHREG-BLRAB#759,BRANCHREG-BLRAB#760,BRANCHREG-BLRAB#761,BRANCHREG-BLRAB#762,BRANCHREG-BLRAB#763,BRANCHREG-BLRAB#764,BRANCHREG-BLRAB#765,BRANCHREG-BLRAB#766,BRANCHREG-BLRAB#767,BRANCHREG-BLRAB#768,BRANCHREG-BLRAB#769,BRANCHREG-BLRAB#770,BRANCHREG-BLRAB#771,BRANCHREG-BLRAB#772,BRANCHREG-BLRAB#773,BRANCHREG-BLRAB#774,BRANCHREG-BLRAB#775,BRANCHREG-BLRAB#776,BRANCHREG-BLRAB#777,BRANCHREG-BLRAB#778,BRANCHREG-BLRAB#779,BRANCHREG-BLRAB#780,BRANCHREG-BLRAB#781,BRANCHREG-BLRAB#782,BRANCHREG-BLRAB#783,BRANCHREG-BLRAB#784,BRANCHREG-BLRAB#785,BRANCHREG-BLRAB#786,BRANCHREG-BLRAB#787,BRANCHREG-BLRAB#788,BRANCHREG-BLRAB#789,BRANCHREG-BLRAB#790,BRANCHREG-BLRAB#791,BRANCHREG-BLRAB#792,BRANCHREG-BLRAB#793,BRANCHREG-BLRAB#794,BRANCHREG-BLRAB#795,BRANCHREG-BLRAB#796,BRANCHREG-BLRAB#797,BRANCHREG-BLRAB#798,BRANCHREG-BLRAB#799,BRANCHREG-BLRAB#800,BRANCHREG-BLRAB#801,BRANCHREG-BLRAB#802,BRANCHREG-BLRAB#803,BRANCHREG-BLRAB#804,BRANCHREG-BLRAB#805,BRANCHREG-BLRAB#806,BRANCHREG-BLRAB#807,BRANCHREG-BLRAB#808,BRANCHREG-BLRAB#809,BRANCHREG-BLRAB#810,BRANCHREG-BLRAB#811,BRANCHREG-BLRAB#812,BRANCHREG-BLRAB#813,BRANCHREG-BLRAB#814,BRANCHREG-BLRAB#815,BRANCHREG-BLRAB#816,BRANCHREG-BLRAB#817,BRANCHREG-BLRAB#818,BRANCHREG-BLRAB#819,BRANCHREG-BLRAB#820,BRANCHREG-BLRAB#821,BRANCHREG-BLRAB#822,BRANCHREG-BLRAB#823,BRANCHREG-BLRAB#824,BRANCHREG-BLRAB#825,BRANCHREG-BLRAB#826,BRANCHREG-BLRAB#827,BRANCHREG-BLRAB#828,BRANCHREG-BLRAB#829,BRANCHREG-BLRAB#830,BRANCHREG-BLRAB#831,BRANCHREG-BLRAB#832,BRANCHREG-BLRAB#833,BRANCHREG-BLRAB#834,BRANCHREG-BLRAB#835,BRANCHREG-BLRAB#836,BRANCHREG-BLRAB#837,BRANCHREG-BLRAB#838,BRANCHREG-BLRAB#839,BRANCHREG-BLRAB#840,BRANCHREG-BLRAB#841,BRANCHREG-BLRAB#842,BRANCHREG-BLRAB#843,BRANCHREG-BLRAB#844,BRANCHREG-BLRAB#845,BRANCHREG-BLRAB#846,BRANCHREG-BLRAB#847,BRANCHREG-BLRAB#848,BRANCHREG-BLRAB#849,BRANCHREG-BLRAB#850,BRANCHREG-BLRAB#851,BRANCHREG-BLRAB#852,BRANCHREG-BLRAB#853,BRANCHREG-BLRAB#854,BRANCHREG-BLRAB#855,BRANCHREG-BLRAB#856,BRANCHREG-BLRAB#857,BRANCHREG-BLRAB#858,BRANCHREG-BLRAB#859,BRANCHREG-BLRAB#860,BRANCHREG-BLRAB#861,BRANCHREG-BLRAB#862,BRANCHREG-BLRAB#863,BRANCHREG-BLRAB#864,BRANCHREG-BLRAB#865,BRANCHREG-BLRAB#866,BRANCHREG-BLRAB#867,BRANCHREG-BLRAB#868,BRANCHREG-BLRAB#869,BRANCHREG-BLRAB#870,BRANCHREG-BLRAB#871,BRANCHREG-BLRAB#872,BRANCHREG-BLRAB#873,BRANCHREG-BLRAB#874,BRANCHREG-BLRAB#875,BRANCHREG-BLRAB#876,BRANCHREG-BLRAB#877,BRANCHREG-BLRAB#878,BRANCHREG-BLRAB#879,BRANCHREG-BLRAB#880,BRANCHREG-BLRAB#881,BRANCHREG-BLRAB#882,BRANCHREG-BLRAB#883,BRANCHREG-BLRAB#884,BRANCHREG-BLRAB#885,BRANCHREG-BLRAB#886,BRANCHREG-BLRAB#887,BRANCHREG-BLRAB#888,BRANCHREG-BLRAB#889,BRANCHREG-BLRAB#890,BRANCHREG-BLRAB#891,BRANCHREG-BLRAB#892,BRANCHREG-BLRAB#893,BRANCHREG-BLRAB#894,BRANCHREG-BLRAB#895,BRANCHREG-BLRAB#896,BRANCHREG-BLRAB#897,BRANCHREG-BLRAB#898,BRANCHREG-BLRAB#899,BRANCHREG-BLRAB#900,BRANCHREG-BLRAB#901,BRANCHREG-BLRAB#902,BRANCHREG-BLRAB#903,BRANCHREG-BLRAB#904,BRANCHREG-BLRAB#905,BRANCHREG-BLRAB#906,BRANCHREG-BLRAB#907,BRANCHREG-BLRAB#908,BRANCHREG-BLRAB#909,BRANCHREG-BLRAB#910,BRANCHREG-BLRAB#911,BRANCHREG-BLRAB#912,BRANCHREG-BLRAB#913,BRANCHREG-BLRAB#914,BRANCHREG-BLRAB#915,BRANCHREG-BLRAB#916,BRANCHREG-BLRAB#917,BRANCHREG-BLRAB#918,BRANCHREG-BLRAB#919,BRANCHREG-BLRAB#920,BRANCHREG-BLRAB#921,BRANCHREG-BLRAB#922,BRANCHREG-BLRAB#923,BRANCHREG-BLRAB#924,BRANCHREG-BLRAB#925,BRANCHREG-BLRAB#926,BRANCHREG-BLRAB#927,BRANCHREG-BLRAB#928,BRANCHREG-BLRAB#929,BRANCHREG-BLRAB#930,BRANCHREG-BLRAB#931,BRANCHREG-BLRAB#932,BRANCHREG-BLRAB#933,BRANCHREG-BLRAB#934,BRANCHREG-BLRAB#935,BRANCHREG-BLRAB#936,BRANCHREG-BLRAB#937,BRANCHREG-BLRAB#938,BRANCHREG-BLRAB#939,BRANCHREG-BLRAB#940,BRANCHREG-BLRAB#941,BRANCHREG-BLRAB#942,BRANCHREG-BLRAB#943,BRANCHREG-BLRAB#944,BRANCHREG-BLRAB#945,BRANCHREG-BLRAB#946,BRANCHREG-BLRAB#947,BRANCHREG-BLRAB#948,BRANCHREG-BLRAB#949,BRANCHREG-BLRAB#950,BRANCHREG-BLRAB#951,BRANCHREG-BLRAB#952,BRANCHREG-BLRAB#953,BRANCHREG-BLRAB#954,BRANCHREG-BLRAB#955,BRANCHREG-BLRAB#956,BRANCHREG-BLRAB#957,BRANCHREG-BLRAB#958,BRANCHREG-BLRAB#959,BRANCHREG-BLRAB#960,BRANCHREG-BLRAB#961,BRANCHREG-BLRAB#962,BRANCHREG-BLRAB#963,BRANCHREG-BLRAB#964,BRANCHREG-BLRAB#965,BRANCHREG-BLRAB#966,BRANCHREG-BLRAB#967,BRANCHREG-BLRAB#968,BRANCHREG-BLRAB#969,BRANCHREG-BLRAB#970,BRANCHREG-BLRAB#971,BRANCHREG-BLRAB#972,BRANCHREG-BLRAB#973,BRANCHREG-BLRAB#974,BRANCHREG-BLRAB#975,BRANCHREG-BLRAB#976,BRANCHREG-BLRAB#977,BRANCHREG-BLRAB#978,BRANCHREG-BLRAB#979,BRANCHREG-BLRAB#980,BRANCHREG-BLRAB#981,BRANCHREG-BLRAB#982,BRANCHREG-BLRAB#983,BRANCHREG-BLRAB#984,BRANCHREG-BLRAB#985,BRANCHREG-BLRAB#986,BRANCHREG-BLRAB#987,BRANCHREG-BLRAB#988,BRANCHREG-BLRAB#989,BRANCHREG-BLRAB#990,BRANCHREG-BLRAB#991,BRANCHREG-BLRAB#992,BRANCHREG-BLRAB#993,BRANCHREG-BLRAB#994,BRANCHREG-BLRAB#995,BRANCHREG-BLRAB#996,BRANCHREG-BLRAB#997,BRANCHREG-BLRAB#998,BRANCHREG-BLRAB#999,BRANCHREG-BLRAB#1000,BRANCHREG-BLRAB#1001,BRANCHREG-BLRAB#1002,BRANCHREG-BLRAB#1003,BRANCHREG-BLRAB#1004,BRANCHREG-BLRAB#1005,BRANCHREG-BLRAB#1006,BRANCHREG-BLRAB#1007,BRANCHREG-BLRAB#1008,BRANCHREG-BLRAB#1009,BRANCHREG-BLRAB#1010,BRANCHREG-BLRAB#1011,BRANCHREG-BLRAB#1012,BRANCHREG-BLRAB#1013,BRANCHREG-BLRAB#1014,BRANCHREG-BLRAB#1015,BRANCHREG-BLRAB#1016,BRANCHREG-BLRAB#1017,BRANCHREG-BLRAB#1018,BRANCHREG-BLRAB#1019,BRANCHREG-BLRAB#1020,BRANCHREG-BLRAB#1021,BRANCHREG-BLRAB#1022,BRANCHREG-BLRAB#1023
 pub const fn classify_impl_15a(inst: u32) -> u32 {
   if (inst&0xff800) != 0xf0800 { return 0; }
-  let idx = match (inst >> 0) & 0x7ff {
+  
+  match inst & 0x7ff {
     0x0 => 0x98b,
     0x1 => 0x98b,
     0x2 => 0x98b,
@@ -48911,22 +48912,21 @@ pub const fn classify_impl_15a(inst: u32) -> u32 {
     0x7fe => 0x98c,
     0x7ff => 0x98c,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-STLUR#0
 pub const fn classify_impl_15b(inst: u32) -> u32 {
   if (inst&0xc00) != 0x0 { return 0; }
-  return 0x618b;
+  0x618b
 }
 
 
 // MEMGM-STZGM#0
 pub const fn classify_impl_15c_1(inst: u32) -> u32 {
   if (inst&0xff000) != 0x0 { return 0; }
-  return 0x6580;
+  0x6580
 }
 
 // STG-STG_POST#0,STG-STG#0,STG-STG_PRE#0,MEMGM-STZGM#0
@@ -48942,47 +48942,47 @@ pub const fn classify_impl_15c(inst: u32) -> u32 {
     0x1 => return classify_impl_15c_1(inst), // MEMGM-STZGM#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // STG-STG_POST#0,STG-STG#0,STG-STG_PRE#0
 pub const fn classify_impl_15d(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x0,
     0x1 => 0x6480,
     0x2 => 0x6481,
     0x3 => 0x6482,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPCU-LDAPUR#0
 pub const fn classify_impl_15e(inst: u32) -> u32 {
   if (inst&0xc00) != 0x0 { return 0; }
-  return 0x618c;
+  0x618c
 }
 
 
 // STG-STZG_POST#0,STG-STZG#0,STG-STZG_PRE#0,LDG-LDG#0
 pub const fn classify_impl_15f(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x6500,
     0x1 => 0x6483,
     0x2 => 0x6484,
     0x3 => 0x6485,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMGM-STGM#0
 pub const fn classify_impl_160_1(inst: u32) -> u32 {
   if (inst&0xff000) != 0x0 { return 0; }
-  return 0x6581;
+  0x6581
 }
 
 // STG-ST2G_POST#0,STG-ST2G#0,STG-ST2G_PRE#0,MEMGM-STGM#0
@@ -48998,27 +48998,27 @@ pub const fn classify_impl_160(inst: u32) -> u32 {
     0x1 => return classify_impl_160_1(inst), // MEMGM-STGM#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // STG-ST2G_POST#0,STG-ST2G#0,STG-ST2G_PRE#0
 pub const fn classify_impl_161(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x0,
     0x1 => 0x6486,
     0x2 => 0x6487,
     0x3 => 0x6488,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMGM-LDGM#0
 pub const fn classify_impl_162_1(inst: u32) -> u32 {
   if (inst&0xff000) != 0x0 { return 0; }
-  return 0x6582;
+  0x6582
 }
 
 // STG-STZ2G_POST#0,STG-STZ2G#0,STG-STZ2G_PRE#0,MEMGM-LDGM#0
@@ -49034,27 +49034,28 @@ pub const fn classify_impl_162(inst: u32) -> u32 {
     0x1 => return classify_impl_162_1(inst), // MEMGM-LDGM#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // STG-STZ2G_POST#0,STG-STZ2G#0,STG-STZ2G_PRE#0
 pub const fn classify_impl_163(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x0,
     0x1 => 0x6489,
     0x2 => 0x648a,
     0x3 => 0x648b,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // CLZ-CLZ#0,CLZ-CLS#0,CLZ-CTZ#0,CLZ-CNT#0,CLZ-ABS#0,REV-RBIT#1,REV-REV16#1,REV-REV32#0,REV-REV64#0
 pub const fn classify_impl_164_1(inst: u32) -> u32 {
   if (inst&0x4000) != 0x0 { return 0; }
-  let idx = match (inst >> 10) & 0xf {
+  
+  match (inst >> 10) & 0xf {
     0x0 => 0x1500,
     0x1 => 0x1501,
     0x2 => 0x1503,
@@ -49072,14 +49073,14 @@ pub const fn classify_impl_164_1(inst: u32) -> u32 {
     0xe => 0x0,
     0xf => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // AUT-PACIA#0,AUT-PACIA#1,AUT-PACIA#2,AUT-PACIA#3,AUT-PACIA#4,AUT-PACIA#5,AUT-PACIA#6,AUT-PACIA#7,AUT-PACIA#8,AUT-PACIA#9,AUT-PACIA#10,AUT-PACIA#11,AUT-PACIA#12,AUT-PACIA#13,AUT-PACIA#14,AUT-PACIA#15,AUT-PACIA#16,AUT-PACIA#17,AUT-PACIA#18,AUT-PACIA#19,AUT-PACIA#20,AUT-PACIA#21,AUT-PACIA#22,AUT-PACIA#23,AUT-PACIA#24,AUT-PACIA#25,AUT-PACIA#26,AUT-PACIA#27,AUT-PACIA#28,AUT-PACIA#29,AUT-PACIA#30,AUT-PACIA#31,AUT-PACIB#0,AUT-PACIB#1,AUT-PACIB#2,AUT-PACIB#3,AUT-PACIB#4,AUT-PACIB#5,AUT-PACIB#6,AUT-PACIB#7,AUT-PACIB#8,AUT-PACIB#9,AUT-PACIB#10,AUT-PACIB#11,AUT-PACIB#12,AUT-PACIB#13,AUT-PACIB#14,AUT-PACIB#15,AUT-PACIB#16,AUT-PACIB#17,AUT-PACIB#18,AUT-PACIB#19,AUT-PACIB#20,AUT-PACIB#21,AUT-PACIB#22,AUT-PACIB#23,AUT-PACIB#24,AUT-PACIB#25,AUT-PACIB#26,AUT-PACIB#27,AUT-PACIB#28,AUT-PACIB#29,AUT-PACIB#30,AUT-PACIB#31,AUT-PACDA#0,AUT-PACDA#1,AUT-PACDA#2,AUT-PACDA#3,AUT-PACDA#4,AUT-PACDA#5,AUT-PACDA#6,AUT-PACDA#7,AUT-PACDA#8,AUT-PACDA#9,AUT-PACDA#10,AUT-PACDA#11,AUT-PACDA#12,AUT-PACDA#13,AUT-PACDA#14,AUT-PACDA#15,AUT-PACDA#16,AUT-PACDA#17,AUT-PACDA#18,AUT-PACDA#19,AUT-PACDA#20,AUT-PACDA#21,AUT-PACDA#22,AUT-PACDA#23,AUT-PACDA#24,AUT-PACDA#25,AUT-PACDA#26,AUT-PACDA#27,AUT-PACDA#28,AUT-PACDA#29,AUT-PACDA#30,AUT-PACDA#31,AUT-PACDB#0,AUT-PACDB#1,AUT-PACDB#2,AUT-PACDB#3,AUT-PACDB#4,AUT-PACDB#5,AUT-PACDB#6,AUT-PACDB#7,AUT-PACDB#8,AUT-PACDB#9,AUT-PACDB#10,AUT-PACDB#11,AUT-PACDB#12,AUT-PACDB#13,AUT-PACDB#14,AUT-PACDB#15,AUT-PACDB#16,AUT-PACDB#17,AUT-PACDB#18,AUT-PACDB#19,AUT-PACDB#20,AUT-PACDB#21,AUT-PACDB#22,AUT-PACDB#23,AUT-PACDB#24,AUT-PACDB#25,AUT-PACDB#26,AUT-PACDB#27,AUT-PACDB#28,AUT-PACDB#29,AUT-PACDB#30,AUT-PACDB#31,AUT-AUTIA#0,AUT-AUTIA#1,AUT-AUTIA#2,AUT-AUTIA#3,AUT-AUTIA#4,AUT-AUTIA#5,AUT-AUTIA#6,AUT-AUTIA#7,AUT-AUTIA#8,AUT-AUTIA#9,AUT-AUTIA#10,AUT-AUTIA#11,AUT-AUTIA#12,AUT-AUTIA#13,AUT-AUTIA#14,AUT-AUTIA#15,AUT-AUTIA#16,AUT-AUTIA#17,AUT-AUTIA#18,AUT-AUTIA#19,AUT-AUTIA#20,AUT-AUTIA#21,AUT-AUTIA#22,AUT-AUTIA#23,AUT-AUTIA#24,AUT-AUTIA#25,AUT-AUTIA#26,AUT-AUTIA#27,AUT-AUTIA#28,AUT-AUTIA#29,AUT-AUTIA#30,AUT-AUTIA#31,AUT-AUTIB#0,AUT-AUTIB#1,AUT-AUTIB#2,AUT-AUTIB#3,AUT-AUTIB#4,AUT-AUTIB#5,AUT-AUTIB#6,AUT-AUTIB#7,AUT-AUTIB#8,AUT-AUTIB#9,AUT-AUTIB#10,AUT-AUTIB#11,AUT-AUTIB#12,AUT-AUTIB#13,AUT-AUTIB#14,AUT-AUTIB#15,AUT-AUTIB#16,AUT-AUTIB#17,AUT-AUTIB#18,AUT-AUTIB#19,AUT-AUTIB#20,AUT-AUTIB#21,AUT-AUTIB#22,AUT-AUTIB#23,AUT-AUTIB#24,AUT-AUTIB#25,AUT-AUTIB#26,AUT-AUTIB#27,AUT-AUTIB#28,AUT-AUTIB#29,AUT-AUTIB#30,AUT-AUTIB#31,AUT-AUTDA#0,AUT-AUTDA#1,AUT-AUTDA#2,AUT-AUTDA#3,AUT-AUTDA#4,AUT-AUTDA#5,AUT-AUTDA#6,AUT-AUTDA#7,AUT-AUTDA#8,AUT-AUTDA#9,AUT-AUTDA#10,AUT-AUTDA#11,AUT-AUTDA#12,AUT-AUTDA#13,AUT-AUTDA#14,AUT-AUTDA#15,AUT-AUTDA#16,AUT-AUTDA#17,AUT-AUTDA#18,AUT-AUTDA#19,AUT-AUTDA#20,AUT-AUTDA#21,AUT-AUTDA#22,AUT-AUTDA#23,AUT-AUTDA#24,AUT-AUTDA#25,AUT-AUTDA#26,AUT-AUTDA#27,AUT-AUTDA#28,AUT-AUTDA#29,AUT-AUTDA#30,AUT-AUTDA#31,AUT-AUTDB#0,AUT-AUTDB#1,AUT-AUTDB#2,AUT-AUTDB#3,AUT-AUTDB#4,AUT-AUTDB#5,AUT-AUTDB#6,AUT-AUTDB#7,AUT-AUTDB#8,AUT-AUTDB#9,AUT-AUTDB#10,AUT-AUTDB#11,AUT-AUTDB#12,AUT-AUTDB#13,AUT-AUTDB#14,AUT-AUTDB#15,AUT-AUTDB#16,AUT-AUTDB#17,AUT-AUTDB#18,AUT-AUTDB#19,AUT-AUTDB#20,AUT-AUTDB#21,AUT-AUTDB#22,AUT-AUTDB#23,AUT-AUTDB#24,AUT-AUTDB#25,AUT-AUTDB#26,AUT-AUTDB#27,AUT-AUTDB#28,AUT-AUTDB#29,AUT-AUTDB#30,AUT-AUTDB#31,AUT-PACIZA#0,AUT-PACIZB#0,AUT-PACDZA#0,AUT-PACDZB#0,AUT-AUTIZA#0,AUT-AUTIZB#0,AUT-AUTDZA#0,AUT-AUTDZB#0,XPAC-XPACI#0,XPAC-XPACD#0
 pub const fn classify_impl_164_2(inst: u32) -> u32 {
-  let idx = match (inst >> 5) & 0x3ff {
+  
+  match (inst >> 5) & 0x3ff {
     0x0 => 0x5d80,
     0x1 => 0x5d80,
     0x2 => 0x5d80,
@@ -50105,8 +50106,7 @@ pub const fn classify_impl_164_2(inst: u32) -> u32 {
     0x3fe => 0x0,
     0x3ff => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // CLZ-CLZ#0,CLZ-CLS#0,CLZ-CTZ#0,CLZ-CNT#0,CLZ-ABS#0,REV-RBIT#1,REV-REV16#1,REV-REV32#0,REV-REV64#0,AUT-PACIA#0,AUT-PACIA#1,AUT-PACIA#2,AUT-PACIA#3,AUT-PACIA#4,AUT-PACIA#5,AUT-PACIA#6,AUT-PACIA#7,AUT-PACIA#8,AUT-PACIA#9,AUT-PACIA#10,AUT-PACIA#11,AUT-PACIA#12,AUT-PACIA#13,AUT-PACIA#14,AUT-PACIA#15,AUT-PACIA#16,AUT-PACIA#17,AUT-PACIA#18,AUT-PACIA#19,AUT-PACIA#20,AUT-PACIA#21,AUT-PACIA#22,AUT-PACIA#23,AUT-PACIA#24,AUT-PACIA#25,AUT-PACIA#26,AUT-PACIA#27,AUT-PACIA#28,AUT-PACIA#29,AUT-PACIA#30,AUT-PACIA#31,AUT-PACIB#0,AUT-PACIB#1,AUT-PACIB#2,AUT-PACIB#3,AUT-PACIB#4,AUT-PACIB#5,AUT-PACIB#6,AUT-PACIB#7,AUT-PACIB#8,AUT-PACIB#9,AUT-PACIB#10,AUT-PACIB#11,AUT-PACIB#12,AUT-PACIB#13,AUT-PACIB#14,AUT-PACIB#15,AUT-PACIB#16,AUT-PACIB#17,AUT-PACIB#18,AUT-PACIB#19,AUT-PACIB#20,AUT-PACIB#21,AUT-PACIB#22,AUT-PACIB#23,AUT-PACIB#24,AUT-PACIB#25,AUT-PACIB#26,AUT-PACIB#27,AUT-PACIB#28,AUT-PACIB#29,AUT-PACIB#30,AUT-PACIB#31,AUT-PACDA#0,AUT-PACDA#1,AUT-PACDA#2,AUT-PACDA#3,AUT-PACDA#4,AUT-PACDA#5,AUT-PACDA#6,AUT-PACDA#7,AUT-PACDA#8,AUT-PACDA#9,AUT-PACDA#10,AUT-PACDA#11,AUT-PACDA#12,AUT-PACDA#13,AUT-PACDA#14,AUT-PACDA#15,AUT-PACDA#16,AUT-PACDA#17,AUT-PACDA#18,AUT-PACDA#19,AUT-PACDA#20,AUT-PACDA#21,AUT-PACDA#22,AUT-PACDA#23,AUT-PACDA#24,AUT-PACDA#25,AUT-PACDA#26,AUT-PACDA#27,AUT-PACDA#28,AUT-PACDA#29,AUT-PACDA#30,AUT-PACDA#31,AUT-PACDB#0,AUT-PACDB#1,AUT-PACDB#2,AUT-PACDB#3,AUT-PACDB#4,AUT-PACDB#5,AUT-PACDB#6,AUT-PACDB#7,AUT-PACDB#8,AUT-PACDB#9,AUT-PACDB#10,AUT-PACDB#11,AUT-PACDB#12,AUT-PACDB#13,AUT-PACDB#14,AUT-PACDB#15,AUT-PACDB#16,AUT-PACDB#17,AUT-PACDB#18,AUT-PACDB#19,AUT-PACDB#20,AUT-PACDB#21,AUT-PACDB#22,AUT-PACDB#23,AUT-PACDB#24,AUT-PACDB#25,AUT-PACDB#26,AUT-PACDB#27,AUT-PACDB#28,AUT-PACDB#29,AUT-PACDB#30,AUT-PACDB#31,AUT-AUTIA#0,AUT-AUTIA#1,AUT-AUTIA#2,AUT-AUTIA#3,AUT-AUTIA#4,AUT-AUTIA#5,AUT-AUTIA#6,AUT-AUTIA#7,AUT-AUTIA#8,AUT-AUTIA#9,AUT-AUTIA#10,AUT-AUTIA#11,AUT-AUTIA#12,AUT-AUTIA#13,AUT-AUTIA#14,AUT-AUTIA#15,AUT-AUTIA#16,AUT-AUTIA#17,AUT-AUTIA#18,AUT-AUTIA#19,AUT-AUTIA#20,AUT-AUTIA#21,AUT-AUTIA#22,AUT-AUTIA#23,AUT-AUTIA#24,AUT-AUTIA#25,AUT-AUTIA#26,AUT-AUTIA#27,AUT-AUTIA#28,AUT-AUTIA#29,AUT-AUTIA#30,AUT-AUTIA#31,AUT-AUTIB#0,AUT-AUTIB#1,AUT-AUTIB#2,AUT-AUTIB#3,AUT-AUTIB#4,AUT-AUTIB#5,AUT-AUTIB#6,AUT-AUTIB#7,AUT-AUTIB#8,AUT-AUTIB#9,AUT-AUTIB#10,AUT-AUTIB#11,AUT-AUTIB#12,AUT-AUTIB#13,AUT-AUTIB#14,AUT-AUTIB#15,AUT-AUTIB#16,AUT-AUTIB#17,AUT-AUTIB#18,AUT-AUTIB#19,AUT-AUTIB#20,AUT-AUTIB#21,AUT-AUTIB#22,AUT-AUTIB#23,AUT-AUTIB#24,AUT-AUTIB#25,AUT-AUTIB#26,AUT-AUTIB#27,AUT-AUTIB#28,AUT-AUTIB#29,AUT-AUTIB#30,AUT-AUTIB#31,AUT-AUTDA#0,AUT-AUTDA#1,AUT-AUTDA#2,AUT-AUTDA#3,AUT-AUTDA#4,AUT-AUTDA#5,AUT-AUTDA#6,AUT-AUTDA#7,AUT-AUTDA#8,AUT-AUTDA#9,AUT-AUTDA#10,AUT-AUTDA#11,AUT-AUTDA#12,AUT-AUTDA#13,AUT-AUTDA#14,AUT-AUTDA#15,AUT-AUTDA#16,AUT-AUTDA#17,AUT-AUTDA#18,AUT-AUTDA#19,AUT-AUTDA#20,AUT-AUTDA#21,AUT-AUTDA#22,AUT-AUTDA#23,AUT-AUTDA#24,AUT-AUTDA#25,AUT-AUTDA#26,AUT-AUTDA#27,AUT-AUTDA#28,AUT-AUTDA#29,AUT-AUTDA#30,AUT-AUTDA#31,AUT-AUTDB#0,AUT-AUTDB#1,AUT-AUTDB#2,AUT-AUTDB#3,AUT-AUTDB#4,AUT-AUTDB#5,AUT-AUTDB#6,AUT-AUTDB#7,AUT-AUTDB#8,AUT-AUTDB#9,AUT-AUTDB#10,AUT-AUTDB#11,AUT-AUTDB#12,AUT-AUTDB#13,AUT-AUTDB#14,AUT-AUTDB#15,AUT-AUTDB#16,AUT-AUTDB#17,AUT-AUTDB#18,AUT-AUTDB#19,AUT-AUTDB#20,AUT-AUTDB#21,AUT-AUTDB#22,AUT-AUTDB#23,AUT-AUTDB#24,AUT-AUTDB#25,AUT-AUTDB#26,AUT-AUTDB#27,AUT-AUTDB#28,AUT-AUTDB#29,AUT-AUTDB#30,AUT-AUTDB#31,AUT-PACIZA#0,AUT-PACIZB#0,AUT-PACDZA#0,AUT-PACDZB#0,AUT-AUTIZA#0,AUT-AUTIZB#0,AUT-AUTDZA#0,AUT-AUTDZB#0,XPAC-XPACI#0,XPAC-XPACD#0
@@ -50122,13 +50122,14 @@ pub const fn classify_impl_164(inst: u32) -> u32 {
     0x2 => return classify_impl_164_2(inst), // AUT-PACIA#0,AUT-PACIA#1,AUT-PACIA#2,AUT-PACIA#3,AUT-PACIA#4,AUT-PACIA#5,AUT-PACIA#6,AUT-PACIA#7,AUT-PACIA#8,AUT-PACIA#9,AUT-PACIA#10,AUT-PACIA#11,AUT-PACIA#12,AUT-PACIA#13,AUT-PACIA#14,AUT-PACIA#15,AUT-PACIA#16,AUT-PACIA#17,AUT-PACIA#18,AUT-PACIA#19,AUT-PACIA#20,AUT-PACIA#21,AUT-PACIA#22,AUT-PACIA#23,AUT-PACIA#24,AUT-PACIA#25,AUT-PACIA#26,AUT-PACIA#27,AUT-PACIA#28,AUT-PACIA#29,AUT-PACIA#30,AUT-PACIA#31,AUT-PACIB#0,AUT-PACIB#1,AUT-PACIB#2,AUT-PACIB#3,AUT-PACIB#4,AUT-PACIB#5,AUT-PACIB#6,AUT-PACIB#7,AUT-PACIB#8,AUT-PACIB#9,AUT-PACIB#10,AUT-PACIB#11,AUT-PACIB#12,AUT-PACIB#13,AUT-PACIB#14,AUT-PACIB#15,AUT-PACIB#16,AUT-PACIB#17,AUT-PACIB#18,AUT-PACIB#19,AUT-PACIB#20,AUT-PACIB#21,AUT-PACIB#22,AUT-PACIB#23,AUT-PACIB#24,AUT-PACIB#25,AUT-PACIB#26,AUT-PACIB#27,AUT-PACIB#28,AUT-PACIB#29,AUT-PACIB#30,AUT-PACIB#31,AUT-PACDA#0,AUT-PACDA#1,AUT-PACDA#2,AUT-PACDA#3,AUT-PACDA#4,AUT-PACDA#5,AUT-PACDA#6,AUT-PACDA#7,AUT-PACDA#8,AUT-PACDA#9,AUT-PACDA#10,AUT-PACDA#11,AUT-PACDA#12,AUT-PACDA#13,AUT-PACDA#14,AUT-PACDA#15,AUT-PACDA#16,AUT-PACDA#17,AUT-PACDA#18,AUT-PACDA#19,AUT-PACDA#20,AUT-PACDA#21,AUT-PACDA#22,AUT-PACDA#23,AUT-PACDA#24,AUT-PACDA#25,AUT-PACDA#26,AUT-PACDA#27,AUT-PACDA#28,AUT-PACDA#29,AUT-PACDA#30,AUT-PACDA#31,AUT-PACDB#0,AUT-PACDB#1,AUT-PACDB#2,AUT-PACDB#3,AUT-PACDB#4,AUT-PACDB#5,AUT-PACDB#6,AUT-PACDB#7,AUT-PACDB#8,AUT-PACDB#9,AUT-PACDB#10,AUT-PACDB#11,AUT-PACDB#12,AUT-PACDB#13,AUT-PACDB#14,AUT-PACDB#15,AUT-PACDB#16,AUT-PACDB#17,AUT-PACDB#18,AUT-PACDB#19,AUT-PACDB#20,AUT-PACDB#21,AUT-PACDB#22,AUT-PACDB#23,AUT-PACDB#24,AUT-PACDB#25,AUT-PACDB#26,AUT-PACDB#27,AUT-PACDB#28,AUT-PACDB#29,AUT-PACDB#30,AUT-PACDB#31,AUT-AUTIA#0,AUT-AUTIA#1,AUT-AUTIA#2,AUT-AUTIA#3,AUT-AUTIA#4,AUT-AUTIA#5,AUT-AUTIA#6,AUT-AUTIA#7,AUT-AUTIA#8,AUT-AUTIA#9,AUT-AUTIA#10,AUT-AUTIA#11,AUT-AUTIA#12,AUT-AUTIA#13,AUT-AUTIA#14,AUT-AUTIA#15,AUT-AUTIA#16,AUT-AUTIA#17,AUT-AUTIA#18,AUT-AUTIA#19,AUT-AUTIA#20,AUT-AUTIA#21,AUT-AUTIA#22,AUT-AUTIA#23,AUT-AUTIA#24,AUT-AUTIA#25,AUT-AUTIA#26,AUT-AUTIA#27,AUT-AUTIA#28,AUT-AUTIA#29,AUT-AUTIA#30,AUT-AUTIA#31,AUT-AUTIB#0,AUT-AUTIB#1,AUT-AUTIB#2,AUT-AUTIB#3,AUT-AUTIB#4,AUT-AUTIB#5,AUT-AUTIB#6,AUT-AUTIB#7,AUT-AUTIB#8,AUT-AUTIB#9,AUT-AUTIB#10,AUT-AUTIB#11,AUT-AUTIB#12,AUT-AUTIB#13,AUT-AUTIB#14,AUT-AUTIB#15,AUT-AUTIB#16,AUT-AUTIB#17,AUT-AUTIB#18,AUT-AUTIB#19,AUT-AUTIB#20,AUT-AUTIB#21,AUT-AUTIB#22,AUT-AUTIB#23,AUT-AUTIB#24,AUT-AUTIB#25,AUT-AUTIB#26,AUT-AUTIB#27,AUT-AUTIB#28,AUT-AUTIB#29,AUT-AUTIB#30,AUT-AUTIB#31,AUT-AUTDA#0,AUT-AUTDA#1,AUT-AUTDA#2,AUT-AUTDA#3,AUT-AUTDA#4,AUT-AUTDA#5,AUT-AUTDA#6,AUT-AUTDA#7,AUT-AUTDA#8,AUT-AUTDA#9,AUT-AUTDA#10,AUT-AUTDA#11,AUT-AUTDA#12,AUT-AUTDA#13,AUT-AUTDA#14,AUT-AUTDA#15,AUT-AUTDA#16,AUT-AUTDA#17,AUT-AUTDA#18,AUT-AUTDA#19,AUT-AUTDA#20,AUT-AUTDA#21,AUT-AUTDA#22,AUT-AUTDA#23,AUT-AUTDA#24,AUT-AUTDA#25,AUT-AUTDA#26,AUT-AUTDA#27,AUT-AUTDA#28,AUT-AUTDA#29,AUT-AUTDA#30,AUT-AUTDA#31,AUT-AUTDB#0,AUT-AUTDB#1,AUT-AUTDB#2,AUT-AUTDB#3,AUT-AUTDB#4,AUT-AUTDB#5,AUT-AUTDB#6,AUT-AUTDB#7,AUT-AUTDB#8,AUT-AUTDB#9,AUT-AUTDB#10,AUT-AUTDB#11,AUT-AUTDB#12,AUT-AUTDB#13,AUT-AUTDB#14,AUT-AUTDB#15,AUT-AUTDB#16,AUT-AUTDB#17,AUT-AUTDB#18,AUT-AUTDB#19,AUT-AUTDB#20,AUT-AUTDB#21,AUT-AUTDB#22,AUT-AUTDB#23,AUT-AUTDB#24,AUT-AUTDB#25,AUT-AUTDB#26,AUT-AUTDB#27,AUT-AUTDB#28,AUT-AUTDB#29,AUT-AUTDB#30,AUT-AUTDB#31,AUT-PACIZA#0,AUT-PACIZB#0,AUT-PACDZA#0,AUT-PACDZB#0,AUT-AUTIZA#0,AUT-AUTIZB#0,AUT-AUTDZA#0,AUT-AUTDZB#0,XPAC-XPACI#0,XPAC-XPACD#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // ANDOREOR_IMM-ANDS_IMM#57,ANDOREOR_IMM-ANDS_IMM#58,ANDOREOR_IMM-ANDS_IMM#59,ANDOREOR_IMM-ANDS_IMM#60,ANDOREOR_IMM-ANDS_IMM#61,ANDOREOR_IMM-ANDS_IMM#62,ANDOREOR_IMM-ANDS_IMM#63,ANDOREOR_IMM-ANDS_IMM#64,ANDOREOR_IMM-ANDS_IMM#65,ANDOREOR_IMM-ANDS_IMM#66,ANDOREOR_IMM-ANDS_IMM#67,ANDOREOR_IMM-ANDS_IMM#68,ANDOREOR_IMM-ANDS_IMM#69,ANDOREOR_IMM-ANDS_IMM#70,ANDOREOR_IMM-ANDS_IMM#71,ANDOREOR_IMM-ANDS_IMM#72,ANDOREOR_IMM-ANDS_IMM#73,ANDOREOR_IMM-ANDS_IMM#74,ANDOREOR_IMM-ANDS_IMM#75,ANDOREOR_IMM-ANDS_IMM#76,ANDOREOR_IMM-ANDS_IMM#77,ANDOREOR_IMM-ANDS_IMM#78,ANDOREOR_IMM-ANDS_IMM#79,ANDOREOR_IMM-ANDS_IMM#80,ANDOREOR_IMM-ANDS_IMM#81,ANDOREOR_IMM-ANDS_IMM#82,ANDOREOR_IMM-ANDS_IMM#83,ANDOREOR_IMM-ANDS_IMM#84,ANDOREOR_IMM-ANDS_IMM#85,ANDOREOR_IMM-ANDS_IMM#86,ANDOREOR_IMM-ANDS_IMM#87,ANDOREOR_IMM-ANDS_IMM#88,ANDOREOR_IMM-ANDS_IMM#89,ANDOREOR_IMM-ANDS_IMM#90,ANDOREOR_IMM-ANDS_IMM#91,ANDOREOR_IMM-ANDS_IMM#92,ANDOREOR_IMM-ANDS_IMM#93,ANDOREOR_IMM-ANDS_IMM#94,ANDOREOR_IMM-ANDS_IMM#95,ANDOREOR_IMM-ANDS_IMM#96,ANDOREOR_IMM-ANDS_IMM#97,ANDOREOR_IMM-ANDS_IMM#98,ANDOREOR_IMM-ANDS_IMM#99,ANDOREOR_IMM-ANDS_IMM#100,ANDOREOR_IMM-ANDS_IMM#101,ANDOREOR_IMM-ANDS_IMM#102,ANDOREOR_IMM-ANDS_IMM#103,ANDOREOR_IMM-ANDS_IMM#104,ANDOREOR_IMM-ANDS_IMM#105,ANDOREOR_IMM-ANDS_IMM#106,ANDOREOR_IMM-ANDS_IMM#107,ANDOREOR_IMM-ANDS_IMM#108,ANDOREOR_IMM-ANDS_IMM#109,ANDOREOR_IMM-ANDS_IMM#110,ANDOREOR_IMM-ANDS_IMM#111,ANDOREOR_IMM-ANDS_IMM#112,ANDOREOR_IMM-ANDS_IMM#113
 pub const fn classify_impl_165(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x503,
     0x1 => 0x503,
     0x2 => 0x503,
@@ -50194,14 +50195,14 @@ pub const fn classify_impl_165(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // ANDOREOR_IMM-ANDS_IMM#114,ANDOREOR_IMM-ANDS_IMM#115,ANDOREOR_IMM-ANDS_IMM#116,ANDOREOR_IMM-ANDS_IMM#117,ANDOREOR_IMM-ANDS_IMM#118,ANDOREOR_IMM-ANDS_IMM#119,ANDOREOR_IMM-ANDS_IMM#120,ANDOREOR_IMM-ANDS_IMM#121,ANDOREOR_IMM-ANDS_IMM#122,ANDOREOR_IMM-ANDS_IMM#123,ANDOREOR_IMM-ANDS_IMM#124,ANDOREOR_IMM-ANDS_IMM#125,ANDOREOR_IMM-ANDS_IMM#126,ANDOREOR_IMM-ANDS_IMM#127,ANDOREOR_IMM-ANDS_IMM#128,ANDOREOR_IMM-ANDS_IMM#129,ANDOREOR_IMM-ANDS_IMM#130,ANDOREOR_IMM-ANDS_IMM#131,ANDOREOR_IMM-ANDS_IMM#132,ANDOREOR_IMM-ANDS_IMM#133,ANDOREOR_IMM-ANDS_IMM#134,ANDOREOR_IMM-ANDS_IMM#135,ANDOREOR_IMM-ANDS_IMM#136,ANDOREOR_IMM-ANDS_IMM#137,ANDOREOR_IMM-ANDS_IMM#138,ANDOREOR_IMM-ANDS_IMM#139,ANDOREOR_IMM-ANDS_IMM#140,ANDOREOR_IMM-ANDS_IMM#141,ANDOREOR_IMM-ANDS_IMM#142,ANDOREOR_IMM-ANDS_IMM#143,ANDOREOR_IMM-ANDS_IMM#144,ANDOREOR_IMM-ANDS_IMM#145,ANDOREOR_IMM-ANDS_IMM#146,ANDOREOR_IMM-ANDS_IMM#147,ANDOREOR_IMM-ANDS_IMM#148,ANDOREOR_IMM-ANDS_IMM#149,ANDOREOR_IMM-ANDS_IMM#150,ANDOREOR_IMM-ANDS_IMM#151,ANDOREOR_IMM-ANDS_IMM#152,ANDOREOR_IMM-ANDS_IMM#153,ANDOREOR_IMM-ANDS_IMM#154,ANDOREOR_IMM-ANDS_IMM#155,ANDOREOR_IMM-ANDS_IMM#156,ANDOREOR_IMM-ANDS_IMM#157,ANDOREOR_IMM-ANDS_IMM#158,ANDOREOR_IMM-ANDS_IMM#159,ANDOREOR_IMM-ANDS_IMM#160,ANDOREOR_IMM-ANDS_IMM#161,ANDOREOR_IMM-ANDS_IMM#162,ANDOREOR_IMM-ANDS_IMM#163,ANDOREOR_IMM-ANDS_IMM#164,ANDOREOR_IMM-ANDS_IMM#165,ANDOREOR_IMM-ANDS_IMM#166,ANDOREOR_IMM-ANDS_IMM#167,ANDOREOR_IMM-ANDS_IMM#168,ANDOREOR_IMM-ANDS_IMM#169,ANDOREOR_IMM-ANDS_IMM#170,ANDOREOR_IMM-ANDS_IMM#171,ANDOREOR_IMM-ANDS_IMM#172,ANDOREOR_IMM-ANDS_IMM#173,ANDOREOR_IMM-ANDS_IMM#174,ANDOREOR_IMM-ANDS_IMM#175,ANDOREOR_IMM-ANDS_IMM#176
 pub const fn classify_impl_166(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x503,
     0x1 => 0x503,
     0x2 => 0x503,
@@ -50267,49 +50268,48 @@ pub const fn classify_impl_166(inst: u32) -> u32 {
     0x3e => 0x503,
     0x3f => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMU-STURX#0,MEMU-STRX_POST#0,MEMU-STTRX#0,MEMU-STRX_PRE#0
 pub const fn classify_impl_167(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x182c,
     0x1 => 0x182d,
     0x2 => 0x182e,
     0x3 => 0x182f,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // LS64V-ST64BV0#0,LS64V-ST64BV0#1,LS64V-ST64BV0#2
 pub const fn classify_impl_168_1(inst: u32) -> u32 {
   if (inst&0x1) != 0x0 { return 0; }
-  let idx = match (inst >> 3) & 0x3 {
+  
+  match (inst >> 3) & 0x3 {
     0x0 => 0x6b00,
     0x1 => 0x6b00,
     0x2 => 0x6b00,
     0x3 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // LS64V-ST64BV#0,LS64V-ST64BV#1,LS64V-ST64BV#2
 pub const fn classify_impl_168_2(inst: u32) -> u32 {
   if (inst&0x1) != 0x0 { return 0; }
-  let idx = match (inst >> 3) & 0x3 {
+  
+  match (inst >> 3) & 0x3 {
     0x0 => 0x6b01,
     0x1 => 0x6b01,
     0x2 => 0x6b01,
     0x3 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // MEM_REG-STR_REG#0,LDRAUT-LDRAA#0,LDRAUT-LDRAA_PRE#0,SWP-SWP#1,LDATOMIC-LDADDX#0,LDATOMIC-LDCLRX#0,LDATOMIC-LDEORX#0,LDATOMIC-LDSETX#0,LDATOMIC-LDSMAXX#0,LDATOMIC-LDSMINX#0,LDATOMIC-LDUMAXX#0,LDATOMIC-LDUMINX#0,LS64V-ST64BV0#0,LS64V-ST64BV0#1,LS64V-ST64BV0#2,LS64V-ST64BV#0,LS64V-ST64BV#1,LS64V-ST64BV#2
@@ -50386,63 +50386,63 @@ pub const fn classify_impl_168(inst: u32) -> u32 {
     0x2 => return classify_impl_168_2(inst), // LS64V-ST64BV#0,LS64V-ST64BV#1,LS64V-ST64BV#2
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // LS64-ST64B#0,LS64-ST64B#1,LS64-ST64B#2
 pub const fn classify_impl_169_1(inst: u32) -> u32 {
   if (inst&0xf0001) != 0xf0000 { return 0; }
-  let idx = match (inst >> 3) & 0x3 {
+  
+  match (inst >> 3) & 0x3 {
     0x0 => 0x6a80,
     0x1 => 0x6a80,
     0x2 => 0x6a80,
     0x3 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // LS64V-ST64BV0#0,LS64V-ST64BV0#1,LS64V-ST64BV0#2
 pub const fn classify_impl_169_2(inst: u32) -> u32 {
   if (inst&0x1) != 0x0 { return 0; }
-  let idx = match (inst >> 3) & 0x3 {
+  
+  match (inst >> 3) & 0x3 {
     0x0 => 0x6b00,
     0x1 => 0x6b00,
     0x2 => 0x6b00,
     0x3 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // LS64V-ST64BV#0,LS64V-ST64BV#1,LS64V-ST64BV#2
 pub const fn classify_impl_169_3(inst: u32) -> u32 {
   if (inst&0x1) != 0x0 { return 0; }
-  let idx = match (inst >> 3) & 0x3 {
+  
+  match (inst >> 3) & 0x3 {
     0x0 => 0x6b01,
     0x1 => 0x6b01,
     0x2 => 0x6b01,
     0x3 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // LS64-LD64B#0,LS64-LD64B#1,LS64-LD64B#2
 pub const fn classify_impl_169_4(inst: u32) -> u32 {
   if (inst&0xf0001) != 0xf0000 { return 0; }
-  let idx = match (inst >> 3) & 0x3 {
+  
+  match (inst >> 3) & 0x3 {
     0x0 => 0x6a81,
     0x1 => 0x6a81,
     0x2 => 0x6a81,
     0x3 => 0x0,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 // MEM_REG-STR_REG#0,LDRAUT-LDRAA#0,LDRAUT-LDRAA_PRE#0,SWP-SWP#1,LDATOMIC-LDADDX#0,LDATOMIC-LDCLRX#0,LDATOMIC-LDEORX#0,LDATOMIC-LDSETX#0,LDATOMIC-LDSMAXX#0,LDATOMIC-LDSMINX#0,LDATOMIC-LDUMAXX#0,LDATOMIC-LDUMINX#0,LS64-ST64B#0,LS64-ST64B#1,LS64-ST64B#2,LS64-LD64B#0,LS64-LD64B#1,LS64-LD64B#2,LS64V-ST64BV0#0,LS64V-ST64BV0#1,LS64V-ST64BV0#2,LS64V-ST64BV#0,LS64V-ST64BV#1,LS64V-ST64BV#2
@@ -50521,26 +50521,27 @@ pub const fn classify_impl_169(inst: u32) -> u32 {
     0x4 => return classify_impl_169_4(inst), // LS64-LD64B#0,LS64-LD64B#1,LS64-LD64B#2
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // MEMU-LDURX#0,MEMU-LDRX_POST#0,MEMU-LDTRX#0,MEMU-LDRX_PRE#0
 pub const fn classify_impl_16a(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1830,
     0x1 => 0x1831,
     0x2 => 0x1832,
     0x3 => 0x1833,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG-LDR_REG#0,LDRAUT-LDRAA#0,LDRAUT-LDRAA_PRE#0,SWP-SWPL#1,LDATOMIC-LDADDLX#0,LDATOMIC-LDCLRLX#0,LDATOMIC-LDEORLX#0,LDATOMIC-LDSETLX#0,LDATOMIC-LDSMAXLX#0,LDATOMIC-LDSMINLX#0,LDATOMIC-LDUMAXLX#0,LDATOMIC-LDUMINLX#0
 pub const fn classify_impl_16b(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x6168,
     0x1 => 0x5e00,
     0x2 => 0x0,
@@ -50606,21 +50607,21 @@ pub const fn classify_impl_16b(inst: u32) -> u32 {
     0x3e => 0x190c,
     0x3f => 0x5e01,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMU-PRFUM#0
 pub const fn classify_impl_16c(inst: u32) -> u32 {
   if (inst&0xc00) != 0x0 { return 0; }
-  return 0x1834;
+  0x1834
 }
 
 
 // MEM_REG-PRFM_REG#0,LDRAUT-LDRAB#0,LDRAUT-LDRAB_PRE#0,SWP-SWPA#1,LDATOMIC-LDADDAX#0,LDATOMIC-LDCLRAX#0,LDATOMIC-LDEORAX#0,LDATOMIC-LDSETAX#0,LDATOMIC-LDSMAXAX#0,LDATOMIC-LDSMINAX#0,LDATOMIC-LDUMAXAX#0,LDATOMIC-LDUMINAX#0
 pub const fn classify_impl_16d(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x6170,
     0x1 => 0x5e02,
     0x2 => 0x0,
@@ -50686,15 +50687,14 @@ pub const fn classify_impl_16d(inst: u32) -> u32 {
     0x3e => 0x190d,
     0x3f => 0x5e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // RCPC-LDAPRX#0
 pub const fn classify_impl_16e_1(inst: u32) -> u32 {
   if (inst&0xf0000) != 0xf0000 { return 0; }
-  return 0x6203;
+  0x6203
 }
 
 // MEM_REG-PRFM_REG#0,LDRAUT-LDRAB#0,LDRAUT-LDRAB_PRE#0,SWP-SWPA#1,LDATOMIC-LDADDAX#0,LDATOMIC-LDCLRAX#0,LDATOMIC-LDEORAX#0,LDATOMIC-LDSETAX#0,LDATOMIC-LDSMAXAX#0,LDATOMIC-LDSMINAX#0,LDATOMIC-LDUMAXAX#0,LDATOMIC-LDUMINAX#0,RCPC-LDAPRX#0
@@ -50770,13 +50770,14 @@ pub const fn classify_impl_16e(inst: u32) -> u32 {
     0x1 => return classify_impl_16e_1(inst), // RCPC-LDAPRX#0
     _ => idx
   };
-  return idx;
+  idx
 }
 
 
 // LDRAUT-LDRAB#0,LDRAUT-LDRAB_PRE#0,SWP-SWPAL#1,LDATOMIC-LDADDALX#0,LDATOMIC-LDCLRALX#0,LDATOMIC-LDEORALX#0,LDATOMIC-LDSETALX#0,LDATOMIC-LDSMAXALX#0,LDATOMIC-LDSMINALX#0,LDATOMIC-LDUMAXALX#0,LDATOMIC-LDUMINALX#0
 pub const fn classify_impl_16f(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3f {
+  
+  match (inst >> 10) & 0x3f {
     0x0 => 0x6178,
     0x1 => 0x5e02,
     0x2 => 0x0,
@@ -50842,48 +50843,47 @@ pub const fn classify_impl_16f(inst: u32) -> u32 {
     0x3e => 0x0,
     0x3f => 0x5e03,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEMU_FP-STUR_FP#4,MEMU_FP-STR_FP_POST#4,MEMU_FP-STR_FP_PRE#4
 pub const fn classify_impl_170(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1a80,
     0x1 => 0x1a81,
     0x2 => 0x0,
     0x3 => 0x1a82,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG_FP-STR_REG_FP#4
 pub const fn classify_impl_171(inst: u32) -> u32 {
   if (inst&0x4c00) != 0x4800 { return 0; }
-  return 0x1b80;
+  0x1b80
 }
 
 
 // MEMU_FP-LDUR_FP#4,MEMU_FP-LDR_FP_POST#4,MEMU_FP-LDR_FP_PRE#4
 pub const fn classify_impl_172(inst: u32) -> u32 {
-  let idx = match (inst >> 10) & 0x3 {
+  
+  match (inst >> 10) & 0x3 {
     0x0 => 0x1a83,
     0x1 => 0x1a84,
     0x2 => 0x0,
     0x3 => 0x1a85,
     _ => 0,
-  };
-  return idx;
+  }
 }
 
 
 // MEM_REG_FP-LDR_REG_FP#4
 pub const fn classify_impl_173(inst: u32) -> u32 {
   if (inst&0x4c00) != 0x4800 { return 0; }
-  return 0x1b81;
+  0x1b81
 }
 
 // *
@@ -55361,7 +55361,7 @@ pub const fn classify_impl(inst: u32) -> u32 {
     0x173 => return classify_impl_173(inst), // MEM_REG_FP-LDR_REG_FP#4
     _ => idx
   };
-  return idx;
+  idx
 }
 
 pub static MNEMSTR: &str = "zip2zip1xpaciadcsincasabal2xpacdaddgminsabdl2xaraddhn2xaflagwfitblraazwfetbnzuzp2uzp1usubw2usubl2usrax1usqaddsbcsinvusmmladdvushrbitbxushll2usdotbzursradrpsadalpacdb.ursqrteonotcanceld1rev16urshrev32urshltcommitrn1urhaddcps1urecpeor3uqxtn2uqsubguqshrn2uqshld2rev64uqrshrn2uqrshld3rmifabdcps2umull2umulhintrn2umsublrabzumovirgummlaesdivumlsl2umlal2uminvuminpacdzaesetenumaxvumaxpacdzbc.umaddld4rorvuhsubpsaddl2uhaddcps3udivudfabslisbfmlalbcaxflagucvtfacgeretaaesimcasahvcasalbfcvtn2ubfmlaltstarttest1uaddw2uaddlvuaddlpacgaesmcasalhuaddl2uadalpacibfdotuabdl2uabal2sysld64bfmmlandsaddlpacizasrvswplhswplbicsnegswphswpbifacgtswpalhswpalbraazswpahswpabrabzsvcasbrksuqaddmbsudotsubsaddlvstzgmovkstz2gstxrhstxrbstxpacizbsturhsturbsttrhsttrbstrhstrbstpmull2stnprfmadduprfumovnstlxrhstlxrbstlxpstlurhstlurbstlrhstlrbstllrhstllrbstgpstgmovzst64bv0st4st3st2gssubw2ssubl2ssrautdautdbsshrsubhn2sshll2srsrautdzautdzbsrshrsrshldaddabsrisrhaddsqxtun2sqxtn2sqsubsqshrun2sqshrn2sqshlusqrshrun2sqrshrn2sqrshldaddahsqrdmulhsqrdmlsha1casha1hsqrdmlahsqnegsqdmull2sqdmulhsqdmlsl2sqdmlal2sqabsaddw2smull2smulhsmsubldaddalbsmovsmlsl2smlal2sminvsminpsmaxvsmaxpsmaddldaddalhsm4ekeysm3tt2bsm3tt2autiautibsm3tt1bsm3tt1autizautizbsm3ss1sm3partw2sm3partw1shsubshaddsha512su1sha512su0sha512h2sha256su1sha256su0sha256h2sha1su1sha1su0sha1psha1mrscvtfaddpsetptnsetpnsetmtnsetmnsetgptnsetgpnsetgmtnsetgmnsetgetnsetgensetf8setf16setetnorrornmvnimsr uao,msr tco,msr ssbs,msr spsel,msr pm,msr pan,msr dit,msr daifset,msr daifclr,msr allint,lsrvlslvldxrhldxrbldxpldurswldurshldursbldurhldurblduminlhlduminlblduminhlduminblduminalhlduminalblduminahlduminabldumaxlhldumaxlbldumaxhldumaxbldumaxalhldumaxalbldumaxahldumaxabldtrswldtrshldtrsbldtrhldtrbldsminlhldsminlbldsminhldsminbldsminalhldsminalbldsminahldsminabldsmaxlhldsmaxlbldsmaxhldsmaxbldsmaxalhldsmaxalbldsmaxahldsmaxabldsetlhldsetlbldsethldsetbldsetalhldsetalbldsetahldsetabldrswldrshldrsbldrhldrbldrabldraaldpswldnpldlarhldlarbldgmldeorlhldeorlbldeorhldeorbldeoralhldeoralbldeorahldeorabldclrlhldclrlbldclrhldclrbldclralhldclralbldclrahldclrabldaxrhldaxrbldaxpldarhldarbldapurswldapurshldapursbldapurhldapurbldaddlhldaddlbldaddhldaddbfsubfsqrtfrsqrtsfrsqrteretabfrintzfrintxfrintpfrintnfrintmfrintifrintafrint64zfrint64xfrint32zfrint32xfrecpxfrecpsfrecpextrfnmulfnmsubfnmaddfnegfmulxfmsubfmovfmlsl2fmlal2fminvfminpfminnmvfminnmpfmaxvfmaxpfmaxnmvfmaxnmpfjcvtzsfdivfcvtzufcvtzsfcvtxn2fcvtpufcvtpsfcvtnufcvtnsfcvtmufcvtmsfcvtl2fcvtaufcvtasfcselfcmpefcmltfcmlefcmlafcmgtfcmgefcmeqfccmpefcaddcrc32xcrc32wcrc32hcrc32cxcrc32cwcrc32chcrc32cbnzcrc32bcpypwtwncpypwtrncpypwtncpypwncpyptwncpyptrncpyptncpyprtwncpyprtrncpyprtncpyprncpypncpymwtwncpymwtrncpymwtncpymwncpymtwncpymtrncpymtncpymrtwncpymrtrncpymrtncpymrncpymncpyfpwtwncpyfpwtrncpyfpwtncpyfpwncpyfptwncpyfptrncpyfptncpyfprtwncpyfprtrncpyfprtncpyfprncpyfpncpyfmwtwncpyfmwtrncpyfmwtncpyfmwncpyfmtwncpyfmtrncpyfmtncpyfmrtwncpyfmrtrncpyfmrtncpyfmrncpyfmncpyfewtwncpyfewtrncpyfewtncpyfewncpyfetwncpyfetrncpyfetncpyfertwncpyfertrncpyfertncpyferncpyfencpyewtwncpyewtrncpyewtncpyewncpyetwncpyetrncpyetncpyertwncpyertrncpyertncpyerncpyencntcmtstcmhscmhiclzclsclrexcfinvccmncbzcaslhcaslbLDAPRHLDAPRBCTZCNTABS";
@@ -56846,139 +56846,139 @@ pub fn decode(inst: u32, ddi: &mut Inst) -> bool {
  ddi.mnem = mnem;
 match a64_group(mnem) { InstGroup::Unknown=>return false,
 InstGroup::UDF => {
-let imm16: u32 = (inst>>0&0xffff) as u32;
+let imm16: u32 = (inst&0xffff);
 ddi.ops[0] = opuimm(imm16);
 }
 InstGroup::ADCSBC => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opreggp(rn, sf);
 ddi.ops[2] = opreggp(rm, sf);
 }
 InstGroup::ADDSUB_EXT => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let s: u32 = (inst>>29&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let option: u32 = (inst>>13&0x7) as u32;
-let imm3: u32 = (inst>>10&0x7) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let s: u32 = (inst>>29&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let option: u32 = (inst>>13&0x7);
+let imm3: u32 = (inst>>10&0x7);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggpmaysp(!s, rd, sf);
 ddi.ops[1] = opreggpsp(rn, sf);
 ddi.ops[2] = opreggpext(rm, (sf!=0&&(option&3)==3) as u32, option, imm3);
 }
 InstGroup::ADDSUB_IMM => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let s: u32 = (inst>>29&0x1) as u32;
-let shift: u32 = (inst>>22&0x3) as u32;
-let imm12: u32 = (inst>>10&0xfff) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let s: u32 = (inst>>29&0x1);
+let shift: u32 = (inst>>22&0x3);
+let imm12: u32 = (inst>>10&0xfff);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggpmaysp(!s, rd, sf);
 ddi.ops[1] = opreggpsp(rn, sf);
 ddi.ops[2] = opuimmshift(imm12, 0, shift*12);
 }
 InstGroup::ADDSUB_SHIFT => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let shift: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let imm6: u32 = (inst>>10&0x3f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let shift: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let imm6: u32 = (inst>>10&0x3f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opreggp(rn, sf);
 ddi.ops[2] = opreggpext(rm, sf, shift+8, imm6);
 }
 InstGroup::ADR => {
-let op: u32 = (inst>>31&0x1) as u32;
-let immlo: u32 = (inst>>29&0x3) as u32;
-let immhi: i32 = sext((inst>>5&0x7ffff) as i32 as i32, 19);
-let rd: u32 = (inst>>0&0x1f) as u32;
+let op: u32 = (inst>>31&0x1);
+let immlo: u32 = (inst>>29&0x3);
+let immhi: i32 = sext(((inst>>5&0x7ffff) as i32), 19);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, 1);
 ddi.ops[1] = opreladdr(ddi, (((immhi as u32)<<2|immlo)<<(op*12)) as i32);
 }
 InstGroup::ANDOREOR_IMM => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let opc: u32 = (inst>>29&0x3) as u32;
-let n: u32 = (inst>>22&0x1) as u32;
-let immr: u32 = (inst>>16&0x3f) as u32;
-let imms: u32 = (inst>>10&0x3f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let opc: u32 = (inst>>29&0x3);
+let n: u32 = (inst>>22&0x1);
+let immr: u32 = (inst>>16&0x3f);
+let imms: u32 = (inst>>10&0x3f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggpmaysp((opc<3) as u32, rd, sf);
 ddi.ops[1] = opreggp(rn, sf);
 ddi.ops[2] = opimmlogical(ddi, sf, n, immr, imms);
 }
 InstGroup::ANDOREOR_SHIFT => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let shift: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let imm6: u32 = (inst>>10&0x3f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let shift: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let imm6: u32 = (inst>>10&0x3f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opreggp(rn, sf);
 ddi.ops[2] = opreggpext(rm, sf, shift+8, imm6);
 }
 InstGroup::SHIFTV => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opreggp(rn, sf);
 ddi.ops[2] = opreggp(rm, sf);
 }
 InstGroup::MUL => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let ra: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let ra: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opreggp(rn, sf);
 ddi.ops[2] = opreggp(rm, sf);
 ddi.ops[3] = opreggp(ra, sf);
 }
 InstGroup::MULL => {
-let sf: u32 = 1 as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let ra: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = 1_u32;
+let rm: u32 = (inst>>16&0x1f);
+let ra: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opreggp(rn, 0);
 ddi.ops[2] = opreggp(rm, 0);
 ddi.ops[3] = opreggp(ra, sf);
 }
 InstGroup::MULH => {
-let sf: u32 = 1 as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = 1_u32;
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opreggp(rn, sf);
 ddi.ops[2] = opreggp(rm, sf);
 }
 InstGroup::BCOND => {
-let imm19: i32 = sext((inst>>5&0x7ffff) as i32 as i32, 19);
-let bcond: u32 = (inst>>0&0xf) as u32;
+let imm19: i32 = sext(((inst>>5&0x7ffff) as i32), 19);
+let bcond: u32 = (inst&0xf);
 ddi.ops[0] = opcond(bcond);
 ddi.ops[1] = opreladdr(ddi, imm19<<2);
 }
 InstGroup::BRANCH => {
-let imm26: i32 = sext((inst>>0&0x3ffffff) as i32 as i32, 26);
+let imm26: i32 = sext(((inst&0x3ffffff) as i32), 26);
 ddi.ops[0] = opreladdr(ddi, imm26<<2);
 }
 InstGroup::BFM => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let immr: u32 = (inst>>16&0x3f) as u32;
-let imms: u32 = (inst>>10&0x3f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let immr: u32 = (inst>>16&0x3f);
+let imms: u32 = (inst>>10&0x3f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opreggp(rn, sf);
 ddi.ops[2] = opimmsmall(immr);
@@ -56987,7 +56987,7 @@ ddi.ops[3] = opimmsmall(imms);
 InstGroup::BRANCHREG => match mnem {
   InstKind::BR| InstKind::BRAAZ| InstKind::BRABZ| InstKind::BLR| InstKind::BLRAAZ| InstKind::BLRABZ| InstKind::RET
     =>{
-let rn: u32 = (inst>>5&0x1f) as u32;
+let rn: u32 = (inst>>5&0x1f);
 ddi.ops[0] = opreggp(rn, 1);
 },
   InstKind::RETAA| InstKind::RETAB
@@ -56995,77 +56995,77 @@ ddi.ops[0] = opreggp(rn, 1);
 },
   InstKind::BRAA| InstKind::BRAB| InstKind::BLRAA| InstKind::BLRAB
     =>{
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rm: u32 = (inst>>0&0x1f) as u32;
+let rn: u32 = (inst>>5&0x1f);
+let rm: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rn, 1);
 ddi.ops[1] = opreggpsp(rm, 1);
 },
   _ => unreachable!()
 }
 InstGroup::BRK => {
-let imm16: u32 = (inst>>5&0xffff) as u32;
+let imm16: u32 = (inst>>5&0xffff);
 ddi.ops[0] = opuimm(imm16);
 }
 InstGroup::CBZ => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let imm19: i32 = sext((inst>>5&0x7ffff) as i32 as i32, 19);
-let rt: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let imm19: i32 = sext(((inst>>5&0x7ffff) as i32), 19);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, sf);
 ddi.ops[1] = opreladdr(ddi, imm19<<2);
 }
 InstGroup::TBZ => {
-let b5: u32 = (inst>>31&0x1) as u32;
-let b40: u32 = (inst>>19&0x1f) as u32;
-let imm14: i32 = sext((inst>>5&0x3fff) as i32 as i32, 14);
-let rt: u32 = (inst>>0&0x1f) as u32;
+let b5: u32 = (inst>>31&0x1);
+let b40: u32 = (inst>>19&0x1f);
+let imm14: i32 = sext(((inst>>5&0x3fff) as i32), 14);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, b5);
 ddi.ops[1] = opimmsmall(b5<<5|b40);
 ddi.ops[2] = opreladdr(ddi, imm14<<2);
 }
 InstGroup::CCMP_IMM => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let imm5: u32 = (inst>>16&0x1f) as u32;
-let cond: u32 = (inst>>12&0xf) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let nzcv: u32 = (inst>>0&0xf) as u32;
+let sf: u32 = (inst>>31&0x1);
+let imm5: u32 = (inst>>16&0x1f);
+let cond: u32 = (inst>>12&0xf);
+let rn: u32 = (inst>>5&0x1f);
+let nzcv: u32 = (inst&0xf);
 ddi.ops[0] = opreggp(rn, sf);
 ddi.ops[1] = opimmsmall(imm5);
 ddi.ops[2] = opimmsmall(nzcv);
 ddi.ops[3] = opcond(cond);
 }
 InstGroup::CCMP_REG => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let cond: u32 = (inst>>12&0xf) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let nzcv: u32 = (inst>>0&0xf) as u32;
+let sf: u32 = (inst>>31&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let cond: u32 = (inst>>12&0xf);
+let rn: u32 = (inst>>5&0x1f);
+let nzcv: u32 = (inst&0xf);
 ddi.ops[0] = opreggp(rn, sf);
 ddi.ops[1] = opreggp(rm, sf);
 ddi.ops[2] = opimmsmall(nzcv);
 ddi.ops[3] = opcond(cond);
 }
 InstGroup::CLREX => {
-let crm: u32 = (inst>>8&0xf) as u32;
+let crm: u32 = (inst>>8&0xf);
 ddi.ops[0] = opimmsmall(crm);
 }
 InstGroup::DSB => {
-let crm: u32 = (inst>>8&0xf) as u32;
+let crm: u32 = (inst>>8&0xf);
 ddi.ops[0] = opimmsmall(crm);
 }
 InstGroup::HINT => {
-let imm: u32 = (inst>>5&0x7f) as u32;
+let imm: u32 = (inst>>5&0x7f);
 ddi.ops[0] = opuimm(imm);
 }
 InstGroup::HLT => {
-let imm16: u32 = (inst>>5&0xffff) as u32;
+let imm16: u32 = (inst>>5&0xffff);
 ddi.ops[0] = opuimm(imm16);
 }
 InstGroup::SVC => {
-let imm16: u32 = (inst>>5&0xffff) as u32;
+let imm16: u32 = (inst>>5&0xffff);
 ddi.ops[0] = opuimm(imm16);
 }
 InstGroup::DCPS => {
-let imm16: u32 = (inst>>5&0xffff) as u32;
+let imm16: u32 = (inst>>5&0xffff);
 ddi.ops[0] = opuimm(imm16);
 }
 InstGroup::ERET => {
@@ -57073,29 +57073,29 @@ InstGroup::ERET => {
 InstGroup::DRPS => {
 }
 InstGroup::CLZ => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opreggp(rn, sf);
 }
 InstGroup::MINMAX_IMM => match mnem {
   InstKind::SMAX_GP_IMM| InstKind::SMIN_GP_IMM
     =>{
-let sf: u32 = (inst>>31&0x1) as u32;
-let imm8: u32 = (inst>>10&0xff) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let imm8: u32 = (inst>>10&0xff);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opreggp(rn, sf);
 ddi.ops[2] = opsimm(sext(imm8 as _, 8));
 },
   InstKind::UMAX_GP_IMM| InstKind::UMIN_GP_IMM
     =>{
-let sf: u32 = (inst>>31&0x1) as u32;
-let imm8: u32 = (inst>>10&0xff) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let imm8: u32 = (inst>>10&0xff);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opreggp(rn, sf);
 ddi.ops[2] = opuimm(imm8);
@@ -57103,56 +57103,56 @@ ddi.ops[2] = opuimm(imm8);
   _ => unreachable!()
 }
 InstGroup::MINMAX_REG => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opreggp(rn, sf);
 ddi.ops[2] = opreggp(rm, sf);
 }
 InstGroup::CSEL => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let cond: u32 = (inst>>12&0xf) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let cond: u32 = (inst>>12&0xf);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opreggp(rn, sf);
 ddi.ops[2] = opreggp(rm, sf);
 ddi.ops[3] = opcond(cond);
 }
 InstGroup::EXTR => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let imms: u32 = (inst>>10&0x3f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let imms: u32 = (inst>>10&0x3f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opreggp(rn, sf);
 ddi.ops[2] = opreggp(rm, sf);
 ddi.ops[3] = opimmsmall(imms);
 }
 InstGroup::MOV => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let hw: u32 = (inst>>21&0x3) as u32;
-let imm16: u32 = (inst>>5&0xffff) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let hw: u32 = (inst>>21&0x3);
+let imm16: u32 = (inst>>5&0xffff);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opuimmshift(imm16, 0, hw*16);
 }
 InstGroup::SYS => match mnem {
   InstKind::SYS
     =>{
-let sysreg: u32 = (inst>>5&0xffff) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let sysreg: u32 = (inst>>5&0xffff);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opsysreg(sysreg);
 ddi.ops[1] = opreggp(rt, 1);
 },
   InstKind::SYSL
     =>{
-let sysreg: u32 = (inst>>5&0xffff) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let sysreg: u32 = (inst>>5&0xffff);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, 1);
 ddi.ops[1] = opsysreg(sysreg);
 },
@@ -57161,15 +57161,15 @@ ddi.ops[1] = opsysreg(sysreg);
 InstGroup::MSR_REG => match mnem {
   InstKind::MSR
     =>{
-let sysreg: u32 = (inst>>5&0xffff) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let sysreg: u32 = (inst>>5&0xffff);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opsysreg(sysreg);
 ddi.ops[1] = opreggp(rt, 1);
 },
   InstKind::MRS
     =>{
-let sysreg: u32 = (inst>>5&0xffff) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let sysreg: u32 = (inst>>5&0xffff);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, 1);
 ddi.ops[1] = opsysreg(sysreg);
 },
@@ -57178,64 +57178,64 @@ ddi.ops[1] = opsysreg(sysreg);
 InstGroup::MSR_IMM => match mnem {
   InstKind::MSR_UAO| InstKind::MSR_PAN| InstKind::MSR_SPSel| InstKind::MSR_SSBS| InstKind::MSR_DIT| InstKind::MSR_TCO| InstKind::MSR_DAIFSet| InstKind::MSR_DAIFClr
     =>{
-let crm: u32 = (inst>>8&0xf) as u32;
+let crm: u32 = (inst>>8&0xf);
 ddi.ops[0] = opimmsmall(crm&15);
 },
   InstKind::MSR_ALLINT| InstKind::MSR_PM
     =>{
-let crm: u32 = (inst>>8&0xf) as u32;
+let crm: u32 = (inst>>8&0xf);
 ddi.ops[0] = opimmsmall(crm&1);
 },
   _ => unreachable!()
 }
 InstGroup::REV => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opreggp(rn, sf);
 }
 InstGroup::DIV => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opreggp(rn, sf);
 ddi.ops[2] = opreggp(rm, sf);
 }
 InstGroup::MEMOR => {
-let size: u32 = (inst>>30&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, (size==3) as u32);
 ddi.ops[1] = opmemuoff(rn, 0);
 }
 InstGroup::MEMX => match mnem {
   InstKind::STXRB| InstKind::STLXRB| InstKind::STXRH| InstKind::STLXRH| InstKind::STXRW| InstKind::STLXRW| InstKind::STXRX| InstKind::STLXRX
     =>{
-let size: u32 = (inst>>30&0x3) as u32;
-let rs: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let rs: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rs, 0);
 ddi.ops[1] = opreggp(rt, (size==3) as u32);
 ddi.ops[2] = opmemsoff(rn, 0);
 },
   InstKind::LDXRB| InstKind::LDAXRB| InstKind::LDXRH| InstKind::LDAXRH| InstKind::LDXRW| InstKind::LDAXRW| InstKind::LDXRX| InstKind::LDAXRX
     =>{
-let size: u32 = (inst>>30&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, (size==3) as u32);
 ddi.ops[1] = opmemsoff(rn, 0);
 },
   InstKind::STXPW| InstKind::STLXPW| InstKind::STXPX| InstKind::STLXPX
     =>{
-let size: u32 = (inst>>30&0x3) as u32;
-let rs: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let rs: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rs, 0);
 ddi.ops[1] = opreggp(rt, (size==3) as u32);
 ddi.ops[2] = opreggp(rt, (size==3) as u32);
@@ -57243,9 +57243,9 @@ ddi.ops[3] = opmemsoff(rn, 0);
 },
   InstKind::LDXPW| InstKind::LDAXPW| InstKind::LDXPX| InstKind::LDAXPX
     =>{
-let size: u32 = (inst>>30&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, (size==3) as u32);
 ddi.ops[1] = opreggp(rt, (size==3) as u32);
 ddi.ops[2] = opmemsoff(rn, 0);
@@ -57253,11 +57253,11 @@ ddi.ops[2] = opmemsoff(rn, 0);
   _ => unreachable!()
 }
 InstGroup::MEMNP => {
-let opc: u32 = (inst>>30&0x3) as u32;
-let imm7: i32 = sext((inst>>15&0x7f) as i32 as i32, 7);
-let rt2: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let opc: u32 = (inst>>30&0x3);
+let imm7: i32 = sext(((inst>>15&0x7f) as i32), 7);
+let rt2: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, (opc>0) as u32);
 ddi.ops[1] = opreggp(rt2, (opc>0) as u32);
 ddi.ops[2] = opmemsoff(rn, imm7<<(2+(opc>=2) as u32));
@@ -57265,99 +57265,99 @@ ddi.ops[2] = opmemsoff(rn, imm7<<(2+(opc>=2) as u32));
 InstGroup::MEMP => match mnem {
   InstKind::STPW_POST| InstKind::LDPW_POST| InstKind::LDPSW_POST
     =>{
-let opc: u32 = (inst>>30&0x3) as u32;
-let imm7: i32 = sext((inst>>15&0x7f) as i32 as i32, 7);
-let rt2: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let opc: u32 = (inst>>30&0x3);
+let imm7: i32 = sext(((inst>>15&0x7f) as i32), 7);
+let rt2: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, (opc>0) as u32);
 ddi.ops[1] = opreggp(rt2, (opc>0) as u32);
 ddi.ops[2] = opmemsoffpost(rn, imm7<<2);
 },
   InstKind::STPW| InstKind::LDPW| InstKind::LDPSW
     =>{
-let opc: u32 = (inst>>30&0x3) as u32;
-let imm7: i32 = sext((inst>>15&0x7f) as i32 as i32, 7);
-let rt2: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let opc: u32 = (inst>>30&0x3);
+let imm7: i32 = sext(((inst>>15&0x7f) as i32), 7);
+let rt2: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, (opc>0) as u32);
 ddi.ops[1] = opreggp(rt2, (opc>0) as u32);
 ddi.ops[2] = opmemsoff(rn, imm7<<2);
 },
   InstKind::STPW_PRE| InstKind::LDPW_PRE| InstKind::LDPSW_PRE
     =>{
-let opc: u32 = (inst>>30&0x3) as u32;
-let imm7: i32 = sext((inst>>15&0x7f) as i32 as i32, 7);
-let rt2: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let opc: u32 = (inst>>30&0x3);
+let imm7: i32 = sext(((inst>>15&0x7f) as i32), 7);
+let rt2: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, (opc>0) as u32);
 ddi.ops[1] = opreggp(rt2, (opc>0) as u32);
 ddi.ops[2] = opmemsoffpre(rn, imm7<<2);
 },
   InstKind::STGP_POST
     =>{
-let opc: u32 = (inst>>30&0x3) as u32;
-let imm7: i32 = sext((inst>>15&0x7f) as i32 as i32, 7);
-let rt2: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let opc: u32 = (inst>>30&0x3);
+let imm7: i32 = sext(((inst>>15&0x7f) as i32), 7);
+let rt2: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, (opc>0) as u32);
 ddi.ops[1] = opreggp(rt2, (opc>0) as u32);
 ddi.ops[2] = opmemsoffpost(rn, imm7<<4);
 },
   InstKind::STGP
     =>{
-let opc: u32 = (inst>>30&0x3) as u32;
-let imm7: i32 = sext((inst>>15&0x7f) as i32 as i32, 7);
-let rt2: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let opc: u32 = (inst>>30&0x3);
+let imm7: i32 = sext(((inst>>15&0x7f) as i32), 7);
+let rt2: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, (opc>0) as u32);
 ddi.ops[1] = opreggp(rt2, (opc>0) as u32);
 ddi.ops[2] = opmemsoff(rn, imm7<<4);
 },
   InstKind::STGP_PRE
     =>{
-let opc: u32 = (inst>>30&0x3) as u32;
-let imm7: i32 = sext((inst>>15&0x7f) as i32 as i32, 7);
-let rt2: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let opc: u32 = (inst>>30&0x3);
+let imm7: i32 = sext(((inst>>15&0x7f) as i32), 7);
+let rt2: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, (opc>0) as u32);
 ddi.ops[1] = opreggp(rt2, (opc>0) as u32);
 ddi.ops[2] = opmemsoffpre(rn, imm7<<4);
 },
   InstKind::STPX_POST| InstKind::LDPX_POST
     =>{
-let opc: u32 = (inst>>30&0x3) as u32;
-let imm7: i32 = sext((inst>>15&0x7f) as i32 as i32, 7);
-let rt2: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let opc: u32 = (inst>>30&0x3);
+let imm7: i32 = sext(((inst>>15&0x7f) as i32), 7);
+let rt2: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, (opc>0) as u32);
 ddi.ops[1] = opreggp(rt2, (opc>0) as u32);
 ddi.ops[2] = opmemsoffpost(rn, imm7<<3);
 },
   InstKind::STPX| InstKind::LDPX
     =>{
-let opc: u32 = (inst>>30&0x3) as u32;
-let imm7: i32 = sext((inst>>15&0x7f) as i32 as i32, 7);
-let rt2: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let opc: u32 = (inst>>30&0x3);
+let imm7: i32 = sext(((inst>>15&0x7f) as i32), 7);
+let rt2: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, (opc>0) as u32);
 ddi.ops[1] = opreggp(rt2, (opc>0) as u32);
 ddi.ops[2] = opmemsoff(rn, imm7<<3);
 },
   InstKind::STPX_PRE| InstKind::LDPX_PRE
     =>{
-let opc: u32 = (inst>>30&0x3) as u32;
-let imm7: i32 = sext((inst>>15&0x7f) as i32 as i32, 7);
-let rt2: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let opc: u32 = (inst>>30&0x3);
+let imm7: i32 = sext(((inst>>15&0x7f) as i32), 7);
+let rt2: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, (opc>0) as u32);
 ddi.ops[1] = opreggp(rt2, (opc>0) as u32);
 ddi.ops[2] = opmemsoffpre(rn, imm7<<3);
@@ -57367,96 +57367,96 @@ ddi.ops[2] = opmemsoffpre(rn, imm7<<3);
 InstGroup::MEMU => match mnem {
   InstKind::STURB| InstKind::STTRB| InstKind::LDURB| InstKind::LDTRB| InstKind::LDURSB| InstKind::LDTRSB| InstKind::LDURSBW| InstKind::LDTRSBW| InstKind::STURH| InstKind::STTRH| InstKind::LDURH| InstKind::LDTRH| InstKind::LDURSH| InstKind::LDTRSH| InstKind::LDURSHW| InstKind::LDTRSHW| InstKind::STURW| InstKind::STTRW| InstKind::LDURW| InstKind::LDTRW| InstKind::LDURSW| InstKind::LDTRSW| InstKind::STURX| InstKind::STTRX| InstKind::LDURX| InstKind::LDTRX| InstKind::PRFUM
     =>{
-let size: u32 = (inst>>30&0x3) as u32;
-let opc: u32 = (inst>>22&0x3) as u32;
-let imm9: i32 = sext((inst>>12&0x1ff) as i32 as i32, 9);
-let op2: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let opc: u32 = (inst>>22&0x3);
+let imm9: i32 = sext(((inst>>12&0x1ff) as i32), 9);
+let op2: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggpprf((op2==0&&opc==2&&size==3) as u32, rt, (size>2||opc==2) as u32);
 ddi.ops[1] = opmemsoff(rn, imm9);
 },
   InstKind::STRB_POST| InstKind::LDRB_POST| InstKind::LDRSB_POST| InstKind::LDRSBW_POST| InstKind::STRH_POST| InstKind::LDRH_POST| InstKind::LDRSH_POST| InstKind::LDRSHW_POST| InstKind::STRW_POST| InstKind::LDRW_POST| InstKind::LDRSW_POST| InstKind::STRX_POST| InstKind::LDRX_POST
     =>{
-let size: u32 = (inst>>30&0x3) as u32;
-let opc: u32 = (inst>>22&0x3) as u32;
-let imm9: i32 = sext((inst>>12&0x1ff) as i32 as i32, 9);
-let op2: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let opc: u32 = (inst>>22&0x3);
+let imm9: i32 = sext(((inst>>12&0x1ff) as i32), 9);
+let op2: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggpprf((op2==0&&opc==2&&size==3) as u32, rt, (size>2||opc==2) as u32);
 ddi.ops[1] = opmemsoffpost(rn, imm9);
 },
   InstKind::STRB_PRE| InstKind::LDRB_PRE| InstKind::LDRSB_PRE| InstKind::LDRSBW_PRE| InstKind::STRH_PRE| InstKind::LDRH_PRE| InstKind::LDRSH_PRE| InstKind::LDRSHW_PRE| InstKind::STRW_PRE| InstKind::LDRW_PRE| InstKind::LDRSW_PRE| InstKind::STRX_PRE| InstKind::LDRX_PRE
     =>{
-let size: u32 = (inst>>30&0x3) as u32;
-let opc: u32 = (inst>>22&0x3) as u32;
-let imm9: i32 = sext((inst>>12&0x1ff) as i32 as i32, 9);
-let op2: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let opc: u32 = (inst>>22&0x3);
+let imm9: i32 = sext(((inst>>12&0x1ff) as i32), 9);
+let op2: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggpprf((op2==0&&opc==2&&size==3) as u32, rt, (size>2||opc==2) as u32);
 ddi.ops[1] = opmemsoffpre(rn, imm9);
 },
   _ => unreachable!()
 }
 InstGroup::MEM_IMM => {
-let size: u32 = (inst>>30&0x3) as u32;
-let opc: u32 = (inst>>22&0x3) as u32;
-let imm12: u32 = (inst>>10&0xfff) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let opc: u32 = (inst>>22&0x3);
+let imm12: u32 = (inst>>10&0xfff);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggpprf((opc==2&&size==3) as u32, rt, (size>2||opc==2) as u32);
 ddi.ops[1] = opmemuoff(rn, imm12<<size);
 }
 InstGroup::MEM_REG => {
-let size: u32 = (inst>>30&0x3) as u32;
-let opc: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let option: u32 = (inst>>13&0x7) as u32;
-let sc: u32 = (inst>>12&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let opc: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let option: u32 = (inst>>13&0x7);
+let sc: u32 = (inst>>12&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggpprf((opc==2&&size==3) as u32, rt, (size>2||opc==2) as u32);
 ddi.ops[1] = opmemreg(rn, rm, option, sc, size);
 }
 InstGroup::MEM_LIT => {
-let opc: u32 = (inst>>30&0x3) as u32;
-let imm19: i32 = sext((inst>>5&0x7ffff) as i32 as i32, 19);
-let rt: u32 = (inst>>0&0x1f) as u32;
+let opc: u32 = (inst>>30&0x3);
+let imm19: i32 = sext(((inst>>5&0x7ffff) as i32), 19);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggpprf((opc==3) as u32, rt, (opc>0) as u32);
 ddi.ops[1] = opreladdr(ddi, imm19<<2);
 }
 InstGroup::MEMP_FP => match mnem {
   InstKind::STNP_FP| InstKind::LDNP_FP| InstKind::STP_FP| InstKind::LDP_FP
     =>{
-let opc: u32 = (inst>>30&0x3) as u32;
-let imm7: i32 = sext((inst>>15&0x7f) as i32 as i32, 7);
-let rt2: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let opc: u32 = (inst>>30&0x3);
+let imm7: i32 = sext(((inst>>15&0x7f) as i32), 7);
+let rt2: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rt, opc+2);
 ddi.ops[1] = opregfp(rt2, opc+2);
 ddi.ops[2] = opmemsoff(rn, imm7<<(opc+2));
 },
   InstKind::STP_FP_POST| InstKind::LDP_FP_POST
     =>{
-let opc: u32 = (inst>>30&0x3) as u32;
-let imm7: i32 = sext((inst>>15&0x7f) as i32 as i32, 7);
-let rt2: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let opc: u32 = (inst>>30&0x3);
+let imm7: i32 = sext(((inst>>15&0x7f) as i32), 7);
+let rt2: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rt, opc+2);
 ddi.ops[1] = opregfp(rt2, opc+2);
 ddi.ops[2] = opmemsoffpost(rn, imm7<<(opc+2));
 },
   InstKind::STP_FP_PRE| InstKind::LDP_FP_PRE
     =>{
-let opc: u32 = (inst>>30&0x3) as u32;
-let imm7: i32 = sext((inst>>15&0x7f) as i32 as i32, 7);
-let rt2: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let opc: u32 = (inst>>30&0x3);
+let imm7: i32 = sext(((inst>>15&0x7f) as i32), 7);
+let rt2: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rt, opc+2);
 ddi.ops[1] = opregfp(rt2, opc+2);
 ddi.ops[2] = opmemsoffpre(rn, imm7<<(opc+2));
@@ -57466,69 +57466,69 @@ ddi.ops[2] = opmemsoffpre(rn, imm7<<(opc+2));
 InstGroup::MEMU_FP => match mnem {
   InstKind::STUR_FP| InstKind::LDUR_FP
     =>{
-let size: u32 = (inst>>30&0x3) as u32;
-let opc: u32 = (inst>>22&0x3) as u32;
-let imm9: i32 = sext((inst>>12&0x1ff) as i32 as i32, 9);
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let opc: u32 = (inst>>22&0x3);
+let imm9: i32 = sext(((inst>>12&0x1ff) as i32), 9);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rt, size+(opc<<1&4));
 ddi.ops[1] = opmemsoff(rn, imm9);
 },
   InstKind::STR_FP_POST| InstKind::LDR_FP_POST
     =>{
-let size: u32 = (inst>>30&0x3) as u32;
-let opc: u32 = (inst>>22&0x3) as u32;
-let imm9: i32 = sext((inst>>12&0x1ff) as i32 as i32, 9);
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let opc: u32 = (inst>>22&0x3);
+let imm9: i32 = sext(((inst>>12&0x1ff) as i32), 9);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rt, size+(opc<<1&4));
 ddi.ops[1] = opmemsoffpost(rn, imm9);
 },
   InstKind::STR_FP_PRE| InstKind::LDR_FP_PRE
     =>{
-let size: u32 = (inst>>30&0x3) as u32;
-let opc: u32 = (inst>>22&0x3) as u32;
-let imm9: i32 = sext((inst>>12&0x1ff) as i32 as i32, 9);
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let opc: u32 = (inst>>22&0x3);
+let imm9: i32 = sext(((inst>>12&0x1ff) as i32), 9);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rt, size+(opc<<1&4));
 ddi.ops[1] = opmemsoffpre(rn, imm9);
 },
   _ => unreachable!()
 }
 InstGroup::MEM_IMM_FP => {
-let size: u32 = (inst>>30&0x3) as u32;
-let opc: u32 = (inst>>22&0x3) as u32;
-let imm12: u32 = (inst>>10&0xfff) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let opc: u32 = (inst>>22&0x3);
+let imm12: u32 = (inst>>10&0xfff);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rt, size+(opc<<1&4));
 ddi.ops[1] = opmemuoff(rn, imm12<<(size+(opc<<1&4)));
 }
 InstGroup::MEM_REG_FP => {
-let size: u32 = (inst>>30&0x3) as u32;
-let opc: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let option: u32 = (inst>>13&0x7) as u32;
-let sc: u32 = (inst>>12&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let opc: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let option: u32 = (inst>>13&0x7);
+let sc: u32 = (inst>>12&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rt, size+(opc<<1&4));
 ddi.ops[1] = opmemreg(rn, rm, option, sc, size+(opc<<1&4));
 }
 InstGroup::MEM_LIT_FP => {
-let opc: u32 = (inst>>30&0x3) as u32;
-let imm19: i32 = sext((inst>>5&0x7ffff) as i32 as i32, 19);
-let rt: u32 = (inst>>0&0x1f) as u32;
+let opc: u32 = (inst>>30&0x3);
+let imm19: i32 = sext(((inst>>5&0x7ffff) as i32), 19);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rt, opc+2);
 ddi.ops[1] = opreladdr(ddi, imm19<<2);
 }
 InstGroup::MEMSIMD_MULT => {
-let q: u32 = (inst>>30&0x1) as u32;
-let opcode: u32 = (inst>>12&0xf) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let opcode: u32 = (inst>>12&0xf);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtbl(rt, size, q, 
 if opcode & 1 != 0 {
     1
@@ -57541,41 +57541,41 @@ ddi.ops[1] = opmemsoff(rn, 0);
 InstGroup::MEMSIMD_MULT_POST => match mnem {
   InstKind::ST4_POST| InstKind::ST1_4_POST| InstKind::LD4_POST| InstKind::LD1_4_POST
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtbl(rt, size, q, 4);
 ddi.ops[1] = opmemregsimdpost(rn, rm, 4<<(q+3));
 },
   InstKind::ST3_POST| InstKind::ST1_3_POST| InstKind::LD3_POST| InstKind::LD1_3_POST
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtbl(rt, size, q, 3);
 ddi.ops[1] = opmemregsimdpost(rn, rm, 3<<(q+3));
 },
   InstKind::ST1_1_POST| InstKind::LD1_1_POST
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtbl(rt, size, q, 1);
 ddi.ops[1] = opmemregsimdpost(rn, rm, 1<<(q+3));
 },
   InstKind::ST2_POST| InstKind::ST1_2_POST| InstKind::LD2_POST| InstKind::LD1_2_POST
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtbl(rt, size, q, 2);
 ddi.ops[1] = opmemregsimdpost(rn, rm, 2<<(q+3));
 },
@@ -57584,45 +57584,45 @@ ddi.ops[1] = opmemregsimdpost(rn, rm, 2<<(q+3));
 InstGroup::MEMSIMD_SINGLE => match mnem {
   InstKind::ST1B| InstKind::ST1H| InstKind::ST1S| InstKind::ST1D| InstKind::LD1B| InstKind::LD1H| InstKind::LD1S| InstKind::LD1D
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let opc: u32 = (inst>>13&0x7) as u32;
-let s: u32 = (inst>>12&0x1) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let opc: u32 = (inst>>13&0x7);
+let s: u32 = (inst>>12&0x1);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtblidx(rt, (opc>>1)+(if opc >=4 { size } else { 0 }), (q<<3|s<<2|size) >> ((opc>>1)+(if opc >=4 { size } else { 0 })), 1);
 ddi.ops[1] = opmemsoff(rn, 0);
 },
   InstKind::ST3B| InstKind::ST3H| InstKind::ST3S| InstKind::ST3D| InstKind::LD3B| InstKind::LD3H| InstKind::LD3S| InstKind::LD3D
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let opc: u32 = (inst>>13&0x7) as u32;
-let s: u32 = (inst>>12&0x1) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let opc: u32 = (inst>>13&0x7);
+let s: u32 = (inst>>12&0x1);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtblidx(rt, (opc>>1)+(if opc >=4 { size } else { 0 }), (q<<3|s<<2|size) >> ((opc>>1)+(if opc >=4 { size } else { 0 })), 3);
 ddi.ops[1] = opmemsoff(rn, 0);
 },
   InstKind::ST2B| InstKind::ST2H| InstKind::ST2S| InstKind::ST2D| InstKind::LD2B| InstKind::LD2H| InstKind::LD2S| InstKind::LD2D
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let opc: u32 = (inst>>13&0x7) as u32;
-let s: u32 = (inst>>12&0x1) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let opc: u32 = (inst>>13&0x7);
+let s: u32 = (inst>>12&0x1);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtblidx(rt, (opc>>1)+(if opc >=4 { size } else { 0 }), (q<<3|s<<2|size) >> ((opc>>1)+(if opc >=4 { size } else { 0 })), 2);
 ddi.ops[1] = opmemsoff(rn, 0);
 },
   InstKind::ST4B| InstKind::ST4H| InstKind::ST4S| InstKind::ST4D| InstKind::LD4B| InstKind::LD4H| InstKind::LD4S| InstKind::LD4D
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let opc: u32 = (inst>>13&0x7) as u32;
-let s: u32 = (inst>>12&0x1) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let opc: u32 = (inst>>13&0x7);
+let s: u32 = (inst>>12&0x1);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtblidx(rt, (opc>>1)+(if opc >=4 { size } else { 0 }), (q<<3|s<<2|size) >> ((opc>>1)+(if opc >=4 { size } else { 0 })), 4);
 ddi.ops[1] = opmemsoff(rn, 0);
 },
@@ -57631,49 +57631,49 @@ ddi.ops[1] = opmemsoff(rn, 0);
 InstGroup::MEMSIMD_SINGLE_POST => match mnem {
   InstKind::ST1B_POST| InstKind::ST1H_POST| InstKind::ST1S_POST| InstKind::ST1D_POST| InstKind::LD1B_POST| InstKind::LD1H_POST| InstKind::LD1S_POST| InstKind::LD1D_POST
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let opc: u32 = (inst>>13&0x7) as u32;
-let s: u32 = (inst>>12&0x1) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let opc: u32 = (inst>>13&0x7);
+let s: u32 = (inst>>12&0x1);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtblidx(rt, (opc>>1)+(if opc >=4 { size } else { 0 }), (q<<3|s<<2|size) >> ((opc>>1)+(if opc >=4 { size } else { 0 })), 1);
 ddi.ops[1] = opmemregsimdpost(rn, rm, 1 << ((opc>>1)+(if opc >=4 { size } else { 0 })));
 },
   InstKind::ST3B_POST| InstKind::ST3H_POST| InstKind::ST3S_POST| InstKind::ST3D_POST| InstKind::LD3B_POST| InstKind::LD3H_POST| InstKind::LD3S_POST| InstKind::LD3D_POST
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let opc: u32 = (inst>>13&0x7) as u32;
-let s: u32 = (inst>>12&0x1) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let opc: u32 = (inst>>13&0x7);
+let s: u32 = (inst>>12&0x1);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtblidx(rt, (opc>>1)+(if opc >=4 { size } else { 0 }), (q<<3|s<<2|size) >> ((opc>>1)+(if opc >=4 { size } else { 0 })), 3);
 ddi.ops[1] = opmemregsimdpost(rn, rm, 3 << ((opc>>1)+(if opc >=4 { size } else { 0 })));
 },
   InstKind::ST2B_POST| InstKind::ST2H_POST| InstKind::ST2S_POST| InstKind::ST2D_POST| InstKind::LD2B_POST| InstKind::LD2H_POST| InstKind::LD2S_POST| InstKind::LD2D_POST
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let opc: u32 = (inst>>13&0x7) as u32;
-let s: u32 = (inst>>12&0x1) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let opc: u32 = (inst>>13&0x7);
+let s: u32 = (inst>>12&0x1);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtblidx(rt, (opc>>1)+(if opc >=4 { size } else { 0 }), (q<<3|s<<2|size) >> ((opc>>1)+(if opc >=4 { size } else { 0 })), 2);
 ddi.ops[1] = opmemregsimdpost(rn, rm, 2 << ((opc>>1)+(if opc >=4 { size } else { 0 })));
 },
   InstKind::ST4B_POST| InstKind::ST4H_POST| InstKind::ST4S_POST| InstKind::ST4D_POST| InstKind::LD4B_POST| InstKind::LD4H_POST| InstKind::LD4S_POST| InstKind::LD4D_POST
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let opc: u32 = (inst>>13&0x7) as u32;
-let s: u32 = (inst>>12&0x1) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let opc: u32 = (inst>>13&0x7);
+let s: u32 = (inst>>12&0x1);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtblidx(rt, (opc>>1)+(if opc >=4 { size } else { 0 }), (q<<3|s<<2|size) >> ((opc>>1)+(if opc >=4 { size } else { 0 })), 4);
 ddi.ops[1] = opmemregsimdpost(rn, rm, 4 << ((opc>>1)+(if opc >=4 { size } else { 0 })));
 },
@@ -57682,37 +57682,37 @@ ddi.ops[1] = opmemregsimdpost(rn, rm, 4 << ((opc>>1)+(if opc >=4 { size } else {
 InstGroup::MEMSIMD_REP => match mnem {
   InstKind::LD1R
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtbl(rt, size, q, 1);
 ddi.ops[1] = opmemsoff(rn, 0);
 },
   InstKind::LD3R
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtbl(rt, size, q, 3);
 ddi.ops[1] = opmemsoff(rn, 0);
 },
   InstKind::LD2R
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtbl(rt, size, q, 2);
 ddi.ops[1] = opmemsoff(rn, 0);
 },
   InstKind::LD4R
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtbl(rt, size, q, 4);
 ddi.ops[1] = opmemsoff(rn, 0);
 },
@@ -57721,97 +57721,97 @@ ddi.ops[1] = opmemsoff(rn, 0);
 InstGroup::MEMSIMD_REP_POST => match mnem {
   InstKind::LD1R_POST
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtbl(rt, size, q, 1);
 ddi.ops[1] = opmemregsimdpost(rn, rm, 1<<size);
 },
   InstKind::LD3R_POST
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtbl(rt, size, q, 3);
 ddi.ops[1] = opmemregsimdpost(rn, rm, 3<<size);
 },
   InstKind::LD2R_POST
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtbl(rt, size, q, 2);
 ddi.ops[1] = opmemregsimdpost(rn, rm, 2<<size);
 },
   InstKind::LD4R_POST
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let size: u32 = (inst>>10&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let size: u32 = (inst>>10&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opregvtbl(rt, size, q, 4);
 ddi.ops[1] = opmemregsimdpost(rn, rm, 4<<size);
 },
   _ => unreachable!()
 }
 InstGroup::FCVT_TOFIXED => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let ftype: u32 = (inst>>22&0x3) as u32;
-let scale: u32 = (inst>>10&0x3f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let ftype: u32 = (inst>>22&0x3);
+let scale: u32 = (inst>>10&0x3f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opregfp(rn, ftype^2);
 ddi.ops[2] = opimmsmall(64-scale);
 }
 InstGroup::FCVT_FROMFIXED => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let ftype: u32 = (inst>>22&0x3) as u32;
-let scale: u32 = (inst>>10&0x3f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let ftype: u32 = (inst>>22&0x3);
+let scale: u32 = (inst>>10&0x3f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, ftype^2);
 ddi.ops[1] = opreggp(rn, sf);
 ddi.ops[2] = opimmsmall(64-scale);
 }
 InstGroup::FCVT_TOINT => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let ftype: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let ftype: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opregfp(rn, ftype^2);
 }
 InstGroup::FCVT_FROMINT => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let ftype: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let ftype: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, ftype^2);
 ddi.ops[1] = opreggp(rn, sf);
 }
 InstGroup::FMOV_TOGP => match mnem {
   InstKind::FMOV_TOGP| InstKind::FMOV_TOGP_FP16
     =>{
-let sf: u32 = (inst>>31&0x1) as u32;
-let ftype: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let ftype: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opregfp(rn, ftype^2);
 },
   InstKind::FMOV_TOGP_HIGH
     =>{
-let sf: u32 = (inst>>31&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opregvidx(rn, 3, 1);
 },
@@ -57820,72 +57820,72 @@ ddi.ops[1] = opregvidx(rn, 3, 1);
 InstGroup::FMOV_FROMGP => match mnem {
   InstKind::FMOV_FROM| InstKind::FMOV_FROM_FP16
     =>{
-let sf: u32 = (inst>>31&0x1) as u32;
-let ftype: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let ftype: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, ftype^2);
 ddi.ops[1] = opreggp(rn, sf);
 },
   InstKind::FMOV_FROM_HIGH
     =>{
-let sf: u32 = (inst>>31&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvidx(rd, 3, 1);
 ddi.ops[1] = opreggp(rn, sf);
 },
   _ => unreachable!()
 }
 InstGroup::FJCVTZS => {
-let sf: u32 = 0 as u32;
-let ftype: u32 = 1 as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = 0_u32;
+let ftype: u32 = 1_u32;
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, sf);
 ddi.ops[1] = opregfp(rn, ftype^2);
 }
 InstGroup::FCVT_FP => {
-let ftype: u32 = (inst>>22&0x3) as u32;
-let opc: u32 = (inst>>15&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let ftype: u32 = (inst>>22&0x3);
+let opc: u32 = (inst>>15&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, if opc==2{1}else{opc^2});
 ddi.ops[1] = opregfp(rn, (if opc == 2 { 2 } else { ftype^2 }));
 }
 InstGroup::FRINT => {
-let ftype: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let ftype: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, ftype^2);
 ddi.ops[1] = opregfp(rn, ftype^2);
 }
 InstGroup::FRINTTS => {
-let ftype: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let ftype: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, ftype^2);
 ddi.ops[1] = opregfp(rn, ftype^2);
 }
 InstGroup::FARITH1 => {
-let ftype: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let ftype: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, ftype^2);
 ddi.ops[1] = opregfp(rn, ftype^2);
 }
 InstGroup::FMOV_IMM => {
-let ftype: u32 = (inst>>22&0x3) as u32;
-let imm8: u32 = (inst>>13&0xff) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let ftype: u32 = (inst>>22&0x3);
+let imm8: u32 = (inst>>13&0xff);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, ftype^2);
 ddi.ops[1] = opimmfloat(ddi, imm8);
 }
 InstGroup::FARITH2 => {
-let ftype: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let ftype: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, ftype^2);
 ddi.ops[1] = opregfp(rn, ftype^2);
 ddi.ops[2] = opregfp(rm, ftype^2);
@@ -57893,77 +57893,77 @@ ddi.ops[2] = opregfp(rm, ftype^2);
 InstGroup::FCMP => match mnem {
   InstKind::FCMP| InstKind::FCMPE| InstKind::FCMP_FP16| InstKind::FCMPE_FP16
     =>{
-let ftype: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
+let ftype: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
 ddi.ops[0] = opregfp(rn, ftype^2);
 ddi.ops[1] = opregfp(rm, ftype^2);
 },
   InstKind::FCMP_ZERO| InstKind::FCMPE_ZERO| InstKind::FCMP_FP16_ZERO| InstKind::FCMPE_FP16_ZERO
     =>{
-let ftype: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
+let ftype: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
 ddi.ops[0] = opregfp(rn, ftype^2);
 ddi.ops[1] = opimmfloatzero(ddi);
 },
   _ => unreachable!()
 }
 InstGroup::FCCMP => {
-let ftype: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let cond: u32 = (inst>>12&0xf) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let nzcv: u32 = (inst>>0&0xf) as u32;
+let ftype: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let cond: u32 = (inst>>12&0xf);
+let rn: u32 = (inst>>5&0x1f);
+let nzcv: u32 = (inst&0xf);
 ddi.ops[0] = opregfp(rn, ftype^2);
 ddi.ops[1] = opregfp(rm, ftype^2);
 ddi.ops[2] = opimmsmall(nzcv);
 ddi.ops[3] = opcond(cond);
 }
 InstGroup::FCSEL => {
-let ftype: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let cond: u32 = (inst>>12&0xf) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let ftype: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let cond: u32 = (inst>>12&0xf);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, ftype^2);
 ddi.ops[1] = opregfp(rn, ftype^2);
 ddi.ops[2] = opregfp(rm, ftype^2);
 ddi.ops[3] = opcond(cond);
 }
 InstGroup::FMADD => {
-let ftype: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let ra: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let ftype: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let ra: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, ftype^2);
 ddi.ops[1] = opregfp(rn, ftype^2);
 ddi.ops[2] = opregfp(rm, ftype^2);
 ddi.ops[3] = opregfp(ra, ftype^2);
 }
 InstGroup::DUP_SCALAR => {
-let imm5: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let imm5: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, ctz(imm5));
 ddi.ops[1] = opregvidx(rn, ctz(imm5), imm5>>(ctz(imm5)+1));
 }
 InstGroup::DUP_VEC => match mnem {
   InstKind::DUP_ELEM
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let imm5: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let imm5: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, ctz(imm5), q);
 ddi.ops[1] = opregvidx(rn, ctz(imm5), imm5>>(ctz(imm5)+1));
 },
   InstKind::DUP_GP
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let imm5: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let imm5: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, ctz(imm5), q);
 ddi.ops[1] = opreggp(rn, !(imm5&7));
 },
@@ -57972,465 +57972,465 @@ ddi.ops[1] = opreggp(rn, !(imm5&7));
 InstGroup::INS => match mnem {
   InstKind::INS_GP
     =>{
-let imm5: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let imm5: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvidx(rd, ctz(imm5), imm5>>(ctz(imm5)+1));
 ddi.ops[1] = opreggp(rn, !(imm5&7));
 },
   InstKind::INS_ELEM
     =>{
-let imm5: u32 = (inst>>16&0x1f) as u32;
-let imm4: u32 = (inst>>11&0xf) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let imm5: u32 = (inst>>16&0x1f);
+let imm4: u32 = (inst>>11&0xf);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvidx(rd, ctz(imm5), imm5>>(ctz(imm5)+1));
 ddi.ops[1] = opregvidx(rn, ctz(imm5), imm4>>ctz(imm5));
 },
   _ => unreachable!()
 }
 InstGroup::MOV_TOGP => {
-let q: u32 = (inst>>30&0x1) as u32;
-let imm5: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let imm5: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, q);
 ddi.ops[1] = opregvidx(rn, ctz(imm5), imm5>>(ctz(imm5)+1));
 }
 InstGroup::TBL => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = 0 as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let len: u32 = (inst>>13&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = 0_u32;
+let rm: u32 = (inst>>16&0x1f);
+let len: u32 = (inst>>13&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvtbl(rn, 0, 1, len+1);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::ZIP => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::EXT => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = 0 as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let imm4: u32 = (inst>>11&0xf) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = 0_u32;
+let rm: u32 = (inst>>16&0x1f);
+let imm4: u32 = (inst>>11&0xf);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 ddi.ops[3] = opimmsmall(imm4);
 }
 InstGroup::HADDSUB_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::QADDSUB_SCALAR => {
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, size);
 ddi.ops[1] = opregfp(rn, size);
 ddi.ops[2] = opregfp(rm, size);
 }
 InstGroup::QADDSUB_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::CMGT_SCALAR => {
-let size: u32 = 3 as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = 3_u32;
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, size);
 ddi.ops[1] = opregfp(rn, size);
 ddi.ops[2] = opregfp(rm, size);
 }
 InstGroup::CMGT_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::CMEQ_SCALAR => {
-let size: u32 = 3 as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = 3_u32;
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, size);
 ddi.ops[1] = opregfp(rn, size);
 ddi.ops[2] = opregfp(rm, size);
 }
 InstGroup::CMEQ_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::CMZERO_SCALAR => {
-let size: u32 = 3 as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = 3_u32;
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, size);
 ddi.ops[1] = opregfp(rn, size);
 ddi.ops[2] = opimmsmall(0);
 }
 InstGroup::CMZERO_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opimmsmall(0);
 }
 InstGroup::ARITH1_SCALAR => {
-let size: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, size);
 ddi.ops[1] = opregfp(rn, size);
 }
 InstGroup::ARITH1_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 }
 InstGroup::ADDLP_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size+1, q);
 ddi.ops[1] = opregvec(rn, size, q);
 }
 InstGroup::CLZ_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 }
 InstGroup::BIT_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 0, q);
 ddi.ops[1] = opregvec(rn, 0, q);
 }
 InstGroup::REV_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 }
 InstGroup::XTN_SCALAR => {
-let size: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, size);
 ddi.ops[1] = opregfp(rn, size+1);
 }
 InstGroup::XTN_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size+1, 1);
 }
 InstGroup::SHL_REG_SCALAR => {
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, size);
 ddi.ops[1] = opregfp(rn, size);
 ddi.ops[2] = opregfp(rm, size);
 }
 InstGroup::SHL_REG_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::MINMAX_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::ABD_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::ADDSUB_SCALAR => {
-let size: u32 = 3 as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = 3_u32;
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, size);
 ddi.ops[1] = opregfp(rn, size);
 ddi.ops[2] = opregfp(rm, size);
 }
 InstGroup::ADDSUB_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::ADDP_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::MUL_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::SQDMULH_SCALAR => {
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, size);
 ddi.ops[1] = opregfp(rn, size);
 ddi.ops[2] = opregfp(rm, size);
 }
 InstGroup::SQDMULH_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::FMINMAX_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let sz: u32 = (inst>>22&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let sz: u32 = (inst>>22&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, sz+2, q);
 ddi.ops[1] = opregvec(rn, sz+2, q);
 ddi.ops[2] = opregvec(rm, sz+2, q);
 }
 InstGroup::FCMP_REG_SCALAR => {
-let sz: u32 = (inst>>22&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sz: u32 = (inst>>22&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, sz+2);
 ddi.ops[1] = opregfp(rn, sz+2);
 ddi.ops[2] = opregfp(rm, sz+2);
 }
 InstGroup::FCMP_ZERO_SCALAR => {
-let sz: u32 = (inst>>22&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sz: u32 = (inst>>22&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, sz+2);
 ddi.ops[1] = opregfp(rn, sz+2);
 ddi.ops[2] = opimmfloatzero(ddi);
 }
 InstGroup::FCMP_REG_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let sz: u32 = (inst>>22&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let sz: u32 = (inst>>22&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, sz+2, q);
 ddi.ops[1] = opregvec(rn, sz+2, q);
 ddi.ops[2] = opregvec(rm, sz+2, q);
 }
 InstGroup::FCMP_ZERO_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let sz: u32 = (inst>>22&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let sz: u32 = (inst>>22&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, sz+2, q);
 ddi.ops[1] = opregvec(rn, sz+2, q);
 ddi.ops[2] = opimmfloatzero(ddi);
 }
 InstGroup::FARITH1_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let sz: u32 = (inst>>22&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let sz: u32 = (inst>>22&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, sz+2, q);
 ddi.ops[1] = opregvec(rn, sz+2, q);
 }
 InstGroup::FABD_SCALAR => {
-let sz: u32 = (inst>>22&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sz: u32 = (inst>>22&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, sz+2);
 ddi.ops[1] = opregfp(rn, sz+2);
 ddi.ops[2] = opregfp(rm, sz+2);
 }
 InstGroup::FADDSUB_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let sz: u32 = (inst>>22&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let sz: u32 = (inst>>22&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, sz+2, q);
 ddi.ops[1] = opregvec(rn, sz+2, q);
 ddi.ops[2] = opregvec(rm, sz+2, q);
 }
 InstGroup::FRECP_SCALAR => {
-let sz: u32 = (inst>>22&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sz: u32 = (inst>>22&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, sz+2);
 ddi.ops[1] = opregfp(rn, sz+2);
 }
 InstGroup::FRECP_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 }
 InstGroup::FRECP_STEP_SCALAR => {
-let sz: u32 = (inst>>22&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sz: u32 = (inst>>22&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, sz+2);
 ddi.ops[1] = opregfp(rn, sz+2);
 ddi.ops[2] = opregfp(rm, sz+2);
 }
 InstGroup::FRECP_STEP_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let sz: u32 = (inst>>22&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let sz: u32 = (inst>>22&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, sz+2, q);
 ddi.ops[1] = opregvec(rn, sz+2, q);
 ddi.ops[2] = opregvec(rm, sz+2, q);
 }
 InstGroup::FMULX_SCALAR => {
-let sz: u32 = (inst>>22&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sz: u32 = (inst>>22&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, sz+2);
 ddi.ops[1] = opregfp(rn, sz+2);
 ddi.ops[2] = opregfp(rm, sz+2);
 }
 InstGroup::FMUL_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let sz: u32 = (inst>>22&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let sz: u32 = (inst>>22&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, sz+2, q);
 ddi.ops[1] = opregvec(rn, sz+2, q);
 ddi.ops[2] = opregvec(rm, sz+2, q);
 }
 InstGroup::FMLA_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let sz: u32 = (inst>>22&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let sz: u32 = (inst>>22&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, sz+2, q);
 ddi.ops[1] = opregvec(rn, sz+2, q);
 ddi.ops[2] = opregvec(rm, sz+2, q);
 }
 InstGroup::FDIV_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let sz: u32 = (inst>>22&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let sz: u32 = (inst>>22&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, sz+2, q);
 ddi.ops[1] = opregvec(rn, sz+2, q);
 ddi.ops[2] = opregvec(rm, sz+2, q);
 }
 InstGroup::FP16_3REG_SCALAR => {
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, 1);
 ddi.ops[1] = opregfp(rn, 1);
 ddi.ops[2] = opregfp(rm, 1);
 }
 InstGroup::FP16_3REG_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 1, q);
 ddi.ops[1] = opregvec(rn, 1, q);
 ddi.ops[2] = opregvec(rm, 1, q);
@@ -58438,15 +58438,15 @@ ddi.ops[2] = opregvec(rm, 1, q);
 InstGroup::FP16_2REG_SCALAR => match mnem {
   InstKind::FCVTNS_SCALAR_FP16| InstKind::FCVTMS_SCALAR_FP16| InstKind::FCVTAS_SCALAR_FP16| InstKind::SCVTF_SCALAR_FP16| InstKind::FCVTPS_SCALAR_FP16| InstKind::FCVTZS_SCALAR_FP16| InstKind::FRECPE_SCALAR_FP16| InstKind::FRECPX_SCALAR_FP16| InstKind::FCVTNU_SCALAR_FP16| InstKind::FCVTMU_SCALAR_FP16| InstKind::FCVTAU_SCALAR_FP16| InstKind::UCVTF_SCALAR_FP16| InstKind::FCVTPU_SCALAR_FP16| InstKind::FCVTZU_SCALAR_FP16| InstKind::FRSQRTE_SCALAR_FP16
     =>{
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, 1);
 ddi.ops[1] = opregfp(rn, 1);
 },
   InstKind::FCMGT_ZERO_SCALAR_FP16| InstKind::FCMEQ_ZERO_SCALAR_FP16| InstKind::FCMLT_ZERO_SCALAR_FP16| InstKind::FCMGE_ZERO_SCALAR_FP16| InstKind::FCMLE_ZERO_SCALAR_FP16
     =>{
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, 1);
 ddi.ops[1] = opregfp(rn, 1);
 ddi.ops[2] = opimmfloatzero(ddi);
@@ -58456,17 +58456,17 @@ ddi.ops[2] = opimmfloatzero(ddi);
 InstGroup::FP16_2REG_VEC => match mnem {
   InstKind::FRINTN_VEC_FP16| InstKind::FRINTM_VEC_FP16| InstKind::FCVTNS_VEC_FP16| InstKind::FCVTMS_VEC_FP16| InstKind::FCVTAS_VEC_FP16| InstKind::SCVTF_VEC_FP16| InstKind::FABS_VEC_FP16| InstKind::FRINTP_VEC_FP16| InstKind::FRINTZ_VEC_FP16| InstKind::FCVTPS_VEC_FP16| InstKind::FCVTZS_VEC_FP16| InstKind::FRECPE_VEC_FP16| InstKind::FRINTA_VEC_FP16| InstKind::FRINTX_VEC_FP16| InstKind::FCVTNU_VEC_FP16| InstKind::FCVTMU_VEC_FP16| InstKind::FCVTAU_VEC_FP16| InstKind::UCVTF_VEC_FP16| InstKind::FNEG_VEC_FP16| InstKind::FRINTI_VEC_FP16| InstKind::FCVTPU_VEC_FP16| InstKind::FCVTZU_VEC_FP16| InstKind::FRSQRTE_VEC_FP16| InstKind::FSQRT_VEC_FP16
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 1, q);
 ddi.ops[1] = opregvec(rn, 1, q);
 },
   InstKind::FCMGT_ZERO_VEC_FP16| InstKind::FCMEQ_ZERO_VEC_FP16| InstKind::FCMLT_ZERO_VEC_FP16| InstKind::FCMGE_ZERO_VEC_FP16| InstKind::FCMLE_ZERO_VEC_FP16
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 1, q);
 ddi.ops[1] = opregvec(rn, 1, q);
 ddi.ops[2] = opimmfloatzero(ddi);
@@ -58474,205 +58474,205 @@ ddi.ops[2] = opimmfloatzero(ddi);
   _ => unreachable!()
 }
 InstGroup::ANDOREOR_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 0, q);
 ddi.ops[1] = opregvec(rn, 0, q);
 ddi.ops[2] = opregvec(rm, 0, q);
 }
 InstGroup::ADDSUBL_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size+1, 1);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::ADDSUBW_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size+1, 1);
 ddi.ops[1] = opregvec(rn, size+1, 1);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::ADDSUBHN_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size+1, 1);
 ddi.ops[2] = opregvec(rm, size+1, 1);
 }
 InstGroup::ABDL_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size+1, 1);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::MULL_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size+1, 1);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::SQDMULL_SCALAR => {
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, size+1);
 ddi.ops[1] = opregfp(rn, size);
 ddi.ops[2] = opregfp(rm, size);
 }
 InstGroup::SQDMULL_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size+1, 1);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::PMULL_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size+1, 1);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::SQRDMLAH_SCALAR => {
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, size);
 ddi.ops[1] = opregfp(rn, size);
 ddi.ops[2] = opregfp(rm, size);
 }
 InstGroup::SQRDMLAH_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
 }
 InstGroup::SHR_SCALAR_IMM => {
-let immh: u32 = (inst>>19&0xf) as u32;
-let immb: u32 = (inst>>16&0x7) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let immh: u32 = (inst>>19&0xf);
+let immb: u32 = (inst>>16&0x7);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, 3);
 ddi.ops[1] = opregfp(rn, 3);
 ddi.ops[2] = opimmsmall(128-(immh<<3|immb));
 }
 InstGroup::SHR_VEC_IMM => {
-let q: u32 = (inst>>30&0x1) as u32;
-let immh: u32 = (inst>>19&0xf) as u32;
-let immb: u32 = (inst>>16&0x7) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let immh: u32 = (inst>>19&0xf);
+let immb: u32 = (inst>>16&0x7);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 3-clz(immh, 4), q);
 ddi.ops[1] = opregvec(rn, 3-clz(immh, 4), q);
 ddi.ops[2] = opimmsmall((16<<(3-clz(immh, 4)))-(immh<<3|immb));
 }
 InstGroup::QSHL_SCALAR_IMM => {
-let immh: u32 = (inst>>19&0xf) as u32;
-let immb: u32 = (inst>>16&0x7) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let immh: u32 = (inst>>19&0xf);
+let immb: u32 = (inst>>16&0x7);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, 3-clz(immh, 4));
 ddi.ops[1] = opregfp(rn, 3-clz(immh, 4));
 ddi.ops[2] = opimmsmall((immh<<3|immb)-(8<<(3-clz(immh, 4))));
 }
 InstGroup::QSHL_VEC_IMM => {
-let q: u32 = (inst>>30&0x1) as u32;
-let immh: u32 = (inst>>19&0xf) as u32;
-let immb: u32 = (inst>>16&0x7) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let immh: u32 = (inst>>19&0xf);
+let immb: u32 = (inst>>16&0x7);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 3-clz(immh, 4), q);
 ddi.ops[1] = opregvec(rn, 3-clz(immh, 4), q);
 ddi.ops[2] = opimmsmall((immh<<3|immb)-(8<<(3-clz(immh, 4))));
 }
 InstGroup::SHRN_SCALAR_IMM => {
-let immh: u32 = (inst>>19&0xf) as u32;
-let immb: u32 = (inst>>16&0x7) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let immh: u32 = (inst>>19&0xf);
+let immb: u32 = (inst>>16&0x7);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, 3-clz(immh, 4));
 ddi.ops[1] = opregfp(rn, 4-clz(immh, 4));
 ddi.ops[2] = opimmsmall((16<<(3-clz(immh, 4)))-(immh<<3|immb));
 }
 InstGroup::SHRN_VEC_IMM => {
-let q: u32 = (inst>>30&0x1) as u32;
-let immh: u32 = (inst>>19&0xf) as u32;
-let immb: u32 = (inst>>16&0x7) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let immh: u32 = (inst>>19&0xf);
+let immb: u32 = (inst>>16&0x7);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 3-clz(immh, 4), q);
 ddi.ops[1] = opregvec(rn, 4-clz(immh, 4), 1);
 ddi.ops[2] = opimmsmall((16<<(3-clz(immh, 4)))-(immh<<3|immb));
 }
 InstGroup::SHLL_VEC_IMM => {
-let q: u32 = (inst>>30&0x1) as u32;
-let immh: u32 = (inst>>19&0xf) as u32;
-let immb: u32 = (inst>>16&0x7) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let immh: u32 = (inst>>19&0xf);
+let immb: u32 = (inst>>16&0x7);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 4-clz(immh, 4), 1);
 ddi.ops[1] = opregvec(rn, 3-clz(immh, 4), q);
 ddi.ops[2] = opimmsmall((immh<<3|immb)-(8<<(3-clz(immh, 4))));
 }
 InstGroup::SHLL_VEC_ESZ => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size+1, 1);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opimmsmall(8<<size);
 }
 InstGroup::SHIFT_SCALAR_IMM => {
-let immh: u32 = (inst>>19&0xf) as u32;
-let immb: u32 = (inst>>16&0x7) as u32;
-let op: u32 = (inst>>12&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let immh: u32 = (inst>>19&0xf);
+let immb: u32 = (inst>>16&0x7);
+let op: u32 = (inst>>12&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, 3);
 ddi.ops[1] = opregfp(rn, 3);
 ddi.ops[2] = opimmsmall(if op != 0{(immh<<3|immb)-64}else{128-(immh<<3|immb)});
 }
 InstGroup::SHIFT_VEC_IMM => {
-let q: u32 = (inst>>30&0x1) as u32;
-let immh: u32 = (inst>>19&0xf) as u32;
-let immb: u32 = (inst>>16&0x7) as u32;
-let op: u32 = (inst>>12&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let immh: u32 = (inst>>19&0xf);
+let immb: u32 = (inst>>16&0x7);
+let op: u32 = (inst>>12&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 3-clz(immh, 4), q);
 ddi.ops[1] = opregvec(rn, 3-clz(immh, 4), q);
 ddi.ops[2] = opimmsmall(
@@ -58685,113 +58685,113 @@ if op!=0 {
         );
 }
 InstGroup::FCVT_SCALAR_FIXED => {
-let immh: u32 = (inst>>19&0xf) as u32;
-let immb: u32 = (inst>>16&0x7) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let immh: u32 = (inst>>19&0xf);
+let immb: u32 = (inst>>16&0x7);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, 3-clz(immh, 4));
 ddi.ops[1] = opregfp(rn, 3-clz(immh, 4));
 ddi.ops[2] = opimmsmall((16<<(3-clz(immh, 4)))-(immh<<3|immb));
 }
 InstGroup::FCVT_VEC_FIXED => {
-let q: u32 = (inst>>30&0x1) as u32;
-let immh: u32 = (inst>>19&0xf) as u32;
-let immb: u32 = (inst>>16&0x7) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let immh: u32 = (inst>>19&0xf);
+let immb: u32 = (inst>>16&0x7);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 3-clz(immh, 4), q);
 ddi.ops[1] = opregvec(rn, 3-clz(immh, 4), q);
 ddi.ops[2] = opimmsmall((16<<(3-clz(immh, 4)))-(immh<<3|immb));
 }
 InstGroup::FCVT_SCALAR => {
-let sz: u32 = (inst>>22&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sz: u32 = (inst>>22&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, sz+2);
 ddi.ops[1] = opregfp(rn, sz+2);
 }
 InstGroup::FCVT_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let sz: u32 = (inst>>22&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let sz: u32 = (inst>>22&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, sz+2, q);
 ddi.ops[1] = opregvec(rn, sz+2, q);
 }
 InstGroup::FCVTL_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let sz: u32 = (inst>>22&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let sz: u32 = (inst>>22&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, sz+2, 1);
 ddi.ops[1] = opregvec(rn, sz+1, q);
 }
 InstGroup::FCVT_FROMINT_SCALAR => {
-let sz: u32 = (inst>>22&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sz: u32 = (inst>>22&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, sz+2);
 ddi.ops[1] = opregfp(rn, sz+2);
 }
 InstGroup::FCVT_FROMINT_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let sz: u32 = (inst>>22&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let sz: u32 = (inst>>22&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, sz+2, q);
 ddi.ops[1] = opregvec(rn, sz+2, q);
 }
 InstGroup::FCVTN_SCALAR => {
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, 2);
 ddi.ops[1] = opregfp(rn, 3);
 }
 InstGroup::FCVTN_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let sz: u32 = (inst>>22&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let sz: u32 = (inst>>22&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, sz+1, q);
 ddi.ops[1] = opregvec(rn, sz+2, 1);
 }
 InstGroup::FRINT_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let sz: u32 = (inst>>22&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let sz: u32 = (inst>>22&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, sz+2, q);
 ddi.ops[1] = opregvec(rn, sz+2, q);
 }
 InstGroup::FRINTTS_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let sz: u32 = (inst>>22&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let sz: u32 = (inst>>22&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, sz+2, q);
 ddi.ops[1] = opregvec(rn, sz+2, q);
 }
 InstGroup::INT_HORZ_SCALAR => {
-let size: u32 = 3 as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = 3_u32;
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, size);
 ddi.ops[1] = opregvec(rn, 3, 1);
 }
 InstGroup::INT_HORZ_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let opcode: u32 = (inst>>12&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let opcode: u32 = (inst>>12&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, size+!(opcode&8));
 ddi.ops[1] = opregvec(rn, size, q);
 }
 InstGroup::FP_HORZ_SCALAR => {
-let u: u32 = (inst>>29&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let u: u32 = (inst>>29&0x1);
+let size: u32 = (inst>>22&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, (size&1)+1+u);
 ddi.ops[1] = opregvec(rn, 
 if (u | (size & 1)) != 0 {
@@ -58802,107 +58802,107 @@ if (u | (size & 1)) != 0 {
         , u&size&1);
 }
 InstGroup::FP_HORZ_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let u: u32 = (inst>>29&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let u: u32 = (inst>>29&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, u+1);
 ddi.ops[1] = opregvec(rn, u+1, q);
 }
 InstGroup::MUL_ELEM_SCALAR => {
-let size: u32 = (inst>>22&0x3) as u32;
-let l: u32 = (inst>>21&0x1) as u32;
-let m: u32 = (inst>>20&0x1) as u32;
-let rm: u32 = (inst>>16&0xf) as u32;
-let h: u32 = (inst>>11&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>22&0x3);
+let l: u32 = (inst>>21&0x1);
+let m: u32 = (inst>>20&0x1);
+let rm: u32 = (inst>>16&0xf);
+let h: u32 = (inst>>11&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, size);
 ddi.ops[1] = opregfp(rn, size);
 ddi.ops[2] = opregvidx(rm+(if size >= 2 {m<<4}else{0}), size, if size>=2{2*h+l}else{4*h+2*l+m});
 }
 InstGroup::MUL_ELEM => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let l: u32 = (inst>>21&0x1) as u32;
-let m: u32 = (inst>>20&0x1) as u32;
-let rm: u32 = (inst>>16&0xf) as u32;
-let h: u32 = (inst>>11&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let l: u32 = (inst>>21&0x1);
+let m: u32 = (inst>>20&0x1);
+let rm: u32 = (inst>>16&0xf);
+let h: u32 = (inst>>11&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvidx(rm+(if size >= 2 {m<<4}else{0}), size, if size>=2{2*h+l}else{4*h+2*l+m});
 }
 InstGroup::MULL_ELEM_SCALAR => {
-let size: u32 = (inst>>22&0x3) as u32;
-let l: u32 = (inst>>21&0x1) as u32;
-let m: u32 = (inst>>20&0x1) as u32;
-let rm: u32 = (inst>>16&0xf) as u32;
-let h: u32 = (inst>>11&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>22&0x3);
+let l: u32 = (inst>>21&0x1);
+let m: u32 = (inst>>20&0x1);
+let rm: u32 = (inst>>16&0xf);
+let h: u32 = (inst>>11&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, size+1);
 ddi.ops[1] = opregfp(rn, size);
 ddi.ops[2] = opregvidx(rm+(if size >= 2 {m<<4}else{0}), size, if size>=2{2*h+l}else{4*h+2*l+m});
 }
 InstGroup::MULL_ELEM => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let l: u32 = (inst>>21&0x1) as u32;
-let m: u32 = (inst>>20&0x1) as u32;
-let rm: u32 = (inst>>16&0xf) as u32;
-let h: u32 = (inst>>11&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let l: u32 = (inst>>21&0x1);
+let m: u32 = (inst>>20&0x1);
+let rm: u32 = (inst>>16&0xf);
+let h: u32 = (inst>>11&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size+1, 1);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvidx(rm+(if size >= 2 {m<<4}else{0}), size, if size>=2{2*h+l}else{4*h+2*l+m});
 }
 InstGroup::FMUL_ELEM_SCALAR => {
-let sz: u32 = (inst>>22&0x1) as u32;
-let l: u32 = (inst>>21&0x1) as u32;
-let m: u32 = (inst>>20&0x1) as u32;
-let rm: u32 = (inst>>16&0xf) as u32;
-let h: u32 = (inst>>11&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sz: u32 = (inst>>22&0x1);
+let l: u32 = (inst>>21&0x1);
+let m: u32 = (inst>>20&0x1);
+let rm: u32 = (inst>>16&0xf);
+let h: u32 = (inst>>11&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, sz+2);
 ddi.ops[1] = opregfp(rn, sz+2);
 ddi.ops[2] = opregvidx(rm+(m<<4), sz+2, (if sz != 0 { h } else { 2 })*h+l);
 }
 InstGroup::FMUL_ELEM_SCALAR_FP16 => {
-let l: u32 = (inst>>21&0x1) as u32;
-let m: u32 = (inst>>20&0x1) as u32;
-let rm: u32 = (inst>>16&0xf) as u32;
-let h: u32 = (inst>>11&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let l: u32 = (inst>>21&0x1);
+let m: u32 = (inst>>20&0x1);
+let rm: u32 = (inst>>16&0xf);
+let h: u32 = (inst>>11&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, 1);
 ddi.ops[1] = opregfp(rn, 1);
 ddi.ops[2] = opregvidx(rm, 1, 4*h+2*l+m);
 }
 InstGroup::FMUL_ELEM => {
-let q: u32 = (inst>>30&0x1) as u32;
-let sz: u32 = (inst>>22&0x1) as u32;
-let l: u32 = (inst>>21&0x1) as u32;
-let m: u32 = (inst>>20&0x1) as u32;
-let rm: u32 = (inst>>16&0xf) as u32;
-let h: u32 = (inst>>11&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let sz: u32 = (inst>>22&0x1);
+let l: u32 = (inst>>21&0x1);
+let m: u32 = (inst>>20&0x1);
+let rm: u32 = (inst>>16&0xf);
+let h: u32 = (inst>>11&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, sz+2, q);
 ddi.ops[1] = opregvec(rn, sz+2, q);
 ddi.ops[2] = opregvidx(rm+(m<<4), sz+2, (if sz != 0 { h } else { 2 })*h+l);
 }
 InstGroup::FMUL_ELEM_FP16 => {
-let q: u32 = (inst>>30&0x1) as u32;
-let l: u32 = (inst>>21&0x1) as u32;
-let m: u32 = (inst>>20&0x1) as u32;
-let rm: u32 = (inst>>16&0xf) as u32;
-let h: u32 = (inst>>11&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let l: u32 = (inst>>21&0x1);
+let m: u32 = (inst>>20&0x1);
+let rm: u32 = (inst>>16&0xf);
+let h: u32 = (inst>>11&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 1, q);
 ddi.ops[1] = opregvec(rn, 1, q);
 ddi.ops[2] = opregvidx(rm, 1, 4*h+2*l+m);
@@ -58910,20 +58910,20 @@ ddi.ops[2] = opregvidx(rm, 1, 4*h+2*l+m);
 InstGroup::DOT_VEC => match mnem {
   InstKind::SDOT_VEC| InstKind::USDOT_VEC| InstKind::UDOT_VEC| InstKind::SMMLA_VEC| InstKind::USMMLA_VEC| InstKind::UMMLA_VEC
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 2, q);
 ddi.ops[1] = opregvec(rn, 0, q);
 ddi.ops[2] = opregvec(rm, 0, q);
 },
   InstKind::BFDOT_VEC| InstKind::BFMMLA_VEC
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 2, q);
 ddi.ops[1] = opregvec(rn, 1, q);
 ddi.ops[2] = opregvec(rm, 1, q);
@@ -58933,26 +58933,26 @@ ddi.ops[2] = opregvec(rm, 1, q);
 InstGroup::DOT_ELEM => match mnem {
   InstKind::SUDOT_ELEM| InstKind::SDOT_ELEM| InstKind::USDOT_ELEM| InstKind::UDOT_ELEM
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let l: u32 = (inst>>21&0x1) as u32;
-let m: u32 = (inst>>20&0x1) as u32;
-let rm: u32 = (inst>>16&0xf) as u32;
-let h: u32 = (inst>>11&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let l: u32 = (inst>>21&0x1);
+let m: u32 = (inst>>20&0x1);
+let rm: u32 = (inst>>16&0xf);
+let h: u32 = (inst>>11&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 2, q);
 ddi.ops[1] = opregvec(rn, 0, q);
 ddi.ops[2] = opregvidx(rm+(m<<4), 6, h<<1|l);
 },
   InstKind::BFDOT_ELEM
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let l: u32 = (inst>>21&0x1) as u32;
-let m: u32 = (inst>>20&0x1) as u32;
-let rm: u32 = (inst>>16&0xf) as u32;
-let h: u32 = (inst>>11&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let l: u32 = (inst>>21&0x1);
+let m: u32 = (inst>>20&0x1);
+let rm: u32 = (inst>>16&0xf);
+let h: u32 = (inst>>11&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 2, q);
 ddi.ops[1] = opregvec(rn, 1, q);
 ddi.ops[2] = opregvidx(rm+(m<<4), 7, h<<1|l);
@@ -58960,54 +58960,54 @@ ddi.ops[2] = opregvidx(rm+(m<<4), 7, h<<1|l);
   _ => unreachable!()
 }
 InstGroup::FMLAL_VEC => {
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 2, 1);
 ddi.ops[1] = opregvec(rn, 1, 1);
 ddi.ops[2] = opregvec(rm, 1, 1);
 }
 InstGroup::FMLAL_ELEM => {
-let l: u32 = (inst>>21&0x1) as u32;
-let m: u32 = (inst>>20&0x1) as u32;
-let rm: u32 = (inst>>16&0xf) as u32;
-let h: u32 = (inst>>11&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let l: u32 = (inst>>21&0x1);
+let m: u32 = (inst>>20&0x1);
+let rm: u32 = (inst>>16&0xf);
+let h: u32 = (inst>>11&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 2, 1);
 ddi.ops[1] = opregvec(rn, 1, 1);
 ddi.ops[2] = opregvidx(rm, 1, (h<<3|l<<2|m<<1|rm>>3)>>1);
 }
 InstGroup::FHM_VEC => {
-let q: u32 = (inst>>30&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 2, q);
 ddi.ops[1] = opregvec(rn, if q != 0 { 1 } else { 4 }, 0);
 ddi.ops[2] = opregvec(rm, if q != 0 { 1 } else { 4 }, 0);
 }
 InstGroup::FHM_ELEM => {
-let q: u32 = (inst>>30&0x1) as u32;
-let l: u32 = (inst>>21&0x1) as u32;
-let m: u32 = (inst>>20&0x1) as u32;
-let rm: u32 = (inst>>16&0xf) as u32;
-let h: u32 = (inst>>11&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let l: u32 = (inst>>21&0x1);
+let m: u32 = (inst>>20&0x1);
+let rm: u32 = (inst>>16&0xf);
+let h: u32 = (inst>>11&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 2, q);
 ddi.ops[1] = opregvec(rn, if q != 0 { 1 } else { 4 }, 0);
-ddi.ops[2] = opregvidx(rm, 1, h<<2|l<<1|m<<0);
+ddi.ops[2] = opregvidx(rm, 1, h<<2|l<<1|m);
 }
 InstGroup::FCMLA_VEC => match mnem {
   InstKind::FCMLA_VEC
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rot: u32 = (inst>>11&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rot: u32 = (inst>>11&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
@@ -59015,12 +59015,12 @@ ddi.ops[3] = opuimm(rot*90);
 },
   InstKind::FCADD_VEC
     =>{
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rot: u32 = (inst>>11&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let rm: u32 = (inst>>16&0x1f);
+let rot: u32 = (inst>>11&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
 ddi.ops[2] = opregvec(rm, size, q);
@@ -59029,28 +59029,28 @@ ddi.ops[3] = opuimm(rot*90+90);
   _ => unreachable!()
 }
 InstGroup::FCMLA_ELEM => {
-let q: u32 = (inst>>30&0x1) as u32;
-let size: u32 = (inst>>22&0x3) as u32;
-let l: u32 = (inst>>21&0x1) as u32;
-let m: u32 = (inst>>20&0x1) as u32;
-let rm: u32 = (inst>>16&0xf) as u32;
-let rot: u32 = (inst>>13&0x3) as u32;
-let h: u32 = (inst>>11&0x1) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let size: u32 = (inst>>22&0x3);
+let l: u32 = (inst>>21&0x1);
+let m: u32 = (inst>>20&0x1);
+let rm: u32 = (inst>>16&0xf);
+let rot: u32 = (inst>>13&0x3);
+let h: u32 = (inst>>11&0x1);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, size, q);
 ddi.ops[1] = opregvec(rn, size, q);
-ddi.ops[2] = opregvidx(rm|m<<4, size, (h<<2|l<<1|m<<0)>>size);
+ddi.ops[2] = opregvidx(rm|m<<4, size, (h<<2|l<<1|m)>>size);
 ddi.ops[3] = opuimm(rot*90);
 }
 InstGroup::SIMD_IMM => {
-let q: u32 = (inst>>30&0x1) as u32;
-let op: u32 = (inst>>29&0x1) as u32;
-let immh: u32 = (inst>>16&0x7) as u32;
-let cmode: u32 = (inst>>12&0xf) as u32;
-let o2: u32 = (inst>>11&0x1) as u32;
-let imml: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let q: u32 = (inst>>30&0x1);
+let op: u32 = (inst>>29&0x1);
+let immh: u32 = (inst>>16&0x7);
+let cmode: u32 = (inst>>12&0xf);
+let o2: u32 = (inst>>11&0x1);
+let imml: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = 
 if op !=0 && cmode >= 14 && q == 0 {
     opregfp(rd, 3)
@@ -59091,14 +59091,14 @@ if cmode < 14 {
 InstGroup::AUT => match mnem {
   InstKind::PACIA| InstKind::PACIB| InstKind::PACDA| InstKind::PACDB| InstKind::AUTIA| InstKind::AUTIB| InstKind::AUTDA| InstKind::AUTDB
     =>{
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, 1);
 ddi.ops[1] = opreggpsp(rn, 1);
 },
   InstKind::PACIZA| InstKind::PACIZB| InstKind::PACDZA| InstKind::PACDZB| InstKind::AUTIZA| InstKind::AUTIZB| InstKind::AUTDZA| InstKind::AUTDZB
     =>{
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, 1);
 },
   _ => unreachable!()
@@ -59106,50 +59106,50 @@ ddi.ops[0] = opreggp(rd, 1);
 InstGroup::LDRAUT => match mnem {
   InstKind::LDRAA| InstKind::LDRAB
     =>{
-let s: i32 = sext((inst>>22&0x1) as i32 as i32, 1);
-let imm9: u32 = (inst>>12&0x1ff) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let s: i32 = sext(((inst>>22&0x1) as i32), 1);
+let imm9: u32 = (inst>>12&0x1ff);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, 1);
 ddi.ops[1] = opmemsoff(rn, s*0x1000+imm9 as i32*8);
 },
   InstKind::LDRAA_PRE| InstKind::LDRAB_PRE
     =>{
-let s: i32 = sext((inst>>22&0x1) as i32 as i32, 1);
-let imm9: u32 = (inst>>12&0x1ff) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let s: i32 = sext(((inst>>22&0x1) as i32), 1);
+let imm9: u32 = (inst>>12&0x1ff);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, 1);
 ddi.ops[1] = opmemsoffpre(rn, s*0x1000+imm9 as i32*8);
 },
   _ => unreachable!()
 }
 InstGroup::XPAC => {
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, 1);
 }
 InstGroup::PACGA => {
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, 1);
 ddi.ops[1] = opreggp(rn, 1);
 ddi.ops[2] = opreggpsp(rm, 1);
 }
 InstGroup::CAS => {
-let size: u32 = (inst>>30&0x3) as u32;
-let rs: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let rs: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rs, (size==3) as u32);
 ddi.ops[1] = opreggp(rt, (size==3) as u32);
 ddi.ops[2] = opmemsoff(rn, 0);
 }
 InstGroup::CASP => {
-let size: u32 = (inst>>30&0x1) as u32;
-let rs: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x1);
+let rs: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rs, (size==3) as u32);
 ddi.ops[1] = opreggp(rs+1, (size==3) as u32);
 ddi.ops[2] = opreggp(rt, (size==3) as u32);
@@ -59157,53 +59157,53 @@ ddi.ops[3] = opreggp(rt+1, (size==3) as u32);
 ddi.ops[4] = opmemsoff(rn, 0);
 }
 InstGroup::SWP => {
-let size: u32 = (inst>>30&0x3) as u32;
-let rs: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let rs: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rs, (size==3) as u32);
 ddi.ops[1] = opreggp(rt, (size==3) as u32);
 ddi.ops[2] = opmemsoff(rn, 0);
 }
 InstGroup::LDATOMIC => {
-let size: u32 = (inst>>30&0x3) as u32;
-let rs: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let rs: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rs, (size==3) as u32);
 ddi.ops[1] = opreggp(rt, (size==3) as u32);
 ddi.ops[2] = opmemsoff(rn, 0);
 }
 InstGroup::RCPCU => {
-let size: u32 = (inst>>30&0x3) as u32;
-let opc: u32 = (inst>>22&0x3) as u32;
-let imm9: i32 = sext((inst>>12&0x1ff) as i32 as i32, 9);
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let opc: u32 = (inst>>22&0x3);
+let imm9: i32 = sext(((inst>>12&0x1ff) as i32), 9);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, (size>2||opc==2) as u32);
 ddi.ops[1] = opmemsoff(rn, imm9);
 }
 InstGroup::RCPC => {
-let size: u32 = (inst>>30&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let size: u32 = (inst>>30&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, (size>=3) as u32);
 ddi.ops[1] = opmemsoff(rn, 0);
 }
 InstGroup::CRC32 => {
-let sf: u32 = (inst>>31&0x1) as u32;
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let sf: u32 = (inst>>31&0x1);
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, 0);
 ddi.ops[1] = opreggp(rn, 0);
 ddi.ops[2] = opreggp(rm, sf);
 }
 InstGroup::ADDSUBG => {
-let uimm6: u32 = (inst>>16&0x3f) as u32;
-let uimm4: u32 = (inst>>10&0xf) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let uimm6: u32 = (inst>>16&0x3f);
+let uimm4: u32 = (inst>>10&0xf);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggpsp(rd, 1);
 ddi.ops[1] = opreggpsp(rn, 1);
 ddi.ops[2] = opuimm(uimm6<<4);
@@ -59212,18 +59212,18 @@ ddi.ops[3] = opimmsmall(uimm4);
 InstGroup::TAGINSERT => match mnem {
   InstKind::IRG
     =>{
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggpsp(rd, 1);
 ddi.ops[1] = opreggpsp(rn, 1);
 ddi.ops[2] = opreggp(rm, 1);
 },
   InstKind::GMI
     =>{
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, 1);
 ddi.ops[1] = opreggpsp(rn, 1);
 ddi.ops[2] = opreggp(rm, 1);
@@ -59231,9 +59231,9 @@ ddi.ops[2] = opreggp(rm, 1);
   _ => unreachable!()
 }
 InstGroup::SUBP => {
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, 1);
 ddi.ops[1] = opreggpsp(rn, 1);
 ddi.ops[2] = opreggpsp(rm, 1);
@@ -59241,137 +59241,137 @@ ddi.ops[2] = opreggpsp(rm, 1);
 InstGroup::STG => match mnem {
   InstKind::STG_POST| InstKind::STZG_POST| InstKind::ST2G_POST| InstKind::STZ2G_POST
     =>{
-let imm9: i32 = sext((inst>>12&0x1ff) as i32 as i32, 9);
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let imm9: i32 = sext(((inst>>12&0x1ff) as i32), 9);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggpsp(rt, 1);
 ddi.ops[1] = opmemsoffpost(rn, imm9*16);
 },
   InstKind::STG| InstKind::STZG| InstKind::ST2G| InstKind::STZ2G
     =>{
-let imm9: i32 = sext((inst>>12&0x1ff) as i32 as i32, 9);
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let imm9: i32 = sext(((inst>>12&0x1ff) as i32), 9);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggpsp(rt, 1);
 ddi.ops[1] = opmemsoff(rn, imm9*16);
 },
   InstKind::STG_PRE| InstKind::STZG_PRE| InstKind::ST2G_PRE| InstKind::STZ2G_PRE
     =>{
-let imm9: i32 = sext((inst>>12&0x1ff) as i32 as i32, 9);
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let imm9: i32 = sext(((inst>>12&0x1ff) as i32), 9);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggpsp(rt, 1);
 ddi.ops[1] = opmemsoffpre(rn, imm9*16);
 },
   _ => unreachable!()
 }
 InstGroup::LDG => {
-let imm9: i32 = sext((inst>>12&0x1ff) as i32 as i32, 9);
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let imm9: i32 = sext(((inst>>12&0x1ff) as i32), 9);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, 1);
 ddi.ops[1] = opmemsoff(rn, imm9*16);
 }
 InstGroup::MEMGM => {
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, 1);
 ddi.ops[1] = opmemsoff(rn, 0);
 }
 InstGroup::MSR_FLAGM => {
 }
 InstGroup::RMIF => {
-let imm6: u32 = (inst>>15&0x3f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let mask: u32 = (inst>>0&0xf) as u32;
+let imm6: u32 = (inst>>15&0x3f);
+let rn: u32 = (inst>>5&0x1f);
+let mask: u32 = (inst&0xf);
 ddi.ops[0] = opreggp(rn, 1);
 ddi.ops[1] = opimmsmall(imm6);
 ddi.ops[2] = opimmsmall(mask);
 }
 InstGroup::SETF => {
-let rn: u32 = (inst>>5&0x1f) as u32;
+let rn: u32 = (inst>>5&0x1f);
 ddi.ops[0] = opreggp(rn, 0);
 }
 InstGroup::SB => {
 }
 InstGroup::TCANCEL => {
-let imm16: u32 = (inst>>5&0xffff) as u32;
+let imm16: u32 = (inst>>5&0xffff);
 ddi.ops[0] = opuimm(imm16);
 }
 InstGroup::TCOMMIT => {
 }
 InstGroup::TSTART => {
-let rt: u32 = (inst>>0&0x1f) as u32;
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, 1);
 }
 InstGroup::TTEST => {
-let rt: u32 = (inst>>0&0x1f) as u32;
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, 1);
 }
 InstGroup::WFXT => {
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rd, 1);
 }
 InstGroup::LS64 => {
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rt, 1);
 ddi.ops[1] = opmemsoff(rn, 0);
 }
 InstGroup::LS64V => {
-let rs: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rt: u32 = (inst>>0&0x1f) as u32;
+let rs: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rt: u32 = (inst&0x1f);
 ddi.ops[0] = opreggp(rs, 1);
 ddi.ops[1] = opreggp(rt, 1);
 ddi.ops[2] = opmemsoff(rn, 0);
 }
 InstGroup::CPY => {
-let rs: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rs: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opmeminc(rd);
 ddi.ops[1] = opmeminc(rs);
 ddi.ops[2] = opreggpinc(rn);
 }
 InstGroup::SET => {
-let rs: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rs: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opmeminc(rd);
 ddi.ops[1] = opreggpinc(rn);
 ddi.ops[2] = opreggp(rs, 1);
 }
 InstGroup::AES => {
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 0, 1);
 ddi.ops[1] = opregvec(rn, 0, 1);
 }
 InstGroup::SHA2_3REG => match mnem {
   InstKind::SHA1C| InstKind::SHA1P| InstKind::SHA1M
     =>{
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, 4);
 ddi.ops[1] = opregfp(rn, 2);
 ddi.ops[2] = opregvec(rm, 2, 1);
 },
   InstKind::SHA1SU0| InstKind::SHA256SU1
     =>{
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 2, 1);
 ddi.ops[1] = opregvec(rn, 2, 1);
 ddi.ops[2] = opregvec(rm, 2, 1);
 },
   InstKind::SHA256H| InstKind::SHA256H2
     =>{
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, 4);
 ddi.ops[1] = opregfp(rn, 4);
 ddi.ops[2] = opregvec(rm, 2, 1);
@@ -59381,25 +59381,25 @@ ddi.ops[2] = opregvec(rm, 2, 1);
 InstGroup::SHA2_2REG => match mnem {
   InstKind::SHA1H
     =>{
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, 2);
 ddi.ops[1] = opregfp(rn, 2);
 },
   InstKind::SHA1SU1| InstKind::SHA256SU0
     =>{
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 2, 1);
 ddi.ops[1] = opregvec(rn, 2, 1);
 },
   _ => unreachable!()
 }
 InstGroup::SM3TT => {
-let rm: u32 = (inst>>16&0x1f) as u32;
-let imm2: u32 = (inst>>12&0x3) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rm: u32 = (inst>>16&0x1f);
+let imm2: u32 = (inst>>12&0x3);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 2, 1);
 ddi.ops[1] = opregvec(rn, 2, 1);
 ddi.ops[2] = opregvidx(rm, 2, imm2);
@@ -59407,10 +59407,10 @@ ddi.ops[2] = opregvidx(rm, 2, imm2);
 InstGroup::SHA3_4REG => match mnem {
   InstKind::EOR3| InstKind::BCAX
     =>{
-let rm: u32 = (inst>>16&0x1f) as u32;
-let ra: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rm: u32 = (inst>>16&0x1f);
+let ra: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 0, 1);
 ddi.ops[1] = opregvec(rn, 0, 1);
 ddi.ops[2] = opregvec(rm, 0, 1);
@@ -59418,10 +59418,10 @@ ddi.ops[3] = opregvec(ra, 0, 1);
 },
   InstKind::SM3SS1
     =>{
-let rm: u32 = (inst>>16&0x1f) as u32;
-let ra: u32 = (inst>>10&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rm: u32 = (inst>>16&0x1f);
+let ra: u32 = (inst>>10&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 2, 1);
 ddi.ops[1] = opregvec(rn, 2, 1);
 ddi.ops[2] = opregvec(rm, 2, 1);
@@ -59432,15 +59432,15 @@ ddi.ops[3] = opregvec(ra, 2, 1);
 InstGroup::SHA512_2REG => match mnem {
   InstKind::SHA512SU0
     =>{
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 3, 1);
 ddi.ops[1] = opregvec(rn, 3, 1);
 },
   InstKind::SM4E
     =>{
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 2, 1);
 ddi.ops[1] = opregvec(rn, 2, 1);
 },
@@ -59449,18 +59449,18 @@ ddi.ops[1] = opregvec(rn, 2, 1);
 InstGroup::SHA512_3REG => match mnem {
   InstKind::SHA512H| InstKind::SHA512H2
     =>{
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregfp(rd, 4);
 ddi.ops[1] = opregfp(rn, 4);
 ddi.ops[2] = opregvec(rm, 3, 1);
 },
   InstKind::SHA512SU1| InstKind::RAX1
     =>{
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 3, 1);
 ddi.ops[1] = opregvec(rn, 3, 1);
 ddi.ops[2] = opregvec(rm, 3, 1);
@@ -59468,18 +59468,18 @@ ddi.ops[2] = opregvec(rm, 3, 1);
   _ => unreachable!()
 }
 InstGroup::SM3_3REG => {
-let rm: u32 = (inst>>16&0x1f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rm: u32 = (inst>>16&0x1f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 2, 1);
 ddi.ops[1] = opregvec(rn, 2, 1);
 ddi.ops[2] = opregvec(rm, 2, 1);
 }
 InstGroup::XAR => {
-let rm: u32 = (inst>>16&0x1f) as u32;
-let imm6: u32 = (inst>>10&0x3f) as u32;
-let rn: u32 = (inst>>5&0x1f) as u32;
-let rd: u32 = (inst>>0&0x1f) as u32;
+let rm: u32 = (inst>>16&0x1f);
+let imm6: u32 = (inst>>10&0x3f);
+let rn: u32 = (inst>>5&0x1f);
+let rd: u32 = (inst&0x1f);
 ddi.ops[0] = opregvec(rd, 3, 1);
 ddi.ops[1] = opregvec(rn, 3, 1);
 ddi.ops[2] = opregvec(rm, 3, 1);

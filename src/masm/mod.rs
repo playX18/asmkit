@@ -164,6 +164,12 @@ pub struct JumpList {
     pub labels: SmallVec<[Label; 4]>,
 }
 
+impl Default for JumpList {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl JumpList {
     pub fn new() -> Self {
         Self {

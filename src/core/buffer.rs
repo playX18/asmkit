@@ -3,16 +3,16 @@ use alloc::{borrow::Cow, collections::BinaryHeap, vec::Vec};
 use smallvec::SmallVec;
 
 use crate::{
-    riscv::{self},
     AsmError,
+    riscv::{self},
 };
 
 use super::{
     jit_allocator::{JitAllocator, Span},
     operand::{Label, Sym},
     patch::{
-        fill_with_nops, minimum_patch_alignment, PatchBlock, PatchBlockId, PatchCatalog, PatchSite,
-        PatchSiteId,
+        PatchBlock, PatchBlockId, PatchCatalog, PatchSite, PatchSiteId, fill_with_nops,
+        minimum_patch_alignment,
     },
     target::Environment,
 };
@@ -470,7 +470,7 @@ impl CodeBuffer {
             label,
             offset,
         } = fixup;
-        let start = offset as u32;
+        let start = offset;
         let end = offset as usize + kind.patch_size();
 
         let label_offset = self.label_offsets[label.id() as usize];
@@ -484,7 +484,7 @@ impl CodeBuffer {
             if veneer_required {
                 self.emit_veneer(label, offset, kind);
             } else {
-                let slice = &mut self.data[start as usize..end as usize];
+                let slice = &mut self.data[start as usize..end];
 
                 kind.patch(slice, start, label_offset);
             }
@@ -517,7 +517,7 @@ impl CodeBuffer {
         let slice = &mut self.data[start..end];
 
         kind.patch(slice, offset, veneer_offset);
-        let veneer_slice = self.get_appended_space(kind.veneer_size() as usize);
+        let veneer_slice = self.get_appended_space(kind.veneer_size());
         let (veneer_fixup_off, veneer_label_use) =
             kind.generate_veneer(veneer_slice, veneer_offset);
 
@@ -725,11 +725,7 @@ impl ConstantData {
     }
 
     pub fn alignment(&self) -> usize {
-        if self.as_slice().len() <= 8 {
-            8
-        } else {
-            16
-        }
+        if self.as_slice().len() <= 8 { 8 } else { 16 }
     }
 }
 
@@ -1010,10 +1006,7 @@ impl LabelUse {
     }
 
     pub const fn supports_veneer(&self) -> bool {
-        match self {
-            Self::RVB12 | Self::RVJal20 | Self::RVCJump => true,
-            _ => false,
-        }
+        matches!(self, Self::RVB12 | Self::RVJal20 | Self::RVCJump)
     }
 
     pub const fn veneer_size(&self) -> usize {
@@ -1100,7 +1093,7 @@ impl LabelUse {
 
             Self::RVJal20 => {
                 let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
-                let offset = pc_rel as u32;
+                let offset = pc_rel;
                 let v = ((offset >> 12 & 0b1111_1111) << 12)
                     | ((offset >> 11 & 0b1) << 20)
                     | ((offset >> 1 & 0b11_1111_1111) << 21)
@@ -1126,7 +1119,7 @@ impl LabelUse {
 
             Self::RVB12 => {
                 let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
-                let offset = pc_rel as u32;
+                let offset = pc_rel;
                 let v = ((offset >> 11 & 0b1) << 7)
                     | ((offset >> 1 & 0b1111) << 8)
                     | ((offset >> 5 & 0b11_1111) << 25)
@@ -1284,7 +1277,13 @@ pub(crate) fn generate_imm(value: u64) -> (u32, u32) {
 /// # NOTE
 ///
 /// Very simple and incomplete. At the moment only Abs4, Abs8, X86 and RISC-V GOT relocations are supported.
-pub fn perform_relocations(
+///
+/// # Safety
+///
+/// Code and code_rx must be valid pointers to the beginning of the code section. They are used to compute the addresses of the instructions to patch.
+///
+/// get_address, get_got_entry and get_plt_entry must return valid pointers to the target addresses for the given relocation targets.
+pub unsafe fn perform_relocations(
     code: *mut u8,
     code_rx: *const u8,
     relocs: &[AsmReloc],
@@ -1352,7 +1351,7 @@ pub fn perform_relocations(
                 let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
                 let pc_rel = i32::try_from((what as isize) - (atrx as isize)).unwrap();
                 unsafe {
-                    let buffer = core::slice::from_raw_parts_mut(at as *mut u8, 4);
+                    let buffer = core::slice::from_raw_parts_mut(at, 4);
                     let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
                     let hi20 = (pc_rel as u32).wrapping_add(0x800) >> 12;
                     let insn = (insn & 0xfff) | (hi20 << 12);
@@ -1366,7 +1365,7 @@ pub fn perform_relocations(
                 let pc_rel = i32::try_from((what as isize) - (atrx as isize)).unwrap();
 
                 unsafe {
-                    let buffer = core::slice::from_raw_parts_mut(at as *mut u8, 4);
+                    let buffer = core::slice::from_raw_parts_mut(at, 4);
                     let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
                     let lo12 = (pc_rel + 4) as u32 & 0xfff;
                     let insn = (insn & 0xFFFFF) | (lo12 << 20);

@@ -959,6 +959,12 @@ pub enum Broadcast {
 }
 type Signature = OperandSignature;
 
+impl Default for Mem {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Mem {
     pub const SIGNATURE_MEM_ADDR_TYPE_SHIFT: u32 = 14;
     pub const SIGNATURE_MEM_ADDR_TYPE_MASK: u32 = 0x03 << Self::SIGNATURE_MEM_ADDR_TYPE_SHIFT;
@@ -1154,9 +1160,8 @@ impl Mem {
 
     pub fn clone_broadcasted(&self, bcst: Broadcast) -> Self {
         Self(BaseMem::from_base_and_index_disp(
-            OperandSignature::new(
-                self.0.signature.bits() & !Self::SIGNATURE_MEM_BROADCAST_MASK as u32,
-            ) | OperandSignature::new((bcst as u32) << Self::SIGNATURE_MEM_BROADCAST_SHIFT),
+            OperandSignature::new(self.0.signature.bits() & !Self::SIGNATURE_MEM_BROADCAST_MASK)
+                | OperandSignature::new((bcst as u32) << Self::SIGNATURE_MEM_BROADCAST_SHIFT),
             self.0.base_id(),
             self.0.data[0],
             self.0.data[1] as _,

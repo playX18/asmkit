@@ -697,6 +697,12 @@ define_operand_cast!(Mem, BaseMem);
 
 type Signature = OperandSignature;
 
+impl Default for Mem {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Mem {
     pub const SIGNATURE_MEM_SHIFT_VALUE_SHIFT: u32 = 14;
     pub const SIGNATURE_MEM_SHIFT_VALUE_MASK: u32 = 0x1F << Self::SIGNATURE_MEM_SHIFT_VALUE_SHIFT;

@@ -243,7 +243,7 @@ impl OperandSignature {
 }
 
 impl OperandSignature {
-    pub fn reset(&mut self) -> () {
+    pub fn reset(&mut self) {
         self.bits = 0;
     }
 
@@ -251,7 +251,7 @@ impl OperandSignature {
         self.bits
     }
 
-    pub fn set_bits(&mut self, bits: u32) -> () {
+    pub fn set_bits(&mut self, bits: u32) {
         self.bits = bits;
     }
 
@@ -315,7 +315,7 @@ impl OperandSignature {
         }
     }
 
-    pub fn set_field<const K_FIELD_MASK: u32>(&mut self, value: u32) -> () {
+    pub fn set_field<const K_FIELD_MASK: u32>(&mut self, value: u32) {
         self.bits = (self.bits & !K_FIELD_MASK) | (value << K_FIELD_MASK.trailing_zeros());
     }
 
@@ -416,6 +416,12 @@ pub const fn index_to_virt_id(id: u32) -> u32 {
 
 pub const fn virt_id_to_index(id: u32) -> u32 {
     id - VIRT_ID_MIN
+}
+
+impl Default for Operand {
+    fn default() -> Self {
+        Self::new()
+    }
 }
 
 impl Operand {
@@ -593,7 +599,7 @@ impl core::fmt::Debug for Label {
 
 impl PartialOrd for Label {
     fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        self.id().partial_cmp(&other.id())
+        Some(self.cmp(other))
     }
 }
 
@@ -604,6 +610,12 @@ impl Ord for Label {
 }
 
 define_operand_cast!(Label, Operand);
+
+impl Default for Label {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl Label {
     pub const fn new() -> Self {
@@ -642,7 +654,7 @@ impl core::fmt::Debug for Sym {
 
 impl PartialOrd for Sym {
     fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        self.id().partial_cmp(&other.id())
+        Some(self.cmp(other))
     }
 }
 
@@ -653,6 +665,12 @@ impl Ord for Sym {
 }
 
 define_operand_cast!(Sym, Operand);
+
+impl Default for Sym {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl Sym {
     pub const fn new() -> Self {
@@ -689,6 +707,12 @@ pub const REG_BASE_SIGNATURE_MASK: u32 = OperandSignature::OP_TYPE_MASK
     | OperandSignature::REG_TYPE_MASK
     | OperandSignature::REG_GROUP_MASK
     | OperandSignature::SIZE_MASK;
+
+impl Default for BaseReg {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl BaseReg {
     pub const SIGNATURE: u32 = REG_BASE_SIGNATURE_MASK;
@@ -830,6 +854,12 @@ pub trait RegTraits {
 #[macro_export]
 macro_rules! define_abstract_reg {
     ($reg: ty, $base: ty) => {
+        impl Default for $reg {
+            fn default() -> Self {
+                Self::new()
+            }
+        }
+
         impl $reg {
             pub const fn new() -> Self {
                 Self(<$base>::from_signature_and_id(
@@ -919,6 +949,12 @@ impl Operand {
 pub struct BaseMem(pub Operand);
 
 define_operand_cast!(BaseMem, Operand);
+
+impl Default for BaseMem {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl BaseMem {
     pub fn from_base_disp(base_reg: impl AsRef<BaseReg>, offset: i32) -> Self {
@@ -1131,6 +1167,12 @@ pub struct Imm(pub Operand);
 
 define_operand_cast!(Imm, Operand);
 
+impl Default for Imm {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Imm {
     pub const fn new() -> Self {
         Self(Operand {
@@ -1286,10 +1328,6 @@ impl Imm {
         self.data[DATA_IMM_VALUE_LO] = value as u32;
         self.data[DATA_IMM_VALUE_HI] = (value >> 32) as u32;
         self.set_type(ImmType::Double);
-    }
-
-    pub fn clone(&self) -> Self {
-        *self
     }
 
     pub fn sign_extend_8_bits(&mut self) {

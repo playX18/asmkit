@@ -11,7 +11,7 @@
 //! - **Code Relocations**: Provides a CodeBuffer interface to handle relocations, allowing the insertion of symbols into the API seamlessly.
 //! - **Auto-Generated Assemblers**: The goal is to support a wide range of platforms and provide auto-generated assemblers for as many architectures as possible.
 //! - **Portability**: Built to run on any platform, with the architecture-specific parts of the library being independent of the platform on which asmkit is built.
-//! #![no_std]
+//!
 //!
 //!
 //! ### Usage
@@ -26,7 +26,7 @@
 //! use asmkit::core::jit_allocator::JitAllocator;
 //! use asmkit::x86::*;
 //!
-//! fn main() {
+//!
 //!     let mut buf = CodeBuffer::new();
 //!     let mut asm = Assembler::new(&mut buf);
 //!
@@ -57,7 +57,7 @@
 //!
 //!         println!("{:?}", res);
 //!     }
-//! }
+//!
 //!```
 
 #![cfg_attr(not(test), no_std)]

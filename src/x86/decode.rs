@@ -1,3 +1,4 @@
+#![allow(clippy::never_loop)]
 use super::decode_tab::*;
 
 pub struct Decoder<'a> {
@@ -209,11 +210,11 @@ impl InstDesc {
     pub(crate) const INVALID: Self = Self::new(Opcode::_3DNOW, 0, 0, 0);
 
     pub fn has_modrm(&self) -> bool {
-        (self.operand_indices & (3 << 0)) != 0
+        (self.operand_indices & 3) != 0
     }
 
     pub fn modrm_idx(&self) -> u8 {
-        (((self.operand_indices >> 0) & 3) ^ 3) as u8
+        ((self.operand_indices & 3) ^ 3) as u8
     }
 
     pub fn has_modreg(&self) -> bool {
@@ -265,7 +266,7 @@ impl InstDesc {
     }
 
     pub fn modrm_size(&self) -> u8 {
-        ((self.operand_sizes >> 0) & 3) as u8
+        (self.operand_sizes & 3) as u8
     }
 
     pub fn modreg_size(&self) -> u8 {
@@ -317,7 +318,7 @@ impl InstDesc {
     }
 
     pub fn regty_modrm(&self) -> u8 {
-        ((self.reg_types >> 0) & 7) as u8
+        (self.reg_types & 7) as u8
     }
 
     pub fn regty_modreg(&self) -> u8 {
@@ -572,7 +573,7 @@ impl<'a> Decoder<'a> {
 
         inst.segment = Reg::None as _;
         let start = self.cursor;
-        #[allow(dead_code)]
+        #[allow(dead_code, clippy::eq_op)]
         const PF_SEG1: usize = 0xfff8 - 0xfff8;
         const PF_SEG2: usize = 0xfff9 - 0xfff8;
         const PF_66: usize = 0xfffa - 0xfff8;
@@ -901,8 +902,8 @@ impl<'a> Decoder<'a> {
                 };
             }
         } else {
-            op_size = 5 + vexl as u8;
-            op_size_alt = op_size - (desc.opsize() as u8 & 3);
+            op_size = 5 + vexl;
+            op_size_alt = op_size - (desc.opsize() & 3);
         }
 
         let operand_sizes = [desc.size_fix1(), desc.size_fix2() + 1, op_size, op_size_alt];
@@ -921,9 +922,9 @@ impl<'a> Decoder<'a> {
                     RegType::Dr as u8
                 };
 
-                if matches!(inst.typ, Opcode::MOV_CR) && (!0x011d >> op_modreg.reg) & 1 != 0 {
-                    return self.invalid();
-                } else if matches!(inst.typ, Opcode::MOV_DR) && prefix_rex & PREFIX_REXR != 0 {
+                if matches!(inst.typ, Opcode::MOV_CR) && (!0x011d >> op_modreg.reg) & 1 != 0
+                    || matches!(inst.typ, Opcode::MOV_DR) && prefix_rex & PREFIX_REXR != 0
+                {
                     return self.invalid();
                 }
 
@@ -1115,7 +1116,7 @@ impl<'a> Decoder<'a> {
                             }
 
                             self.read_u8();
-                            inst.disp = ((load_le_1(dispbase) as i8 as i64) << dispscale) as i64;
+                            inst.disp = (load_le_1(dispbase) as i8 as i64) << dispscale;
                         } else if op_byte & 0x80 != 0 || (op_byte < 0x40 && base == 5) {
                             if self.cursor + 4 > self.buf.len() {
                                 return self.partial();
@@ -1256,11 +1257,7 @@ impl<'a> Decoder<'a> {
                     } else if matches!(inst.typ, Opcode::MOVABS) {
                         1 << op_size >> 1
                     } else {
-                        if op_size == 2 {
-                            2
-                        } else {
-                            4
-                        }
+                        if op_size == 2 { 2 } else { 4 }
                     };
 
                     if self.cursor + imm_size > self.buf.len() {
@@ -1361,7 +1358,7 @@ impl<'a> Decoder<'a> {
         } else {
             inst.operandsz = 0;
         }
-        inst.size = (self.cursor - start as usize) as u8;
+        inst.size = (self.cursor - start) as u8;
     }
 
     pub fn decode(&mut self) -> Instruction {
@@ -1401,6 +1398,6 @@ impl<'a> Decoder<'a> {
     fn read_u8(&mut self) -> u8 {
         let ret = self.buf[self.cursor];
         self.cursor += 1;
-        return ret;
+        ret
     }
 }

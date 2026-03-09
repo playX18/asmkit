@@ -1,11 +1,11 @@
 use super::opcodes::Opcode;
+use crate::AsmError;
 use crate::core::buffer::{CodeBuffer, CodeOffset, ConstantData, LabelUse, Reloc, RelocTarget};
 use crate::core::operand::*;
 use crate::core::operand::{Imm, Sym};
 use crate::core::patch::PatchSiteId;
 use crate::riscv::opcodes::Encoding;
 use crate::riscv::{EmitterExplicit, RA};
-use crate::AsmError;
 use crate::{core::emitter::Emitter, riscv::opcodes::Inst};
 pub struct Assembler<'a> {
     pub buffer: &'a mut CodeBuffer,
@@ -64,7 +64,6 @@ impl<'a> Assembler<'a> {
             self.buffer
                 .use_label_at_offset(off, target.as_::<Label>(), LabelUse::RVPCRelLo12I);
             self.addi(rd, rd, imm(0));
-            return;
         } else if target.is_sym() {
             if self.buffer.env().pic() {
                 // Load a PC-relative address into a register.
@@ -126,13 +125,12 @@ impl<'a> Assembler<'a> {
             self.buffer
                 .use_label_at_offset(off, target.as_::<Label>(), LabelUse::RVPCRelHi20);
             self.auipc(RA, imm(0));
-            assert!(!self.last_error.is_some());
+            assert!(self.last_error.is_none());
             let off = self.buffer.cur_offset();
             self.buffer
                 .use_label_at_offset(off, target.as_::<Label>(), LabelUse::RVPCRelLo12I);
             self.jalr(RA, RA, imm(0));
-            assert!(!self.last_error.is_some());
-            return;
+            assert!(self.last_error.is_none());
         } else if target.is_sym() {
             let sym = target.as_::<Sym>();
 
@@ -336,7 +334,7 @@ impl<'a> Emitter for Assembler<'a> {
                     return;
                 };
 
-                if imm == 0 || imm > 1024 || imm < -1024 {
+                if imm == 0 || !(-1024..=1024).contains(&imm) {
                     self.last_error = Some(AsmError::InvalidOperand);
                     return;
                 }
@@ -381,7 +379,7 @@ impl<'a> Emitter for Assembler<'a> {
                     self.last_error = Some(AsmError::InvalidOperand);
                     return;
                 };
-                if imm < 0 || imm > 256 {
+                if !(0..=256).contains(&imm) {
                     self.last_error = Some(AsmError::InvalidOperand);
                     return;
                 }
@@ -397,7 +395,7 @@ impl<'a> Emitter for Assembler<'a> {
                     self.last_error = Some(AsmError::InvalidOperand);
                     return;
                 };
-                if imm < 0 || imm > 511 {
+                if !(0..=511).contains(&imm) {
                     self.last_error = Some(AsmError::InvalidOperand);
                     return;
                 }

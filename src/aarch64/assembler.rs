@@ -1,8 +1,9 @@
-use crate::aarch64::opcodes::{Encoding, Opcode, INST_INFO};
+#![allow(clippy::eq_op, clippy::erasing_op)]
+use crate::AsmError;
+use crate::aarch64::opcodes::{Encoding, INST_INFO, Opcode};
 use crate::core::buffer::{LabelUse, Reloc, RelocTarget};
 use crate::core::operand::*;
 use crate::core::{buffer::CodeBuffer, emitter::Emitter, patch::PatchSiteId};
-use crate::AsmError;
 
 use super::emitter::A64EmitterExplicit;
 pub struct Assembler<'a> {
@@ -86,7 +87,7 @@ fn imm_fmov32(value: f32) -> u32 {
     if (vi & 0x7ffff) == 0 && ((vi >> 25 & 0x3f) - 0x1f) <= 1 {
         return (vi >> 19 & 0x7f) | (vi >> 24 & 0x80);
     }
-    return 0xffffffff;
+    0xffffffff
 }
 
 fn imm_fmov64(value: f64) -> u64 {
@@ -94,7 +95,7 @@ fn imm_fmov64(value: f64) -> u64 {
     if (vi & 0xffffffffffff) != 0 && ((vi >> 54 & 0x1ff) - 0xff) <= 1 {
         return (vi >> 48 & 0x7f) | (vi >> 56 & 0x80);
     }
-    return 0xffffffff;
+    0xffffffff
 }
 
 const fn movi_encode(imm8: u32, op: u32, cmode: u32) -> u32 {
@@ -103,13 +104,11 @@ const fn movi_encode(imm8: u32, op: u32, cmode: u32) -> u32 {
 }
 
 fn imm_simdmovi(value: u64) -> u32 {
-    let imm8 = || {
-        return movi_encode((value & 0xff) as u32, 0, 0xe);
-    };
+    let imm8 = || movi_encode((value & 0xff) as u32, 0, 0xe);
     let mask64 = || {
         let mut imm8 = 0u32;
         for i in 0..8 {
-            let byte = value >> 8 * i & 0xff;
+            let byte = value >> (8 * i) & 0xff;
             if byte == 0xff {
                 imm8 |= 1 << i;
             } else if byte != 0 {
@@ -117,7 +116,7 @@ fn imm_simdmovi(value: u64) -> u32 {
             }
         }
 
-        return movi_encode(imm8, 1, 0xe);
+        movi_encode(imm8, 1, 0xe)
     };
 
     if value == 0 || !value == 0 {
@@ -135,17 +134,17 @@ fn imm_simdmovi(value: u64) -> u32 {
         let ictz = (!value32).trailing_zeros() >> 3;
 
         if clz + ctz >= 3 {
-            return movi_encode((value >> ctz * 8) as u32, 0, ctz * 2);
+            return movi_encode((value >> (ctz * 8)) as u32, 0, ctz * 2);
         }
         if iclz + ictz >= 3 {
-            return movi_encode((!value >> ictz * 8) as u32, 1, ictz * 2);
+            return movi_encode((!value >> (ictz * 8)) as u32, 1, ictz * 2);
         }
         if clz + ictz >= 3 {
-            return movi_encode((value >> ictz * 8) as u32, 0, 0xc + ictz - 1);
+            return movi_encode((value >> (ictz * 8)) as u32, 0, 0xc + ictz - 1);
         }
 
         if iclz + ctz >= 3 {
-            return movi_encode((!value >> ctz * 8) as u32, 1, 0xc + ctz - 1);
+            return movi_encode((!value >> (ctz * 8)) as u32, 1, 0xc + ctz - 1);
         }
 
         return mask64();
@@ -268,16 +267,14 @@ impl<'a> Emitter for Assembler<'a> {
                     let cond = ops[0].as_::<Imm>().value() as u32;
 
                     self.use_label(ops[1], LabelUse::A64Branch19);
-                    self.buffer
-                        .put4(info.val | (0 & 0x7ffff) << 5 | ((cond & 0xf) << 0));
+                    self.buffer.put4(info.val | (cond & 0xf));
                     return;
                 } else if isign3 == enc_ops2!(Imm, Imm) {
                     let cond = ops[0].as_::<Imm>().value() as u32;
                     let imm = ops[1].as_::<Imm>().value() as u32;
                     self.buffer
-                        .put4(info.val | ((imm & 0x7ffff) << 5) | ((cond & 0xf) << 0));
+                        .put4(info.val | ((imm & 0x7ffff) << 5) | (cond & 0xf));
                     return;
-                } else {
                 }
             }
 
@@ -294,7 +291,7 @@ impl<'a> Emitter for Assembler<'a> {
             }
 
             Encoding::Const0 => {
-                self.buffer.put4(info.val | (0 & 0xf) << 8);
+                self.buffer.put4(info.val);
                 return;
             }
 
@@ -306,8 +303,7 @@ impl<'a> Emitter for Assembler<'a> {
             Encoding::FpConst0 => {
                 if isign3 == enc_ops1!(Reg) {
                     let rn = ops[0].id();
-                    self.buffer
-                        .put4(info.val | (0 & 0x1f) << 16 | (rn & 0x1f) << 5);
+                    self.buffer.put4(info.val | (rn & 0x1f) << 5);
                     return;
                 }
             }
@@ -326,8 +322,7 @@ impl<'a> Emitter for Assembler<'a> {
                 if isign3 == enc_ops2!(Reg, Reg) {
                     let rd = ops[0].id();
                     let rn = ops[1].id();
-                    self.buffer
-                        .put4(info.val | (0 & 0x7) << 16 | (rn & 0x1f) << 5 | (rd & 0x1f) << 0);
+                    self.buffer.put4(info.val | (rn & 0x1f) << 5 | (rd & 0x1f));
                     return;
                 }
             }
@@ -338,9 +333,8 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let rm = ops[2].id();
 
-                    self.buffer.put4(
-                        info.val | ((rm & 0x1f) << 16) | (rn & 0x1f) << 5 | ((rd & 0x1f) << 0),
-                    );
+                    self.buffer
+                        .put4(info.val | ((rm & 0x1f) << 16) | (rn & 0x1f) << 5 | (rd & 0x1f));
                     return;
                 }
             }
@@ -357,7 +351,7 @@ impl<'a> Emitter for Assembler<'a> {
                             | ((rm & 0x1f) << 16)
                             | ((cond as u32 & 0xf) << 12)
                             | (rn & 0x1f) << 5
-                            | ((rd & 0x1f) << 0),
+                            | (rd & 0x1f),
                     );
                     return;
                 }
@@ -375,7 +369,7 @@ impl<'a> Emitter for Assembler<'a> {
                             | ((rm & 0x1f) << 16)
                             | ((ra & 0x1f) << 10)
                             | (rn & 0x1f) << 5
-                            | ((rd & 0x1f) << 0),
+                            | (rd & 0x1f),
                     );
                     return;
                 }
@@ -393,7 +387,7 @@ impl<'a> Emitter for Assembler<'a> {
                             | ((rm & 0x1f) << 16)
                             | ((imm4 & 0xf) << 11)
                             | ((rn & 0x1f) << 5)
-                            | ((rd & 0x1f) << 0),
+                            | (rd & 0x1f),
                     );
                     return;
                 }
@@ -411,12 +405,10 @@ impl<'a> Emitter for Assembler<'a> {
                                 | ((rm & 0x1f) << 16)
                                 | (((rot / 90 - 1) & 0x3) << 11)
                                 | ((rn & 0x1f) << 5)
-                                | ((rd & 0x1f) << 0),
+                                | (rd & 0x1f),
                         );
                         return;
-                    } else {
                     }
-                } else {
                 }
             }
 
@@ -426,18 +418,16 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let rm = ops[2].id();
                     let rot = ops[3].as_::<Imm>().value() as i32 as u32;
-                    if rot < 360 && rot % 90 == 0 {
+                    if rot < 360 && rot.is_multiple_of(90) {
                         self.buffer.put4(
                             info.val
                                 | ((rm & 0x1f) << 16)
                                 | (((rot / 90) & 0x3) << 11)
                                 | ((rn & 0x1f) << 5)
-                                | ((rd & 0x1f) << 0),
+                                | (rd & 0x1f),
                         );
                         return;
-                    } else {
                     }
-                } else {
                 }
             }
 
@@ -455,13 +445,11 @@ impl<'a> Emitter for Assembler<'a> {
                             | (((((elemidx << 1) & 1) << 3) & 0xf) << 16)
                             | ((((elemidx << 1) >> 3) & 0x1) << 11)
                             | ((rn & 0x1f) << 5)
-                            | ((rd & 0x1f) << 0);
+                            | (rd & 0x1f);
 
                         self.buffer.put4(v);
                         return;
-                    } else {
                     }
-                } else {
                 }
             }
 
@@ -471,14 +459,13 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let mrm = ops[2].id();
 
-                    let elemidx = ops[3].id() as u32;
-                    let val = (info.val ^ mrm << 16)
+                    let elemidx = ops[3].id();
+                    let val = ((info.val ^ mrm << 16)
                         | ((((elemidx << 1) >> 2) & 0x1) << 21)
-                        | ((((elemidx << 1) >> 1) & 0x1) << 20)
-                        | (((0) & 0xf) << 16)
+                        | ((((elemidx << 1) >> 1) & 0x1) << 20))
                         | ((((elemidx << 1) >> 3) & 0x1) << 11)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -490,14 +477,13 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let mrm = ops[2].id();
 
-                    let elemidx = ops[3].id() as u32;
-                    let val = (info.val ^ mrm << 16)
+                    let elemidx = ops[3].id();
+                    let val = ((info.val ^ mrm << 16)
                         | ((((elemidx << 1) >> 2) & 0x1) << 21)
-                        | ((((elemidx << 1) >> 1) & 0x1) << 20)
-                        | (((0) & 0xf) << 16)
+                        | ((((elemidx << 1) >> 1) & 0x1) << 20))
                         | ((((elemidx << 1) >> 3) & 0x1) << 11)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -509,14 +495,13 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let mrm = ops[2].id();
 
-                    let elemidx = ops[3].id() as u32;
-                    let val = (info.val ^ mrm << 16)
+                    let elemidx = ops[3].id();
+                    let val = ((info.val ^ mrm << 16)
                         | ((((elemidx << 2) >> 2) & 0x1) << 21)
-                        | ((((elemidx << 2) >> 1) & 0x1) << 20)
-                        | (((0) & 0xf) << 16)
+                        | ((((elemidx << 2) >> 1) & 0x1) << 20))
                         | ((((elemidx << 2) >> 3) & 0x1) << 11)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -528,16 +513,15 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let mrm = ops[2].id();
 
-                    let elemidx = ops[3].id() as u32;
-                    let rot = ops[4].id() as u32;
-                    let val = (info.val ^ mrm << 16)
+                    let elemidx = ops[3].id();
+                    let rot = ops[4].id();
+                    let val = ((info.val ^ mrm << 16)
                         | ((((elemidx << 2) >> 2) & 0x1) << 21)
-                        | ((((elemidx << 2) >> 1) & 0x1) << 20)
-                        | (((0) & 0xf) << 16)
+                        | ((((elemidx << 2) >> 1) & 0x1) << 20))
                         | (((rot / 90) & 0x3) << 13)
                         | ((((elemidx << 2) >> 3) & 0x1) << 11)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
 
                     self.buffer.put4(val);
                     return;
@@ -550,16 +534,15 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let mrm = ops[2].id();
 
-                    let elemidx = ops[3].id() as u32;
-                    let rot = ops[4].id() as u32;
-                    let val = (info.val ^ mrm << 16)
+                    let elemidx = ops[3].id();
+                    let rot = ops[4].id();
+                    let val = ((info.val ^ mrm << 16)
                         | ((((elemidx << 2) >> 2) & 0x1) << 21)
-                        | ((((elemidx << 2) >> 1) & 0x1) << 20)
-                        | (((0) & 0xf) << 16)
+                        | ((((elemidx << 2) >> 1) & 0x1) << 20))
                         | (((rot / 90) & 0x3) << 13)
                         | ((((elemidx << 2) >> 3) & 0x1) << 11)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
 
                     self.buffer.put4(val);
                     return;
@@ -572,16 +555,15 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let mrm = ops[2].id();
 
-                    let elemidx = ops[3].id() as u32;
-                    let rot = ops[4].id() as u32;
-                    let val = (info.val ^ mrm << 16)
+                    let elemidx = ops[3].id();
+                    let rot = ops[4].id();
+                    let val = ((info.val ^ mrm << 16)
                         | ((((elemidx << 3) >> 2) & 0x1) << 21)
-                        | ((((elemidx << 3) >> 1) & 0x1) << 20)
-                        | (((0) & 0xf) << 16)
+                        | ((((elemidx << 3) >> 1) & 0x1) << 20))
                         | (((rot / 90) & 0x3) << 13)
                         | ((((elemidx << 3) >> 3) & 0x1) << 11)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
 
                     self.buffer.put4(val);
                     return;
@@ -598,7 +580,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | (((imm7 / (1 << 2)) & 0x7f) << 15)
                         | ((rt2 & 0x1f) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -615,7 +597,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | (((imm7 / (1 << 3)) & 0x7f) << 15)
                         | ((rt2 & 0x1f) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -632,7 +614,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | (((imm7 / (1 << 4)) & 0x7f) << 15)
                         | ((rt2 & 0x1f) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -649,7 +631,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((rm & 0x1f) << 16)
                         | ((cond & 0xf) << 12)
                         | ((rn & 0x1f) << 5)
-                        | ((nzcv & 0xf) << 0);
+                        | (nzcv & 0xf);
                     self.buffer.put4(val);
                     return;
                 }
@@ -661,11 +643,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let imm = ops[2].as_::<Imm>().value() as u32;
 
-                    let val = (info.val ^ imm << 16)
-                        | ((0 & 0xf) << 19)
-                        | ((0 & 0x7) << 16)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                    let val = (info.val ^ imm << 16) | ((rn & 0x1f) << 5) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -677,11 +655,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let imm = ops[2].as_::<Imm>().value() as u32;
 
-                    let val = (info.val ^ imm << 16)
-                        | ((0 & 0xf) << 19)
-                        | ((0 & 0x7) << 16)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                    let val = (info.val ^ imm << 16) | ((rn & 0x1f) << 5) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -693,11 +667,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let imm = ops[2].as_::<Imm>().value() as u32;
 
-                    let val = ((info.val ^ imm) << 16)
-                        | ((0 & 0xf) << 19)
-                        | ((0 & 0x7) << 16)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                    let val = ((info.val ^ imm) << 16) | ((rn & 0x1f) << 5) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -709,11 +679,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let imm = ops[2].as_::<Imm>().value() as i32 as u32;
 
-                    let val = (info.val ^ imm << 16)
-                        | ((0 & 0xf) << 19)
-                        | ((0 & 0x7) << 16)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                    let val = (info.val ^ imm << 16) | ((rn & 0x1f) << 5) | (rd & 0x1f);
 
                     self.buffer.put4(val);
                     return;
@@ -726,11 +692,8 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let imm = ops[2].as_::<Imm>().value() as u32;
 
-                    let val = (info.val ^ 8u32.wrapping_sub(imm << 16))
-                        | ((0 & 0xf) << 19)
-                        | ((0 & 0x7) << 16)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0) << 0);
+                    let val =
+                        (info.val ^ 8u32.wrapping_sub(imm << 16)) | ((rn & 0x1f) << 5) | (rd & 0);
                     self.buffer.put4(val);
                     return;
                 }
@@ -742,11 +705,8 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let imm = ops[2].as_::<Imm>().value() as u32;
 
-                    let val = (info.val ^ 16u32.wrapping_sub(imm << 16))
-                        | ((0 & 0xf) << 19)
-                        | ((0 & 0x7) << 16)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0) << 0);
+                    let val =
+                        (info.val ^ 16u32.wrapping_sub(imm << 16)) | ((rn & 0x1f) << 5) | (rd & 0);
                     self.buffer.put4(val);
                     return;
                 }
@@ -758,11 +718,8 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let imm = ops[2].as_::<Imm>().value() as u32;
 
-                    let val = (info.val ^ 32u32.wrapping_sub(imm << 16))
-                        | ((0 & 0xf) << 19)
-                        | ((0 & 0x7) << 16)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0) << 0);
+                    let val =
+                        (info.val ^ 32u32.wrapping_sub(imm << 16)) | ((rn & 0x1f) << 5) | (rd & 0);
                     self.buffer.put4(val);
                     return;
                 }
@@ -774,11 +731,8 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let imm = ops[2].as_::<Imm>().value() as u32;
 
-                    let val = (info.val ^ 64u32.wrapping_sub(imm << 16))
-                        | ((0 & 0xf) << 19)
-                        | ((0 & 0x7) << 16)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0) << 0);
+                    let val =
+                        (info.val ^ 64u32.wrapping_sub(imm << 16)) | ((rn & 0x1f) << 5) | (rd & 0);
                     self.buffer.put4(val);
                     return;
                 }
@@ -790,10 +744,8 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let imm5 = ops[2].as_::<Imm>().value() as u32;
 
-                    let val = info.val
-                        | (((imm5 << (0 + 1)) & 0x1f) << 16)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                    let val =
+                        info.val | (((imm5 << 1) & 0x1f) << 16) | ((rn & 0x1f) << 5) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -808,7 +760,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm5 << (1 + 1)) & 0x1f) << 16)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -823,7 +775,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm5 << (2 + 1)) & 0x1f) << 16)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -837,7 +789,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm5 << (3 + 1)) & 0x1f) << 16)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -848,10 +800,8 @@ impl<'a> Emitter for Assembler<'a> {
                     let rd = ops[0].id();
                     let rn = ops[1].id();
                     let fbits = ops[2].as_::<Imm>().value() as u32;
-                    let val = info.val
-                        | (((64 - fbits) & 0x3f) << 10)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                    let val =
+                        info.val | (((64 - fbits) & 0x3f) << 10) | ((rn & 0x1f) << 5) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -863,8 +813,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let rm = ops[2].id();
 
-                    let val =
-                        info.val | ((rm & 0x1f) << 16) | ((rn & 0x1f) << 5) | ((rt & 0x1f) << 0);
+                    let val = info.val | ((rm & 0x1f) << 16) | ((rn & 0x1f) << 5) | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -881,7 +830,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((rm & 0x1f) << 16)
                         | ((sc & 0x1) << 12)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -892,10 +841,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rt = ops[0].id();
                     let rn = ops[1].id();
                     let imm9 = ops[2].as_::<Imm>().value() as i32 as u32;
-                    let val = info.val
-                        | (((imm9 / (1 << 0)) & 0x1ff) << 12)
-                        | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                    let val = info.val | ((imm9 & 0x1ff) << 12) | ((rn & 0x1f) << 5) | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -906,10 +852,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rt = ops[0].id();
                     let rn = ops[1].id();
                     let imm12 = ops[2].as_::<Imm>().value() as i32 as u32;
-                    let val = info.val
-                        | (((imm12 >> 0) & 0xfff) << 10)
-                        | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                    let val = info.val | ((imm12 & 0xfff) << 10) | ((rn & 0x1f) << 5) | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -923,7 +866,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm12 >> 1) & 0xfff) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -937,7 +880,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm12 >> 2) & 0xfff) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -951,7 +894,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm12 >> 3) & 0xfff) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -965,7 +908,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm12 >> 4) & 0xfff) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -976,8 +919,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rt = ops[0].id();
                     let rn = ops[1].id();
 
-                    let val =
-                        info.val | (((31) & 0x1f) << 16) | ((rn & 0x1f) << 5) | ((rt & 0x1f) << 0);
+                    let val = info.val | (((31) & 0x1f) << 16) | ((rn & 0x1f) << 5) | (rt & 0x1f);
 
                     self.buffer.put4(val);
                     return;
@@ -988,7 +930,7 @@ impl<'a> Emitter for Assembler<'a> {
                 if isign3 == enc_ops2!(Reg, Imm) {
                     let rd = ops[0].id();
                     let imm = ops[1].as_::<Imm>().value_f32();
-                    let val = info.val | ((imm_fmov32(imm) & 0xff) << 13) | ((rd & 0x1f) << 0);
+                    let val = info.val | ((imm_fmov32(imm) & 0xff) << 13) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -998,8 +940,7 @@ impl<'a> Emitter for Assembler<'a> {
                 if isign3 == enc_ops2!(Reg, Imm) {
                     let rd = ops[0].id();
                     let imm = ops[1].as_::<Imm>().value_f64();
-                    let val =
-                        info.val | (((imm_fmov64(imm) & 0xff) as u32) << 13) | ((rd & 0x1f) << 0);
+                    let val = info.val | (((imm_fmov64(imm) & 0xff) as u32) << 13) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1012,7 +953,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm_fmov32(imm) >> 5) & 0x7) << 16)
                         | (((imm_fmov32(imm) & 0x1f) & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1028,7 +969,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | (((imm >> 5) & 0x7) << 16)
                         | (((lsl >> 2 | 1) & 0x1f) << 12)
                         | (((imm & 0x1f) & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1039,12 +980,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rd = ops[0].id();
                     let imm64 = ops[1].as_::<Imm>().value() as u64;
 
-                    let val = (info.val ^ imm_simdmovi(imm64))
-                        | ((0 & 0x1) << 29)
-                        | ((0 & 0x7) << 16)
-                        | ((0 & 0xf) << 12)
-                        | ((0 & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                    let val = (info.val ^ imm_simdmovi(imm64)) | (rd & 0x1f);
 
                     self.buffer.put4(val);
                     return;
@@ -1059,10 +995,10 @@ impl<'a> Emitter for Assembler<'a> {
                     let imm4 = ops[3].as_::<Imm>().value() as u32;
 
                     let val = info.val
-                        | (((imm5 << (0 + 1)) & 0x1f) << 16)
-                        | (((imm4 << (0 + 0)) & 0xf) << 11)
+                        | (((imm5 << 1) & 0x1f) << 16)
+                        | ((imm4 & 0xf) << 11)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1074,10 +1010,8 @@ impl<'a> Emitter for Assembler<'a> {
                     let imm5 = ops[1].as_::<Imm>().value() as u32;
                     let rn = ops[2].id();
 
-                    let val = info.val
-                        | (((imm5 << (0 + 1)) & 0x1f) << 16)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                    let val =
+                        info.val | (((imm5 << 1) & 0x1f) << 16) | ((rn & 0x1f) << 5) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1092,9 +1026,9 @@ impl<'a> Emitter for Assembler<'a> {
 
                     let val = info.val
                         | (((imm5 << (1 + 1)) & 0x1f) << 16)
-                        | (((imm4 << (0 + 0)) & 0xf) << 11)
+                        | ((imm4 & 0xf) << 11)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1109,7 +1043,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm5 << (1 + 1)) & 0x1f) << 16)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1124,9 +1058,9 @@ impl<'a> Emitter for Assembler<'a> {
 
                     let val = info.val
                         | (((imm5 << (2 + 1)) & 0x1f) << 16)
-                        | (((imm4 << (2 + 0)) & 0xf) << 11)
+                        | (((imm4 << 2) & 0xf) << 11)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1141,7 +1075,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm5 << (2 + 1)) & 0x1f) << 16)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1156,9 +1090,9 @@ impl<'a> Emitter for Assembler<'a> {
 
                     let val = info.val
                         | (((imm5 << (3 + 1)) & 0x1f) << 16)
-                        | (((imm4 << (3 + 0)) & 0xf) << 11)
+                        | (((imm4 << 3) & 0xf) << 11)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1173,7 +1107,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm5 << (3 + 1)) & 0x1f) << 16)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1186,11 +1120,11 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[2].id();
 
                     let val = info.val
-                        | ((((elemidx << 0) >> 3) & 0x1) << 30)
-                        | ((((elemidx << 0) >> 2) & 0x1) << 12)
-                        | (((elemidx << 0) & 0x3) << 10)
+                        | (((elemidx >> 3) & 0x1) << 30)
+                        | (((elemidx >> 2) & 0x1) << 12)
+                        | ((elemidx & 0x3) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1204,12 +1138,12 @@ impl<'a> Emitter for Assembler<'a> {
                     let rm = ops[3].id();
 
                     let val = info.val
-                        | ((((elemidx << 0) >> 3) & 0x1) << 30)
+                        | (((elemidx >> 3) & 0x1) << 30)
                         | ((rm & 0x1f) << 16)
-                        | ((((elemidx << 0) >> 2) & 0x1) << 12)
-                        | (((elemidx << 0) & 0x3) << 10)
+                        | (((elemidx >> 2) & 0x1) << 12)
+                        | ((elemidx & 0x3) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1222,12 +1156,12 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[2].id();
 
                     let val = info.val
-                        | ((((elemidx << 0) >> 3) & 0x1) << 30)
+                        | (((elemidx >> 3) & 0x1) << 30)
                         | (((31) & 0x1f) << 16)
-                        | ((((elemidx << 0) >> 2) & 0x1) << 12)
-                        | (((elemidx << 0) & 0x3) << 10)
+                        | (((elemidx >> 2) & 0x1) << 12)
+                        | ((elemidx & 0x3) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1246,7 +1180,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((((elemidx << 1) >> 2) & 0x1) << 12)
                         | (((elemidx << 1) & 0x3) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1264,7 +1198,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((((elemidx << 1) >> 2) & 0x1) << 12)
                         | (((elemidx << 1) & 0x3) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1283,7 +1217,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((((elemidx << 2) >> 2) & 0x1) << 12)
                         | (((elemidx << 2) & 0x3) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1302,7 +1236,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((((elemidx << 2) >> 2) & 0x1) << 12)
                         | (((elemidx << 2) & 0x3) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1320,7 +1254,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((((elemidx << 2) >> 2) & 0x1) << 12)
                         | (((elemidx << 2) & 0x3) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1339,7 +1273,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((((elemidx << 3) >> 2) & 0x1) << 12)
                         | (((elemidx << 3) & 0x3) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1358,7 +1292,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((((elemidx << 3) >> 2) & 0x1) << 12)
                         | (((elemidx << 3) & 0x3) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1376,7 +1310,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((((elemidx << 3) >> 2) & 0x1) << 12)
                         | (((elemidx << 3) & 0x3) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1387,7 +1321,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rt = ops[0].id();
                     let imm19 = ops[1].as_::<Imm>().value() as isize as i32 as u32;
 
-                    let val = info.val | ((imm19 & 0x7ffff) << 5) | ((rt & 0x1f) << 0);
+                    let val = info.val | ((imm19 & 0x7ffff) << 5) | (rt & 0x1f);
 
                     self.buffer.put4(val);
                     return;
@@ -1396,7 +1330,7 @@ impl<'a> Emitter for Assembler<'a> {
 
                     self.use_label(ops[1], LabelUse::A64Branch19);
 
-                    let val = info.val | ((0 & 0x7ffff) << 5) | ((rt & 0x1f) << 0);
+                    let val = info.val | (rt & 0x1f);
 
                     self.buffer.put4(val);
                     return;
@@ -1408,7 +1342,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rd = ops[0].id();
                     let rn = ops[1].id();
 
-                    let val = info.val | ((rn & 0x1f) << 5) | ((rd & 0x1f) << 0);
+                    let val = info.val | ((rn & 0x1f) << 5) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1420,10 +1354,8 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let fbits = ops[2].as_::<Imm>().value() as u32;
 
-                    let val = info.val
-                        | (((64 - fbits) & &0x3f) << 10)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                    let val =
+                        info.val | (((64 - fbits) & 0x3f) << 10) | ((rn & 0x1f) << 5) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1434,10 +1366,8 @@ impl<'a> Emitter for Assembler<'a> {
                     let rd = ops[0].id();
                     let rn = ops[1].id();
                     let imm5 = ops[2].as_::<Imm>().value() as u32;
-                    let val = info.val
-                        | (((imm5 << (0 + 1)) & 0x1f) << 16)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                    let val =
+                        info.val | (((imm5 << 1) & 0x1f) << 16) | ((rn & 0x1f) << 5) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1451,7 +1381,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm5 << (1 + 1)) & 0x1f) << 16)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1465,7 +1395,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm5 << (2 + 1)) & 0x1f) << 16)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1479,7 +1409,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm5 << (3 + 1)) & 0x1f) << 16)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1490,11 +1420,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rd = ops[0].id();
                     let rn = ops[1].id();
 
-                    let val = info.val
-                        | ((0 & 0x3) << 22)
-                        | ((0 & 0xfff) << 10)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                    let val = info.val | ((rn & 0x1f) << 5) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1505,11 +1431,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rd = ops[0].id();
                     let rn = ops[1].id();
 
-                    let val = info.val
-                        | ((0 & 0x3) << 16)
-                        | ((15 & 0x3f) << 10)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                    let val = info.val | ((15 & 0x3f) << 10) | ((rn & 0x1f) << 5) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1520,11 +1442,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rd = ops[0].id();
                     let rn = ops[1].id();
 
-                    let val = info.val
-                        | ((0 & 0x3) << 16)
-                        | ((31 & 0x3f) << 10)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                    let val = info.val | ((31 & 0x3f) << 10) | ((rn & 0x1f) << 5) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1534,11 +1452,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rd = ops[0].id();
                     let rn = ops[1].id();
 
-                    let val = info.val
-                        | ((0 & 0x3) << 16)
-                        | ((7 & 0x3f) << 10)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                    let val = info.val | ((7 & 0x3f) << 10) | ((rn & 0x1f) << 5) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1555,7 +1469,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((rm & 0x1f) << 16)
                         | ((sc & 0x1) << 12)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1572,7 +1486,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((rm & 0x1f) << 16)
                         | ((sc & 0xf) << 12)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1589,7 +1503,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((rs & 0x1f) << 16)
                         | ((rt2 & 0x1f) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1607,7 +1521,7 @@ impl<'a> Emitter for Assembler<'a> {
                             | ((rm & 0x1f) << 16)
                             | ((imm3 & 0x7) << 10)
                             | ((rn & 0x1f) << 5)
-                            | ((rd & 0x1f) << 0),
+                            | (rd & 0x1f),
                     );
                     return;
                 }
@@ -1624,7 +1538,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | (((imm7 / (1 << 2)) & 0x7f) << 15)
                         | ((rt2 & 0x1f) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1641,7 +1555,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | (((imm7 / (1 << 3)) & 0x7f) << 15)
                         | ((rt2 & 0x1f) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1657,7 +1571,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | (((imm7 / (1 << 4)) & 0x7f) << 15)
                         | ((rt2 & 0x1f) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1673,7 +1587,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((rm & 0x1f) << 16)
                         | ((31 & 0x1f) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1685,11 +1599,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let imm = ops[2].as_::<Imm>().value();
 
-                    let val = (info.val ^ imm_add(imm))
-                        | ((0 & 0x3) << 22)
-                        | ((0 & 0xfff) << 10)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                    let val = (info.val ^ imm_add(imm)) | ((rn & 0x1f) << 5) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1701,11 +1611,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let imm = ops[2].as_::<Imm>().value();
 
-                    let val = (info.val ^ imm_add(imm))
-                        | ((0 & 0x3) << 22)
-                        | ((0 & 0xfff) << 10)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                    let val = (info.val ^ imm_add(imm)) | ((rn & 0x1f) << 5) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1722,7 +1628,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((rm & 0x1f) << 16)
                         | ((cond & 0xf) << 12)
                         | ((rn & 0x1f) << 5)
-                        | ((nzcv & 0xf) << 0);
+                        | (nzcv & 0xf);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1739,7 +1645,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((immr & 0x3f) << 16)
                         | ((31 & 0x3f) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1755,7 +1661,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((immr & 0x3f) << 16)
                         | ((63 & 0x3f) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1773,7 +1679,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((immr & 0x3f) << 16)
                         | ((imms & 0x3f) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1790,7 +1696,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((((simm9 >> 12) & 1) & 0x1) << 22)
                         | ((((simm9 & 0xff8) >> 3) & 0x1ff) << 12)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1804,10 +1710,8 @@ impl<'a> Emitter for Assembler<'a> {
                     let imm = ops[2].as_::<Imm>().value() as u64;
 
                     let val = (info.val ^ imm_logical(imm, (32 >> 6) != 0))
-                        | ((0 & 0x3f) << 16)
-                        | ((0 & 0x3f) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1821,10 +1725,8 @@ impl<'a> Emitter for Assembler<'a> {
                     let imm = ops[2].as_::<Imm>().value() as u64;
 
                     let val = (info.val ^ imm_logical(imm, (64 >> 6) != 0))
-                        | ((0 & 0x3f) << 16)
-                        | ((0 & 0x3f) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1841,7 +1743,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((rn & 0x1f) << 16)
                         | (((cond ^ 1) & 0xf) << 12)
                         | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1854,8 +1756,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rt = ops[1].id();
                     let rn = ops[2].id();
 
-                    let val =
-                        info.val | ((rs & 0x1f) << 16) | ((rt & 0x1f) << 5) | ((rn & 0x1f) << 0);
+                    let val = info.val | ((rs & 0x1f) << 16) | ((rt & 0x1f) << 5) | (rn & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1868,10 +1769,8 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let imm8 = ops[2].as_::<Imm>().value() as u32;
 
-                    let val = info.val
-                        | (((imm8 / (1 << 0)) & 0xff) << 10)
-                        | (((rn) & 0x1f) << 5)
-                        | (((rd) & 0x1f) << 0);
+                    let val =
+                        info.val | ((imm8 & 0xff) << 10) | (((rn) & 0x1f) << 5) | ((rd) & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1883,10 +1782,8 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let imm9 = ops[2].as_::<Imm>().value() as u32;
 
-                    let val = info.val
-                        | (((imm9 / (1 << 0)) & 0x1ff) << 12)
-                        | (((rn) & 0x1f) << 5)
-                        | (((rd) & 0x1f) << 0);
+                    let val =
+                        info.val | ((imm9 & 0x1ff) << 12) | (((rn) & 0x1f) << 5) | ((rd) & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1901,7 +1798,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm9 / (1 << 4)) & 0x1ff) << 12)
                         | (((rn) & 0x1f) << 5)
-                        | (((rd) & 0x1f) << 0);
+                        | ((rd) & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1913,10 +1810,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let imm12 = ops[2].as_::<Imm>().value() as i32 as u32;
 
-                    let val = info.val
-                        | (((imm12 >> 0) & 0xfff) << 10)
-                        | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                    let val = info.val | ((imm12 & 0xfff) << 10) | ((rn & 0x1f) << 5) | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1931,7 +1825,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm12 >> 1) & 0xfff) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1946,7 +1840,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm12 >> 2) & 0xfff) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1961,7 +1855,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((imm12 >> 3) & 0xfff) << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -1975,11 +1869,8 @@ impl<'a> Emitter for Assembler<'a> {
                     let imm6 = ops[2].as_::<Imm>().value() as u32;
                     let imm4 = ops[3].as_::<Imm>().value() as u32;
 
-                    let val = info.val
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0)
-                        | ((0 & 0x3) << 14)
-                        | (((imm4 >> 0) & 0xf) << 10)
+                    let val = (info.val | ((rn & 0x1f) << 5) | (rd & 0x1f))
+                        | ((imm4 & 0xf) << 10)
                         | (((imm6 >> 4) & 0x3f) << 16);
 
                     self.buffer.put4(val);
@@ -1994,10 +1885,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let imm8 = ops[2].as_::<Imm>().value() as u32;
 
-                    let val = info.val
-                        | (((imm8 >> 0) & 0xff) << 12)
-                        | ((rn & 0x1f) << 5)
-                        | ((rd & 0x1f) << 0);
+                    let val = info.val | ((imm8 & 0xff) << 12) | ((rn & 0x1f) << 5) | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -2011,9 +1899,9 @@ impl<'a> Emitter for Assembler<'a> {
                     let rt = ops[2].id();
 
                     let val = info.val
-                        | ((31 & 0x1f) << 10)
+                        | (31 << 10)
                         | ((rn & 0x1f) << 5)
-                        | ((rt & 0x1f) << 0)
+                        | (rt & 0x1f)
                         | ((rs & 0x1f) << 16);
 
                     self.buffer.put4(val);
@@ -2032,7 +1920,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((lsb + width - 1) & 0x3f) << 10)
                         | (((rn) & 0x1f) << 5)
-                        | (((rd) & 0x1f) << 0);
+                        | ((rd) & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -2047,7 +1935,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((32 - 1 - lsl32) & 0x3f) << 10)
                         | (((rn) & 0x1f) << 5)
-                        | (((rd) & 0x1f) << 0);
+                        | ((rd) & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -2062,7 +1950,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((64 - 1 - lsl64) & 0x3f) << 10)
                         | (((rn) & 0x1f) << 5)
-                        | (((rd) & 0x1f) << 0);
+                        | ((rd) & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -2077,14 +1965,14 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | (((target & 3) & 0x3) << 29)
                         | (((target >> 2) & 0x7ffff) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
 
                     self.buffer.put4(val);
                     return;
                 } else if isign3 == enc_ops2!(Reg, Label) {
                     let rd = ops[0].id();
-                    self.use_label(&ops[1], LabelUse::A64Adr21);
-                    let val = info.val | (rd & 0x1f) << 0;
+                    self.use_label(ops[1], LabelUse::A64Adr21);
+                    let val = info.val | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -2098,14 +1986,14 @@ impl<'a> Emitter for Assembler<'a> {
                     let val = info.val
                         | ((((target & !0xfffu64) >> 12) as u32 & 3) << 29)
                         | ((((target & !0xfffu64) >> 14) as u32 & 0x7ffff) << 5)
-                        | ((rd & 0x1f) << 0);
+                        | (rd & 0x1f);
 
                     self.buffer.put4(val);
                     return;
                 } else if isign3 == enc_ops2!(Reg, Label) {
                     let rd = ops[0].id();
-                    self.use_label(&ops[1], LabelUse::A64Adr21);
-                    let val = info.val | (rd & 0x1f) << 0;
+                    self.use_label(ops[1], LabelUse::A64Adr21);
+                    let val = info.val | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 } else if isign3 == enc_ops2!(Reg, Sym) {
@@ -2115,7 +2003,7 @@ impl<'a> Emitter for Assembler<'a> {
                         RelocTarget::Sym(ops[1].as_::<Sym>()),
                         0,
                     );
-                    let val = info.val | (rd & 0x1f) << 0;
+                    let val = info.val | (rd & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -2132,7 +2020,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | ((imm5 & 0x1f) << 16)
                         | ((cond & 0xf) << 12)
                         | ((rn & 0x1f) << 5)
-                        | ((nzcv & 0xf) << 0);
+                        | (nzcv & 0xf);
 
                     self.buffer.put4(val);
                     return;
@@ -2145,14 +2033,14 @@ impl<'a> Emitter for Assembler<'a> {
                     let rt = ops[0].id();
                     let imm19 = ops[1].as_::<Imm>().value() as i32 as u32;
 
-                    let val = info.val | (((imm19 & 0x7ffff) << 5) & 0x7ffff0) | ((rt & 0x1f) << 0);
+                    let val = info.val | (((imm19 & 0x7ffff) << 5) & 0x7ffff0) | (rt & 0x1f);
 
                     self.buffer.put4(val);
                     return;
                 } else if isign3 == enc_ops2!(Reg, Label) {
                     let rt = ops[0].id();
-                    self.use_label(&ops[1], LabelUse::A64Ldr19);
-                    let val = info.val | (rt & 0x1f) << 0;
+                    self.use_label(ops[1], LabelUse::A64Ldr19);
+                    let val = info.val | (rt & 0x1f);
                     self.buffer.put4(val);
                     return;
                 }
@@ -2164,11 +2052,9 @@ impl<'a> Emitter for Assembler<'a> {
                     let bit = ops[1].as_::<Imm>().value() as u32;
 
                     self.use_label(ops[2], LabelUse::A64Branch14);
-                    let val = info.val
-                        | (((bit >> 5) & 0x1) << 31)
-                        | (((bit & 0x1f) & 0x1f) << 19)
-                        | (((0 >> 2) & 0x3fff) << 5)
-                        | ((rt & 0x1f) << 0);
+                    let val =
+                        (info.val | (((bit >> 5) & 0x1) << 31) | (((bit & 0x1f) & 0x1f) << 19))
+                            | (rt & 0x1f);
 
                     self.buffer.put4(val);
                     return;
@@ -2181,7 +2067,7 @@ impl<'a> Emitter for Assembler<'a> {
                         | (((bit >> 5) & 0x1) << 31)
                         | (((bit & 0x1f) & 0x1f) << 19)
                         | (((imm14.value() as i32 as u32 >> 2) & 0x3fff) << 5)
-                        | ((rt & 0x1f) << 0);
+                        | (rt & 0x1f);
 
                     self.buffer.put4(val);
                     return;
@@ -2194,7 +2080,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let rd = ops[0].id();
                     let imm16 = ops[1].as_::<Imm>().value() as u32;
 
-                    let val = info.val | (((imm16 >> 0) & 0xffff) << 5) | ((rd & 0x1f) << 0);
+                    let val = info.val | ((imm16 & 0xffff) << 5) | (rd & 0x1f);
 
                     self.buffer.put4(val);
                     return;
@@ -2208,10 +2094,7 @@ impl<'a> Emitter for Assembler<'a> {
                     let imm16 = ops[1].as_::<Imm>().value() as u32;
                     let hw = ops[2].as_::<Imm>().value() as u32;
 
-                    let val = info.val
-                        | (((imm16 >> 0) & 0xffff) << 5)
-                        | (((hw >> 0) & 0x3) << 21)
-                        | ((rd & 0x1f) << 0);
+                    let val = info.val | ((imm16 & 0xffff) << 5) | ((hw & 0x3) << 21) | (rd & 0x1f);
 
                     self.buffer.put4(val);
                     return;
@@ -2236,13 +2119,8 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let rm = ops[2].id();
 
-                    self.buffer.put4(
-                        info.val
-                            | ((rm & 0x1f) << 16)
-                            | (0 << 10)
-                            | (rn & 0x1f) << 5
-                            | ((rd & 0x1f) << 0),
-                    );
+                    self.buffer
+                        .put4((info.val | ((rm & 0x1f) << 16)) | (rn & 0x1f) << 5 | (rd & 0x1f));
                     return;
                 }
             }
@@ -2253,13 +2131,8 @@ impl<'a> Emitter for Assembler<'a> {
                     let rn = ops[1].id();
                     let rm = ops[2].id();
 
-                    self.buffer.put4(
-                        info.val
-                            | ((rm & 0x1f) << 16)
-                            | (0 << 10)
-                            | (rn & 0x1f) << 5
-                            | ((rd & 0x1f) << 0),
-                    );
+                    self.buffer
+                        .put4((info.val | ((rm & 0x1f) << 16)) | (rn & 0x1f) << 5 | (rd & 0x1f));
                     return;
                 }
             }

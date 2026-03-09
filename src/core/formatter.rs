@@ -1,7 +1,6 @@
 //! Formatter core functionality
 
 /// An output for formatter.
-
 pub trait FormatterOutput {
     fn write_str(&mut self, s: &str);
     fn write_fmt(&mut self, args: core::fmt::Arguments<'_>);

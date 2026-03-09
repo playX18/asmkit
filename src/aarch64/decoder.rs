@@ -212,7 +212,7 @@ fn immlogical(sf: u32, n: u32, immr: u32, imms: u32) -> u32 {
         return 0;
     }
 
-    let len = 31 - (imms.count_ones() as u32);
+    let len = 31 - imms.count_ones();
     let levels = (1 << len) - 1;
     let s = imms & levels;
     let r = immr & levels;
@@ -227,8 +227,8 @@ fn immlogical(sf: u32, n: u32, immr: u32, imms: u32) -> u32 {
         welem &= ((1 << esize) - 1) as u64;
     }
 
-    let mut wmask = 0 as u64;
-    for i in (0..(!sf as u32 * 32)).step_by(esize as usize) {
+    let mut wmask = 0_u64;
+    for i in (0..(!sf * 32)).step_by(esize as usize) {
         wmask |= welem << i;
     }
 
@@ -471,7 +471,7 @@ pub fn opuimmshift(imm: u32, msl: u32, shift: u32) -> Op {
 
 pub fn opreladdr(ddi: &mut Inst, imm: i32) -> Op {
     ddi.imm = Imm {
-        imm64: imm as i32 as i64 as u64,
+        imm64: imm as i64 as u64,
     };
     Op {
         op_type: OpType::ImmLarge,
@@ -528,13 +528,13 @@ pub fn opimmfloatzero(ddi: &mut Inst) -> Op {
 }
 
 pub fn opimmfloat(ddi: &mut Inst, imm8: u32) -> Op {
-    let res = (imm8 as u32 & 0x80) << 24
+    let res = (imm8 & 0x80) << 24
         | if (imm8 & 0x40) != 0 {
             0x3e000000
         } else {
             0x40000000
         }
-        | ((imm8 & 0x3f) as u32) << 19;
+        | (imm8 & 0x3f) << 19;
     ddi.imm = Imm {
         float8: f64::from_bits(res as u64),
     };

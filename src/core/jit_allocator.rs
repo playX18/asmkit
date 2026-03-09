@@ -10,15 +10,15 @@
 
 */
 
+use crate::AsmError;
 use crate::util::virtual_memory::{
-    self, alloc, alloc_dual_mapping, flush_instruction_cache, protect_jit_memory, release,
-    release_dual_mapping, DualMapping, MemoryFlags, ProtectJitAccess,
+    self, DualMapping, MemoryFlags, ProtectJitAccess, alloc, alloc_dual_mapping,
+    flush_instruction_cache, protect_jit_memory, release, release_dual_mapping,
 };
 use crate::util::{
     align_down, align_up, bit_vector_clear, bit_vector_fill, bit_vector_get_bit,
     bit_vector_index_of, bit_vector_set_bit,
 };
-use crate::AsmError;
 use alloc::vec::Vec;
 use core::cell::{Cell, UnsafeCell};
 use core::mem::size_of;
@@ -201,8 +201,8 @@ impl<'a> Iterator for BitVectorRangeIterator<'a, 0> {
     }
 }
 
-use intrusive_collections::{intrusive_adapter, rbtree::*};
 use intrusive_collections::{KeyAdapter, UnsafeRef};
+use intrusive_collections::{intrusive_adapter, rbtree::*};
 
 struct JitAllocatorBlock {
     node: Link,
@@ -292,10 +292,12 @@ impl JitAllocatorBlock {
         unsafe { &*self.stop_bitvector.get() }
     }
 
+    #[allow(clippy::mut_from_ref)]
     fn used_bitvector_mut(&self) -> &mut alloc::vec::Vec<u32> {
         unsafe { &mut *self.used_bitvector.get() }
     }
 
+    #[allow(clippy::mut_from_ref)]
     fn stop_bitvector_mut(&self) -> &mut alloc::vec::Vec<u32> {
         unsafe { &mut *self.stop_bitvector.get() }
     }
@@ -323,8 +325,7 @@ impl JitAllocatorBlock {
             (*self.pool).total_area_used += allocated_area_size as usize;
         }
 
-        self.area_used
-            .set(self.area_used() + allocated_area_size as u32);
+        self.area_used.set(self.area_used() + allocated_area_size);
 
         if self.area_available() == 0 {
             self.search_start.set(self.area_size());
@@ -351,8 +352,7 @@ impl JitAllocatorBlock {
             (*self.pool).total_area_used -= released_area_size as usize;
         }
 
-        self.area_used
-            .set(self.area_used() - released_area_size as u32);
+        self.area_used.set(self.area_used() - released_area_size);
         self.search_start
             .set(self.search_start.get().min(released_area_start));
         self.search_end
@@ -400,17 +400,17 @@ impl JitAllocatorBlock {
             .set(self.search_end.get().max(shrunk_area_end));
 
         bit_vector_clear(
-            &mut self.used_bitvector_mut(),
+            self.used_bitvector_mut(),
             shrunk_area_start as _,
             shrunk_area_size as _,
         );
         bit_vector_set_bit(
-            &mut self.stop_bitvector_mut(),
+            self.stop_bitvector_mut(),
             shrunk_area_end as usize - 1,
             false,
         );
         bit_vector_set_bit(
-            &mut self.stop_bitvector_mut(),
+            self.stop_bitvector_mut(),
             shrunk_area_start as usize - 1,
             true,
         );
@@ -421,7 +421,7 @@ impl JitAllocatorBlock {
 
 impl PartialOrd for JitAllocatorBlock {
     fn partial_cmp(&self, other: &Self) -> Option<core::cmp::Ordering> {
-        self.rx_ptr().partial_cmp(&other.rx_ptr())
+        Some(self.cmp(other))
     }
 }
 
@@ -466,11 +466,11 @@ impl Ord for BlockKey {
         let addr_off = other.rxptr as usize + other.block_size as usize;
 
         if addr_off <= self.rxptr as usize {
-            return core::cmp::Ordering::Less;
+            core::cmp::Ordering::Less
         } else if other.rxptr > self.rxptr {
-            return core::cmp::Ordering::Greater;
+            core::cmp::Ordering::Greater
         } else {
-            return core::cmp::Ordering::Equal;
+            core::cmp::Ordering::Equal
         }
     }
 }
@@ -584,12 +584,11 @@ impl JitAllocator {
             pool_count = MULTI_POOL_COUNT;
         }
 
-        if block_size < 64 * 1024 || block_size > 256 * 1024 * 1024 || !block_size.is_power_of_two()
-        {
+        if !(64 * 1024..=256 * 1024 * 1024).contains(&block_size) || !block_size.is_power_of_two() {
             block_size = vm_info.page_granularity as _;
         }
 
-        if granularity < 64 || granularity > 256 || !granularity.is_power_of_two() {
+        if !(64..=256).contains(&granularity) || !granularity.is_power_of_two() {
             granularity = MIN_GRANULARITY as _;
         }
 
@@ -601,7 +600,7 @@ impl JitAllocator {
             pools.push(Box::into_raw(Box::new(JitAllocatorPool::new(granularity))));
         }
 
-        let allocator = Box::new(Self {
+        Box::new(Self {
             options: params,
             block_size: block_size as _,
             granulariy: granularity as _,
@@ -609,9 +608,7 @@ impl JitAllocator {
             allocation_count: 0,
             tree: RBTree::new(JitAllocatorBlockAdapter::new()),
             pools: pools.into_boxed_slice(),
-        });
-
-        allocator
+        })
     }
 
     fn size_to_pool_id(&self, size: usize) -> usize {
@@ -631,7 +628,7 @@ impl JitAllocator {
     }
 
     fn bitvector_size_to_byte_size(area_size: u32) -> usize {
-        ((area_size as usize + 32 - 1) / 32) * size_of::<u32>()
+        (area_size as usize).div_ceil(32) * size_of::<u32>()
     }
 
     fn calculate_ideal_block_size(
@@ -670,183 +667,197 @@ impl JitAllocator {
         pool: *mut JitAllocatorPool,
         block_size: usize,
     ) -> Result<Box<JitAllocatorBlock>, AsmError> {
-        let area_size = (block_size + (*pool).granularity as usize - 1) >> (*pool).granularity_log2;
-        let num_bit_words = (area_size + 32 - 1) / 32;
+        unsafe {
+            let area_size =
+                (block_size + (*pool).granularity as usize - 1) >> (*pool).granularity_log2;
+            let num_bit_words = area_size.div_ceil(32);
 
-        let mut block = Box::new(JitAllocatorBlock {
-            node: Link::new(),
-            list_node: intrusive_collections::LinkedListLink::new(),
-            pool,
-            mapping: DualMapping {
-                rx: null_mut(),
-                rw: null_mut(),
-            },
-            block_size: block_size as _,
-            flags: Cell::new(0),
-            area_size: Cell::new(0),
-            area_used: Cell::new(0),
-            largest_unused_area: Cell::new(area_size as _),
-            search_end: Cell::new(area_size as _),
-            search_start: Cell::new(0),
-            used_bitvector: UnsafeCell::new({
-                let mut v = Vec::with_capacity(num_bit_words);
-                v.resize(num_bit_words * size_of::<u32>(), 0);
-                v
-            }),
-            stop_bitvector: UnsafeCell::new({
-                let mut v = Vec::with_capacity(num_bit_words);
-                v.resize(num_bit_words * size_of::<u32>(), 0);
-                v
-            }),
-        });
-        let mut block_flags = 0;
-        let virt_mem = if self.options.use_dual_mapping {
-            block_flags |= JitAllocatorBlock::FLAG_DUAL_MAPPED;
-            alloc_dual_mapping(block_size, MemoryFlags::ACCESS_RWX.into())?
-        } else {
-            let rx = alloc(block_size, MemoryFlags::ACCESS_RWX.into())?;
-            DualMapping { rx, rw: rx }
-        };
+            let mut block = Box::new(JitAllocatorBlock {
+                node: Link::new(),
+                list_node: intrusive_collections::LinkedListLink::new(),
+                pool,
+                mapping: DualMapping {
+                    rx: null_mut(),
+                    rw: null_mut(),
+                },
+                block_size: block_size as _,
+                flags: Cell::new(0),
+                area_size: Cell::new(0),
+                area_used: Cell::new(0),
+                largest_unused_area: Cell::new(area_size as _),
+                search_end: Cell::new(area_size as _),
+                search_start: Cell::new(0),
+                used_bitvector: UnsafeCell::new({
+                    let mut v = Vec::with_capacity(num_bit_words);
+                    v.resize(num_bit_words * size_of::<u32>(), 0);
+                    v
+                }),
+                stop_bitvector: UnsafeCell::new({
+                    let mut v = Vec::with_capacity(num_bit_words);
+                    v.resize(num_bit_words * size_of::<u32>(), 0);
+                    v
+                }),
+            });
+            let mut block_flags = 0;
+            let virt_mem = if self.options.use_dual_mapping {
+                block_flags |= JitAllocatorBlock::FLAG_DUAL_MAPPED;
+                alloc_dual_mapping(block_size, MemoryFlags::ACCESS_RWX.into())?
+            } else {
+                let rx = alloc(block_size, MemoryFlags::ACCESS_RWX.into())?;
+                DualMapping { rx, rw: rx }
+            };
 
-        if self.options.fill_unused_memory {
-            protect_jit_memory(ProtectJitAccess::ReadWrite);
-            fill_pattern(virt_mem.rw, self.fill_pattern, block_size);
-            protect_jit_memory(ProtectJitAccess::ReadExecute);
-            flush_instruction_cache(virt_mem.rx, block_size);
+            if self.options.fill_unused_memory {
+                protect_jit_memory(ProtectJitAccess::ReadWrite);
+                fill_pattern(virt_mem.rw, self.fill_pattern, block_size);
+                protect_jit_memory(ProtectJitAccess::ReadExecute);
+                flush_instruction_cache(virt_mem.rx, block_size);
+            }
+
+            block.area_size.set(area_size as _);
+            block.mapping = virt_mem;
+            block.flags.set(block_flags);
+            Ok(block)
         }
-
-        block.area_size.set(area_size as _);
-        block.mapping = virt_mem;
-        block.flags.set(block_flags);
-        Ok(block)
     }
 
     unsafe fn delete_block(&mut self, block: *mut JitAllocatorBlock) {
-        let mut block = Box::from_raw(block);
-        if (block.flags() & JitAllocatorBlock::FLAG_DUAL_MAPPED) != 0 {
-            let _ = release_dual_mapping(&mut block.mapping, block.block_size);
-        } else {
-            let _ = release(block.mapping.rx as _, block.block_size);
-        }
+        unsafe {
+            let mut block = Box::from_raw(block);
+            if (block.flags() & JitAllocatorBlock::FLAG_DUAL_MAPPED) != 0 {
+                let _ = release_dual_mapping(&mut block.mapping, block.block_size);
+            } else {
+                let _ = release(block.mapping.rx as _, block.block_size);
+            }
 
-        drop(block);
+            drop(block);
+        }
     }
 
     unsafe fn insert_block(&mut self, block: *mut JitAllocatorBlock) {
-        let b = &mut *block;
-        let pool = &mut *b.pool();
+        unsafe {
+            let b = &mut *block;
+            let pool = &mut *b.pool();
 
-        if pool.cursor.is_null() {
-            pool.cursor = block;
+            if pool.cursor.is_null() {
+                pool.cursor = block;
+            }
+
+            self.tree.insert(UnsafeRef::from_raw(block));
+            pool.blocks.push_front(UnsafeRef::from_raw(block));
+
+            pool.block_count += 1;
+            pool.total_area_size += b.area_size() as usize;
+
+            pool.total_overhead_bytes += size_of::<JitAllocatorBlock>()
+                + Self::bitvector_size_to_byte_size(b.area_size()) * 2;
         }
-
-        self.tree.insert(UnsafeRef::from_raw(block));
-        pool.blocks.push_front(UnsafeRef::from_raw(block));
-
-        pool.block_count += 1;
-        pool.total_area_size += b.area_size() as usize;
-
-        pool.total_overhead_bytes +=
-            size_of::<JitAllocatorBlock>() + Self::bitvector_size_to_byte_size(b.area_size()) * 2;
     }
 
     unsafe fn remove_block(
         &mut self,
         block: &mut intrusive_collections::linked_list::CursorMut<'_, BlockListAdapter>,
     ) -> *mut JitAllocatorBlock {
-        let b = block.get().unwrap();
-        let pool = &mut *b.pool();
+        unsafe {
+            let b = block.get().unwrap();
+            let pool = &mut *b.pool();
 
-        if pool.cursor == b as *const JitAllocatorBlock as *mut _ {
-            pool.cursor = if let Some(block) = block.peek_prev().get() {
-                block as *const _ as *mut _
-            } else if let Some(block) = block.peek_next().get() {
-                block as *const _ as *mut _
-            } else {
-                null_mut()
-            };
-        }
+            if core::ptr::eq(pool.cursor, b) {
+                pool.cursor = if let Some(block) = block.peek_prev().get() {
+                    block as *const _ as *mut _
+                } else if let Some(block) = block.peek_next().get() {
+                    block as *const _ as *mut _
+                } else {
+                    null_mut()
+                };
+            }
 
-        match self.tree.entry(&BlockKey {
-            rxptr: b.rx_ptr(),
-            block_size: b.block_size as _,
-        }) {
-            Entry::Occupied(mut c) => {
+            if let Entry::Occupied(mut c) = self.tree.entry(&BlockKey {
+                rxptr: b.rx_ptr(),
+                block_size: b.block_size as _,
+            }) {
                 assert_eq!(
                     UnsafeRef::into_raw(c.remove().unwrap()),
                     b as *const _ as *mut JitAllocatorBlock,
                     "blocks are not the same"
                 );
             }
+            let area_size = b.area_size();
 
-            _ => (),
+            pool.block_count -= 1;
+            pool.total_area_size -= area_size as usize;
+
+            pool.total_overhead_bytes -=
+                size_of::<JitAllocatorBlock>() + Self::bitvector_size_to_byte_size(area_size) * 2;
+
+            UnsafeRef::into_raw(block.remove().unwrap())
         }
-        let area_size = b.area_size();
-
-        pool.block_count -= 1;
-        pool.total_area_size -= area_size as usize;
-
-        pool.total_overhead_bytes -=
-            size_of::<JitAllocatorBlock>() + Self::bitvector_size_to_byte_size(area_size) * 2;
-
-        UnsafeRef::into_raw(block.remove().unwrap())
     }
 
     unsafe fn wipe_out_block(
         &mut self,
         block: &mut intrusive_collections::linked_list::CursorMut<'_, BlockListAdapter>,
     ) {
-        let b = block.get().unwrap();
-        if (b.flags() & JitAllocatorBlock::FLAG_EMPTY) != 0 {
-            return;
-        }
-
-        let pool = &mut *b.pool();
-
-        let area_size = b.area_size();
-        let granularity = pool.granularity;
-
-        virtual_memory::protect_jit_memory(ProtectJitAccess::ReadWrite);
-
-        if self.options.fill_unused_memory {
-            let rw_ptr = b.rw_ptr();
-
-            let it = BitVectorRangeIterator::from_slice_and_nbitwords(
-                &b.stop_bitvector(),
-                pool.bit_word_count_from_area_size(b.area_size()),
-            );
-
-            for range in it {
-                let span_ptr = rw_ptr.add(range.start as usize * granularity as usize);
-                let span_size = (range.end as usize - range.start as usize) * granularity as usize;
-
-                let mut n = 0;
-                while n < span_size {
-                    *span_ptr.add(n).cast::<u32>() = self.fill_pattern;
-                    n += size_of::<u32>();
-                }
-
-                virtual_memory::flush_instruction_cache(span_ptr, span_size as usize);
+        unsafe {
+            let b = block.get().unwrap();
+            if (b.flags() & JitAllocatorBlock::FLAG_EMPTY) != 0 {
+                return;
             }
+
+            let pool = &mut *b.pool();
+
+            let area_size = b.area_size();
+            let granularity = pool.granularity;
+
+            virtual_memory::protect_jit_memory(ProtectJitAccess::ReadWrite);
+
+            if self.options.fill_unused_memory {
+                let rw_ptr = b.rw_ptr();
+
+                let it = BitVectorRangeIterator::from_slice_and_nbitwords(
+                    b.stop_bitvector(),
+                    pool.bit_word_count_from_area_size(b.area_size()),
+                );
+
+                for range in it {
+                    let span_ptr = rw_ptr.add(range.start as usize * granularity as usize);
+                    let span_size =
+                        (range.end as usize - range.start as usize) * granularity as usize;
+
+                    let mut n = 0;
+                    while n < span_size {
+                        *span_ptr.add(n).cast::<u32>() = self.fill_pattern;
+                        n += size_of::<u32>();
+                    }
+
+                    virtual_memory::flush_instruction_cache(span_ptr, span_size);
+                }
+            }
+
+            virtual_memory::protect_jit_memory(ProtectJitAccess::ReadExecute);
+
+            let b = &mut *UnsafeRef::into_raw(block.remove().unwrap());
+            b.used_bitvector_mut().fill(0);
+            b.stop_bitvector_mut().fill(0);
+
+            b.area_used.set(0);
+            b.largest_unused_area.set(area_size);
+            b.search_start.set(0);
+            b.search_end.set(area_size);
+            b.add_flags(JitAllocatorBlock::FLAG_EMPTY);
+            b.clear_flags(JitAllocatorBlock::FLAG_DIRTY);
         }
-
-        virtual_memory::protect_jit_memory(ProtectJitAccess::ReadExecute);
-
-        let b = &mut *UnsafeRef::into_raw(block.remove().unwrap());
-        b.used_bitvector_mut().fill(0);
-        b.stop_bitvector_mut().fill(0);
-
-        b.area_used.set(0);
-        b.largest_unused_area.set(area_size);
-        b.search_start.set(0);
-        b.search_end.set(area_size);
-        b.add_flags(JitAllocatorBlock::FLAG_EMPTY);
-        b.clear_flags(JitAllocatorBlock::FLAG_DIRTY);
     }
 
     /// Resets current allocator by emptying all pools and blocks.
     ///
     /// Frees all memory is `ResetPolicy::Hard` is specified or `immediate_release` in [JitAllocatorOptions] is specific.
+    ///
+    /// # Safety
+    ///
+    /// - The caller must ensure that no code is currently executing from the memory managed by this allocator.
+    /// - The caller must ensure that no references to the memory managed by this allocator are used after calling this function.
+    /// - The caller must ensure that no other thread is currently accessing the memory managed by this allocator.
     pub unsafe fn reset(&mut self, reset_policy: ResetPolicy) {
         self.tree.clear();
 
@@ -910,49 +921,49 @@ impl JitAllocator {
                 loop {
                     let b = block.get().unwrap();
 
-                    if b.area_available() >= area_size {
-                        if b.is_dirty() || b.largest_unused_area() >= area_size {
-                            let mut it = BitVectorRangeIterator::<0>::new(
-                                b.used_bitvector(),
-                                pool.bit_word_count_from_area_size(b.area_size()),
-                                b.search_start() as _,
-                                b.search_end() as _,
-                            );
+                    if b.area_available() >= area_size
+                        && (b.is_dirty() || b.largest_unused_area() >= area_size)
+                    {
+                        let mut it = BitVectorRangeIterator::<0>::new(
+                            b.used_bitvector(),
+                            pool.bit_word_count_from_area_size(b.area_size()),
+                            b.search_start() as _,
+                            b.search_end() as _,
+                        );
 
-                            let mut range_start;
-                            let mut range_end = b.area_size() as usize;
+                        let mut range_start;
+                        let mut range_end = b.area_size() as usize;
 
-                            let mut search_start = usize::MAX;
-                            let mut largest_area = 0;
+                        let mut search_start = usize::MAX;
+                        let mut largest_area = 0;
 
-                            while let Some(range) = it.next_range(area_size as _) {
-                                range_start = range.start as _;
-                                range_end = range.end as _;
+                        while let Some(range) = it.next_range(area_size as _) {
+                            range_start = range.start as _;
+                            range_end = range.end as _;
 
-                                let range_size = range_end - range_start;
+                            let range_size = range_end - range_start;
 
-                                if range_size >= area_size as usize {
-                                    area_index = range_start as _;
-                                    break;
-                                }
-
-                                search_start = search_start.min(range_start);
-                                largest_area = largest_area.max(range_size);
-                            }
-
-                            if area_index != NO_INDEX {
+                            if range_size >= area_size as usize {
+                                area_index = range_start as _;
                                 break;
                             }
 
-                            if search_start != usize::MAX {
-                                let search_end = range_end;
+                            search_start = search_start.min(range_start);
+                            largest_area = largest_area.max(range_size);
+                        }
 
-                                b.search_start.set(search_start as _);
+                        if area_index != NO_INDEX {
+                            break;
+                        }
 
-                                b.search_end.set(search_end as _);
-                                b.largest_unused_area.set(largest_area as _);
-                                b.clear_flags(JitAllocatorBlock::FLAG_DIRTY);
-                            }
+                        if search_start != usize::MAX {
+                            let search_end = range_end;
+
+                            b.search_start.set(search_start as _);
+
+                            b.search_end.set(search_end as _);
+                            b.largest_unused_area.set(largest_area as _);
+                            b.clear_flags(JitAllocatorBlock::FLAG_DIRTY);
                         }
                     }
 
@@ -1046,7 +1057,7 @@ impl JitAllocator {
 
             let area_index = (offset >> pool.granularity_log2 as usize) as u32;
             let area_end =
-                bit_vector_index_of(&block.stop_bitvector(), area_index as _, true) as u32 + 1;
+                bit_vector_index_of(block.stop_bitvector(), area_index as _, true) as u32 + 1;
             let area_size = area_end - area_index;
 
             self.allocation_count -= 1;
@@ -1090,7 +1101,7 @@ impl JitAllocator {
         }
 
         if new_size == 0 {
-            return self.release(rx_ptr);
+            return unsafe { self.release(rx_ptr) };
         }
 
         let Some(block) = self
@@ -1116,7 +1127,7 @@ impl JitAllocator {
             }
 
             let area_end =
-                bit_vector_index_of(&block.stop_bitvector(), area_start as _, true) as u32 + 1;
+                bit_vector_index_of(block.stop_bitvector(), area_start as _, true) as u32 + 1;
 
             let area_prev_size = area_end - area_start;
             let area_shrunk_size = pool.area_size_from_byte_size(new_size);
@@ -1174,7 +1185,7 @@ impl JitAllocator {
             }
 
             let area_end =
-                bit_vector_index_of(&block.stop_bitvector(), area_start as _, true) as u32 + 1;
+                bit_vector_index_of(block.stop_bitvector(), area_start as _, true) as u32 + 1;
             let byte_offset = pool.byte_size_from_area_size(area_start);
             let byte_size = pool.byte_size_from_area_size(area_end - area_start);
 
@@ -1214,26 +1225,38 @@ impl JitAllocator {
         flush_instruction_cache(span.rx(), span.size());
 
         if span.size() != size {
-            self.shrink(span.rx(), span.size)?;
+            unsafe {
+                self.shrink(span.rx(), span.size)?;
+            }
         }
 
         Ok(())
     }
 
+    /// Writes the provided `slice` to the memory referenced by `span` starting at `offset`, and then flushes the instruction cache for that memory range.
+    ///
+    /// # Safety
+    ///
+    /// - `span` must reference a valid memory range allocated by this allocator.
+    /// - `offset + slice.len()` must not exceed the size of the memory range referenced by `span`.
+    /// - After this function is called, the memory range from `span.rx() + offset` to `span.rx() + offset + slice.len()` must contain valid executable code.
+    /// - The caller must ensure that no other threads are executing code in the memory range being modified by this function while it is running.
     pub unsafe fn copy_from_slice(
         &mut self,
         span: &mut Span,
         offset: usize,
         slice: &[u8],
     ) -> Result<(), AsmError> {
-        if slice.len() == 0 {
+        if slice.is_empty() {
             return Ok(());
         }
 
         protect_jit_memory(ProtectJitAccess::ReadWrite);
-        span.rw()
-            .add(offset)
-            .copy_from_nonoverlapping(slice.as_ptr(), slice.len());
+        unsafe {
+            span.rw()
+                .add(offset)
+                .copy_from_nonoverlapping(slice.as_ptr(), slice.len());
+        }
         protect_jit_memory(ProtectJitAccess::ReadExecute);
         flush_instruction_cache(span.rx(), span.size());
         Ok(())
@@ -1247,7 +1270,9 @@ unsafe fn fill_pattern(mem: *mut u8, pattern: u32, size_in_bytes: usize) {
     let p = mem as *mut u32;
 
     for i in 0..n {
-        p.add(i).write(pattern);
+        unsafe {
+            p.add(i).write(pattern);
+        }
     }
 }
 

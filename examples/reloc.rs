@@ -1,7 +1,7 @@
-use asmkit::core::buffer::{perform_relocations, CodeBuffer, ExternalName, RelocDistance};
+use asmkit::core::buffer::{CodeBuffer, ExternalName, RelocDistance, perform_relocations};
 use asmkit::core::jit_allocator::JitAllocator;
 
-extern "C" {
+unsafe extern "C" {
     fn puts(_: *const i8);
 }
 

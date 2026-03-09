@@ -81,9 +81,7 @@ pub fn strpcatreg<W: Write>(w: &mut W, rt: RegType, ri: usize, size: usize) -> f
     let mut dst = [0; 16];
     let name = &nametab[idx + 8 * ri..];
 
-    for i in 0..8 {
-        dst[i] = name[i + 1];
-    }
+    dst[..8].copy_from_slice(&name[1..(8 + 1)]);
 
     if rt == RegType::Vec && size > 4 {
         dst[0] += size as u8 - 4;
@@ -157,23 +155,21 @@ fn mnemonic<W: Write>(w: &mut W, inst: &Instruction) -> fmt::Result {
             }
         }
 
-        Opcode::POP => {
+        Opcode::POP
             if inst.op_size_log(0) == 1
                 && inst.op_type(0) == OperandType::Reg
-                && inst.op_reg_type(0) == Some(RegType::Seg)
-            {
-                sizesuffix[0] = b'w';
-                sizesuffixlen = 1;
-            }
+                && inst.op_reg_type(0) == Some(RegType::Seg) =>
+        {
+            sizesuffix[0] = b'w';
+            sizesuffixlen = 1;
         }
 
-        Opcode::MOV => {
+        Opcode::MOV
             if inst.has_rep()
                 && inst.op_type(0) == OperandType::Mem
-                && inst.op_type(1) == OperandType::Imm
-            {
-                prefix_xacq_xrel = true;
-            }
+                && inst.op_type(1) == OperandType::Imm =>
+        {
+            prefix_xacq_xrel = true;
         }
 
         Opcode::FXSAVE
@@ -183,12 +179,12 @@ fn mnemonic<W: Write>(w: &mut W, inst: &Instruction) -> fmt::Result {
         | Opcode::XSAVEOPT
         | Opcode::XSAVES
         | Opcode::XRSTOR
-        | Opcode::XRSTORS => {
-            if inst.opsize_log() == 3 {
-                sizesuffix[0] = b'6';
-                sizesuffix[1] = b'4';
-                sizesuffixlen = 2;
-            }
+        | Opcode::XRSTORS
+            if inst.opsize_log() == 3 =>
+        {
+            sizesuffix[0] = b'6';
+            sizesuffix[1] = b'4';
+            sizesuffixlen = 2;
         }
 
         Opcode::EVX_MOV_G2X | Opcode::EVX_MOV_X2G => {
@@ -206,11 +202,9 @@ fn mnemonic<W: Write>(w: &mut W, inst: &Instruction) -> fmt::Result {
             sizesuffixlen = 1;
         }
 
-        Opcode::RET | Opcode::ENTER | Opcode::LEAVE => {
-            if inst.opsize_log() == 1 {
-                sizesuffix[0] = b'w';
-                sizesuffixlen = 1;
-            }
+        Opcode::RET | Opcode::ENTER | Opcode::LEAVE if inst.opsize_log() == 1 => {
+            sizesuffix[0] = b'w';
+            sizesuffixlen = 1;
         }
 
         Opcode::LODS | Opcode::MOVS | Opcode::CMPS | Opcode::OUTS => {
@@ -296,6 +290,12 @@ fn mnemonic<W: Write>(w: &mut W, inst: &Instruction) -> fmt::Result {
 }
 
 pub struct Formatter {}
+
+impl Default for Formatter {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 
 impl Formatter {
     pub const fn new() -> Self {
@@ -516,9 +516,9 @@ pub fn pretty_disassembler<W: Write>(
 
         let mut outs = alloc::string::String::new();
         fmt.format(&mut outs, &inst)?;
-        write!(
+        writeln!(
             out,
-            "{:<15.016x} {:<20} {}\n",
+            "{:<15.016x} {:<20} {}",
             inst.address, instr_bytes, outs
         )?;
     }

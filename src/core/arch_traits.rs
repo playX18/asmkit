@@ -17,18 +17,18 @@ pub struct ArchTraits {
 }
 
 pub const ARCH_X86: usize = if cfg!(any(target_arch = "x86", target_arch = "x86_64")) {
-    size_of::<usize>() * 8
+    usize::BITS as usize
 } else {
     0
 };
 
 pub const ARCH_ARM: usize = if cfg!(any(target_arch = "aarch64", target_arch = "arm")) {
-    size_of::<usize>() * 8
+    usize::BITS as usize
 } else {
     0
 };
 pub const ARCH_RISCV: usize = if cfg!(any(target_arch = "riscv64", target_arch = "riscv32")) {
-    size_of::<usize>() * 8
+    usize::BITS as usize
 } else {
     0
 };

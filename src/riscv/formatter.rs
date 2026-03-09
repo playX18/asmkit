@@ -1,19 +1,25 @@
 use core::fmt::{self, Write};
 
 use super::{
+    Opcode,
     decode::{Decoder, Instruction},
     opcodes::Encoding,
     opcodes::OPCODE_STR,
-    Opcode,
 };
 
 pub struct Formatter {
     abi_names: bool,
 }
 
+impl Default for Formatter {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Formatter {
     pub const fn new() -> Self {
-        Self { abi_names: !true }
+        Self { abi_names: true }
     }
 
     fn write_reg<W: Write>(&self, out: &mut W, f: bool, vec: bool, reg: u32) -> fmt::Result {
@@ -130,7 +136,7 @@ impl Formatter {
             Encoding::Bimm12HiRs1Bimm12lo => {
                 write!(out, " ")?;
                 self.write_reg(out, false, false, inst.value.rs1())?;
-                let addr = inst.address as isize as isize + inst.value.bimm12lohi() as isize;
+                let addr = inst.address as isize + inst.value.bimm12lohi() as isize;
                 write!(out, ", {:x}", addr)?;
             }
 
@@ -825,7 +831,7 @@ pub fn pretty_disassembler<W: Write>(
         write!(out, "{:016x}: {:08x}  ", inst.address, inst.value.value)?;
 
         fmt.format(out, &inst)?;
-        write!(out, "\n")?;
+        writeln!(out)?;
     }
     Ok(())
 }
