@@ -19,7 +19,24 @@ use crate::{
     define_abstract_reg, define_final_reg, define_operand_cast, define_reg_traits,
 };
 use core::ops::{Add, Deref, Mul};
-use derive_more::derive::{Deref, DerefMut};
+
+macro_rules! impl_deref_for_wrapper {
+    ($wrapper:ty, $target:ty) => {
+        impl core::ops::Deref for $wrapper {
+            type Target = $target;
+
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+
+        impl core::ops::DerefMut for $wrapper {
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+    };
+}
 
 define_reg_traits!(X86Rip, RegGroup::X86Rip, 0, TypeId::Void);
 define_reg_traits!(X86GpbLo, RegGroup::Gp, 1, TypeId::Int8);
@@ -39,8 +56,10 @@ define_reg_traits!(X86St, RegGroup::X86St, 10, TypeId::Float80);
 define_reg_traits!(X86Bnd, RegGroup::X86Bnd, 16, TypeId::Void);
 define_reg_traits!(X86Tmm, RegGroup::X86Tmm, 0, TypeId::Void);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Reg(pub BaseReg);
+
+impl_deref_for_wrapper!(Reg, BaseReg);
 
 define_abstract_reg!(Reg, BaseReg);
 
@@ -309,8 +328,10 @@ impl Reg {
     pub const SIGNATURE: u32 = BaseReg::SIGNATURE;
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Gp(pub Reg);
+
+impl_deref_for_wrapper!(Gp, Reg);
 
 define_abstract_reg!(Gp, Reg);
 
@@ -339,8 +360,10 @@ impl Gp {
     pub const SIGNATURE: u32 = Reg::SIGNATURE;
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Vec(pub Reg);
+
+impl_deref_for_wrapper!(Vec, Reg);
 
 define_abstract_reg!(Vec, Reg);
 
@@ -352,8 +375,10 @@ impl Vec {
     pub const SIGNATURE: u32 = Reg::SIGNATURE;
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct SReg(pub Reg);
+
+impl_deref_for_wrapper!(SReg, Reg);
 
 impl SReg {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -370,8 +395,10 @@ impl SReg {
 
 define_final_reg!(SReg, Reg, X86SReg);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Gpb(pub Gp);
+
+impl_deref_for_wrapper!(Gpb, Gp);
 
 define_abstract_reg!(Gpb, Gp);
 
@@ -383,8 +410,10 @@ impl Gpb {
     pub const SIGNATURE: u32 = Gp::SIGNATURE;
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct GpbLo(pub Gpb);
+
+impl_deref_for_wrapper!(GpbLo, Gpb);
 
 impl GpbLo {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -394,8 +423,10 @@ impl GpbLo {
 
 define_final_reg!(GpbLo, Gpb, X86GpbLo);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct GpbHi(pub Gpb);
+
+impl_deref_for_wrapper!(GpbHi, Gpb);
 
 impl GpbHi {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -405,8 +436,10 @@ impl GpbHi {
 
 define_final_reg!(GpbHi, Gpb, X86GpbHi);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Gpw(pub Gp);
+
+impl_deref_for_wrapper!(Gpw, Gp);
 
 impl Gpw {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -416,8 +449,10 @@ impl Gpw {
 
 define_final_reg!(Gpw, Gp, X86Gpw);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Gpd(pub Gp);
+
+impl_deref_for_wrapper!(Gpd, Gp);
 
 impl Gpd {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -427,8 +462,10 @@ impl Gpd {
 
 define_final_reg!(Gpd, Gp, X86Gpd);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Gpq(pub Gp);
+
+impl_deref_for_wrapper!(Gpq, Gp);
 
 impl Gpq {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -438,8 +475,10 @@ impl Gpq {
 
 define_final_reg!(Gpq, Gp, X86Gpq);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Xmm(pub Vec);
+
+impl_deref_for_wrapper!(Xmm, Vec);
 
 impl Xmm {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -453,8 +492,10 @@ impl Xmm {
 
 define_final_reg!(Xmm, Vec, X86Xmm);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Ymm(pub Vec);
+
+impl_deref_for_wrapper!(Ymm, Vec);
 
 impl Ymm {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -468,8 +509,10 @@ impl Ymm {
 
 define_final_reg!(Ymm, Vec, X86Ymm);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Zmm(pub Vec);
+
+impl_deref_for_wrapper!(Zmm, Vec);
 
 impl Zmm {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -483,8 +526,10 @@ impl Zmm {
 
 define_final_reg!(Zmm, Vec, X86Zmm);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Mm(pub Reg);
+
+impl_deref_for_wrapper!(Mm, Reg);
 
 impl Mm {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -494,8 +539,10 @@ impl Mm {
 
 define_final_reg!(Mm, Reg, X86Mm);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct KReg(pub Reg);
+
+impl_deref_for_wrapper!(KReg, Reg);
 
 impl KReg {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -505,8 +552,10 @@ impl KReg {
 
 define_final_reg!(KReg, Reg, X86KReg);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct CReg(pub Reg);
+
+impl_deref_for_wrapper!(CReg, Reg);
 
 impl CReg {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -516,8 +565,10 @@ impl CReg {
 
 define_final_reg!(CReg, Reg, X86CReg);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct DReg(pub Reg);
+
+impl_deref_for_wrapper!(DReg, Reg);
 
 impl DReg {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -527,8 +578,10 @@ impl DReg {
 
 define_final_reg!(DReg, Reg, X86DReg);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct St(pub Reg);
+
+impl_deref_for_wrapper!(St, Reg);
 
 impl St {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -538,8 +591,10 @@ impl St {
 
 define_final_reg!(St, Reg, X86St);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Bnd(pub Reg);
+
+impl_deref_for_wrapper!(Bnd, Reg);
 
 impl Bnd {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -549,8 +604,10 @@ impl Bnd {
 
 define_final_reg!(Bnd, Reg, X86Bnd);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Tmm(pub Reg);
+
+impl_deref_for_wrapper!(Tmm, Reg);
 
 impl Tmm {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -560,8 +617,10 @@ impl Tmm {
 
 define_final_reg!(Tmm, Reg, X86Tmm);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Rip(pub Reg);
+
+impl_deref_for_wrapper!(Rip, Reg);
 
 impl Rip {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -933,8 +992,10 @@ pub mod regs {
 }
 pub use regs::*;
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash, Debug)]
 pub struct Mem(pub BaseMem);
+
+impl_deref_for_wrapper!(Mem, BaseMem);
 
 define_operand_cast!(Mem, BaseMem);
 

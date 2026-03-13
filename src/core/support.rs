@@ -46,7 +46,7 @@ where
     x >= a && x <= b
 }
 
-#[cfg(not(windows))]
+#[cfg(all(feature = "jit", not(windows)))]
 pub fn lookup_with_dlsym(name: &str) -> *const u8 {
     use alloc::ffi::CString;
     use core::ptr::null;

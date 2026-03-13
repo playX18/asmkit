@@ -927,6 +927,7 @@ impl<'a> Assembler<'a> {
 }
 
 impl<'a> Emitter for Assembler<'a> {
+    
     fn emit(&mut self, opcode: i64, op0: &Operand, op1: &Operand, op2: &Operand, op3: &Operand) {
         let mut opc = opcode as u64;
         opc |= self.flags;

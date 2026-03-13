@@ -1,6 +1,7 @@
-use asmkit::core::buffer::{CodeBuffer, ExternalName, RelocDistance, perform_relocations};
+use asmkit::core::buffer::{CodeBuffer, ExternalName, RelocDistance};
 use asmkit::core::jit_allocator::JitAllocator;
 
+use capstone::prelude::*;
 unsafe extern "C" {
     fn puts(_: *const i8);
 }
@@ -8,7 +9,6 @@ unsafe extern "C" {
 fn main() {
     {
         use asmkit::x86::*;
-        use formatter::pretty_disassembler;
 
         let mut buf = CodeBuffer::new();
         let mut asm = Assembler::new(&mut buf);
@@ -32,45 +32,33 @@ fn main() {
         }
 
         let mut jit = JitAllocator::new(Default::default());
-
-        // allocate memory for GOT table and for code itself
-        let mut span = jit
-            .alloc(result.data().len() + result.relocs().len() * 8)
+        let loaded = result
+            .allocate_relocated(&mut jit, |_| puts as *const u8, |_| puts as *const u8)
             .unwrap();
-
-        let mut got_addr_rx = std::ptr::null();
+        let span = loaded.span();
 
         unsafe {
-            jit.write(&mut span, |span| {
-                span.rw()
-                    .copy_from_nonoverlapping(result.data().as_ptr(), result.data().len());
-                got_addr_rx = span.rx().add(result.data().len());
-                span.rw()
-                    .add(result.data().len())
-                    .cast::<usize>()
-                    .write(puts as *const u8 as usize);
-                // we only link to one symbol in GOT table, don't bother with anything else...
-                perform_relocations(
-                    span.rw(),
-                    span.rx(),
-                    &result.relocs(),
-                    |_| unreachable!(),
-                    |_| got_addr_rx,
-                    |_| unreachable!(),
+            let cs = Capstone::new()
+                .x86()
+                .mode(arch::x86::ArchMode::Mode64)
+                .build()
+                .unwrap();
+
+            let insns = cs
+                .disasm_all(
+                    std::slice::from_raw_parts(span.rx(), off as usize),
+                    span.rx() as u64,
+                )
+                .unwrap();
+
+            for i in insns.iter() {
+                println!(
+                    "0x{:x}:\t{}\t{}",
+                    i.address(),
+                    i.mnemonic().unwrap(),
+                    i.op_str().unwrap()
                 );
-            })
-            .unwrap();
-
-            let mut out = String::new();
-            pretty_disassembler(
-                &mut out,
-                64,
-                std::slice::from_raw_parts(span.rx(), off as _),
-                span.rx() as _,
-            )
-            .unwrap();
-
-            println!("{}", out);
+            }
 
             #[cfg(target_arch = "x86_64")]
             {
@@ -80,7 +68,7 @@ fn main() {
             }
         }
     }
-
+    #[cfg(target_arch = "riscv64")]
     {
         use asmkit::riscv::*;
         use formatter::pretty_disassembler;
@@ -114,35 +102,12 @@ fn main() {
         }
 
         let mut jit = JitAllocator::new(Default::default());
-
-        // allocate memory for GOT table and for code itself
-        let mut span = jit
-            .alloc(result.data().len() + result.relocs().len() * 8)
+        let loaded = result
+            .allocate_relocated(&mut jit, |_| puts as *const u8, |_| puts as *const u8)
             .unwrap();
-
-        let mut got_addr_rx = std::ptr::null();
+        let span = loaded.span();
 
         unsafe {
-            jit.write(&mut span, |span| {
-                span.rw()
-                    .copy_from_nonoverlapping(result.data().as_ptr(), result.data().len());
-                got_addr_rx = span.rx().add(result.data().len());
-                span.rw()
-                    .add(result.data().len())
-                    .cast::<usize>()
-                    .write(puts as *const u8 as usize);
-                // we only link to one symbol in GOT table, don't bother with anything else...
-                perform_relocations(
-                    span.rw(),
-                    span.rx(),
-                    &result.relocs(),
-                    |_| puts as *const u8,
-                    |_| got_addr_rx,
-                    |_| unreachable!(),
-                );
-            })
-            .unwrap();
-
             let mut out = String::new();
             pretty_disassembler(
                 &mut out,
@@ -155,6 +120,72 @@ fn main() {
             println!("{}", out);
 
             #[cfg(target_arch = "riscv64")]
+            {
+                let f: extern "C" fn() = std::mem::transmute(span.rx());
+
+                f();
+            }
+        }
+    }
+
+    {
+        use asmkit::aarch64::*;
+        use capstone::prelude::*;
+
+        let mut buf = CodeBuffer::new();
+        let mut asm = Assembler::new(&mut buf);
+
+        let str_constant = asm.buffer.add_constant("Hello, World!\0");
+        let puts_sym = asm
+            .buffer
+            .add_symbol(ExternalName::Symbol("puts".into()), RelocDistance::Far);
+        asm.load_constant(x0, str_constant);
+        asm.load_constant(x1, puts_sym);
+        asm.blr(x1);
+        asm.ret(lr);
+
+        let end = asm.buffer.get_label();
+        asm.buffer.bind_label(end);
+        let off = asm.buffer.label_offset(end);
+
+        let result = buf.finish();
+
+        for reloc in result.relocs() {
+            println!("{:?}", reloc);
+        }
+
+        println!("puts at {:p}", puts as *const u8);
+
+        let mut jit = JitAllocator::new(Default::default());
+
+        let loaded = result
+            .allocate_relocated(&mut jit, |_| puts as *const u8, |_| puts as *const u8)
+            .unwrap();
+        let span = loaded.span();
+
+        unsafe {
+            let cs = Capstone::new()
+                .arm64()
+                .mode(arch::arm64::ArchMode::Arm)
+                .build()
+                .unwrap();
+
+            let insns = cs
+                .disasm_all(
+                    std::slice::from_raw_parts(span.rx(), off as usize),
+                    span.rx() as u64,
+                )
+                .unwrap();
+
+            for i in insns.iter() {
+                println!(
+                    "0x{:x}:\t{}\t{}",
+                    i.address(),
+                    i.mnemonic().unwrap(),
+                    i.op_str().unwrap()
+                );
+            }
+            #[cfg(target_arch = "aarch64")]
             {
                 let f: extern "C" fn() = std::mem::transmute(span.rx());
 

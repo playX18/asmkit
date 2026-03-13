@@ -6,7 +6,10 @@
 
 use smallvec::SmallVec;
 
-use crate::{core::operand::Label, x86::CondCode};
+use crate::core::operand::Label;
+
+#[cfg(feature = "x86")]
+use crate::x86::CondCode as X86CondCode;
 
 //pub mod x86;
 
@@ -74,18 +77,19 @@ impl RelationalCondition {
         }
     }
 
-    pub const fn x86_condition(self) -> CondCode {
+    #[cfg(feature = "x86")]
+    pub const fn x86_condition(self) -> X86CondCode {
         match self {
-            Self::Equal => CondCode::E,
-            Self::NotEqual => CondCode::NE,
-            Self::Above => CondCode::A,
-            Self::AboveOrEqual => CondCode::AE,
-            Self::Below => CondCode::B,
-            Self::BelowOrEqual => CondCode::BE,
-            Self::GreaterThan => CondCode::G,
-            Self::GreaterThanOrEqual => CondCode::GE,
-            Self::LessThan => CondCode::L,
-            Self::LessThanOrEqual => CondCode::LE,
+            Self::Equal => X86CondCode::E,
+            Self::NotEqual => X86CondCode::NE,
+            Self::Above => X86CondCode::A,
+            Self::AboveOrEqual => X86CondCode::AE,
+            Self::Below => X86CondCode::B,
+            Self::BelowOrEqual => X86CondCode::BE,
+            Self::GreaterThan => X86CondCode::G,
+            Self::GreaterThanOrEqual => X86CondCode::GE,
+            Self::LessThan => X86CondCode::L,
+            Self::LessThanOrEqual => X86CondCode::LE,
         }
     }
 }
@@ -102,14 +106,15 @@ impl ResultCondition {
         }
     }
 
-    pub const fn x86_condition(self) -> CondCode {
+    #[cfg(feature = "x86")]
+    pub const fn x86_condition(self) -> X86CondCode {
         match self {
-            Self::Carry => CondCode::C,
-            Self::Overflow => CondCode::O,
-            Self::Signed => CondCode::S,
-            Self::PositiveOrZero => CondCode::NS,
-            Self::Zero => CondCode::E,
-            Self::NonZero => CondCode::NE,
+            Self::Carry => X86CondCode::C,
+            Self::Overflow => X86CondCode::O,
+            Self::Signed => X86CondCode::S,
+            Self::PositiveOrZero => X86CondCode::NS,
+            Self::Zero => X86CondCode::E,
+            Self::NonZero => X86CondCode::NE,
         }
     }
 }
@@ -133,20 +138,21 @@ impl DoubleCondition {
     }
 
     /// Convert to x86 condition code, returning a tuple of (special, invert, condition_code)
-    pub const fn x86_condition(self) -> (bool, bool, CondCode) {
+    #[cfg(feature = "x86")]
+    pub const fn x86_condition(self) -> (bool, bool, X86CondCode) {
         match self {
-            Self::EqualAndOrdered => (true, false, CondCode::E),
-            Self::NotEqualAndOrdered => (false, false, CondCode::NE),
-            Self::GreaterThanAndOrdered => (false, false, CondCode::A),
-            Self::GreaterThanOrEqualAndOrdered => (false, false, CondCode::AE),
-            Self::LessThanAndOrdered => (false, true, CondCode::A),
-            Self::LessThanOrEqualAndOrdered => (false, true, CondCode::AE),
-            Self::EqualOrUnordered => (false, false, CondCode::E),
-            Self::NotEqualOrUnordered => (true, false, CondCode::NP),
-            Self::GreaterThanOrUnordered => (false, true, CondCode::B),
-            Self::GreaterThanOrEqualOrUnordered => (false, true, CondCode::BE),
-            Self::LessThanOrUnordered => (false, false, CondCode::B),
-            Self::LessThanOrEqualOrUnordered => (false, false, CondCode::BE),
+            Self::EqualAndOrdered => (true, false, X86CondCode::E),
+            Self::NotEqualAndOrdered => (false, false, X86CondCode::NE),
+            Self::GreaterThanAndOrdered => (false, false, X86CondCode::A),
+            Self::GreaterThanOrEqualAndOrdered => (false, false, X86CondCode::AE),
+            Self::LessThanAndOrdered => (false, true, X86CondCode::A),
+            Self::LessThanOrEqualAndOrdered => (false, true, X86CondCode::AE),
+            Self::EqualOrUnordered => (false, false, X86CondCode::E),
+            Self::NotEqualOrUnordered => (true, false, X86CondCode::NP),
+            Self::GreaterThanOrUnordered => (false, true, X86CondCode::B),
+            Self::GreaterThanOrEqualOrUnordered => (false, true, X86CondCode::BE),
+            Self::LessThanOrUnordered => (false, false, X86CondCode::B),
+            Self::LessThanOrEqualOrUnordered => (false, false, X86CondCode::BE),
         }
     }
 }

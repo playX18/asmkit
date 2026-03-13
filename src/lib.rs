@@ -64,12 +64,15 @@
 
 extern crate alloc;
 
+#[cfg(feature = "aarch64")]
 pub mod aarch64;
 pub mod core;
 pub mod masm;
 pub mod ppc;
+#[cfg(feature = "riscv")]
 pub mod riscv;
 pub mod util;
+
 pub mod x86;
 
 use ::core::fmt;
@@ -78,6 +81,7 @@ use ::core::fmt;
 pub enum AsmError {
     InvalidPrefix,
     InvalidOperand,
+    InvalidImmediate,
     InvalidInstruction,
     OutOfMemory,
     InvalidState,
@@ -99,6 +103,7 @@ impl fmt::Display for AsmError {
             AsmError::InvalidState => write!(f, "invalid state"),
             AsmError::TooManyHandles => write!(f, "too many handles"),
             AsmError::InvalidArgument => write!(f, "invalid argument"),
+            AsmError::InvalidImmediate => write!(f, "invalid immediate"),
             AsmError::FailedToOpenAnonymousMemory => {
                 write!(f, "failed to open anonymous memory")
             }

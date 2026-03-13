@@ -8,10 +8,28 @@ use crate::{
     define_abstract_reg, define_final_reg, define_operand_cast, define_reg_traits,
 };
 
-use derive_more::derive::{Deref, DerefMut};
+macro_rules! impl_deref_for_wrapper {
+    ($wrapper:ty, $target:ty) => {
+        impl core::ops::Deref for $wrapper {
+            type Target = $target;
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+
+        impl core::ops::DerefMut for $wrapper {
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+    };
+}
+
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Reg(pub BaseReg);
+
+impl_deref_for_wrapper!(Reg, BaseReg);
 
 define_abstract_reg!(Reg, BaseReg);
 
@@ -50,8 +68,10 @@ impl Reg {
     pub const SIGNATURE: u32 = BaseReg::SIGNATURE;
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Gp(pub Reg);
+
+impl_deref_for_wrapper!(Gp, Reg);
 
 impl Gp {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
@@ -94,8 +114,10 @@ impl Gp {
 
 define_final_reg!(Gp, Reg, RISCV64Gp);
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Fp(pub Reg);
+
+impl_deref_for_wrapper!(Fp, Reg);
 
 define_final_reg!(Fp, Reg, RISCVFp);
 
@@ -138,8 +160,10 @@ impl Fp {
     pub const F31: u32 = 31;
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Vp(pub Reg);
+
+impl_deref_for_wrapper!(Vp, Reg);
 
 define_final_reg!(Vp, Reg, RISCVVec);
 

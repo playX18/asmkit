@@ -5,7 +5,24 @@ use crate::{
 };
 
 use core::fmt;
-use derive_more::derive::{Deref, DerefMut};
+
+macro_rules! impl_deref_for_wrapper {
+    ($wrapper:ty, $target:ty) => {
+        impl core::ops::Deref for $wrapper {
+            type Target = $target;
+
+            fn deref(&self) -> &Self::Target {
+                &self.0
+            }
+        }
+
+        impl core::ops::DerefMut for $wrapper {
+            fn deref_mut(&mut self) -> &mut Self::Target {
+                &mut self.0
+            }
+        }
+    };
+}
 
 pub struct A64Gpw;
 impl RegTraits for A64Gpw {
@@ -63,8 +80,10 @@ impl RegTraits for A64VecQ {
     const TYPE_ID: TypeId = TypeId::Int32x4;
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Reg(pub BaseReg);
+
+impl_deref_for_wrapper!(Reg, BaseReg);
 
 define_abstract_reg!(Reg, BaseReg);
 
@@ -136,11 +155,21 @@ impl Reg {
         T::TYPE_ID
     }
 
+    pub fn is_sp(&self) -> bool {
+        self.is_gp() && self.0.0.id() == Gp::ID_SP
+    }
+
+    pub fn is_zr(&self) -> bool {
+        self.is_gp() && self.0.0.id() == Gp::ID_ZR
+    }
+
     pub const SIGNATURE: u32 = BaseReg::SIGNATURE;
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Gp(pub Reg);
+
+impl_deref_for_wrapper!(Gp, Reg);
 
 define_abstract_reg!(Gp, Reg);
 
@@ -216,8 +245,10 @@ pub enum VecElementType {
     H2 = 6,
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Vec(pub Reg);
+
+impl_deref_for_wrapper!(Vec, Reg);
 
 define_abstract_reg!(Vec, Reg);
 
@@ -367,8 +398,8 @@ impl Vec {
 
     pub fn is_vec_b8(&self) -> bool {
         self.0
-             .0
-             .0
+            .0
+            .0
             .signature
             .subset(REG_BASE_SIGNATURE_MASK | Self::SIGNATURE_REG_ELEMENT_TYPE_MASK)
             == OperandSignature::new(A64VecD::SIGNATURE | Self::SIGNATURE_ELEMENT_B)
@@ -376,8 +407,8 @@ impl Vec {
 
     pub fn is_vec_h4(&self) -> bool {
         self.0
-             .0
-             .0
+            .0
+            .0
             .signature
             .subset(REG_BASE_SIGNATURE_MASK | Self::SIGNATURE_REG_ELEMENT_TYPE_MASK)
             == OperandSignature::new(A64VecD::SIGNATURE | Self::SIGNATURE_ELEMENT_H)
@@ -385,8 +416,8 @@ impl Vec {
 
     pub fn is_vec_s2(&self) -> bool {
         self.0
-             .0
-             .0
+            .0
+            .0
             .signature
             .subset(REG_BASE_SIGNATURE_MASK | Self::SIGNATURE_REG_ELEMENT_TYPE_MASK)
             == OperandSignature::new(A64VecD::SIGNATURE | Self::SIGNATURE_ELEMENT_S)
@@ -394,8 +425,8 @@ impl Vec {
 
     pub fn is_vec_d1(&self) -> bool {
         self.0
-             .0
-             .0
+            .0
+            .0
             .signature
             .subset(REG_BASE_SIGNATURE_MASK | Self::SIGNATURE_REG_ELEMENT_TYPE_MASK)
             == OperandSignature::new(A64VecD::SIGNATURE)
@@ -403,8 +434,8 @@ impl Vec {
 
     pub fn is_vec_b16(&self) -> bool {
         self.0
-             .0
-             .0
+            .0
+            .0
             .signature
             .subset(REG_BASE_SIGNATURE_MASK | Self::SIGNATURE_REG_ELEMENT_TYPE_MASK)
             == OperandSignature::new(A64VecQ::SIGNATURE | Self::SIGNATURE_ELEMENT_B)
@@ -412,8 +443,8 @@ impl Vec {
 
     pub fn is_vec_h8(&self) -> bool {
         self.0
-             .0
-             .0
+            .0
+            .0
             .signature
             .subset(REG_BASE_SIGNATURE_MASK | Self::SIGNATURE_REG_ELEMENT_TYPE_MASK)
             == OperandSignature::new(A64VecQ::SIGNATURE | Self::SIGNATURE_ELEMENT_H)
@@ -421,8 +452,8 @@ impl Vec {
 
     pub fn is_vec_s4(&self) -> bool {
         self.0
-             .0
-             .0
+            .0
+            .0
             .signature
             .subset(REG_BASE_SIGNATURE_MASK | Self::SIGNATURE_REG_ELEMENT_TYPE_MASK)
             == OperandSignature::new(A64VecQ::SIGNATURE | Self::SIGNATURE_ELEMENT_S)
@@ -430,8 +461,8 @@ impl Vec {
 
     pub fn is_vec_d2(&self) -> bool {
         self.0
-             .0
-             .0
+            .0
+            .0
             .signature
             .subset(REG_BASE_SIGNATURE_MASK | Self::SIGNATURE_REG_ELEMENT_TYPE_MASK)
             == OperandSignature::new(A64VecQ::SIGNATURE | Self::SIGNATURE_ELEMENT_D)
@@ -439,8 +470,8 @@ impl Vec {
 
     pub fn is_vec_b4x4(&self) -> bool {
         self.0
-             .0
-             .0
+            .0
+            .0
             .signature
             .subset(REG_BASE_SIGNATURE_MASK | Self::SIGNATURE_REG_ELEMENT_TYPE_MASK)
             == OperandSignature::new(A64VecQ::SIGNATURE | Self::SIGNATURE_ELEMENT_B4)
@@ -448,8 +479,8 @@ impl Vec {
 
     pub fn is_vec_h2x4(&self) -> bool {
         self.0
-             .0
-             .0
+            .0
+            .0
             .signature
             .subset(REG_BASE_SIGNATURE_MASK | Self::SIGNATURE_REG_ELEMENT_TYPE_MASK)
             == OperandSignature::new(A64VecQ::SIGNATURE | Self::SIGNATURE_ELEMENT_H2)
@@ -553,8 +584,8 @@ impl Vec {
 
     pub fn has_element_type(&self) -> bool {
         self.0
-             .0
-             .0
+            .0
+            .0
             .signature
             .has_field::<{ Self::SIGNATURE_REG_ELEMENT_TYPE_MASK }>()
     }
@@ -562,8 +593,8 @@ impl Vec {
     pub fn element_type(&self) -> VecElementType {
         match self
             .0
-             .0
-             .0
+            .0
+            .0
             .signature
             .get_field::<{ Self::SIGNATURE_REG_ELEMENT_TYPE_MASK }>()
         {
@@ -579,54 +610,54 @@ impl Vec {
 
     pub fn set_element_type(&mut self, element_type: VecElementType) {
         self.0
-             .0
-             .0
+            .0
+            .0
             .signature
             .set_field::<{ Self::SIGNATURE_REG_ELEMENT_TYPE_MASK }>(element_type as u32);
     }
 
     pub fn reset_element_type(&mut self) {
         self.0
-             .0
-             .0
+            .0
+            .0
             .signature
             .set_field::<{ Self::SIGNATURE_REG_ELEMENT_TYPE_MASK }>(0);
     }
 
     pub fn has_element_index(&self) -> bool {
         self.0
-             .0
-             .0
+            .0
+            .0
             .signature
             .has_field::<{ Self::SIGNATURE_REG_ELEMENT_FLAG_MASK }>()
     }
 
     pub fn element_index(&self) -> u32 {
         self.0
-             .0
-             .0
+            .0
+            .0
             .signature
             .get_field::<{ Self::SIGNATURE_REG_ELEMENT_INDEX_MASK }>()
     }
 
     pub fn set_element_index(&mut self, element_index: u32) {
-        self.0 .0 .0.signature.bits |= Self::SIGNATURE_REG_ELEMENT_FLAG_MASK;
+        self.0.0.0.signature.bits |= Self::SIGNATURE_REG_ELEMENT_FLAG_MASK;
         self.0
-             .0
-             .0
+            .0
+            .0
             .signature
             .set_field::<{ Self::SIGNATURE_REG_ELEMENT_INDEX_MASK }>(element_index);
     }
 
     pub fn reset_element_index(&mut self) {
-        self.0 .0 .0.signature.bits &=
+        self.0.0.0.signature.bits &=
             !(Self::SIGNATURE_REG_ELEMENT_FLAG_MASK | Self::SIGNATURE_REG_ELEMENT_INDEX_MASK);
     }
 
     pub fn at(&self, element_index: u32) -> Self {
         Self(Reg::from_signature_and_id(
             OperandSignature::new(
-                (self.0 .0 .0.signature.bits & !Self::SIGNATURE_REG_ELEMENT_INDEX_MASK)
+                (self.0.0.0.signature.bits & !Self::SIGNATURE_REG_ELEMENT_INDEX_MASK)
                     | (element_index << Self::SIGNATURE_REG_ELEMENT_INDEX_SHIFT)
                     | Self::SIGNATURE_REG_ELEMENT_FLAG_MASK,
             ),
@@ -690,8 +721,10 @@ pub enum OffsetMode {
     PostIndex = 2,
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Mem(pub BaseMem);
+
+impl_deref_for_wrapper!(Mem, BaseMem);
 
 define_operand_cast!(Mem, BaseMem);
 

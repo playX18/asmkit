@@ -5,10 +5,11 @@ use crate::{
     core::{
         arch_traits::Arch,
         buffer::{CodeBufferFinalized, CodeOffset, LabelUse},
-        jit_allocator::{JitAllocator, Span},
     },
 };
 
+#[cfg(feature = "jit")]
+use crate::jit_allocator::{JitAllocator, Span};
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub struct PatchBlockId(u32);
 
@@ -94,7 +95,7 @@ impl PatchCatalog {
         self.sites.get(id.index())
     }
 
-    fn site_mut(&mut self, id: PatchSiteId) -> Option<&mut PatchSite> {
+    pub fn site_mut(&mut self, id: PatchSiteId) -> Option<&mut PatchSite> {
         self.sites.get_mut(id.index())
     }
 }
@@ -126,11 +127,13 @@ pub fn fill_with_nops(arch: Arch, buffer: &mut [u8]) -> Result<(), AsmError> {
     Ok(())
 }
 
+#[cfg(feature = "jit")]
 pub struct LoadedPatchableCode {
     catalog: PatchCatalog,
     span: Span,
 }
 
+#[cfg(feature = "jit")]
 impl LoadedPatchableCode {
     pub(crate) fn new(span: Span, catalog: PatchCatalog) -> Self {
         Self { catalog, span }
@@ -209,6 +212,7 @@ impl CodeBufferFinalized {
         &self.patch_catalog
     }
 
+    #[cfg(feature = "jit")]
     pub fn allocate_patched(
         &self,
         jit_allocator: &mut JitAllocator,

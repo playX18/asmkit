@@ -2,18 +2,19 @@ use alloc::{borrow::Cow, collections::BinaryHeap, vec::Vec};
 
 use smallvec::SmallVec;
 
-use crate::{
-    AsmError,
-    riscv::{self},
+use crate::AsmError;
+use crate::core::patch::{
+    PatchBlock, PatchBlockId, PatchCatalog, PatchSite, PatchSiteId, fill_with_nops,
+    minimum_patch_alignment,
 };
+#[cfg(feature = "riscv")]
+use crate::riscv;
+
+#[cfg(feature = "jit")]
+use crate::jit_allocator::{JitAllocator, Span};
 
 use super::{
-    jit_allocator::{JitAllocator, Span},
     operand::{Label, Sym},
-    patch::{
-        PatchBlock, PatchBlockId, PatchCatalog, PatchSite, PatchSiteId, fill_with_nops,
-        minimum_patch_alignment,
-    },
     target::Environment,
 };
 
@@ -104,6 +105,12 @@ pub struct AsmFixup {
     pub kind: LabelUse,
 }
 
+impl AsmFixup {
+    fn deadline(&self) -> CodeOffset {
+        self.offset.saturating_sub(self.kind.max_pos_range())
+    }
+}
+
 /// Metadata about a constant.
 #[derive(Clone, Copy)]
 struct AsmConstant {
@@ -127,6 +134,67 @@ pub struct CodeBufferFinalized {
     pub(crate) symbols: SmallVec<[SymData; 16]>,
     pub(crate) alignment: u32,
     pub(crate) patch_catalog: PatchCatalog,
+}
+
+/// Executable memory loaded from a finalized code buffer with relocations applied.
+#[cfg(feature = "jit")]
+pub struct LoadedRelocatedCode {
+    span: Span,
+    code_size: usize,
+    got_targets: Vec<RelocTarget>,
+}
+
+#[cfg(feature = "jit")]
+impl LoadedRelocatedCode {
+    pub const fn rx(&self) -> *const u8 {
+        self.span.rx()
+    }
+
+    pub const fn rw(&self) -> *mut u8 {
+        self.span.rw()
+    }
+
+    pub const fn span(&self) -> &Span {
+        &self.span
+    }
+
+    pub const fn code_size(&self) -> usize {
+        self.code_size
+    }
+
+    pub fn got_targets(&self) -> &[RelocTarget] {
+        &self.got_targets
+    }
+
+    pub fn got_size(&self) -> usize {
+        self.got_targets.len() * core::mem::size_of::<usize>()
+    }
+
+    pub fn got_rx(&self) -> *const u8 {
+        self.rx().wrapping_add(self.code_size)
+    }
+
+    pub fn got_rw(&self) -> *mut u8 {
+        self.rw().wrapping_add(self.code_size)
+    }
+}
+
+pub fn reloc_uses_got(kind: Reloc) -> bool {
+    matches!(
+        kind,
+        Reloc::X86GOTPCRel4
+            | Reloc::RiscvGotHi20
+            | Reloc::RiscvPCRelLo12I
+            | Reloc::Aarch64AdrGotPage21
+            | Reloc::Aarch64Ld64GotLo12Nc
+    )
+}
+
+pub fn got_slot_index(got_targets: &[RelocTarget], target: &RelocTarget) -> usize {
+    got_targets
+        .iter()
+        .position(|item| item == target)
+        .expect("missing GOT target for relocation")
 }
 
 impl CodeBufferFinalized {
@@ -162,6 +230,7 @@ impl CodeBufferFinalized {
     /// This will also write the code into the allocated memory. To execute
     /// code you can simply use [`span.rx()`](Span::rx) to get a pointer to read+exec memory
     /// and transmute that to a function pointer of the appropriate type.
+    #[cfg(feature = "jit")]
     pub fn allocate(&self, jit_allocator: &mut JitAllocator) -> Result<Span, AsmError> {
         let mut span = jit_allocator.alloc(self.data().len())?;
 
@@ -173,6 +242,63 @@ impl CodeBufferFinalized {
         }
 
         Ok(span)
+    }
+
+    /// Allocate executable memory and apply relocations, including GOT setup in JIT mode.
+    ///
+    /// GOT entries are created automatically for relocations that require them and populated
+    /// with values returned by `get_address`.
+    #[cfg(feature = "jit")]
+    pub fn allocate_relocated(
+        &self,
+        jit_allocator: &mut JitAllocator,
+        get_address: impl Fn(&RelocTarget) -> *const u8,
+        get_plt_entry: impl Fn(&RelocTarget) -> *const u8,
+    ) -> Result<LoadedRelocatedCode, AsmError> {
+        let mut got_targets = Vec::new();
+
+        for reloc in &self.relocs {
+            if reloc_uses_got(reloc.kind) && !got_targets.iter().any(|item| item == &reloc.target) {
+                got_targets.push(reloc.target.clone());
+            }
+        }
+
+        let got_size = got_targets.len() * core::mem::size_of::<usize>();
+        let total_size = self.data().len() + got_size;
+        let mut span = jit_allocator.alloc(total_size)?;
+
+        unsafe {
+            jit_allocator.write(&mut span, |span| {
+                span.rw()
+                    .copy_from_nonoverlapping(self.data().as_ptr(), self.data().len());
+
+                let got_rw = span.rw().wrapping_add(self.data().len()) as *mut usize;
+                for (index, target) in got_targets.iter().enumerate() {
+                    let addr = get_address(target);
+                    got_rw.wrapping_add(index).write_unaligned(addr.addr());
+                }
+
+                let got_rx = span.rx().wrapping_add(self.data().len());
+                perform_relocations(
+                    span.rw(),
+                    span.rx(),
+                    &self.relocs,
+                    &get_address,
+                    |target| {
+                        got_rx.wrapping_add(
+                            got_slot_index(&got_targets, target) * core::mem::size_of::<usize>(),
+                        )
+                    },
+                    &get_plt_entry,
+                );
+            })?;
+        }
+
+        Ok(LoadedRelocatedCode {
+            span,
+            code_size: self.data().len(),
+            got_targets,
+        })
     }
 }
 
@@ -279,6 +405,10 @@ impl CodeBuffer {
         Label::from_id(l as _)
     }
 
+    pub fn is_bound(&mut self, label: Label) -> bool {
+        self.label_offsets[label.id() as usize] != u32::MAX
+    }
+
     pub fn get_label_for_constant(&mut self, constant: Constant) -> Label {
         let (
             _,
@@ -319,6 +449,7 @@ impl CodeBuffer {
         };
 
         self.pending_fixup_records.push(fixup);
+        self.pending_fixup_deadline = self.pending_fixup_deadline.min(fixup.deadline());
     }
 
     /// Align up to the given alignment.
@@ -839,6 +970,11 @@ pub enum Reloc {
     /// This is equivalent to `R_AARCH64_LD64_GOT_LO12_NC` (312) in the  [aaelf64](https://github.com/ARM-software/abi-aa/blob/2bcab1e3b22d55170c563c3c7940134089176746/aaelf64/aaelf64.rst#static-aarch64-relocations)
     Aarch64Ld64GotLo12Nc,
 
+    /// Equivalent of `R_AARCH64_ADR_PREL_PG_HI21`.
+    Aarch64AdrPrelPgHi21,
+    /// Equivalent of `R_AARCH64_ADD_ABS_LO12_NC`.
+    Aarch64AddAbsLo12Nc,
+
     /// RISC-V Absolute address: 64-bit address.
     RiscvAbs8,
 
@@ -926,6 +1062,9 @@ pub enum LabelUse {
     /// 21-bit offset for ADRP (get address of label). PC-rel, offset is shifted. Immediate is
     /// 21 signed bits, with high 19 bits in bits 23:5 and low 2 bits in bits 30:29.
     A64Adrp21,
+    A64Ldr12,
+
+    A64AddAbsLo12,
 }
 
 impl LabelUse {
@@ -954,6 +1093,12 @@ impl LabelUse {
                 let page_delta = ((label_offset & !0xfff) as i64) - ((use_offset & !0xfff) as i64);
                 page_delta % 4096 == 0 && (-(1 << 32)..=((1 << 32) - 4096)).contains(&page_delta)
             }
+
+            Self::A64AddAbsLo12 => {
+                delta % 4096 == delta && (-(1 << 12)..=(1 << 12) - 1).contains(&delta)
+            }
+
+            Self::A64Ldr12 => true,
         }
     }
 
@@ -1030,36 +1175,64 @@ impl LabelUse {
                 | Self::RVPCRelLo12I
                 | Self::RVPCRel32
         ) {
-            let base = riscv::X31;
-
+            #[cfg(not(feature = "riscv"))]
             {
-                let x = riscv::Inst::new(riscv::Opcode::AUIPC)
-                    .encode()
-                    .set_rd(base.id())
-                    .value
-                    .to_le_bytes();
-                buffer[0] = x[0];
-                buffer[1] = x[1];
-                buffer[2] = x[2];
-                buffer[3] = x[3];
+                let _ = (buffer, veneer_offset);
+                panic!("RISC-V veneers aren't supported without the `riscv` feature");
             }
-
+            #[cfg(feature = "riscv")]
             {
-                let x = riscv::Inst::new(riscv::Opcode::JALR)
-                    .encode()
-                    .set_rd(riscv::ZERO.id())
-                    .set_rs1(base.id())
-                    .value
-                    .to_le_bytes();
-                buffer[4] = x[0];
-                buffer[5] = x[1];
-                buffer[6] = x[2];
-                buffer[7] = x[3];
-            }
+                let base = riscv::X31;
 
-            (veneer_offset, LabelUse::RVPCRel32)
+                {
+                    let x = riscv::Inst::new(riscv::Opcode::AUIPC)
+                        .encode()
+                        .set_rd(base.id())
+                        .value
+                        .to_le_bytes();
+                    buffer[0] = x[0];
+                    buffer[1] = x[1];
+                    buffer[2] = x[2];
+                    buffer[3] = x[3];
+                }
+
+                {
+                    let x = riscv::Inst::new(riscv::Opcode::JALR)
+                        .encode()
+                        .set_rd(riscv::ZERO.id())
+                        .set_rs1(base.id())
+                        .value
+                        .to_le_bytes();
+                    buffer[4] = x[0];
+                    buffer[5] = x[1];
+                    buffer[6] = x[2];
+                    buffer[7] = x[3];
+                }
+
+                (veneer_offset, LabelUse::RVPCRel32)
+            }
         } else {
-            todo!()
+            #[cfg(not(feature = "aarch64"))]
+            {
+                panic!("AArch64 veneers aren't supported without the `aarch64` feature");
+            }
+
+            #[cfg(feature = "aarch64")]
+            match self {
+                LabelUse::A64Branch14 | LabelUse::A64Branch19 => {
+                    // veneer is a Branch26 (unconditional branch). Just encode directly here -- don't
+                    // bother with constructing an Inst.
+                    let insn_word = 0b000101 << 26;
+                    buffer[0..4].clone_from_slice(&u32::to_le_bytes(insn_word));
+                    (veneer_offset, LabelUse::A64Branch26)
+                }
+
+                LabelUse::A64Branch26 => {
+                    todo!()
+                }
+
+                _ => todo!(),
+            }
         }
     }
     pub fn patch(&self, buffer: &mut [u8], use_offset: CodeOffset, label_offset: CodeOffset) {
@@ -1102,29 +1275,43 @@ impl LabelUse {
             }
 
             Self::RVPCRel32 => {
-                let (imm20, imm12) = generate_imm(pc_rel as u64);
-                let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
-                let insn2 = u32::from_le_bytes([buffer[4], buffer[5], buffer[6], buffer[7]]);
+                #[cfg(feature = "riscv")]
+                {
+                    let (imm20, imm12) = generate_imm(pc_rel as u64);
+                    let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
+                    let insn2 = u32::from_le_bytes([buffer[4], buffer[5], buffer[6], buffer[7]]);
 
-                let auipc = riscv::Inst::new(riscv::Opcode::AUIPC).encode().set_imm20(0);
-                let jalr = riscv::Inst::new(riscv::Opcode::JALR)
-                    .encode()
-                    .set_rd(0)
-                    .set_rs1(0)
-                    .set_imm12(0);
+                    let auipc = riscv::Inst::new(riscv::Opcode::AUIPC).encode().set_imm20(0);
+                    let jalr = riscv::Inst::new(riscv::Opcode::JALR)
+                        .encode()
+                        .set_rd(0)
+                        .set_rs1(0)
+                        .set_imm12(0);
 
-                buffer[0..4].copy_from_slice(&(insn | auipc.value | imm20).to_le_bytes());
-                buffer[4..8].copy_from_slice(&(insn2 | jalr.value | imm12).to_le_bytes());
+                    buffer[0..4].copy_from_slice(&(insn | auipc.value | imm20).to_le_bytes());
+                    buffer[4..8].copy_from_slice(&(insn2 | jalr.value | imm12).to_le_bytes());
+                }
+                #[cfg(not(feature = "riscv"))]
+                {
+                    panic!("RISC-V veneers aren't supported without the `riscv` feature");
+                }
             }
 
             Self::RVB12 => {
-                let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
-                let offset = pc_rel;
-                let v = ((offset >> 11 & 0b1) << 7)
-                    | ((offset >> 1 & 0b1111) << 8)
-                    | ((offset >> 5 & 0b11_1111) << 25)
-                    | ((offset >> 12 & 0b1) << 31);
-                buffer[0..4].clone_from_slice(&u32::to_le_bytes(insn | v));
+                #[cfg(feature = "riscv")]
+                {
+                    let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
+                    let offset = pc_rel;
+                    let v = ((offset >> 11 & 0b1) << 7)
+                        | ((offset >> 1 & 0b1111) << 8)
+                        | ((offset >> 5 & 0b11_1111) << 25)
+                        | ((offset >> 12 & 0b1) << 31);
+                    buffer[0..4].clone_from_slice(&u32::to_le_bytes(insn | v));
+                }
+                #[cfg(not(feature = "riscv"))]
+                {
+                    panic!("RISC-V veneers aren't supported without the `riscv` feature");
+                }
             }
 
             Self::RVPCRelHi20 => {
@@ -1161,19 +1348,33 @@ impl LabelUse {
             Self::RVCJump => {
                 debug_assert!(pc_rel & 1 == 0);
 
-                let insn = riscv::Inst::new(riscv::Opcode::CJ)
-                    .encode()
-                    .set_c_imm12(pc_rel as _);
-                buffer[0..2].clone_from_slice(&(insn.value as u16).to_le_bytes());
+                #[cfg(feature = "riscv")]
+                {
+                    let insn = riscv::Inst::new(riscv::Opcode::CJ)
+                        .encode()
+                        .set_c_imm12(pc_rel as _);
+                    buffer[0..2].clone_from_slice(&(insn.value as u16).to_le_bytes());
+                }
+                #[cfg(not(feature = "riscv"))]
+                {
+                    panic!("RISC-V jumps aren't supported without the `riscv` feature");
+                }
             }
 
             Self::RVCB9 => {
                 debug_assert!(pc_rel & 1 == 0);
 
-                let insn = riscv::Inst::new(riscv::Opcode::BEQZ)
-                    .encode()
-                    .set_c_bimm9lohi(pc_rel as _);
-                buffer[0..2].clone_from_slice(&(insn.value as u16).to_le_bytes());
+                #[cfg(feature = "riscv")]
+                {
+                    let insn = riscv::Inst::new(riscv::Opcode::BEQZ)
+                        .encode()
+                        .set_c_bimm9lohi(pc_rel as _);
+                    buffer[0..2].clone_from_slice(&(insn.value as u16).to_le_bytes());
+                }
+                #[cfg(not(feature = "riscv"))]
+                {
+                    panic!("RISC-V veneers aren't supported without the `riscv` feature");
+                }
             }
 
             Self::A64Branch14 => {
@@ -1213,16 +1414,36 @@ impl LabelUse {
             }
 
             Self::A64Adrp21 => {
-                let page_delta = ((label_offset & !0xfff) as i64) - ((use_offset & !0xfff) as i64);
-                debug_assert!(page_delta & 0xfff == 0);
-
                 let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
-                let imm21 = ((page_delta >> 12) as i32 as u32) & 0x1f_ffff;
-                let immlo = imm21 & 0x3;
-                let immhi = (imm21 >> 2) & 0x7ffff;
-                let insn = (insn & !0x60ff_ffe0) | (immlo << 29) | (immhi << 5);
+
+                // 1. Calculate the page-aligned PC and Target
+                let pc_page = (use_offset as i64) & !0xFFF;
+                let target_page = ((label_offset as i64) + addend) & !0xFFF;
+
+                // 2. Calculate the offset in pages
+                let page_offset = (target_page - pc_page) >> 12;
+
+                // 3. Encode the 21-bit signed immediate
+                let imm21 = (page_offset as u32) & 0x1F_FFFF;
+                let immlo = imm21 & 0x3; // Lowest 2 bits
+                let immhi = (imm21 >> 2) & 0x7FFFF; // Upper 19 bits
+
+                // 4. Clear existing immediate bits and insert new ones
+                // Bits 29..31 (immlo) and Bits 5..24 (immhi)
+                let insn = (insn & !0x60FF_FFE0) | (immlo << 29) | (immhi << 5);
+
                 buffer[0..4].copy_from_slice(&insn.to_le_bytes());
             }
+
+            Self::A64AddAbsLo12 => {
+                let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
+
+                let imm12 = ((pc_reli as i32 as u32) & 0xfff) << 10;
+                let insn = insn | imm12;
+                buffer[0..4].copy_from_slice(&insn.to_le_bytes());
+            }
+
+            _ => todo!(),
         }
     }
 }
@@ -1231,45 +1452,54 @@ pub const fn is_imm12(val: i64) -> bool {
     val >= -2048 && val <= 2047
 }
 
+#[allow(dead_code)]
 pub(crate) fn generate_imm(value: u64) -> (u32, u32) {
-    if is_imm12(value as _) {
-        return (
-            0,
-            riscv::InstructionValue::new(0)
-                .set_imm12(value as i64 as i32)
-                .value,
-        );
+    #[cfg(not(feature = "riscv"))]
+    {
+        let _ = value;
+        panic!("Can't generate RISC-V immediates without the `riscv` feature");
     }
-
-    let value = value as i64;
-
-    let mod_num = 4096i64;
-    let (imm20, imm12) = if value > 0 {
-        let mut imm20 = value / mod_num;
-        let mut imm12 = value % mod_num;
-
-        if imm12 >= 2048 {
-            imm12 -= mod_num;
-            imm20 += 1;
+    #[cfg(feature = "riscv")]
+    {
+        if is_imm12(value as _) {
+            return (
+                0,
+                riscv::InstructionValue::new(0)
+                    .set_imm12(value as i64 as i32)
+                    .value,
+            );
         }
 
-        (imm20, imm12)
-    } else {
-        let value_abs = value.abs();
-        let imm20 = value_abs / mod_num;
-        let imm12 = value_abs % mod_num;
-        let mut imm20 = -imm20;
-        let mut imm12 = -imm12;
-        if imm12 < -2048 {
-            imm12 += mod_num;
-            imm20 -= 1;
-        }
-        (imm20, imm12)
-    };
-    (
-        riscv::InstructionValue::new(0).set_imm20(imm20 as _).value,
-        riscv::InstructionValue::new(0).set_imm12(imm12 as _).value,
-    )
+        let value = value as i64;
+
+        let mod_num = 4096i64;
+        let (imm20, imm12) = if value > 0 {
+            let mut imm20 = value / mod_num;
+            let mut imm12 = value % mod_num;
+
+            if imm12 >= 2048 {
+                imm12 -= mod_num;
+                imm20 += 1;
+            }
+
+            (imm20, imm12)
+        } else {
+            let value_abs = value.abs();
+            let imm20 = value_abs / mod_num;
+            let imm12 = value_abs % mod_num;
+            let mut imm20 = -imm20;
+            let mut imm12 = -imm12;
+            if imm12 < -2048 {
+                imm12 += mod_num;
+                imm20 -= 1;
+            }
+            (imm20, imm12)
+        };
+        (
+            riscv::InstructionValue::new(0).set_imm20(imm20 as _).value,
+            riscv::InstructionValue::new(0).set_imm12(imm12 as _).value,
+        )
+    }
 }
 
 /// A generic implementation of relocation resolving.
@@ -1374,45 +1604,113 @@ pub unsafe fn perform_relocations(
             }
 
             Reloc::RiscvCallPlt => {
-                // A R_RISCV_CALL_PLT relocation expects auipc+jalr instruction pair.
-                // It is the equivalent of two relocations:
-                // 1. R_RISCV_PCREL_HI20 on the `auipc`
-                // 2. R_RISCV_PCREL_LO12_I on the `jalr`
+                #[cfg(not(feature = "riscv"))]
+                {
+                    panic!("RISC-V calls aren't supported without the `riscv` feature");
+                }
+                #[cfg(feature = "riscv")]
+                {
+                    // A R_RISCV_CALL_PLT relocation expects auipc+jalr instruction pair.
+                    // It is the equivalent of two relocations:
+                    // 1. R_RISCV_PCREL_HI20 on the `auipc`
+                    // 2. R_RISCV_PCREL_LO12_I on the `jalr`
 
+                    let base = get_address(target);
+                    let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
+                    let pcrel = i32::try_from((what as isize) - (atrx as isize)).unwrap();
+
+                    // See https://github.com/riscv-non-isa/riscv-elf-psabi-doc/blob/master/riscv-elf.adoc#pc-relative-symbol-addresses
+                    // for a better explanation of the following code.
+                    //
+                    // Unlike the regular symbol relocations, here both "sub-relocations" point to the same address.
+                    //
+                    // `pcrel` is a signed value (+/- 2GiB range), when splitting it into two parts, we need to
+                    // ensure that `hi20` is close enough to `pcrel` to be able to add `lo12` to it and still
+                    // get a valid address.
+                    //
+                    // `lo12` is also a signed offset (+/- 2KiB range) relative to the `hi20` value.
+                    //
+                    // `hi20` should also be shifted right to be the "true" value. But we also need it
+                    // left shifted for the `lo12` calculation and it also matches the instruction encoding.
+                    let hi20 = pcrel.wrapping_add(0x800) as u32 & 0xFFFFF000u32;
+                    let lo12 = (pcrel as u32).wrapping_sub(hi20) & 0xFFF;
+
+                    unsafe {
+                        let auipc_addr = at as *mut u32;
+                        let auipc = riscv::Inst::new(riscv::Opcode::AUIPC)
+                            .encode()
+                            .set_imm20(hi20 as _)
+                            .value;
+                        auipc_addr.write(auipc_addr.read() | auipc);
+
+                        let jalr_addr = at.offset(4) as *mut u32;
+                        let jalr = riscv::Inst::new(riscv::Opcode::JALR)
+                            .encode()
+                            .set_imm12(lo12 as _)
+                            .value;
+                        jalr_addr.write(jalr_addr.read() | jalr);
+                    }
+                }
+            }
+
+            Reloc::Aarch64AdrPrelPgHi21 => {
                 let base = get_address(target);
                 let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
-                let pcrel = i32::try_from((what as isize) - (atrx as isize)).unwrap();
-
-                // See https://github.com/riscv-non-isa/riscv-elf-psabi-doc/blob/master/riscv-elf.adoc#pc-relative-symbol-addresses
-                // for a better explanation of the following code.
-                //
-                // Unlike the regular symbol relocations, here both "sub-relocations" point to the same address.
-                //
-                // `pcrel` is a signed value (+/- 2GiB range), when splitting it into two parts, we need to
-                // ensure that `hi20` is close enough to `pcrel` to be able to add `lo12` to it and still
-                // get a valid address.
-                //
-                // `lo12` is also a signed offset (+/- 2KiB range) relative to the `hi20` value.
-                //
-                // `hi20` should also be shifted right to be the "true" value. But we also need it
-                // left shifted for the `lo12` calculation and it also matches the instruction encoding.
-                let hi20 = pcrel.wrapping_add(0x800) as u32 & 0xFFFFF000u32;
-                let lo12 = (pcrel as u32).wrapping_sub(hi20) & 0xFFF;
-
+                let get_page = |x| x & (!0xfff);
+                // NOTE: This should technically be i33 given that this relocation type allows
+                // a range from -4GB to +4GB, not -2GB to +2GB. But this doesn't really matter
+                // as the target is unlikely to be more than 2GB from the adrp instruction. We
+                // need to be careful to not cast to an unsigned int until after doing >> 12 to
+                // compute the upper 21bits of the pcrel address however as otherwise the top
+                // bit of the 33bit pcrel address would be forced 0 through zero extension
+                // instead of being sign extended as it should be.
+                let pcrel =
+                    i32::try_from(get_page(what as isize) - get_page(atrx as isize)).unwrap();
+                let iptr = at as *mut u32;
+                let hi21 = (pcrel >> 12).cast_unsigned();
+                let lo = (hi21 & 0x3) << 29;
+                let hi = (hi21 & 0x1ffffc) << 3;
                 unsafe {
-                    let auipc_addr = at as *mut u32;
-                    let auipc = riscv::Inst::new(riscv::Opcode::AUIPC)
-                        .encode()
-                        .set_imm20(hi20 as _)
-                        .value;
-                    auipc_addr.write(auipc_addr.read() | auipc);
+                    let insn = iptr.read();
+                    iptr.write(insn | lo | hi);
+                }
+            }
 
-                    let jalr_addr = at.offset(4) as *mut u32;
-                    let jalr = riscv::Inst::new(riscv::Opcode::JALR)
-                        .encode()
-                        .set_imm12(lo12 as _)
-                        .value;
-                    jalr_addr.write(jalr_addr.read() | jalr);
+            Reloc::Aarch64AddAbsLo12Nc => {
+                let base = get_address(target);
+                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
+                let iptr = at as *mut u32;
+                let imm12 = (what.addr() as u32 & 0xfff) << 10;
+                unsafe {
+                    let insn = iptr.read();
+                    iptr.write(insn | imm12);
+                }
+            }
+
+            Reloc::Aarch64AdrGotPage21 => {
+                let base = get_got_entry(target);
+                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
+                let get_page = |x| x & (!0xfff);
+                let pcrel =
+                    i32::try_from(get_page(what as isize) - get_page(atrx as isize)).unwrap();
+                let iptr = at as *mut u32;
+                let hi21 = (pcrel >> 12).cast_unsigned();
+                let lo = (hi21 & 0x3) << 29;
+                let hi = (hi21 & 0x1ffffc) << 3;
+                unsafe {
+                    let insn = iptr.read();
+                    iptr.write(insn | lo | hi);
+                }
+            }
+
+            Reloc::Aarch64Ld64GotLo12Nc => {
+                let base = get_got_entry(target);
+                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
+                let iptr = at as *mut u32;
+                let imm12 = ((what.addr() as u32 & 0xfff) >> 3) << 10;
+                unsafe {
+                    let insn = iptr.read();
+                    iptr.write(insn | imm12);
                 }
             }
 

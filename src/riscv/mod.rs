@@ -1,7 +1,5 @@
 pub mod assembler;
-pub mod decode;
 pub mod emitter;
-pub mod formatter;
 pub mod opcodes;
 pub mod operands;
 
@@ -16,7 +14,7 @@ pub use regs::*;
 ///
 /// The current spec reserves a bit pattern for instructions of length >= 192 bits, but for
 /// simplicity this function just returns 24 in that case. The largest instructions currently
-/// defined are 4 bytes so it will likely be a long time until this diffence matters.
+/// defined are 4 bytes so it will likely be a long time until this difference matters.
 pub fn instruction_length(i: u16) -> usize {
     if i & 0b11 != 0b11 {
         2

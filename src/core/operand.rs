@@ -12,7 +12,7 @@
 
 //! Default operand types available across all backends. All Operands derive from [`Operand`] and all of them
 //! must be of the same size and downcast-able/upcast-able from/to Operand itself.
-use derive_more::derive::{BitAnd, BitOr, BitXor, Deref, DerefMut, TryFrom};
+use core::ops::{BitAnd, BitOr, BitXor, Deref, DerefMut};
 use num_traits::{FromPrimitive, ToPrimitive};
 
 use super::{globals::INVALID_ID, support::bitmask_from_bool, types::TypeId};
@@ -32,9 +32,8 @@ macro_rules! define_operand_cast {
 }
 
 /// Operand type used by [Operand]
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, derive_more::TryFrom, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
 #[repr(u32)]
-#[try_from(repr)]
 pub enum OperandType {
     /// Not an operand or not initialized.
     None = 0,
@@ -52,6 +51,23 @@ pub enum OperandType {
     Sym = 6,
 }
 
+impl core::convert::TryFrom<u32> for OperandType {
+    type Error = ();
+
+    fn try_from(value: u32) -> Result<Self, Self::Error> {
+        match value {
+            0 => Ok(Self::None),
+            1 => Ok(Self::Reg),
+            2 => Ok(Self::Mem),
+            3 => Ok(Self::RegList),
+            4 => Ok(Self::Imm),
+            5 => Ok(Self::Label),
+            6 => Ok(Self::Sym),
+            _ => Err(()),
+        }
+    }
+}
+
 /// Register mask is a convenience typedef that describes a mask where each bit describes a physical register id
 /// in the same [RegGroup]. At the moment 32 bits are enough as asmkit doesn't support any architecture that
 /// would provide more than 32 registers for a register group.
@@ -60,9 +76,8 @@ pub type RegMask = u32;
 /// Register type.
 ///
 /// Provides a unique type that can be used to identify a register or its view.
-#[derive(TryFrom, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[repr(u32)]
-#[try_from(repr)]
 pub enum RegType {
     /// No register - unused, invalid, multiple meanings.
     None,
@@ -128,6 +143,42 @@ pub enum RegType {
     MaxValue = 31,
 }
 
+impl core::convert::TryFrom<u32> for RegType {
+    type Error = ();
+
+    fn try_from(value: u32) -> Result<Self, Self::Error> {
+        match value {
+            0 => Ok(Self::None),
+            1 => Ok(Self::LabelTag),
+            2 => Ok(Self::SymTag),
+            3 => Ok(Self::PC),
+            4 => Ok(Self::Gp8Lo),
+            5 => Ok(Self::Gp8Hi),
+            6 => Ok(Self::Gp16),
+            7 => Ok(Self::Gp32),
+            8 => Ok(Self::Gp64),
+            9 => Ok(Self::Vec8),
+            10 => Ok(Self::Vec16),
+            11 => Ok(Self::Vec32),
+            12 => Ok(Self::Vec64),
+            13 => Ok(Self::Vec128),
+            14 => Ok(Self::Vec256),
+            15 => Ok(Self::Vec512),
+            16 => Ok(Self::VecNLen),
+            17 => Ok(Self::Mask),
+            18 => Ok(Self::Extra),
+            19 => Ok(Self::X86SReg),
+            20 => Ok(Self::X86CReg),
+            21 => Ok(Self::X86DReg),
+            22 => Ok(Self::X86St),
+            23 => Ok(Self::X86Bnd),
+            24 => Ok(Self::X86Tmm),
+            31 => Ok(Self::MaxValue),
+            _ => Err(()),
+        }
+    }
+}
+
 #[allow(non_upper_case_globals)]
 impl RegType {
     pub const X86Mm: Self = Self::Extra;
@@ -149,9 +200,8 @@ impl RegType {
     pub const RISCVVec: Self = Self::VecNLen;
 }
 
-#[derive(TryFrom, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
 #[repr(u32)]
-#[try_from(repr)]
 pub enum RegGroup {
     Gp = 0,
     Vec,
@@ -166,6 +216,27 @@ pub enum RegGroup {
     X86Tmm,
 }
 
+impl core::convert::TryFrom<u32> for RegGroup {
+    type Error = ();
+
+    fn try_from(value: u32) -> Result<Self, Self::Error> {
+        match value {
+            0 => Ok(Self::Gp),
+            1 => Ok(Self::Vec),
+            2 => Ok(Self::Mask),
+            3 => Ok(Self::ExtraVirt3),
+            4 => Ok(Self::PC),
+            5 => Ok(Self::X86SReg),
+            6 => Ok(Self::X86CReg),
+            7 => Ok(Self::X86DReg),
+            8 => Ok(Self::X86St),
+            9 => Ok(Self::X86Bnd),
+            10 => Ok(Self::X86Tmm),
+            _ => Err(()),
+        }
+    }
+}
+
 impl RegGroup {
     pub const X86K: Self = Self::Mask;
     pub const X86MM: Self = Self::ExtraVirt3;
@@ -176,9 +247,39 @@ impl RegGroup {
     pub const X86Rip: Self = Self::PC;
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, BitOr, BitAnd, BitXor)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct OperandSignature {
     pub bits: u32,
+}
+
+impl BitOr for OperandSignature {
+    type Output = Self;
+
+    fn bitor(self, rhs: Self) -> Self::Output {
+        Self {
+            bits: self.bits | rhs.bits,
+        }
+    }
+}
+
+impl BitAnd for OperandSignature {
+    type Output = Self;
+
+    fn bitand(self, rhs: Self) -> Self::Output {
+        Self {
+            bits: self.bits & rhs.bits,
+        }
+    }
+}
+
+impl BitXor for OperandSignature {
+    type Output = Self;
+
+    fn bitxor(self, rhs: Self) -> Self::Output {
+        Self {
+            bits: self.bits ^ rhs.bits,
+        }
+    }
 }
 
 impl From<u32> for OperandSignature {
@@ -588,8 +689,22 @@ impl Operand {
     }
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Label(pub Operand);
+
+impl Deref for Label {
+    type Target = Operand;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl DerefMut for Label {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
 
 impl core::fmt::Debug for Label {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
@@ -643,8 +758,22 @@ impl Label {
     }
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Clone, Copy, PartialEq, Eq, Hash)]
 pub struct Sym(pub Operand);
+
+impl Deref for Sym {
+    type Target = Operand;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl DerefMut for Sym {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
 
 impl core::fmt::Debug for Sym {
     fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
@@ -698,8 +827,22 @@ impl Sym {
     }
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct BaseReg(pub Operand);
+
+impl Deref for BaseReg {
+    type Target = Operand;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl DerefMut for BaseReg {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
 
 pub const REG_SIGNATURE: OperandSignature = OperandSignature::from_op_type(OperandType::Reg);
 pub const REG_TYPE_NONE: u32 = RegType::None as u32;
@@ -808,6 +951,10 @@ impl BaseReg {
     }
 
     pub fn typ(&self) -> RegType {
+        self.signature.reg_type()
+    }
+
+    pub fn reg_type(&self) -> RegType {
         self.signature.reg_type()
     }
 
@@ -945,8 +1092,22 @@ impl Operand {
     }
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash, Debug)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash, Debug)]
 pub struct BaseMem(pub Operand);
+
+impl Deref for BaseMem {
+    type Target = Operand;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl DerefMut for BaseMem {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
 
 define_operand_cast!(BaseMem, Operand);
 
@@ -1162,8 +1323,22 @@ pub enum ImmType {
     Double = 1,
 }
 
-#[derive(Deref, DerefMut, Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
+#[derive(Clone, Copy, PartialEq, PartialOrd, Eq, Ord, Hash)]
 pub struct Imm(pub Operand);
+
+impl Deref for Imm {
+    type Target = Operand;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl DerefMut for Imm {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
 
 define_operand_cast!(Imm, Operand);
 

@@ -13,25 +13,21 @@ name = "asmkit"
 
 [dependencies]
 smallvec = "1.13"
-libc = { version = "0.2.162", optional = true }
+libc = { version = "0.2.162", optional = true, default-features = false }
 cfgenius = "0.1"
 intrusive-collections = "0.9"
-errno = { version = "0.3.9", optional = true }
+errno = { version = "0.3.9", optional = true, default-features = false }
 paste = "1.0"
-num-traits = "0.2.19"
-derive_more = { version = "1.0.0", features = [
-    "deref",
-    "deref_mut",
-    "try_from",
-    "add",
-] }
+num-traits = { version = "0.2.19", default-features = false }
+bitflags = "2.11.0"
 
 [target.'cfg(target_arch="riscv64")'.dependencies]
 wasmtime-jit-icache-coherence = { version = "26.0.1", optional = true }
 [features]
-default = ["jit", "riscv", "x86"]
+default = []
 x86 = []
 riscv = []
+aarch64 = []
 jit = ["wasmtime-jit-icache-coherence", "libc", "errno"]
 # Dynamic instruction construction API with runtime operand-type checking.
 x86-dyn = ["x86"]
