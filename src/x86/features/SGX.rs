@@ -1,8 +1,8 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -49,7 +49,11 @@ impl<'a> EncluEmitter for Assembler<'a> {
     }
 }
 
-/// `ENCLV`.
+/// `ENCLV` (ENCLV). 
+/// The ENCLV instruction invokes the virtualization SGX leaf functions for managing enclaves in a virtualized environment. Software specifies the leaf function by setting the appropriate value in the register EAX as input. The registers RBX, RCX, and RDX have leaf-specific purpose, and may act as input, as output, or may be unused. In non 64-bit mode, the instruction ignores upper 32 bits of the RAX register.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/ENCLV.html).
 ///
 /// Supported operand variants:
 ///
@@ -70,6 +74,7 @@ impl<'a> EnclvEmitter for Assembler<'a> {
     }
 }
 
+
 impl<'a> Assembler<'a> {
     /// `ENCLS`.
     ///
@@ -84,9 +89,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn encls(&mut self)
-    where
-        Assembler<'a>: EnclsEmitter,
-    {
+    where Assembler<'a>: EnclsEmitter {
         <Self as EnclsEmitter>::encls(self);
     }
     /// `ENCLU`.
@@ -102,12 +105,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn enclu(&mut self)
-    where
-        Assembler<'a>: EncluEmitter,
-    {
+    where Assembler<'a>: EncluEmitter {
         <Self as EncluEmitter>::enclu(self);
     }
-    /// `ENCLV`.
+    /// `ENCLV` (ENCLV). 
+    /// The ENCLV instruction invokes the virtualization SGX leaf functions for managing enclaves in a virtualized environment. Software specifies the leaf function by setting the appropriate value in the register EAX as input. The registers RBX, RCX, and RDX have leaf-specific purpose, and may act as input, as output, or may be unused. In non 64-bit mode, the instruction ignores upper 32 bits of the RAX register.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/ENCLV.html).
     ///
     /// Supported operand variants:
     ///
@@ -120,9 +125,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn enclv(&mut self)
-    where
-        Assembler<'a>: EnclvEmitter,
-    {
+    where Assembler<'a>: EnclvEmitter {
         <Self as EnclvEmitter>::enclv(self);
     }
 }

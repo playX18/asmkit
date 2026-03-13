@@ -1,13 +1,17 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
 
-/// `VPERMB`.
+/// `VPERMB` (VPERMB). 
+/// Copies bytes from the second source operand (the third operand) to the destination operand (the first operand) according to the byte indices in the first source operand (the second operand). Note that this instruction permits a byte in the source operand to be copied to more than one location in the destination operand.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMB.html).
 ///
 /// Supported operand variants:
 ///
@@ -29,77 +33,45 @@ pub trait VpermbEmitter<A, B, C> {
 
 impl<'a> VpermbEmitter<Xmm, Xmm, Xmm> for Assembler<'a> {
     fn vpermb(&mut self, op0: Xmm, op1: Xmm, op2: Xmm) {
-        self.emit(
-            VPERMB128RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB128RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpermbEmitter<Xmm, Xmm, Mem> for Assembler<'a> {
     fn vpermb(&mut self, op0: Xmm, op1: Xmm, op2: Mem) {
-        self.emit(
-            VPERMB128RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB128RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpermbEmitter<Ymm, Ymm, Ymm> for Assembler<'a> {
     fn vpermb(&mut self, op0: Ymm, op1: Ymm, op2: Ymm) {
-        self.emit(
-            VPERMB256RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB256RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpermbEmitter<Ymm, Ymm, Mem> for Assembler<'a> {
     fn vpermb(&mut self, op0: Ymm, op1: Ymm, op2: Mem) {
-        self.emit(
-            VPERMB256RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB256RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpermbEmitter<Zmm, Zmm, Zmm> for Assembler<'a> {
     fn vpermb(&mut self, op0: Zmm, op1: Zmm, op2: Zmm) {
-        self.emit(
-            VPERMB512RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB512RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpermbEmitter<Zmm, Zmm, Mem> for Assembler<'a> {
     fn vpermb(&mut self, op0: Zmm, op1: Zmm, op2: Mem) {
-        self.emit(
-            VPERMB512RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB512RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `VPERMB_MASK`.
+/// `VPERMB_MASK` (VPERMB). 
+/// Copies bytes from the second source operand (the third operand) to the destination operand (the first operand) according to the byte indices in the first source operand (the second operand). Note that this instruction permits a byte in the source operand to be copied to more than one location in the destination operand.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMB.html).
 ///
 /// Supported operand variants:
 ///
@@ -121,77 +93,45 @@ pub trait VpermbMaskEmitter<A, B, C> {
 
 impl<'a> VpermbMaskEmitter<Xmm, Xmm, Xmm> for Assembler<'a> {
     fn vpermb_mask(&mut self, op0: Xmm, op1: Xmm, op2: Xmm) {
-        self.emit(
-            VPERMB128RRR_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB128RRR_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpermbMaskEmitter<Xmm, Xmm, Mem> for Assembler<'a> {
     fn vpermb_mask(&mut self, op0: Xmm, op1: Xmm, op2: Mem) {
-        self.emit(
-            VPERMB128RRM_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB128RRM_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpermbMaskEmitter<Ymm, Ymm, Ymm> for Assembler<'a> {
     fn vpermb_mask(&mut self, op0: Ymm, op1: Ymm, op2: Ymm) {
-        self.emit(
-            VPERMB256RRR_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB256RRR_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpermbMaskEmitter<Ymm, Ymm, Mem> for Assembler<'a> {
     fn vpermb_mask(&mut self, op0: Ymm, op1: Ymm, op2: Mem) {
-        self.emit(
-            VPERMB256RRM_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB256RRM_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpermbMaskEmitter<Zmm, Zmm, Zmm> for Assembler<'a> {
     fn vpermb_mask(&mut self, op0: Zmm, op1: Zmm, op2: Zmm) {
-        self.emit(
-            VPERMB512RRR_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB512RRR_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpermbMaskEmitter<Zmm, Zmm, Mem> for Assembler<'a> {
     fn vpermb_mask(&mut self, op0: Zmm, op1: Zmm, op2: Mem) {
-        self.emit(
-            VPERMB512RRM_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB512RRM_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `VPERMB_MASKZ`.
+/// `VPERMB_MASKZ` (VPERMB). 
+/// Copies bytes from the second source operand (the third operand) to the destination operand (the first operand) according to the byte indices in the first source operand (the second operand). Note that this instruction permits a byte in the source operand to be copied to more than one location in the destination operand.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMB.html).
 ///
 /// Supported operand variants:
 ///
@@ -213,77 +153,45 @@ pub trait VpermbMaskzEmitter<A, B, C> {
 
 impl<'a> VpermbMaskzEmitter<Xmm, Xmm, Xmm> for Assembler<'a> {
     fn vpermb_maskz(&mut self, op0: Xmm, op1: Xmm, op2: Xmm) {
-        self.emit(
-            VPERMB128RRR_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB128RRR_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpermbMaskzEmitter<Xmm, Xmm, Mem> for Assembler<'a> {
     fn vpermb_maskz(&mut self, op0: Xmm, op1: Xmm, op2: Mem) {
-        self.emit(
-            VPERMB128RRM_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB128RRM_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpermbMaskzEmitter<Ymm, Ymm, Ymm> for Assembler<'a> {
     fn vpermb_maskz(&mut self, op0: Ymm, op1: Ymm, op2: Ymm) {
-        self.emit(
-            VPERMB256RRR_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB256RRR_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpermbMaskzEmitter<Ymm, Ymm, Mem> for Assembler<'a> {
     fn vpermb_maskz(&mut self, op0: Ymm, op1: Ymm, op2: Mem) {
-        self.emit(
-            VPERMB256RRM_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB256RRM_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpermbMaskzEmitter<Zmm, Zmm, Zmm> for Assembler<'a> {
     fn vpermb_maskz(&mut self, op0: Zmm, op1: Zmm, op2: Zmm) {
-        self.emit(
-            VPERMB512RRR_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB512RRR_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpermbMaskzEmitter<Zmm, Zmm, Mem> for Assembler<'a> {
     fn vpermb_maskz(&mut self, op0: Zmm, op1: Zmm, op2: Mem) {
-        self.emit(
-            VPERMB512RRM_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMB512RRM_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `VPERMI2B`.
+/// `VPERMI2B` (VPERMI2B). 
+/// Permutes byte values in the second operand (the first source operand) and the third operand (the second source operand) using the byte indices in the first operand (the destination operand) to select byte elements from the second or third source operands. The selected byte elements are written to the destination at byte granularity under the writemask k1.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMI2B.html).
 ///
 /// Supported operand variants:
 ///
@@ -305,77 +213,45 @@ pub trait Vpermi2bEmitter<A, B, C> {
 
 impl<'a> Vpermi2bEmitter<Xmm, Xmm, Xmm> for Assembler<'a> {
     fn vpermi2b(&mut self, op0: Xmm, op1: Xmm, op2: Xmm) {
-        self.emit(
-            VPERMI2B128RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B128RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermi2bEmitter<Xmm, Xmm, Mem> for Assembler<'a> {
     fn vpermi2b(&mut self, op0: Xmm, op1: Xmm, op2: Mem) {
-        self.emit(
-            VPERMI2B128RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B128RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermi2bEmitter<Ymm, Ymm, Ymm> for Assembler<'a> {
     fn vpermi2b(&mut self, op0: Ymm, op1: Ymm, op2: Ymm) {
-        self.emit(
-            VPERMI2B256RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B256RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermi2bEmitter<Ymm, Ymm, Mem> for Assembler<'a> {
     fn vpermi2b(&mut self, op0: Ymm, op1: Ymm, op2: Mem) {
-        self.emit(
-            VPERMI2B256RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B256RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermi2bEmitter<Zmm, Zmm, Zmm> for Assembler<'a> {
     fn vpermi2b(&mut self, op0: Zmm, op1: Zmm, op2: Zmm) {
-        self.emit(
-            VPERMI2B512RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B512RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermi2bEmitter<Zmm, Zmm, Mem> for Assembler<'a> {
     fn vpermi2b(&mut self, op0: Zmm, op1: Zmm, op2: Mem) {
-        self.emit(
-            VPERMI2B512RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B512RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `VPERMI2B_MASK`.
+/// `VPERMI2B_MASK` (VPERMI2B). 
+/// Permutes byte values in the second operand (the first source operand) and the third operand (the second source operand) using the byte indices in the first operand (the destination operand) to select byte elements from the second or third source operands. The selected byte elements are written to the destination at byte granularity under the writemask k1.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMI2B.html).
 ///
 /// Supported operand variants:
 ///
@@ -397,77 +273,45 @@ pub trait Vpermi2bMaskEmitter<A, B, C> {
 
 impl<'a> Vpermi2bMaskEmitter<Xmm, Xmm, Xmm> for Assembler<'a> {
     fn vpermi2b_mask(&mut self, op0: Xmm, op1: Xmm, op2: Xmm) {
-        self.emit(
-            VPERMI2B128RRR_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B128RRR_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermi2bMaskEmitter<Xmm, Xmm, Mem> for Assembler<'a> {
     fn vpermi2b_mask(&mut self, op0: Xmm, op1: Xmm, op2: Mem) {
-        self.emit(
-            VPERMI2B128RRM_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B128RRM_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermi2bMaskEmitter<Ymm, Ymm, Ymm> for Assembler<'a> {
     fn vpermi2b_mask(&mut self, op0: Ymm, op1: Ymm, op2: Ymm) {
-        self.emit(
-            VPERMI2B256RRR_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B256RRR_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermi2bMaskEmitter<Ymm, Ymm, Mem> for Assembler<'a> {
     fn vpermi2b_mask(&mut self, op0: Ymm, op1: Ymm, op2: Mem) {
-        self.emit(
-            VPERMI2B256RRM_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B256RRM_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermi2bMaskEmitter<Zmm, Zmm, Zmm> for Assembler<'a> {
     fn vpermi2b_mask(&mut self, op0: Zmm, op1: Zmm, op2: Zmm) {
-        self.emit(
-            VPERMI2B512RRR_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B512RRR_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermi2bMaskEmitter<Zmm, Zmm, Mem> for Assembler<'a> {
     fn vpermi2b_mask(&mut self, op0: Zmm, op1: Zmm, op2: Mem) {
-        self.emit(
-            VPERMI2B512RRM_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B512RRM_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `VPERMI2B_MASKZ`.
+/// `VPERMI2B_MASKZ` (VPERMI2B). 
+/// Permutes byte values in the second operand (the first source operand) and the third operand (the second source operand) using the byte indices in the first operand (the destination operand) to select byte elements from the second or third source operands. The selected byte elements are written to the destination at byte granularity under the writemask k1.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMI2B.html).
 ///
 /// Supported operand variants:
 ///
@@ -489,77 +333,45 @@ pub trait Vpermi2bMaskzEmitter<A, B, C> {
 
 impl<'a> Vpermi2bMaskzEmitter<Xmm, Xmm, Xmm> for Assembler<'a> {
     fn vpermi2b_maskz(&mut self, op0: Xmm, op1: Xmm, op2: Xmm) {
-        self.emit(
-            VPERMI2B128RRR_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B128RRR_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermi2bMaskzEmitter<Xmm, Xmm, Mem> for Assembler<'a> {
     fn vpermi2b_maskz(&mut self, op0: Xmm, op1: Xmm, op2: Mem) {
-        self.emit(
-            VPERMI2B128RRM_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B128RRM_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermi2bMaskzEmitter<Ymm, Ymm, Ymm> for Assembler<'a> {
     fn vpermi2b_maskz(&mut self, op0: Ymm, op1: Ymm, op2: Ymm) {
-        self.emit(
-            VPERMI2B256RRR_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B256RRR_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermi2bMaskzEmitter<Ymm, Ymm, Mem> for Assembler<'a> {
     fn vpermi2b_maskz(&mut self, op0: Ymm, op1: Ymm, op2: Mem) {
-        self.emit(
-            VPERMI2B256RRM_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B256RRM_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermi2bMaskzEmitter<Zmm, Zmm, Zmm> for Assembler<'a> {
     fn vpermi2b_maskz(&mut self, op0: Zmm, op1: Zmm, op2: Zmm) {
-        self.emit(
-            VPERMI2B512RRR_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B512RRR_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermi2bMaskzEmitter<Zmm, Zmm, Mem> for Assembler<'a> {
     fn vpermi2b_maskz(&mut self, op0: Zmm, op1: Zmm, op2: Mem) {
-        self.emit(
-            VPERMI2B512RRM_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMI2B512RRM_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `VPERMT2B`.
+/// `VPERMT2B` (VPERMT2B). 
+/// Permutes byte values from two tables, comprising of the first operand (also the destination operand) and the third operand (the second source operand). The second operand (the first source operand) provides byte indices to select byte results from the two tables. The selected byte elements are written to the destination at byte granularity under the writemask k1.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMT2B.html).
 ///
 /// Supported operand variants:
 ///
@@ -581,77 +393,45 @@ pub trait Vpermt2bEmitter<A, B, C> {
 
 impl<'a> Vpermt2bEmitter<Xmm, Xmm, Xmm> for Assembler<'a> {
     fn vpermt2b(&mut self, op0: Xmm, op1: Xmm, op2: Xmm) {
-        self.emit(
-            VPERMT2B128RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B128RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermt2bEmitter<Xmm, Xmm, Mem> for Assembler<'a> {
     fn vpermt2b(&mut self, op0: Xmm, op1: Xmm, op2: Mem) {
-        self.emit(
-            VPERMT2B128RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B128RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermt2bEmitter<Ymm, Ymm, Ymm> for Assembler<'a> {
     fn vpermt2b(&mut self, op0: Ymm, op1: Ymm, op2: Ymm) {
-        self.emit(
-            VPERMT2B256RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B256RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermt2bEmitter<Ymm, Ymm, Mem> for Assembler<'a> {
     fn vpermt2b(&mut self, op0: Ymm, op1: Ymm, op2: Mem) {
-        self.emit(
-            VPERMT2B256RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B256RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermt2bEmitter<Zmm, Zmm, Zmm> for Assembler<'a> {
     fn vpermt2b(&mut self, op0: Zmm, op1: Zmm, op2: Zmm) {
-        self.emit(
-            VPERMT2B512RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B512RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermt2bEmitter<Zmm, Zmm, Mem> for Assembler<'a> {
     fn vpermt2b(&mut self, op0: Zmm, op1: Zmm, op2: Mem) {
-        self.emit(
-            VPERMT2B512RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B512RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `VPERMT2B_MASK`.
+/// `VPERMT2B_MASK` (VPERMT2B). 
+/// Permutes byte values from two tables, comprising of the first operand (also the destination operand) and the third operand (the second source operand). The second operand (the first source operand) provides byte indices to select byte results from the two tables. The selected byte elements are written to the destination at byte granularity under the writemask k1.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMT2B.html).
 ///
 /// Supported operand variants:
 ///
@@ -673,77 +453,45 @@ pub trait Vpermt2bMaskEmitter<A, B, C> {
 
 impl<'a> Vpermt2bMaskEmitter<Xmm, Xmm, Xmm> for Assembler<'a> {
     fn vpermt2b_mask(&mut self, op0: Xmm, op1: Xmm, op2: Xmm) {
-        self.emit(
-            VPERMT2B128RRR_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B128RRR_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermt2bMaskEmitter<Xmm, Xmm, Mem> for Assembler<'a> {
     fn vpermt2b_mask(&mut self, op0: Xmm, op1: Xmm, op2: Mem) {
-        self.emit(
-            VPERMT2B128RRM_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B128RRM_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermt2bMaskEmitter<Ymm, Ymm, Ymm> for Assembler<'a> {
     fn vpermt2b_mask(&mut self, op0: Ymm, op1: Ymm, op2: Ymm) {
-        self.emit(
-            VPERMT2B256RRR_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B256RRR_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermt2bMaskEmitter<Ymm, Ymm, Mem> for Assembler<'a> {
     fn vpermt2b_mask(&mut self, op0: Ymm, op1: Ymm, op2: Mem) {
-        self.emit(
-            VPERMT2B256RRM_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B256RRM_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermt2bMaskEmitter<Zmm, Zmm, Zmm> for Assembler<'a> {
     fn vpermt2b_mask(&mut self, op0: Zmm, op1: Zmm, op2: Zmm) {
-        self.emit(
-            VPERMT2B512RRR_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B512RRR_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermt2bMaskEmitter<Zmm, Zmm, Mem> for Assembler<'a> {
     fn vpermt2b_mask(&mut self, op0: Zmm, op1: Zmm, op2: Mem) {
-        self.emit(
-            VPERMT2B512RRM_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B512RRM_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `VPERMT2B_MASKZ`.
+/// `VPERMT2B_MASKZ` (VPERMT2B). 
+/// Permutes byte values from two tables, comprising of the first operand (also the destination operand) and the third operand (the second source operand). The second operand (the first source operand) provides byte indices to select byte results from the two tables. The selected byte elements are written to the destination at byte granularity under the writemask k1.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMT2B.html).
 ///
 /// Supported operand variants:
 ///
@@ -765,77 +513,45 @@ pub trait Vpermt2bMaskzEmitter<A, B, C> {
 
 impl<'a> Vpermt2bMaskzEmitter<Xmm, Xmm, Xmm> for Assembler<'a> {
     fn vpermt2b_maskz(&mut self, op0: Xmm, op1: Xmm, op2: Xmm) {
-        self.emit(
-            VPERMT2B128RRR_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B128RRR_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermt2bMaskzEmitter<Xmm, Xmm, Mem> for Assembler<'a> {
     fn vpermt2b_maskz(&mut self, op0: Xmm, op1: Xmm, op2: Mem) {
-        self.emit(
-            VPERMT2B128RRM_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B128RRM_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermt2bMaskzEmitter<Ymm, Ymm, Ymm> for Assembler<'a> {
     fn vpermt2b_maskz(&mut self, op0: Ymm, op1: Ymm, op2: Ymm) {
-        self.emit(
-            VPERMT2B256RRR_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B256RRR_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermt2bMaskzEmitter<Ymm, Ymm, Mem> for Assembler<'a> {
     fn vpermt2b_maskz(&mut self, op0: Ymm, op1: Ymm, op2: Mem) {
-        self.emit(
-            VPERMT2B256RRM_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B256RRM_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermt2bMaskzEmitter<Zmm, Zmm, Zmm> for Assembler<'a> {
     fn vpermt2b_maskz(&mut self, op0: Zmm, op1: Zmm, op2: Zmm) {
-        self.emit(
-            VPERMT2B512RRR_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B512RRR_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Vpermt2bMaskzEmitter<Zmm, Zmm, Mem> for Assembler<'a> {
     fn vpermt2b_maskz(&mut self, op0: Zmm, op1: Zmm, op2: Mem) {
-        self.emit(
-            VPERMT2B512RRM_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPERMT2B512RRM_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `VPMULTISHIFTQB`.
+/// `VPMULTISHIFTQB` (VPMULTISHIFTQB). 
+/// This instruction selects eight unaligned bytes from each input qword element of the second source operand (the third operand) and writes eight assembled bytes for each qword element in the destination operand (the first operand). Each byte result is selected using a byte-granular shift control within the corresponding qword element of the first source operand (the second operand). Each byte result in the destination operand is updated under the writemask k1.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPMULTISHIFTQB.html).
 ///
 /// Supported operand variants:
 ///
@@ -857,77 +573,45 @@ pub trait VpmultishiftqbEmitter<A, B, C> {
 
 impl<'a> VpmultishiftqbEmitter<Xmm, Xmm, Xmm> for Assembler<'a> {
     fn vpmultishiftqb(&mut self, op0: Xmm, op1: Xmm, op2: Xmm) {
-        self.emit(
-            VPMULTISHIFTQB128RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB128RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpmultishiftqbEmitter<Xmm, Xmm, Mem> for Assembler<'a> {
     fn vpmultishiftqb(&mut self, op0: Xmm, op1: Xmm, op2: Mem) {
-        self.emit(
-            VPMULTISHIFTQB128RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB128RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpmultishiftqbEmitter<Ymm, Ymm, Ymm> for Assembler<'a> {
     fn vpmultishiftqb(&mut self, op0: Ymm, op1: Ymm, op2: Ymm) {
-        self.emit(
-            VPMULTISHIFTQB256RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB256RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpmultishiftqbEmitter<Ymm, Ymm, Mem> for Assembler<'a> {
     fn vpmultishiftqb(&mut self, op0: Ymm, op1: Ymm, op2: Mem) {
-        self.emit(
-            VPMULTISHIFTQB256RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB256RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpmultishiftqbEmitter<Zmm, Zmm, Zmm> for Assembler<'a> {
     fn vpmultishiftqb(&mut self, op0: Zmm, op1: Zmm, op2: Zmm) {
-        self.emit(
-            VPMULTISHIFTQB512RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB512RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpmultishiftqbEmitter<Zmm, Zmm, Mem> for Assembler<'a> {
     fn vpmultishiftqb(&mut self, op0: Zmm, op1: Zmm, op2: Mem) {
-        self.emit(
-            VPMULTISHIFTQB512RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB512RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `VPMULTISHIFTQB_MASK`.
+/// `VPMULTISHIFTQB_MASK` (VPMULTISHIFTQB). 
+/// This instruction selects eight unaligned bytes from each input qword element of the second source operand (the third operand) and writes eight assembled bytes for each qword element in the destination operand (the first operand). Each byte result is selected using a byte-granular shift control within the corresponding qword element of the first source operand (the second operand). Each byte result in the destination operand is updated under the writemask k1.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPMULTISHIFTQB.html).
 ///
 /// Supported operand variants:
 ///
@@ -949,77 +633,45 @@ pub trait VpmultishiftqbMaskEmitter<A, B, C> {
 
 impl<'a> VpmultishiftqbMaskEmitter<Xmm, Xmm, Xmm> for Assembler<'a> {
     fn vpmultishiftqb_mask(&mut self, op0: Xmm, op1: Xmm, op2: Xmm) {
-        self.emit(
-            VPMULTISHIFTQB128RRR_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB128RRR_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpmultishiftqbMaskEmitter<Xmm, Xmm, Mem> for Assembler<'a> {
     fn vpmultishiftqb_mask(&mut self, op0: Xmm, op1: Xmm, op2: Mem) {
-        self.emit(
-            VPMULTISHIFTQB128RRM_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB128RRM_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpmultishiftqbMaskEmitter<Ymm, Ymm, Ymm> for Assembler<'a> {
     fn vpmultishiftqb_mask(&mut self, op0: Ymm, op1: Ymm, op2: Ymm) {
-        self.emit(
-            VPMULTISHIFTQB256RRR_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB256RRR_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpmultishiftqbMaskEmitter<Ymm, Ymm, Mem> for Assembler<'a> {
     fn vpmultishiftqb_mask(&mut self, op0: Ymm, op1: Ymm, op2: Mem) {
-        self.emit(
-            VPMULTISHIFTQB256RRM_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB256RRM_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpmultishiftqbMaskEmitter<Zmm, Zmm, Zmm> for Assembler<'a> {
     fn vpmultishiftqb_mask(&mut self, op0: Zmm, op1: Zmm, op2: Zmm) {
-        self.emit(
-            VPMULTISHIFTQB512RRR_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB512RRR_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpmultishiftqbMaskEmitter<Zmm, Zmm, Mem> for Assembler<'a> {
     fn vpmultishiftqb_mask(&mut self, op0: Zmm, op1: Zmm, op2: Mem) {
-        self.emit(
-            VPMULTISHIFTQB512RRM_MASK,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB512RRM_MASK, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `VPMULTISHIFTQB_MASKZ`.
+/// `VPMULTISHIFTQB_MASKZ` (VPMULTISHIFTQB). 
+/// This instruction selects eight unaligned bytes from each input qword element of the second source operand (the third operand) and writes eight assembled bytes for each qword element in the destination operand (the first operand). Each byte result is selected using a byte-granular shift control within the corresponding qword element of the first source operand (the second operand). Each byte result in the destination operand is updated under the writemask k1.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPMULTISHIFTQB.html).
 ///
 /// Supported operand variants:
 ///
@@ -1041,78 +693,47 @@ pub trait VpmultishiftqbMaskzEmitter<A, B, C> {
 
 impl<'a> VpmultishiftqbMaskzEmitter<Xmm, Xmm, Xmm> for Assembler<'a> {
     fn vpmultishiftqb_maskz(&mut self, op0: Xmm, op1: Xmm, op2: Xmm) {
-        self.emit(
-            VPMULTISHIFTQB128RRR_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB128RRR_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpmultishiftqbMaskzEmitter<Xmm, Xmm, Mem> for Assembler<'a> {
     fn vpmultishiftqb_maskz(&mut self, op0: Xmm, op1: Xmm, op2: Mem) {
-        self.emit(
-            VPMULTISHIFTQB128RRM_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB128RRM_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpmultishiftqbMaskzEmitter<Ymm, Ymm, Ymm> for Assembler<'a> {
     fn vpmultishiftqb_maskz(&mut self, op0: Ymm, op1: Ymm, op2: Ymm) {
-        self.emit(
-            VPMULTISHIFTQB256RRR_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB256RRR_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpmultishiftqbMaskzEmitter<Ymm, Ymm, Mem> for Assembler<'a> {
     fn vpmultishiftqb_maskz(&mut self, op0: Ymm, op1: Ymm, op2: Mem) {
-        self.emit(
-            VPMULTISHIFTQB256RRM_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB256RRM_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpmultishiftqbMaskzEmitter<Zmm, Zmm, Zmm> for Assembler<'a> {
     fn vpmultishiftqb_maskz(&mut self, op0: Zmm, op1: Zmm, op2: Zmm) {
-        self.emit(
-            VPMULTISHIFTQB512RRR_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB512RRR_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> VpmultishiftqbMaskzEmitter<Zmm, Zmm, Mem> for Assembler<'a> {
     fn vpmultishiftqb_maskz(&mut self, op0: Zmm, op1: Zmm, op2: Mem) {
-        self.emit(
-            VPMULTISHIFTQB512RRM_MASKZ,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(VPMULTISHIFTQB512RRM_MASKZ, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
+
 impl<'a> Assembler<'a> {
-    /// `VPERMB`.
+    /// `VPERMB` (VPERMB). 
+    /// Copies bytes from the second source operand (the third operand) to the destination operand (the first operand) according to the byte indices in the first source operand (the second operand). Note that this instruction permits a byte in the source operand to be copied to more than one location in the destination operand.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMB.html).
     ///
     /// Supported operand variants:
     ///
@@ -1130,12 +751,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vpermb<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: VpermbEmitter<A, B, C>,
-    {
+    where Assembler<'a>: VpermbEmitter<A, B, C> {
         <Self as VpermbEmitter<A, B, C>>::vpermb(self, op0, op1, op2);
     }
-    /// `VPERMB_MASK`.
+    /// `VPERMB_MASK` (VPERMB). 
+    /// Copies bytes from the second source operand (the third operand) to the destination operand (the first operand) according to the byte indices in the first source operand (the second operand). Note that this instruction permits a byte in the source operand to be copied to more than one location in the destination operand.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMB.html).
     ///
     /// Supported operand variants:
     ///
@@ -1153,12 +776,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vpermb_mask<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: VpermbMaskEmitter<A, B, C>,
-    {
+    where Assembler<'a>: VpermbMaskEmitter<A, B, C> {
         <Self as VpermbMaskEmitter<A, B, C>>::vpermb_mask(self, op0, op1, op2);
     }
-    /// `VPERMB_MASKZ`.
+    /// `VPERMB_MASKZ` (VPERMB). 
+    /// Copies bytes from the second source operand (the third operand) to the destination operand (the first operand) according to the byte indices in the first source operand (the second operand). Note that this instruction permits a byte in the source operand to be copied to more than one location in the destination operand.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMB.html).
     ///
     /// Supported operand variants:
     ///
@@ -1176,12 +801,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vpermb_maskz<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: VpermbMaskzEmitter<A, B, C>,
-    {
+    where Assembler<'a>: VpermbMaskzEmitter<A, B, C> {
         <Self as VpermbMaskzEmitter<A, B, C>>::vpermb_maskz(self, op0, op1, op2);
     }
-    /// `VPERMI2B`.
+    /// `VPERMI2B` (VPERMI2B). 
+    /// Permutes byte values in the second operand (the first source operand) and the third operand (the second source operand) using the byte indices in the first operand (the destination operand) to select byte elements from the second or third source operands. The selected byte elements are written to the destination at byte granularity under the writemask k1.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMI2B.html).
     ///
     /// Supported operand variants:
     ///
@@ -1199,12 +826,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vpermi2b<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: Vpermi2bEmitter<A, B, C>,
-    {
+    where Assembler<'a>: Vpermi2bEmitter<A, B, C> {
         <Self as Vpermi2bEmitter<A, B, C>>::vpermi2b(self, op0, op1, op2);
     }
-    /// `VPERMI2B_MASK`.
+    /// `VPERMI2B_MASK` (VPERMI2B). 
+    /// Permutes byte values in the second operand (the first source operand) and the third operand (the second source operand) using the byte indices in the first operand (the destination operand) to select byte elements from the second or third source operands. The selected byte elements are written to the destination at byte granularity under the writemask k1.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMI2B.html).
     ///
     /// Supported operand variants:
     ///
@@ -1222,12 +851,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vpermi2b_mask<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: Vpermi2bMaskEmitter<A, B, C>,
-    {
+    where Assembler<'a>: Vpermi2bMaskEmitter<A, B, C> {
         <Self as Vpermi2bMaskEmitter<A, B, C>>::vpermi2b_mask(self, op0, op1, op2);
     }
-    /// `VPERMI2B_MASKZ`.
+    /// `VPERMI2B_MASKZ` (VPERMI2B). 
+    /// Permutes byte values in the second operand (the first source operand) and the third operand (the second source operand) using the byte indices in the first operand (the destination operand) to select byte elements from the second or third source operands. The selected byte elements are written to the destination at byte granularity under the writemask k1.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMI2B.html).
     ///
     /// Supported operand variants:
     ///
@@ -1245,12 +876,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vpermi2b_maskz<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: Vpermi2bMaskzEmitter<A, B, C>,
-    {
+    where Assembler<'a>: Vpermi2bMaskzEmitter<A, B, C> {
         <Self as Vpermi2bMaskzEmitter<A, B, C>>::vpermi2b_maskz(self, op0, op1, op2);
     }
-    /// `VPERMT2B`.
+    /// `VPERMT2B` (VPERMT2B). 
+    /// Permutes byte values from two tables, comprising of the first operand (also the destination operand) and the third operand (the second source operand). The second operand (the first source operand) provides byte indices to select byte results from the two tables. The selected byte elements are written to the destination at byte granularity under the writemask k1.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMT2B.html).
     ///
     /// Supported operand variants:
     ///
@@ -1268,12 +901,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vpermt2b<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: Vpermt2bEmitter<A, B, C>,
-    {
+    where Assembler<'a>: Vpermt2bEmitter<A, B, C> {
         <Self as Vpermt2bEmitter<A, B, C>>::vpermt2b(self, op0, op1, op2);
     }
-    /// `VPERMT2B_MASK`.
+    /// `VPERMT2B_MASK` (VPERMT2B). 
+    /// Permutes byte values from two tables, comprising of the first operand (also the destination operand) and the third operand (the second source operand). The second operand (the first source operand) provides byte indices to select byte results from the two tables. The selected byte elements are written to the destination at byte granularity under the writemask k1.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMT2B.html).
     ///
     /// Supported operand variants:
     ///
@@ -1291,12 +926,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vpermt2b_mask<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: Vpermt2bMaskEmitter<A, B, C>,
-    {
+    where Assembler<'a>: Vpermt2bMaskEmitter<A, B, C> {
         <Self as Vpermt2bMaskEmitter<A, B, C>>::vpermt2b_mask(self, op0, op1, op2);
     }
-    /// `VPERMT2B_MASKZ`.
+    /// `VPERMT2B_MASKZ` (VPERMT2B). 
+    /// Permutes byte values from two tables, comprising of the first operand (also the destination operand) and the third operand (the second source operand). The second operand (the first source operand) provides byte indices to select byte results from the two tables. The selected byte elements are written to the destination at byte granularity under the writemask k1.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPERMT2B.html).
     ///
     /// Supported operand variants:
     ///
@@ -1314,12 +951,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vpermt2b_maskz<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: Vpermt2bMaskzEmitter<A, B, C>,
-    {
+    where Assembler<'a>: Vpermt2bMaskzEmitter<A, B, C> {
         <Self as Vpermt2bMaskzEmitter<A, B, C>>::vpermt2b_maskz(self, op0, op1, op2);
     }
-    /// `VPMULTISHIFTQB`.
+    /// `VPMULTISHIFTQB` (VPMULTISHIFTQB). 
+    /// This instruction selects eight unaligned bytes from each input qword element of the second source operand (the third operand) and writes eight assembled bytes for each qword element in the destination operand (the first operand). Each byte result is selected using a byte-granular shift control within the corresponding qword element of the first source operand (the second operand). Each byte result in the destination operand is updated under the writemask k1.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPMULTISHIFTQB.html).
     ///
     /// Supported operand variants:
     ///
@@ -1337,12 +976,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vpmultishiftqb<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: VpmultishiftqbEmitter<A, B, C>,
-    {
+    where Assembler<'a>: VpmultishiftqbEmitter<A, B, C> {
         <Self as VpmultishiftqbEmitter<A, B, C>>::vpmultishiftqb(self, op0, op1, op2);
     }
-    /// `VPMULTISHIFTQB_MASK`.
+    /// `VPMULTISHIFTQB_MASK` (VPMULTISHIFTQB). 
+    /// This instruction selects eight unaligned bytes from each input qword element of the second source operand (the third operand) and writes eight assembled bytes for each qword element in the destination operand (the first operand). Each byte result is selected using a byte-granular shift control within the corresponding qword element of the first source operand (the second operand). Each byte result in the destination operand is updated under the writemask k1.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPMULTISHIFTQB.html).
     ///
     /// Supported operand variants:
     ///
@@ -1360,12 +1001,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vpmultishiftqb_mask<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: VpmultishiftqbMaskEmitter<A, B, C>,
-    {
+    where Assembler<'a>: VpmultishiftqbMaskEmitter<A, B, C> {
         <Self as VpmultishiftqbMaskEmitter<A, B, C>>::vpmultishiftqb_mask(self, op0, op1, op2);
     }
-    /// `VPMULTISHIFTQB_MASKZ`.
+    /// `VPMULTISHIFTQB_MASKZ` (VPMULTISHIFTQB). 
+    /// This instruction selects eight unaligned bytes from each input qword element of the second source operand (the third operand) and writes eight assembled bytes for each qword element in the destination operand (the first operand). Each byte result is selected using a byte-granular shift control within the corresponding qword element of the first source operand (the second operand). Each byte result in the destination operand is updated under the writemask k1.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/VPMULTISHIFTQB.html).
     ///
     /// Supported operand variants:
     ///
@@ -1383,9 +1026,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vpmultishiftqb_maskz<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: VpmultishiftqbMaskzEmitter<A, B, C>,
-    {
+    where Assembler<'a>: VpmultishiftqbMaskzEmitter<A, B, C> {
         <Self as VpmultishiftqbMaskzEmitter<A, B, C>>::vpmultishiftqb_maskz(self, op0, op1, op2);
     }
 }

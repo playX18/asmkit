@@ -1,8 +1,8 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -45,15 +45,10 @@ pub trait WrmsrnsEmitter_2<A, B> {
 
 impl<'a> WrmsrnsEmitter_2<Imm, Gpd> for Assembler<'a> {
     fn wrmsrns_2(&mut self, op0: Imm, op1: Gpd) {
-        self.emit(
-            WRMSRNSIR,
-            op0.as_operand(),
-            op1.as_operand(),
-            &NOREG,
-            &NOREG,
-        );
+        self.emit(WRMSRNSIR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
     }
 }
+
 
 impl<'a> Assembler<'a> {
     /// `RDMSR`.
@@ -69,9 +64,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn rdmsr_2<A, B>(&mut self, op0: A, op1: B)
-    where
-        Assembler<'a>: RdmsrEmitter_2<A, B>,
-    {
+    where Assembler<'a>: RdmsrEmitter_2<A, B> {
         <Self as RdmsrEmitter_2<A, B>>::rdmsr_2(self, op0, op1);
     }
     /// `WRMSRNS`.
@@ -87,9 +80,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn wrmsrns_2<A, B>(&mut self, op0: A, op1: B)
-    where
-        Assembler<'a>: WrmsrnsEmitter_2<A, B>,
-    {
+    where Assembler<'a>: WrmsrnsEmitter_2<A, B> {
         <Self as WrmsrnsEmitter_2<A, B>>::wrmsrns_2(self, op0, op1);
     }
 }

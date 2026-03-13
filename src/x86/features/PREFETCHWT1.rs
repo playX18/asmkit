@@ -1,13 +1,17 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
 
-/// `PREFETCHWT1`.
+/// `PREFETCHWT1` (PREFETCHWT1). 
+/// Fetches the line of data from memory that contains the byte specified with the source operand to a location in the cache hierarchy specified by an intent to write hint (so that data is brought into ‘Exclusive’ state via a request for ownership) and a locality hint
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/PREFETCHWT1.html).
 ///
 /// Supported operand variants:
 ///
@@ -28,8 +32,13 @@ impl<'a> Prefetchwt1Emitter<Mem> for Assembler<'a> {
     }
 }
 
+
 impl<'a> Assembler<'a> {
-    /// `PREFETCHWT1`.
+    /// `PREFETCHWT1` (PREFETCHWT1). 
+    /// Fetches the line of data from memory that contains the byte specified with the source operand to a location in the cache hierarchy specified by an intent to write hint (so that data is brought into ‘Exclusive’ state via a request for ownership) and a locality hint
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/PREFETCHWT1.html).
     ///
     /// Supported operand variants:
     ///
@@ -42,9 +51,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn prefetchwt1<A>(&mut self, op0: A)
-    where
-        Assembler<'a>: Prefetchwt1Emitter<A>,
-    {
+    where Assembler<'a>: Prefetchwt1Emitter<A> {
         <Self as Prefetchwt1Emitter<A>>::prefetchwt1(self, op0);
     }
 }

@@ -1,8 +1,8 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -91,6 +91,7 @@ impl<'a> RmpupdateEmitter for Assembler<'a> {
     }
 }
 
+
 impl<'a> Assembler<'a> {
     /// `PSMASH`.
     ///
@@ -105,9 +106,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn psmash(&mut self)
-    where
-        Assembler<'a>: PsmashEmitter,
-    {
+    where Assembler<'a>: PsmashEmitter {
         <Self as PsmashEmitter>::psmash(self);
     }
     /// `PVALIDATE`.
@@ -123,9 +122,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn pvalidate(&mut self)
-    where
-        Assembler<'a>: PvalidateEmitter,
-    {
+    where Assembler<'a>: PvalidateEmitter {
         <Self as PvalidateEmitter>::pvalidate(self);
     }
     /// `RMPADJUST`.
@@ -141,9 +138,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn rmpadjust(&mut self)
-    where
-        Assembler<'a>: RmpadjustEmitter,
-    {
+    where Assembler<'a>: RmpadjustEmitter {
         <Self as RmpadjustEmitter>::rmpadjust(self);
     }
     /// `RMPUPDATE`.
@@ -159,9 +154,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn rmpupdate(&mut self)
-    where
-        Assembler<'a>: RmpupdateEmitter,
-    {
+    where Assembler<'a>: RmpupdateEmitter {
         <Self as RmpupdateEmitter>::rmpupdate(self);
     }
 }

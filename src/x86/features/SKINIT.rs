@@ -1,8 +1,8 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -70,6 +70,7 @@ impl<'a> StgiEmitter for Assembler<'a> {
     }
 }
 
+
 impl<'a> Assembler<'a> {
     /// `CLGI`.
     ///
@@ -84,9 +85,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn clgi(&mut self)
-    where
-        Assembler<'a>: ClgiEmitter,
-    {
+    where Assembler<'a>: ClgiEmitter {
         <Self as ClgiEmitter>::clgi(self);
     }
     /// `SKINIT`.
@@ -102,9 +101,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn skinit(&mut self)
-    where
-        Assembler<'a>: SkinitEmitter,
-    {
+    where Assembler<'a>: SkinitEmitter {
         <Self as SkinitEmitter>::skinit(self);
     }
     /// `STGI`.
@@ -120,9 +117,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn stgi(&mut self)
-    where
-        Assembler<'a>: StgiEmitter,
-    {
+    where Assembler<'a>: StgiEmitter {
         <Self as StgiEmitter>::stgi(self);
     }
 }

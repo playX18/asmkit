@@ -1,13 +1,17 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
 
-/// `SHA1MSG1`.
+/// `SHA1MSG1` (SHA1MSG1). 
+/// The SHA1MSG1 instruction is one of two SHA1 message scheduling instructions. The instruction performs an intermediate calculation for the next four SHA1 message dwords.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SHA1MSG1.html).
 ///
 /// Supported operand variants:
 ///
@@ -25,29 +29,21 @@ pub trait Sha1msg1Emitter<A, B> {
 
 impl<'a> Sha1msg1Emitter<Xmm, Xmm> for Assembler<'a> {
     fn sha1msg1(&mut self, op0: Xmm, op1: Xmm) {
-        self.emit(
-            SHA1MSG1RR,
-            op0.as_operand(),
-            op1.as_operand(),
-            &NOREG,
-            &NOREG,
-        );
+        self.emit(SHA1MSG1RR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
     }
 }
 
 impl<'a> Sha1msg1Emitter<Xmm, Mem> for Assembler<'a> {
     fn sha1msg1(&mut self, op0: Xmm, op1: Mem) {
-        self.emit(
-            SHA1MSG1RM,
-            op0.as_operand(),
-            op1.as_operand(),
-            &NOREG,
-            &NOREG,
-        );
+        self.emit(SHA1MSG1RM, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
     }
 }
 
-/// `SHA1MSG2`.
+/// `SHA1MSG2` (SHA1MSG2). 
+/// The SHA1MSG2 instruction is one of two SHA1 message scheduling instructions. The instruction performs the final calculation to derive the next four SHA1 message dwords.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SHA1MSG2.html).
 ///
 /// Supported operand variants:
 ///
@@ -65,29 +61,21 @@ pub trait Sha1msg2Emitter<A, B> {
 
 impl<'a> Sha1msg2Emitter<Xmm, Xmm> for Assembler<'a> {
     fn sha1msg2(&mut self, op0: Xmm, op1: Xmm) {
-        self.emit(
-            SHA1MSG2RR,
-            op0.as_operand(),
-            op1.as_operand(),
-            &NOREG,
-            &NOREG,
-        );
+        self.emit(SHA1MSG2RR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
     }
 }
 
 impl<'a> Sha1msg2Emitter<Xmm, Mem> for Assembler<'a> {
     fn sha1msg2(&mut self, op0: Xmm, op1: Mem) {
-        self.emit(
-            SHA1MSG2RM,
-            op0.as_operand(),
-            op1.as_operand(),
-            &NOREG,
-            &NOREG,
-        );
+        self.emit(SHA1MSG2RM, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
     }
 }
 
-/// `SHA1NEXTE`.
+/// `SHA1NEXTE` (SHA1NEXTE). 
+/// The SHA1NEXTE calculates the SHA1 state variable E after four rounds of operation from the current SHA1 state variable A in the destination operand. The calculated value of the SHA1 state variable E is added to the source operand, which contains the scheduled dwords.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SHA1NEXTE.html).
 ///
 /// Supported operand variants:
 ///
@@ -105,29 +93,21 @@ pub trait Sha1nexteEmitter<A, B> {
 
 impl<'a> Sha1nexteEmitter<Xmm, Xmm> for Assembler<'a> {
     fn sha1nexte(&mut self, op0: Xmm, op1: Xmm) {
-        self.emit(
-            SHA1NEXTERR,
-            op0.as_operand(),
-            op1.as_operand(),
-            &NOREG,
-            &NOREG,
-        );
+        self.emit(SHA1NEXTERR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
     }
 }
 
 impl<'a> Sha1nexteEmitter<Xmm, Mem> for Assembler<'a> {
     fn sha1nexte(&mut self, op0: Xmm, op1: Mem) {
-        self.emit(
-            SHA1NEXTERM,
-            op0.as_operand(),
-            op1.as_operand(),
-            &NOREG,
-            &NOREG,
-        );
+        self.emit(SHA1NEXTERM, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
     }
 }
 
-/// `SHA1RNDS4`.
+/// `SHA1RNDS4` (SHA1RNDS4). 
+/// The SHA1RNDS4 instruction performs four rounds of SHA1 operation using an initial SHA1 state (A,B,C,D) from the first operand (which is a source operand and the destination operand) and some pre-computed sum of the next 4 round message dwords, and state variable E from the second operand (a source operand). The updated SHA1 state (A,B,C,D) after four rounds of processing is stored in the destination operand.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SHA1RNDS4.html).
 ///
 /// Supported operand variants:
 ///
@@ -145,29 +125,21 @@ pub trait Sha1rnds4Emitter<A, B, C> {
 
 impl<'a> Sha1rnds4Emitter<Xmm, Xmm, Imm> for Assembler<'a> {
     fn sha1rnds4(&mut self, op0: Xmm, op1: Xmm, op2: Imm) {
-        self.emit(
-            SHA1RNDS4RRI,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(SHA1RNDS4RRI, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Sha1rnds4Emitter<Xmm, Mem, Imm> for Assembler<'a> {
     fn sha1rnds4(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
-        self.emit(
-            SHA1RNDS4RMI,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(SHA1RNDS4RMI, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `SHA256MSG1`.
+/// `SHA256MSG1` (SHA256MSG1). 
+/// The SHA256MSG1 instruction is one of two SHA256 message scheduling instructions. The instruction performs an intermediate calculation for the next four SHA256 message dwords.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SHA256MSG1.html).
 ///
 /// Supported operand variants:
 ///
@@ -185,29 +157,21 @@ pub trait Sha256msg1Emitter<A, B> {
 
 impl<'a> Sha256msg1Emitter<Xmm, Xmm> for Assembler<'a> {
     fn sha256msg1(&mut self, op0: Xmm, op1: Xmm) {
-        self.emit(
-            SHA256MSG1RR,
-            op0.as_operand(),
-            op1.as_operand(),
-            &NOREG,
-            &NOREG,
-        );
+        self.emit(SHA256MSG1RR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
     }
 }
 
 impl<'a> Sha256msg1Emitter<Xmm, Mem> for Assembler<'a> {
     fn sha256msg1(&mut self, op0: Xmm, op1: Mem) {
-        self.emit(
-            SHA256MSG1RM,
-            op0.as_operand(),
-            op1.as_operand(),
-            &NOREG,
-            &NOREG,
-        );
+        self.emit(SHA256MSG1RM, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
     }
 }
 
-/// `SHA256MSG2`.
+/// `SHA256MSG2` (SHA256MSG2). 
+/// The SHA256MSG2 instruction is one of two SHA2 message scheduling instructions. The instruction performs the final calculation for the next four SHA256 message dwords.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SHA256MSG2.html).
 ///
 /// Supported operand variants:
 ///
@@ -225,29 +189,21 @@ pub trait Sha256msg2Emitter<A, B> {
 
 impl<'a> Sha256msg2Emitter<Xmm, Xmm> for Assembler<'a> {
     fn sha256msg2(&mut self, op0: Xmm, op1: Xmm) {
-        self.emit(
-            SHA256MSG2RR,
-            op0.as_operand(),
-            op1.as_operand(),
-            &NOREG,
-            &NOREG,
-        );
+        self.emit(SHA256MSG2RR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
     }
 }
 
 impl<'a> Sha256msg2Emitter<Xmm, Mem> for Assembler<'a> {
     fn sha256msg2(&mut self, op0: Xmm, op1: Mem) {
-        self.emit(
-            SHA256MSG2RM,
-            op0.as_operand(),
-            op1.as_operand(),
-            &NOREG,
-            &NOREG,
-        );
+        self.emit(SHA256MSG2RM, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
     }
 }
 
-/// `SHA256RNDS2`.
+/// `SHA256RNDS2` (SHA256RNDS2). 
+/// The SHA256RNDS2 instruction performs 2 rounds of SHA256 operation using an initial SHA256 state (C,D,G,H) from the first operand, an initial SHA256 state (A,B,E,F) from the second operand, and a pre-computed sum of the next 2 round message dwords and the corresponding round constants from the implicit operand xmm0. Note that only the two lower dwords of XMM0 are used by the instruction.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SHA256RNDS2.html).
 ///
 /// Supported operand variants:
 ///
@@ -265,30 +221,23 @@ pub trait Sha256rnds2Emitter<A, B, C> {
 
 impl<'a> Sha256rnds2Emitter<Xmm, Xmm, Xmm> for Assembler<'a> {
     fn sha256rnds2(&mut self, op0: Xmm, op1: Xmm, op2: Xmm) {
-        self.emit(
-            SHA256RNDS2RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(SHA256RNDS2RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> Sha256rnds2Emitter<Xmm, Mem, Xmm> for Assembler<'a> {
     fn sha256rnds2(&mut self, op0: Xmm, op1: Mem, op2: Xmm) {
-        self.emit(
-            SHA256RNDS2RMR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(SHA256RNDS2RMR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
+
 impl<'a> Assembler<'a> {
-    /// `SHA1MSG1`.
+    /// `SHA1MSG1` (SHA1MSG1). 
+    /// The SHA1MSG1 instruction is one of two SHA1 message scheduling instructions. The instruction performs an intermediate calculation for the next four SHA1 message dwords.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SHA1MSG1.html).
     ///
     /// Supported operand variants:
     ///
@@ -302,12 +251,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn sha1msg1<A, B>(&mut self, op0: A, op1: B)
-    where
-        Assembler<'a>: Sha1msg1Emitter<A, B>,
-    {
+    where Assembler<'a>: Sha1msg1Emitter<A, B> {
         <Self as Sha1msg1Emitter<A, B>>::sha1msg1(self, op0, op1);
     }
-    /// `SHA1MSG2`.
+    /// `SHA1MSG2` (SHA1MSG2). 
+    /// The SHA1MSG2 instruction is one of two SHA1 message scheduling instructions. The instruction performs the final calculation to derive the next four SHA1 message dwords.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SHA1MSG2.html).
     ///
     /// Supported operand variants:
     ///
@@ -321,12 +272,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn sha1msg2<A, B>(&mut self, op0: A, op1: B)
-    where
-        Assembler<'a>: Sha1msg2Emitter<A, B>,
-    {
+    where Assembler<'a>: Sha1msg2Emitter<A, B> {
         <Self as Sha1msg2Emitter<A, B>>::sha1msg2(self, op0, op1);
     }
-    /// `SHA1NEXTE`.
+    /// `SHA1NEXTE` (SHA1NEXTE). 
+    /// The SHA1NEXTE calculates the SHA1 state variable E after four rounds of operation from the current SHA1 state variable A in the destination operand. The calculated value of the SHA1 state variable E is added to the source operand, which contains the scheduled dwords.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SHA1NEXTE.html).
     ///
     /// Supported operand variants:
     ///
@@ -340,12 +293,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn sha1nexte<A, B>(&mut self, op0: A, op1: B)
-    where
-        Assembler<'a>: Sha1nexteEmitter<A, B>,
-    {
+    where Assembler<'a>: Sha1nexteEmitter<A, B> {
         <Self as Sha1nexteEmitter<A, B>>::sha1nexte(self, op0, op1);
     }
-    /// `SHA1RNDS4`.
+    /// `SHA1RNDS4` (SHA1RNDS4). 
+    /// The SHA1RNDS4 instruction performs four rounds of SHA1 operation using an initial SHA1 state (A,B,C,D) from the first operand (which is a source operand and the destination operand) and some pre-computed sum of the next 4 round message dwords, and state variable E from the second operand (a source operand). The updated SHA1 state (A,B,C,D) after four rounds of processing is stored in the destination operand.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SHA1RNDS4.html).
     ///
     /// Supported operand variants:
     ///
@@ -359,12 +314,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn sha1rnds4<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: Sha1rnds4Emitter<A, B, C>,
-    {
+    where Assembler<'a>: Sha1rnds4Emitter<A, B, C> {
         <Self as Sha1rnds4Emitter<A, B, C>>::sha1rnds4(self, op0, op1, op2);
     }
-    /// `SHA256MSG1`.
+    /// `SHA256MSG1` (SHA256MSG1). 
+    /// The SHA256MSG1 instruction is one of two SHA256 message scheduling instructions. The instruction performs an intermediate calculation for the next four SHA256 message dwords.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SHA256MSG1.html).
     ///
     /// Supported operand variants:
     ///
@@ -378,12 +335,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn sha256msg1<A, B>(&mut self, op0: A, op1: B)
-    where
-        Assembler<'a>: Sha256msg1Emitter<A, B>,
-    {
+    where Assembler<'a>: Sha256msg1Emitter<A, B> {
         <Self as Sha256msg1Emitter<A, B>>::sha256msg1(self, op0, op1);
     }
-    /// `SHA256MSG2`.
+    /// `SHA256MSG2` (SHA256MSG2). 
+    /// The SHA256MSG2 instruction is one of two SHA2 message scheduling instructions. The instruction performs the final calculation for the next four SHA256 message dwords.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SHA256MSG2.html).
     ///
     /// Supported operand variants:
     ///
@@ -397,12 +356,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn sha256msg2<A, B>(&mut self, op0: A, op1: B)
-    where
-        Assembler<'a>: Sha256msg2Emitter<A, B>,
-    {
+    where Assembler<'a>: Sha256msg2Emitter<A, B> {
         <Self as Sha256msg2Emitter<A, B>>::sha256msg2(self, op0, op1);
     }
-    /// `SHA256RNDS2`.
+    /// `SHA256RNDS2` (SHA256RNDS2). 
+    /// The SHA256RNDS2 instruction performs 2 rounds of SHA256 operation using an initial SHA256 state (C,D,G,H) from the first operand, an initial SHA256 state (A,B,E,F) from the second operand, and a pre-computed sum of the next 2 round message dwords and the corresponding round constants from the implicit operand xmm0. Note that only the two lower dwords of XMM0 are used by the instruction.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SHA256RNDS2.html).
     ///
     /// Supported operand variants:
     ///
@@ -416,9 +377,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn sha256rnds2<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: Sha256rnds2Emitter<A, B, C>,
-    {
+    where Assembler<'a>: Sha256rnds2Emitter<A, B, C> {
         <Self as Sha256rnds2Emitter<A, B, C>>::sha256rnds2(self, op0, op1, op2);
     }
 }

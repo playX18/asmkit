@@ -1,8 +1,8 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -49,6 +49,7 @@ impl<'a> MwaitxEmitter for Assembler<'a> {
     }
 }
 
+
 impl<'a> Assembler<'a> {
     /// `MONITORX`.
     ///
@@ -63,9 +64,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn monitorx(&mut self)
-    where
-        Assembler<'a>: MonitorxEmitter,
-    {
+    where Assembler<'a>: MonitorxEmitter {
         <Self as MonitorxEmitter>::monitorx(self);
     }
     /// `MWAITX`.
@@ -81,9 +80,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn mwaitx(&mut self)
-    where
-        Assembler<'a>: MwaitxEmitter,
-    {
+    where Assembler<'a>: MwaitxEmitter {
         <Self as MwaitxEmitter>::mwaitx(self);
     }
 }

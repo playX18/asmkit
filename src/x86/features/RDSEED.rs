@@ -1,8 +1,8 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -42,6 +42,7 @@ impl<'a> RdseedEmitter<Gpq> for Assembler<'a> {
     }
 }
 
+
 impl<'a> Assembler<'a> {
     /// `RDSEED`.
     ///
@@ -58,9 +59,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn rdseed<A>(&mut self, op0: A)
-    where
-        Assembler<'a>: RdseedEmitter<A>,
-    {
+    where Assembler<'a>: RdseedEmitter<A> {
         <Self as RdseedEmitter<A>>::rdseed(self, op0);
     }
 }

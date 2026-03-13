@@ -1372,7 +1372,7 @@ def encode3(entries, args):
     mnemonics = encode_mnems3(entries)
     mnemonics["NOP", "NOP", 0, ""] = [EncodeVariant(Opcode.parse("90"), InstrDesc.parse("NP - - - - NOP"))]
     opcode_docs = load_opcode_docs(args.docs_inputfolder)
-
+   
     get_feature = get_instruction_feature_set(entries)
     trait_feature = {}  # (base_mnem, nargs) -> feature name
 
@@ -1636,7 +1636,8 @@ def encode3(entries, args):
         # Doc for trait
         trait_doc = ''
         if doc:
-            trait_doc = f"/// `{base_mnem.upper()}` ({canonical_mnemonic}). {doc['tooltip']}\n"
+            trait_doc = f"/// `{base_mnem.upper()}` ({canonical_mnemonic}). \n/// {doc['tooltip']}\n"
+            trait_doc = f"{trait_doc}///\n///\n/// For more details, see the [Intel manual]({doc['url']}).\n"
         else:
             trait_doc = f"/// `{base_mnem.upper()}`.\n"
         trait_doc += "///\n"

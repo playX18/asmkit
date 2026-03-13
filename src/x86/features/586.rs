@@ -1,8 +1,8 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -70,7 +70,11 @@ impl<'a> CmpxchgdEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `CPUID`.
+/// `CPUID` (CPUID). 
+/// The ID flag (bit 21) in the EFLAGS register indicates support for the CPUID instruction. If a software procedure can set and clear this flag, the processor executing the procedure supports the CPUID instruction. This instruction operates the same in non-64-bit modes and 64-bit mode.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/CPUID.html).
 ///
 /// Supported operand variants:
 ///
@@ -112,7 +116,11 @@ impl<'a> RdmsrEmitter for Assembler<'a> {
     }
 }
 
-/// `RDTSC`.
+/// `RDTSC` (RDTSC). 
+/// Reads the current value of the processor’s time-stamp counter (a 64-bit MSR) into the EDX:EAX registers. The EDX register is loaded with the high-order 32 bits of the MSR and the EAX register is loaded with the low-order 32 bits. (On processors that support the Intel 64 architecture, the high-order 32 bits of each of RAX and RDX are cleared.)
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/RDTSC.html).
 ///
 /// Supported operand variants:
 ///
@@ -133,7 +141,11 @@ impl<'a> RdtscEmitter for Assembler<'a> {
     }
 }
 
-/// `RSM`.
+/// `RSM` (RSM). 
+/// Returns program control from system management mode (SMM) to the application program or operating-system procedure that was interrupted when the processor received an SMM interrupt. The processor’s state is restored from the dump created upon entering SMM. If the processor detects invalid state information during state restoration, it enters the shutdown state. The following invalid information can cause a shutdown
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/RSM.html).
 ///
 /// Supported operand variants:
 ///
@@ -154,7 +166,11 @@ impl<'a> RsmEmitter for Assembler<'a> {
     }
 }
 
-/// `WRMSR`.
+/// `WRMSR` (WRMSR). 
+/// Writes the contents of registers EDX:EAX into the 64-bit model specific register (MSR) specified in the ECX register. (On processors that support the Intel 64 architecture, the high-order 32 bits of RCX are ignored.) The contents of the EDX register are copied to high-order 32 bits of the selected MSR and the contents of the EAX register are copied to low-order 32 bits of the MSR. (On processors that support the Intel 64 architecture, the high-order 32 bits of each of RAX and RDX are ignored.) Undefined or reserved bits in an MSR should be set to values previously read.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/WRMSR.html).
 ///
 /// Supported operand variants:
 ///
@@ -175,6 +191,7 @@ impl<'a> WrmsrEmitter for Assembler<'a> {
     }
 }
 
+
 impl<'a> Assembler<'a> {
     /// `CMPXCHG16BM`.
     ///
@@ -189,9 +206,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn cmpxchg16bm<A>(&mut self, op0: A)
-    where
-        Assembler<'a>: Cmpxchg16bmEmitter<A>,
-    {
+    where Assembler<'a>: Cmpxchg16bmEmitter<A> {
         <Self as Cmpxchg16bmEmitter<A>>::cmpxchg16bm(self, op0);
     }
     /// `CMPXCHG8BM`.
@@ -207,9 +222,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn cmpxchg8bm<A>(&mut self, op0: A)
-    where
-        Assembler<'a>: Cmpxchg8bmEmitter<A>,
-    {
+    where Assembler<'a>: Cmpxchg8bmEmitter<A> {
         <Self as Cmpxchg8bmEmitter<A>>::cmpxchg8bm(self, op0);
     }
     /// `CMPXCHGD`.
@@ -225,12 +238,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn cmpxchgd<A>(&mut self, op0: A)
-    where
-        Assembler<'a>: CmpxchgdEmitter<A>,
-    {
+    where Assembler<'a>: CmpxchgdEmitter<A> {
         <Self as CmpxchgdEmitter<A>>::cmpxchgd(self, op0);
     }
-    /// `CPUID`.
+    /// `CPUID` (CPUID). 
+    /// The ID flag (bit 21) in the EFLAGS register indicates support for the CPUID instruction. If a software procedure can set and clear this flag, the processor executing the procedure supports the CPUID instruction. This instruction operates the same in non-64-bit modes and 64-bit mode.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/CPUID.html).
     ///
     /// Supported operand variants:
     ///
@@ -243,9 +258,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn cpuid(&mut self)
-    where
-        Assembler<'a>: CpuidEmitter,
-    {
+    where Assembler<'a>: CpuidEmitter {
         <Self as CpuidEmitter>::cpuid(self);
     }
     /// `RDMSR`.
@@ -261,12 +274,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn rdmsr(&mut self)
-    where
-        Assembler<'a>: RdmsrEmitter,
-    {
+    where Assembler<'a>: RdmsrEmitter {
         <Self as RdmsrEmitter>::rdmsr(self);
     }
-    /// `RDTSC`.
+    /// `RDTSC` (RDTSC). 
+    /// Reads the current value of the processor’s time-stamp counter (a 64-bit MSR) into the EDX:EAX registers. The EDX register is loaded with the high-order 32 bits of the MSR and the EAX register is loaded with the low-order 32 bits. (On processors that support the Intel 64 architecture, the high-order 32 bits of each of RAX and RDX are cleared.)
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/RDTSC.html).
     ///
     /// Supported operand variants:
     ///
@@ -279,12 +294,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn rdtsc(&mut self)
-    where
-        Assembler<'a>: RdtscEmitter,
-    {
+    where Assembler<'a>: RdtscEmitter {
         <Self as RdtscEmitter>::rdtsc(self);
     }
-    /// `RSM`.
+    /// `RSM` (RSM). 
+    /// Returns program control from system management mode (SMM) to the application program or operating-system procedure that was interrupted when the processor received an SMM interrupt. The processor’s state is restored from the dump created upon entering SMM. If the processor detects invalid state information during state restoration, it enters the shutdown state. The following invalid information can cause a shutdown
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/RSM.html).
     ///
     /// Supported operand variants:
     ///
@@ -297,12 +314,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn rsm(&mut self)
-    where
-        Assembler<'a>: RsmEmitter,
-    {
+    where Assembler<'a>: RsmEmitter {
         <Self as RsmEmitter>::rsm(self);
     }
-    /// `WRMSR`.
+    /// `WRMSR` (WRMSR). 
+    /// Writes the contents of registers EDX:EAX into the 64-bit model specific register (MSR) specified in the ECX register. (On processors that support the Intel 64 architecture, the high-order 32 bits of RCX are ignored.) The contents of the EDX register are copied to high-order 32 bits of the selected MSR and the contents of the EAX register are copied to low-order 32 bits of the MSR. (On processors that support the Intel 64 architecture, the high-order 32 bits of each of RAX and RDX are ignored.) Undefined or reserved bits in an MSR should be set to values previously read.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/WRMSR.html).
     ///
     /// Supported operand variants:
     ///
@@ -315,9 +334,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn wrmsr(&mut self)
-    where
-        Assembler<'a>: WrmsrEmitter,
-    {
+    where Assembler<'a>: WrmsrEmitter {
         <Self as WrmsrEmitter>::wrmsr(self);
     }
 }

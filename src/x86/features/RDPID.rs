@@ -1,13 +1,17 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
 
-/// `RDPID`.
+/// `RDPID` (RDPID). 
+/// Reads the value of the IA32_TSC_AUX MSR (address C0000103H) into the destination register. The value of CS.D and operand-size prefixes (66H and REX.W) do not affect the behavior of the RDPID instruction.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/RDPID.html).
 ///
 /// Supported operand variants:
 ///
@@ -28,8 +32,13 @@ impl<'a> RdpidEmitter<Gpq> for Assembler<'a> {
     }
 }
 
+
 impl<'a> Assembler<'a> {
-    /// `RDPID`.
+    /// `RDPID` (RDPID). 
+    /// Reads the value of the IA32_TSC_AUX MSR (address C0000103H) into the destination register. The value of CS.D and operand-size prefixes (66H and REX.W) do not affect the behavior of the RDPID instruction.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/RDPID.html).
     ///
     /// Supported operand variants:
     ///
@@ -42,9 +51,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn rdpid<A>(&mut self, op0: A)
-    where
-        Assembler<'a>: RdpidEmitter<A>,
-    {
+    where Assembler<'a>: RdpidEmitter<A> {
         <Self as RdpidEmitter<A>>::rdpid(self, op0);
     }
 }

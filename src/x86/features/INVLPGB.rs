@@ -1,8 +1,8 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -49,6 +49,7 @@ impl<'a> TlbsyncEmitter for Assembler<'a> {
     }
 }
 
+
 impl<'a> Assembler<'a> {
     /// `INVLPGB`.
     ///
@@ -63,9 +64,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn invlpgb(&mut self)
-    where
-        Assembler<'a>: InvlpgbEmitter,
-    {
+    where Assembler<'a>: InvlpgbEmitter {
         <Self as InvlpgbEmitter>::invlpgb(self);
     }
     /// `TLBSYNC`.
@@ -81,9 +80,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn tlbsync(&mut self)
-    where
-        Assembler<'a>: TlbsyncEmitter,
-    {
+    where Assembler<'a>: TlbsyncEmitter {
         <Self as TlbsyncEmitter>::tlbsync(self);
     }
 }

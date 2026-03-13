@@ -1,8 +1,8 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -28,6 +28,7 @@ impl<'a> PbndkbEmitter for Assembler<'a> {
     }
 }
 
+
 impl<'a> Assembler<'a> {
     /// `PBNDKB`.
     ///
@@ -42,9 +43,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn pbndkb(&mut self)
-    where
-        Assembler<'a>: PbndkbEmitter,
-    {
+    where Assembler<'a>: PbndkbEmitter {
         <Self as PbndkbEmitter>::pbndkb(self);
     }
 }

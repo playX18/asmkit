@@ -1,8 +1,8 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -28,6 +28,7 @@ impl<'a> WrmsrnsEmitter for Assembler<'a> {
     }
 }
 
+
 impl<'a> Assembler<'a> {
     /// `WRMSRNS`.
     ///
@@ -42,9 +43,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn wrmsrns(&mut self)
-    where
-        Assembler<'a>: WrmsrnsEmitter,
-    {
+    where Assembler<'a>: WrmsrnsEmitter {
         <Self as WrmsrnsEmitter>::wrmsrns(self);
     }
 }

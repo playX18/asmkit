@@ -1,13 +1,17 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
 
-/// `BZHI`.
+/// `BZHI` (BZHI). 
+/// BZHI copies the bits of the first source operand (the second operand) into the destination operand (the first operand) and clears the higher bits in the destination according to the INDEX value specified by the second source operand (the third operand). The INDEX is specified by bits 7:0 of the second source operand. The INDEX value is saturated at the value of OperandSize -1. CF is set, if the number contained in the 8 low bits of the third operand is greater than OperandSize -1.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/BZHI.html).
 ///
 /// Supported operand variants:
 ///
@@ -27,53 +31,33 @@ pub trait BzhiEmitter<A, B, C> {
 
 impl<'a> BzhiEmitter<Gpd, Gpd, Gpd> for Assembler<'a> {
     fn bzhi(&mut self, op0: Gpd, op1: Gpd, op2: Gpd) {
-        self.emit(
-            BZHI32RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(BZHI32RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> BzhiEmitter<Gpd, Mem, Gpd> for Assembler<'a> {
     fn bzhi(&mut self, op0: Gpd, op1: Mem, op2: Gpd) {
-        self.emit(
-            BZHI32RMR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(BZHI32RMR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> BzhiEmitter<Gpq, Gpq, Gpq> for Assembler<'a> {
     fn bzhi(&mut self, op0: Gpq, op1: Gpq, op2: Gpq) {
-        self.emit(
-            BZHI64RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(BZHI64RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> BzhiEmitter<Gpq, Mem, Gpq> for Assembler<'a> {
     fn bzhi(&mut self, op0: Gpq, op1: Mem, op2: Gpq) {
-        self.emit(
-            BZHI64RMR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(BZHI64RMR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `MULX`.
+/// `MULX` (MULX). 
+/// Performs an unsigned multiplication of the implicit source operand (EDX/RDX) and the specified source operand (the third operand) and stores the low half of the result in the second destination (second operand), the high half of the result in the first destination operand (first operand), without reading or writing the arithmetic flags. This enables efficient programming where the software can interleave add with carry operations and multiplications.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/MULX.html).
 ///
 /// Supported operand variants:
 ///
@@ -93,53 +77,33 @@ pub trait MulxEmitter<A, B, C> {
 
 impl<'a> MulxEmitter<Gpd, Gpd, Gpd> for Assembler<'a> {
     fn mulx(&mut self, op0: Gpd, op1: Gpd, op2: Gpd) {
-        self.emit(
-            MULX32RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(MULX32RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> MulxEmitter<Gpd, Gpd, Mem> for Assembler<'a> {
     fn mulx(&mut self, op0: Gpd, op1: Gpd, op2: Mem) {
-        self.emit(
-            MULX32RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(MULX32RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> MulxEmitter<Gpq, Gpq, Gpq> for Assembler<'a> {
     fn mulx(&mut self, op0: Gpq, op1: Gpq, op2: Gpq) {
-        self.emit(
-            MULX64RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(MULX64RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> MulxEmitter<Gpq, Gpq, Mem> for Assembler<'a> {
     fn mulx(&mut self, op0: Gpq, op1: Gpq, op2: Mem) {
-        self.emit(
-            MULX64RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(MULX64RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `PDEP`.
+/// `PDEP` (PDEP). 
+/// PDEP uses a mask in the second source operand (the third operand) to transfer/scatter contiguous low order bits in the first source operand (the second operand) into the destination (the first operand). PDEP takes the low bits from the first source operand and deposit them in the destination operand at the corresponding bit locations that are set in the second source operand (mask). All other bits (bits not set in mask) in destination are set to zero.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/PDEP.html).
 ///
 /// Supported operand variants:
 ///
@@ -159,53 +123,33 @@ pub trait PdepEmitter<A, B, C> {
 
 impl<'a> PdepEmitter<Gpd, Gpd, Gpd> for Assembler<'a> {
     fn pdep(&mut self, op0: Gpd, op1: Gpd, op2: Gpd) {
-        self.emit(
-            PDEP32RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(PDEP32RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> PdepEmitter<Gpd, Gpd, Mem> for Assembler<'a> {
     fn pdep(&mut self, op0: Gpd, op1: Gpd, op2: Mem) {
-        self.emit(
-            PDEP32RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(PDEP32RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> PdepEmitter<Gpq, Gpq, Gpq> for Assembler<'a> {
     fn pdep(&mut self, op0: Gpq, op1: Gpq, op2: Gpq) {
-        self.emit(
-            PDEP64RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(PDEP64RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> PdepEmitter<Gpq, Gpq, Mem> for Assembler<'a> {
     fn pdep(&mut self, op0: Gpq, op1: Gpq, op2: Mem) {
-        self.emit(
-            PDEP64RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(PDEP64RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `PEXT`.
+/// `PEXT` (PEXT). 
+/// PEXT uses a mask in the second source operand (the third operand) to transfer either contiguous or non-contiguous bits in the first source operand (the second operand) to contiguous low order bit positions in the destination (the first operand). For each bit set in the MASK, PEXT extracts the corresponding bits from the first source operand and writes them into contiguous lower bits of destination operand. The remaining upper bits of destination are zeroed.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/PEXT.html).
 ///
 /// Supported operand variants:
 ///
@@ -225,53 +169,33 @@ pub trait PextEmitter<A, B, C> {
 
 impl<'a> PextEmitter<Gpd, Gpd, Gpd> for Assembler<'a> {
     fn pext(&mut self, op0: Gpd, op1: Gpd, op2: Gpd) {
-        self.emit(
-            PEXT32RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(PEXT32RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> PextEmitter<Gpd, Gpd, Mem> for Assembler<'a> {
     fn pext(&mut self, op0: Gpd, op1: Gpd, op2: Mem) {
-        self.emit(
-            PEXT32RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(PEXT32RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> PextEmitter<Gpq, Gpq, Gpq> for Assembler<'a> {
     fn pext(&mut self, op0: Gpq, op1: Gpq, op2: Gpq) {
-        self.emit(
-            PEXT64RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(PEXT64RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> PextEmitter<Gpq, Gpq, Mem> for Assembler<'a> {
     fn pext(&mut self, op0: Gpq, op1: Gpq, op2: Mem) {
-        self.emit(
-            PEXT64RRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(PEXT64RRM, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `RORX`.
+/// `RORX` (RORX). 
+/// Rotates the bits of second operand right by the count value specified in imm8 without affecting arithmetic flags. The RORX instruction does not read or write the arithmetic flags.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/RORX.html).
 ///
 /// Supported operand variants:
 ///
@@ -291,53 +215,33 @@ pub trait RorxEmitter<A, B, C> {
 
 impl<'a> RorxEmitter<Gpd, Gpd, Imm> for Assembler<'a> {
     fn rorx(&mut self, op0: Gpd, op1: Gpd, op2: Imm) {
-        self.emit(
-            RORX32RRI,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(RORX32RRI, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> RorxEmitter<Gpd, Mem, Imm> for Assembler<'a> {
     fn rorx(&mut self, op0: Gpd, op1: Mem, op2: Imm) {
-        self.emit(
-            RORX32RMI,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(RORX32RMI, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> RorxEmitter<Gpq, Gpq, Imm> for Assembler<'a> {
     fn rorx(&mut self, op0: Gpq, op1: Gpq, op2: Imm) {
-        self.emit(
-            RORX64RRI,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(RORX64RRI, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> RorxEmitter<Gpq, Mem, Imm> for Assembler<'a> {
     fn rorx(&mut self, op0: Gpq, op1: Mem, op2: Imm) {
-        self.emit(
-            RORX64RMI,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(RORX64RMI, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `SARX`.
+/// `SARX` (SARX). 
+/// Shifts the bits of the first source operand (the second operand) to the left or right by a COUNT value specified in the second source operand (the third operand). The result is written to the destination operand (the first operand).
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SARX%3ASHLX%3ASHRX.html).
 ///
 /// Supported operand variants:
 ///
@@ -357,53 +261,33 @@ pub trait SarxEmitter<A, B, C> {
 
 impl<'a> SarxEmitter<Gpd, Gpd, Gpd> for Assembler<'a> {
     fn sarx(&mut self, op0: Gpd, op1: Gpd, op2: Gpd) {
-        self.emit(
-            SARX32RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(SARX32RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> SarxEmitter<Gpd, Mem, Gpd> for Assembler<'a> {
     fn sarx(&mut self, op0: Gpd, op1: Mem, op2: Gpd) {
-        self.emit(
-            SARX32RMR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(SARX32RMR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> SarxEmitter<Gpq, Gpq, Gpq> for Assembler<'a> {
     fn sarx(&mut self, op0: Gpq, op1: Gpq, op2: Gpq) {
-        self.emit(
-            SARX64RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(SARX64RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> SarxEmitter<Gpq, Mem, Gpq> for Assembler<'a> {
     fn sarx(&mut self, op0: Gpq, op1: Mem, op2: Gpq) {
-        self.emit(
-            SARX64RMR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(SARX64RMR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `SHLX`.
+/// `SHLX` (SHLX). 
+/// Shifts the bits of the first source operand (the second operand) to the left or right by a COUNT value specified in the second source operand (the third operand). The result is written to the destination operand (the first operand).
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SARX%3ASHLX%3ASHRX.html).
 ///
 /// Supported operand variants:
 ///
@@ -423,53 +307,33 @@ pub trait ShlxEmitter<A, B, C> {
 
 impl<'a> ShlxEmitter<Gpd, Gpd, Gpd> for Assembler<'a> {
     fn shlx(&mut self, op0: Gpd, op1: Gpd, op2: Gpd) {
-        self.emit(
-            SHLX32RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(SHLX32RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> ShlxEmitter<Gpd, Mem, Gpd> for Assembler<'a> {
     fn shlx(&mut self, op0: Gpd, op1: Mem, op2: Gpd) {
-        self.emit(
-            SHLX32RMR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(SHLX32RMR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> ShlxEmitter<Gpq, Gpq, Gpq> for Assembler<'a> {
     fn shlx(&mut self, op0: Gpq, op1: Gpq, op2: Gpq) {
-        self.emit(
-            SHLX64RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(SHLX64RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> ShlxEmitter<Gpq, Mem, Gpq> for Assembler<'a> {
     fn shlx(&mut self, op0: Gpq, op1: Mem, op2: Gpq) {
-        self.emit(
-            SHLX64RMR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(SHLX64RMR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
-/// `SHRX`.
+/// `SHRX` (SHRX). 
+/// Shifts the bits of the first source operand (the second operand) to the left or right by a COUNT value specified in the second source operand (the third operand). The result is written to the destination operand (the first operand).
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SARX%3ASHLX%3ASHRX.html).
 ///
 /// Supported operand variants:
 ///
@@ -489,54 +353,35 @@ pub trait ShrxEmitter<A, B, C> {
 
 impl<'a> ShrxEmitter<Gpd, Gpd, Gpd> for Assembler<'a> {
     fn shrx(&mut self, op0: Gpd, op1: Gpd, op2: Gpd) {
-        self.emit(
-            SHRX32RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(SHRX32RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> ShrxEmitter<Gpd, Mem, Gpd> for Assembler<'a> {
     fn shrx(&mut self, op0: Gpd, op1: Mem, op2: Gpd) {
-        self.emit(
-            SHRX32RMR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(SHRX32RMR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> ShrxEmitter<Gpq, Gpq, Gpq> for Assembler<'a> {
     fn shrx(&mut self, op0: Gpq, op1: Gpq, op2: Gpq) {
-        self.emit(
-            SHRX64RRR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(SHRX64RRR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
 impl<'a> ShrxEmitter<Gpq, Mem, Gpq> for Assembler<'a> {
     fn shrx(&mut self, op0: Gpq, op1: Mem, op2: Gpq) {
-        self.emit(
-            SHRX64RMR,
-            op0.as_operand(),
-            op1.as_operand(),
-            op2.as_operand(),
-            &NOREG,
-        );
+        self.emit(SHRX64RMR, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
     }
 }
 
+
 impl<'a> Assembler<'a> {
-    /// `BZHI`.
+    /// `BZHI` (BZHI). 
+    /// BZHI copies the bits of the first source operand (the second operand) into the destination operand (the first operand) and clears the higher bits in the destination according to the INDEX value specified by the second source operand (the third operand). The INDEX is specified by bits 7:0 of the second source operand. The INDEX value is saturated at the value of OperandSize -1. CF is set, if the number contained in the 8 low bits of the third operand is greater than OperandSize -1.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/BZHI.html).
     ///
     /// Supported operand variants:
     ///
@@ -552,12 +397,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn bzhi<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: BzhiEmitter<A, B, C>,
-    {
+    where Assembler<'a>: BzhiEmitter<A, B, C> {
         <Self as BzhiEmitter<A, B, C>>::bzhi(self, op0, op1, op2);
     }
-    /// `MULX`.
+    /// `MULX` (MULX). 
+    /// Performs an unsigned multiplication of the implicit source operand (EDX/RDX) and the specified source operand (the third operand) and stores the low half of the result in the second destination (second operand), the high half of the result in the first destination operand (first operand), without reading or writing the arithmetic flags. This enables efficient programming where the software can interleave add with carry operations and multiplications.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/MULX.html).
     ///
     /// Supported operand variants:
     ///
@@ -573,12 +420,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn mulx<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: MulxEmitter<A, B, C>,
-    {
+    where Assembler<'a>: MulxEmitter<A, B, C> {
         <Self as MulxEmitter<A, B, C>>::mulx(self, op0, op1, op2);
     }
-    /// `PDEP`.
+    /// `PDEP` (PDEP). 
+    /// PDEP uses a mask in the second source operand (the third operand) to transfer/scatter contiguous low order bits in the first source operand (the second operand) into the destination (the first operand). PDEP takes the low bits from the first source operand and deposit them in the destination operand at the corresponding bit locations that are set in the second source operand (mask). All other bits (bits not set in mask) in destination are set to zero.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/PDEP.html).
     ///
     /// Supported operand variants:
     ///
@@ -594,12 +443,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn pdep<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: PdepEmitter<A, B, C>,
-    {
+    where Assembler<'a>: PdepEmitter<A, B, C> {
         <Self as PdepEmitter<A, B, C>>::pdep(self, op0, op1, op2);
     }
-    /// `PEXT`.
+    /// `PEXT` (PEXT). 
+    /// PEXT uses a mask in the second source operand (the third operand) to transfer either contiguous or non-contiguous bits in the first source operand (the second operand) to contiguous low order bit positions in the destination (the first operand). For each bit set in the MASK, PEXT extracts the corresponding bits from the first source operand and writes them into contiguous lower bits of destination operand. The remaining upper bits of destination are zeroed.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/PEXT.html).
     ///
     /// Supported operand variants:
     ///
@@ -615,12 +466,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn pext<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: PextEmitter<A, B, C>,
-    {
+    where Assembler<'a>: PextEmitter<A, B, C> {
         <Self as PextEmitter<A, B, C>>::pext(self, op0, op1, op2);
     }
-    /// `RORX`.
+    /// `RORX` (RORX). 
+    /// Rotates the bits of second operand right by the count value specified in imm8 without affecting arithmetic flags. The RORX instruction does not read or write the arithmetic flags.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/RORX.html).
     ///
     /// Supported operand variants:
     ///
@@ -636,12 +489,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn rorx<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: RorxEmitter<A, B, C>,
-    {
+    where Assembler<'a>: RorxEmitter<A, B, C> {
         <Self as RorxEmitter<A, B, C>>::rorx(self, op0, op1, op2);
     }
-    /// `SARX`.
+    /// `SARX` (SARX). 
+    /// Shifts the bits of the first source operand (the second operand) to the left or right by a COUNT value specified in the second source operand (the third operand). The result is written to the destination operand (the first operand).
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SARX%3ASHLX%3ASHRX.html).
     ///
     /// Supported operand variants:
     ///
@@ -657,12 +512,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn sarx<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: SarxEmitter<A, B, C>,
-    {
+    where Assembler<'a>: SarxEmitter<A, B, C> {
         <Self as SarxEmitter<A, B, C>>::sarx(self, op0, op1, op2);
     }
-    /// `SHLX`.
+    /// `SHLX` (SHLX). 
+    /// Shifts the bits of the first source operand (the second operand) to the left or right by a COUNT value specified in the second source operand (the third operand). The result is written to the destination operand (the first operand).
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SARX%3ASHLX%3ASHRX.html).
     ///
     /// Supported operand variants:
     ///
@@ -678,12 +535,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn shlx<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: ShlxEmitter<A, B, C>,
-    {
+    where Assembler<'a>: ShlxEmitter<A, B, C> {
         <Self as ShlxEmitter<A, B, C>>::shlx(self, op0, op1, op2);
     }
-    /// `SHRX`.
+    /// `SHRX` (SHRX). 
+    /// Shifts the bits of the first source operand (the second operand) to the left or right by a COUNT value specified in the second source operand (the third operand). The result is written to the destination operand (the first operand).
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/SARX%3ASHLX%3ASHRX.html).
     ///
     /// Supported operand variants:
     ///
@@ -699,9 +558,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn shrx<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where
-        Assembler<'a>: ShrxEmitter<A, B, C>,
-    {
+    where Assembler<'a>: ShrxEmitter<A, B, C> {
         <Self as ShrxEmitter<A, B, C>>::shrx(self, op0, op1, op2);
     }
 }

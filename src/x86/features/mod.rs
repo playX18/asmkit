@@ -1,207 +1,106 @@
 #![allow(unused, non_camel_case_types)]
-#[path = "387.rs"]
-pub mod _387;
-#[path = "3DNOW.rs"]
-pub mod _3dnow;
-#[path = "486.rs"]
-pub mod _486;
-#[path = "586.rs"]
-pub mod _586;
-#[path = "686.rs"]
-pub mod _686;
-#[path = "ADX.rs"]
-pub mod adx;
-#[path = "AESKLE.rs"]
-pub mod aeskle;
-#[path = "AESNI.rs"]
-pub mod aesni;
-#[path = "AVX.rs"]
-pub mod avx;
-#[path = "AVX2.rs"]
-pub mod avx2;
-#[path = "AVX512_BF16.rs"]
-pub mod avx512_bf16;
-#[path = "AVX512_BITALG.rs"]
-pub mod avx512_bitalg;
-#[path = "AVX512_IFMA.rs"]
-pub mod avx512_ifma;
-#[path = "AVX512_VBMI.rs"]
-pub mod avx512_vbmi;
-#[path = "AVX512_VBMI2.rs"]
-pub mod avx512_vbmi2;
-#[path = "AVX512_VNNI.rs"]
-pub mod avx512_vnni;
-#[path = "AVX512_VP2INTERSECT.rs"]
-pub mod avx512_vp2intersect;
-#[path = "AVX512_VPOPCNTDQ.rs"]
-pub mod avx512_vpopcntdq;
-#[path = "AVX512BW.rs"]
-pub mod avx512bw;
-#[path = "AVX512CD.rs"]
-pub mod avx512cd;
-#[path = "AVX512DQ.rs"]
-pub mod avx512dq;
-#[path = "AVX512F.rs"]
-pub mod avx512f;
-#[path = "BASE.rs"]
-pub mod base;
-#[path = "BMI1.rs"]
-pub mod bmi1;
-#[path = "BMI2.rs"]
-pub mod bmi2;
-#[path = "CET.rs"]
-pub mod cet;
-#[path = "CLDEMOTE.rs"]
-pub mod cldemote;
-#[path = "CLFLUSHOPT.rs"]
-pub mod clflushopt;
-#[path = "CLWB.rs"]
-pub mod clwb;
-#[path = "CLZERO.rs"]
-pub mod clzero;
-#[path = "CMOV.rs"]
-pub mod cmov;
-#[path = "CMPCCXADD.rs"]
-pub mod cmpccxadd;
-#[path = "ENQCMD.rs"]
-pub mod enqcmd;
-#[path = "FRED.rs"]
-pub mod fred;
-#[path = "FSGSBASE.rs"]
-pub mod fsgsbase;
-#[path = "FXSR.rs"]
-pub mod fxsr;
-#[path = "GFNI.rs"]
-pub mod gfni;
-#[path = "HLERTM.rs"]
-pub mod hlertm;
-#[path = "HRESET.rs"]
-pub mod hreset;
-#[path = "INVLPGB.rs"]
-pub mod invlpgb;
-#[path = "INVPCID.rs"]
-pub mod invpcid;
-#[path = "LZCNT.rs"]
-pub mod lzcnt;
-#[path = "MCOMMIT.rs"]
-pub mod mcommit;
-#[path = "MMX.rs"]
-pub mod mmx;
-#[path = "MONITOR.rs"]
-pub mod monitor;
-#[path = "MONITORX.rs"]
-pub mod monitorx;
-#[path = "MOVBE.rs"]
-pub mod movbe;
-#[path = "MOVDIR64B.rs"]
-pub mod movdir64b;
-#[path = "MOVDIRI.rs"]
-pub mod movdiri;
-#[path = "MSR_IMM.rs"]
-pub mod msr_imm;
-#[path = "MSRLIST.rs"]
-pub mod msrlist;
-#[path = "OSPKE.rs"]
-pub mod ospke;
-#[path = "PADLOCK.rs"]
-pub mod padlock;
-#[path = "PBNDKB.rs"]
-pub mod pbndkb;
-#[path = "PCLMULQDQ.rs"]
-pub mod pclmulqdq;
-#[path = "PCONFIG.rs"]
-pub mod pconfig;
-#[path = "POPCNT.rs"]
-pub mod popcnt;
-#[path = "PREFETCH.rs"]
-pub mod prefetch;
-#[path = "PREFETCHI.rs"]
-pub mod prefetchi;
-#[path = "PREFETCHW.rs"]
-pub mod prefetchw;
-#[path = "PREFETCHWT1.rs"]
-pub mod prefetchwt1;
-#[path = "PTWRITE.rs"]
-pub mod ptwrite;
-#[path = "RDPID.rs"]
-pub mod rdpid;
-#[path = "RDPRU.rs"]
-pub mod rdpru;
-#[path = "RDRAND.rs"]
-pub mod rdrand;
-#[path = "RDSEED.rs"]
-pub mod rdseed;
-#[path = "RDTSCP.rs"]
-pub mod rdtscp;
-#[path = "RMPQUERY.rs"]
-pub mod rmpquery;
-#[path = "RMPREAD.rs"]
-pub mod rmpread;
-#[path = "SEAM.rs"]
-pub mod seam;
-#[path = "SERIALIZE.rs"]
-pub mod serialize;
-#[path = "SEVES.rs"]
-pub mod seves;
-#[path = "SGX.rs"]
-pub mod sgx;
-#[path = "SHA.rs"]
-pub mod sha;
-#[path = "SKINIT.rs"]
-pub mod skinit;
-#[path = "SMAP.rs"]
-pub mod smap;
-#[path = "SMX.rs"]
-pub mod smx;
-#[path = "SNP.rs"]
-pub mod snp;
-#[path = "SSE.rs"]
-pub mod sse;
-#[path = "SSE2.rs"]
-pub mod sse2;
-#[path = "SSE3.rs"]
-pub mod sse3;
-#[path = "SSE41.rs"]
-pub mod sse41;
-#[path = "SSE42.rs"]
-pub mod sse42;
-#[path = "SSE4A.rs"]
-pub mod sse4a;
-#[path = "SSSE3.rs"]
-pub mod ssse3;
-#[path = "SVM.rs"]
-pub mod svm;
-#[path = "TSXLDTRK.rs"]
-pub mod tsxldtrk;
-#[path = "UINTR.rs"]
-pub mod uintr;
-#[path = "USER_MSR.rs"]
-pub mod user_msr;
-#[path = "VMX.rs"]
-pub mod vmx;
-#[path = "WAITPKG.rs"]
-pub mod waitpkg;
-#[path = "WBNOINVD.rs"]
-pub mod wbnoinvd;
-#[path = "WRMSRNS.rs"]
-pub mod wrmsrns;
-#[path = "XSAVE.rs"]
-pub mod xsave;
-#[path = "XSAVEC.rs"]
-pub mod xsavec;
-#[path = "XSAVEOPT.rs"]
-pub mod xsaveopt;
-#[path = "XSS.rs"]
-pub mod xss;
+#[path = "387.rs"] pub mod _387;
+#[path = "3DNOW.rs"] pub mod _3dnow;
+#[path = "486.rs"] pub mod _486;
+#[path = "586.rs"] pub mod _586;
+#[path = "686.rs"] pub mod _686;
+#[path = "ADX.rs"] pub mod adx;
+#[path = "AESKLE.rs"] pub mod aeskle;
+#[path = "AESNI.rs"] pub mod aesni;
+#[path = "AVX.rs"] pub mod avx;
+#[path = "AVX2.rs"] pub mod avx2;
+#[path = "AVX512BW.rs"] pub mod avx512bw;
+#[path = "AVX512CD.rs"] pub mod avx512cd;
+#[path = "AVX512DQ.rs"] pub mod avx512dq;
+#[path = "AVX512F.rs"] pub mod avx512f;
+#[path = "AVX512_BF16.rs"] pub mod avx512_bf16;
+#[path = "AVX512_BITALG.rs"] pub mod avx512_bitalg;
+#[path = "AVX512_IFMA.rs"] pub mod avx512_ifma;
+#[path = "AVX512_VBMI.rs"] pub mod avx512_vbmi;
+#[path = "AVX512_VBMI2.rs"] pub mod avx512_vbmi2;
+#[path = "AVX512_VNNI.rs"] pub mod avx512_vnni;
+#[path = "AVX512_VP2INTERSECT.rs"] pub mod avx512_vp2intersect;
+#[path = "AVX512_VPOPCNTDQ.rs"] pub mod avx512_vpopcntdq;
+#[path = "BASE.rs"] pub mod base;
+#[path = "BMI1.rs"] pub mod bmi1;
+#[path = "BMI2.rs"] pub mod bmi2;
+#[path = "CET.rs"] pub mod cet;
+#[path = "CLDEMOTE.rs"] pub mod cldemote;
+#[path = "CLFLUSHOPT.rs"] pub mod clflushopt;
+#[path = "CLWB.rs"] pub mod clwb;
+#[path = "CLZERO.rs"] pub mod clzero;
+#[path = "CMOV.rs"] pub mod cmov;
+#[path = "CMPCCXADD.rs"] pub mod cmpccxadd;
+#[path = "ENQCMD.rs"] pub mod enqcmd;
+#[path = "FRED.rs"] pub mod fred;
+#[path = "FSGSBASE.rs"] pub mod fsgsbase;
+#[path = "FXSR.rs"] pub mod fxsr;
+#[path = "GFNI.rs"] pub mod gfni;
+#[path = "HLERTM.rs"] pub mod hlertm;
+#[path = "HRESET.rs"] pub mod hreset;
+#[path = "INVLPGB.rs"] pub mod invlpgb;
+#[path = "INVPCID.rs"] pub mod invpcid;
+#[path = "LZCNT.rs"] pub mod lzcnt;
+#[path = "MCOMMIT.rs"] pub mod mcommit;
+#[path = "MMX.rs"] pub mod mmx;
+#[path = "MONITOR.rs"] pub mod monitor;
+#[path = "MONITORX.rs"] pub mod monitorx;
+#[path = "MOVBE.rs"] pub mod movbe;
+#[path = "MOVDIR64B.rs"] pub mod movdir64b;
+#[path = "MOVDIRI.rs"] pub mod movdiri;
+#[path = "MSRLIST.rs"] pub mod msrlist;
+#[path = "MSR_IMM.rs"] pub mod msr_imm;
+#[path = "OSPKE.rs"] pub mod ospke;
+#[path = "PADLOCK.rs"] pub mod padlock;
+#[path = "PBNDKB.rs"] pub mod pbndkb;
+#[path = "PCLMULQDQ.rs"] pub mod pclmulqdq;
+#[path = "PCONFIG.rs"] pub mod pconfig;
+#[path = "POPCNT.rs"] pub mod popcnt;
+#[path = "PREFETCH.rs"] pub mod prefetch;
+#[path = "PREFETCHI.rs"] pub mod prefetchi;
+#[path = "PREFETCHW.rs"] pub mod prefetchw;
+#[path = "PREFETCHWT1.rs"] pub mod prefetchwt1;
+#[path = "PTWRITE.rs"] pub mod ptwrite;
+#[path = "RDPID.rs"] pub mod rdpid;
+#[path = "RDPRU.rs"] pub mod rdpru;
+#[path = "RDRAND.rs"] pub mod rdrand;
+#[path = "RDSEED.rs"] pub mod rdseed;
+#[path = "RDTSCP.rs"] pub mod rdtscp;
+#[path = "RMPQUERY.rs"] pub mod rmpquery;
+#[path = "RMPREAD.rs"] pub mod rmpread;
+#[path = "SEAM.rs"] pub mod seam;
+#[path = "SERIALIZE.rs"] pub mod serialize;
+#[path = "SEVES.rs"] pub mod seves;
+#[path = "SGX.rs"] pub mod sgx;
+#[path = "SHA.rs"] pub mod sha;
+#[path = "SKINIT.rs"] pub mod skinit;
+#[path = "SMAP.rs"] pub mod smap;
+#[path = "SMX.rs"] pub mod smx;
+#[path = "SNP.rs"] pub mod snp;
+#[path = "SSE.rs"] pub mod sse;
+#[path = "SSE2.rs"] pub mod sse2;
+#[path = "SSE3.rs"] pub mod sse3;
+#[path = "SSE41.rs"] pub mod sse41;
+#[path = "SSE42.rs"] pub mod sse42;
+#[path = "SSE4A.rs"] pub mod sse4a;
+#[path = "SSSE3.rs"] pub mod ssse3;
+#[path = "SVM.rs"] pub mod svm;
+#[path = "TSXLDTRK.rs"] pub mod tsxldtrk;
+#[path = "UINTR.rs"] pub mod uintr;
+#[path = "USER_MSR.rs"] pub mod user_msr;
+#[path = "VMX.rs"] pub mod vmx;
+#[path = "WAITPKG.rs"] pub mod waitpkg;
+#[path = "WBNOINVD.rs"] pub mod wbnoinvd;
+#[path = "WRMSRNS.rs"] pub mod wrmsrns;
+#[path = "XSAVE.rs"] pub mod xsave;
+#[path = "XSAVEC.rs"] pub mod xsavec;
+#[path = "XSAVEOPT.rs"] pub mod xsaveopt;
+#[path = "XSS.rs"] pub mod xss;
 
-/// Dynamic instruction construction API with runtime operand-type checking.
-/// Enabled by the `x86-dyn` Cargo feature.
 #[cfg(feature = "x86-dyn")]
 #[path = "_DYN.rs"]
 pub mod dyn_emit;
 
-/// Text-assembler: parse Intel-syntax assembly lines and emit code.
-/// Enabled by the `x86-asm` Cargo feature (implies `x86-dyn`).
 #[cfg(feature = "x86-asm")]
 #[path = "_PARSER.rs"]
 pub mod text_asm;

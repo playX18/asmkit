@@ -1,13 +1,17 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
 
-/// `RDFSBASE`.
+/// `RDFSBASE` (RDFSBASE). 
+/// Loads the general-purpose register indicated by the ModR/M:r/m field with the FS or GS segment base address.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/RDFSBASE%3ARDGSBASE.html).
 ///
 /// Supported operand variants:
 ///
@@ -35,7 +39,11 @@ impl<'a> RdfsbaseEmitter<Gpq> for Assembler<'a> {
     }
 }
 
-/// `RDGSBASE`.
+/// `RDGSBASE` (RDGSBASE). 
+/// Loads the general-purpose register indicated by the ModR/M:r/m field with the FS or GS segment base address.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/RDFSBASE%3ARDGSBASE.html).
 ///
 /// Supported operand variants:
 ///
@@ -63,7 +71,11 @@ impl<'a> RdgsbaseEmitter<Gpq> for Assembler<'a> {
     }
 }
 
-/// `WRFSBASE`.
+/// `WRFSBASE` (WRFSBASE). 
+/// Loads the FS or GS segment base address with the general-purpose register indicated by the modR/M:r/m field.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/WRFSBASE%3AWRGSBASE.html).
 ///
 /// Supported operand variants:
 ///
@@ -91,7 +103,11 @@ impl<'a> WrfsbaseEmitter<Gpq> for Assembler<'a> {
     }
 }
 
-/// `WRGSBASE`.
+/// `WRGSBASE` (WRGSBASE). 
+/// Loads the FS or GS segment base address with the general-purpose register indicated by the modR/M:r/m field.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/WRFSBASE%3AWRGSBASE.html).
 ///
 /// Supported operand variants:
 ///
@@ -119,8 +135,13 @@ impl<'a> WrgsbaseEmitter<Gpq> for Assembler<'a> {
     }
 }
 
+
 impl<'a> Assembler<'a> {
-    /// `RDFSBASE`.
+    /// `RDFSBASE` (RDFSBASE). 
+    /// Loads the general-purpose register indicated by the ModR/M:r/m field with the FS or GS segment base address.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/RDFSBASE%3ARDGSBASE.html).
     ///
     /// Supported operand variants:
     ///
@@ -134,12 +155,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn rdfsbase<A>(&mut self, op0: A)
-    where
-        Assembler<'a>: RdfsbaseEmitter<A>,
-    {
+    where Assembler<'a>: RdfsbaseEmitter<A> {
         <Self as RdfsbaseEmitter<A>>::rdfsbase(self, op0);
     }
-    /// `RDGSBASE`.
+    /// `RDGSBASE` (RDGSBASE). 
+    /// Loads the general-purpose register indicated by the ModR/M:r/m field with the FS or GS segment base address.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/RDFSBASE%3ARDGSBASE.html).
     ///
     /// Supported operand variants:
     ///
@@ -153,12 +176,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn rdgsbase<A>(&mut self, op0: A)
-    where
-        Assembler<'a>: RdgsbaseEmitter<A>,
-    {
+    where Assembler<'a>: RdgsbaseEmitter<A> {
         <Self as RdgsbaseEmitter<A>>::rdgsbase(self, op0);
     }
-    /// `WRFSBASE`.
+    /// `WRFSBASE` (WRFSBASE). 
+    /// Loads the FS or GS segment base address with the general-purpose register indicated by the modR/M:r/m field.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/WRFSBASE%3AWRGSBASE.html).
     ///
     /// Supported operand variants:
     ///
@@ -172,12 +197,14 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn wrfsbase<A>(&mut self, op0: A)
-    where
-        Assembler<'a>: WrfsbaseEmitter<A>,
-    {
+    where Assembler<'a>: WrfsbaseEmitter<A> {
         <Self as WrfsbaseEmitter<A>>::wrfsbase(self, op0);
     }
-    /// `WRGSBASE`.
+    /// `WRGSBASE` (WRGSBASE). 
+    /// Loads the FS or GS segment base address with the general-purpose register indicated by the modR/M:r/m field.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/WRFSBASE%3AWRGSBASE.html).
     ///
     /// Supported operand variants:
     ///
@@ -191,9 +218,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn wrgsbase<A>(&mut self, op0: A)
-    where
-        Assembler<'a>: WrgsbaseEmitter<A>,
-    {
+    where Assembler<'a>: WrgsbaseEmitter<A> {
         <Self as WrgsbaseEmitter<A>>::wrgsbase(self, op0);
     }
 }

@@ -1,8 +1,8 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -49,6 +49,7 @@ impl<'a> Prefetchit1Emitter<Mem> for Assembler<'a> {
     }
 }
 
+
 impl<'a> Assembler<'a> {
     /// `PREFETCHIT0`.
     ///
@@ -63,9 +64,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn prefetchit0<A>(&mut self, op0: A)
-    where
-        Assembler<'a>: Prefetchit0Emitter<A>,
-    {
+    where Assembler<'a>: Prefetchit0Emitter<A> {
         <Self as Prefetchit0Emitter<A>>::prefetchit0(self, op0);
     }
     /// `PREFETCHIT1`.
@@ -81,9 +80,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn prefetchit1<A>(&mut self, op0: A)
-    where
-        Assembler<'a>: Prefetchit1Emitter<A>,
-    {
+    where Assembler<'a>: Prefetchit1Emitter<A> {
         <Self as Prefetchit1Emitter<A>>::prefetchit1(self, op0);
     }
 }

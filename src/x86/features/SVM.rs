@@ -1,8 +1,8 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -112,6 +112,7 @@ impl<'a> VmsaveEmitter for Assembler<'a> {
     }
 }
 
+
 impl<'a> Assembler<'a> {
     /// `INVLPGA`.
     ///
@@ -126,9 +127,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn invlpga(&mut self)
-    where
-        Assembler<'a>: InvlpgaEmitter,
-    {
+    where Assembler<'a>: InvlpgaEmitter {
         <Self as InvlpgaEmitter>::invlpga(self);
     }
     /// `VMLOAD`.
@@ -144,9 +143,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vmload(&mut self)
-    where
-        Assembler<'a>: VmloadEmitter,
-    {
+    where Assembler<'a>: VmloadEmitter {
         <Self as VmloadEmitter>::vmload(self);
     }
     /// `VMMCALL`.
@@ -162,9 +159,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vmmcall(&mut self)
-    where
-        Assembler<'a>: VmmcallEmitter,
-    {
+    where Assembler<'a>: VmmcallEmitter {
         <Self as VmmcallEmitter>::vmmcall(self);
     }
     /// `VMRUN`.
@@ -180,9 +175,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vmrun(&mut self)
-    where
-        Assembler<'a>: VmrunEmitter,
-    {
+    where Assembler<'a>: VmrunEmitter {
         <Self as VmrunEmitter>::vmrun(self);
     }
     /// `VMSAVE`.
@@ -198,9 +191,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vmsave(&mut self)
-    where
-        Assembler<'a>: VmsaveEmitter,
-    {
+    where Assembler<'a>: VmsaveEmitter {
         <Self as VmsaveEmitter>::vmsave(self);
     }
 }

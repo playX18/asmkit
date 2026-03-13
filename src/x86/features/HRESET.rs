@@ -1,13 +1,17 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
 
-/// `HRESET`.
+/// `HRESET` (HRESET). 
+/// Requests the processor to selectively reset selected components of hardware history maintained by the current logical processor. HRESET operation is controlled by the implicit EAX operand. The value of the explicit imm8 operand is ignored. This instruction can only be executed at privilege level 0.
+///
+///
+/// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/HRESET.html).
 ///
 /// Supported operand variants:
 ///
@@ -28,8 +32,13 @@ impl<'a> HresetEmitter<Imm> for Assembler<'a> {
     }
 }
 
+
 impl<'a> Assembler<'a> {
-    /// `HRESET`.
+    /// `HRESET` (HRESET). 
+    /// Requests the processor to selectively reset selected components of hardware history maintained by the current logical processor. HRESET operation is controlled by the implicit EAX operand. The value of the explicit imm8 operand is ignored. This instruction can only be executed at privilege level 0.
+    ///
+    ///
+    /// For more details, see the [Intel manual](https://www.felixcloutier.com/x86/HRESET.html).
     ///
     /// Supported operand variants:
     ///
@@ -42,9 +51,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn hreset<A>(&mut self, op0: A)
-    where
-        Assembler<'a>: HresetEmitter<A>,
-    {
+    where Assembler<'a>: HresetEmitter<A> {
         <Self as HresetEmitter<A>>::hreset(self, op0);
     }
 }

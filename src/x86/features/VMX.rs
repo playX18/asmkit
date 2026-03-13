@@ -1,8 +1,8 @@
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -45,13 +45,7 @@ pub trait InvvpidEmitter<A, B> {
 
 impl<'a> InvvpidEmitter<Gpq, Mem> for Assembler<'a> {
     fn invvpid(&mut self, op0: Gpq, op1: Mem) {
-        self.emit(
-            INVVPIDRM,
-            op0.as_operand(),
-            op1.as_operand(),
-            &NOREG,
-            &NOREG,
-        );
+        self.emit(INVVPIDRM, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
     }
 }
 
@@ -248,25 +242,13 @@ pub trait VmwriteEmitter<A, B> {
 
 impl<'a> VmwriteEmitter<Gpq, Gpq> for Assembler<'a> {
     fn vmwrite(&mut self, op0: Gpq, op1: Gpq) {
-        self.emit(
-            VMWRITERR,
-            op0.as_operand(),
-            op1.as_operand(),
-            &NOREG,
-            &NOREG,
-        );
+        self.emit(VMWRITERR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
     }
 }
 
 impl<'a> VmwriteEmitter<Gpq, Mem> for Assembler<'a> {
     fn vmwrite(&mut self, op0: Gpq, op1: Mem) {
-        self.emit(
-            VMWRITERM,
-            op0.as_operand(),
-            op1.as_operand(),
-            &NOREG,
-            &NOREG,
-        );
+        self.emit(VMWRITERM, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
     }
 }
 
@@ -312,6 +294,7 @@ impl<'a> VmxonEmitter<Mem> for Assembler<'a> {
     }
 }
 
+
 impl<'a> Assembler<'a> {
     /// `INVEPT`.
     ///
@@ -326,9 +309,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn invept<A, B>(&mut self, op0: A, op1: B)
-    where
-        Assembler<'a>: InveptEmitter<A, B>,
-    {
+    where Assembler<'a>: InveptEmitter<A, B> {
         <Self as InveptEmitter<A, B>>::invept(self, op0, op1);
     }
     /// `INVVPID`.
@@ -344,9 +325,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn invvpid<A, B>(&mut self, op0: A, op1: B)
-    where
-        Assembler<'a>: InvvpidEmitter<A, B>,
-    {
+    where Assembler<'a>: InvvpidEmitter<A, B> {
         <Self as InvvpidEmitter<A, B>>::invvpid(self, op0, op1);
     }
     /// `VMCALL`.
@@ -362,9 +341,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vmcall(&mut self)
-    where
-        Assembler<'a>: VmcallEmitter,
-    {
+    where Assembler<'a>: VmcallEmitter {
         <Self as VmcallEmitter>::vmcall(self);
     }
     /// `VMCLEAR`.
@@ -380,9 +357,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vmclear<A>(&mut self, op0: A)
-    where
-        Assembler<'a>: VmclearEmitter<A>,
-    {
+    where Assembler<'a>: VmclearEmitter<A> {
         <Self as VmclearEmitter<A>>::vmclear(self, op0);
     }
     /// `VMFUNC`.
@@ -398,9 +373,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vmfunc(&mut self)
-    where
-        Assembler<'a>: VmfuncEmitter,
-    {
+    where Assembler<'a>: VmfuncEmitter {
         <Self as VmfuncEmitter>::vmfunc(self);
     }
     /// `VMLAUNCH`.
@@ -416,9 +389,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vmlaunch(&mut self)
-    where
-        Assembler<'a>: VmlaunchEmitter,
-    {
+    where Assembler<'a>: VmlaunchEmitter {
         <Self as VmlaunchEmitter>::vmlaunch(self);
     }
     /// `VMPTRLD`.
@@ -434,9 +405,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vmptrld<A>(&mut self, op0: A)
-    where
-        Assembler<'a>: VmptrldEmitter<A>,
-    {
+    where Assembler<'a>: VmptrldEmitter<A> {
         <Self as VmptrldEmitter<A>>::vmptrld(self, op0);
     }
     /// `VMPTRST`.
@@ -452,9 +421,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vmptrst<A>(&mut self, op0: A)
-    where
-        Assembler<'a>: VmptrstEmitter<A>,
-    {
+    where Assembler<'a>: VmptrstEmitter<A> {
         <Self as VmptrstEmitter<A>>::vmptrst(self, op0);
     }
     /// `VMREAD`.
@@ -471,9 +438,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vmread<A, B>(&mut self, op0: A, op1: B)
-    where
-        Assembler<'a>: VmreadEmitter<A, B>,
-    {
+    where Assembler<'a>: VmreadEmitter<A, B> {
         <Self as VmreadEmitter<A, B>>::vmread(self, op0, op1);
     }
     /// `VMRESUME`.
@@ -489,9 +454,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vmresume(&mut self)
-    where
-        Assembler<'a>: VmresumeEmitter,
-    {
+    where Assembler<'a>: VmresumeEmitter {
         <Self as VmresumeEmitter>::vmresume(self);
     }
     /// `VMWRITE`.
@@ -508,9 +471,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vmwrite<A, B>(&mut self, op0: A, op1: B)
-    where
-        Assembler<'a>: VmwriteEmitter<A, B>,
-    {
+    where Assembler<'a>: VmwriteEmitter<A, B> {
         <Self as VmwriteEmitter<A, B>>::vmwrite(self, op0, op1);
     }
     /// `VMXOFF`.
@@ -526,9 +487,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vmxoff(&mut self)
-    where
-        Assembler<'a>: VmxoffEmitter,
-    {
+    where Assembler<'a>: VmxoffEmitter {
         <Self as VmxoffEmitter>::vmxoff(self);
     }
     /// `VMXON`.
@@ -544,9 +503,7 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn vmxon<A>(&mut self, op0: A)
-    where
-        Assembler<'a>: VmxonEmitter<A>,
-    {
+    where Assembler<'a>: VmxonEmitter<A> {
         <Self as VmxonEmitter<A>>::vmxon(self, op0);
     }
 }
