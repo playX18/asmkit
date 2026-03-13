@@ -9,7 +9,7 @@ use crate::{
 };
 
 #[cfg(feature = "jit")]
-use crate::jit_allocator::{JitAllocator, Span};
+use crate::core::jit_allocator::{JitAllocator, Span};
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub struct PatchBlockId(u32);
 

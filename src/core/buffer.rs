@@ -11,7 +11,7 @@ use crate::core::patch::{
 use crate::riscv;
 
 #[cfg(feature = "jit")]
-use crate::jit_allocator::{JitAllocator, Span};
+use crate::core::jit_allocator::{JitAllocator, Span};
 
 use super::{
     operand::{Label, Sym},
