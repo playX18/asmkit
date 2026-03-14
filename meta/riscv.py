@@ -272,162 +272,164 @@ def create_inst_dict(file_filter, include_pseudo=False, include_pseudo_ops=[]):
     # file_names contains all files to be parsed in the riscv-opcodes directory
     file_names = []
     for fil in file_filter:
-        file_names += glob.glob(f"{opcodes_dir}/{fil}")
+        file_names += glob.glob(f"{opcodes_dir}/extensions/{fil}")
     file_names.sort(reverse=True)
     print(file_names)
     # first pass if for standard/regular instructions
     logging.debug("Collecting standard instructions first")
     for f in file_names:
         logging.debug(f"Parsing File: {f} for standard instructions")
-        with open(f) as fp:
-            lines = (line.rstrip() for line in fp)  # All lines including the blank ones
-            lines = list(line for line in lines if line)  # Non-blank lines
-            lines = list(
-                line for line in lines if not line.startswith("#")
-            )  # remove comment lines
+        if not os.path.isdir(f):
+            with open(f) as fp:
+                lines = (line.rstrip() for line in fp)  # All lines including the blank ones
+                lines = list(line for line in lines if line)  # Non-blank lines
+                lines = list(
+                    line for line in lines if not line.startswith("#")
+                )  # remove comment lines
 
-        # go through each line of the file
-        for line in lines:
-            # if the an instruction needs to be imported then go to the
-            # respective file and pick the line that has the instruction.
-            # The variable 'line' will now point to the new line from the
-            # imported file
+            # go through each line of the file
+            for line in lines:
+                # if the an instruction needs to be imported then go to the
+                # respective file and pick the line that has the instruction.
+                # The variable 'line' will now point to the new line from the
+                # imported file
 
-            # ignore all lines starting with $import and $pseudo
-            if "$import" in line or "$pseudo" in line:
-                continue
-            logging.debug(f"     Processing line: {line}")
+                # ignore all lines starting with $import and $pseudo
+                if "$import" in line or "$pseudo" in line:
+                    continue
+                logging.debug(f"     Processing line: {line}")
 
-            # call process_enc_line to get the data about the current
-            # instruction
-            (name, single_dict) = process_enc_line(line, f)
-            ext_name = os.path.basename(f)
+                # call process_enc_line to get the data about the current
+                # instruction
+                (name, single_dict) = process_enc_line(line, f)
+                ext_name = os.path.basename(f)
 
-            # if an instruction has already been added to the filtered
-            # instruction dictionary throw an error saying the given
-            # instruction is already imported and raise SystemExit
-            if name in instr_dict:
-                var = instr_dict[name]["extension"]
-                if same_base_isa(ext_name, var):
-                    # disable same names on the same base ISA
-                    err_msg = f"instruction : {name} from "
-                    err_msg += f"{ext_name} is already "
-                    err_msg += f"added from {var} in same base ISA"
-                    logging.error(err_msg)
-                    raise SystemExit(1)
-                elif instr_dict[name]["encoding"] != single_dict["encoding"]:
-                    # disable same names with different encodings on different base ISAs
-                    err_msg = f"instruction : {name} from "
-                    err_msg += f"{ext_name} is already "
-                    err_msg += f"added from {var} but each have different encodings in different base ISAs"
-                    logging.error(err_msg)
-                    raise SystemExit(1)
-                instr_dict[name]["extension"].extend(single_dict["extension"])
-            else:
-                for key in instr_dict:
-                    item = instr_dict[key]
-                    if (
-                        overlaps(item["encoding"], single_dict["encoding"])
-                        and not extension_overlap_allowed(
-                            ext_name, item["extension"][0]
-                        )
-                        and not instruction_overlap_allowed(name, key)
-                        and same_base_isa(ext_name, item["extension"])
-                    ):
-                        # disable different names with overlapping encodings on the same base ISA
-                        err_msg = f"instruction : {name} in extension "
-                        err_msg += f"{ext_name} overlaps instruction {key} "
-                        err_msg += f'in extension {item["extension"]}'
+                # if an instruction has already been added to the filtered
+                # instruction dictionary throw an error saying the given
+                # instruction is already imported and raise SystemExit
+                if name in instr_dict:
+                    var = instr_dict[name]["extension"]
+                    if same_base_isa(ext_name, var):
+                        # disable same names on the same base ISA
+                        err_msg = f"instruction : {name} from "
+                        err_msg += f"{ext_name} is already "
+                        err_msg += f"added from {var} in same base ISA"
                         logging.error(err_msg)
                         raise SystemExit(1)
+                    elif instr_dict[name]["encoding"] != single_dict["encoding"]:
+                        # disable same names with different encodings on different base ISAs
+                        err_msg = f"instruction : {name} from "
+                        err_msg += f"{ext_name} is already "
+                        err_msg += f"added from {var} but each have different encodings in different base ISAs"
+                        logging.error(err_msg)
+                        raise SystemExit(1)
+                    instr_dict[name]["extension"].extend(single_dict["extension"])
+                else:
+                    for key in instr_dict:
+                        item = instr_dict[key]
+                        if (
+                            overlaps(item["encoding"], single_dict["encoding"])
+                            and not extension_overlap_allowed(
+                                ext_name, item["extension"][0]
+                            )
+                            and not instruction_overlap_allowed(name, key)
+                            and same_base_isa(ext_name, item["extension"])
+                        ):
+                            # disable different names with overlapping encodings on the same base ISA
+                            err_msg = f"instruction : {name} in extension "
+                            err_msg += f"{ext_name} overlaps instruction {key} "
+                            err_msg += f'in extension {item["extension"]}'
+                            logging.error(err_msg)
+                            raise SystemExit(1)
 
-            if name not in instr_dict:
-                # update the final dict with the instruction
-                instr_dict[name] = single_dict
+                if name not in instr_dict:
+                    # update the final dict with the instruction
+                    instr_dict[name] = single_dict
 
     # second pass if for pseudo instructions
     logging.debug("Collecting pseudo instructions now")
     for f in file_names:
         logging.debug(f"Parsing File: {f} for pseudo_ops")
-        with open(f) as fp:
-            lines = (line.rstrip() for line in fp)  # All lines including the blank ones
-            lines = list(line for line in lines if line)  # Non-blank lines
-            lines = list(
-                line for line in lines if not line.startswith("#")
-            )  # remove comment lines
+        if not os.path.isdir(f):
+            with open(f) as fp:
+                lines = (line.rstrip() for line in fp)  # All lines including the blank ones
+                lines = list(line for line in lines if line)  # Non-blank lines
+                lines = list(
+                    line for line in lines if not line.startswith("#")
+                )  # remove comment lines
 
-        # go through each line of the file
-        for line in lines:
+            # go through each line of the file
+            for line in lines:
 
-            # ignore all lines not starting with $pseudo
-            if "$pseudo" not in line:
-                continue
-            logging.debug(f"     Processing line: {line}")
+                # ignore all lines not starting with $pseudo
+                if "$pseudo" not in line:
+                    continue
+                logging.debug(f"     Processing line: {line}")
 
-            # use the regex pseudo_regex from constants.py to find the dependent
-            # extension, dependent instruction, the pseudo_op in question and
-            # its encoding
-            (ext, orig_inst, pseudo_inst, line) = pseudo_regex.findall(line)[0]
-            ext_file = f"{opcodes_dir}/{ext}"
+                # use the regex pseudo_regex from constants.py to find the dependent
+                # extension, dependent instruction, the pseudo_op in question and
+                # its encoding
+                (ext, orig_inst, pseudo_inst, line) = pseudo_regex.findall(line)[0]
+                ext_file = f"{opcodes_dir}/extensions/{ext}"
 
-            # check if the file of the dependent extension exist. Throw error if
-            # it doesn't
-            if not os.path.exists(ext_file):
-                ext1_file = f"{opcodes_dir}/unratified/{ext}"
-                if not os.path.exists(ext1_file):
+                # check if the file of the dependent extension exist. Throw error if
+                # it doesn't
+                if not os.path.exists(ext_file):
+                    ext1_file = f"{opcodes_dir}/extensions/unratified/{ext}"
+                    if not os.path.exists(ext1_file):
+                        logging.error(
+                            f"Pseudo op {pseudo_inst} in {f} depends on {ext} which is not available"
+                        )
+                        raise SystemExit(1)
+                    else:
+                        ext_file = ext1_file
+
+                # check if the dependent instruction exist in the dependent
+                # extension. Else throw error.
+                found = False
+                for oline in open(ext_file):
+                    if not re.findall(f"^\\s*{orig_inst}\\s+", oline):
+                        continue
+                    else:
+                        found = True
+                        break
+                if not found:
                     logging.error(
-                        f"Pseudo op {pseudo_inst} in {f} depends on {ext} which is not available"
+                        f"Orig instruction {orig_inst} not found in {ext}. Required by pseudo_op {pseudo_inst} present in {f}"
                     )
                     raise SystemExit(1)
-                else:
-                    ext_file = ext1_file
 
-            # check if the dependent instruction exist in the dependent
-            # extension. Else throw error.
-            found = False
-            for oline in open(ext_file):
-                if not re.findall(f"^\\s*{orig_inst}\\s+", oline):
-                    continue
-                else:
-                    found = True
-                    break
-            if not found:
-                logging.error(
-                    f"Orig instruction {orig_inst} not found in {ext}. Required by pseudo_op {pseudo_inst} present in {f}"
-                )
-                raise SystemExit(1)
+                (name, single_dict) = process_enc_line(pseudo_inst + " " + line, f)
+                # add the pseudo_op to the dictionary only if the original
+                # instruction is not already in the dictionary.
+                if (
+                    orig_inst.replace(".", "_") not in instr_dict
+                    or include_pseudo
+                    or name in include_pseudo_ops
+                ):
 
-            (name, single_dict) = process_enc_line(pseudo_inst + " " + line, f)
-            # add the pseudo_op to the dictionary only if the original
-            # instruction is not already in the dictionary.
-            if (
-                orig_inst.replace(".", "_") not in instr_dict
-                or include_pseudo
-                or name in include_pseudo_ops
-            ):
-
-                # update the final dict with the instruction
-                if name not in instr_dict:
-                    instr_dict[name] = single_dict
-                    logging.debug(f"        including pseudo_ops:{name}")
-                else:
-                    if single_dict["match"] != instr_dict[name]["match"]:
-                        instr_dict[name + "_pseudo"] = single_dict
-
-                    # if a pseudo instruction has already been added to the filtered
-                    # instruction dictionary but the extension is not in the current
-                    # list, add it
+                    # update the final dict with the instruction
+                    if name not in instr_dict:
+                        instr_dict[name] = single_dict
+                        logging.debug(f"        including pseudo_ops:{name}")
                     else:
-                        ext_name = single_dict["extension"]
+                        if single_dict["match"] != instr_dict[name]["match"]:
+                            instr_dict[name + "_pseudo"] = single_dict
 
-                    if (ext_name not in instr_dict[name]["extension"]) & (
-                        name + "_pseudo" not in instr_dict
-                    ):
-                        instr_dict[name]["extension"].extend(ext_name)
-            else:
-                logging.debug(
-                    f"        Skipping pseudo_op {pseudo_inst} since original instruction {orig_inst} already selected in list"
-                )
+                        # if a pseudo instruction has already been added to the filtered
+                        # instruction dictionary but the extension is not in the current
+                        # list, add it
+                        else:
+                            ext_name = single_dict["extension"]
+
+                        if (ext_name not in instr_dict[name]["extension"]) & (
+                            name + "_pseudo" not in instr_dict
+                        ):
+                            instr_dict[name]["extension"].extend(ext_name)
+                else:
+                    logging.debug(
+                        f"        Skipping pseudo_op {pseudo_inst} since original instruction {orig_inst} already selected in list"
+                    )
 
     # third pass if for imported instructions
     logging.debug("Collecting imported instructions")
@@ -453,12 +455,12 @@ def create_inst_dict(file_filter, include_pseudo=False, include_pseudo_ops=[]):
             logging.debug(f"     Processing line: {line}")
 
             (import_ext, reg_instr) = imported_regex.findall(line)[0]
-            import_ext_file = f"{opcodes_dir}/{import_ext}"
+            import_ext_file = f"{opcodes_dir}/extensions/{import_ext}"
 
             # check if the file of the dependent extension exist. Throw error if
             # it doesn't
             if not os.path.exists(import_ext_file):
-                ext1_file = f"{opcodes_dir}/unratified/{import_ext}"
+                ext1_file = f"{opcodes_dir}/extensions/unratified/{import_ext}"
                 if not os.path.exists(ext1_file):
                     logging.error(
                         f"Instruction {reg_instr} in {f} cannot be imported from {import_ext}"
@@ -545,11 +547,13 @@ def make_encoders(instr_dict):
     code = ""
     asm_code = "pub trait EmitterExplicit: Emitter {\n"
     imms = immediates()
+    print(f"make encoders {instr_dict}")
     for i in instr_dict:
         args: list[str] = instr_dict[i]["variable_fields"]
-
+        
         actual_args: list[str] = []
         imm_args = []
+        print(args)
         for arg in args:
             if "hi" in arg or "lo" in arg: 
                 imm_args.append(arg)
@@ -940,7 +944,6 @@ if __name__ == "__main__":
     for i in ["-c", "-latex", "-chisel", "-sverilog", "-rust", "-go", "-spinalhdl"]:
         if i in extensions:
             extensions.remove(i)
-    print(f"Extensions selected : {extensions}")
 
     include_pseudo = True
     instr_dict = create_inst_dict(extensions, include_pseudo)

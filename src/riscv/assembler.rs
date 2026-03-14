@@ -1438,14 +1438,153 @@ impl<'a> Emitter for Assembler<'a> {
                         self.last_error = Some(AsmError::InvalidOperand);
                         return;
                     } else {
-                        inst = inst.set_rd_n0(rd).set_c_nzimm6lohi(imm);
+                        inst = inst.set_rd_rs1_n0(rd).set_c_nzimm6lohi(imm);
                     }
                 } else {
                     self.last_error = Some(AsmError::InvalidOperand);
                     return;
                 }
             }
-            _ => todo!("unimplemented encoding: {encoding:?}"),
+
+            Encoding::RdRs1N0CImm6loCImm6hi => {
+                short = true;
+                if isign3 == enc_ops2!(Reg, Imm) {
+                    let rd = ops[0].id();
+                    let imm = ops[1].as_::<Imm>().value() as i32;
+                    inst = inst.set_rd_rs1_n0(rd).set_c_imm6lohi(imm);
+                } else {
+                    self.last_error = Some(AsmError::InvalidOperand);
+                    return;
+                }
+            }
+
+            Encoding::RdRs1N0CNzuimm6hiCNzuimm6lo => {
+                short = true;
+                if isign3 == enc_ops2!(Reg, Imm) {
+                    let rd = ops[0].id();
+                    let imm = ops[1].as_::<Imm>().value() as i32;
+                    if imm == 0 {
+                        self.last_error = Some(AsmError::InvalidOperand);
+                        return;
+                    } else {
+                        inst = inst.set_rd_rs1_n0(rd).set_c_nzuimm6lohi(imm as u32);
+                    }
+                } else {
+                    self.last_error = Some(AsmError::InvalidOperand);
+                    return;
+                }
+            }
+
+            Encoding::RdRs1N0CNzuimm6lo => {
+                short = true;
+                if isign3 == enc_ops2!(Reg, Imm) {
+                    let rd = ops[0].id();
+                    let imm = ops[1].as_::<Imm>().value() as i32;
+                    if imm == 0 {
+                        self.last_error = Some(AsmError::InvalidOperand);
+                        return;
+                    } else {
+                        inst = inst.set_rd_rs1_n0(rd).set_c_nzuimm6lo_raw(imm as u32);
+                    }
+                } else {
+                    self.last_error = Some(AsmError::InvalidOperand);
+                    return;
+                }
+            }
+
+            Encoding::RdRs1N0CRs2N0 => {
+                short = true;
+                if isign3 == enc_ops2!(Reg, Reg) {
+                    let rd = ops[0].id();
+                    let rs1 = ops[1].id();
+                    inst = inst.set_rd_rs1_n0(rd).set_c_rs2_n0(rs1);
+                } else {
+                    self.last_error = Some(AsmError::InvalidOperand);
+                    return;
+                }
+            }
+
+            Encoding::RdRs1P => {
+                if isign3 == enc_ops2!(Reg, Reg) {
+                    let rd = ops[0].id();
+
+                    inst = inst.set_rd_rs1_p(rd);
+                } else {
+                    self.last_error = Some(AsmError::InvalidOperand);
+                    return;
+                }
+            }
+
+            Encoding::RdRs1PCImm6hiCImm6lo => {
+                short = true;
+                if isign3 == enc_ops2!(Reg, Imm) {
+                    let rd = ops[0].id();
+                    let imm = ops[1].as_::<Imm>().value() as i32;
+                    inst = inst.set_rd_rs1_p(rd).set_c_imm6lohi(imm);
+                } else {
+                    self.last_error = Some(AsmError::InvalidOperand);
+                    return;
+                }
+            }
+
+            Encoding::RdRs1PCNzuimm5 => {
+                short = true;
+                if isign3 == enc_ops2!(Reg, Imm) {
+                    let rd = ops[0].id();
+                    let imm = ops[1].as_::<Imm>().value() as i32;
+                    if imm == 0 {
+                        self.last_error = Some(AsmError::InvalidOperand);
+                        return;
+                    } else {
+                        inst = inst.set_rd(rd).set_rs1(0).set_c_nzuimm5(imm as u32);
+                    }
+                } else {
+                    self.last_error = Some(AsmError::InvalidOperand);
+                    return;
+                }
+            }
+
+            Encoding::RdRs1PCNzuimm6loCNzuimm6hi => {
+                short = true;
+                if isign3 == enc_ops2!(Reg, Imm) {
+                    let rd = ops[0].id();
+                    let imm = ops[1].as_::<Imm>().value() as i32;
+                    if imm == 0 {
+                        self.last_error = Some(AsmError::InvalidOperand);
+                        return;
+                    } else {
+                        inst = inst.set_rd_rs1_p(rd).set_c_nzuimm6lohi(imm as u32);
+                    }
+                } else {
+                    self.last_error = Some(AsmError::InvalidOperand);
+                    return;
+                }
+            }
+
+            Encoding::RdRs1PRs2P => {
+                short = true;
+                if isign3 == enc_ops2!(Reg, Reg) {
+                    let rd = ops[0].id();
+                    let rs2 = ops[1].id();
+                    inst = inst.set_rd_rs1_p(rd).set_rs2_p(rs2);
+                } else {
+                    self.last_error = Some(AsmError::InvalidOperand);
+                    return;
+                }
+            }
+
+            Encoding::RdRs1Shamtd => {
+                short = true;
+                if isign3 == enc_ops3!(Reg, Reg, Imm) {
+                    let rd = ops[0].id();
+                    let rs1 = ops[1].id();
+                    let shamt = ops[2].as_::<Imm>().value() as i32;
+                    inst = inst.set_rd(rd).set_rs1(rs1).set_shamtd(shamt as _);
+                } else {
+                    self.last_error = Some(AsmError::InvalidOperand);
+                    return;
+                }
+            }
         }
         let offset = self.buffer.cur_offset();
         if let Some((label, kind)) = label_use {
