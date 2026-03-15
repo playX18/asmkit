@@ -67,12 +67,11 @@ extern crate alloc;
 #[cfg(feature = "aarch64")]
 pub mod aarch64;
 pub mod core;
-pub mod masm;
 pub mod ppc;
 #[cfg(feature = "riscv")]
 pub mod riscv;
 pub mod util;
-
+#[cfg(feature = "x86")]
 pub mod x86;
 
 use ::core::fmt;
