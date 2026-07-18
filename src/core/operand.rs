@@ -1536,6 +1536,20 @@ pub fn imm<T: Into<i64>>(val: T) -> Imm {
     Imm::from_value(val, 0)
 }
 
+macro_rules! impl_from_int_for_imm {
+    ($($ty:ty),*) => {
+        $(impl From<$ty> for Imm {
+            fn from(value: $ty) -> Self {
+                Imm::from_value(value, 0)
+            }
+        })*
+    };
+}
+
+// Integer literals convert to `Imm` so emitter methods can take them directly
+// (e.g. `a.mov(RAX, 42)`). Matches the widths accepted by `imm()`.
+impl_from_int_for_imm!(i8, i16, i32, i64, u8, u16, u32);
+
 // ============================================================================
 // Display Implementations
 // ============================================================================

@@ -33,7 +33,7 @@ int main() {
     x86::Assembler a(&code);
     a.add(x86::rax, x86::rcx);       // 48 01 c8
     a.mov(x86::eax, 42);             // b8 2a 00 00 00
-    a.vaddps(x86::xmm0, x86::xmm1, x86::xmm2); // c5 e8 58 c2
+    a.vaddps(x86::xmm0, x86::xmm1, x86::xmm2); // c5 f0 58 c2
     a.ret();
     dump("base", code);
   }
@@ -42,7 +42,7 @@ int main() {
     CodeHolder code;
     code.init(env);
     x86::Assembler a(&code);
-    a.vaddps(x86::zmm0, x86::zmm1, x86::zmm2); // 62 f1 6c 48 58 c2
+    a.vaddps(x86::zmm0, x86::zmm1, x86::zmm2); // 62 f1 74 48 58 c2
     dump("evex", code);
   }
 

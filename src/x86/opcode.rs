@@ -206,7 +206,9 @@ impl Opcode {
     }
 
     pub fn add(&mut self, x: u32) {
-        self.0 += x;
+        // Wrapping: call sites pass negative adjustments as two's-complement
+        // (e.g. `add(-0x10i32 as u32)`), mirroring AsmJit's unsigned arithmetic.
+        self.0 = self.0.wrapping_add(x);
     }
 
     pub fn add_66h(&mut self) {

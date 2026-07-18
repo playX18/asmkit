@@ -7,7 +7,6 @@ The transformation mirrors meta/arm64.py (aarch64):
 * one `pub trait {Camel}Emitter<T0..Tn>` per (mnemonic, arity) pair;
 * one `impl {Camel}Emitter<...> for Assembler<'_>` per concrete operand tuple,
   forwarding to `self.emit_n(InstId::{Id}, &[op0.as_operand(), ...])`;
-* inherent forwarding methods on `Assembler<'_>` with `where Self: ...` bounds;
 * when a mnemonic is declared with several arities, the first-seen arity keeps
   the plain name and later ones are suffixed (`cbw` / `cbw_0`);
 * doc comments come from the docenizer database (meta/docenizer_amd64.py).
@@ -26,16 +25,37 @@ X86-specific handling:
 * Rust keywords are raw-escaped (r#loop, r#in); names already C++-escaped in
   the input (and_, or_, not_, xor_, int_) are kept as-is.
 
+Sized-register impls:
+
+* besides the abstract-kind impls (MovEmitter<Gp, Gp>), the generator emits
+  impls for the concrete sized register wrappers (Gpq/Gpd/Gpw/GpbLo/GpbHi,
+  Xmm/Ymm/Zmm, ...) so call sites can pass the register constants directly
+  (`a.mov(RAX, RBX)`, no deref);
+* the width data comes from the same instdb the rest of the pipeline uses:
+  meta/asmjit_db parses AsmJit's x86instdb.cpp (InstId -> CommonInfo ->
+  InstSignature -> OpSignature flag sets); only signature-valid width
+  combinations are generated (mov r,r -> same-width pairs, movzx -> mixed);
+* immediate positions are generated as `U: Into<Imm>` so integer literals work
+  (`a.mov(RAX, 42)`); when a variant's sized expansion is exactly its abstract
+  tuple with Imm generalized, the generic impl replaces the abstract one
+  (they would overlap), otherwise the abstract impl is kept.
+
 Usage: python3 meta/x86_emitter_gen.py [--docs-inputfolder DIR] [--check] OUTPUT
 """
 
 import argparse
+import itertools
 import os
 import re
+import sys
 
 from docenizer_amd64 import collect_instruction_docs
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.dirname(SCRIPT_DIR)
+if REPO_ROOT not in sys.path:
+    sys.path.insert(0, REPO_ROOT)
+
 INPUT_PATH = os.path.join(SCRIPT_DIR, "x86_emitter.txt")
 X86GLOBALS_PATH = os.path.join(SCRIPT_DIR, "asmjit", "asmjit", "x86", "x86globals.h")
 
@@ -65,6 +85,137 @@ CONV_TABLES = {
     "Inst::setcc_from_cond": ("SETCC_FROM_COND", "Set"),
     "Inst::cmovcc_from_cond": ("CMOVCC_FROM_COND", "Cmov"),
 }
+
+# Marker used in typed operand tuples for an immediate position generated as
+# `U: Into<Imm>` (accepts Imm and the integer types Imm: From<int> covers).
+IMM_GENERIC = "<imm>"
+
+# AsmJit OpFlags (`F(...)` terms of the OpSignature table, `k` stripped) that
+# map to the concrete sized wrapper types of src/x86/operands.rs. Order is
+# significant: it is the emission order of typed impls.
+GP_SIZED_TYPES = [
+    ("RegGpbLo", "GpbLo"),
+    ("RegGpbHi", "GpbHi"),
+    ("RegGpw", "Gpw"),
+    ("RegGpd", "Gpd"),
+    ("RegGpq", "Gpq"),
+]
+VEC_SIZED_TYPES = [
+    ("RegXmm", "Xmm"),
+    ("RegYmm", "Ymm"),
+    ("RegZmm", "Zmm"),
+]
+# Base kinds that map one-to-one to a single OpFlags register bit.
+SINGLE_REG_FLAGS = {
+    "KReg": "RegKReg",
+    "Mm": "RegMm",
+    "SReg": "RegSReg",
+    "CReg": "RegCReg",
+    "DReg": "RegDReg",
+    "St": "RegSt",
+    "Bnd": "RegBnd",
+    "Tmm": "RegTmm",
+}
+
+
+def load_width_db():
+    """Loads per-InstId operand signatures from the vendored AsmJit instdb via
+    meta/asmjit_db (the same parser that generates src/x86/instdb.rs).
+
+    Returns {InstId name: [(frozenset of OpFlags names per explicit operand)]}.
+    """
+    from meta.asmjit_db.cxx_src import (
+        extract_block,
+        parse_brace_row,
+        parse_macro_invocation,
+        split_line_rows,
+        split_tables,
+        strip_generated_banner,
+    )
+    from meta.asmjit_db.tablegen_x86 import X86Db, x86_parse_inst_rows
+
+    db = X86Db()
+
+    # CommonInfo rows: {flags, avx512_flags, signature_index, signature_count, ...}.
+    common_tables = split_tables(strip_generated_banner(
+        extract_block(db.inst_cpp, "InstCommonTable")))
+    common_rows = []
+    for code, _ in split_line_rows(common_tables["_inst_common_info_table"]):
+        fields = parse_brace_row(code)
+        common_rows.append((int(fields[2]), int(fields[3])))
+
+    sig_tables = split_tables(strip_generated_banner(
+        extract_block(db.inst_cpp, "InstSignatureTable")))
+    inst_sigs = []  # (op_count, implicit_op_count, [op_signature_indexes x 6])
+    for code, _ in split_line_rows(sig_tables["_inst_signature_table"]):
+        name, args = parse_macro_invocation(code)
+        assert name == "ROW" and len(args) == 10, f"bad InstSignature row {code!r}"
+        inst_sigs.append((int(args[0]), int(args[3]), [int(a) for a in args[4:]]))
+
+    op_sigs = []  # frozenset of OpFlags names per row
+    for code, _ in split_line_rows(sig_tables["_op_signature_table"]):
+        name, args = parse_macro_invocation(code)
+        assert name == "ROW" and len(args) == 2, f"bad OpSignature row {code!r}"
+        op_sigs.append(frozenset(re.findall(r"F\(([A-Za-z_0-9]+)\)", args[0])))
+
+    width_db = {}
+    for row in x86_parse_inst_rows(db):
+        sig_index, sig_count = common_rows[int(row["common_info_index"])]
+        forms = []
+        for op_count, implicit, indexes in inst_sigs[sig_index:sig_index + sig_count]:
+            explicit = tuple(op_sigs[i] for i in indexes[implicit:op_count])
+            full = tuple(op_sigs[i] for i in indexes[:op_count])
+            forms.append((explicit, full))
+        width_db[row["id"]] = forms
+    return width_db
+
+
+def expand_position(base_kind, flags):
+    """Maps one signature operand's OpFlags set to the concrete operand types a
+    `base_kind` emitter parameter can take, or None when the base kind cannot
+    appear at this position."""
+    if base_kind == "Gp":
+        types = [rust for flag, rust in GP_SIZED_TYPES if flag in flags]
+        return types or None
+    if base_kind == "Vec":
+        types = [rust for flag, rust in VEC_SIZED_TYPES if flag in flags]
+        return types or None
+    if base_kind == "Mem":
+        return ["Mem"] if any(f.startswith(("Mem", "Vm")) for f in flags) else None
+    if base_kind == "Imm":
+        if any(f.startswith(("Imm", "Rel")) for f in flags):
+            return [IMM_GENERIC]
+        return None
+    if base_kind == "Label":
+        return ["Label"] if any(f.startswith("Rel") for f in flags) else None
+    flag = SINGLE_REG_FLAGS.get(base_kind)
+    return [base_kind] if flag in flags else None
+
+
+def typed_operand_tuples(variant, forms_list):
+    """Computes the sized operand tuples for one emitter variant from the
+    instruction's signature forms (see load_width_db). Returns a deduplicated
+    list of tuples in which immediate positions carry IMM_GENERIC."""
+    arity = len(variant.operands)
+    seen, out = set(), []
+    for explicit, full in forms_list:
+        # Explicit decls match the non-implicit signature operands; decls that
+        # spell fixed registers out (cbw(Gp_AX)) match the full operand list.
+        if len(explicit) == arity:
+            form = explicit
+        elif len(full) == arity:
+            form = full
+        else:
+            continue
+        per_position = [expand_position(kind, flags)
+                        for kind, flags in zip(variant.operands, form)]
+        if any(types is None for types in per_position):
+            continue
+        for combo in itertools.product(*per_position):
+            if combo not in seen:
+                seen.add(combo)
+                out.append(combo)
+    return out
 
 # All sixteen x86 condition suffixes, in AsmJit's table order.
 X86_CC_SUFFIXES = [
@@ -284,60 +435,41 @@ def trait_block(opcode, opcode_docs):
     return "\n".join(lines)
 
 
-def impl_block(opcode, variant):
+def impl_block(opcode, inst_id, operands, comment):
+    """Emits one impl. `operands` holds concrete Rust types; IMM_GENERIC marks
+    an immediate position generated as a `U{i}: Into<Imm>` type parameter."""
     trait = trait_name(opcode.name)
-    generics = f"<{', '.join(variant.operands)}>" if variant.operands else ""
+    type_args = [f"U{i}" if op == IMM_GENERIC else op
+                 for i, op in enumerate(operands)]
+    generics = f"<{', '.join(type_args)}>" if type_args else ""
+    bounds = [f"U{i}: Into<Imm>" for i, op in enumerate(operands) if op == IMM_GENERIC]
+    impl_generics = f"<{', '.join(bounds)}>" if bounds else ""
+    params = ["&mut self"]
+    params.extend(f"op{i}: {arg}" for i, arg in enumerate(type_args))
+    ops = "&[{}]".format(", ".join(
+        f"Into::<Imm>::into(op{i}).as_operand()" if op == IMM_GENERIC
+        else f"op{i}.as_operand()"
+        for i, op in enumerate(operands)))
+    comment = f" // {comment}" if comment else ""
     method = rust_method_name(opcode.name)
-    ops = f"&[{', '.join(f'op{i}.as_operand()' for i in range(len(variant.operands)))}]"
-    comment = f" // {variant.comment}" if variant.comment else ""
 
-    lines = [f"impl {trait}Emitter{generics} for Assembler<'_> {{"]
+    lines = [f"impl{impl_generics} {trait}Emitter{generics} for Assembler<'_> {{"]
     if opcode.conv:
         table, prefix = CONV_TABLES[opcode.conv]
-        lines.append(f"    fn {method}({fn_params(variant.operands, cc=True)}) {{")
+        cc_params = ", ".join([params[0], "cc: CondCode"] + params[1:])
+        lines.append(f"    fn {method}({cc_params}) {{")
         lines.append(f"        self.emit_n({table}[cc as usize], {ops});{comment}")
         lines.append("    }")
         for suffix in X86_CC_SUFFIXES:
-            lines.append(f"    fn {method}{suffix}({fn_params(variant.operands)}) {{")
-            lines.append(f"        self.emit_n(InstId::{prefix}{suffix}, {ops});")
+            lines.append(f"    fn {method}{suffix}({', '.join(params)}) {{")
+            lines.append(f"        self.emit_n(InstId::{prefix}{suffix} as u32, {ops});")
             lines.append("    }")
     else:
-        lines.append(f"    fn {method}({fn_params(variant.operands)}) {{")
-        lines.append(f"        self.emit_n(InstId::{variant.inst_id}, {ops});{comment}")
+        lines.append(f"    fn {method}({', '.join(params)}) {{")
+        lines.append(f"        self.emit_n(InstId::{inst_id} as u32, {ops});{comment}")
         lines.append("    }")
     lines.append("}")
     return "\n".join(lines)
-
-
-def inherent_blocks(opcode, opcode_docs):
-    n = len(opcode.variants[0].operands)
-    generics = ", ".join(f"T{i}" for i in range(n))
-    trait = trait_name(opcode.name)
-    trait_ref = f"{trait}Emitter<{generics}>" if n else f"{trait}Emitter"
-    generic_params = f"<{generics}>" if n else ""
-    generic_operands = [f"T{i}" for i in range(n)]
-    method = rust_method_name(opcode.name)
-    call_args = ", ".join(f"op{i}" for i in range(n))
-
-    def forwarder(doc_name, method_name, cc):
-        call = f"cc, {call_args}" if cc and call_args else ("cc" if cc else call_args)
-        lines = doc_lines(doc_name, opcode_docs, indent="    ")
-        lines.append(f"    pub fn {method_name}{generic_params}"
-                     f"({fn_params(generic_operands, cc=cc)})")
-        lines.append("    where")
-        lines.append(f"        Self: {trait_ref},")
-        lines.append("    {")
-        lines.append(f"        <Self as {trait_ref}>::{method_name}(self"
-                     f"{', ' if call else ''}{call});")
-        lines.append("    }")
-        return "\n".join(lines)
-
-    if opcode.conv:
-        blocks = [forwarder(opcode.name, method, cc=True)]
-        blocks.extend(forwarder(f"{opcode.name}{suffix}", f"{method}{suffix}", cc=False)
-                      for suffix in X86_CC_SUFFIXES)
-        return blocks
-    return [forwarder(opcode.name, method, cc=False)]
 
 
 HEADER = """\
@@ -348,8 +480,8 @@ HEADER = """\
 //! Conventions:
 //! - One `{Name}Emitter<T0..Tn>` trait per (mnemonic, arity) pair. `Assembler<'_>`
 //!   implements it once per declared concrete operand tuple, forwarding to
-//!   `emit_n(InstId::{Id}, &[...])`; an inherent method per trait method forwards
-//!   to the trait implementation through a `where Self: {Name}Emitter<...>` bound.
+//!   `emit_n(InstId::{Id} as u32, &[...])`. Unlike the legacy `features/*` API there
+//!   are no inherent forwarding methods, so both APIs can coexist.
 //! - Both `[EXPLICIT]` (fixed-register operands spelled out) and `[IMPLICIT]`
 //!   (fixed registers hidden) input declarations are kept. When a mnemonic is
 //!   declared with more than one arity, the first-seen arity keeps the plain name
@@ -358,6 +490,13 @@ HEADER = """\
 //! - AsmJit fixed-register alias operands (`Gp_AX`, `DS_ZSI`, `XMM0`, ...) are
 //!   collapsed to their base operand kind (`Gp`, `Mem`, `Vec`); operand tuples
 //!   that become duplicates after collapsing are dropped (first one wins).
+//! - Besides the abstract-kind impls (`MovEmitter<Gp, Gp>`), impls are generated
+//!   for the concrete sized register wrappers (`Gpq`/`Gpd`/`Gpw`/`GpbLo`/`GpbHi`,
+//!   `Xmm`/`Ymm`/`Zmm`, ...) so register constants work without dereferencing
+//!   (`a.mov(RAX, RBX)`). Only width combinations present in the instruction's
+//!   instdb signatures are generated. Immediate positions take `U: Into<Imm>`,
+//!   so integer literals work too (`a.mov(RAX, 42)`); when a sized impl would
+//!   overlap its abstract `Imm` counterpart, the generic one replaces it.
 //! - The conditional families `j`, `set` and `cmov` take an explicit [`CondCode`]
 //!   translated through the `JCC_FROM_COND` / `SETCC_FROM_COND` /
 //!   `CMOVCC_FROM_COND` tables below, plus one named method per x86 condition
@@ -400,31 +539,71 @@ def cond_table_lines():
     return lines
 
 
-def generate(opcodes, opcode_docs):
-    """Returns (file_text, {opcode name: {"trait": str, "impls": [str],
-    "inherent": [str]}}) for spot printing."""
+def width_forms(opcode, variant, width_db):
+    """Signature forms for one emitter variant. Conditional families
+    (j/set/cmov) have no InstId of their own: merge the forms of the sixteen
+    concrete condition instructions, deduplicated."""
+    if opcode.conv:
+        prefix = CONV_TABLES[opcode.conv][1]
+        seen, forms = set(), []
+        for suffix in X86_CC_SUFFIXES:
+            for form in width_db.get(f"{prefix}{suffix}", []):
+                if form not in seen:
+                    seen.add(form)
+                    forms.append(form)
+        return forms
+    return width_db.get(variant.inst_id, [])
+
+
+def generate(opcodes, opcode_docs, width_db):
+    """Returns (file_text, {opcode name: {"trait": str, "impls": [str]}}, gen
+    stats) for spot printing."""
     blocks = {}
-    traits, impls, inherent = [], [], []
+    traits, impls = [], []
+    gen_stats = {"typed_impls": 0, "generic_imm_impls": 0, "replaced_abstract": 0}
+    impl_keys = []
     for opcode in opcodes.values():
+        opcode_impls = []
+        for variant in opcode.variants:
+            typed = typed_operand_tuples(variant, width_forms(opcode, variant, width_db))
+            # An abstract (.., Imm, ..) impl would overlap with its sized
+            # (.., U: Into<Imm>, ..) counterpart; in that case the generic
+            # impl replaces the abstract one (Imm: Into<Imm> keeps old calls
+            # working).
+            generalized = tuple(IMM_GENERIC if op == "Imm" else op
+                                for op in variant.operands)
+            replace = generalized in typed and generalized != tuple(variant.operands)
+            if replace:
+                gen_stats["replaced_abstract"] += 1
+            else:
+                opcode_impls.append(
+                    impl_block(opcode, variant.inst_id, variant.operands, variant.comment))
+                impl_keys.append((trait_name(opcode.name), tuple(variant.operands)))
+            for combo in typed:
+                if combo == tuple(variant.operands):
+                    continue
+                opcode_impls.append(
+                    impl_block(opcode, variant.inst_id, combo, variant.comment))
+                impl_keys.append((trait_name(opcode.name), combo))
+                gen_stats["typed_impls"] += 1
+                if IMM_GENERIC in combo:
+                    gen_stats["generic_imm_impls"] += 1
         block = {
             "trait": trait_block(opcode, opcode_docs),
-            "impls": [impl_block(opcode, variant) for variant in opcode.variants],
-            "inherent": inherent_blocks(opcode, opcode_docs),
+            "impls": opcode_impls,
         }
         blocks[opcode.name] = block
         traits.append(block["trait"])
         impls.extend(block["impls"])
-        inherent.extend(block["inherent"])
 
     parts = [HEADER]
     parts.extend(cond_table_lines())
     parts.append("\n\n".join(traits))
     parts.append("\n\n".join(impls))
-    parts.append("impl Assembler<'_> {\n" + "\n\n".join(inherent) + "\n}")
-    return "\n".join(parts) + "\n", blocks
+    return "\n".join(parts) + "\n", blocks, gen_stats, impl_keys
 
 
-def validate(opcodes, inst_id_names):
+def validate(opcodes, inst_id_names, impl_keys):
     """Cross-checks the generated references against the parsed InstId enum.
     Returns a list of problem strings (empty when everything checks out)."""
     problems = []
@@ -442,13 +621,10 @@ def validate(opcodes, inst_id_names):
 
     seen = set()
     duplicates = []
-    for opcode in opcodes.values():
-        trait = trait_name(opcode.name)
-        for variant in opcode.variants:
-            key = (trait, variant.operands)
-            if key in seen:
-                duplicates.append(key)
-            seen.add(key)
+    for key in impl_keys:
+        if key in seen:
+            duplicates.append(key)
+        seen.add(key)
     if duplicates:
         problems.append(f"duplicate (trait, operands) impls: {duplicates}")
 
@@ -474,12 +650,11 @@ def validate(opcodes, inst_id_names):
     return problems
 
 
-def print_report(opcodes, stats, inst_id_names, problems):
+def print_report(opcodes, stats, gen_stats, inst_id_names, problems):
     traits = len(opcodes)
-    impls = sum(len(opcode.variants) for opcode in opcodes.values())
+    impls = sum(len(block["impls"]) for block in gen_stats["blocks"].values())
     cc_traits = sum(1 for opcode in opcodes.values() if opcode.conv)
     methods = sum((17 if opcode.conv else 1) for opcode in opcodes.values())
-    inherent = methods  # one inherent forwarder per trait method
     splits = traits - stats["distinct_names"]
 
     print(f"Parsed {stats['decls']} declarations "
@@ -488,8 +663,10 @@ def print_report(opcodes, stats, inst_id_names, problems):
     print(f"Parsed {len(inst_id_names)} InstId enum names from x86globals.h")
     print(f"Generated {traits} traits ({splits} arity-split), "
           f"{impls} impls ({stats['dropped_duplicates']} alias-collapse duplicates dropped), "
-          f"{methods} trait methods ({cc_traits} cc traits x 17), "
-          f"{inherent} inherent methods")
+          f"{methods} trait methods ({cc_traits} cc traits x 17)")
+    print(f"Sized impls: {gen_stats['typed_impls']} typed "
+          f"({gen_stats['generic_imm_impls']} with Into<Imm> immediates), "
+          f"{gen_stats['replaced_abstract']} abstract Imm impls replaced by generic ones")
     for key in ("unknown_tokens", "arity_mismatches", "conv_mismatches"):
         for entry in stats[key]:
             print(f"WARNING: {entry}")
@@ -514,9 +691,6 @@ def print_spot_checks(opcodes, blocks):
             for impl in block["impls"]:
                 print(impl)
                 print()
-            for forwarder in block["inherent"]:
-                print(forwarder)
-                print()
 
 
 def main():
@@ -533,7 +707,9 @@ def main():
     opcodes, stats = parse_opcodes(INPUT_PATH)
     inst_id_names = parse_inst_id_names(X86GLOBALS_PATH)
     opcode_docs = load_opcode_docs(args.docs_inputfolder)
-    text, blocks = generate(opcodes, opcode_docs)
+    width_db = load_width_db()
+    text, blocks, gen_stats, impl_keys = generate(opcodes, opcode_docs, width_db)
+    gen_stats["blocks"] = blocks
 
     output_dir = os.path.dirname(os.path.abspath(args.output))
     os.makedirs(output_dir, exist_ok=True)
@@ -541,8 +717,8 @@ def main():
         out.write(text)
     print(f"Wrote {args.output} ({len(text.splitlines())} lines)")
 
-    problems = validate(opcodes, inst_id_names)
-    print_report(opcodes, stats, inst_id_names, problems)
+    problems = validate(opcodes, inst_id_names, impl_keys)
+    print_report(opcodes, stats, gen_stats, inst_id_names, problems)
     if args.check:
         print_spot_checks(opcodes, blocks)
     if problems:

@@ -1286,9 +1286,35 @@ pub fn emit_jmp_call(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), 
     }
 
     if st.rm_rel.is_imm() {
-        // asmkit has no base address: a plain immediate is a raw displacement (old
-        // encoder semantics), encoded like a bound label.
-        return emit_jmp_call_rel(buf, st, st.imm_value as u32, opcode8);
+        // asmkit has no base address: a plain immediate is a raw displacement.
+        // The rel8 form is used when it exists and the value fits (rel8-only
+        // instructions like loop/jcxz require it); LONG_FORM forces rel32.
+        let rel = st.rm_rel.as_::<crate::core::operand::Imm>().value();
+        if opcode8 != 0 && !st.options.contains(InstOptions::LONG_FORM) {
+            if let Ok(disp8) = i8::try_from(rel) {
+                buf.put1(opcode8 as u8); // Emit opcode.
+                buf.put1(disp8 as u8); // Emit DISP8.
+                return Ok(());
+            }
+        }
+
+        if st.opcode.get() == 0 || st.options.contains(InstOptions::SHORT_FORM) {
+            return Err(X86Error::InvalidDisplacement {
+                value: rel,
+                size: 1,
+                reason: "displacement does not fit the requested/available branch form",
+            });
+        }
+
+        if st.opcode.get() & Opcode::MM_MASK != 0 {
+            buf.put1(0x0F); // Emit 0F prefix.
+        }
+        buf.put1(st.opcode.get() as u8); // Emit opcode.
+        if st.op_reg != 0 {
+            buf.put1(encode_mod(3, st.op_reg, 0) as u8); // Emit MOD.
+        }
+        buf.put4(rel as u32); // Emit DISP32.
+        return Ok(());
     }
 
     if st.rm_rel.is_sym() {

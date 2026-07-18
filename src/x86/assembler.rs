@@ -1,14 +1,12 @@
 #![allow(dead_code, clippy::all)]
-use super::features::base::MovEmitter;
-use super::opcodes::ALT_TAB;
+use super::emit::{self, PendingPrefixes};
+use super::emitter::{CallEmitter, JmpEmitter, MovEmitter};
 use super::operands::*;
 use crate::{
     X86Error,
     core::{
-        buffer::{
-            CodeBuffer, CodeOffset, ConstantData, LabelUse, Reloc, RelocDistance, RelocTarget,
-        },
-        emitter::Emitter,
+        buffer::{CodeBuffer, CodeOffset, ConstantData, LabelUse},
+        globals::InstOptions,
         operand::*,
         patch::{PatchBlockId, PatchSiteId},
     },
@@ -27,321 +25,82 @@ const RC_RD: u64 = 0x0800000;
 const RC_RU: u64 = 0x1000000;
 const RC_RZ: u64 = 0x1800000;
 const SEG_MASK: u64 = 0xe0000000;
-const ADDR32: u64 = 0x10000000;
 const LONG: u64 = 0x100000000;
 
-const OPC_66: u64 = 0x80000;
-const OPC_F2: u64 = 0x100000;
-const OPC_F3: u64 = 0x200000;
-const OPC_REXW: u64 = 0x400000;
-const OPC_LOCK: u64 = 0x800000;
-const OPC_VEXL0: u64 = 0x1000000;
-const OPC_VEXL1: u64 = 0x1800000;
-const OPC_EVEXL0: u64 = 0x2000000;
-const OPC_EVEXL1: u64 = 0x2800000;
-const OPC_EVEXL2: u64 = 0x3000000;
-const OPC_EVEXL3: u64 = 0x3800000;
-const OPC_EVEXB: u64 = 0x4000000;
-const OPC_VSIB: u64 = 0x8000000;
-const OPC_67: u64 = ADDR32;
-const OPC_SEG_MSK: u64 = 0xe0000000;
-const OPC_JMPL: u64 = 0x100000000; // Placeholder for FE_JMPL, define as needed
-const OPC_MASK_MSK: u64 = 0xe00000000;
-const OPC_EVEXZ: u64 = 0x1000000000;
-const OPC_USER_MSK: u64 = OPC_67 | OPC_SEG_MSK | OPC_MASK_MSK;
-const OPC_FORCE_SIB: u64 = 0x2000000000;
-const OPC_DOWNGRADE_VEX: u64 = 0x4000000000;
-const OPC_DOWNGRADE_VEX_FLIPW: u64 = 0x40000000000;
-const OPC_EVEX_DISP8SCALE: u64 = 0x38000000000;
-const OPC_GPH_OP0: u64 = 0x200000000000;
-const OPC_GPH_OP1: u64 = 0x400000000000;
-const EPFX_REX_MSK: u64 = 0x43f;
-const EPFX_REX: u64 = 0x20;
-const EPFX_EVEX: u64 = 0x40;
-const EPFX_REXR: u64 = 0x10;
-const EPFX_REXX: u64 = 0x08;
-const EPFX_REXB: u64 = 0x04;
-const EPFX_REXR4: u64 = 0x02;
-const EPFX_REXB4: u64 = 0x01;
-const EPFX_REXX4: u64 = 0x400;
-const EPFX_VVVV_IDX: u64 = 11;
+/// Bit 37: LOCK prefix (bits 23/24 are the rounding-mode RC bits, bits 20/21
+/// REP/REPNE, bit 26 SAE/ER enable, bits 29..=31 segment, bit 32 long-form,
+/// bits 33..=35 mask id, bit 36 zeroing mask).
+const OPC_LOCK: u64 = 0x2000000000;
+/// Bit 36: AVX-512 zeroing mask `{z}` (bits 33..=35 carry the mask register id).
+const OPC_Z: u64 = 0x1000000000;
 
-fn op_imm_n(imm: Operand, immsz: usize) -> bool {
-    if !imm.is_imm() {
-        return false;
-    }
-    let imm = imm.as_::<Imm>();
-    if immsz == 0 && imm.value() == 0 {
-        return true;
+impl crate::core::builder::InstSink for Assembler<'_> {
+    fn emit_inst(&mut self, inst: &crate::core::inst::Inst) {
+        let ops = inst.operands();
+        let mut refs: smallvec::SmallVec<[&Operand; 6]> = smallvec::SmallVec::new();
+        refs.extend(ops.iter());
+        self.emit_n(inst.id, &refs);
     }
 
-    if immsz == 1 && imm.is_int8() {
-        return true;
-    }
-    if immsz == 2 && imm.is_int16() {
-        return true;
-    }
-    if immsz == 3 && (imm.value() & 0xffffff) == imm.value() {
-        return true;
-    }
-    if immsz == 4 && imm.is_int32() {
-        return true;
-    }
-    if immsz == 8 {
-        return true;
-    }
-
-    false
-}
-
-fn opc_size(opc: u64, epfx: u64) -> usize {
-    let mut res = 1;
-
-    if (opc & OPC_EVEXL0) != 0 {
-        res += 4;
-    } else if (opc & OPC_VEXL0) != 0 {
-        if (opc & (OPC_REXW | 0x20000)) != 0 || (epfx & (EPFX_REXX | EPFX_REXB)) != 0 {
-            res += 3;
-        } else {
-            res += 2;
-        }
-    } else {
-        if (opc & OPC_LOCK) != 0 {
-            res += 1;
-        }
-        if (opc & OPC_66) != 0 {
-            res += 1;
-        }
-        if (opc & (OPC_F2 | OPC_F3)) != 0 {
-            res += 1;
-        }
-        if (opc & OPC_REXW) != 0 || (epfx & EPFX_REX_MSK) != 0 {
-            res += 1;
-        }
-        if (opc & 0x30000) != 0 {
-            res += 1;
-        }
-        if (opc & 0x20000) != 0 {
-            res += 1;
-        }
-    }
-    if (opc & OPC_SEG_MSK) != 0 {
-        res += 1;
-    }
-    if (opc & OPC_67) != 0 {
-        res += 1;
-    }
-    if (opc & 0x8000) != 0 {
-        res += 1;
-    }
-
-    res
-}
-
-#[derive(Copy, Clone, PartialEq, Eq, Debug)]
-enum Encoding {
-    NP,
-    M,
-    R,
-    M1,
-    MC,
-    MR,
-    RM,
-    RMA,
-    MRC,
-    AM,
-    MA,
-    I,
-    O,
-    OA,
-    S,
-    A,
-    D,
-    FD,
-    TD,
-    IM,
-    RVM,
-    RVMR,
-    RMV,
-    VM,
-    MVR,
-    MRV,
-    MAX,
-}
-#[repr(C)]
-#[derive(Copy, Clone, Debug)]
-struct EncodingInfo {
-    modrm: u8,
-    modreg: u8,
-    vexreg: u8,
-    immidx: u8,
-    immctl: u8,
-    zregidx: u8,
-    zregval: u8,
-}
-
-impl EncodingInfo {
-    pub const fn new() -> Self {
-        Self {
-            modreg: 0,
-            modrm: 0,
-            vexreg: 0,
-            immctl: 0,
-            immidx: 0,
-            zregidx: 0,
-            zregval: 0,
-        }
+    fn bind_label(&mut self, label: Label) {
+        Assembler::bind_label(self, label);
     }
 }
-
-const ENCODING_INFOS: [EncodingInfo; Encoding::MAX as usize] = [
-    EncodingInfo::new(),
-    EncodingInfo {
-        modrm: 0x0 ^ 3,
-        immidx: 1,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modreg: 0x0 ^ 3,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modrm: 0x0 ^ 3,
-        immctl: 1,
-        immidx: 1,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modrm: 0x0 ^ 3,
-        zregidx: 0x1 ^ 3,
-        zregval: 1,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modrm: 0x0 ^ 3,
-        modreg: 0x1 ^ 3,
-        immidx: 2,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modrm: 0x1 ^ 3,
-        modreg: 0x0 ^ 3,
-        immidx: 2,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modrm: 0x1 ^ 3,
-        modreg: 0x0 ^ 3,
-        zregidx: 0x2 ^ 3,
-        zregval: 0,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modrm: 0x0 ^ 3,
-        modreg: 0x1 ^ 3,
-        zregidx: 0x2 ^ 3,
-        zregval: 1,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modrm: 0x1 ^ 3,
-        zregidx: 0x0 ^ 3,
-        zregval: 0,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modrm: 0x0 ^ 3,
-        zregidx: 0x1 ^ 3,
-        zregval: 0,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        immidx: 0,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modreg: 0x0 ^ 3,
-        immidx: 1,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modreg: 0x0 ^ 3,
-        zregidx: 0x1 ^ 3,
-        zregval: 0,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo::new(),
-    EncodingInfo {
-        zregidx: 0x0 ^ 3,
-        zregval: 0,
-        immidx: 1,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        immidx: 0,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        zregidx: 0x0 ^ 3,
-        zregval: 0,
-        immctl: 2,
-        immidx: 1,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        zregidx: 0x1 ^ 3,
-        zregval: 0,
-        immctl: 2,
-        immidx: 0,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modrm: 0x1 ^ 3,
-        immidx: 0,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modrm: 0x2 ^ 3,
-        modreg: 0x0 ^ 3,
-        vexreg: 0x1 ^ 3,
-        immidx: 3,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modrm: 0x2 ^ 3,
-        modreg: 0x0 ^ 3,
-        vexreg: 0x1 ^ 3,
-        immctl: 3,
-        immidx: 3,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modrm: 0x1 ^ 3,
-        modreg: 0x0 ^ 3,
-        vexreg: 0x2 ^ 3,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modrm: 0x1 ^ 3,
-        vexreg: 0x0 ^ 3,
-        immidx: 2,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modrm: 0x0 ^ 3,
-        modreg: 0x2 ^ 3,
-        vexreg: 0x1 ^ 3,
-        ..EncodingInfo::new()
-    },
-    EncodingInfo {
-        modrm: 0x0 ^ 3,
-        modreg: 0x1 ^ 3,
-        vexreg: 0x2 ^ 3,
-        ..EncodingInfo::new()
-    },
-];
 
 impl<'a> Assembler<'a> {
+    /// Collects the pending prefix flags set by the prefix setters (`rep`, `lock`,
+    /// `seg`, `k`, sae/rounding, `long`) and resets them, mapping them onto the
+    /// asmjit-style [`InstOptions`]/extra-reg model consumed by [`Assembler::emit_n`].
+    fn take_pending_prefixes(&mut self) -> PendingPrefixes {
+        let flags = self.flags;
+        self.flags = 0;
+
+        let mut prefixes = PendingPrefixes::default();
+        if flags & OPC_LOCK != 0 {
+            prefixes.options |= InstOptions::X86_LOCK;
+        }
+        if flags & 0x200000 != 0 {
+            prefixes.options |= InstOptions::X86_REP;
+        }
+        if flags & 0x100000 != 0 {
+            prefixes.options |= InstOptions::X86_REPNE;
+        }
+        if flags & LONG != 0 {
+            prefixes.options |= InstOptions::LONG_FORM;
+        }
+        if flags & OPC_Z != 0 {
+            prefixes.options |= InstOptions::X86_ZMASK;
+        }
+        if flags & 0x4000000 != 0 {
+            let rc = flags & (RC_RD | RC_RU);
+            prefixes.options |= if rc == RC_RD {
+                InstOptions::X86_ER | InstOptions::X86_RD_SAE
+            } else if rc == RC_RU {
+                InstOptions::X86_ER | InstOptions::X86_RU_SAE
+            } else if rc == RC_RZ {
+                InstOptions::X86_ER | InstOptions::X86_RZ_SAE
+            } else {
+                // `sae()` and `rn_sae()` share the same flag bits (RC_RN is zero);
+                // both encode identically (EVEX.b with LL=00).
+                InstOptions::X86_SAE
+            };
+        }
+        prefixes.segment_id = ((flags & SEG_MASK) >> 29) as u32;
+        prefixes.mask_id = ((flags >> 33) & 0x7) as u32;
+        prefixes
+    }
+
+    /// Emits one instruction by id with explicit operands, using the asmjit-style
+    /// InstInfo → signature match → emit-handler pipeline (the new primary emit
+    /// path). Pending prefixes set by the prefix setters apply. On failure,
+    /// `last_error` is set and nothing more is emitted.
+    pub fn emit_n(&mut self, id: impl Into<u32>, ops: &[&Operand]) {
+        let prefixes = self.take_pending_prefixes();
+        if let Err(err) = emit::emit_n(self.buffer, id.into(), ops, prefixes) {
+            self.last_error = Some(err);
+        }
+    }
+
     pub fn new(buf: &'a mut CodeBuffer) -> Self {
         Self {
             buffer: buf,
@@ -404,6 +163,12 @@ impl<'a> Assembler<'a> {
         self
     }
 
+    /// AVX-512 zeroing mask `{z}` for the next instruction (requires `k()`).
+    pub fn z(&mut self) -> &mut Self {
+        self.flags |= OPC_Z;
+        self
+    }
+
     pub fn rep(&mut self) -> &mut Self {
         self.flags |= 0x200000;
         self
@@ -419,7 +184,7 @@ impl<'a> Assembler<'a> {
     }
 
     pub fn lock(&mut self) -> &mut Self {
-        self.flags |= 0x800000;
+        self.flags |= OPC_LOCK;
         self
     }
 
@@ -477,659 +242,17 @@ impl<'a> Assembler<'a> {
             unreachable!("patchable_mov currently only supports immediate sources");
         }
 
-        self.mov::<A, B>(dst, src);
+        MovEmitter::mov(self, dst, src);
 
         if dst_op.is_reg_type_of(RegType::Gp64) {
             let offset = self.buffer.cur_offset().saturating_sub(8);
             self.buffer.record_patch_block(offset, 8, 1)
         } else if dst_op.is_reg_type_of(RegType::Gp32) {
-            self.mov::<A, B>(dst, src);
+            MovEmitter::mov(self, dst, src);
             let offset = self.buffer.cur_offset().saturating_sub(4);
             self.buffer.record_patch_block(offset, 4, 1)
         } else {
             unreachable!("patchable_mov currently only supports Gp64 and Gp32 destinations");
-        }
-    }
-
-    fn enc_opc(&mut self, opc: u64, epfx: u64) -> bool {
-        if opc & OPC_SEG_MSK != 0 {
-            self.buffer
-                .put1(((0x65643e362e2600u64 >> (8 * ((opc >> 29) & 7))) & 0xff) as u8);
-        }
-
-        if opc & OPC_67 != 0 {
-            self.buffer.put1(0x67);
-        }
-
-        if opc & OPC_EVEXL0 != 0 {
-            self.buffer.put1(0x62);
-            let mut b1 = (opc >> 16 & 7) as u8;
-            if (epfx & EPFX_REXR) == 0 {
-                b1 |= 0x80;
-            }
-            if (epfx & EPFX_REXX) == 0 {
-                b1 |= 0x40;
-            }
-            if (epfx & EPFX_REXB) == 0 {
-                b1 |= 0x20;
-            }
-            if (epfx & EPFX_REXR4) == 0 {
-                b1 |= 0x10;
-            }
-            if (epfx & EPFX_REXB4) != 0 {
-                b1 |= 0x08;
-            }
-            self.buffer.put1(b1);
-
-            let mut b2 = (opc >> 20 & 3) as u8;
-            if (epfx & EPFX_REXX4) == 0 {
-                b2 |= 0x04;
-            }
-            b2 |= ((!(epfx >> EPFX_VVVV_IDX) & 0xf) << 3) as u8;
-            if opc & OPC_REXW != 0 {
-                b2 |= 0x80;
-            }
-            self.buffer.put1(b2);
-
-            let mut b3 = (opc >> 33 & 7) as u8;
-            b3 |= ((!(epfx >> EPFX_VVVV_IDX) & 0x10) >> 1) as u8;
-            if opc & OPC_EVEXB != 0 {
-                b3 |= 0x10;
-            }
-            b3 |= ((opc >> 23 & 3) << 5) as u8;
-            if opc & OPC_EVEXZ != 0 {
-                b3 |= 0x80;
-            }
-            self.buffer.put1(b3);
-        } else if opc & OPC_VEXL0 != 0 {
-            if (epfx & (EPFX_REXR4 | EPFX_REXX4 | EPFX_REXB4 | (0x10 << EPFX_VVVV_IDX))) != 0 {
-                self.last_error = Some(X86Error::InvalidVEX {
-                    field: "prefix",
-                    reason: "VEX prefix has invalid extended register bits",
-                });
-                return true;
-            }
-
-            let vex3 = (opc & (OPC_REXW | 0x20000)) != 0 || (epfx & (EPFX_REXX | EPFX_REXB)) != 0;
-            let pp = (opc >> 20 & 3) as u8;
-            self.buffer.put1(0xc4 | !vex3 as u8);
-
-            let mut b2 = pp | if (opc & 0x800000) != 0 { 0x4 } else { 0 };
-
-            if vex3 {
-                let mut b1 = (opc >> 16 & 3) as u8;
-                if (epfx & EPFX_REXR) == 0 {
-                    b1 |= 0x80;
-                }
-                if (epfx & EPFX_REXX) == 0 {
-                    b1 |= 0x40;
-                }
-                if (epfx & EPFX_REXB) == 0 {
-                    b1 |= 0x20;
-                }
-                self.buffer.put1(b1);
-
-                if (opc & OPC_REXW) != 0 {
-                    b2 |= 0x80;
-                }
-            } else {
-                if (epfx & EPFX_REXR) == 0 {
-                    b2 |= 0x80;
-                }
-            }
-
-            b2 |= ((!(epfx >> EPFX_VVVV_IDX) & 0xf) << 3) as u8;
-            self.buffer.put1(b2);
-        } else {
-            if opc & OPC_LOCK != 0 {
-                self.buffer.put1(0xF0);
-            }
-            if opc & OPC_66 != 0 {
-                self.buffer.put1(0x66);
-            }
-            if opc & OPC_F2 != 0 {
-                self.buffer.put1(0xF2);
-            }
-            if opc & OPC_F3 != 0 {
-                self.buffer.put1(0xF3);
-            }
-            if opc & OPC_REXW != 0 || epfx & EPFX_REX_MSK != 0 {
-                let mut rex = 0x40;
-                if opc & OPC_REXW != 0 {
-                    rex |= 0x08;
-                }
-                if epfx & EPFX_REXR != 0 {
-                    rex |= 0x04;
-                }
-                if epfx & EPFX_REXX != 0 {
-                    rex |= 0x02;
-                }
-                if epfx & EPFX_REXB != 0 {
-                    rex |= 0x01;
-                }
-                self.buffer.put1(rex);
-            }
-            if opc & 0x30000 != 0 {
-                self.buffer.put1(0x0F);
-            }
-            if opc & 0x30000 == 0x20000 {
-                self.buffer.put1(0x38);
-            }
-            if opc & 0x30000 == 0x30000 {
-                self.buffer.put1(0x3A);
-            }
-        }
-
-        self.buffer.put1((opc & 0xff) as u8);
-        if (opc & 0x8000) != 0 {
-            self.buffer.put1(((opc >> 8) & 0xff) as u8);
-        }
-        false
-    }
-
-    fn encode_imm(&mut self, imm: Operand, immsz: usize) -> bool {
-        if !op_imm_n(imm, immsz) {
-            self.last_error = Some(X86Error::InvalidImmediate {
-                value: imm.as_::<Imm>().value() as i64,
-                size: immsz,
-                reason: "immediate value does not fit in specified size",
-            });
-            return true;
-        }
-        let imm = imm.as_::<Imm>().value() as u64;
-        for i in 0..immsz {
-            self.buffer.put1((imm >> 8 * i) as u8);
-        }
-
-        false
-    }
-
-    fn enc_o(&mut self, opc: u64, mut epfx: u64, op0: Operand) -> bool {
-        if op0.id() & 0x8 != 0 {
-            epfx |= EPFX_REXB;
-        }
-
-        if self.enc_opc(opc, epfx) {
-            return true;
-        }
-
-        let ix = self.buffer.cur_offset() as usize - 1;
-        let byte = self.buffer.data()[ix];
-
-        self.buffer.data_mut()[ix] = (byte & 0xf8) | (op0.id() & 0x7) as u8;
-        false
-    }
-
-    fn enc_mr(
-        &mut self,
-        mut opc: u64,
-        mut epfx: u64,
-        op0: Operand,
-        op1: Operand,
-        immsz: usize,
-    ) -> bool {
-        if op0.is_reg() && op0.id() & 0x8 != 0 {
-            epfx |= EPFX_REXB;
-        }
-
-        if op0.is_reg() && op0.id() & 0x10 != 0 {
-            epfx |= EPFX_REXX | EPFX_EVEX;
-        }
-
-        if op0.is_mem() && op0.as_::<Mem>().base_id() & 0x8 != 0 {
-            epfx |= EPFX_REXB;
-        }
-
-        if op0.is_mem() && op0.as_::<Mem>().base_id() & 0x10 != 0 {
-            epfx |= EPFX_REXB4;
-        }
-
-        if op0.is_mem() && op0.as_::<Mem>().index_id() & 0x8 != 0 {
-            epfx |= EPFX_REXX;
-        }
-
-        if op0.is_mem() && op0.as_::<Mem>().index_id() & 0x10 != 0 {
-            epfx |= if opc & OPC_VSIB != 0 {
-                0x10 << EPFX_VVVV_IDX
-            } else {
-                EPFX_REXX4
-            };
-        }
-        if op1.is_reg() && op1.id() & 0x8 != 0 {
-            epfx |= EPFX_REXR;
-        }
-
-        if op1.is_reg() && op1.id() & 0x10 != 0 {
-            epfx |= EPFX_REXR4;
-        }
-
-        let has_rex =
-            (opc & (OPC_REXW | OPC_VEXL0 | OPC_EVEXL0) != 0) || (epfx & EPFX_REX_MSK) != 0;
-
-        if has_rex && (op0.is_reg_type_of(RegType::Gp8Hi) || op1.is_reg_type_of(RegType::Gp8Hi)) {
-            self.last_error = Some(X86Error::InvalidOperand {
-                operand_index: if op0.is_reg_type_of(RegType::Gp8Hi) {
-                    0
-                } else {
-                    1
-                },
-                reason: "high-byte registers cannot be used with REX prefix",
-            });
-            return true;
-        }
-
-        if epfx & (EPFX_EVEX | EPFX_REXB4 | EPFX_REXX4 | EPFX_REXR4 | (0x10 << EPFX_VVVV_IDX)) != 0
-        {
-            if (opc & OPC_EVEXL0) == 0 {
-                self.last_error = Some(X86Error::InvalidEVEX {
-                    field: "prefix",
-                    reason: "EVEX-specific bits set but EVEX prefix not present",
-                });
-                return true;
-            }
-        } else if opc & OPC_DOWNGRADE_VEX != 0 {
-            opc = (opc & !(OPC_EVEXL0 | OPC_EVEX_DISP8SCALE)) | OPC_VEXL0;
-            if opc & OPC_DOWNGRADE_VEX_FLIPW != 0 {
-                opc ^= OPC_REXW;
-            }
-        }
-
-        if op0.is_reg() {
-            if self.enc_opc(opc, epfx) {
-                return true;
-            }
-
-            self.buffer
-                .put1(0xc0 | ((op1.id() & 7) << 3) as u8 | (op0.id() & 7) as u8);
-            return false;
-        }
-
-        let opcsz = opc_size(opc, epfx);
-
-        let mut mod_ = 0;
-        let reg = op1.id() & 7;
-        let mut rm;
-        let mut scale = 0;
-        let mut idx = 4;
-        let mut base = 0;
-        let mut off = op0.as_::<Mem>().offset();
-        let mut withsib = opc & OPC_FORCE_SIB != 0;
-        let mem = op0.as_::<Mem>();
-
-        if mem.has_index() {
-            if opc & OPC_VSIB != 0 {
-                if mem.index_type() != RegType::X86Xmm {
-                    self.last_error = Some(X86Error::InvalidVSIB {
-                        index_reg: mem.index_id(),
-                        reason: "VSIB requires XMM register as index",
-                    });
-                    return true;
-                }
-
-                if opc & OPC_EVEXL0 != 0 && opc & OPC_MASK_MSK == 0 {
-                    self.last_error = Some(X86Error::InvalidMasking {
-                        mask_reg: 0,
-                        reason: "VSIB with EVEX requires masking",
-                    });
-                    return true;
-                }
-            } else {
-                if !matches!(mem.index_type(), RegType::Gp32 | RegType::Gp64) {
-                    self.last_error = Some(X86Error::InvalidMemoryOperand {
-                        base: Some(mem.base_id()),
-                        index: Some(mem.index_id()),
-                        scale: mem.shift() as _,
-                        offset: mem.offset(),
-                        reason: "index register must be Gp32 or Gp64",
-                    });
-                    return true;
-                }
-
-                if mem.index_id() == 4 {
-                    self.last_error = Some(X86Error::InvalidSIB {
-                        sib: 0,
-                        reason: "index register cannot be RSP/R12",
-                    });
-                    return true;
-                }
-            }
-
-            idx = mem.index_id() & 7;
-            let scalabs = mem.shift();
-            if scalabs & (scalabs.wrapping_sub(1)) != 0 {
-                self.last_error = Some(X86Error::InvalidSIB {
-                    sib: 0,
-                    reason: "scale must be 1, 2, 4, or 8",
-                });
-                return true;
-            }
-
-            scale = if scalabs & 0xA != 0 { 1 } else { 0 } | if scalabs & 0xC != 0 { 2 } else { 0 };
-            withsib = true;
-        }
-
-        let mut dispsz = 0;
-        let mut label_use = None;
-        let mut reloc = None;
-
-        if !mem.has_base() {
-            base = 5;
-            rm = 4;
-            dispsz = 4;
-        } else if mem.has_base_reg() && mem.base_reg().is_rip() {
-            rm = 5;
-            dispsz = 4;
-            off -= (opcsz + 5 + immsz) as i64;
-            if withsib {
-                self.last_error = Some(X86Error::InvalidRIPRelative {
-                    offset: off,
-                    reason: "RIP-relative addressing cannot be used with SIB",
-                });
-                return true;
-            }
-        } else if mem.has_base_label() {
-            rm = 5;
-            if withsib {
-                self.last_error = Some(X86Error::InvalidLabel {
-                    label_id: mem.base_id(),
-                    reason: "label base cannot be used with SIB",
-                });
-                return true;
-            }
-            dispsz = 4;
-            label_use = Some((mem.base_id(), LabelUse::X86JmpRel32));
-        } else if mem.has_base_sym() {
-            rm = 5;
-            if withsib {
-                self.last_error = Some(X86Error::InvalidSymbol {
-                    symbol_id: mem.base_id(),
-                    reason: "symbol base cannot be used with SIB",
-                });
-                return true;
-            }
-            dispsz = 4;
-            let sym = Sym::from_id(mem.base_id());
-            let distance = self.buffer.symbol_distance(sym);
-
-            if distance == RelocDistance::Near {
-                reloc = Some((sym, Reloc::X86PCRel4));
-            } else {
-                reloc = Some((sym, Reloc::X86GOTPCRel4))
-            }
-        } else {
-            if !matches!(mem.base_type(), RegType::Gp32 | RegType::Gp64) {
-                self.last_error = Some(X86Error::InvalidMemoryOperand {
-                    base: Some(mem.base_id()),
-                    index: Some(mem.index_id()),
-                    scale: mem.shift() as _,
-                    offset: mem.offset(),
-                    reason: "base register must be Gp32 or Gp64",
-                });
-                return true;
-            }
-
-            rm = mem.base_id() & 0x7;
-
-            if withsib || rm == 4 {
-                base = rm;
-                rm = 4;
-            }
-
-            if off != 0 {
-                let disp8scale = (opc & OPC_EVEX_DISP8SCALE) >> 39;
-
-                if (off & ((1 << (disp8scale)) - 1)) == 0
-                    && op_imm_n(*imm(off >> disp8scale).as_operand(), 1)
-                    && opc & LONG == 0
-                {
-                    mod_ = 0x40;
-                    dispsz = 1;
-                    off >>= disp8scale;
-                } else {
-                    mod_ = 0x80;
-                    dispsz = 1;
-                }
-            } else if rm == 5 {
-                mod_ = 0x40;
-                dispsz = 1;
-            }
-        }
-
-        if opcsz + 1 + (rm == 4) as usize + dispsz + immsz > 15 {
-            self.last_error = Some(X86Error::TooLongInstruction {
-                length: opcsz + 1 + (rm == 4) as usize + dispsz + immsz,
-                max_length: 15,
-            });
-            return true;
-        }
-
-        if self.enc_opc(opc, epfx) {
-            return true;
-        }
-
-        self.buffer.put1(mod_ as u8 | (reg << 3) as u8 | rm as u8);
-        if rm == 4 {
-            self.buffer
-                .put1((scale << 6) as u8 | (idx << 3) as u8 | base as u8);
-        }
-        let offset = self.buffer.cur_offset();
-        if let Some((label, label_use)) = label_use {
-            self.buffer
-                .use_label_at_offset(offset, Label::from_id(label), label_use);
-        }
-
-        if let Some((sym, reloc)) = reloc {
-            self.buffer
-                .add_reloc_at_offset(offset, reloc, RelocTarget::Sym(sym), -4);
-        }
-        self.encode_imm(*imm(off).as_operand(), dispsz)
-    }
-}
-
-impl<'a> Emitter for Assembler<'a> {
-    fn emit(&mut self, opcode: i64, op0: &Operand, op1: &Operand, op2: &Operand, op3: &Operand) {
-        let mut opc = opcode as u64;
-        opc |= self.flags;
-        self.flags = 0;
-        let ops = &[*op0, *op1, *op2, *op3];
-
-        let mut epfx = 0;
-
-        if opc & OPC_GPH_OP0 != 0 && op0.is_reg() && op0.id() >= Gp::SP {
-            epfx |= EPFX_REX;
-        } else if opc & OPC_GPH_OP0 == 0 && op0.is_reg_type_of(RegType::Gp8Hi) {
-            self.last_error = Some(X86Error::InvalidRegister {
-                reg_id: op0.id(),
-                reg_type: "Gp8Hi",
-                reason: "high-byte register not allowed in this context",
-            });
-            return;
-        }
-
-        if opc & OPC_GPH_OP1 != 0 && op1.is_reg() && op1.id() >= Gp::SP {
-            epfx |= EPFX_REX;
-        } else if opc & OPC_GPH_OP1 == 0 && op1.is_reg_type_of(RegType::Gp8Hi) {
-            self.last_error = Some(X86Error::InvalidRegister {
-                reg_id: op1.id(),
-                reg_type: "Gp8Hi",
-                reason: "high-byte register not allowed in this context",
-            });
-            return;
-        }
-        let mut label_use = None;
-        let mut reloc = None;
-
-        loop {
-            macro_rules! next {
-                () => {
-                    let alt = opc >> 56;
-                    if alt != 0 {
-                        opc = ALT_TAB[alt as usize] as u64 | (opc & OPC_USER_MSK);
-                        continue;
-                    }
-                };
-            }
-
-            let enc = (opc >> 51) & 0x1f;
-            let ei = &ENCODING_INFOS[enc as usize];
-            let mut imm = 0xcci64;
-            let mut immsz = (opc >> 47) & 0xf;
-
-            if ei.zregidx != 0 && ops[ei.zregidx as usize ^ 3].id() != 0 {
-                next!();
-            }
-
-            if enc == Encoding::S as u64 {
-                if ((op0.id() as u64) << 3 & 0x20) != (opc & 0x20) {
-                    next!();
-                }
-
-                opc |= (op0.id() << 3) as u64;
-            }
-
-            if immsz != 0 {
-                imm = ops[ei.immidx as usize].as_::<Imm>().value() as i64;
-
-                if ei.immctl != 0 {
-                    if ei.immctl == 2 {
-                        immsz = if opc & OPC_67 != 0 { 4 } else { 8 };
-                        if immsz == 4 {
-                            imm = imm as i32 as i64; // addresses are zero-extended
-                        }
-                    } else if ei.immctl == 3 {
-                        if !ops[ei.immidx as usize].is_reg_type_of(RegType::X86Xmm) {
-                            self.last_error = Some(X86Error::InvalidRegister {
-                                reg_id: ops[ei.immidx as usize].id(),
-                                reg_type: "X86Xmm",
-                                reason: "expected XMM register for immediate encoding",
-                            });
-                            return;
-                        }
-                        imm = (ops[ei.immidx as usize].id() << 4) as i64;
-                        if !op_imm_n(*crate::core::operand::imm(imm).as_operand(), 1) {
-                            self.last_error = Some(X86Error::InvalidImmediate {
-                                value: imm,
-                                size: 1,
-                                reason: "XMM register index does not fit in 1 byte",
-                            });
-                            return;
-                        }
-                    } else if ei.immctl == 1 {
-                        if imm != 1 {
-                            next!();
-                        }
-
-                        immsz = 0;
-                    }
-                } else if enc == Encoding::D as u64 {
-                    let has_alt = opc >> 56 != 0;
-                    //let skip_to_alt = has_alt && opc & OPC_JMPL != 0;
-                    let imm_op = ops[ei.immidx as usize];
-                    if imm_op.is_label() {
-                        if immsz == 1 && has_alt {
-                            immsz = 4;
-                            if opc & 0x80 != 0 {
-                                opc -= 2;
-                            } else {
-                                opc += 0x10010;
-                            }
-                        } else if immsz == 1 {
-                            self.last_error = Some(X86Error::InvalidLabel {
-                                label_id: imm_op.id(),
-                                reason: "label requires 32-bit displacement, 8-bit not supported",
-                            });
-                            return;
-                        }
-                        label_use = Some((imm_op.id(), LabelUse::X86JmpRel32));
-                    } else if imm_op.is_sym() {
-                        let sym = imm_op.as_::<Sym>();
-                        if immsz == 1 && has_alt {
-                            immsz = 4;
-                            if opc & 0x80 != 0 {
-                                opc -= 2;
-                            } else {
-                                opc += 0x10010;
-                            }
-                        } else if immsz == 1 {
-                            self.last_error = Some(X86Error::InvalidSymbol {
-                                symbol_id: sym.id(),
-                                reason: "symbol requires 32-bit displacement, 8-bit not supported",
-                            });
-                            return;
-                        }
-
-                        let distance = self.buffer.symbol_distance(sym);
-                        reloc = Some((
-                            sym,
-                            if distance == RelocDistance::Near {
-                                Reloc::X86PCRel4
-                            } else {
-                                Reloc::X86GOTPCRel4
-                            },
-                        ));
-                    }
-                } else {
-                    if !op_imm_n(*crate::core::operand::imm(imm).as_operand(), immsz as _) {
-                        next!();
-                    }
-                }
-            }
-
-            if (opc & 0xfffffff) == 0x90 && ops[0].id() == 0 {
-                next!();
-            }
-
-            if enc == Encoding::R as u64 {
-                if self.enc_mr(opc, epfx, Operand::new(), ops[0], immsz as _) {
-                    return;
-                }
-            } else if ei.modrm != 0 {
-                let modreg = if ei.modreg != 0 {
-                    ops[ei.modreg as usize ^ 3]
-                } else {
-                    *crate::x86::operands::Reg::from_type_and_id(
-                        RegType::Gp64,
-                        ((opc & 0xff00) >> 8) as u32,
-                    )
-                    .as_operand()
-                };
-
-                if ei.vexreg != 0 {
-                    epfx |= (ops[ei.vexreg as usize ^ 3].id() as u64) << EPFX_VVVV_IDX;
-                }
-
-                if self.enc_mr(opc, epfx, ops[(ei.modrm ^ 3) as usize], modreg, immsz as _) {
-                    next!();
-                }
-            } else if ei.modreg != 0 {
-                if self.enc_o(opc, epfx, ops[(ei.modreg ^ 3) as usize]) {
-                    return;
-                }
-            } else {
-                if self.enc_opc(opc, epfx) {
-                    return;
-                }
-            }
-
-            if immsz != 0 {
-                let offset = self.buffer.cur_offset();
-                if let Some((sym, reloc)) = reloc {
-                    self.buffer
-                        .add_reloc_at_offset(offset, reloc, RelocTarget::Sym(sym), -4);
-                }
-                if let Some((label_id, label_use)) = label_use {
-                    self.buffer
-                        .use_label_at_offset(offset, Label::from_id(label_id), label_use);
-                }
-
-                if self.encode_imm(*crate::core::operand::imm(imm).as_operand(), immsz as _) {
-                    return;
-                }
-            }
-
-            self.flags = 0;
-
-            break;
         }
     }
 }
@@ -1194,5 +317,334 @@ impl CondCode {
             Self::LE => Self::G,
             Self::G => Self::LE,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::core::builder::Builder;
+    use crate::core::inst::Inst;
+    use crate::x86::instdb::InstId;
+    use crate::x86::operands::regs::*;
+
+    /// Assembles via `emit_n`, asserting no error, and finalizes label fixups.
+    fn asm(f: impl FnOnce(&mut Assembler)) -> std::vec::Vec<u8> {
+        let mut buf = CodeBuffer::new();
+        {
+            let mut a = Assembler::new(&mut buf);
+            f(&mut a);
+            assert!(a.last_error().is_none(), "{:?}", a.last_error());
+        }
+        buf.finish().data().to_vec()
+    }
+
+    #[test]
+    fn emit_n_integer_forms() {
+        // mov rax, 1 — sign-extended C7 /0 form (AsmJit default, no long_form).
+        assert_eq!(
+            asm(|a| a.emit_n(InstId::Mov as u32, &[RAX.as_operand(), imm(1).as_operand()])),
+            [0x48, 0xC7, 0xC0, 0x01, 0x00, 0x00, 0x00]
+        );
+        // mov rax, rbx.
+        assert_eq!(
+            asm(|a| a.emit_n(InstId::Mov as u32, &[RAX.as_operand(), RBX.as_operand()])),
+            [0x48, 0x89, 0xD8]
+        );
+        // add rax, rbx.
+        assert_eq!(
+            asm(|a| a.emit_n(InstId::Add as u32, &[RAX.as_operand(), RBX.as_operand()])),
+            [0x48, 0x01, 0xD8]
+        );
+        // push rax / pop rax.
+        assert_eq!(
+            asm(|a| a.emit_n(InstId::Push as u32, &[RAX.as_operand()])),
+            [0x50]
+        );
+        assert_eq!(
+            asm(|a| a.emit_n(InstId::Pop as u32, &[RAX.as_operand()])),
+            [0x58]
+        );
+        // cmovz rax, rbx.
+        assert_eq!(
+            asm(|a| a.emit_n(InstId::Cmovz as u32, &[RAX.as_operand(), RBX.as_operand()])),
+            [0x48, 0x0F, 0x44, 0xC3]
+        );
+        // ret / syscall.
+        assert_eq!(asm(|a| a.emit_n(InstId::Ret as u32, &[])), [0xC3]);
+        assert_eq!(asm(|a| a.emit_n(InstId::Syscall as u32, &[])), [0x0F, 0x05]);
+        // mov rax, 0x123456789 — 64-bit immediate uses the B8 (movabs) form.
+        assert_eq!(
+            asm(|a| a.emit_n(
+                InstId::Mov as u32,
+                &[RAX.as_operand(), imm(0x1_2345_6789i64).as_operand()]
+            )),
+            [0x48, 0xB8, 0x89, 0x67, 0x45, 0x23, 0x01, 0x00, 0x00, 0x00]
+        );
+    }
+
+    #[test]
+    fn emit_n_invalid_sets_last_error() {
+        let mut buf = CodeBuffer::new();
+        let mut a = Assembler::new(&mut buf);
+        // add rax, xmm0 — no signature matches; nothing is emitted.
+        a.emit_n(InstId::Add as u32, &[RAX.as_operand(), XMM0.as_operand()]);
+        assert!(matches!(
+            a.last_error(),
+            Some(X86Error::InvalidInstruction { .. })
+        ));
+        assert!(a.buffer.data().is_empty());
+        // Unknown instruction id.
+        a.clear_error();
+        a.emit_n(u32::MAX, &[]);
+        assert!(a.last_error().is_some());
+    }
+
+    #[test]
+    fn emit_n_memory_forms() {
+        // mov rax, [rip + 0x1234].
+        assert_eq!(
+            asm(|a| a.emit_n(
+                InstId::Mov as u32,
+                &[RAX.as_operand(), qword_ptr_rip(0x1234).as_operand()]
+            )),
+            [0x48, 0x8B, 0x05, 0x34, 0x12, 0x00, 0x00]
+        );
+        // mov [rip + label], eax — label bound right after the instruction.
+        assert_eq!(
+            asm(|a| {
+                let label = a.get_label();
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[dword_ptr_label(label, 0).as_operand(), EAX.as_operand()],
+                );
+                a.bind_label(label);
+                a.emit_n(InstId::Ret as u32, &[]);
+            }),
+            [0x89, 0x05, 0x00, 0x00, 0x00, 0x00, 0xC3]
+        );
+        // fs prefix from the prefix setter applies to the mem operand.
+        assert_eq!(
+            asm(|a| {
+                a.fs();
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[RAX.as_operand(), qword_ptr_u64(0x40).as_operand()],
+                );
+            }),
+            [0x64, 0x48, 0x8B, 0x04, 0x25, 0x40, 0x00, 0x00, 0x00]
+        );
+    }
+
+    #[test]
+    fn emit_n_branch_forms() {
+        // Backward jmp to a bound label: rel32 = 0 - 0 - 5 = -5.
+        assert_eq!(
+            asm(|a| {
+                let label = a.get_label();
+                a.bind_label(label);
+                a.emit_n(
+                    InstId::Jmp as u32,
+                    &[Label::from_id(label.id()).as_operand()],
+                );
+            }),
+            [0xE9, 0xFB, 0xFF, 0xFF, 0xFF]
+        );
+        // Forward jmp to an unbound label, bound right after: rel32 = 0.
+        assert_eq!(
+            asm(|a| {
+                let label = a.get_label();
+                a.emit_n(
+                    InstId::Jmp as u32,
+                    &[Label::from_id(label.id()).as_operand()],
+                );
+                a.bind_label(label);
+            }),
+            [0xE9, 0x00, 0x00, 0x00, 0x00]
+        );
+        // call rel32 to an unbound label, bound right after.
+        assert_eq!(
+            asm(|a| {
+                let label = a.get_label();
+                a.emit_n(
+                    InstId::Call as u32,
+                    &[Label::from_id(label.id()).as_operand()],
+                );
+                a.bind_label(label);
+            }),
+            [0xE8, 0x00, 0x00, 0x00, 0x00]
+        );
+    }
+
+    #[test]
+    fn emit_n_vex_evex_forms() {
+        // vaddps ymm1, ymm2, ymm3 — AsmJit golden "C5EC58CB".
+        assert_eq!(
+            asm(|a| a.emit_n(
+                InstId::Vaddps as u32,
+                &[YMM1.as_operand(), YMM2.as_operand(), YMM3.as_operand()]
+            )),
+            [0xC5, 0xEC, 0x58, 0xCB]
+        );
+        // vmovdqu ymm0, ymm1.
+        assert_eq!(
+            asm(|a| a.emit_n(
+                InstId::Vmovdqu as u32,
+                &[YMM0.as_operand(), YMM1.as_operand()]
+            )),
+            [0xC5, 0xFE, 0x6F, 0xC1]
+        );
+        // vaddpd zmm1, zmm2, zmm3 (unmasked EVEX).
+        assert_eq!(
+            asm(|a| a.emit_n(
+                InstId::Vaddpd as u32,
+                &[ZMM1.as_operand(), ZMM2.as_operand(), ZMM3.as_operand()]
+            )),
+            [0x62, 0xF1, 0xED, 0x48, 0x58, 0xCB]
+        );
+        // {k1} mask from the prefix setter: EVEX P2 aaa=001.
+        assert_eq!(
+            asm(|a| {
+                a.k(K1);
+                a.emit_n(
+                    InstId::Vaddpd as u32,
+                    &[ZMM1.as_operand(), ZMM2.as_operand(), ZMM3.as_operand()],
+                );
+            }),
+            [0x62, 0xF1, 0xED, 0x49, 0x58, 0xCB]
+        );
+    }
+
+    #[test]
+    fn emitter_traits_match_emit_n() {
+        // The generated emitter traits (src/x86/emitter.rs) must produce the
+        // same bytes as the direct `emit_n` calls above.
+        use crate::x86::emitter::{AddEmitter, JmpEmitter, MovEmitter, VaddpsEmitter};
+
+        // mov rax, 1.
+        assert_eq!(
+            asm(|a| MovEmitter::mov(a, RAX, imm(1))),
+            [0x48, 0xC7, 0xC0, 0x01, 0x00, 0x00, 0x00]
+        );
+        // mov rax, rbx.
+        assert_eq!(asm(|a| MovEmitter::mov(a, RAX, RBX)), [0x48, 0x89, 0xD8]);
+        // add rax, rbx.
+        assert_eq!(asm(|a| AddEmitter::add(a, RAX, RBX)), [0x48, 0x01, 0xD8]);
+        // vaddps ymm1, ymm2, ymm3.
+        assert_eq!(
+            asm(|a| VaddpsEmitter::vaddps(a, YMM1, YMM2, YMM3)),
+            [0xC5, 0xEC, 0x58, 0xCB]
+        );
+        // Backward jmp to a bound label through the trait.
+        assert_eq!(
+            asm(|a| {
+                let label = a.get_label();
+                a.bind_label(label);
+                JmpEmitter::jmp(a, label);
+            }),
+            [0xE9, 0xFB, 0xFF, 0xFF, 0xFF]
+        );
+    }
+
+    #[test]
+    fn emitter_typed_call_sites() {
+        // Sized register constants and integer literals must work directly,
+        // producing the same bytes as the abstract forms above.
+        use crate::x86::emitter::{AddEmitter, MovEmitter, PaddwEmitter, VaddpsEmitter};
+
+        // mov rax, 42 (integer literal via Into<Imm>).
+        assert_eq!(
+            asm(|a| MovEmitter::mov(a, RAX, 42)),
+            [0x48, 0xC7, 0xC0, 0x2A, 0x00, 0x00, 0x00]
+        );
+        // mov eax, 42 (no REX prefix).
+        assert_eq!(
+            asm(|a| MovEmitter::mov(a, EAX, 42)),
+            [0xB8, 0x2A, 0x00, 0x00, 0x00]
+        );
+        // add rax, rbx.
+        assert_eq!(asm(|a| AddEmitter::add(a, RAX, RBX)), [0x48, 0x01, 0xD8]);
+        // paddw xmm0, xmm1 (legacy SSE form).
+        assert_eq!(
+            asm(|a| PaddwEmitter::paddw(a, XMM0, XMM1)),
+            [0x66, 0x0F, 0xFD, 0xC1]
+        );
+        // vaddps ymm1, ymm2, ymm3 (VEX form).
+        assert_eq!(
+            asm(|a| VaddpsEmitter::vaddps(a, YMM1, YMM2, YMM3)),
+            [0xC5, 0xEC, 0x58, 0xCB]
+        );
+    }
+
+    #[test]
+    fn emit_n_prefix_forms() {
+        // rep movsq (explicit implicit-mem form): F3 48 A5.
+        assert_eq!(
+            asm(|a| {
+                a.rep();
+                a.emit_n(
+                    InstId::Movs as u32,
+                    &[
+                        qword_ptr(RDI, 0).as_operand(),
+                        qword_ptr(RSI, 0).as_operand(),
+                    ],
+                );
+            }),
+            [0xF3, 0x48, 0xA5]
+        );
+        // lock add dword ptr [rbx], eax: F0 01 03.
+        assert_eq!(
+            asm(|a| {
+                a.lock();
+                a.emit_n(
+                    InstId::Add as u32,
+                    &[dword_ptr(RBX, 0).as_operand(), EAX.as_operand()],
+                );
+            }),
+            [0xF0, 0x01, 0x03]
+        );
+    }
+
+    #[test]
+    fn emit_n_builder_replay_matches_direct() {
+        fn direct() -> std::vec::Vec<u8> {
+            asm(|a| {
+                let done = a.get_label();
+                a.emit_n(InstId::Mov as u32, &[RAX.as_operand(), imm(1).as_operand()]);
+                a.emit_n(InstId::Add as u32, &[RAX.as_operand(), RBX.as_operand()]);
+                a.emit_n(
+                    InstId::Jmp as u32,
+                    &[Label::from_id(done.id()).as_operand()],
+                );
+                a.emit_n(InstId::Ret as u32, &[]);
+                a.bind_label(done);
+                a.emit_n(InstId::Ret as u32, &[]);
+            })
+        }
+
+        let mut buf = CodeBuffer::new();
+        let mut builder = Builder::new();
+        let done = buf.get_label();
+        builder.push_inst(Inst::with_operands(
+            InstId::Mov as u32,
+            &[*RAX.as_operand(), *imm(1).as_operand()],
+        ));
+        builder.push_inst(Inst::with_operands(
+            InstId::Add as u32,
+            &[*RAX.as_operand(), *RBX.as_operand()],
+        ));
+        builder.push_inst(Inst::with_operands(
+            InstId::Jmp as u32,
+            &[*Label::from_id(done.id()).as_operand()],
+        ));
+        builder.push_inst(Inst::with_operands(InstId::Ret as u32, &[]));
+        builder.push_label(done);
+        builder.push_inst(Inst::with_operands(InstId::Ret as u32, &[]));
+        {
+            let mut a = Assembler::new(&mut buf);
+            builder.emit_into(&mut a).unwrap();
+            assert!(a.last_error().is_none(), "{:?}", a.last_error());
+        }
+        assert_eq!(buf.finish().data().to_vec(), direct());
     }
 }

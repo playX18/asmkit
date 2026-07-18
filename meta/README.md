@@ -12,7 +12,6 @@ All third-party inputs are gitignored. Record exact versions here when updating.
 | Input | Where it lives | Pinned version | License | Used for |
 |---|---|---|---|---|
 | AsmJit | `meta/asmjit` (git clone) | `0bd5787b54b575ed94bf32ac452153b34385c514` | Zlib | instdb C++ tables + `db/isa_*.json` (x86 + aarch64 instruction DB: effects, signatures, encodings, features) |
-| fadec instr table | `meta/x86.txt` (committed snapshot of `aengelke/fadec` `instrs.txt`) | snapshot 2026-03-06 | BSD-style (see fadec) | legacy x86 encodings (being phased out) |
 | felixcloutier.com x86 docs | `asm-docs/` (download) | rolling | (Intel manual derived) | x86 doc comments |
 | ARM A64 ISA XML | `asm-docs-arm/` (download) | `ISA_A64_xml_A_profile-2023-03` (CE pin) | ARM proprietary notice — derive facts only, never redistribute | aarch64 doc comments |
 | riscv-opcodes | `riscv-opcodes/` (git clone), env `RISCV_OPCODES` | `c6edca7d8c3f92694963a0a0baeb511930fb2af4` | BSD-3-Clause | riscv encodings, CSRs, causes |
@@ -47,30 +46,27 @@ uniform `emit_n(InstId, &[Operand])` sink. Tools maintaining the generated table
 3. **`meta/x86_emitter.txt`** + **`meta/x86_emitter_gen.py`** — the x86 emitter API
    declarations extracted from AsmJit's `x86emitter.h` (3,275 decls) and the generator
    turning them into `src/x86/emitter.rs` typed traits (same role as `arm64.py` for
-   aarch64). Re-extract with the regex in git history or from a fresh asmjit checkout.
+   aarch64). Besides the abstract-kind impls it emits impls for the sized register
+   wrappers (`Gpq`/`Gpd`/`Gpw`/`GpbLo`/`GpbHi`, `Xmm`/`Ymm`/`Zmm`, ...) with
+   `U: Into<Imm>` immediates, using the operand signatures from `meta/asmjit_db`
+   (AsmJit's x86instdb.cpp) to keep only width-valid combinations. Re-extract with
+   the regex in git history or from a fresh asmjit checkout.
 4. **`meta/difftest/`** — differential-test harness: materializes the pre-rewrite
    baseline (`git archive 35caa377d68c4ba3b4577f691f3673f91d4338aa`) and generates an
    instruction corpus with expected bytes; `tests/x86_differential.rs` replays it through
    the new encoder.
 5. **`meta/riscv.py`** (+ `meta/docenizer_riscv.py`) — riscv-opcodes →
-   `src/riscv/{opcodes,emitter,instdb}.rs`, with derived RW effects and unified-db docs.
+   `src/riscv/{opcodes,emitter,instdb}.rs`, with derived RW effects and unified-db docs
+   (`RISCV_OPCODES`/`RISCV_UNIFIED_DB` env vars default to the repo-root clones;
+   `opcodes.rs` preserves the hand-maintained immediate section above the generation
+   marker byte-identical). Extensions whose encodings `src/riscv/assembler.rs` cannot
+   emit yet (`rv_zicfilp`, `rv_zicfiss`, `rv32_zilsd`, `rv32_zclsd`) are excluded in the
+   generator — re-enable there once emit support lands.
 
 ## Legacy generators (being replaced)
 
-- `x86_v2.py` — fadec-table → `src/x86/opcodes.rs` + `src/x86/features/`.
-  Regenerate: `python3 docenizer_amd64.py` (once, downloads docs), then
-  `python3 x86_v2.py --docs-inputfolder asm-docs encode3 x86.txt ../src/x86/opcodes.rs ../src/x86/features`
 - `arm64.py` — signature list → `src/aarch64/emitter.rs` (writes `./emitter.rs` at repo
   root; move + add header + rustfmt). Docs: `ASMKIT_ARM64_DOCS=asm-docs-arm python3 arm64.py`
-- `riscv.py` — `python3 meta/riscv.py` (defaults: all supported `rv*` extensions;
-  `RISCV_OPCODES`/`RISCV_UNIFIED_DB` env vars default to the repo-root clones).
-  Writes `src/riscv/opcodes.rs` (preserving the hand-maintained immediate section
-  above the generation marker byte-identical), `src/riscv/emitter.rs`, and
-  `src/riscv/instdb.rs` (effects DB). Run `rustfmt` on the outputs afterwards.
-  Docs come from riscv-unified-db via `meta/docenizer_riscv.py` (line-based YAML
-  extractor, no PyYAML). Extensions whose encodings `src/riscv/assembler.rs`
-  cannot emit yet (`rv_zicfilp`, `rv_zicfiss`, `rv32_zilsd`, `rv32_zclsd`) are
-  excluded in the generator — re-enable there once emit support lands.
 - `ppc.py` — WIP, consumes `src/ppc/opc.c` as data.
 
 ## Licensing obligations

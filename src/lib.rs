@@ -1,23 +1,37 @@
 //! # asmkit
 //!
 //! ### Overview
-//! asmkit is a portable assembler toolkit designed for decoding and encoding various assembly architectures. It aims to provide a small, efficient, and cross-platform library that can be used to build and manipulate assembly code without being tied to a specific platform or architecture. The library is written in Rust and supports several architectures including X64, RISC-V, and ARM (work-in-progress). Key features include:
-//! - **Multi-Architecture Support**: Supports multiple architectures such as X64, RISC-V, ARM (WIP), PPC (WIP), and plans to support PPC64 and OpenPOWER in the future.
-//! - **Minimal Dependencies**: Relies on a minimal set of dependencies to ensure portability and efficiency:
-//! - - `libc` and `intrusive-collections`` - For JIT support.
-//! - - `paste` and `derive-more` - Utility crates that simplify repetitive code.
-//! - - `smallvec` - A crate used to manage collections that avoid too frequent heap allocations during code generation.
+//! asmkit is a portable assembler toolkit built around an AsmJit-style instruction-database
+//! model. It is a small, efficient, `no_std` library for encoding machine code without being
+//! tied to a specific platform. Key features include:
 //!
-//! - **Code Relocations**: Provides a CodeBuffer interface to handle relocations, allowing the insertion of symbols into the API seamlessly.
-//! - **Auto-Generated Assemblers**: The goal is to support a wide range of platforms and provide auto-generated assemblers for as many architectures as possible.
-//! - **Portability**: Built to run on any platform, with the architecture-specific parts of the library being independent of the platform on which asmkit is built.
-//!
-//!
+//! - **Multi-Architecture Support**: X64 (64-bit only), RISC-V, and AArch64, with PPC as
+//!   work-in-progress. Each backend follows the same uniform model: a dense `InstId` enum
+//!   backed by generated instdb tables, and a single emit entry point
+//!   `Assembler::emit_n(impl Into<u32>, &[&Operand])`.
+//! - **Generated emitter traits**: per-mnemonic traits (e.g. `MovEmitter`) with impls for
+//!   the sized register wrappers, so register constants and integer immediates are passed
+//!   directly (`asm.mov(RAX, 42)` — no dereferencing).
+//! - **Read/write effects**: `query_rw_info(&Inst) -> InstRwInfo` per architecture, over the
+//!   arch-neutral [`core::inst::Inst`], as input for future register allocation.
+//! - **Deferred emission**: [`core::builder::Builder`] records instructions and label binds
+//!   and replays them into any [`core::builder::InstSink`] (implemented by every
+//!   architecture's `Assembler`).
+//! - **Minimal Dependencies**:
+//! - - `libc`, `intrusive-collections`, `errno` - For JIT support.
+//! - - `paste`, `bitflags`, `cfgenius`, `num-traits` - Utility crates that simplify repetitive
+//!     arch-specific declarations.
+//! - - `smallvec` - Avoids frequent heap allocation during code generation.
+//! - **Code Relocations**: Provides a CodeBuffer interface to handle relocations, allowing
+//!   the insertion of symbols into the API seamlessly.
+//! - **Portability**: Built to run on any platform, with the architecture-specific parts of
+//!   the library being independent of the platform on which asmkit is built.
 //!
 //! ### Usage
 //!
-//! To use the library simply import a module for architecture you want to emit code for e.g `use asmkit::x86::*;`; This would
-//! include all the required code to generate code for platform.
+//! To use the library simply import the module for the architecture you want to emit code
+//! for, e.g. `use asmkit::x86::*;`; this includes all the code required to generate code for
+//! that platform.
 //!
 //! Example:
 //!
@@ -26,39 +40,27 @@
 //! use asmkit::core::jit_allocator::JitAllocator;
 //! use asmkit::x86::*;
 //!
+//! let mut buf = CodeBuffer::new();
+//! let mut asm = Assembler::new(&mut buf);
 //!
-//!     let mut buf = CodeBuffer::new();
-//!     let mut asm = Assembler::new(&mut buf);
+//! // Typed sized registers and plain integer immediates.
+//! asm.mov(RAX, 5);
+//! asm.add(RAX, 37);
+//! asm.ret();
 //!
-//!     let dst = RDI;
-//!     let arg0 = RSI;
-//!     let arg1 = RDX;
+//! let result = buf.finish();
+//! let mut jit = JitAllocator::new(Default::default());
+//! // you can also use jit.alloc + jit.write manually.
+//! let span = result
+//!     .allocate(&mut jit)
+//!     .expect("failed to allocate JIT-code");
 //!
-//!     asm.sse_movdqu(XMM0, ptr64(arg0, 0)); // load 4 ints from [arg0] to XMM0
-//!     asm.sse_movdqu(XMM1, ptr64(arg1, 0)); // load 4 ints from [arg1] to XMM1
-//!     asm.sse_paddw(XMM0, XMM1); // add 4 ints
-//!     asm.sse_movdqu(ptr64(dst, 0), XMM0); // store result in [dst]
-//!     asm.ret(); // return from function
-//!
-//!     let result = buf.finish();
-//!     let mut jit = JitAllocator::new(Default::default());
-//!     // you can also use jit.alloc + jit.write manually.
-//!     let span = result
-//!         .allocate(&mut jit)
-//!         .expect("failed to allocate JIT-code");
-//!
-//!     // JIT Allocator uses dual-mapping: it allocates two pages which map to same physical space
-//!     // and you write to executable code through `span.rw()` pointer while you can execute `span.rx()`.
-//!     let f: extern "C" fn(*mut i32, *const i32, *const i32) = unsafe { std::mem::transmute(span.rx()) };
-//!     #[cfg(all(unix, target_arch="x86_64"))] // can run only on x64 and on SystemV platforms.
-//!     {
-//!         let mut res = [0; 4];
-//!         f(res.as_mut_ptr(), [4, 3, 2, 1].as_ptr(), [1, 5, 2, 8].as_ptr());
-//!
-//!         println!("{:?}", res);
-//!     }
-//!
-//!```
+//! // JIT Allocator uses dual-mapping: it allocates two pages which map to same physical space
+//! // and you write to executable code through `span.rw()` pointer while you can execute `span.rx()`.
+//! let f: extern "C" fn() -> u64 = unsafe { std::mem::transmute(span.rx()) };
+//! #[cfg(all(unix, target_arch = "x86_64"))] // can run only on x64 and on SystemV platforms.
+//! assert_eq!(f(), 42);
+//! ```
 
 #![cfg_attr(not(test), no_std)]
 

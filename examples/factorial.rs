@@ -26,7 +26,7 @@ fn main() {
             asm.call(fac);
             asm.mov(RDX, RAX);
             asm.mov(RAX, RBX);
-            asm.imul_2(RAX, RDX);
+            asm.imul(RAX, RDX);
             asm.pop(RBX);
             asm.ret();
         }
