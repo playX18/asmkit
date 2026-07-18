@@ -1,2 +1,10 @@
 /target
 /asm-docs
+/meta/asmjit
+/asm-docs-arm
+/riscv-opcodes
+/riscv-unified-db
+__pycache__
+*.pyc
+# Full differential corpus is generated locally; only the sample is committed.
+/meta/difftest/corpus_full.bin

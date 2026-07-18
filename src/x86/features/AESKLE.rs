@@ -1,8 +1,8 @@
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -24,7 +24,13 @@ pub trait Aesdec128klEmitter<A, B> {
 
 impl<'a> Aesdec128klEmitter<Xmm, Mem> for Assembler<'a> {
     fn aesdec128kl(&mut self, op0: Xmm, op1: Mem) {
-        self.emit(AESDEC128KLRM, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            AESDEC128KLRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
@@ -45,7 +51,13 @@ pub trait Aesdec256klEmitter<A, B> {
 
 impl<'a> Aesdec256klEmitter<Xmm, Mem> for Assembler<'a> {
     fn aesdec256kl(&mut self, op0: Xmm, op1: Mem) {
-        self.emit(AESDEC256KLRM, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            AESDEC256KLRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
@@ -108,7 +120,13 @@ pub trait Aesenc128klEmitter<A, B> {
 
 impl<'a> Aesenc128klEmitter<Xmm, Mem> for Assembler<'a> {
     fn aesenc128kl(&mut self, op0: Xmm, op1: Mem) {
-        self.emit(AESENC128KLRM, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            AESENC128KLRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
@@ -129,7 +147,13 @@ pub trait Aesenc256klEmitter<A, B> {
 
 impl<'a> Aesenc256klEmitter<Xmm, Mem> for Assembler<'a> {
     fn aesenc256kl(&mut self, op0: Xmm, op1: Mem) {
-        self.emit(AESENC256KLRM, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            AESENC256KLRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
@@ -192,7 +216,13 @@ pub trait Encodekey128Emitter<A, B> {
 
 impl<'a> Encodekey128Emitter<Gpd, Gpd> for Assembler<'a> {
     fn encodekey128(&mut self, op0: Gpd, op1: Gpd) {
-        self.emit(ENCODEKEY128RR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            ENCODEKEY128RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
@@ -213,7 +243,13 @@ pub trait Encodekey256Emitter<A, B> {
 
 impl<'a> Encodekey256Emitter<Gpd, Gpd> for Assembler<'a> {
     fn encodekey256(&mut self, op0: Gpd, op1: Gpd) {
-        self.emit(ENCODEKEY256RR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            ENCODEKEY256RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
@@ -234,10 +270,15 @@ pub trait LoadiwkeyEmitter<A, B> {
 
 impl<'a> LoadiwkeyEmitter<Xmm, Xmm> for Assembler<'a> {
     fn loadiwkey(&mut self, op0: Xmm, op1: Xmm) {
-        self.emit(LOADIWKEYRR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            LOADIWKEYRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
-
 
 impl<'a> Assembler<'a> {
     /// `AESDEC128KL`.
@@ -253,7 +294,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn aesdec128kl<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: Aesdec128klEmitter<A, B> {
+    where
+        Assembler<'a>: Aesdec128klEmitter<A, B>,
+    {
         <Self as Aesdec128klEmitter<A, B>>::aesdec128kl(self, op0, op1);
     }
     /// `AESDEC256KL`.
@@ -269,7 +312,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn aesdec256kl<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: Aesdec256klEmitter<A, B> {
+    where
+        Assembler<'a>: Aesdec256klEmitter<A, B>,
+    {
         <Self as Aesdec256klEmitter<A, B>>::aesdec256kl(self, op0, op1);
     }
     /// `AESDECWIDE128KL`.
@@ -285,7 +330,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn aesdecwide128kl<A>(&mut self, op0: A)
-    where Assembler<'a>: Aesdecwide128klEmitter<A> {
+    where
+        Assembler<'a>: Aesdecwide128klEmitter<A>,
+    {
         <Self as Aesdecwide128klEmitter<A>>::aesdecwide128kl(self, op0);
     }
     /// `AESDECWIDE256KL`.
@@ -301,7 +348,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn aesdecwide256kl<A>(&mut self, op0: A)
-    where Assembler<'a>: Aesdecwide256klEmitter<A> {
+    where
+        Assembler<'a>: Aesdecwide256klEmitter<A>,
+    {
         <Self as Aesdecwide256klEmitter<A>>::aesdecwide256kl(self, op0);
     }
     /// `AESENC128KL`.
@@ -317,7 +366,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn aesenc128kl<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: Aesenc128klEmitter<A, B> {
+    where
+        Assembler<'a>: Aesenc128klEmitter<A, B>,
+    {
         <Self as Aesenc128klEmitter<A, B>>::aesenc128kl(self, op0, op1);
     }
     /// `AESENC256KL`.
@@ -333,7 +384,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn aesenc256kl<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: Aesenc256klEmitter<A, B> {
+    where
+        Assembler<'a>: Aesenc256klEmitter<A, B>,
+    {
         <Self as Aesenc256klEmitter<A, B>>::aesenc256kl(self, op0, op1);
     }
     /// `AESENCWIDE128KL`.
@@ -349,7 +402,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn aesencwide128kl<A>(&mut self, op0: A)
-    where Assembler<'a>: Aesencwide128klEmitter<A> {
+    where
+        Assembler<'a>: Aesencwide128klEmitter<A>,
+    {
         <Self as Aesencwide128klEmitter<A>>::aesencwide128kl(self, op0);
     }
     /// `AESENCWIDE256KL`.
@@ -365,7 +420,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn aesencwide256kl<A>(&mut self, op0: A)
-    where Assembler<'a>: Aesencwide256klEmitter<A> {
+    where
+        Assembler<'a>: Aesencwide256klEmitter<A>,
+    {
         <Self as Aesencwide256klEmitter<A>>::aesencwide256kl(self, op0);
     }
     /// `ENCODEKEY128`.
@@ -381,7 +438,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn encodekey128<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: Encodekey128Emitter<A, B> {
+    where
+        Assembler<'a>: Encodekey128Emitter<A, B>,
+    {
         <Self as Encodekey128Emitter<A, B>>::encodekey128(self, op0, op1);
     }
     /// `ENCODEKEY256`.
@@ -397,7 +456,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn encodekey256<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: Encodekey256Emitter<A, B> {
+    where
+        Assembler<'a>: Encodekey256Emitter<A, B>,
+    {
         <Self as Encodekey256Emitter<A, B>>::encodekey256(self, op0, op1);
     }
     /// `LOADIWKEY`.
@@ -413,7 +474,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn loadiwkey<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: LoadiwkeyEmitter<A, B> {
+    where
+        Assembler<'a>: LoadiwkeyEmitter<A, B>,
+    {
         <Self as LoadiwkeyEmitter<A, B>>::loadiwkey(self, op0, op1);
     }
 }

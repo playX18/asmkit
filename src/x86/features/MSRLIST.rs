@@ -1,8 +1,8 @@
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -49,7 +49,6 @@ impl<'a> WrmsrlistEmitter for Assembler<'a> {
     }
 }
 
-
 impl<'a> Assembler<'a> {
     /// `RDMSRLIST`.
     ///
@@ -64,7 +63,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn rdmsrlist(&mut self)
-    where Assembler<'a>: RdmsrlistEmitter {
+    where
+        Assembler<'a>: RdmsrlistEmitter,
+    {
         <Self as RdmsrlistEmitter>::rdmsrlist(self);
     }
     /// `WRMSRLIST`.
@@ -80,7 +81,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn wrmsrlist(&mut self)
-    where Assembler<'a>: WrmsrlistEmitter {
+    where
+        Assembler<'a>: WrmsrlistEmitter,
+    {
         <Self as WrmsrlistEmitter>::wrmsrlist(self);
     }
 }

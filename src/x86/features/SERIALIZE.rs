@@ -1,13 +1,13 @@
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
 
-/// `SERIALIZE` (SERIALIZE). 
+/// `SERIALIZE` (SERIALIZE).
 /// Serializes instruction execution. Before the next instruction is fetched and executed, the SERIALIZE instruction ensures that all modifications to flags, registers, and memory by previous instructions are completed, draining all buffered writes to memory. This instruction is also a serializing instruction as defined in the section “Serializing Instructions” in Chapter 9 of the Intel® 64 and IA-32 Architectures Software Developer’s Manual, Volume 3A.
 ///
 ///
@@ -32,9 +32,8 @@ impl<'a> SerializeEmitter for Assembler<'a> {
     }
 }
 
-
 impl<'a> Assembler<'a> {
-    /// `SERIALIZE` (SERIALIZE). 
+    /// `SERIALIZE` (SERIALIZE).
     /// Serializes instruction execution. Before the next instruction is fetched and executed, the SERIALIZE instruction ensures that all modifications to flags, registers, and memory by previous instructions are completed, draining all buffered writes to memory. This instruction is also a serializing instruction as defined in the section “Serializing Instructions” in Chapter 9 of the Intel® 64 and IA-32 Architectures Software Developer’s Manual, Volume 3A.
     ///
     ///
@@ -51,7 +50,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn serialize(&mut self)
-    where Assembler<'a>: SerializeEmitter {
+    where
+        Assembler<'a>: SerializeEmitter,
+    {
         <Self as SerializeEmitter>::serialize(self);
     }
 }

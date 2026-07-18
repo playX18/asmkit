@@ -1,13 +1,13 @@
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
 
-/// `AESDEC` (AESDEC). 
+/// `AESDEC` (AESDEC).
 /// This instruction performs a single round of the AES decryption flow using the Equivalent Inverse Cipher, using one/two/four (depending on vector length) 128-bit data (state) from the first source operand with one/two/four (depending on vector length) round key(s) from the second source operand, and stores the result in the destination operand.
 ///
 ///
@@ -39,7 +39,7 @@ impl<'a> AesdecEmitter<Xmm, Mem> for Assembler<'a> {
     }
 }
 
-/// `AESDECLAST` (AESDECLAST). 
+/// `AESDECLAST` (AESDECLAST).
 /// This instruction performs the last round of the AES decryption flow using the Equivalent Inverse Cipher, using one/two/four (depending on vector length) 128-bit data (state) from the first source operand with one/two/four (depending on vector length) round key(s) from the second source operand, and stores the result in the destination operand.
 ///
 ///
@@ -61,17 +61,29 @@ pub trait AesdeclastEmitter<A, B> {
 
 impl<'a> AesdeclastEmitter<Xmm, Xmm> for Assembler<'a> {
     fn aesdeclast(&mut self, op0: Xmm, op1: Xmm) {
-        self.emit(AESDECLASTRR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            AESDECLASTRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
 impl<'a> AesdeclastEmitter<Xmm, Mem> for Assembler<'a> {
     fn aesdeclast(&mut self, op0: Xmm, op1: Mem) {
-        self.emit(AESDECLASTRM, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            AESDECLASTRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
-/// `AESENC` (AESENC). 
+/// `AESENC` (AESENC).
 /// This instruction performs a single round of an AES encryption flow using one/two/four (depending on vector length) 128-bit data (state) from the first source operand with one/two/four (depending on vector length) round key(s) from the second source operand, and stores the result in the destination operand.
 ///
 ///
@@ -103,7 +115,7 @@ impl<'a> AesencEmitter<Xmm, Mem> for Assembler<'a> {
     }
 }
 
-/// `AESENCLAST` (AESENCLAST). 
+/// `AESENCLAST` (AESENCLAST).
 /// This instruction performs the last round of an AES encryption flow using one/two/four (depending on vector length) 128-bit data (state) from the first source operand with one/two/four (depending on vector length) round key(s) from the second source operand, and stores the result in the destination operand.
 ///
 ///
@@ -125,17 +137,29 @@ pub trait AesenclastEmitter<A, B> {
 
 impl<'a> AesenclastEmitter<Xmm, Xmm> for Assembler<'a> {
     fn aesenclast(&mut self, op0: Xmm, op1: Xmm) {
-        self.emit(AESENCLASTRR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            AESENCLASTRR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
 impl<'a> AesenclastEmitter<Xmm, Mem> for Assembler<'a> {
     fn aesenclast(&mut self, op0: Xmm, op1: Mem) {
-        self.emit(AESENCLASTRM, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            AESENCLASTRM,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
-/// `AESIMC` (AESIMC). 
+/// `AESIMC` (AESIMC).
 /// Perform the InvMixColumns transformation on the source operand and store the result in the destination operand. The destination operand is an XMM register. The source operand can be an XMM register or a 128-bit memory location.
 ///
 ///
@@ -167,7 +191,7 @@ impl<'a> AesimcEmitter<Xmm, Mem> for Assembler<'a> {
     }
 }
 
-/// `AESKEYGENASSIST` (AESKEYGENASSIST). 
+/// `AESKEYGENASSIST` (AESKEYGENASSIST).
 /// Assist in expanding the AES cipher key, by computing steps towards generating a round key for encryption, using 128-bit data specified in the source operand and an 8-bit round constant specified as an immediate, store the result in the destination operand.
 ///
 ///
@@ -189,19 +213,30 @@ pub trait AeskeygenassistEmitter<A, B, C> {
 
 impl<'a> AeskeygenassistEmitter<Xmm, Xmm, Imm> for Assembler<'a> {
     fn aeskeygenassist(&mut self, op0: Xmm, op1: Xmm, op2: Imm) {
-        self.emit(AESKEYGENASSISTRRI, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
+        self.emit(
+            AESKEYGENASSISTRRI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
 }
 
 impl<'a> AeskeygenassistEmitter<Xmm, Mem, Imm> for Assembler<'a> {
     fn aeskeygenassist(&mut self, op0: Xmm, op1: Mem, op2: Imm) {
-        self.emit(AESKEYGENASSISTRMI, op0.as_operand(), op1.as_operand(), op2.as_operand(), &NOREG);
+        self.emit(
+            AESKEYGENASSISTRMI,
+            op0.as_operand(),
+            op1.as_operand(),
+            op2.as_operand(),
+            &NOREG,
+        );
     }
 }
 
-
 impl<'a> Assembler<'a> {
-    /// `AESDEC` (AESDEC). 
+    /// `AESDEC` (AESDEC).
     /// This instruction performs a single round of the AES decryption flow using the Equivalent Inverse Cipher, using one/two/four (depending on vector length) 128-bit data (state) from the first source operand with one/two/four (depending on vector length) round key(s) from the second source operand, and stores the result in the destination operand.
     ///
     ///
@@ -219,10 +254,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn aesdec<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: AesdecEmitter<A, B> {
+    where
+        Assembler<'a>: AesdecEmitter<A, B>,
+    {
         <Self as AesdecEmitter<A, B>>::aesdec(self, op0, op1);
     }
-    /// `AESDECLAST` (AESDECLAST). 
+    /// `AESDECLAST` (AESDECLAST).
     /// This instruction performs the last round of the AES decryption flow using the Equivalent Inverse Cipher, using one/two/four (depending on vector length) 128-bit data (state) from the first source operand with one/two/four (depending on vector length) round key(s) from the second source operand, and stores the result in the destination operand.
     ///
     ///
@@ -240,10 +277,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn aesdeclast<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: AesdeclastEmitter<A, B> {
+    where
+        Assembler<'a>: AesdeclastEmitter<A, B>,
+    {
         <Self as AesdeclastEmitter<A, B>>::aesdeclast(self, op0, op1);
     }
-    /// `AESENC` (AESENC). 
+    /// `AESENC` (AESENC).
     /// This instruction performs a single round of an AES encryption flow using one/two/four (depending on vector length) 128-bit data (state) from the first source operand with one/two/four (depending on vector length) round key(s) from the second source operand, and stores the result in the destination operand.
     ///
     ///
@@ -261,10 +300,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn aesenc<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: AesencEmitter<A, B> {
+    where
+        Assembler<'a>: AesencEmitter<A, B>,
+    {
         <Self as AesencEmitter<A, B>>::aesenc(self, op0, op1);
     }
-    /// `AESENCLAST` (AESENCLAST). 
+    /// `AESENCLAST` (AESENCLAST).
     /// This instruction performs the last round of an AES encryption flow using one/two/four (depending on vector length) 128-bit data (state) from the first source operand with one/two/four (depending on vector length) round key(s) from the second source operand, and stores the result in the destination operand.
     ///
     ///
@@ -282,10 +323,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn aesenclast<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: AesenclastEmitter<A, B> {
+    where
+        Assembler<'a>: AesenclastEmitter<A, B>,
+    {
         <Self as AesenclastEmitter<A, B>>::aesenclast(self, op0, op1);
     }
-    /// `AESIMC` (AESIMC). 
+    /// `AESIMC` (AESIMC).
     /// Perform the InvMixColumns transformation on the source operand and store the result in the destination operand. The destination operand is an XMM register. The source operand can be an XMM register or a 128-bit memory location.
     ///
     ///
@@ -303,10 +346,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn aesimc<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: AesimcEmitter<A, B> {
+    where
+        Assembler<'a>: AesimcEmitter<A, B>,
+    {
         <Self as AesimcEmitter<A, B>>::aesimc(self, op0, op1);
     }
-    /// `AESKEYGENASSIST` (AESKEYGENASSIST). 
+    /// `AESKEYGENASSIST` (AESKEYGENASSIST).
     /// Assist in expanding the AES cipher key, by computing steps towards generating a round key for encryption, using 128-bit data specified in the source operand and an 8-bit round constant specified as an immediate, store the result in the destination operand.
     ///
     ///
@@ -324,7 +369,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn aeskeygenassist<A, B, C>(&mut self, op0: A, op1: B, op2: C)
-    where Assembler<'a>: AeskeygenassistEmitter<A, B, C> {
+    where
+        Assembler<'a>: AeskeygenassistEmitter<A, B, C>,
+    {
         <Self as AeskeygenassistEmitter<A, B, C>>::aeskeygenassist(self, op0, op1, op2);
     }
 }

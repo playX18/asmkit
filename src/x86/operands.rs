@@ -47,7 +47,7 @@ define_reg_traits!(X86Gpq, RegGroup::Gp, 8, TypeId::Int64);
 define_reg_traits!(X86Xmm, RegGroup::Vec, 16, TypeId::Int32x4);
 define_reg_traits!(X86Ymm, RegGroup::Vec, 32, TypeId::Int32x8);
 define_reg_traits!(X86Zmm, RegGroup::Vec, 64, TypeId::Int32x16);
-define_reg_traits!(X86KReg, RegGroup::X86K, 0, TypeId::Void);
+define_reg_traits!(X86KReg, RegGroup::X86K, 0, TypeId::Mask64);
 define_reg_traits!(X86Mm, RegGroup::X86MM, 8, TypeId::Mmx64);
 define_reg_traits!(X86SReg, RegGroup::X86SReg, 2, TypeId::Void);
 define_reg_traits!(X86CReg, RegGroup::X86CReg, 0, TypeId::Void);
@@ -748,7 +748,7 @@ pub mod regs {
     }
 
     pub const fn rip() -> Rip {
-        Rip::from_id(0x120)
+        Rip::from_id(0)
     }
 
     pub const fn sreg(id: u32) -> SReg {
@@ -1363,7 +1363,7 @@ impl Mem {
                 | signature,
             (base >> 32) as u32,
             index.id(),
-            (base & 0xFFFFFFF) as _,
+            (base & 0xFFFF_FFFF) as _,
         ))
     }
 
@@ -1372,7 +1372,7 @@ impl Mem {
             Signature::from_op_type(OperandType::Mem) | Signature::from_size(size) | signature,
             (base >> 32) as u32,
             0,
-            (base & 0xFFFFFFF) as _,
+            (base & 0xFFFF_FFFF) as _,
         ))
     }
 

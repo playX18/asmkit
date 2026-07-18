@@ -1,0 +1,144 @@
+/* Copyright (c) 2008-2024 The AsmJit Authors
+
+   This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
+
+   Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
+
+   The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment in the product documentation would be appreciated but is not required.
+   Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software.
+   This notice may not be removed or altered from any source distribution.
+*/
+
+use super::assembler::*;
+use super::operands::*;
+use crate::core::operand::RegType;
+
+pub const W: u32 = 0x1;
+pub const X: u32 = 0x2;
+pub const WX: u32 = W | X;
+
+pub const ZR: u32 = Gp::ID_ZR as u32;
+pub const SP: u32 = Gp::ID_SP as u32;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum RwInfo {
+    R,
+    RW,
+    RX,
+    RRW,
+    RWX,
+    W,
+    WRW,
+    WRX,
+    WRRW,
+    WRRX,
+    WW,
+    X,
+    XRX,
+    XXRRX,
+
+    LDn,
+    STn,
+}
+
+pub const RWI_R: u16 = RwInfo::R as u16;
+pub const RWI_RW: u16 = RwInfo::RW as u16;
+pub const RWI_RX: u16 = RwInfo::RX as u16;
+pub const RWI_RRW: u16 = RwInfo::RRW as u16;
+pub const RWI_RWX: u16 = RwInfo::RWX as u16;
+pub const RWI_W: u16 = RwInfo::W as u16;
+pub const RWI_WRW: u16 = RwInfo::WRW as u16;
+pub const RWI_WRX: u16 = RwInfo::WRX as u16;
+pub const RWI_WRRW: u16 = RwInfo::WRRW as u16;
+pub const RWI_WRRX: u16 = RwInfo::WRRX as u16;
+pub const RWI_WW: u16 = RwInfo::WW as u16;
+pub const RWI_X: u16 = RwInfo::X as u16;
+pub const RWI_XRX: u16 = RwInfo::XRX as u16;
+pub const RWI_XXRRX: u16 = RwInfo::XXRRX as u16;
+pub const RWI_LDN: u16 = RwInfo::LDn as u16;
+pub const RWI_STN: u16 = RwInfo::STn as u16;
+
+impl RwInfo {
+    pub const SPECIAL_START: Self = Self::LDn;
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum InstElementType {
+    None = VecElementType::None as isize,
+    B = VecElementType::B as isize,
+    H = VecElementType::H as isize,
+    S = VecElementType::S as isize,
+    D = VecElementType::D as isize,
+    _2H = VecElementType::H2 as isize,
+    _4B = VecElementType::B4 as isize,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum GpType {
+    X,
+    W,
+    XSp,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u32)]
+pub enum OpSignature {
+    GpW = Reg::signature_of(RegType::Gp32).bits,
+    GpX = Reg::signature_of(RegType::Gp64).bits,
+    B = Reg::signature_of(RegType::Vec8).bits,
+    H = Reg::signature_of(RegType::Vec16).bits,
+    S = Reg::signature_of(RegType::Vec32).bits,
+    D = Reg::signature_of(RegType::Vec64).bits,
+    Q = Reg::signature_of(RegType::Vec128).bits,
+    V8B = Self::D as u32 | Vec::SIGNATURE_ELEMENT_B,
+    V4H = Self::D as u32 | Vec::SIGNATURE_ELEMENT_H,
+    V2S = Self::D as u32 | Vec::SIGNATURE_ELEMENT_S,
+
+    V16B = Self::Q as u32 | Vec::SIGNATURE_ELEMENT_B,
+    V8H = Self::Q as u32 | Vec::SIGNATURE_ELEMENT_H,
+    V4S = Self::Q as u32 | Vec::SIGNATURE_ELEMENT_S,
+    V2D = Self::Q as u32 | Vec::SIGNATURE_ELEMENT_D,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum HFConv {
+    N,
+    None,
+    A,
+    B,
+    C,
+    D,
+    Count,
+}
+
+pub enum VOType {
+    VB,
+    VBH,
+    VBH4S,
+    VBHS,
+    VBHSD2,
+    VHS,
+    VS,
+
+    VB8H4,
+    VB8H4S2,
+    VB8D1,
+    VH4S2,
+
+    VB16,
+    VB16H8,
+    VB16H8S4,
+    VB16D2,
+    VH8S4,
+    VS4,
+    VD2,
+
+    SVBHS,
+    SVB8H4S2,
+    SVHS,
+    VAny,
+    SVAny,
+
+    Count,
+}
+

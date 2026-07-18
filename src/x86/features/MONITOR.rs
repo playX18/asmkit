@@ -1,8 +1,8 @@
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -28,7 +28,7 @@ impl<'a> MonitorEmitter for Assembler<'a> {
     }
 }
 
-/// `MWAIT` (MWAIT). 
+/// `MWAIT` (MWAIT).
 /// MWAIT instruction provides hints to allow the processor to enter an implementation-dependent optimized state. There are two principal targeted usages: address-range monitor and advanced power management. Both usages of MWAIT require the use of the MONITOR instruction.
 ///
 ///
@@ -53,7 +53,6 @@ impl<'a> MwaitEmitter for Assembler<'a> {
     }
 }
 
-
 impl<'a> Assembler<'a> {
     /// `MONITOR`.
     ///
@@ -68,10 +67,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn monitor(&mut self)
-    where Assembler<'a>: MonitorEmitter {
+    where
+        Assembler<'a>: MonitorEmitter,
+    {
         <Self as MonitorEmitter>::monitor(self);
     }
-    /// `MWAIT` (MWAIT). 
+    /// `MWAIT` (MWAIT).
     /// MWAIT instruction provides hints to allow the processor to enter an implementation-dependent optimized state. There are two principal targeted usages: address-range monitor and advanced power management. Both usages of MWAIT require the use of the MONITOR instruction.
     ///
     ///
@@ -88,7 +89,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn mwait(&mut self)
-    where Assembler<'a>: MwaitEmitter {
+    where
+        Assembler<'a>: MwaitEmitter,
+    {
         <Self as MwaitEmitter>::mwait(self);
     }
 }

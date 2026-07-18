@@ -1,0 +1,1292 @@
+impl TryFrom<u8> for Encoding {
+    type Error = ();
+
+    fn try_from(value: u8) -> Result<Self, Self::Error> {
+        unsafe {
+            if value >= Self::Count as u8 {
+                Err(())
+            } else {
+                Ok(::core::mem::transmute(value))
+            }
+        }
+    }
+}
+
+const HF_C: u32 = HFConv::C as u32;
+
+macro_rules! impl_const_new_zero {
+    ($name:ident { $($field:ident : $ty:ty),* $(,)? }) => {
+        impl $name {
+            pub const fn new($($field: $ty),*) -> Self {
+                Self {
+                    $($field),*
+                }
+            }
+        }
+    };
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseOp {
+    pub opcode: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseOpX16 {
+    pub opcode: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseOpImm {
+    pub opcode: u32,
+    pub imm_bits: u16,
+    pub imm_offset: u16,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseR {
+    pub opcode: u32,
+    pub reg_type: u32,
+    pub reg_hi_id: u32,
+    pub r_shift: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseRR {
+    pub opcode: u32,
+    pub a_type: u32,
+    pub a_hi_id: u32,
+    pub a_shift: u32,
+    pub b_type: u32,
+    pub b_hi_id: u32,
+    pub b_shift: u32,
+    pub uniform: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseRRR {
+    opcode: u32,
+    pub a_type: u32,
+    pub a_hi_id: u32,
+    pub b_type: u32,
+    pub b_hi_id: u32,
+    pub c_type: u32,
+    pub c_hi_id: u32,
+    pub uniform: u32,
+}
+
+impl BaseRRR {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseRRRR {
+    opcode: u32,
+    pub a_type: u32,
+    pub a_hi_id: u32,
+    pub b_type: u32,
+    pub b_hi_id: u32,
+    pub c_type: u32,
+    pub c_hi_id: u32,
+    pub d_type: u32,
+    pub d_hi_id: u32,
+    pub uniform: u32,
+}
+
+impl BaseRRRR {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseRRII {
+    opcode: u32,
+    pub a_type: u32,
+    pub a_hi_id: u32,
+    pub b_type: u32,
+    pub b_hi_id: u32,
+    pub a_imm_size: u32,
+    pub a_imm_discard_lsb: u32,
+    pub a_imm_offset: u32,
+    pub b_imm_size: u32,
+    pub b_imm_discard_lsb: u32,
+    pub b_imm_offset: u32,
+}
+
+impl BaseRRII {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseAtDcIcTlbi {
+    pub imm_verify_mask: u32,
+    pub imm_verify_data: u32,
+    pub mandatory_reg: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseAdcSbc {
+    pub opcode: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseMinMax {
+    pub register_op: u32,
+    pub immediate_op: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseAddSub {
+    pub shifted_op: u32,
+    pub extended_op: u32,
+    pub immediate_op: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseAdr {
+    opcode: u32,
+    pub offset_type: u8,
+}
+
+impl BaseAdr {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseBfm {
+    pub opcode: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseCmpCmn {
+    pub shifted_op: u32,
+    pub extended_op: u32,
+    pub immediate_op: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseExtend {
+    opcode: u32,
+    pub reg_type: u32,
+    pub u: u32,
+}
+
+impl BaseExtend {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseLogical {
+    pub shifted_op: u32,
+    pub immediate_op: u32,
+    pub negate_imm: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseMvnNeg {
+    pub opcode: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseShift {
+    pub register_op: u32,
+    pub immediate_op: u32,
+    pub ror: u32,
+}
+
+impl BaseShift {
+    pub const fn register_op(&self) -> u32 {
+        self.register_op << 10
+    }
+
+    pub const fn immediate_op(&self) -> u32 {
+        self.immediate_op << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseTst {
+    pub shifted_op: u32,
+    pub immediate_op: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseRMNoImm {
+    opcode: u32,
+    pub reg_type: u32,
+    pub reg_hi_id: u32,
+    pub x_offset: u32,
+}
+
+impl BaseRMNoImm {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseRMSImm9 {
+    pub offset_op: u32,
+    pub pre_post_op: u32,
+    pub reg_type: u32,
+    pub reg_hi_id: u32,
+    pub x_offset: u32,
+    pub imm_shift: u32,
+}
+
+impl BaseRMSImm9 {
+    pub const fn offset_op(&self) -> u32 {
+        self.offset_op << 10
+    }
+
+    pub const fn pre_post_op(&self) -> u32 {
+        self.pre_post_op << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseRMSImm10 {
+    opcode: u32,
+    pub reg_type: u32,
+    pub reg_hi_id: u32,
+    pub x_offset: u32,
+    pub imm_shift: u32,
+}
+
+impl BaseRMSImm10 {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BasePrfm {
+    pub register_op: u32,
+    pub s_offset_op: u32,
+    pub u_offset_op: u32,
+    pub literal_op: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseLdSt {
+    pub u_offset_op: u32,
+    pub pre_post_op: u32,
+    pub register_op: u32,
+    pub literal_op: u32,
+    pub reg_type: u32,
+    pub x_offset: u32,
+    pub u_offset_shift: u32,
+    pub u_alt_inst_id: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseLdpStp {
+    pub offset_op: u32,
+    pub pre_post_op: u32,
+    pub reg_type: u32,
+    pub x_offset: u32,
+    pub offset_shift: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseStx {
+    opcode: u32,
+    pub reg_type: u32,
+    pub x_offset: u32,
+}
+
+impl BaseStx {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseLdxp {
+    opcode: u32,
+    pub reg_type: u32,
+    pub x_offset: u32,
+}
+
+impl BaseLdxp {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseStxp {
+    opcode: u32,
+    pub reg_type: u32,
+    pub x_offset: u32,
+}
+
+impl BaseStxp {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseAtomicOp {
+    opcode: u32,
+    pub reg_type: u32,
+    pub x_offset: u32,
+    pub zr_reg: u32,
+}
+
+impl BaseAtomicOp {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseAtomicSt {
+    opcode: u32,
+    pub reg_type: u32,
+    pub x_offset: u32,
+}
+
+impl BaseAtomicSt {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct BaseAtomicCasp {
+    opcode: u32,
+    pub reg_type: u32,
+    pub x_offset: u32,
+}
+
+impl BaseAtomicCasp {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+pub type BaseBranchReg = BaseOp;
+pub type BaseBranchRel = BaseOp;
+pub type BaseBranchCmp = BaseOp;
+pub type BaseBranchTst = BaseOp;
+pub type BaseExtract = BaseOp;
+pub type BaseBfc = BaseOp;
+pub type BaseBfi = BaseOp;
+pub type BaseBfx = BaseOp;
+pub type BaseCCmp = BaseOp;
+pub type BaseCInc = BaseOp;
+pub type BaseCSet = BaseOp;
+pub type BaseCSel = BaseOp;
+pub type BaseMovKNZ = BaseOp;
+pub type BaseMull = BaseOp;
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct FSimdGeneric {
+    scalar_op: u32,
+    scalar_hf: u32,
+    vector_op: u32,
+    vector_hf: u32,
+}
+
+impl FSimdGeneric {
+    pub const fn scalar_op(&self) -> u32 {
+        self.scalar_op << 10
+    }
+
+    pub const fn vector_op(&self) -> u32 {
+        self.vector_op << 10
+    }
+
+    pub const fn scalar_hf(&self) -> u32 {
+        self.scalar_hf
+    }
+
+    pub const fn vector_hf(&self) -> u32 {
+        self.vector_hf
+    }
+}
+
+pub type FSimdVV = FSimdGeneric;
+pub type FSimdVVV = FSimdGeneric;
+pub type FSimdVVVV = FSimdGeneric;
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct FSimdSV {
+    pub opcode: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct FSimdVVVe {
+    scalar_op: u32,
+    scalar_hf: u32,
+    vector_op: u32,
+    element_op: u32,
+}
+
+impl FSimdVVVe {
+    pub const fn scalar_op(&self) -> u32 {
+        self.scalar_op << 10
+    }
+
+    pub const fn scalar_hf(&self) -> u32 {
+        self.scalar_hf
+    }
+
+    pub const fn vector_op(&self) -> u32 {
+        self.vector_op << 10
+    }
+
+    pub const fn vector_hf(&self) -> u32 {
+        HF_C
+    }
+
+    pub const fn element_scalar_op(&self) -> u32 {
+        (self.element_op << 10) | (0x5 << 28)
+    }
+
+    pub const fn element_vector_op(&self) -> u32 {
+        self.element_op << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdFcadd {
+    opcode: u32,
+}
+
+impl SimdFcadd {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdFcmla {
+    regular_op: u32,
+    element_op: u32,
+}
+
+impl SimdFcmla {
+    pub const fn regular_op(&self) -> u32 {
+        self.regular_op << 10
+    }
+
+    pub const fn element_op(&self) -> u32 {
+        self.element_op << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdFccmpFccmpe {
+    opcode: u32,
+}
+
+impl SimdFccmpFccmpe {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdFcm {
+    register_op: u32,
+    register_hf: u32,
+    zero_op: u32,
+}
+
+impl SimdFcm {
+    pub const fn has_register_op(&self) -> bool {
+        self.register_op != 0
+    }
+
+    pub const fn has_zero_op(&self) -> bool {
+        self.zero_op != 0
+    }
+
+    pub const fn register_scalar_op(&self) -> u32 {
+        (self.register_op << 10) | (0x5 << 28)
+    }
+
+    pub const fn register_vector_op(&self) -> u32 {
+        self.register_op << 10
+    }
+
+    pub const fn register_scalar_hf(&self) -> u32 {
+        self.register_hf
+    }
+
+    pub const fn register_vector_hf(&self) -> u32 {
+        self.register_hf
+    }
+
+    pub const fn zero_scalar_op(&self) -> u32 {
+        (self.zero_op << 10) | (0x5 << 28)
+    }
+
+    pub const fn zero_vector_op(&self) -> u32 {
+        self.zero_op << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdFcmpFcmpe {
+    opcode: u32,
+}
+
+impl SimdFcmpFcmpe {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdFcvtLN {
+    opcode: u32,
+    is_cvtxn: u32,
+    has_scalar: u32,
+}
+
+impl SimdFcvtLN {
+    pub const fn scalar_op(&self) -> u32 {
+        (self.opcode << 10) | (0x5 << 28)
+    }
+
+    pub const fn vector_op(&self) -> u32 {
+        self.opcode << 10
+    }
+
+    pub const fn is_cvtxn(&self) -> u32 {
+        self.is_cvtxn
+    }
+
+    pub const fn has_scalar(&self) -> u32 {
+        self.has_scalar
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdFcvtSV {
+    vector_int_op: u32,
+    vector_fp_op: u32,
+    general_op: u32,
+    is_float_to_int: u32,
+}
+
+impl SimdFcvtSV {
+    pub const fn scalar_int_op(&self) -> u32 {
+        (self.vector_int_op << 10) | (0x5 << 28)
+    }
+
+    pub const fn vector_int_op(&self) -> u32 {
+        self.vector_int_op << 10
+    }
+
+    pub const fn scalar_fp_op(&self) -> u32 {
+        (self.vector_fp_op << 10) | (0x5 << 28)
+    }
+
+    pub const fn vector_fp_op(&self) -> u32 {
+        self.vector_fp_op << 10
+    }
+
+    pub const fn general_op(&self) -> u32 {
+        self.general_op << 10
+    }
+
+    pub const fn is_float_to_int(&self) -> u32 {
+        self.is_float_to_int
+    }
+
+    pub const fn is_fixed_point(&self) -> bool {
+        self.vector_fp_op != 0
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdFmlal {
+    pub vector_op: u32,
+    pub element_op: u32,
+    pub optional_q: u8,
+    pub ta: u8,
+    pub tb: u8,
+    pub t_element: u8,
+}
+
+impl SimdFmlal {
+    pub const fn vector_op(&self) -> u32 {
+        self.vector_op << 10
+    }
+
+    pub const fn element_op(&self) -> u32 {
+        self.element_op << 10
+    }
+
+    pub const fn optional_q(&self) -> u32 {
+        self.optional_q as u32
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct FSimdPair {
+    pub scalar_op: u32,
+    pub vector_op: u32,
+}
+
+impl FSimdPair {
+    pub const fn scalar_op(&self) -> u32 {
+        self.scalar_op << 10
+    }
+
+    pub const fn vector_op(&self) -> u32 {
+        self.vector_op << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ISimdVV {
+    opcode: u32,
+    pub vec_op_type: u32,
+}
+
+impl ISimdVV {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ISimdVVx {
+    opcode: u32,
+    pub op0_signature: u32,
+    pub op1_signature: u32,
+}
+
+impl ISimdVVx {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ISimdSV {
+    opcode: u32,
+    pub vec_op_type: u32,
+}
+
+impl ISimdSV {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ISimdVVV {
+    opcode: u32,
+    pub vec_op_type: u32,
+}
+
+impl ISimdVVV {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ISimdVVVx {
+    opcode: u32,
+    pub op0_signature: u32,
+    pub op1_signature: u32,
+    pub op2_signature: u32,
+}
+
+impl ISimdVVVx {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ISimdWWV {
+    opcode: u32,
+    pub vec_op_type: u32,
+}
+
+impl ISimdWWV {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ISimdVVVe {
+    pub regular_op: u32,
+    pub regular_vec_type: u32,
+    pub element_op: u32,
+    pub element_vec_type: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ISimdVVVI {
+    opcode: u32,
+    pub vec_op_type: u32,
+    pub imm_size: u32,
+    pub imm_shift: u32,
+    pub imm64_has_one_bit_less: u32,
+}
+
+impl ISimdVVVI {
+    pub const fn opcode(&self) -> u32 {
+        self.opcode << 10
+    }
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ISimdVVVV {
+    pub opcode: u32,
+    pub vec_op_type: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ISimdVVVVx {
+    pub opcode: u32,
+    pub op0_signature: u32,
+    pub op1_signature: u32,
+    pub op2_signature: u32,
+    pub op3_signature: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdBicOrr {
+    pub register_op: u32,
+    pub immediate_op: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdCmp {
+    pub register_op: u32,
+    pub zero_op: u32,
+    pub vec_op_type: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdDot {
+    pub vector_op: u32,
+    pub element_op: u32,
+    pub ta: u8,
+    pub tb: u8,
+    pub t_element: u8,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdMoviMvni {
+    pub opcode: u32,
+    pub inverted: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdLdSt {
+    pub u_offset_op: u32,
+    pub pre_post_op: u32,
+    pub register_op: u32,
+    pub literal_op: u32,
+    pub u_alt_inst_id: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdLdNStN {
+    pub single_op: u32,
+    pub multiple_op: u32,
+    pub n: u32,
+    pub replicate: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdLdpStp {
+    pub offset_op: u32,
+    pub pre_post_op: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdLdurStur {
+    pub opcode: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct ISimdPair {
+    pub opcode2: u32,
+    pub opcode3: u32,
+    pub op_type3: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdShift {
+    pub register_op: u32,
+    pub immediate_op: u32,
+    pub inverted_imm: u32,
+    pub vec_op_type: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdShiftES {
+    pub opcode: u32,
+    pub vec_op_type: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdSm3tt {
+    pub opcode: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdSmovUmov {
+    pub opcode: u32,
+    pub vec_op_type: u32,
+    pub is_signed: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdSxtlUxtl {
+    pub opcode: u32,
+    pub vec_op_type: u32,
+}
+
+#[derive(Debug, Clone, Copy, Default)]
+pub struct SimdTblTbx {
+    pub opcode: u32,
+}
+
+impl_const_new_zero!(BaseOp { opcode: u32 });
+impl_const_new_zero!(BaseOpX16 { opcode: u32 });
+impl_const_new_zero!(BaseOpImm {
+    opcode: u32,
+    imm_bits: u16,
+    imm_offset: u16
+});
+impl_const_new_zero!(BaseR {
+    opcode: u32,
+    reg_type: u32,
+    reg_hi_id: u32,
+    r_shift: u32
+});
+impl_const_new_zero!(BaseRR {
+    opcode: u32,
+    a_type: u32,
+    a_hi_id: u32,
+    a_shift: u32,
+    b_type: u32,
+    b_hi_id: u32,
+    b_shift: u32,
+    uniform: u32,
+});
+impl_const_new_zero!(BaseRRR {
+    opcode: u32,
+    a_type: u32,
+    a_hi_id: u32,
+    b_type: u32,
+    b_hi_id: u32,
+    c_type: u32,
+    c_hi_id: u32,
+    uniform: u32,
+});
+impl_const_new_zero!(BaseRRRR {
+    opcode: u32,
+    a_type: u32,
+    a_hi_id: u32,
+    b_type: u32,
+    b_hi_id: u32,
+    c_type: u32,
+    c_hi_id: u32,
+    d_type: u32,
+    d_hi_id: u32,
+    uniform: u32,
+});
+impl_const_new_zero!(BaseRRII {
+    opcode: u32,
+    a_type: u32,
+    a_hi_id: u32,
+    b_type: u32,
+    b_hi_id: u32,
+    a_imm_size: u32,
+    a_imm_discard_lsb: u32,
+    a_imm_offset: u32,
+    b_imm_size: u32,
+    b_imm_discard_lsb: u32,
+    b_imm_offset: u32,
+});
+impl_const_new_zero!(BaseAtDcIcTlbi {
+    imm_verify_mask: u32,
+    imm_verify_data: u32,
+    mandatory_reg: u32,
+});
+impl_const_new_zero!(BaseAdcSbc { opcode: u32 });
+impl_const_new_zero!(BaseMinMax {
+    register_op: u32,
+    immediate_op: u32
+});
+impl_const_new_zero!(BaseAddSub {
+    shifted_op: u32,
+    extended_op: u32,
+    immediate_op: u32
+});
+impl_const_new_zero!(BaseAdr {
+    opcode: u32,
+    offset_type: u8
+});
+impl_const_new_zero!(BaseBfm { opcode: u32 });
+impl_const_new_zero!(BaseCmpCmn {
+    shifted_op: u32,
+    extended_op: u32,
+    immediate_op: u32
+});
+impl_const_new_zero!(BaseExtend {
+    opcode: u32,
+    reg_type: u32,
+    u: u32
+});
+impl_const_new_zero!(BaseLogical {
+    shifted_op: u32,
+    immediate_op: u32,
+    negate_imm: u32
+});
+impl_const_new_zero!(BaseMvnNeg { opcode: u32 });
+impl_const_new_zero!(BaseShift {
+    register_op: u32,
+    immediate_op: u32,
+    ror: u32
+});
+impl_const_new_zero!(BaseTst {
+    shifted_op: u32,
+    immediate_op: u32
+});
+impl_const_new_zero!(BaseRMNoImm {
+    opcode: u32,
+    reg_type: u32,
+    reg_hi_id: u32,
+    x_offset: u32
+});
+impl_const_new_zero!(BaseRMSImm9 {
+    offset_op: u32,
+    pre_post_op: u32,
+    reg_type: u32,
+    reg_hi_id: u32,
+    x_offset: u32,
+    imm_shift: u32,
+});
+impl_const_new_zero!(BaseRMSImm10 {
+    opcode: u32,
+    reg_type: u32,
+    reg_hi_id: u32,
+    x_offset: u32,
+    imm_shift: u32,
+});
+impl_const_new_zero!(BasePrfm {
+    register_op: u32,
+    s_offset_op: u32,
+    u_offset_op: u32,
+    literal_op: u32
+});
+impl_const_new_zero!(BaseLdSt {
+    u_offset_op: u32,
+    pre_post_op: u32,
+    register_op: u32,
+    literal_op: u32,
+    reg_type: u32,
+    x_offset: u32,
+    u_offset_shift: u32,
+    u_alt_inst_id: u32,
+});
+impl_const_new_zero!(BaseLdpStp {
+    offset_op: u32,
+    pre_post_op: u32,
+    reg_type: u32,
+    x_offset: u32,
+    offset_shift: u32,
+});
+impl_const_new_zero!(BaseStx {
+    opcode: u32,
+    reg_type: u32,
+    x_offset: u32
+});
+impl_const_new_zero!(BaseLdxp {
+    opcode: u32,
+    reg_type: u32,
+    x_offset: u32
+});
+impl_const_new_zero!(BaseStxp {
+    opcode: u32,
+    reg_type: u32,
+    x_offset: u32
+});
+impl_const_new_zero!(BaseAtomicOp {
+    opcode: u32,
+    reg_type: u32,
+    x_offset: u32,
+    zr_reg: u32
+});
+impl_const_new_zero!(BaseAtomicSt {
+    opcode: u32,
+    reg_type: u32,
+    x_offset: u32
+});
+impl_const_new_zero!(BaseAtomicCasp {
+    opcode: u32,
+    reg_type: u32,
+    x_offset: u32
+});
+
+impl_const_new_zero!(FSimdGeneric {
+    scalar_op: u32,
+    scalar_hf: u32,
+    vector_op: u32,
+    vector_hf: u32
+});
+impl_const_new_zero!(FSimdSV { opcode: u32 });
+impl_const_new_zero!(FSimdVVVe {
+    scalar_op: u32,
+    scalar_hf: u32,
+    vector_op: u32,
+    element_op: u32
+});
+impl_const_new_zero!(SimdFcadd { opcode: u32 });
+impl_const_new_zero!(SimdFcmla {
+    regular_op: u32,
+    element_op: u32
+});
+impl_const_new_zero!(SimdFccmpFccmpe { opcode: u32 });
+impl_const_new_zero!(SimdFcm {
+    register_op: u32,
+    register_hf: u32,
+    zero_op: u32
+});
+impl_const_new_zero!(SimdFcmpFcmpe { opcode: u32 });
+impl_const_new_zero!(SimdFcvtLN {
+    opcode: u32,
+    is_cvtxn: u32,
+    has_scalar: u32
+});
+impl_const_new_zero!(SimdFcvtSV {
+    vector_int_op: u32,
+    vector_fp_op: u32,
+    general_op: u32,
+    is_float_to_int: u32,
+});
+impl_const_new_zero!(SimdFmlal {
+    vector_op: u32,
+    element_op: u32,
+    optional_q: u8,
+    ta: u8,
+    tb: u8,
+    t_element: u8,
+});
+impl_const_new_zero!(FSimdPair {
+    scalar_op: u32,
+    vector_op: u32
+});
+
+impl_const_new_zero!(ISimdVV {
+    opcode: u32,
+    vec_op_type: u32
+});
+impl_const_new_zero!(ISimdVVx {
+    opcode: u32,
+    op0_signature: u32,
+    op1_signature: u32
+});
+impl_const_new_zero!(ISimdSV {
+    opcode: u32,
+    vec_op_type: u32
+});
+impl_const_new_zero!(ISimdVVV {
+    opcode: u32,
+    vec_op_type: u32
+});
+impl_const_new_zero!(ISimdVVVx {
+    opcode: u32,
+    op0_signature: u32,
+    op1_signature: u32,
+    op2_signature: u32,
+});
+impl_const_new_zero!(ISimdWWV {
+    opcode: u32,
+    vec_op_type: u32
+});
+impl_const_new_zero!(ISimdVVVe {
+    regular_op: u32,
+    regular_vec_type: u32,
+    element_op: u32,
+    element_vec_type: u32,
+});
+impl_const_new_zero!(ISimdVVVI {
+    opcode: u32,
+    vec_op_type: u32,
+    imm_size: u32,
+    imm_shift: u32,
+    imm64_has_one_bit_less: u32,
+});
+impl_const_new_zero!(ISimdVVVV {
+    opcode: u32,
+    vec_op_type: u32
+});
+impl_const_new_zero!(ISimdVVVVx {
+    opcode: u32,
+    op0_signature: u32,
+    op1_signature: u32,
+    op2_signature: u32,
+    op3_signature: u32,
+});
+impl_const_new_zero!(SimdBicOrr {
+    register_op: u32,
+    immediate_op: u32
+});
+impl_const_new_zero!(SimdCmp {
+    register_op: u32,
+    zero_op: u32,
+    vec_op_type: u32
+});
+impl_const_new_zero!(SimdDot {
+    vector_op: u32,
+    element_op: u32,
+    ta: u8,
+    tb: u8,
+    t_element: u8
+});
+impl_const_new_zero!(SimdMoviMvni {
+    opcode: u32,
+    inverted: u32
+});
+impl_const_new_zero!(SimdLdSt {
+    u_offset_op: u32,
+    pre_post_op: u32,
+    register_op: u32,
+    literal_op: u32,
+    u_alt_inst_id: u32,
+});
+impl_const_new_zero!(SimdLdNStN {
+    single_op: u32,
+    multiple_op: u32,
+    n: u32,
+    replicate: u32
+});
+impl_const_new_zero!(SimdLdpStp {
+    offset_op: u32,
+    pre_post_op: u32
+});
+impl_const_new_zero!(SimdLdurStur { opcode: u32 });
+impl_const_new_zero!(ISimdPair {
+    opcode2: u32,
+    opcode3: u32,
+    op_type3: u32
+});
+impl_const_new_zero!(SimdShift {
+    register_op: u32,
+    immediate_op: u32,
+    inverted_imm: u32,
+    vec_op_type: u32
+});
+impl_const_new_zero!(SimdShiftES {
+    opcode: u32,
+    vec_op_type: u32
+});
+impl_const_new_zero!(SimdSm3tt { opcode: u32 });
+impl_const_new_zero!(SimdSmovUmov {
+    opcode: u32,
+    vec_op_type: u32,
+    is_signed: u32
+});
+impl_const_new_zero!(SimdSxtlUxtl {
+    opcode: u32,
+    vec_op_type: u32
+});
+impl_const_new_zero!(SimdTblTbx { opcode: u32 });
+
+#[derive(Debug, Clone, Copy)]
+pub struct InstInfo {
+    pub encoding: u8,
+    pub encoding_data_index: u8,
+    pub reserved: u16,
+    pub rw_info_index: u16,
+    pub flags: u16,
+}
+
+impl InstInfo {
+    pub const fn new(
+        encoding: u8,
+        encoding_data_index: u8,
+        reserved: u16,
+        rw_info_index: u16,
+        flags: u16,
+    ) -> Self {
+        Self {
+            encoding,
+            encoding_data_index,
+            reserved,
+            rw_info_index,
+            flags,
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum InstFlag {
+    Cond = 0x00000001,
+    Pair = 0x00000002,
+    Long = 0x00000004,
+    Narrow = 0x00000008,
+    VH0_15 = 0x00000010,
+    Consecutive = 0x00000080,
+}
+
+macro_rules! F {
+    ($name: ident) => {
+        InstFlag::$name as u16
+    };
+}
+
+macro_rules! INST {
+    ($id: ident, $opcode_encoding: ident, $opcode_data: expr, $rw_info_index: expr, $flags: expr, $opcode_data_index: expr) => {
+        InstInfo::new(
+            Encoding::$opcode_encoding as u8,
+            $opcode_data_index as u8,
+            0,
+            $rw_info_index,
+            $flags,
+        )
+    };
+}
+
+macro_rules! TABLE {
+    ($name: ident = {
+        $(INST(
+            $id: ident,
+            $opcode_encoding: ident,
+            $opcode_data: expr,
+            $rw_info_index: expr,
+            $flags: expr,
+            $opcode_data_index: expr
+        ),)*
+    }) => {
+        pub static $name: &[InstInfo] = &[
+            $(
+                INST!(
+                    $id,
+                    $opcode_encoding,
+                    $opcode_data,
+                    $rw_info_index,
+                    $flags,
+                    $opcode_data_index)
+            ),*
+        ];
+    };
+}
+

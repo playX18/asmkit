@@ -1,13 +1,13 @@
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
 
-/// `PCONFIG` (PCONFIG). 
+/// `PCONFIG` (PCONFIG).
 /// The PCONFIG instruction allows software to configure certain platform features. It supports these features with multiple leaf functions, selecting a leaf function using the value in EAX.
 ///
 ///
@@ -32,9 +32,8 @@ impl<'a> PconfigEmitter for Assembler<'a> {
     }
 }
 
-
 impl<'a> Assembler<'a> {
-    /// `PCONFIG` (PCONFIG). 
+    /// `PCONFIG` (PCONFIG).
     /// The PCONFIG instruction allows software to configure certain platform features. It supports these features with multiple leaf functions, selecting a leaf function using the value in EAX.
     ///
     ///
@@ -51,7 +50,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn pconfig(&mut self)
-    where Assembler<'a>: PconfigEmitter {
+    where
+        Assembler<'a>: PconfigEmitter,
+    {
         <Self as PconfigEmitter>::pconfig(self);
     }
 }

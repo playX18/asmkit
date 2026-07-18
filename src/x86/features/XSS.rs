@@ -1,13 +1,13 @@
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
 
-/// `XRSTORS` (XRSTORS). 
+/// `XRSTORS` (XRSTORS).
 /// Performs a full or partial restore of processor state components from the XSAVE area located at the memory address specified by the source operand. The implicit EDX:EAX register pair specifies a 64-bit instruction mask. The specific state components restored correspond to the bits set in the requested-feature bitmap (RFBM), which is the logical-AND of EDX:EAX and the logical-OR of XCR0 with the IA32_XSS MSR. XRSTORS may be executed only if CPL = 0.
 ///
 ///
@@ -32,7 +32,7 @@ impl<'a> XrstorsEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `XSAVES` (XSAVES). 
+/// `XSAVES` (XSAVES).
 /// Performs a full or partial save of processor state components to the XSAVE area located at the memory address specified by the destination operand. The implicit EDX:EAX register pair specifies a 64-bit instruction mask. The specific state components saved correspond to the bits set in the requested-feature bitmap (RFBM), the logicalAND of EDX:EAX and the logical-OR of XCR0 with the IA32_XSS MSR. XSAVES may be executed only if CPL = 0.
 ///
 ///
@@ -57,9 +57,8 @@ impl<'a> XsavesEmitter<Mem> for Assembler<'a> {
     }
 }
 
-
 impl<'a> Assembler<'a> {
-    /// `XRSTORS` (XRSTORS). 
+    /// `XRSTORS` (XRSTORS).
     /// Performs a full or partial restore of processor state components from the XSAVE area located at the memory address specified by the source operand. The implicit EDX:EAX register pair specifies a 64-bit instruction mask. The specific state components restored correspond to the bits set in the requested-feature bitmap (RFBM), which is the logical-AND of EDX:EAX and the logical-OR of XCR0 with the IA32_XSS MSR. XRSTORS may be executed only if CPL = 0.
     ///
     ///
@@ -76,10 +75,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn xrstors<A>(&mut self, op0: A)
-    where Assembler<'a>: XrstorsEmitter<A> {
+    where
+        Assembler<'a>: XrstorsEmitter<A>,
+    {
         <Self as XrstorsEmitter<A>>::xrstors(self, op0);
     }
-    /// `XSAVES` (XSAVES). 
+    /// `XSAVES` (XSAVES).
     /// Performs a full or partial save of processor state components to the XSAVE area located at the memory address specified by the destination operand. The implicit EDX:EAX register pair specifies a 64-bit instruction mask. The specific state components saved correspond to the bits set in the requested-feature bitmap (RFBM), the logicalAND of EDX:EAX and the logical-OR of XCR0 with the IA32_XSS MSR. XSAVES may be executed only if CPL = 0.
     ///
     ///
@@ -96,7 +97,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn xsaves<A>(&mut self, op0: A)
-    where Assembler<'a>: XsavesEmitter<A> {
+    where
+        Assembler<'a>: XsavesEmitter<A>,
+    {
         <Self as XsavesEmitter<A>>::xsaves(self, op0);
     }
 }

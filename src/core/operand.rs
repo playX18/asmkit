@@ -491,7 +491,9 @@ pub const DATA_MEM_OFFSET_LO: usize = 1;
 pub const DATA_IMM_VALUE_LO: usize = if cfg!(target_endian = "little") { 0 } else { 1 };
 pub const DATA_IMM_VALUE_HI: usize = if DATA_IMM_VALUE_LO == 0 { 1 } else { 0 };
 
-pub const VIRT_ID_MIN: u32 = 400;
+/// Register id space layout: ids `0..0xFF` are physical registers (`0xFF` itself is the
+/// invalid/none id), ids `0x100..` are virtual registers.
+pub const VIRT_ID_MIN: u32 = 0x100;
 pub const VIRT_ID_MAX: u32 = u32::MAX - 1;
 pub const VIRT_ID_COUNT: u32 = VIRT_ID_MAX - VIRT_ID_MIN + 1;
 
@@ -508,7 +510,7 @@ pub struct Operand {
 }
 
 pub const fn is_virt_id(id: u32) -> bool {
-    id - VIRT_ID_MIN < VIRT_ID_COUNT
+    id.wrapping_sub(VIRT_ID_MIN) < VIRT_ID_COUNT
 }
 
 pub const fn index_to_virt_id(id: u32) -> u32 {
@@ -601,7 +603,7 @@ impl Operand {
     }
 
     pub fn is_virt_reg(&self) -> bool {
-        self.is_reg() && self.base_id > 0xff
+        self.is_reg() && is_virt_id(self.base_id)
     }
 
     pub const fn id(&self) -> u32 {
@@ -895,7 +897,7 @@ impl BaseReg {
     }
 
     pub fn is_virt_reg(&self) -> bool {
-        self.base_id > 0xff
+        is_virt_id(self.base_id)
     }
 
     pub fn is_type(&self, typ: RegType) -> bool {

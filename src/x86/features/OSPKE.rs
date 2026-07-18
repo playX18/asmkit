@@ -1,13 +1,13 @@
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
 
-/// `RDPKRU` (RDPKRU). 
+/// `RDPKRU` (RDPKRU).
 /// Reads the value of PKRU into EAX and clears EDX. ECX must be 0 when RDPKRU is executed; otherwise, a general-protection exception (#GP) occurs.
 ///
 ///
@@ -32,7 +32,7 @@ impl<'a> RdpkruEmitter for Assembler<'a> {
     }
 }
 
-/// `WRPKRU` (WRPKRU). 
+/// `WRPKRU` (WRPKRU).
 /// Writes the value of EAX into PKRU. ECX and EDX must be 0 when WRPKRU is executed; otherwise, a general-protection exception (#GP) occurs.
 ///
 ///
@@ -57,9 +57,8 @@ impl<'a> WrpkruEmitter for Assembler<'a> {
     }
 }
 
-
 impl<'a> Assembler<'a> {
-    /// `RDPKRU` (RDPKRU). 
+    /// `RDPKRU` (RDPKRU).
     /// Reads the value of PKRU into EAX and clears EDX. ECX must be 0 when RDPKRU is executed; otherwise, a general-protection exception (#GP) occurs.
     ///
     ///
@@ -76,10 +75,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn rdpkru(&mut self)
-    where Assembler<'a>: RdpkruEmitter {
+    where
+        Assembler<'a>: RdpkruEmitter,
+    {
         <Self as RdpkruEmitter>::rdpkru(self);
     }
-    /// `WRPKRU` (WRPKRU). 
+    /// `WRPKRU` (WRPKRU).
     /// Writes the value of EAX into PKRU. ECX and EDX must be 0 when WRPKRU is executed; otherwise, a general-protection exception (#GP) occurs.
     ///
     ///
@@ -96,7 +97,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn wrpkru(&mut self)
-    where Assembler<'a>: WrpkruEmitter {
+    where
+        Assembler<'a>: WrpkruEmitter,
+    {
         <Self as WrpkruEmitter>::wrpkru(self);
     }
 }

@@ -1,8 +1,8 @@
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -49,7 +49,7 @@ impl<'a> FabsEmitter for Assembler<'a> {
     }
 }
 
-/// `FADD` (FADD). 
+/// `FADD` (FADD).
 /// Adds the destination and source operands and stores the sum in the destination location. The destination operand is always an FPU register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
 ///
 ///
@@ -74,7 +74,7 @@ impl<'a> FaddEmitter_1<Mem> for Assembler<'a> {
     }
 }
 
-/// `FADD` (FADD). 
+/// `FADD` (FADD).
 /// Adds the destination and source operands and stores the sum in the destination location. The destination operand is always an FPU register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
 ///
 ///
@@ -99,7 +99,7 @@ impl<'a> FaddEmitter_2<St, St> for Assembler<'a> {
     }
 }
 
-/// `FADDP` (FADDP). 
+/// `FADDP` (FADDP).
 /// Adds the destination and source operands and stores the sum in the destination location. The destination operand is always an FPU register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
 ///
 ///
@@ -124,7 +124,7 @@ impl<'a> FaddpEmitter<St, St> for Assembler<'a> {
     }
 }
 
-/// `FBLD` (FBLD). 
+/// `FBLD` (FBLD).
 /// Converts the BCD source operand into double extended-precision floating-point format and pushes the value onto the FPU stack. The source operand is loaded without rounding errors. The sign of the source operand is preserved, including that of −0.
 ///
 ///
@@ -191,7 +191,7 @@ impl<'a> FchsEmitter for Assembler<'a> {
     }
 }
 
-/// `FCLEX` (FCLEX). 
+/// `FCLEX` (FCLEX).
 /// Clears the floating-point exception flags (PE, UE, OE, ZE, DE, and IE), the exception summary status flag (ES), the stack fault flag (SF), and the busy flag (B) in the FPU status word. The FCLEX instruction checks for and handles any pending unmasked floating-point exceptions before clearing the exception flags; the FNCLEX instruction does not.
 ///
 ///
@@ -216,7 +216,7 @@ impl<'a> FclexEmitter for Assembler<'a> {
     }
 }
 
-/// `FCOM` (FCOM). 
+/// `FCOM` (FCOM).
 /// Compares the contents of register ST(0) and source value and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). The source operand can be a data register or a memory location. If no source operand is given, the value in ST(0) is compared with the value in ST(1). The sign of zero is ignored, so that –0.0 is equal to +0.0.
 ///
 ///
@@ -241,7 +241,7 @@ impl<'a> FcomEmitter_1<Mem> for Assembler<'a> {
     }
 }
 
-/// `FCOM` (FCOM). 
+/// `FCOM` (FCOM).
 /// Compares the contents of register ST(0) and source value and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). The source operand can be a data register or a memory location. If no source operand is given, the value in ST(0) is compared with the value in ST(1). The sign of zero is ignored, so that –0.0 is equal to +0.0.
 ///
 ///
@@ -266,7 +266,7 @@ impl<'a> FcomEmitter_2<St, St> for Assembler<'a> {
     }
 }
 
-/// `FCOMP` (FCOMP). 
+/// `FCOMP` (FCOMP).
 /// Compares the contents of register ST(0) and source value and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). The source operand can be a data register or a memory location. If no source operand is given, the value in ST(0) is compared with the value in ST(1). The sign of zero is ignored, so that –0.0 is equal to +0.0.
 ///
 ///
@@ -291,7 +291,7 @@ impl<'a> FcompEmitter_1<Mem> for Assembler<'a> {
     }
 }
 
-/// `FCOMP` (FCOMP). 
+/// `FCOMP` (FCOMP).
 /// Compares the contents of register ST(0) and source value and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). The source operand can be a data register or a memory location. If no source operand is given, the value in ST(0) is compared with the value in ST(1). The sign of zero is ignored, so that –0.0 is equal to +0.0.
 ///
 ///
@@ -316,7 +316,7 @@ impl<'a> FcompEmitter_2<St, St> for Assembler<'a> {
     }
 }
 
-/// `FCOMPP` (FCOMPP). 
+/// `FCOMPP` (FCOMPP).
 /// Compares the contents of register ST(0) and source value and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). The source operand can be a data register or a memory location. If no source operand is given, the value in ST(0) is compared with the value in ST(1). The sign of zero is ignored, so that –0.0 is equal to +0.0.
 ///
 ///
@@ -383,7 +383,7 @@ impl<'a> FdecstpEmitter for Assembler<'a> {
     }
 }
 
-/// `FDIV` (FDIV). 
+/// `FDIV` (FDIV).
 /// Divides the destination operand by the source operand and stores the result in the destination location. The destination operand (dividend) is always in an FPU register; the source operand (divisor) can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format, word or doubleword integer format.
 ///
 ///
@@ -408,7 +408,7 @@ impl<'a> FdivEmitter_1<Mem> for Assembler<'a> {
     }
 }
 
-/// `FDIV` (FDIV). 
+/// `FDIV` (FDIV).
 /// Divides the destination operand by the source operand and stores the result in the destination location. The destination operand (dividend) is always in an FPU register; the source operand (divisor) can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format, word or doubleword integer format.
 ///
 ///
@@ -433,7 +433,7 @@ impl<'a> FdivEmitter_2<St, St> for Assembler<'a> {
     }
 }
 
-/// `FDIVP` (FDIVP). 
+/// `FDIVP` (FDIVP).
 /// Divides the destination operand by the source operand and stores the result in the destination location. The destination operand (dividend) is always in an FPU register; the source operand (divisor) can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format, word or doubleword integer format.
 ///
 ///
@@ -458,7 +458,7 @@ impl<'a> FdivpEmitter<St, St> for Assembler<'a> {
     }
 }
 
-/// `FDIVR` (FDIVR). 
+/// `FDIVR` (FDIVR).
 /// Divides the source operand by the destination operand and stores the result in the destination location. The destination operand (divisor) is always in an FPU register; the source operand (dividend) can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format, word or doubleword integer format.
 ///
 ///
@@ -483,7 +483,7 @@ impl<'a> FdivrEmitter_1<Mem> for Assembler<'a> {
     }
 }
 
-/// `FDIVR` (FDIVR). 
+/// `FDIVR` (FDIVR).
 /// Divides the source operand by the destination operand and stores the result in the destination location. The destination operand (divisor) is always in an FPU register; the source operand (dividend) can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format, word or doubleword integer format.
 ///
 ///
@@ -508,7 +508,7 @@ impl<'a> FdivrEmitter_2<St, St> for Assembler<'a> {
     }
 }
 
-/// `FDIVRP` (FDIVRP). 
+/// `FDIVRP` (FDIVRP).
 /// Divides the source operand by the destination operand and stores the result in the destination location. The destination operand (divisor) is always in an FPU register; the source operand (dividend) can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format, word or doubleword integer format.
 ///
 ///
@@ -554,7 +554,7 @@ impl<'a> FfreeEmitter<St> for Assembler<'a> {
     }
 }
 
-/// `FIADD` (FIADD). 
+/// `FIADD` (FIADD).
 /// Adds the destination and source operands and stores the sum in the destination location. The destination operand is always an FPU register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
 ///
 ///
@@ -579,7 +579,7 @@ impl<'a> FiaddEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `FICOM` (FICOM). 
+/// `FICOM` (FICOM).
 /// Compares the value in ST(0) with an integer source operand and sets the condition code flags C0, C2, and C3 in the FPU status word according to the results (see table below). The integer value is converted to double extended-precision floating-point format before the comparison is made.
 ///
 ///
@@ -604,7 +604,7 @@ impl<'a> FicomEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `FICOMP` (FICOMP). 
+/// `FICOMP` (FICOMP).
 /// Compares the value in ST(0) with an integer source operand and sets the condition code flags C0, C2, and C3 in the FPU status word according to the results (see table below). The integer value is converted to double extended-precision floating-point format before the comparison is made.
 ///
 ///
@@ -629,7 +629,7 @@ impl<'a> FicompEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `FIDIV` (FIDIV). 
+/// `FIDIV` (FIDIV).
 /// Divides the destination operand by the source operand and stores the result in the destination location. The destination operand (dividend) is always in an FPU register; the source operand (divisor) can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format, word or doubleword integer format.
 ///
 ///
@@ -654,7 +654,7 @@ impl<'a> FidivEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `FIDIVR` (FIDIVR). 
+/// `FIDIVR` (FIDIVR).
 /// Divides the source operand by the destination operand and stores the result in the destination location. The destination operand (divisor) is always in an FPU register; the source operand (dividend) can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format, word or doubleword integer format.
 ///
 ///
@@ -679,7 +679,7 @@ impl<'a> FidivrEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `FILD` (FILD). 
+/// `FILD` (FILD).
 /// Converts the signed-integer source operand into double extended-precision floating-point format and pushes the value onto the FPU register stack. The source operand can be a word, doubleword, or quadword integer. It is loaded without rounding errors. The sign of the source operand is preserved.
 ///
 ///
@@ -704,7 +704,7 @@ impl<'a> FildEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `FIMUL` (FIMUL). 
+/// `FIMUL` (FIMUL).
 /// Multiplies the destination and source operands and stores the product in the destination location. The destination operand is always an FPU data register; the source operand can be an FPU data register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
 ///
 ///
@@ -750,7 +750,7 @@ impl<'a> FincstpEmitter for Assembler<'a> {
     }
 }
 
-/// `FINIT` (FINIT). 
+/// `FINIT` (FINIT).
 /// Sets the FPU control, status, tag, instruction pointer, and data pointer registers to their default states. The FPU control word is set to 037FH (round to nearest, all exceptions masked, 64-bit precision). The status word is cleared (no exception flags set, TOP is set to 0). The data registers in the register stack are left unchanged, but they are all tagged as empty (11B). Both the instruction and data pointers are cleared.
 ///
 ///
@@ -775,7 +775,7 @@ impl<'a> FinitEmitter for Assembler<'a> {
     }
 }
 
-/// `FIST` (FIST). 
+/// `FIST` (FIST).
 /// The FIST instruction converts the value in the ST(0) register to a signed integer and stores the result in the destination operand. Values can be stored in word or doubleword integer format. The destination operand specifies the address where the first byte of the destination value is to be stored.
 ///
 ///
@@ -800,7 +800,7 @@ impl<'a> FistEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `FISTP` (FISTP). 
+/// `FISTP` (FISTP).
 /// The FIST instruction converts the value in the ST(0) register to a signed integer and stores the result in the destination operand. Values can be stored in word or doubleword integer format. The destination operand specifies the address where the first byte of the destination value is to be stored.
 ///
 ///
@@ -825,7 +825,7 @@ impl<'a> FistpEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `FISUB` (FISUB). 
+/// `FISUB` (FISUB).
 /// Subtracts the source operand from the destination operand and stores the difference in the destination location. The destination operand is always an FPU data register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
 ///
 ///
@@ -850,7 +850,7 @@ impl<'a> FisubEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `FISUBR` (FISUBR). 
+/// `FISUBR` (FISUBR).
 /// Subtracts the destination operand from the source operand and stores the difference in the destination location. The destination operand is always an FPU register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
 ///
 ///
@@ -875,7 +875,7 @@ impl<'a> FisubrEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `FLD` (FLD). 
+/// `FLD` (FLD).
 /// Pushes the source operand onto the FPU register stack. The source operand can be in single precision, double precision, or double extended-precision floating-point format. If the source operand is in single precision or double precision floating-point format, it is automatically converted to the double extended-precision floating-point format before being pushed on the stack.
 ///
 ///
@@ -907,7 +907,7 @@ impl<'a> FldEmitter<St> for Assembler<'a> {
     }
 }
 
-/// `FLD1` (FLD1). 
+/// `FLD1` (FLD1).
 /// Push one of seven commonly used constants (in double extended-precision floating-point format) onto the FPU register stack. The constants that can be loaded with these instructions include +1.0, +0.0, log210, log2e, π, log102, and loge2. For each constant, an internal 66-bit constant is rounded (as specified by the RC field in the FPU control word) to double extended-precision floating-point format. The inexact-result exception (#P) is not generated as a result of the rounding, nor is the C1 flag set in the x87 FPU status word if the value is rounded up.
 ///
 ///
@@ -974,7 +974,7 @@ impl<'a> FldenvEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `FLDL2E` (FLDL2E). 
+/// `FLDL2E` (FLDL2E).
 /// Push one of seven commonly used constants (in double extended-precision floating-point format) onto the FPU register stack. The constants that can be loaded with these instructions include +1.0, +0.0, log210, log2e, π, log102, and loge2. For each constant, an internal 66-bit constant is rounded (as specified by the RC field in the FPU control word) to double extended-precision floating-point format. The inexact-result exception (#P) is not generated as a result of the rounding, nor is the C1 flag set in the x87 FPU status word if the value is rounded up.
 ///
 ///
@@ -999,7 +999,7 @@ impl<'a> Fldl2eEmitter for Assembler<'a> {
     }
 }
 
-/// `FLDL2T` (FLDL2T). 
+/// `FLDL2T` (FLDL2T).
 /// Push one of seven commonly used constants (in double extended-precision floating-point format) onto the FPU register stack. The constants that can be loaded with these instructions include +1.0, +0.0, log210, log2e, π, log102, and loge2. For each constant, an internal 66-bit constant is rounded (as specified by the RC field in the FPU control word) to double extended-precision floating-point format. The inexact-result exception (#P) is not generated as a result of the rounding, nor is the C1 flag set in the x87 FPU status word if the value is rounded up.
 ///
 ///
@@ -1024,7 +1024,7 @@ impl<'a> Fldl2tEmitter for Assembler<'a> {
     }
 }
 
-/// `FLDLG2` (FLDLG2). 
+/// `FLDLG2` (FLDLG2).
 /// Push one of seven commonly used constants (in double extended-precision floating-point format) onto the FPU register stack. The constants that can be loaded with these instructions include +1.0, +0.0, log210, log2e, π, log102, and loge2. For each constant, an internal 66-bit constant is rounded (as specified by the RC field in the FPU control word) to double extended-precision floating-point format. The inexact-result exception (#P) is not generated as a result of the rounding, nor is the C1 flag set in the x87 FPU status word if the value is rounded up.
 ///
 ///
@@ -1049,7 +1049,7 @@ impl<'a> Fldlg2Emitter for Assembler<'a> {
     }
 }
 
-/// `FLDLN2` (FLDLN2). 
+/// `FLDLN2` (FLDLN2).
 /// Push one of seven commonly used constants (in double extended-precision floating-point format) onto the FPU register stack. The constants that can be loaded with these instructions include +1.0, +0.0, log210, log2e, π, log102, and loge2. For each constant, an internal 66-bit constant is rounded (as specified by the RC field in the FPU control word) to double extended-precision floating-point format. The inexact-result exception (#P) is not generated as a result of the rounding, nor is the C1 flag set in the x87 FPU status word if the value is rounded up.
 ///
 ///
@@ -1074,7 +1074,7 @@ impl<'a> Fldln2Emitter for Assembler<'a> {
     }
 }
 
-/// `FLDPI` (FLDPI). 
+/// `FLDPI` (FLDPI).
 /// Push one of seven commonly used constants (in double extended-precision floating-point format) onto the FPU register stack. The constants that can be loaded with these instructions include +1.0, +0.0, log210, log2e, π, log102, and loge2. For each constant, an internal 66-bit constant is rounded (as specified by the RC field in the FPU control word) to double extended-precision floating-point format. The inexact-result exception (#P) is not generated as a result of the rounding, nor is the C1 flag set in the x87 FPU status word if the value is rounded up.
 ///
 ///
@@ -1099,7 +1099,7 @@ impl<'a> FldpiEmitter for Assembler<'a> {
     }
 }
 
-/// `FLDZ` (FLDZ). 
+/// `FLDZ` (FLDZ).
 /// Push one of seven commonly used constants (in double extended-precision floating-point format) onto the FPU register stack. The constants that can be loaded with these instructions include +1.0, +0.0, log210, log2e, π, log102, and loge2. For each constant, an internal 66-bit constant is rounded (as specified by the RC field in the FPU control word) to double extended-precision floating-point format. The inexact-result exception (#P) is not generated as a result of the rounding, nor is the C1 flag set in the x87 FPU status word if the value is rounded up.
 ///
 ///
@@ -1124,7 +1124,7 @@ impl<'a> FldzEmitter for Assembler<'a> {
     }
 }
 
-/// `FMUL` (FMUL). 
+/// `FMUL` (FMUL).
 /// Multiplies the destination and source operands and stores the product in the destination location. The destination operand is always an FPU data register; the source operand can be an FPU data register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
 ///
 ///
@@ -1149,7 +1149,7 @@ impl<'a> FmulEmitter_1<Mem> for Assembler<'a> {
     }
 }
 
-/// `FMUL` (FMUL). 
+/// `FMUL` (FMUL).
 /// Multiplies the destination and source operands and stores the product in the destination location. The destination operand is always an FPU data register; the source operand can be an FPU data register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
 ///
 ///
@@ -1174,7 +1174,7 @@ impl<'a> FmulEmitter_2<St, St> for Assembler<'a> {
     }
 }
 
-/// `FMULP` (FMULP). 
+/// `FMULP` (FMULP).
 /// Multiplies the destination and source operands and stores the product in the destination location. The destination operand is always an FPU data register; the source operand can be an FPU data register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
 ///
 ///
@@ -1241,7 +1241,7 @@ impl<'a> FpatanEmitter for Assembler<'a> {
     }
 }
 
-/// `FPREM` (FPREM). 
+/// `FPREM` (FPREM).
 /// Computes the remainder obtained from dividing the value in the ST(0) register (the dividend) by the value in the ST(1) register (the divisor or modulus), and stores the result in ST(0). The remainder represents the following value
 ///
 ///
@@ -1266,7 +1266,7 @@ impl<'a> FpremEmitter for Assembler<'a> {
     }
 }
 
-/// `FPREM1` (FPREM1). 
+/// `FPREM1` (FPREM1).
 /// Computes the IEEE remainder obtained from dividing the value in the ST(0) register (the dividend) by the value in the ST(1) register (the divisor or modulus), and stores the result in ST(0). The remainder represents the following value
 ///
 ///
@@ -1291,7 +1291,7 @@ impl<'a> Fprem1Emitter for Assembler<'a> {
     }
 }
 
-/// `FPTAN` (FPTAN). 
+/// `FPTAN` (FPTAN).
 /// Computes the approximate tangent of the source operand in register ST(0), stores the result in ST(0), and pushes a 1.0 onto the FPU register stack. The source operand must be given in radians and must be less than ±263. The following table shows the unmasked results obtained when computing the partial tangent of various classes of numbers, assuming that underflow does not occur.
 ///
 ///
@@ -1358,7 +1358,7 @@ impl<'a> FrstorEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `FSAVE` (FSAVE). 
+/// `FSAVE` (FSAVE).
 /// Stores the current FPU state (operating environment and register stack) at the specified destination in memory, and then re-initializes the FPU. The FSAVE instruction checks for and handles pending unmasked floating-point exceptions before storing the FPU state; the FNSAVE instruction does not.
 ///
 ///
@@ -1425,7 +1425,7 @@ impl<'a> FsinEmitter for Assembler<'a> {
     }
 }
 
-/// `FSINCOS` (FSINCOS). 
+/// `FSINCOS` (FSINCOS).
 /// Computes both the approximate sine and the cosine of the source operand in register ST(0), stores the sine in ST(0), and pushes the cosine onto the top of the FPU register stack. (This instruction is faster than executing the FSIN and FCOS instructions in succession.)
 ///
 ///
@@ -1471,7 +1471,7 @@ impl<'a> FsqrtEmitter for Assembler<'a> {
     }
 }
 
-/// `FST` (FST). 
+/// `FST` (FST).
 /// The FST instruction copies the value in the ST(0) register to the destination operand, which can be a memory location or another register in the FPU register stack. When storing the value in memory, the value is converted to single precision or double precision floating-point format.
 ///
 ///
@@ -1503,7 +1503,7 @@ impl<'a> FstEmitter<St> for Assembler<'a> {
     }
 }
 
-/// `FSTCW` (FSTCW). 
+/// `FSTCW` (FSTCW).
 /// Stores the current value of the FPU control word at the specified destination in memory. The FSTCW instruction checks for and handles pending unmasked floating-point exceptions before storing the control word; the FNSTCW instruction does not.
 ///
 ///
@@ -1528,7 +1528,7 @@ impl<'a> FstcwEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `FSTENV` (FSTENV). 
+/// `FSTENV` (FSTENV).
 /// Saves the current FPU operating environment at the memory location specified with the destination operand, and then masks all floating-point exceptions. The FPU operating environment consists of the FPU control word, status word, tag word, instruction pointer, data pointer, and last opcode. Figures 8-9 through 8-12 in the Intel® 64 and IA-32 Architectures Software Developer’s Manual, Volume 1, show the layout in memory of the stored environment, depending on the operating mode of the processor (protected or real) and the current operand-size attribute (16-bit or 32-bit). In virtual-8086 mode, the real mode layouts are used.
 ///
 ///
@@ -1553,7 +1553,7 @@ impl<'a> FstenvEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `FSTP` (FSTP). 
+/// `FSTP` (FSTP).
 /// The FST instruction copies the value in the ST(0) register to the destination operand, which can be a memory location or another register in the FPU register stack. When storing the value in memory, the value is converted to single precision or double precision floating-point format.
 ///
 ///
@@ -1585,7 +1585,7 @@ impl<'a> FstpEmitter<St> for Assembler<'a> {
     }
 }
 
-/// `FSTSW` (FSTSW). 
+/// `FSTSW` (FSTSW).
 /// Stores the current value of the x87 FPU status word in the destination location. The destination operand can be either a two-byte memory location or the AX register. The FSTSW instruction checks for and handles pending unmasked floating-point exceptions before storing the status word; the FNSTSW instruction does not.
 ///
 ///
@@ -1617,7 +1617,7 @@ impl<'a> FstswEmitter<Gpd> for Assembler<'a> {
     }
 }
 
-/// `FSUB` (FSUB). 
+/// `FSUB` (FSUB).
 /// Subtracts the source operand from the destination operand and stores the difference in the destination location. The destination operand is always an FPU data register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
 ///
 ///
@@ -1642,7 +1642,7 @@ impl<'a> FsubEmitter_1<Mem> for Assembler<'a> {
     }
 }
 
-/// `FSUB` (FSUB). 
+/// `FSUB` (FSUB).
 /// Subtracts the source operand from the destination operand and stores the difference in the destination location. The destination operand is always an FPU data register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
 ///
 ///
@@ -1667,7 +1667,7 @@ impl<'a> FsubEmitter_2<St, St> for Assembler<'a> {
     }
 }
 
-/// `FSUBP` (FSUBP). 
+/// `FSUBP` (FSUBP).
 /// Subtracts the source operand from the destination operand and stores the difference in the destination location. The destination operand is always an FPU data register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
 ///
 ///
@@ -1692,7 +1692,7 @@ impl<'a> FsubpEmitter<St, St> for Assembler<'a> {
     }
 }
 
-/// `FSUBR` (FSUBR). 
+/// `FSUBR` (FSUBR).
 /// Subtracts the destination operand from the source operand and stores the difference in the destination location. The destination operand is always an FPU register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
 ///
 ///
@@ -1717,7 +1717,7 @@ impl<'a> FsubrEmitter_1<Mem> for Assembler<'a> {
     }
 }
 
-/// `FSUBR` (FSUBR). 
+/// `FSUBR` (FSUBR).
 /// Subtracts the destination operand from the source operand and stores the difference in the destination location. The destination operand is always an FPU register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
 ///
 ///
@@ -1742,7 +1742,7 @@ impl<'a> FsubrEmitter_2<St, St> for Assembler<'a> {
     }
 }
 
-/// `FSUBRP` (FSUBRP). 
+/// `FSUBRP` (FSUBRP).
 /// Subtracts the destination operand from the source operand and stores the difference in the destination location. The destination operand is always an FPU register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
 ///
 ///
@@ -1788,7 +1788,7 @@ impl<'a> FtstEmitter for Assembler<'a> {
     }
 }
 
-/// `FUCOM` (FUCOM). 
+/// `FUCOM` (FUCOM).
 /// Performs an unordered comparison of the contents of register ST(0) and ST(i) and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). If no operand is specified, the contents of registers ST(0) and ST(1) are compared. The sign of zero is ignored, so that –0.0 is equal to +0.0.
 ///
 ///
@@ -1813,7 +1813,7 @@ impl<'a> FucomEmitter<St> for Assembler<'a> {
     }
 }
 
-/// `FUCOMP` (FUCOMP). 
+/// `FUCOMP` (FUCOMP).
 /// Performs an unordered comparison of the contents of register ST(0) and ST(i) and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). If no operand is specified, the contents of registers ST(0) and ST(1) are compared. The sign of zero is ignored, so that –0.0 is equal to +0.0.
 ///
 ///
@@ -1838,7 +1838,7 @@ impl<'a> FucompEmitter<St> for Assembler<'a> {
     }
 }
 
-/// `FUCOMPP` (FUCOMPP). 
+/// `FUCOMPP` (FUCOMPP).
 /// Performs an unordered comparison of the contents of register ST(0) and ST(i) and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). If no operand is specified, the contents of registers ST(0) and ST(1) are compared. The sign of zero is ignored, so that –0.0 is equal to +0.0.
 ///
 ///
@@ -1884,7 +1884,7 @@ impl<'a> FxamEmitter for Assembler<'a> {
     }
 }
 
-/// `FXCH` (FXCH). 
+/// `FXCH` (FXCH).
 /// Exchanges the contents of registers ST(0) and ST(i). If no source operand is specified, the contents of ST(0) and ST(1) are exchanged.
 ///
 ///
@@ -1909,7 +1909,7 @@ impl<'a> FxchEmitter<St> for Assembler<'a> {
     }
 }
 
-/// `FXTRACT` (FXTRACT). 
+/// `FXTRACT` (FXTRACT).
 /// Separates the source value in the ST(0) register into its exponent and significand, stores the exponent in ST(0), and pushes the significand onto the register stack. Following this operation, the new top-of-stack register ST(0) contains the value of the original significand expressed as a floating-point value. The sign and significand of this value are the same as those found in the source operand, and the exponent is 3FFFH (biased value for a true exponent of zero). The ST(1) register contains the value of the original operand’s true (unbiased) exponent expressed as a floating-point value. (The operation performed by this instruction is a superset of the IEEE-recommended logb(x) function.)
 ///
 ///
@@ -1934,7 +1934,7 @@ impl<'a> FxtractEmitter for Assembler<'a> {
     }
 }
 
-/// `FYL2X` (FYL2X). 
+/// `FYL2X` (FYL2X).
 /// Computes (ST(1) ∗ log2 (ST(0))), stores the result in register ST(1), and pops the FPU register stack. The source operand in ST(0) must be a non-zero positive number.
 ///
 ///
@@ -1959,7 +1959,7 @@ impl<'a> Fyl2xEmitter for Assembler<'a> {
     }
 }
 
-/// `FYL2XP1` (FYL2XP1). 
+/// `FYL2XP1` (FYL2XP1).
 /// Computes (ST(1) ∗ log2(ST(0) + 1.0)), stores the result in register ST(1), and pops the FPU register stack. The source operand in ST(0) must be in the range
 ///
 ///
@@ -1984,7 +1984,6 @@ impl<'a> Fyl2xp1Emitter for Assembler<'a> {
     }
 }
 
-
 impl<'a> Assembler<'a> {
     /// `F2XM1`.
     ///
@@ -1999,7 +1998,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn f2xm1(&mut self)
-    where Assembler<'a>: F2xm1Emitter {
+    where
+        Assembler<'a>: F2xm1Emitter,
+    {
         <Self as F2xm1Emitter>::f2xm1(self);
     }
     /// `FABS`.
@@ -2015,10 +2016,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fabs(&mut self)
-    where Assembler<'a>: FabsEmitter {
+    where
+        Assembler<'a>: FabsEmitter,
+    {
         <Self as FabsEmitter>::fabs(self);
     }
-    /// `FADD` (FADD). 
+    /// `FADD` (FADD).
     /// Adds the destination and source operands and stores the sum in the destination location. The destination operand is always an FPU register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
     ///
     ///
@@ -2035,10 +2038,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fadd_1<A>(&mut self, op0: A)
-    where Assembler<'a>: FaddEmitter_1<A> {
+    where
+        Assembler<'a>: FaddEmitter_1<A>,
+    {
         <Self as FaddEmitter_1<A>>::fadd_1(self, op0);
     }
-    /// `FADD` (FADD). 
+    /// `FADD` (FADD).
     /// Adds the destination and source operands and stores the sum in the destination location. The destination operand is always an FPU register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
     ///
     ///
@@ -2055,10 +2060,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fadd_2<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: FaddEmitter_2<A, B> {
+    where
+        Assembler<'a>: FaddEmitter_2<A, B>,
+    {
         <Self as FaddEmitter_2<A, B>>::fadd_2(self, op0, op1);
     }
-    /// `FADDP` (FADDP). 
+    /// `FADDP` (FADDP).
     /// Adds the destination and source operands and stores the sum in the destination location. The destination operand is always an FPU register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
     ///
     ///
@@ -2075,10 +2082,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn faddp<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: FaddpEmitter<A, B> {
+    where
+        Assembler<'a>: FaddpEmitter<A, B>,
+    {
         <Self as FaddpEmitter<A, B>>::faddp(self, op0, op1);
     }
-    /// `FBLD` (FBLD). 
+    /// `FBLD` (FBLD).
     /// Converts the BCD source operand into double extended-precision floating-point format and pushes the value onto the FPU stack. The source operand is loaded without rounding errors. The sign of the source operand is preserved, including that of −0.
     ///
     ///
@@ -2095,7 +2104,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fbld<A>(&mut self, op0: A)
-    where Assembler<'a>: FbldEmitter<A> {
+    where
+        Assembler<'a>: FbldEmitter<A>,
+    {
         <Self as FbldEmitter<A>>::fbld(self, op0);
     }
     /// `FBSTP`.
@@ -2111,7 +2122,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fbstp<A>(&mut self, op0: A)
-    where Assembler<'a>: FbstpEmitter<A> {
+    where
+        Assembler<'a>: FbstpEmitter<A>,
+    {
         <Self as FbstpEmitter<A>>::fbstp(self, op0);
     }
     /// `FCHS`.
@@ -2127,10 +2140,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fchs(&mut self)
-    where Assembler<'a>: FchsEmitter {
+    where
+        Assembler<'a>: FchsEmitter,
+    {
         <Self as FchsEmitter>::fchs(self);
     }
-    /// `FCLEX` (FCLEX). 
+    /// `FCLEX` (FCLEX).
     /// Clears the floating-point exception flags (PE, UE, OE, ZE, DE, and IE), the exception summary status flag (ES), the stack fault flag (SF), and the busy flag (B) in the FPU status word. The FCLEX instruction checks for and handles any pending unmasked floating-point exceptions before clearing the exception flags; the FNCLEX instruction does not.
     ///
     ///
@@ -2147,10 +2162,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fclex(&mut self)
-    where Assembler<'a>: FclexEmitter {
+    where
+        Assembler<'a>: FclexEmitter,
+    {
         <Self as FclexEmitter>::fclex(self);
     }
-    /// `FCOM` (FCOM). 
+    /// `FCOM` (FCOM).
     /// Compares the contents of register ST(0) and source value and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). The source operand can be a data register or a memory location. If no source operand is given, the value in ST(0) is compared with the value in ST(1). The sign of zero is ignored, so that –0.0 is equal to +0.0.
     ///
     ///
@@ -2167,10 +2184,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fcom_1<A>(&mut self, op0: A)
-    where Assembler<'a>: FcomEmitter_1<A> {
+    where
+        Assembler<'a>: FcomEmitter_1<A>,
+    {
         <Self as FcomEmitter_1<A>>::fcom_1(self, op0);
     }
-    /// `FCOM` (FCOM). 
+    /// `FCOM` (FCOM).
     /// Compares the contents of register ST(0) and source value and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). The source operand can be a data register or a memory location. If no source operand is given, the value in ST(0) is compared with the value in ST(1). The sign of zero is ignored, so that –0.0 is equal to +0.0.
     ///
     ///
@@ -2187,10 +2206,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fcom_2<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: FcomEmitter_2<A, B> {
+    where
+        Assembler<'a>: FcomEmitter_2<A, B>,
+    {
         <Self as FcomEmitter_2<A, B>>::fcom_2(self, op0, op1);
     }
-    /// `FCOMP` (FCOMP). 
+    /// `FCOMP` (FCOMP).
     /// Compares the contents of register ST(0) and source value and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). The source operand can be a data register or a memory location. If no source operand is given, the value in ST(0) is compared with the value in ST(1). The sign of zero is ignored, so that –0.0 is equal to +0.0.
     ///
     ///
@@ -2207,10 +2228,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fcomp_1<A>(&mut self, op0: A)
-    where Assembler<'a>: FcompEmitter_1<A> {
+    where
+        Assembler<'a>: FcompEmitter_1<A>,
+    {
         <Self as FcompEmitter_1<A>>::fcomp_1(self, op0);
     }
-    /// `FCOMP` (FCOMP). 
+    /// `FCOMP` (FCOMP).
     /// Compares the contents of register ST(0) and source value and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). The source operand can be a data register or a memory location. If no source operand is given, the value in ST(0) is compared with the value in ST(1). The sign of zero is ignored, so that –0.0 is equal to +0.0.
     ///
     ///
@@ -2227,10 +2250,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fcomp_2<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: FcompEmitter_2<A, B> {
+    where
+        Assembler<'a>: FcompEmitter_2<A, B>,
+    {
         <Self as FcompEmitter_2<A, B>>::fcomp_2(self, op0, op1);
     }
-    /// `FCOMPP` (FCOMPP). 
+    /// `FCOMPP` (FCOMPP).
     /// Compares the contents of register ST(0) and source value and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). The source operand can be a data register or a memory location. If no source operand is given, the value in ST(0) is compared with the value in ST(1). The sign of zero is ignored, so that –0.0 is equal to +0.0.
     ///
     ///
@@ -2247,7 +2272,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fcompp(&mut self)
-    where Assembler<'a>: FcomppEmitter {
+    where
+        Assembler<'a>: FcomppEmitter,
+    {
         <Self as FcomppEmitter>::fcompp(self);
     }
     /// `FCOS`.
@@ -2263,7 +2290,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fcos(&mut self)
-    where Assembler<'a>: FcosEmitter {
+    where
+        Assembler<'a>: FcosEmitter,
+    {
         <Self as FcosEmitter>::fcos(self);
     }
     /// `FDECSTP`.
@@ -2279,10 +2308,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fdecstp(&mut self)
-    where Assembler<'a>: FdecstpEmitter {
+    where
+        Assembler<'a>: FdecstpEmitter,
+    {
         <Self as FdecstpEmitter>::fdecstp(self);
     }
-    /// `FDIV` (FDIV). 
+    /// `FDIV` (FDIV).
     /// Divides the destination operand by the source operand and stores the result in the destination location. The destination operand (dividend) is always in an FPU register; the source operand (divisor) can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format, word or doubleword integer format.
     ///
     ///
@@ -2299,10 +2330,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fdiv_1<A>(&mut self, op0: A)
-    where Assembler<'a>: FdivEmitter_1<A> {
+    where
+        Assembler<'a>: FdivEmitter_1<A>,
+    {
         <Self as FdivEmitter_1<A>>::fdiv_1(self, op0);
     }
-    /// `FDIV` (FDIV). 
+    /// `FDIV` (FDIV).
     /// Divides the destination operand by the source operand and stores the result in the destination location. The destination operand (dividend) is always in an FPU register; the source operand (divisor) can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format, word or doubleword integer format.
     ///
     ///
@@ -2319,10 +2352,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fdiv_2<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: FdivEmitter_2<A, B> {
+    where
+        Assembler<'a>: FdivEmitter_2<A, B>,
+    {
         <Self as FdivEmitter_2<A, B>>::fdiv_2(self, op0, op1);
     }
-    /// `FDIVP` (FDIVP). 
+    /// `FDIVP` (FDIVP).
     /// Divides the destination operand by the source operand and stores the result in the destination location. The destination operand (dividend) is always in an FPU register; the source operand (divisor) can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format, word or doubleword integer format.
     ///
     ///
@@ -2339,10 +2374,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fdivp<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: FdivpEmitter<A, B> {
+    where
+        Assembler<'a>: FdivpEmitter<A, B>,
+    {
         <Self as FdivpEmitter<A, B>>::fdivp(self, op0, op1);
     }
-    /// `FDIVR` (FDIVR). 
+    /// `FDIVR` (FDIVR).
     /// Divides the source operand by the destination operand and stores the result in the destination location. The destination operand (divisor) is always in an FPU register; the source operand (dividend) can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format, word or doubleword integer format.
     ///
     ///
@@ -2359,10 +2396,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fdivr_1<A>(&mut self, op0: A)
-    where Assembler<'a>: FdivrEmitter_1<A> {
+    where
+        Assembler<'a>: FdivrEmitter_1<A>,
+    {
         <Self as FdivrEmitter_1<A>>::fdivr_1(self, op0);
     }
-    /// `FDIVR` (FDIVR). 
+    /// `FDIVR` (FDIVR).
     /// Divides the source operand by the destination operand and stores the result in the destination location. The destination operand (divisor) is always in an FPU register; the source operand (dividend) can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format, word or doubleword integer format.
     ///
     ///
@@ -2379,10 +2418,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fdivr_2<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: FdivrEmitter_2<A, B> {
+    where
+        Assembler<'a>: FdivrEmitter_2<A, B>,
+    {
         <Self as FdivrEmitter_2<A, B>>::fdivr_2(self, op0, op1);
     }
-    /// `FDIVRP` (FDIVRP). 
+    /// `FDIVRP` (FDIVRP).
     /// Divides the source operand by the destination operand and stores the result in the destination location. The destination operand (divisor) is always in an FPU register; the source operand (dividend) can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format, word or doubleword integer format.
     ///
     ///
@@ -2399,7 +2440,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fdivrp<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: FdivrpEmitter<A, B> {
+    where
+        Assembler<'a>: FdivrpEmitter<A, B>,
+    {
         <Self as FdivrpEmitter<A, B>>::fdivrp(self, op0, op1);
     }
     /// `FFREE`.
@@ -2415,10 +2458,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn ffree<A>(&mut self, op0: A)
-    where Assembler<'a>: FfreeEmitter<A> {
+    where
+        Assembler<'a>: FfreeEmitter<A>,
+    {
         <Self as FfreeEmitter<A>>::ffree(self, op0);
     }
-    /// `FIADD` (FIADD). 
+    /// `FIADD` (FIADD).
     /// Adds the destination and source operands and stores the sum in the destination location. The destination operand is always an FPU register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
     ///
     ///
@@ -2435,10 +2480,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fiadd<A>(&mut self, op0: A)
-    where Assembler<'a>: FiaddEmitter<A> {
+    where
+        Assembler<'a>: FiaddEmitter<A>,
+    {
         <Self as FiaddEmitter<A>>::fiadd(self, op0);
     }
-    /// `FICOM` (FICOM). 
+    /// `FICOM` (FICOM).
     /// Compares the value in ST(0) with an integer source operand and sets the condition code flags C0, C2, and C3 in the FPU status word according to the results (see table below). The integer value is converted to double extended-precision floating-point format before the comparison is made.
     ///
     ///
@@ -2455,10 +2502,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn ficom<A>(&mut self, op0: A)
-    where Assembler<'a>: FicomEmitter<A> {
+    where
+        Assembler<'a>: FicomEmitter<A>,
+    {
         <Self as FicomEmitter<A>>::ficom(self, op0);
     }
-    /// `FICOMP` (FICOMP). 
+    /// `FICOMP` (FICOMP).
     /// Compares the value in ST(0) with an integer source operand and sets the condition code flags C0, C2, and C3 in the FPU status word according to the results (see table below). The integer value is converted to double extended-precision floating-point format before the comparison is made.
     ///
     ///
@@ -2475,10 +2524,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn ficomp<A>(&mut self, op0: A)
-    where Assembler<'a>: FicompEmitter<A> {
+    where
+        Assembler<'a>: FicompEmitter<A>,
+    {
         <Self as FicompEmitter<A>>::ficomp(self, op0);
     }
-    /// `FIDIV` (FIDIV). 
+    /// `FIDIV` (FIDIV).
     /// Divides the destination operand by the source operand and stores the result in the destination location. The destination operand (dividend) is always in an FPU register; the source operand (divisor) can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format, word or doubleword integer format.
     ///
     ///
@@ -2495,10 +2546,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fidiv<A>(&mut self, op0: A)
-    where Assembler<'a>: FidivEmitter<A> {
+    where
+        Assembler<'a>: FidivEmitter<A>,
+    {
         <Self as FidivEmitter<A>>::fidiv(self, op0);
     }
-    /// `FIDIVR` (FIDIVR). 
+    /// `FIDIVR` (FIDIVR).
     /// Divides the source operand by the destination operand and stores the result in the destination location. The destination operand (divisor) is always in an FPU register; the source operand (dividend) can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format, word or doubleword integer format.
     ///
     ///
@@ -2515,10 +2568,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fidivr<A>(&mut self, op0: A)
-    where Assembler<'a>: FidivrEmitter<A> {
+    where
+        Assembler<'a>: FidivrEmitter<A>,
+    {
         <Self as FidivrEmitter<A>>::fidivr(self, op0);
     }
-    /// `FILD` (FILD). 
+    /// `FILD` (FILD).
     /// Converts the signed-integer source operand into double extended-precision floating-point format and pushes the value onto the FPU register stack. The source operand can be a word, doubleword, or quadword integer. It is loaded without rounding errors. The sign of the source operand is preserved.
     ///
     ///
@@ -2535,10 +2590,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fild<A>(&mut self, op0: A)
-    where Assembler<'a>: FildEmitter<A> {
+    where
+        Assembler<'a>: FildEmitter<A>,
+    {
         <Self as FildEmitter<A>>::fild(self, op0);
     }
-    /// `FIMUL` (FIMUL). 
+    /// `FIMUL` (FIMUL).
     /// Multiplies the destination and source operands and stores the product in the destination location. The destination operand is always an FPU data register; the source operand can be an FPU data register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
     ///
     ///
@@ -2555,7 +2612,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fimul<A>(&mut self, op0: A)
-    where Assembler<'a>: FimulEmitter<A> {
+    where
+        Assembler<'a>: FimulEmitter<A>,
+    {
         <Self as FimulEmitter<A>>::fimul(self, op0);
     }
     /// `FINCSTP`.
@@ -2571,10 +2630,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fincstp(&mut self)
-    where Assembler<'a>: FincstpEmitter {
+    where
+        Assembler<'a>: FincstpEmitter,
+    {
         <Self as FincstpEmitter>::fincstp(self);
     }
-    /// `FINIT` (FINIT). 
+    /// `FINIT` (FINIT).
     /// Sets the FPU control, status, tag, instruction pointer, and data pointer registers to their default states. The FPU control word is set to 037FH (round to nearest, all exceptions masked, 64-bit precision). The status word is cleared (no exception flags set, TOP is set to 0). The data registers in the register stack are left unchanged, but they are all tagged as empty (11B). Both the instruction and data pointers are cleared.
     ///
     ///
@@ -2591,10 +2652,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn finit(&mut self)
-    where Assembler<'a>: FinitEmitter {
+    where
+        Assembler<'a>: FinitEmitter,
+    {
         <Self as FinitEmitter>::finit(self);
     }
-    /// `FIST` (FIST). 
+    /// `FIST` (FIST).
     /// The FIST instruction converts the value in the ST(0) register to a signed integer and stores the result in the destination operand. Values can be stored in word or doubleword integer format. The destination operand specifies the address where the first byte of the destination value is to be stored.
     ///
     ///
@@ -2611,10 +2674,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fist<A>(&mut self, op0: A)
-    where Assembler<'a>: FistEmitter<A> {
+    where
+        Assembler<'a>: FistEmitter<A>,
+    {
         <Self as FistEmitter<A>>::fist(self, op0);
     }
-    /// `FISTP` (FISTP). 
+    /// `FISTP` (FISTP).
     /// The FIST instruction converts the value in the ST(0) register to a signed integer and stores the result in the destination operand. Values can be stored in word or doubleword integer format. The destination operand specifies the address where the first byte of the destination value is to be stored.
     ///
     ///
@@ -2631,10 +2696,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fistp<A>(&mut self, op0: A)
-    where Assembler<'a>: FistpEmitter<A> {
+    where
+        Assembler<'a>: FistpEmitter<A>,
+    {
         <Self as FistpEmitter<A>>::fistp(self, op0);
     }
-    /// `FISUB` (FISUB). 
+    /// `FISUB` (FISUB).
     /// Subtracts the source operand from the destination operand and stores the difference in the destination location. The destination operand is always an FPU data register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
     ///
     ///
@@ -2651,10 +2718,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fisub<A>(&mut self, op0: A)
-    where Assembler<'a>: FisubEmitter<A> {
+    where
+        Assembler<'a>: FisubEmitter<A>,
+    {
         <Self as FisubEmitter<A>>::fisub(self, op0);
     }
-    /// `FISUBR` (FISUBR). 
+    /// `FISUBR` (FISUBR).
     /// Subtracts the destination operand from the source operand and stores the difference in the destination location. The destination operand is always an FPU register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
     ///
     ///
@@ -2671,10 +2740,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fisubr<A>(&mut self, op0: A)
-    where Assembler<'a>: FisubrEmitter<A> {
+    where
+        Assembler<'a>: FisubrEmitter<A>,
+    {
         <Self as FisubrEmitter<A>>::fisubr(self, op0);
     }
-    /// `FLD` (FLD). 
+    /// `FLD` (FLD).
     /// Pushes the source operand onto the FPU register stack. The source operand can be in single precision, double precision, or double extended-precision floating-point format. If the source operand is in single precision or double precision floating-point format, it is automatically converted to the double extended-precision floating-point format before being pushed on the stack.
     ///
     ///
@@ -2692,10 +2763,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fld<A>(&mut self, op0: A)
-    where Assembler<'a>: FldEmitter<A> {
+    where
+        Assembler<'a>: FldEmitter<A>,
+    {
         <Self as FldEmitter<A>>::fld(self, op0);
     }
-    /// `FLD1` (FLD1). 
+    /// `FLD1` (FLD1).
     /// Push one of seven commonly used constants (in double extended-precision floating-point format) onto the FPU register stack. The constants that can be loaded with these instructions include +1.0, +0.0, log210, log2e, π, log102, and loge2. For each constant, an internal 66-bit constant is rounded (as specified by the RC field in the FPU control word) to double extended-precision floating-point format. The inexact-result exception (#P) is not generated as a result of the rounding, nor is the C1 flag set in the x87 FPU status word if the value is rounded up.
     ///
     ///
@@ -2712,7 +2785,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fld1(&mut self)
-    where Assembler<'a>: Fld1Emitter {
+    where
+        Assembler<'a>: Fld1Emitter,
+    {
         <Self as Fld1Emitter>::fld1(self);
     }
     /// `FLDCW`.
@@ -2728,7 +2803,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fldcw<A>(&mut self, op0: A)
-    where Assembler<'a>: FldcwEmitter<A> {
+    where
+        Assembler<'a>: FldcwEmitter<A>,
+    {
         <Self as FldcwEmitter<A>>::fldcw(self, op0);
     }
     /// `FLDENV`.
@@ -2744,10 +2821,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fldenv<A>(&mut self, op0: A)
-    where Assembler<'a>: FldenvEmitter<A> {
+    where
+        Assembler<'a>: FldenvEmitter<A>,
+    {
         <Self as FldenvEmitter<A>>::fldenv(self, op0);
     }
-    /// `FLDL2E` (FLDL2E). 
+    /// `FLDL2E` (FLDL2E).
     /// Push one of seven commonly used constants (in double extended-precision floating-point format) onto the FPU register stack. The constants that can be loaded with these instructions include +1.0, +0.0, log210, log2e, π, log102, and loge2. For each constant, an internal 66-bit constant is rounded (as specified by the RC field in the FPU control word) to double extended-precision floating-point format. The inexact-result exception (#P) is not generated as a result of the rounding, nor is the C1 flag set in the x87 FPU status word if the value is rounded up.
     ///
     ///
@@ -2764,10 +2843,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fldl2e(&mut self)
-    where Assembler<'a>: Fldl2eEmitter {
+    where
+        Assembler<'a>: Fldl2eEmitter,
+    {
         <Self as Fldl2eEmitter>::fldl2e(self);
     }
-    /// `FLDL2T` (FLDL2T). 
+    /// `FLDL2T` (FLDL2T).
     /// Push one of seven commonly used constants (in double extended-precision floating-point format) onto the FPU register stack. The constants that can be loaded with these instructions include +1.0, +0.0, log210, log2e, π, log102, and loge2. For each constant, an internal 66-bit constant is rounded (as specified by the RC field in the FPU control word) to double extended-precision floating-point format. The inexact-result exception (#P) is not generated as a result of the rounding, nor is the C1 flag set in the x87 FPU status word if the value is rounded up.
     ///
     ///
@@ -2784,10 +2865,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fldl2t(&mut self)
-    where Assembler<'a>: Fldl2tEmitter {
+    where
+        Assembler<'a>: Fldl2tEmitter,
+    {
         <Self as Fldl2tEmitter>::fldl2t(self);
     }
-    /// `FLDLG2` (FLDLG2). 
+    /// `FLDLG2` (FLDLG2).
     /// Push one of seven commonly used constants (in double extended-precision floating-point format) onto the FPU register stack. The constants that can be loaded with these instructions include +1.0, +0.0, log210, log2e, π, log102, and loge2. For each constant, an internal 66-bit constant is rounded (as specified by the RC field in the FPU control word) to double extended-precision floating-point format. The inexact-result exception (#P) is not generated as a result of the rounding, nor is the C1 flag set in the x87 FPU status word if the value is rounded up.
     ///
     ///
@@ -2804,10 +2887,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fldlg2(&mut self)
-    where Assembler<'a>: Fldlg2Emitter {
+    where
+        Assembler<'a>: Fldlg2Emitter,
+    {
         <Self as Fldlg2Emitter>::fldlg2(self);
     }
-    /// `FLDLN2` (FLDLN2). 
+    /// `FLDLN2` (FLDLN2).
     /// Push one of seven commonly used constants (in double extended-precision floating-point format) onto the FPU register stack. The constants that can be loaded with these instructions include +1.0, +0.0, log210, log2e, π, log102, and loge2. For each constant, an internal 66-bit constant is rounded (as specified by the RC field in the FPU control word) to double extended-precision floating-point format. The inexact-result exception (#P) is not generated as a result of the rounding, nor is the C1 flag set in the x87 FPU status word if the value is rounded up.
     ///
     ///
@@ -2824,10 +2909,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fldln2(&mut self)
-    where Assembler<'a>: Fldln2Emitter {
+    where
+        Assembler<'a>: Fldln2Emitter,
+    {
         <Self as Fldln2Emitter>::fldln2(self);
     }
-    /// `FLDPI` (FLDPI). 
+    /// `FLDPI` (FLDPI).
     /// Push one of seven commonly used constants (in double extended-precision floating-point format) onto the FPU register stack. The constants that can be loaded with these instructions include +1.0, +0.0, log210, log2e, π, log102, and loge2. For each constant, an internal 66-bit constant is rounded (as specified by the RC field in the FPU control word) to double extended-precision floating-point format. The inexact-result exception (#P) is not generated as a result of the rounding, nor is the C1 flag set in the x87 FPU status word if the value is rounded up.
     ///
     ///
@@ -2844,10 +2931,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fldpi(&mut self)
-    where Assembler<'a>: FldpiEmitter {
+    where
+        Assembler<'a>: FldpiEmitter,
+    {
         <Self as FldpiEmitter>::fldpi(self);
     }
-    /// `FLDZ` (FLDZ). 
+    /// `FLDZ` (FLDZ).
     /// Push one of seven commonly used constants (in double extended-precision floating-point format) onto the FPU register stack. The constants that can be loaded with these instructions include +1.0, +0.0, log210, log2e, π, log102, and loge2. For each constant, an internal 66-bit constant is rounded (as specified by the RC field in the FPU control word) to double extended-precision floating-point format. The inexact-result exception (#P) is not generated as a result of the rounding, nor is the C1 flag set in the x87 FPU status word if the value is rounded up.
     ///
     ///
@@ -2864,10 +2953,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fldz(&mut self)
-    where Assembler<'a>: FldzEmitter {
+    where
+        Assembler<'a>: FldzEmitter,
+    {
         <Self as FldzEmitter>::fldz(self);
     }
-    /// `FMUL` (FMUL). 
+    /// `FMUL` (FMUL).
     /// Multiplies the destination and source operands and stores the product in the destination location. The destination operand is always an FPU data register; the source operand can be an FPU data register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
     ///
     ///
@@ -2884,10 +2975,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fmul_1<A>(&mut self, op0: A)
-    where Assembler<'a>: FmulEmitter_1<A> {
+    where
+        Assembler<'a>: FmulEmitter_1<A>,
+    {
         <Self as FmulEmitter_1<A>>::fmul_1(self, op0);
     }
-    /// `FMUL` (FMUL). 
+    /// `FMUL` (FMUL).
     /// Multiplies the destination and source operands and stores the product in the destination location. The destination operand is always an FPU data register; the source operand can be an FPU data register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
     ///
     ///
@@ -2904,10 +2997,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fmul_2<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: FmulEmitter_2<A, B> {
+    where
+        Assembler<'a>: FmulEmitter_2<A, B>,
+    {
         <Self as FmulEmitter_2<A, B>>::fmul_2(self, op0, op1);
     }
-    /// `FMULP` (FMULP). 
+    /// `FMULP` (FMULP).
     /// Multiplies the destination and source operands and stores the product in the destination location. The destination operand is always an FPU data register; the source operand can be an FPU data register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
     ///
     ///
@@ -2924,7 +3019,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fmulp<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: FmulpEmitter<A, B> {
+    where
+        Assembler<'a>: FmulpEmitter<A, B>,
+    {
         <Self as FmulpEmitter<A, B>>::fmulp(self, op0, op1);
     }
     /// `FNOP`.
@@ -2940,7 +3037,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fnop(&mut self)
-    where Assembler<'a>: FnopEmitter {
+    where
+        Assembler<'a>: FnopEmitter,
+    {
         <Self as FnopEmitter>::fnop(self);
     }
     /// `FPATAN`.
@@ -2956,10 +3055,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fpatan(&mut self)
-    where Assembler<'a>: FpatanEmitter {
+    where
+        Assembler<'a>: FpatanEmitter,
+    {
         <Self as FpatanEmitter>::fpatan(self);
     }
-    /// `FPREM` (FPREM). 
+    /// `FPREM` (FPREM).
     /// Computes the remainder obtained from dividing the value in the ST(0) register (the dividend) by the value in the ST(1) register (the divisor or modulus), and stores the result in ST(0). The remainder represents the following value
     ///
     ///
@@ -2976,10 +3077,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fprem(&mut self)
-    where Assembler<'a>: FpremEmitter {
+    where
+        Assembler<'a>: FpremEmitter,
+    {
         <Self as FpremEmitter>::fprem(self);
     }
-    /// `FPREM1` (FPREM1). 
+    /// `FPREM1` (FPREM1).
     /// Computes the IEEE remainder obtained from dividing the value in the ST(0) register (the dividend) by the value in the ST(1) register (the divisor or modulus), and stores the result in ST(0). The remainder represents the following value
     ///
     ///
@@ -2996,10 +3099,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fprem1(&mut self)
-    where Assembler<'a>: Fprem1Emitter {
+    where
+        Assembler<'a>: Fprem1Emitter,
+    {
         <Self as Fprem1Emitter>::fprem1(self);
     }
-    /// `FPTAN` (FPTAN). 
+    /// `FPTAN` (FPTAN).
     /// Computes the approximate tangent of the source operand in register ST(0), stores the result in ST(0), and pushes a 1.0 onto the FPU register stack. The source operand must be given in radians and must be less than ±263. The following table shows the unmasked results obtained when computing the partial tangent of various classes of numbers, assuming that underflow does not occur.
     ///
     ///
@@ -3016,7 +3121,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fptan(&mut self)
-    where Assembler<'a>: FptanEmitter {
+    where
+        Assembler<'a>: FptanEmitter,
+    {
         <Self as FptanEmitter>::fptan(self);
     }
     /// `FRNDINT`.
@@ -3032,7 +3139,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn frndint(&mut self)
-    where Assembler<'a>: FrndintEmitter {
+    where
+        Assembler<'a>: FrndintEmitter,
+    {
         <Self as FrndintEmitter>::frndint(self);
     }
     /// `FRSTOR`.
@@ -3048,10 +3157,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn frstor<A>(&mut self, op0: A)
-    where Assembler<'a>: FrstorEmitter<A> {
+    where
+        Assembler<'a>: FrstorEmitter<A>,
+    {
         <Self as FrstorEmitter<A>>::frstor(self, op0);
     }
-    /// `FSAVE` (FSAVE). 
+    /// `FSAVE` (FSAVE).
     /// Stores the current FPU state (operating environment and register stack) at the specified destination in memory, and then re-initializes the FPU. The FSAVE instruction checks for and handles pending unmasked floating-point exceptions before storing the FPU state; the FNSAVE instruction does not.
     ///
     ///
@@ -3068,7 +3179,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fsave<A>(&mut self, op0: A)
-    where Assembler<'a>: FsaveEmitter<A> {
+    where
+        Assembler<'a>: FsaveEmitter<A>,
+    {
         <Self as FsaveEmitter<A>>::fsave(self, op0);
     }
     /// `FSCALE`.
@@ -3084,7 +3197,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fscale(&mut self)
-    where Assembler<'a>: FscaleEmitter {
+    where
+        Assembler<'a>: FscaleEmitter,
+    {
         <Self as FscaleEmitter>::fscale(self);
     }
     /// `FSIN`.
@@ -3100,10 +3215,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fsin(&mut self)
-    where Assembler<'a>: FsinEmitter {
+    where
+        Assembler<'a>: FsinEmitter,
+    {
         <Self as FsinEmitter>::fsin(self);
     }
-    /// `FSINCOS` (FSINCOS). 
+    /// `FSINCOS` (FSINCOS).
     /// Computes both the approximate sine and the cosine of the source operand in register ST(0), stores the sine in ST(0), and pushes the cosine onto the top of the FPU register stack. (This instruction is faster than executing the FSIN and FCOS instructions in succession.)
     ///
     ///
@@ -3120,7 +3237,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fsincos(&mut self)
-    where Assembler<'a>: FsincosEmitter {
+    where
+        Assembler<'a>: FsincosEmitter,
+    {
         <Self as FsincosEmitter>::fsincos(self);
     }
     /// `FSQRT`.
@@ -3136,10 +3255,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fsqrt(&mut self)
-    where Assembler<'a>: FsqrtEmitter {
+    where
+        Assembler<'a>: FsqrtEmitter,
+    {
         <Self as FsqrtEmitter>::fsqrt(self);
     }
-    /// `FST` (FST). 
+    /// `FST` (FST).
     /// The FST instruction copies the value in the ST(0) register to the destination operand, which can be a memory location or another register in the FPU register stack. When storing the value in memory, the value is converted to single precision or double precision floating-point format.
     ///
     ///
@@ -3157,10 +3278,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fst<A>(&mut self, op0: A)
-    where Assembler<'a>: FstEmitter<A> {
+    where
+        Assembler<'a>: FstEmitter<A>,
+    {
         <Self as FstEmitter<A>>::fst(self, op0);
     }
-    /// `FSTCW` (FSTCW). 
+    /// `FSTCW` (FSTCW).
     /// Stores the current value of the FPU control word at the specified destination in memory. The FSTCW instruction checks for and handles pending unmasked floating-point exceptions before storing the control word; the FNSTCW instruction does not.
     ///
     ///
@@ -3177,10 +3300,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fstcw<A>(&mut self, op0: A)
-    where Assembler<'a>: FstcwEmitter<A> {
+    where
+        Assembler<'a>: FstcwEmitter<A>,
+    {
         <Self as FstcwEmitter<A>>::fstcw(self, op0);
     }
-    /// `FSTENV` (FSTENV). 
+    /// `FSTENV` (FSTENV).
     /// Saves the current FPU operating environment at the memory location specified with the destination operand, and then masks all floating-point exceptions. The FPU operating environment consists of the FPU control word, status word, tag word, instruction pointer, data pointer, and last opcode. Figures 8-9 through 8-12 in the Intel® 64 and IA-32 Architectures Software Developer’s Manual, Volume 1, show the layout in memory of the stored environment, depending on the operating mode of the processor (protected or real) and the current operand-size attribute (16-bit or 32-bit). In virtual-8086 mode, the real mode layouts are used.
     ///
     ///
@@ -3197,10 +3322,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fstenv<A>(&mut self, op0: A)
-    where Assembler<'a>: FstenvEmitter<A> {
+    where
+        Assembler<'a>: FstenvEmitter<A>,
+    {
         <Self as FstenvEmitter<A>>::fstenv(self, op0);
     }
-    /// `FSTP` (FSTP). 
+    /// `FSTP` (FSTP).
     /// The FST instruction copies the value in the ST(0) register to the destination operand, which can be a memory location or another register in the FPU register stack. When storing the value in memory, the value is converted to single precision or double precision floating-point format.
     ///
     ///
@@ -3218,10 +3345,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fstp<A>(&mut self, op0: A)
-    where Assembler<'a>: FstpEmitter<A> {
+    where
+        Assembler<'a>: FstpEmitter<A>,
+    {
         <Self as FstpEmitter<A>>::fstp(self, op0);
     }
-    /// `FSTSW` (FSTSW). 
+    /// `FSTSW` (FSTSW).
     /// Stores the current value of the x87 FPU status word in the destination location. The destination operand can be either a two-byte memory location or the AX register. The FSTSW instruction checks for and handles pending unmasked floating-point exceptions before storing the status word; the FNSTSW instruction does not.
     ///
     ///
@@ -3239,10 +3368,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fstsw<A>(&mut self, op0: A)
-    where Assembler<'a>: FstswEmitter<A> {
+    where
+        Assembler<'a>: FstswEmitter<A>,
+    {
         <Self as FstswEmitter<A>>::fstsw(self, op0);
     }
-    /// `FSUB` (FSUB). 
+    /// `FSUB` (FSUB).
     /// Subtracts the source operand from the destination operand and stores the difference in the destination location. The destination operand is always an FPU data register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
     ///
     ///
@@ -3259,10 +3390,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fsub_1<A>(&mut self, op0: A)
-    where Assembler<'a>: FsubEmitter_1<A> {
+    where
+        Assembler<'a>: FsubEmitter_1<A>,
+    {
         <Self as FsubEmitter_1<A>>::fsub_1(self, op0);
     }
-    /// `FSUB` (FSUB). 
+    /// `FSUB` (FSUB).
     /// Subtracts the source operand from the destination operand and stores the difference in the destination location. The destination operand is always an FPU data register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
     ///
     ///
@@ -3279,10 +3412,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fsub_2<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: FsubEmitter_2<A, B> {
+    where
+        Assembler<'a>: FsubEmitter_2<A, B>,
+    {
         <Self as FsubEmitter_2<A, B>>::fsub_2(self, op0, op1);
     }
-    /// `FSUBP` (FSUBP). 
+    /// `FSUBP` (FSUBP).
     /// Subtracts the source operand from the destination operand and stores the difference in the destination location. The destination operand is always an FPU data register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
     ///
     ///
@@ -3299,10 +3434,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fsubp<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: FsubpEmitter<A, B> {
+    where
+        Assembler<'a>: FsubpEmitter<A, B>,
+    {
         <Self as FsubpEmitter<A, B>>::fsubp(self, op0, op1);
     }
-    /// `FSUBR` (FSUBR). 
+    /// `FSUBR` (FSUBR).
     /// Subtracts the destination operand from the source operand and stores the difference in the destination location. The destination operand is always an FPU register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
     ///
     ///
@@ -3319,10 +3456,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fsubr_1<A>(&mut self, op0: A)
-    where Assembler<'a>: FsubrEmitter_1<A> {
+    where
+        Assembler<'a>: FsubrEmitter_1<A>,
+    {
         <Self as FsubrEmitter_1<A>>::fsubr_1(self, op0);
     }
-    /// `FSUBR` (FSUBR). 
+    /// `FSUBR` (FSUBR).
     /// Subtracts the destination operand from the source operand and stores the difference in the destination location. The destination operand is always an FPU register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
     ///
     ///
@@ -3339,10 +3478,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fsubr_2<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: FsubrEmitter_2<A, B> {
+    where
+        Assembler<'a>: FsubrEmitter_2<A, B>,
+    {
         <Self as FsubrEmitter_2<A, B>>::fsubr_2(self, op0, op1);
     }
-    /// `FSUBRP` (FSUBRP). 
+    /// `FSUBRP` (FSUBRP).
     /// Subtracts the destination operand from the source operand and stores the difference in the destination location. The destination operand is always an FPU register; the source operand can be a register or a memory location. Source operands in memory can be in single precision or double precision floating-point format or in word or doubleword integer format.
     ///
     ///
@@ -3359,7 +3500,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fsubrp<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: FsubrpEmitter<A, B> {
+    where
+        Assembler<'a>: FsubrpEmitter<A, B>,
+    {
         <Self as FsubrpEmitter<A, B>>::fsubrp(self, op0, op1);
     }
     /// `FTST`.
@@ -3375,10 +3518,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn ftst(&mut self)
-    where Assembler<'a>: FtstEmitter {
+    where
+        Assembler<'a>: FtstEmitter,
+    {
         <Self as FtstEmitter>::ftst(self);
     }
-    /// `FUCOM` (FUCOM). 
+    /// `FUCOM` (FUCOM).
     /// Performs an unordered comparison of the contents of register ST(0) and ST(i) and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). If no operand is specified, the contents of registers ST(0) and ST(1) are compared. The sign of zero is ignored, so that –0.0 is equal to +0.0.
     ///
     ///
@@ -3395,10 +3540,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fucom<A>(&mut self, op0: A)
-    where Assembler<'a>: FucomEmitter<A> {
+    where
+        Assembler<'a>: FucomEmitter<A>,
+    {
         <Self as FucomEmitter<A>>::fucom(self, op0);
     }
-    /// `FUCOMP` (FUCOMP). 
+    /// `FUCOMP` (FUCOMP).
     /// Performs an unordered comparison of the contents of register ST(0) and ST(i) and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). If no operand is specified, the contents of registers ST(0) and ST(1) are compared. The sign of zero is ignored, so that –0.0 is equal to +0.0.
     ///
     ///
@@ -3415,10 +3562,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fucomp<A>(&mut self, op0: A)
-    where Assembler<'a>: FucompEmitter<A> {
+    where
+        Assembler<'a>: FucompEmitter<A>,
+    {
         <Self as FucompEmitter<A>>::fucomp(self, op0);
     }
-    /// `FUCOMPP` (FUCOMPP). 
+    /// `FUCOMPP` (FUCOMPP).
     /// Performs an unordered comparison of the contents of register ST(0) and ST(i) and sets condition code flags C0, C2, and C3 in the FPU status word according to the results (see the table below). If no operand is specified, the contents of registers ST(0) and ST(1) are compared. The sign of zero is ignored, so that –0.0 is equal to +0.0.
     ///
     ///
@@ -3435,7 +3584,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fucompp(&mut self)
-    where Assembler<'a>: FucomppEmitter {
+    where
+        Assembler<'a>: FucomppEmitter,
+    {
         <Self as FucomppEmitter>::fucompp(self);
     }
     /// `FXAM`.
@@ -3451,10 +3602,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fxam(&mut self)
-    where Assembler<'a>: FxamEmitter {
+    where
+        Assembler<'a>: FxamEmitter,
+    {
         <Self as FxamEmitter>::fxam(self);
     }
-    /// `FXCH` (FXCH). 
+    /// `FXCH` (FXCH).
     /// Exchanges the contents of registers ST(0) and ST(i). If no source operand is specified, the contents of ST(0) and ST(1) are exchanged.
     ///
     ///
@@ -3471,10 +3624,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fxch<A>(&mut self, op0: A)
-    where Assembler<'a>: FxchEmitter<A> {
+    where
+        Assembler<'a>: FxchEmitter<A>,
+    {
         <Self as FxchEmitter<A>>::fxch(self, op0);
     }
-    /// `FXTRACT` (FXTRACT). 
+    /// `FXTRACT` (FXTRACT).
     /// Separates the source value in the ST(0) register into its exponent and significand, stores the exponent in ST(0), and pushes the significand onto the register stack. Following this operation, the new top-of-stack register ST(0) contains the value of the original significand expressed as a floating-point value. The sign and significand of this value are the same as those found in the source operand, and the exponent is 3FFFH (biased value for a true exponent of zero). The ST(1) register contains the value of the original operand’s true (unbiased) exponent expressed as a floating-point value. (The operation performed by this instruction is a superset of the IEEE-recommended logb(x) function.)
     ///
     ///
@@ -3491,10 +3646,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fxtract(&mut self)
-    where Assembler<'a>: FxtractEmitter {
+    where
+        Assembler<'a>: FxtractEmitter,
+    {
         <Self as FxtractEmitter>::fxtract(self);
     }
-    /// `FYL2X` (FYL2X). 
+    /// `FYL2X` (FYL2X).
     /// Computes (ST(1) ∗ log2 (ST(0))), stores the result in register ST(1), and pops the FPU register stack. The source operand in ST(0) must be a non-zero positive number.
     ///
     ///
@@ -3511,10 +3668,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fyl2x(&mut self)
-    where Assembler<'a>: Fyl2xEmitter {
+    where
+        Assembler<'a>: Fyl2xEmitter,
+    {
         <Self as Fyl2xEmitter>::fyl2x(self);
     }
-    /// `FYL2XP1` (FYL2XP1). 
+    /// `FYL2XP1` (FYL2XP1).
     /// Computes (ST(1) ∗ log2(ST(0) + 1.0)), stores the result in register ST(1), and pops the FPU register stack. The source operand in ST(0) must be in the range
     ///
     ///
@@ -3531,7 +3690,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn fyl2xp1(&mut self)
-    where Assembler<'a>: Fyl2xp1Emitter {
+    where
+        Assembler<'a>: Fyl2xp1Emitter,
+    {
         <Self as Fyl2xp1Emitter>::fyl2xp1(self);
     }
 }

@@ -1,0 +1,55 @@
+macro_rules! table_new {
+        ($ty:ident, { $({ $($e:expr),* $(,)? }),* $(,)? }) => {
+                [$( $ty::new($($e as u64 as _),*) ),*]
+        };
+}
+
+const kW: u32 = W;
+const kX: u32 = X;
+const kWX: u32 = WX;
+const kZR: u32 = ZR;
+const kSP: u32 = SP;
+
+const kHF_N: u32 = HFConv::N as u32;
+const kHF_A: u32 = HFConv::A as u32;
+const kHF_B: u32 = HFConv::B as u32;
+const kHF_C: u32 = HFConv::C as u32;
+
+const kET_B: u8 = InstElementType::B as u8;
+const kET_H: u8 = InstElementType::H as u8;
+const kET_S: u8 = InstElementType::S as u8;
+const kET_2H: u8 = InstElementType::_2H as u8;
+const kET_4B: u8 = InstElementType::_4B as u8;
+
+const kOp_GpW: u32 = OpSignature::GpW as u32;
+const kOp_H: u32 = OpSignature::H as u32;
+const kOp_S: u32 = OpSignature::S as u32;
+const kOp_D: u32 = OpSignature::D as u32;
+const kOp_Q: u32 = OpSignature::Q as u32;
+const kOp_V4H: u32 = OpSignature::V4H as u32;
+const kOp_V8H: u32 = OpSignature::V8H as u32;
+const kOp_V4S: u32 = OpSignature::V4S as u32;
+const kOp_V2D: u32 = OpSignature::V2D as u32;
+const kOp_V16B: u32 = OpSignature::V16B as u32;
+
+const kVO_V_B: u32 = VOType::VB as u32;
+const kVO_V_BH: u32 = VOType::VBH as u32;
+const kVO_V_BH_4S: u32 = VOType::VBH4S as u32;
+const kVO_V_BHS: u32 = VOType::VBHS as u32;
+const kVO_V_BHS_D2: u32 = VOType::VBHSD2 as u32;
+const kVO_V_HS: u32 = VOType::VHS as u32;
+const kVO_V_S: u32 = VOType::VS as u32;
+const kVO_V_B8H4S2: u32 = VOType::VB8H4S2 as u32;
+const kVO_V_B8D1: u32 = VOType::VB8D1 as u32;
+const kVO_V_H4S2: u32 = VOType::VH4S2 as u32;
+const kVO_V_B16: u32 = VOType::VB16 as u32;
+const kVO_V_B16H8S4: u32 = VOType::VB16H8S4 as u32;
+const kVO_V_B16D2: u32 = VOType::VB16D2 as u32;
+const kVO_V_H8S4: u32 = VOType::VH8S4 as u32;
+const kVO_V_D2: u32 = VOType::VD2 as u32;
+const kVO_SV_BHS: u32 = VOType::SVBHS as u32;
+const kVO_SV_B8H4S2: u32 = VOType::SVB8H4S2 as u32;
+const kVO_SV_HS: u32 = VOType::SVHS as u32;
+const kVO_V_Any: u32 = VOType::VAny as u32;
+const kVO_SV_Any: u32 = VOType::SVAny as u32;
+

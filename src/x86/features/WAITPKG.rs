@@ -1,13 +1,13 @@
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
 
-/// `TPAUSE` (TPAUSE). 
+/// `TPAUSE` (TPAUSE).
 /// TPAUSE instructs the processor to enter an implementation-dependent optimized state. There are two such optimized states to choose from: light-weight power/performance optimized state, and improved power/performance optimized state. The selection between the two is governed by the explicit input register bit[0] source operand.
 ///
 ///
@@ -32,7 +32,7 @@ impl<'a> TpauseEmitter<Gpd> for Assembler<'a> {
     }
 }
 
-/// `UMONITOR` (UMONITOR). 
+/// `UMONITOR` (UMONITOR).
 /// The UMONITOR instruction arms address monitoring hardware using an address specified in the source register (the address range that the monitoring hardware checks for store operations can be determined by using the CPUID monitor leaf function, EAX=05H). A store to an address within the specified address range triggers the monitoring hardware. The state of monitor hardware is used by UMWAIT.
 ///
 ///
@@ -64,7 +64,7 @@ impl<'a> UmonitorEmitter<Gpq> for Assembler<'a> {
     }
 }
 
-/// `UMWAIT` (UMWAIT). 
+/// `UMWAIT` (UMWAIT).
 /// UMWAIT instructs the processor to enter an implementation-dependent optimized state while monitoring a range of addresses. The optimized state may be either a light-weight power/performance optimized state or an improved power/performance optimized state. The selection between the two states is governed by the explicit input register bit[0] source operand.
 ///
 ///
@@ -89,9 +89,8 @@ impl<'a> UmwaitEmitter<Gpd> for Assembler<'a> {
     }
 }
 
-
 impl<'a> Assembler<'a> {
-    /// `TPAUSE` (TPAUSE). 
+    /// `TPAUSE` (TPAUSE).
     /// TPAUSE instructs the processor to enter an implementation-dependent optimized state. There are two such optimized states to choose from: light-weight power/performance optimized state, and improved power/performance optimized state. The selection between the two is governed by the explicit input register bit[0] source operand.
     ///
     ///
@@ -108,10 +107,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn tpause<A>(&mut self, op0: A)
-    where Assembler<'a>: TpauseEmitter<A> {
+    where
+        Assembler<'a>: TpauseEmitter<A>,
+    {
         <Self as TpauseEmitter<A>>::tpause(self, op0);
     }
-    /// `UMONITOR` (UMONITOR). 
+    /// `UMONITOR` (UMONITOR).
     /// The UMONITOR instruction arms address monitoring hardware using an address specified in the source register (the address range that the monitoring hardware checks for store operations can be determined by using the CPUID monitor leaf function, EAX=05H). A store to an address within the specified address range triggers the monitoring hardware. The state of monitor hardware is used by UMWAIT.
     ///
     ///
@@ -129,10 +130,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn umonitor<A>(&mut self, op0: A)
-    where Assembler<'a>: UmonitorEmitter<A> {
+    where
+        Assembler<'a>: UmonitorEmitter<A>,
+    {
         <Self as UmonitorEmitter<A>>::umonitor(self, op0);
     }
-    /// `UMWAIT` (UMWAIT). 
+    /// `UMWAIT` (UMWAIT).
     /// UMWAIT instructs the processor to enter an implementation-dependent optimized state while monitoring a range of addresses. The optimized state may be either a light-weight power/performance optimized state or an improved power/performance optimized state. The selection between the two states is governed by the explicit input register bit[0] source operand.
     ///
     ///
@@ -149,7 +152,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn umwait<A>(&mut self, op0: A)
-    where Assembler<'a>: UmwaitEmitter<A> {
+    where
+        Assembler<'a>: UmwaitEmitter<A>,
+    {
         <Self as UmwaitEmitter<A>>::umwait(self, op0);
     }
 }

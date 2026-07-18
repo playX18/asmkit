@@ -1,13 +1,13 @@
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
 
-/// `BSWAP` (BSWAP). 
+/// `BSWAP` (BSWAP).
 /// Reverses the byte order of a 32-bit or 64-bit (destination) register. This instruction is provided for converting little-endian values to big-endian format and vice versa. To swap bytes in a word value (16-bit register), use the XCHG instruction. When the BSWAP instruction references a 16-bit register, the result is undefined.
 ///
 ///
@@ -46,7 +46,7 @@ impl<'a> BswapEmitter<Gpq> for Assembler<'a> {
     }
 }
 
-/// `CMPXCHG` (CMPXCHG). 
+/// `CMPXCHG` (CMPXCHG).
 /// Compares the value in the AL, AX, EAX, or RAX register with the first operand (destination operand). If the two values are equal, the second operand (source operand) is loaded into the destination operand. Otherwise, the destination operand is loaded into the AL, AX, EAX or RAX register. RAX register is available only in 64-bit mode.
 ///
 ///
@@ -74,53 +74,101 @@ pub trait CmpxchgEmitter<A, B> {
 
 impl<'a> CmpxchgEmitter<GpbLo, GpbLo> for Assembler<'a> {
     fn cmpxchg(&mut self, op0: GpbLo, op1: GpbLo) {
-        self.emit(CMPXCHG8RR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            CMPXCHG8RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
 impl<'a> CmpxchgEmitter<Mem, GpbLo> for Assembler<'a> {
     fn cmpxchg(&mut self, op0: Mem, op1: GpbLo) {
-        self.emit(CMPXCHG8MR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            CMPXCHG8MR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
 impl<'a> CmpxchgEmitter<Gpw, Gpw> for Assembler<'a> {
     fn cmpxchg(&mut self, op0: Gpw, op1: Gpw) {
-        self.emit(CMPXCHG16RR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            CMPXCHG16RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
 impl<'a> CmpxchgEmitter<Mem, Gpw> for Assembler<'a> {
     fn cmpxchg(&mut self, op0: Mem, op1: Gpw) {
-        self.emit(CMPXCHG16MR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            CMPXCHG16MR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
 impl<'a> CmpxchgEmitter<Gpd, Gpd> for Assembler<'a> {
     fn cmpxchg(&mut self, op0: Gpd, op1: Gpd) {
-        self.emit(CMPXCHG32RR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            CMPXCHG32RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
 impl<'a> CmpxchgEmitter<Mem, Gpd> for Assembler<'a> {
     fn cmpxchg(&mut self, op0: Mem, op1: Gpd) {
-        self.emit(CMPXCHG32MR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            CMPXCHG32MR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
 impl<'a> CmpxchgEmitter<Gpq, Gpq> for Assembler<'a> {
     fn cmpxchg(&mut self, op0: Gpq, op1: Gpq) {
-        self.emit(CMPXCHG64RR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            CMPXCHG64RR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
 impl<'a> CmpxchgEmitter<Mem, Gpq> for Assembler<'a> {
     fn cmpxchg(&mut self, op0: Mem, op1: Gpq) {
-        self.emit(CMPXCHG64MR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            CMPXCHG64MR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
-/// `INVD` (INVD). 
+/// `INVD` (INVD).
 /// Invalidates (flushes) the processor’s internal caches and issues a special-function bus cycle that directs external caches to also flush themselves. Data held in internal caches is not written back to main memory.
 ///
 ///
@@ -166,7 +214,7 @@ impl<'a> InvlpgEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `WBINVD` (WBINVD). 
+/// `WBINVD` (WBINVD).
 /// Writes back all modified cache lines in the processor’s internal cache to main memory and invalidates (flushes) the internal caches. The instruction then issues a special-function bus cycle that directs external caches to also write back modified data and another bus cycle to indicate that the external caches should be invalidated.
 ///
 ///
@@ -191,7 +239,7 @@ impl<'a> WbinvdEmitter for Assembler<'a> {
     }
 }
 
-/// `XADD` (XADD). 
+/// `XADD` (XADD).
 /// Exchanges the first operand (destination operand) with the second operand (source operand), then loads the sum of the two values into the destination operand. The destination operand can be a register or a memory location; the source operand is a register.
 ///
 ///
@@ -265,9 +313,8 @@ impl<'a> XaddEmitter<Mem, Gpq> for Assembler<'a> {
     }
 }
 
-
 impl<'a> Assembler<'a> {
-    /// `BSWAP` (BSWAP). 
+    /// `BSWAP` (BSWAP).
     /// Reverses the byte order of a 32-bit or 64-bit (destination) register. This instruction is provided for converting little-endian values to big-endian format and vice versa. To swap bytes in a word value (16-bit register), use the XCHG instruction. When the BSWAP instruction references a 16-bit register, the result is undefined.
     ///
     ///
@@ -286,10 +333,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn bswap<A>(&mut self, op0: A)
-    where Assembler<'a>: BswapEmitter<A> {
+    where
+        Assembler<'a>: BswapEmitter<A>,
+    {
         <Self as BswapEmitter<A>>::bswap(self, op0);
     }
-    /// `CMPXCHG` (CMPXCHG). 
+    /// `CMPXCHG` (CMPXCHG).
     /// Compares the value in the AL, AX, EAX, or RAX register with the first operand (destination operand). If the two values are equal, the second operand (source operand) is loaded into the destination operand. Otherwise, the destination operand is loaded into the AL, AX, EAX or RAX register. RAX register is available only in 64-bit mode.
     ///
     ///
@@ -313,10 +362,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn cmpxchg<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: CmpxchgEmitter<A, B> {
+    where
+        Assembler<'a>: CmpxchgEmitter<A, B>,
+    {
         <Self as CmpxchgEmitter<A, B>>::cmpxchg(self, op0, op1);
     }
-    /// `INVD` (INVD). 
+    /// `INVD` (INVD).
     /// Invalidates (flushes) the processor’s internal caches and issues a special-function bus cycle that directs external caches to also flush themselves. Data held in internal caches is not written back to main memory.
     ///
     ///
@@ -333,7 +384,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn invd(&mut self)
-    where Assembler<'a>: InvdEmitter {
+    where
+        Assembler<'a>: InvdEmitter,
+    {
         <Self as InvdEmitter>::invd(self);
     }
     /// `INVLPG`.
@@ -349,10 +402,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn invlpg<A>(&mut self, op0: A)
-    where Assembler<'a>: InvlpgEmitter<A> {
+    where
+        Assembler<'a>: InvlpgEmitter<A>,
+    {
         <Self as InvlpgEmitter<A>>::invlpg(self, op0);
     }
-    /// `WBINVD` (WBINVD). 
+    /// `WBINVD` (WBINVD).
     /// Writes back all modified cache lines in the processor’s internal cache to main memory and invalidates (flushes) the internal caches. The instruction then issues a special-function bus cycle that directs external caches to also write back modified data and another bus cycle to indicate that the external caches should be invalidated.
     ///
     ///
@@ -369,10 +424,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn wbinvd(&mut self)
-    where Assembler<'a>: WbinvdEmitter {
+    where
+        Assembler<'a>: WbinvdEmitter,
+    {
         <Self as WbinvdEmitter>::wbinvd(self);
     }
-    /// `XADD` (XADD). 
+    /// `XADD` (XADD).
     /// Exchanges the first operand (destination operand) with the second operand (source operand), then loads the sum of the two values into the destination operand. The destination operand can be a register or a memory location; the source operand is a register.
     ///
     ///
@@ -396,7 +453,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn xadd<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: XaddEmitter<A, B> {
+    where
+        Assembler<'a>: XaddEmitter<A, B>,
+    {
         <Self as XaddEmitter<A, B>>::xadd(self, op0, op1);
     }
 }

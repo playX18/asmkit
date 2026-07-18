@@ -33,6 +33,19 @@ pub struct Assembler<'a> {
     last_error: Option<AsmError>,
 }
 
+impl crate::core::builder::InstSink for Assembler<'_> {
+    fn emit_inst(&mut self, inst: &crate::core::inst::Inst) {
+        let ops = inst.operands();
+        let mut refs: smallvec::SmallVec<[&Operand; 6]> = smallvec::SmallVec::new();
+        refs.extend(ops.iter());
+        self.emit_n(inst.id, &refs);
+    }
+
+    fn bind_label(&mut self, label: Label) {
+        Assembler::bind_label(self, label);
+    }
+}
+
 macro_rules! enc_ops {
     ($op0: ident) => {
         OperandType::$op0 as u32
@@ -136,6 +149,7 @@ impl<'a> Assembler<'a> {
     pub fn bind_label(&mut self, label: Label) {
         self.buffer.bind_label(label);
     }
+
     /// A helper to load a constant address into a register.
     ///
     /// Supported variants are:

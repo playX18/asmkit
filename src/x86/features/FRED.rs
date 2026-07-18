@@ -1,8 +1,8 @@
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -77,7 +77,6 @@ impl<'a> LkgsEmitter<Mem> for Assembler<'a> {
     }
 }
 
-
 impl<'a> Assembler<'a> {
     /// `ERETS`.
     ///
@@ -92,7 +91,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn erets(&mut self)
-    where Assembler<'a>: EretsEmitter {
+    where
+        Assembler<'a>: EretsEmitter,
+    {
         <Self as EretsEmitter>::erets(self);
     }
     /// `ERETU`.
@@ -108,7 +109,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn eretu(&mut self)
-    where Assembler<'a>: EretuEmitter {
+    where
+        Assembler<'a>: EretuEmitter,
+    {
         <Self as EretuEmitter>::eretu(self);
     }
     /// `LKGS`.
@@ -125,7 +128,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn lkgs<A>(&mut self, op0: A)
-    where Assembler<'a>: LkgsEmitter<A> {
+    where
+        Assembler<'a>: LkgsEmitter<A>,
+    {
         <Self as LkgsEmitter<A>>::lkgs(self, op0);
     }
 }

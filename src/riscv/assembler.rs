@@ -407,7 +407,7 @@ impl<'a> Emitter for Assembler<'a> {
                 todo!()
             }
 
-            Encoding::CsrZimm => {
+            Encoding::CsrZimm5 => {
                 let csr_imm = if ops[0].is_imm() {
                     ops[0].as_::<Imm>().value() as i32
                 } else {
@@ -422,7 +422,7 @@ impl<'a> Emitter for Assembler<'a> {
                     return;
                 };
 
-                inst = inst.set_csr(csr_imm as _).set_zimm(zimm as _);
+                inst = inst.set_csr(csr_imm as _).set_zimm5(zimm as _);
             }
 
             Encoding::Empty => {}
@@ -636,12 +636,12 @@ impl<'a> Emitter for Assembler<'a> {
                 }
             }
 
-            Encoding::RdCsrZimm => {
+            Encoding::RdCsrZimm5 => {
                 if isign3 == enc_ops3!(Reg, Imm, Imm) {
                     let rd = ops[0].id();
                     let csr = ops[1].as_::<Imm>().value() as u32;
                     let zimm = ops[2].as_::<Imm>().value() as i32;
-                    inst = inst.set_rd(rd).set_csr(csr).set_zimm(zimm);
+                    inst = inst.set_rd(rd).set_csr(csr).set_zimm5(zimm);
                 } else {
                     self.last_error = Some(AsmError::InvalidOperand);
                     return;
@@ -1013,11 +1013,11 @@ impl<'a> Emitter for Assembler<'a> {
                 }
             }
 
-            Encoding::RdZimm => {
+            Encoding::RdZimm5 => {
                 if isign3 == enc_ops2!(Reg, Imm) {
                     let rd = ops[0].id();
                     let imm = ops[1].as_::<Imm>().value() as i32;
-                    inst = inst.set_rd(rd).set_zimm(imm);
+                    inst = inst.set_rd(rd).set_zimm5(imm);
                 } else {
                     self.last_error = Some(AsmError::InvalidOperand);
                     return;
@@ -1388,12 +1388,12 @@ impl<'a> Emitter for Assembler<'a> {
                 }
             }
 
-            Encoding::Zimm10ZimmRd => {
+            Encoding::Zimm10Zimm5Rd => {
                 if isign3 == enc_ops3!(Reg, Imm, Imm) {
                     let rd = ops[0].id();
                     let uimm = ops[1].as_::<Imm>().value() as i8;
                     let vtypei = ops[2].as_::<Imm>().value() as i8;
-                    inst = inst.set_rd(rd).set_zimm10(vtypei as _).set_zimm(uimm as _);
+                    inst = inst.set_rd(rd).set_zimm10(vtypei as _).set_zimm5(uimm as _);
                 } else {
                     self.last_error = Some(AsmError::InvalidOperand);
                     return;
@@ -1606,3 +1606,16 @@ impl<'a> Emitter for Assembler<'a> {
 }
 
 impl super::emitter::EmitterExplicit for Assembler<'_> {}
+
+impl crate::core::builder::InstSink for Assembler<'_> {
+    fn emit_inst(&mut self, inst: &crate::core::inst::Inst) {
+        let ops = inst.operands();
+        let mut refs: smallvec::SmallVec<[&Operand; 6]> = smallvec::SmallVec::new();
+        refs.extend(ops.iter());
+        self.emit_n(inst.id as i64, &refs);
+    }
+
+    fn bind_label(&mut self, label: Label) {
+        Assembler::bind_label(self, label);
+    }
+}

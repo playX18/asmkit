@@ -1,4 +1,20 @@
+#[cfg(feature = "aarch64")]
+use crate::aarch64::arch_traits::AARCH64_ARCH_TRAITS;
+#[cfg(feature = "riscv")]
+use crate::riscv::arch_traits::{RISCV32_ARCH_TRAITS, RISCV64_ARCH_TRAITS};
+#[cfg(feature = "x86")]
 use crate::x86::arch_traits::{X64_ARCH_TRAITS, X86_ARCH_TRAITS};
+
+#[cfg(not(feature = "aarch64"))]
+const AARCH64_ARCH_TRAITS: ArchTraits = NO_ARCH_TRAITS;
+#[cfg(not(feature = "riscv"))]
+const RISCV32_ARCH_TRAITS: ArchTraits = NO_ARCH_TRAITS;
+#[cfg(not(feature = "riscv"))]
+const RISCV64_ARCH_TRAITS: ArchTraits = NO_ARCH_TRAITS;
+#[cfg(not(feature = "x86"))]
+const X86_ARCH_TRAITS: ArchTraits = NO_ARCH_TRAITS;
+#[cfg(not(feature = "x86"))]
+const X64_ARCH_TRAITS: ArchTraits = NO_ARCH_TRAITS;
 
 use super::operand::{OperandSignature, RegGroup, RegType};
 use super::types::TypeId;
@@ -126,10 +142,10 @@ const ARCH_TRAITS: [ArchTraits; Arch::Max as usize] =[
     NO_ARCH_TRAITS,
     X86_ARCH_TRAITS,
     X64_ARCH_TRAITS,
+    RISCV32_ARCH_TRAITS,
+    RISCV64_ARCH_TRAITS,
     NO_ARCH_TRAITS,
-    NO_ARCH_TRAITS,
-    NO_ARCH_TRAITS,
-    NO_ARCH_TRAITS,
+    AARCH64_ARCH_TRAITS,
     NO_ARCH_TRAITS,
     NO_ARCH_TRAITS,
     NO_ARCH_TRAITS,

@@ -1,13 +1,13 @@
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
 
-/// `PREFETCHW` (PREFETCHW). 
+/// `PREFETCHW` (PREFETCHW).
 /// Fetches the cache line of data from memory that contains the byte specified with the source operand to a location in the 1st or 2nd level cache and invalidates other cached instances of the line.
 ///
 ///
@@ -32,9 +32,8 @@ impl<'a> PrefetchwEmitter<Mem> for Assembler<'a> {
     }
 }
 
-
 impl<'a> Assembler<'a> {
-    /// `PREFETCHW` (PREFETCHW). 
+    /// `PREFETCHW` (PREFETCHW).
     /// Fetches the cache line of data from memory that contains the byte specified with the source operand to a location in the 1st or 2nd level cache and invalidates other cached instances of the line.
     ///
     ///
@@ -51,7 +50,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn prefetchw<A>(&mut self, op0: A)
-    where Assembler<'a>: PrefetchwEmitter<A> {
+    where
+        Assembler<'a>: PrefetchwEmitter<A>,
+    {
         <Self as PrefetchwEmitter<A>>::prefetchw(self, op0);
     }
 }

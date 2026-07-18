@@ -65,6 +65,7 @@ impl CondCode {
 }
 
 bitflags! {
+    #[derive(Clone, Copy, PartialEq, Eq, Debug)]
     pub struct InstOptions: u32 {
         const NONE = 0;
         const RESERVED =  0x00000001;
@@ -74,5 +75,64 @@ bitflags! {
         const LONG_FORM = 0x00000020;
         const TAKEN = 0x00000040;
         const NOT_TAKEN = 0x00000080;
+
+        // X86 & X64 Options
+        // -----------------
+
+        /// Use ModMR instead of ModRM if applicable.
+        const X86_MOD_MR = 0x00000100;
+        /// Use ModRM instead of ModMR if applicable.
+        const X86_MOD_RM = 0x00000200;
+        /// Use 3-byte VEX prefix if possible (AVX).
+        const X86_VEX3 = 0x00000400;
+        /// Use VEX prefix when both VEX|EVEX prefixes are available.
+        const X86_VEX = 0x00000800;
+        /// Use 4-byte EVEX prefix if possible (AVX-512).
+        const X86_EVEX = 0x00001000;
+
+        /// LOCK prefix (lock-enabled instructions only).
+        const X86_LOCK = 0x00002000;
+        /// REP prefix (string instructions only).
+        const X86_REP = 0x00004000;
+        /// REPNE prefix (string instructions only).
+        const X86_REPNE = 0x00008000;
+
+        /// XACQUIRE prefix (only allowed instructions).
+        const X86_XACQUIRE = 0x00010000;
+        /// XRELEASE prefix (only allowed instructions).
+        const X86_XRELEASE = 0x00020000;
+
+        /// AVX-512: embedded-rounding {er} and implicit {sae}.
+        const X86_ER = 0x00040000;
+        /// AVX-512: suppress-all-exceptions {sae}.
+        const X86_SAE = 0x00080000;
+        /// AVX-512: round-to-nearest (even) {rn-sae} (bits 00).
+        const X86_RN_SAE = 0x00000000;
+        /// AVX-512: round-down (toward -inf) {rd-sae} (bits 01).
+        const X86_RD_SAE = 0x00200000;
+        /// AVX-512: round-up (toward +inf) {ru-sae} (bits 10).
+        const X86_RU_SAE = 0x00400000;
+        /// AVX-512: round-toward-zero (truncate) {rz-sae} (bits 11).
+        const X86_RZ_SAE = 0x00600000;
+        /// AVX-512: Use zeroing {k}{z} instead of merging {k}.
+        const X86_ZMASK = 0x00800000;
+
+        /// AVX-512: mask to get embedded rounding bits (2 bits).
+        const X86_ER_MASK = Self::X86_RZ_SAE.bits();
+        /// AVX-512: mask of all possible AVX-512 options except the EVEX prefix flag.
+        const X86_AVX512_MASK = 0x00FC0000;
+
+        /// Force REX.B and/or VEX.B field (X64 only, used internally).
+        const X86_OP_CODE_B = 0x01000000;
+        /// Force REX.X and/or VEX.X field (X64 only, used internally).
+        const X86_OP_CODE_X = 0x02000000;
+        /// Force REX.R and/or VEX.R field (X64 only, used internally).
+        const X86_OP_CODE_R = 0x04000000;
+        /// Force REX.W and/or VEX.W field (X64 only, used internally).
+        const X86_OP_CODE_W = 0x08000000;
+        /// Force REX prefix (X64 only).
+        const X86_REX = 0x40000000;
+        /// Invalid REX prefix (set by X86 or when AH|BH|CH|DH regs are used on X64).
+        const X86_INVALID_REX = 0x80000000;
     }
 }

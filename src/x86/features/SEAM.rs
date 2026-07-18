@@ -1,8 +1,8 @@
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -91,7 +91,6 @@ impl<'a> TdcallEmitter for Assembler<'a> {
     }
 }
 
-
 impl<'a> Assembler<'a> {
     /// `SEAMCALL`.
     ///
@@ -106,7 +105,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn seamcall(&mut self)
-    where Assembler<'a>: SeamcallEmitter {
+    where
+        Assembler<'a>: SeamcallEmitter,
+    {
         <Self as SeamcallEmitter>::seamcall(self);
     }
     /// `SEAMOPS`.
@@ -122,7 +123,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn seamops(&mut self)
-    where Assembler<'a>: SeamopsEmitter {
+    where
+        Assembler<'a>: SeamopsEmitter,
+    {
         <Self as SeamopsEmitter>::seamops(self);
     }
     /// `SEAMRET`.
@@ -138,7 +141,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn seamret(&mut self)
-    where Assembler<'a>: SeamretEmitter {
+    where
+        Assembler<'a>: SeamretEmitter,
+    {
         <Self as SeamretEmitter>::seamret(self);
     }
     /// `TDCALL`.
@@ -154,7 +159,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn tdcall(&mut self)
-    where Assembler<'a>: TdcallEmitter {
+    where
+        Assembler<'a>: TdcallEmitter,
+    {
         <Self as TdcallEmitter>::tdcall(self);
     }
 }

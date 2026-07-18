@@ -1543,782 +1543,782 @@ TABLE!(INST_INFO_TABLE
 // | Instruction Id   | Encoding            | Opcode Data                                                                          | RW Info   | Instruction Flags         |DatX|
 // +------------------+---------------------+--------------------------------------------------------------------------------------+-----------+---------------------------+----+
 // ${InstInfo:Begin}
-INST(None             , None               , (_)                                                                                   , 0         , 0                         , 0  ), // #0
-INST(Abs              , BaseRR             , (0b01011010110000000010000000000000, kWX, kZR, 0, kWX, kZR, 5, true)                  , RWI_W    , 0                         , 0  ), // #1
-INST(Adc              , BaseRRR            , (0b0001101000000000000000, kWX, kZR, kWX, kZR, kWX, kZR, true)                        , RWI_W    , 0                         , 0  ), // #2
-INST(Adcs             , BaseRRR            , (0b0011101000000000000000, kWX, kZR, kWX, kZR, kWX, kZR, true)                        , RWI_W    , 0                         , 1  ), // #3
-INST(Add              , BaseAddSub         , (0b0001011000, 0b0001011001, 0b0010001)                                               , RWI_W    , 0                         , 0  ), // #4
-INST(Addg             , BaseRRII           , (0b1001000110000000000000, kX, kSP, kX, kSP, 6, 4, 16, 4, 0, 10)                      , RWI_W    , 0                         , 0  ), // #5
-INST(Adds             , BaseAddSub         , (0b0101011000, 0b0101011001, 0b0110001)                                               , RWI_W    , 0                         , 1  ), // #6
-INST(Adr              , BaseAdr            , (0b0001000000000000000000, OffsetType::kAArch64_ADR)                                  , RWI_W    , 0                         , 0  ), // #7
-INST(Adrp             , BaseAdr            , (0b1001000000000000000000, OffsetType::kAArch64_ADRP)                                 , RWI_W    , 0                         , 1  ), // #8
-INST(And              , BaseLogical        , (0b0001010000, 0b00100100, 0)                                                         , RWI_W    , 0                         , 0  ), // #9
-INST(Ands             , BaseLogical        , (0b1101010000, 0b11100100, 0)                                                         , RWI_W    , 0                         , 1  ), // #10
-INST(Asr              , BaseShift          , (0b0001101011000000001010, 0b0001001100000000011111, 0)                               , RWI_W    , 0                         , 0  ), // #11
-INST(Asrv             , BaseShift          , (0b0001101011000000001010, 0b0000000000000000000000, 0)                               , RWI_W    , 0                         , 1  ), // #12
-INST(At               , BaseAtDcIcTlbi     , (0b00011111110000, 0b00001111000000, true)                                            , RWI_RX   , 0                         , 0  ), // #13
-INST(Autda            , BaseRR             , (0b11011010110000010001100000000000, kX, kZR, 0, kX, kSP, 5, true)                    , RWI_X    , 0                         , 1  ), // #14
-INST(Autdza           , BaseR              , (0b11011010110000010011101111100000, kX, kZR, 0)                                      , RWI_X    , 0                         , 0  ), // #15
-INST(Autdb            , BaseRR             , (0b11011010110000010001110000000000, kX, kZR, 0, kX, kSP, 5, true)                    , RWI_X    , 0                         , 2  ), // #16
-INST(Autdzb           , BaseR              , (0b11011010110000010011111111100000, kX, kZR, 0)                                      , RWI_X    , 0                         , 1  ), // #17
-INST(Autia            , BaseRR             , (0b11011010110000010001000000000000, kX, kZR, 0, kX, kSP, 5, true)                    , RWI_X    , 0                         , 3  ), // #18
-INST(Autia1716        , BaseOp             , (0b11010101000000110010000110011111)                                                  , 0         , 0                         , 0  ), // #19
-INST(Autiasp          , BaseOp             , (0b11010101000000110010001110111111)                                                  , 0         , 0                         , 1  ), // #20
-INST(Autiaz           , BaseOp             , (0b11010101000000110010001110011111)                                                  , 0         , 0                         , 2  ), // #21
-INST(Autib            , BaseRR             , (0b11011010110000010001010000000000, kX, kZR, 0, kX, kSP, 5, true)                    , RWI_X    , 0                         , 4  ), // #22
-INST(Autib1716        , BaseOp             , (0b11010101000000110010000111011111)                                                  , 0         , 0                         , 3  ), // #23
-INST(Autibsp          , BaseOp             , (0b11010101000000110010001111111111)                                                  , 0         , 0                         , 4  ), // #24
-INST(Autibz           , BaseOp             , (0b11010101000000110010001111011111)                                                  , 0         , 0                         , 5  ), // #25
-INST(Autiza           , BaseR              , (0b11011010110000010011001111100000, kX, kZR, 0)                                      , RWI_X    , 0                         , 2  ), // #26
-INST(Autizb           , BaseR              , (0b11011010110000010011011111100000, kX, kZR, 0)                                      , RWI_X    , 0                         , 3  ), // #27
-INST(Axflag           , BaseOp             , (0b11010101000000000100000001011111)                                                  , 0         , 0                         , 6  ), // #28
-INST(B                , BaseBranchRel      , (0b00010100000000000000000000000000)                                                  , 0         , F!(Cond)                   , 0  ), // #29
-INST(Bc               , BaseBranchRel      , (0b00010100000000000000000000010000)                                                  , 0         , F!(Cond)                   , 1  ), // #30
-INST(Bfc              , BaseBfc            , (0b00110011000000000000001111100000)                                                  , RWI_X    , 0                         , 0  ), // #31
-INST(Bfi              , BaseBfi            , (0b00110011000000000000000000000000)                                                  , RWI_X    , 0                         , 0  ), // #32
-INST(Bfm              , BaseBfm            , (0b00110011000000000000000000000000)                                                  , RWI_X    , 0                         , 0  ), // #33
-INST(Bfxil            , BaseBfx            , (0b00110011000000000000000000000000)                                                  , RWI_X    , 0                         , 0  ), // #34
-INST(Bic              , BaseLogical        , (0b0001010001, 0b00100100, 1)                                                         , RWI_W    , 0                         , 2  ), // #35
-INST(Bics             , BaseLogical        , (0b1101010001, 0b11100100, 1)                                                         , RWI_W    , 0                         , 3  ), // #36
-INST(Bl               , BaseBranchRel      , (0b10010100000000000000000000000000)                                                  , 0         , 0                         , 2  ), // #37
-INST(Blr              , BaseBranchReg      , (0b11010110001111110000000000000000)                                                  , RWI_R    , 0                         , 0  ), // #38
-INST(Br               , BaseBranchReg      , (0b11010110000111110000000000000000)                                                  , RWI_R    , 0                         , 1  ), // #39
-INST(Brk              , BaseOpImm          , (0b11010100001000000000000000000000, 16, 5)                                           , 0         , 0                         , 0  ), // #40
-INST(Bti              , BaseOpImm          , (0b11010101000000110010010000011111, 2, 6)                                            , 0         , 0                         , 1  ), // #41
-INST(Cas              , BaseAtomicOp       , (0b1000100010100000011111, kWX, 30, 0)                                                , RWI_XRX  , 0                         , 0  ), // #42
-INST(Casa             , BaseAtomicOp       , (0b1000100011100000011111, kWX, 30, 1)                                                , RWI_XRX  , 0                         , 1  ), // #43
-INST(Casab            , BaseAtomicOp       , (0b0000100011100000011111, kW , 0 , 1)                                                , RWI_XRX  , 0                         , 2  ), // #44
-INST(Casah            , BaseAtomicOp       , (0b0100100011100000011111, kW , 0 , 1)                                                , RWI_XRX  , 0                         , 3  ), // #45
-INST(Casal            , BaseAtomicOp       , (0b1000100011100000111111, kWX, 30, 1)                                                , RWI_XRX  , 0                         , 4  ), // #46
-INST(Casalb           , BaseAtomicOp       , (0b0000100011100000111111, kW , 0 , 1)                                                , RWI_XRX  , 0                         , 5  ), // #47
-INST(Casalh           , BaseAtomicOp       , (0b0100100011100000111111, kW , 0 , 1)                                                , RWI_XRX  , 0                         , 6  ), // #48
-INST(Casb             , BaseAtomicOp       , (0b0000100010100000011111, kW , 0 , 0)                                                , RWI_XRX  , 0                         , 7  ), // #49
-INST(Cash             , BaseAtomicOp       , (0b0100100010100000011111, kW , 0 , 0)                                                , RWI_XRX  , 0                         , 8  ), // #50
-INST(Casl             , BaseAtomicOp       , (0b1000100010100000111111, kWX, 30, 0)                                                , RWI_XRX  , 0                         , 9  ), // #51
-INST(Caslb            , BaseAtomicOp       , (0b0000100010100000111111, kW , 0 , 0)                                                , RWI_XRX  , 0                         , 10 ), // #52
-INST(Caslh            , BaseAtomicOp       , (0b0100100010100000111111, kW , 0 , 0)                                                , RWI_XRX  , 0                         , 11 ), // #53
-INST(Casp             , BaseAtomicCasp     , (0b0000100000100000011111, kWX, 30)                                                   , RWI_XXRRX, F!(Consecutive)            , 0  ), // #54
-INST(Caspa            , BaseAtomicCasp     , (0b0000100001100000011111, kWX, 30)                                                   , RWI_XXRRX, F!(Consecutive)            , 1  ), // #55
-INST(Caspal           , BaseAtomicCasp     , (0b0000100001100000111111, kWX, 30)                                                   , RWI_XXRRX, F!(Consecutive)            , 2  ), // #56
-INST(Caspl            , BaseAtomicCasp     , (0b0000100000100000111111, kWX, 30)                                                   , RWI_XXRRX, F!(Consecutive)            , 3  ), // #57
-INST(Cbnz             , BaseBranchCmp      , (0b00110101000000000000000000000000)                                                  , RWI_R    , 0                         , 0  ), // #58
-INST(Cbz              , BaseBranchCmp      , (0b00110100000000000000000000000000)                                                  , RWI_R    , 0                         , 1  ), // #59
-INST(Ccmn             , BaseCCmp           , (0b00111010010000000000000000000000)                                                  , RWI_R    , 0                         , 0  ), // #60
-INST(Ccmp             , BaseCCmp           , (0b01111010010000000000000000000000)                                                  , RWI_R    , 0                         , 1  ), // #61
-INST(Cfinv            , BaseOp             , (0b11010101000000000100000000011111)                                                  , 0         , 0                         , 7  ), // #62
-INST(Chkfeat          , BaseOpX16          , (0b11010101000000110010010100011111)                                                  , 0         , 0                         , 0  ), // #63
-INST(Cinc             , BaseCInc           , (0b00011010100000000000010000000000)                                                  , RWI_W    , 0                         , 0  ), // #64
-INST(Cinv             , BaseCInc           , (0b01011010100000000000000000000000)                                                  , RWI_W    , 0                         , 1  ), // #65
-INST(Clrbhb           , BaseOp             , (0b11010101000000110010001011011111)                                                  , 0         , 0                         , 8  ), // #66
-INST(Clrex            , BaseOpImm          , (0b11010101000000110011000001011111, 4, 8)                                            , 0         , 0                         , 2  ), // #67
-INST(Cls              , BaseRR             , (0b01011010110000000001010000000000, kWX, kZR, 0, kWX, kZR, 5, true)                  , RWI_W    , 0                         , 5  ), // #68
-INST(Clz              , BaseRR             , (0b01011010110000000001000000000000, kWX, kZR, 0, kWX, kZR, 5, true)                  , RWI_W    , 0                         , 6  ), // #69
-INST(Cmn              , BaseCmpCmn         , (0b0101011000, 0b0101011001, 0b0110001)                                               , RWI_R    , 0                         , 0  ), // #70
-INST(Cmp              , BaseCmpCmn         , (0b1101011000, 0b1101011001, 0b1110001)                                               , RWI_R    , 0                         , 1  ), // #71
-INST(Cmpp             , BaseRR             , (0b10111010110000000000000000011111, kX, kSP, 5, kX, kSP, 16, true)                   , RWI_R    , 0                         , 7  ), // #72
-INST(Cneg             , BaseCInc           , (0b01011010100000000000010000000000)                                                  , RWI_W    , 0                         , 2  ), // #73
-INST(Cnt              , BaseRR             , (0b01011010110000000001110000000000, kWX, kZR, 0, kWX, kZR, 5, true)                  , RWI_W    , 0                         , 8  ), // #74
-INST(Crc32b           , BaseRRR            , (0b0001101011000000010000, kW, kZR, kW, kZR, kW, kZR, false)                          , RWI_W    , 0                         , 2  ), // #75
-INST(Crc32cb          , BaseRRR            , (0b0001101011000000010100, kW, kZR, kW, kZR, kW, kZR, false)                          , RWI_W    , 0                         , 3  ), // #76
-INST(Crc32ch          , BaseRRR            , (0b0001101011000000010101, kW, kZR, kW, kZR, kW, kZR, false)                          , RWI_W    , 0                         , 4  ), // #77
-INST(Crc32cw          , BaseRRR            , (0b0001101011000000010110, kW, kZR, kW, kZR, kW, kZR, false)                          , RWI_W    , 0                         , 5  ), // #78
-INST(Crc32cx          , BaseRRR            , (0b1001101011000000010111, kW, kZR, kW, kZR, kX, kZR, false)                          , RWI_W    , 0                         , 6  ), // #79
-INST(Crc32h           , BaseRRR            , (0b0001101011000000010001, kW, kZR, kW, kZR, kW, kZR, false)                          , RWI_W    , 0                         , 7  ), // #80
-INST(Crc32w           , BaseRRR            , (0b0001101011000000010010, kW, kZR, kW, kZR, kW, kZR, false)                          , RWI_W    , 0                         , 8  ), // #81
-INST(Crc32x           , BaseRRR            , (0b1001101011000000010011, kW, kZR, kW, kZR, kX, kZR, false)                          , RWI_W    , 0                         , 9  ), // #82
-INST(Csdb             , BaseOp             , (0b11010101000000110010001010011111)                                                  , 0         , 0                         , 9  ), // #83
-INST(Csel             , BaseCSel           , (0b00011010100000000000000000000000)                                                  , RWI_W    , 0                         , 0  ), // #84
-INST(Cset             , BaseCSet           , (0b00011010100111110000011111100000)                                                  , RWI_W    , 0                         , 0  ), // #85
-INST(Csetm            , BaseCSet           , (0b01011010100111110000001111100000)                                                  , RWI_W    , 0                         , 1  ), // #86
-INST(Csinc            , BaseCSel           , (0b00011010100000000000010000000000)                                                  , RWI_W    , 0                         , 1  ), // #87
-INST(Csinv            , BaseCSel           , (0b01011010100000000000000000000000)                                                  , RWI_W    , 0                         , 2  ), // #88
-INST(Csneg            , BaseCSel           , (0b01011010100000000000010000000000)                                                  , RWI_W    , 0                         , 3  ), // #89
-INST(Ctz              , BaseRR             , (0b01011010110000000001100000000000, kWX, kZR, 0, kWX, kZR, 5, true)                  , RWI_W    , 0                         , 9  ), // #90
-INST(Dc               , BaseAtDcIcTlbi     , (0b00011110000000, 0b00001110000000, true)                                            , RWI_RX   , 0                         , 1  ), // #91
-INST(Dcps1            , BaseOpImm          , (0b11010100101000000000000000000001, 16, 5)                                           , 0         , 0                         , 3  ), // #92
-INST(Dcps2            , BaseOpImm          , (0b11010100101000000000000000000010, 16, 5)                                           , 0         , 0                         , 4  ), // #93
-INST(Dcps3            , BaseOpImm          , (0b11010100101000000000000000000011, 16, 5)                                           , 0         , 0                         , 5  ), // #94
-INST(Dgh              , BaseOp             , (0b11010101000000110010000011011111)                                                  , 0         , 0                         , 10 ), // #95
-INST(Dmb              , BaseOpImm          , (0b11010101000000110011000010111111, 4, 8)                                            , 0         , 0                         , 6  ), // #96
-INST(Drps             , BaseOp             , (0b11010110101111110000001111100000)                                                  , 0         , 0                         , 11 ), // #97
-INST(Dsb              , BaseOpImm          , (0b11010101000000110011000010011111, 4, 8)                                            , 0         , 0                         , 7  ), // #98
-INST(Eon              , BaseLogical        , (0b1001010001, 0b10100100, 1)                                                         , RWI_W    , 0                         , 4  ), // #99
-INST(Eor              , BaseLogical        , (0b1001010000, 0b10100100, 0)                                                         , RWI_W    , 0                         , 5  ), // #100
-INST(Esb              , BaseOp             , (0b11010101000000110010001000011111)                                                  , 0         , 0                         , 12 ), // #101
-INST(Extr             , BaseExtract        , (0b00010011100000000000000000000000)                                                  , RWI_W    , 0                         , 0  ), // #102
-INST(Eret             , BaseOp             , (0b11010110100111110000001111100000)                                                  , 0         , 0                         , 13 ), // #103
-INST(Gmi              , BaseRRR            , (0b1001101011000000000101, kX , kZR, kX , kSP, kX , kZR, true)                        , RWI_W    , 0                         , 10 ), // #104
-INST(Hint             , BaseOpImm          , (0b11010101000000110010000000011111, 7, 5)                                            , 0         , 0                         , 8  ), // #105
-INST(Hlt              , BaseOpImm          , (0b11010100010000000000000000000000, 16, 5)                                           , 0         , 0                         , 9  ), // #106
-INST(Hvc              , BaseOpImm          , (0b11010100000000000000000000000010, 16, 5)                                           , 0         , 0                         , 10 ), // #107
-INST(Ic               , BaseAtDcIcTlbi     , (0b00011110000000, 0b00001110000000, false)                                           , RWI_RX   , 0                         , 2  ), // #108
-INST(Isb              , BaseOpImm          , (0b11010101000000110011000011011111, 4, 8)                                            , 0         , 0                         , 11 ), // #109
-INST(Ldadd            , BaseAtomicOp       , (0b1011100000100000000000, kWX, 30, 0)                                                , RWI_WRX  , 0                         , 12 ), // #110
-INST(Ldadda           , BaseAtomicOp       , (0b1011100010100000000000, kWX, 30, 1)                                                , RWI_WRX  , 0                         , 13 ), // #111
-INST(Ldaddab          , BaseAtomicOp       , (0b0011100010100000000000, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 14 ), // #112
-INST(Ldaddah          , BaseAtomicOp       , (0b0111100010100000000000, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 15 ), // #113
-INST(Ldaddal          , BaseAtomicOp       , (0b1011100011100000000000, kWX, 30, 1)                                                , RWI_WRX  , 0                         , 16 ), // #114
-INST(Ldaddalb         , BaseAtomicOp       , (0b0011100011100000000000, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 17 ), // #115
-INST(Ldaddalh         , BaseAtomicOp       , (0b0111100011100000000000, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 18 ), // #116
-INST(Ldaddb           , BaseAtomicOp       , (0b0011100000100000000000, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 19 ), // #117
-INST(Ldaddh           , BaseAtomicOp       , (0b0111100000100000000000, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 20 ), // #118
-INST(Ldaddl           , BaseAtomicOp       , (0b1011100001100000000000, kWX, 30, 0)                                                , RWI_WRX  , 0                         , 21 ), // #119
-INST(Ldaddlb          , BaseAtomicOp       , (0b0011100001100000000000, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 22 ), // #120
-INST(Ldaddlh          , BaseAtomicOp       , (0b0111100001100000000000, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 23 ), // #121
-INST(Ldar             , BaseRMNoImm       , (0b1000100011011111111111, kWX, kZR, 30)                                              , RWI_W    , 0                         , 0  ), // #122
-INST(Ldarb            , BaseRMNoImm       , (0b0000100011011111111111, kW , kZR, 0 )                                              , RWI_W    , 0                         , 1  ), // #123
-INST(Ldarh            , BaseRMNoImm       , (0b0100100011011111111111, kW , kZR, 0 )                                              , RWI_W    , 0                         , 2  ), // #124
-INST(Ldaxp            , BaseLdxp           , (0b1000100001111111100000, kWX, 30)                                                   , RWI_WW   , 0                         , 0  ), // #125
-INST(Ldaxr            , BaseRMNoImm       , (0b1000100001011111111111, kWX, kZR, 30)                                              , RWI_W    , 0                         , 3  ), // #126
-INST(Ldaxrb           , BaseRMNoImm       , (0b0000100001011111111111, kW , kZR, 0 )                                              , RWI_W    , 0                         , 4  ), // #127
-INST(Ldaxrh           , BaseRMNoImm       , (0b0100100001011111111111, kW , kZR, 0 )                                              , RWI_W    , 0                         , 5  ), // #128
-INST(Ldclr            , BaseAtomicOp       , (0b1011100000100000000100, kWX, 30, 0)                                                , RWI_WRX  , 0                         , 24 ), // #129
-INST(Ldclra           , BaseAtomicOp       , (0b1011100010100000000100, kWX, 30, 1)                                                , RWI_WRX  , 0                         , 25 ), // #130
-INST(Ldclrab          , BaseAtomicOp       , (0b0011100010100000000100, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 26 ), // #131
-INST(Ldclrah          , BaseAtomicOp       , (0b0111100010100000000100, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 27 ), // #132
-INST(Ldclral          , BaseAtomicOp       , (0b1011100011100000000100, kWX, 30, 1)                                                , RWI_WRX  , 0                         , 28 ), // #133
-INST(Ldclralb         , BaseAtomicOp       , (0b0011100011100000000100, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 29 ), // #134
-INST(Ldclralh         , BaseAtomicOp       , (0b0111100011100000000100, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 30 ), // #135
-INST(Ldclrb           , BaseAtomicOp       , (0b0011100000100000000100, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 31 ), // #136
-INST(Ldclrh           , BaseAtomicOp       , (0b0111100000100000000100, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 32 ), // #137
-INST(Ldclrl           , BaseAtomicOp       , (0b1011100001100000000100, kWX, 30, 0)                                                , RWI_WRX  , 0                         , 33 ), // #138
-INST(Ldclrlb          , BaseAtomicOp       , (0b0011100001100000000100, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 34 ), // #139
-INST(Ldclrlh          , BaseAtomicOp       , (0b0111100001100000000100, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 35 ), // #140
-INST(Ldeor            , BaseAtomicOp       , (0b1011100000100000001000, kWX, 30, 0)                                                , RWI_WRX  , 0                         , 36 ), // #141
-INST(Ldeora           , BaseAtomicOp       , (0b1011100010100000001000, kWX, 30, 1)                                                , RWI_WRX  , 0                         , 37 ), // #142
-INST(Ldeorab          , BaseAtomicOp       , (0b0011100010100000001000, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 38 ), // #143
-INST(Ldeorah          , BaseAtomicOp       , (0b0111100010100000001000, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 39 ), // #144
-INST(Ldeoral          , BaseAtomicOp       , (0b1011100011100000001000, kWX, 30, 1)                                                , RWI_WRX  , 0                         , 40 ), // #145
-INST(Ldeoralb         , BaseAtomicOp       , (0b0011100011100000001000, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 41 ), // #146
-INST(Ldeoralh         , BaseAtomicOp       , (0b0111100011100000001000, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 42 ), // #147
-INST(Ldeorb           , BaseAtomicOp       , (0b0011100000100000001000, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 43 ), // #148
-INST(Ldeorh           , BaseAtomicOp       , (0b0111100000100000001000, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 44 ), // #149
-INST(Ldeorl           , BaseAtomicOp       , (0b1011100001100000001000, kWX, 30, 0)                                                , RWI_WRX  , 0                         , 45 ), // #150
-INST(Ldeorlb          , BaseAtomicOp       , (0b0011100001100000001000, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 46 ), // #151
-INST(Ldeorlh          , BaseAtomicOp       , (0b0111100001100000001000, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 47 ), // #152
-INST(Ldg              , BaseRMSImm9       , (0b1101100101100000000000, 0b0000000000000000000000, kX , kZR, 0, 4)                  , RWI_W    , 0                         , 0  ), // #153
-INST(Ldgm             , BaseRMNoImm       , (0b1101100111100000000000, kX , kZR, 0 )                                              , RWI_W    , 0                         , 6  ), // #154
-INST(Ldlar            , BaseRMNoImm       , (0b1000100011011111011111, kWX, kZR, 30)                                              , RWI_W    , 0                         , 7  ), // #155
-INST(Ldlarb           , BaseRMNoImm       , (0b0000100011011111011111, kW , kZR, 0 )                                              , RWI_W    , 0                         , 8  ), // #156
-INST(Ldlarh           , BaseRMNoImm       , (0b0100100011011111011111, kW , kZR, 0 )                                              , RWI_W    , 0                         , 9  ), // #157
-INST(Ldnp             , BaseLdpStp         , (0b0010100001, 0           , kWX, 31, 2)                                              , RWI_WW   , 0                         , 0  ), // #158
-INST(Ldp              , BaseLdpStp         , (0b0010100101, 0b0010100011, kWX, 31, 2)                                              , RWI_WW   , 0                         , 1  ), // #159
-INST(Ldpsw            , BaseLdpStp         , (0b0110100101, 0b0110100011, kX , 0 , 2)                                              , RWI_WW   , 0                         , 2  ), // #160
-INST(Ldr              , BaseLdSt           , (0b1011100101, 0b10111000010, 0b10111000011, 0b00011000, kWX, 30, 2, InstId::Ldur)   , RWI_W    , 0                         , 0  ), // #161
-INST(Ldraa            , BaseRMSImm10      , (0b1111100000100000000001, kX , kZR, 0, 3)                                            , RWI_W    , 0                         , 0  ), // #162
-INST(Ldrab            , BaseRMSImm10      , (0b1111100010100000000001, kX , kZR, 0, 3)                                            , RWI_W    , 0                         , 1  ), // #163
-INST(Ldrb             , BaseLdSt           , (0b0011100101, 0b00111000010, 0b00111000011, 0         , kW , 0 , 0, InstId::Ldurb)  , RWI_W    , 0                         , 1  ), // #164
-INST(Ldrh             , BaseLdSt           , (0b0111100101, 0b01111000010, 0b01111000011, 0         , kW , 0 , 1, InstId::Ldurh)  , RWI_W    , 0                         , 2  ), // #165
-INST(Ldrsb            , BaseLdSt           , (0b0011100111, 0b00111000100, 0b00111000111, 0         , kWX, 22, 0, InstId::Ldursb) , RWI_W    , 0                         , 3  ), // #166
-INST(Ldrsh            , BaseLdSt           , (0b0111100111, 0b01111000100, 0b01111000111, 0         , kWX, 22, 1, InstId::Ldursh) , RWI_W    , 0                         , 4  ), // #167
-INST(Ldrsw            , BaseLdSt           , (0b1011100110, 0b10111000100, 0b10111000101, 0b10011000, kX , 0 , 2, InstId::Ldursw) , RWI_W    , 0                         , 5  ), // #168
-INST(Ldset            , BaseAtomicOp       , (0b1011100000100000001100, kWX, 30, 0)                                                , RWI_WRX  , 0                         , 48 ), // #169
-INST(Ldseta           , BaseAtomicOp       , (0b1011100010100000001100, kWX, 30, 1)                                                , RWI_WRX  , 0                         , 49 ), // #170
-INST(Ldsetab          , BaseAtomicOp       , (0b0011100010100000001100, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 50 ), // #171
-INST(Ldsetah          , BaseAtomicOp       , (0b0111100010100000001100, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 51 ), // #172
-INST(Ldsetal          , BaseAtomicOp       , (0b1011100011100000001100, kWX, 30, 1)                                                , RWI_WRX  , 0                         , 52 ), // #173
-INST(Ldsetalb         , BaseAtomicOp       , (0b0011100011100000001100, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 53 ), // #174
-INST(Ldsetalh         , BaseAtomicOp       , (0b0111100011100000001100, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 54 ), // #175
-INST(Ldsetb           , BaseAtomicOp       , (0b0011100000100000001100, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 55 ), // #176
-INST(Ldseth           , BaseAtomicOp       , (0b0111100000100000001100, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 56 ), // #177
-INST(Ldsetl           , BaseAtomicOp       , (0b1011100001100000001100, kWX, 30, 0)                                                , RWI_WRX  , 0                         , 57 ), // #178
-INST(Ldsetlb          , BaseAtomicOp       , (0b0011100001100000001100, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 58 ), // #179
-INST(Ldsetlh          , BaseAtomicOp       , (0b0111100001100000001100, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 59 ), // #180
-INST(Ldsmax           , BaseAtomicOp       , (0b1011100000100000010000, kWX, 30, 0)                                                , RWI_WRX  , 0                         , 60 ), // #181
-INST(Ldsmaxa          , BaseAtomicOp       , (0b1011100010100000010000, kWX, 30, 1)                                                , RWI_WRX  , 0                         , 61 ), // #182
-INST(Ldsmaxab         , BaseAtomicOp       , (0b0011100010100000010000, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 62 ), // #183
-INST(Ldsmaxah         , BaseAtomicOp       , (0b0111100010100000010000, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 63 ), // #184
-INST(Ldsmaxal         , BaseAtomicOp       , (0b1011100011100000010000, kWX, 30, 1)                                                , RWI_WRX  , 0                         , 64 ), // #185
-INST(Ldsmaxalb        , BaseAtomicOp       , (0b0011100011100000010000, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 65 ), // #186
-INST(Ldsmaxalh        , BaseAtomicOp       , (0b0111100011100000010000, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 66 ), // #187
-INST(Ldsmaxb          , BaseAtomicOp       , (0b0011100000100000010000, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 67 ), // #188
-INST(Ldsmaxh          , BaseAtomicOp       , (0b0111100000100000010000, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 68 ), // #189
-INST(Ldsmaxl          , BaseAtomicOp       , (0b1011100001100000010000, kWX, 30, 0)                                                , RWI_WRX  , 0                         , 69 ), // #190
-INST(Ldsmaxlb         , BaseAtomicOp       , (0b0011100001100000010000, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 70 ), // #191
-INST(Ldsmaxlh         , BaseAtomicOp       , (0b0111100001100000010000, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 71 ), // #192
-INST(Ldsmin           , BaseAtomicOp       , (0b1011100000100000010100, kWX, 30, 0)                                                , RWI_WRX  , 0                         , 72 ), // #193
-INST(Ldsmina          , BaseAtomicOp       , (0b1011100010100000010100, kWX, 30, 1)                                                , RWI_WRX  , 0                         , 73 ), // #194
-INST(Ldsminab         , BaseAtomicOp       , (0b0011100010100000010100, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 74 ), // #195
-INST(Ldsminah         , BaseAtomicOp       , (0b0111100010100000010100, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 75 ), // #196
-INST(Ldsminal         , BaseAtomicOp       , (0b1011100011100000010100, kWX, 30, 1)                                                , RWI_WRX  , 0                         , 76 ), // #197
-INST(Ldsminalb        , BaseAtomicOp       , (0b0011100011100000010100, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 77 ), // #198
-INST(Ldsminalh        , BaseAtomicOp       , (0b0111100011100000010100, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 78 ), // #199
-INST(Ldsminb          , BaseAtomicOp       , (0b0011100000100000010100, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 79 ), // #200
-INST(Ldsminh          , BaseAtomicOp       , (0b0111100000100000010100, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 80 ), // #201
-INST(Ldsminl          , BaseAtomicOp       , (0b1011100001100000010100, kWX, 30, 0)                                                , RWI_WRX  , 0                         , 81 ), // #202
-INST(Ldsminlb         , BaseAtomicOp       , (0b0011100001100000010100, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 82 ), // #203
-INST(Ldsminlh         , BaseAtomicOp       , (0b0111100001100000010100, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 83 ), // #204
-INST(Ldtr             , BaseRMSImm9       , (0b1011100001000000000010, 0b0000000000000000000000, kWX, kZR, 30, 0)                 , RWI_W    , 0                         , 1  ), // #205
-INST(Ldtrb            , BaseRMSImm9       , (0b0011100001000000000010, 0b0000000000000000000000, kW , kZR, 0 , 0)                 , RWI_W    , 0                         , 2  ), // #206
-INST(Ldtrh            , BaseRMSImm9       , (0b0111100001000000000010, 0b0000000000000000000000, kW , kZR, 0 , 0)                 , RWI_W    , 0                         , 3  ), // #207
-INST(Ldtrsb           , BaseRMSImm9       , (0b0011100011000000000010, 0b0000000000000000000000, kWX, kZR, 22, 0)                 , RWI_W    , 0                         , 4  ), // #208
-INST(Ldtrsh           , BaseRMSImm9       , (0b0111100011000000000010, 0b0000000000000000000000, kWX, kZR, 22, 0)                 , RWI_W    , 0                         , 5  ), // #209
-INST(Ldtrsw           , BaseRMSImm9       , (0b1011100010000000000010, 0b0000000000000000000000, kX , kZR, 0 , 0)                 , RWI_W    , 0                         , 6  ), // #210
-INST(Ldumax           , BaseAtomicOp       , (0b1011100000100000011000, kWX, 30, 0)                                                , RWI_WRX  , 0                         , 84 ), // #211
-INST(Ldumaxa          , BaseAtomicOp       , (0b1011100010100000011000, kWX, 30, 1)                                                , RWI_WRX  , 0                         , 85 ), // #212
-INST(Ldumaxab         , BaseAtomicOp       , (0b0011100010100000011000, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 86 ), // #213
-INST(Ldumaxah         , BaseAtomicOp       , (0b0111100010100000011000, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 87 ), // #214
-INST(Ldumaxal         , BaseAtomicOp       , (0b1011100011100000011000, kWX, 30, 1)                                                , RWI_WRX  , 0                         , 88 ), // #215
-INST(Ldumaxalb        , BaseAtomicOp       , (0b0011100011100000011000, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 89 ), // #216
-INST(Ldumaxalh        , BaseAtomicOp       , (0b0111100011100000011000, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 90 ), // #217
-INST(Ldumaxb          , BaseAtomicOp       , (0b0011100000100000011000, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 91 ), // #218
-INST(Ldumaxh          , BaseAtomicOp       , (0b0111100000100000011000, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 92 ), // #219
-INST(Ldumaxl          , BaseAtomicOp       , (0b1011100001100000011000, kWX, 30, 0)                                                , RWI_WRX  , 0                         , 93 ), // #220
-INST(Ldumaxlb         , BaseAtomicOp       , (0b0011100001100000011000, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 94 ), // #221
-INST(Ldumaxlh         , BaseAtomicOp       , (0b0111100001100000011000, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 95 ), // #222
-INST(Ldumin           , BaseAtomicOp       , (0b1011100000100000011100, kWX, 30, 0)                                                , RWI_WRX  , 0                         , 96 ), // #223
-INST(Ldumina          , BaseAtomicOp       , (0b1011100010100000011100, kWX, 30, 1)                                                , RWI_WRX  , 0                         , 97 ), // #224
-INST(Lduminab         , BaseAtomicOp       , (0b0011100010100000011100, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 98 ), // #225
-INST(Lduminah         , BaseAtomicOp       , (0b0111100010100000011100, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 99 ), // #226
-INST(Lduminal         , BaseAtomicOp       , (0b1011100011100000011100, kWX, 30, 1)                                                , RWI_WRX  , 0                         , 100), // #227
-INST(Lduminalb        , BaseAtomicOp       , (0b0011100011100000011100, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 101), // #228
-INST(Lduminalh        , BaseAtomicOp       , (0b0111100011100000011100, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 102), // #229
-INST(Lduminb          , BaseAtomicOp       , (0b0011100000100000011100, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 103), // #230
-INST(Lduminh          , BaseAtomicOp       , (0b0111100000100000011100, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 104), // #231
-INST(Lduminl          , BaseAtomicOp       , (0b1011100001100000011100, kWX, 30, 0)                                                , RWI_WRX  , 0                         , 105), // #232
-INST(Lduminlb         , BaseAtomicOp       , (0b0011100001100000011100, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 106), // #233
-INST(Lduminlh         , BaseAtomicOp       , (0b0111100001100000011100, kW , 0 , 0)                                                , RWI_WRX  , 0                         , 107), // #234
-INST(Ldur             , BaseRMSImm9       , (0b1011100001000000000000, 0b0000000000000000000000, kWX, kZR, 30, 0)                 , RWI_W    , 0                         , 7  ), // #235
-INST(Ldurb            , BaseRMSImm9       , (0b0011100001000000000000, 0b0000000000000000000000, kW , kZR, 0 , 0)                 , RWI_W    , 0                         , 8  ), // #236
-INST(Ldurh            , BaseRMSImm9       , (0b0111100001000000000000, 0b0000000000000000000000, kW , kZR, 0 , 0)                 , RWI_W    , 0                         , 9  ), // #237
-INST(Ldursb           , BaseRMSImm9       , (0b0011100011000000000000, 0b0000000000000000000000, kWX, kZR, 22, 0)                 , RWI_W    , 0                         , 10 ), // #238
-INST(Ldursh           , BaseRMSImm9       , (0b0111100011000000000000, 0b0000000000000000000000, kWX, kZR, 22, 0)                 , RWI_W    , 0                         , 11 ), // #239
-INST(Ldursw           , BaseRMSImm9       , (0b1011100010000000000000, 0b0000000000000000000000, kX , kZR, 0 , 0)                 , RWI_W    , 0                         , 12 ), // #240
-INST(Ldxp             , BaseLdxp           , (0b1000100001111111000000, kWX, 30)                                                   , RWI_WW   , 0                         , 1  ), // #241
-INST(Ldxr             , BaseRMNoImm       , (0b1000100001011111011111, kWX, kZR, 30)                                              , RWI_W    , 0                         , 10 ), // #242
-INST(Ldxrb            , BaseRMNoImm       , (0b0000100001011111011111, kW , kZR, 0 )                                              , RWI_W    , 0                         , 11 ), // #243
-INST(Ldxrh            , BaseRMNoImm       , (0b0100100001011111011111, kW , kZR, 0 )                                              , RWI_W    , 0                         , 12 ), // #244
-INST(Lsl              , BaseShift          , (0b0001101011000000001000, 0b0101001100000000000000, 0)                               , RWI_W    , 0                         , 2  ), // #245
-INST(Lslv             , BaseShift          , (0b0001101011000000001000, 0b0000000000000000000000, 0)                               , RWI_W    , 0                         , 3  ), // #246
-INST(Lsr              , BaseShift          , (0b0001101011000000001001, 0b0101001100000000011111, 0)                               , RWI_W    , 0                         , 4  ), // #247
-INST(Lsrv             , BaseShift          , (0b0001101011000000001001, 0b0000000000000000000000, 0)                               , RWI_W    , 0                         , 5  ), // #248
-INST(Madd             , BaseRRRR           , (0b0001101100000000000000, kWX, kZR, kWX, kZR, kWX, kZR, kWX, kZR, true)              , RWI_W    , 0                         , 0  ), // #249
-INST(Mneg             , BaseRRR            , (0b0001101100000000111111, kWX, kZR, kWX, kZR, kWX, kZR, true)                        , RWI_W    , 0                         , 11 ), // #250
-INST(Mov              , BaseMov            , (_)                                                                                   , RWI_W    , 0                         , 0  ), // #251
-INST(Movk             , BaseMovKNZ         , (0b01110010100000000000000000000000)                                                  , RWI_X    , 0                         , 0  ), // #252
-INST(Movn             , BaseMovKNZ         , (0b00010010100000000000000000000000)                                                  , RWI_W    , 0                         , 1  ), // #253
-INST(Movz             , BaseMovKNZ         , (0b01010010100000000000000000000000)                                                  , RWI_W    , 0                         , 2  ), // #254
-INST(Mrs              , BaseMrs            , (_)                                                                                   , RWI_W    , 0                         , 0  ), // #255
-INST(Msr              , BaseMsr            , (_)                                                                                   , RWI_W    , 0                         , 0  ), // #256
-INST(Msub             , BaseRRRR           , (0b0001101100000000100000, kWX, kZR, kWX, kZR, kWX, kZR, kWX, kZR, true)              , RWI_W    , 0                         , 1  ), // #257
-INST(Mul              , BaseRRR            , (0b0001101100000000011111, kWX, kZR, kWX, kZR, kWX, kZR, true)                        , RWI_W    , 0                         , 12 ), // #258
-INST(Mvn              , BaseMvnNeg         , (0b00101010001000000000001111100000)                                                  , RWI_W    , 0                         , 0  ), // #259
-INST(Neg              , BaseMvnNeg         , (0b01001011000000000000001111100000)                                                  , RWI_W    , 0                         , 1  ), // #260
-INST(Negs             , BaseMvnNeg         , (0b01101011000000000000001111100000)                                                  , RWI_W    , 0                         , 2  ), // #261
-INST(Ngc              , BaseRR             , (0b01011010000000000000001111100000, kWX, kZR, 0, kWX, kZR, 16, true)                 , RWI_W    , 0                         , 10 ), // #262
-INST(Ngcs             , BaseRR             , (0b01111010000000000000001111100000, kWX, kZR, 0, kWX, kZR, 16, true)                 , RWI_W    , 0                         , 11 ), // #263
-INST(Nop              , BaseOp             , (0b11010101000000110010000000011111)                                                  , 0         , 0                         , 14 ), // #264
-INST(Orn              , BaseLogical        , (0b0101010001, 0b01100100, 1)                                                         , RWI_W    , 0                         , 6  ), // #265
-INST(Orr              , BaseLogical        , (0b0101010000, 0b01100100, 0)                                                         , RWI_W    , 0                         , 7  ), // #266
-INST(Pacda            , BaseRR             , (0b11011010110000010000100000000000, kX, kZR, 0, kX, kSP, 5, true)                    , RWI_X    , 0                         , 12 ), // #267
-INST(Pacdb            , BaseRR             , (0b11011010110000010000110000000000, kX, kZR, 0, kX, kSP, 5, true)                    , RWI_X    , 0                         , 13 ), // #268
-INST(Pacdza           , BaseR              , (0b11011010110000010010101111100000, kX, kZR, 0)                                      , RWI_X    , 0                         , 4  ), // #269
-INST(Pacdzb           , BaseR              , (0b11011010110000010010111111100000, kX, kZR, 0)                                      , RWI_X    , 0                         , 5  ), // #270
-INST(Pacga            , BaseRRR            , (0b1001101011000000001100, kX, kZR, kX, kZR, kX, kSP, false)                          , RWI_W    , 0                         , 13 ), // #271
-INST(Prfm             , BasePrfm           , (0b11111000101, 0b1111100110, 0b11111000100, 0b11011000)                              , RWI_R    , 0                         , 0  ), // #272
-INST(Pssbb            , BaseOp             , (0b11010101000000110011010010011111)                                                  , 0         , 0                         , 15 ), // #273
-INST(Rbit             , BaseRR             , (0b01011010110000000000000000000000, kWX, kZR, 0, kWX, kZR, 5, true)                  , RWI_W    , 0                         , 14 ), // #274
-INST(Ret              , BaseBranchReg      , (0b11010110010111110000000000000000)                                                  , RWI_R    , 0                         , 2  ), // #275
-INST(Rev              , BaseRev            , (_)                                                                                   , RWI_W    , 0                         , 0  ), // #276
-INST(Rev16            , BaseRR             , (0b01011010110000000000010000000000, kWX, kZR, 0, kWX, kZR, 5, true)                  , RWI_W    , 0                         , 15 ), // #277
-INST(Rev32            , BaseRR             , (0b11011010110000000000100000000000, kWX, kZR, 0, kWX, kZR, 5, true)                  , RWI_W    , 0                         , 16 ), // #278
-INST(Rev64            , BaseRR             , (0b11011010110000000000110000000000, kWX, kZR, 0, kWX, kZR, 5, true)                  , RWI_W    , 0                         , 17 ), // #279
-INST(Ror              , BaseShift          , (0b0001101011000000001011, 0b0001001110000000000000, 1)                               , RWI_W    , 0                         , 6  ), // #280
-INST(Rorv             , BaseShift          , (0b0001101011000000001011, 0b0000000000000000000000, 1)                               , RWI_W    , 0                         , 7  ), // #281
-INST(Sbc              , BaseRRR            , (0b0101101000000000000000, kWX, kZR, kWX, kZR, kWX, kZR, true)                        , RWI_W    , 0                         , 14 ), // #282
-INST(Sbcs             , BaseRRR            , (0b0111101000000000000000, kWX, kZR, kWX, kZR, kWX, kZR, true)                        , RWI_W    , 0                         , 15 ), // #283
-INST(Sbfiz            , BaseBfi            , (0b00010011000000000000000000000000)                                                  , RWI_W    , 0                         , 1  ), // #284
-INST(Sbfm             , BaseBfm            , (0b00010011000000000000000000000000)                                                  , RWI_W    , 0                         , 1  ), // #285
-INST(Sbfx             , BaseBfx            , (0b00010011000000000000000000000000)                                                  , RWI_W    , 0                         , 1  ), // #286
-INST(Sdiv             , BaseRRR            , (0b0001101011000000000011, kWX, kZR, kWX, kZR, kWX, kZR, true)                        , RWI_W    , 0                         , 16 ), // #287
-INST(Setf8            , BaseR              , (0b00111010000000000000100000001101, kW, kZR, 5)                                      , 0         , 0                         , 6  ), // #288
-INST(Setf16           , BaseR              , (0b00111010000000000100100000001101, kW, kZR, 5)                                      , 0         , 0                         , 7  ), // #289
-INST(Sev              , BaseOp             , (0b11010101000000110010000010011111)                                                  , 0         , 0                         , 16 ), // #290
-INST(Sevl             , BaseOp             , (0b11010101000000110010000010111111)                                                  , 0         , 0                         , 17 ), // #291
-INST(Smaddl           , BaseRRRR           , (0b1001101100100000000000, kX , kZR, kW , kZR, kW , kZR, kX , kZR, false)             , RWI_W    , 0                         , 2  ), // #292
-INST(Smax             , BaseMinMax         , (0b00011010110000000110000000000000, 0b00010001110000000000000000000000)              , RWI_W    , 0                         , 0  ), // #293
-INST(Smc              , BaseOpImm          , (0b11010100000000000000000000000011, 16, 5)                                           , 0         , 0                         , 12 ), // #294
-INST(Smin             , BaseMinMax         , (0b00011010110000000110100000000000, 0b00010001110010000000000000000000)              , RWI_W    , 0                         , 1  ), // #295
-INST(Smnegl           , BaseRRR            , (0b1001101100100000111111, kX , kZR, kW , kZR, kW , kZR, false)                       , RWI_W    , 0                         , 17 ), // #296
-INST(Smsubl           , BaseRRRR           , (0b1001101100100000100000, kX , kZR, kW , kZR, kW , kZR, kX , kZR, false)             , RWI_W    , 0                         , 3  ), // #297
-INST(Smulh            , BaseRRR            , (0b1001101101000000011111, kX , kZR, kX , kZR, kX , kZR, true)                        , RWI_W    , 0                         , 18 ), // #298
-INST(Smull            , BaseRRR            , (0b1001101100100000011111, kX , kZR, kW , kZR, kW , kZR, false)                       , RWI_W    , 0                         , 19 ), // #299
-INST(Ssbb             , BaseOp             , (0b11010101000000110011000010011111)                                                  , 0         , 0                         , 18 ), // #300
-INST(St2g             , BaseRMSImm9       , (0b1101100110100000000010, 0b1101100110100000000001, kX, kSP, 0, 4)                   , RWI_RW   , 0                         , 13 ), // #301
-INST(Stadd            , BaseAtomicSt       , (0b1011100000100000000000, kWX, 30)                                                   , RWI_RX   , 0                         , 0  ), // #302
-INST(Staddl           , BaseAtomicSt       , (0b1011100001100000000000, kWX, 30)                                                   , RWI_RX   , 0                         , 1  ), // #303
-INST(Staddb           , BaseAtomicSt       , (0b0011100000100000000000, kW , 0 )                                                   , RWI_RX   , 0                         , 2  ), // #304
-INST(Staddlb          , BaseAtomicSt       , (0b0011100001100000000000, kW , 0 )                                                   , RWI_RX   , 0                         , 3  ), // #305
-INST(Staddh           , BaseAtomicSt       , (0b0111100000100000000000, kW , 0 )                                                   , RWI_RX   , 0                         , 4  ), // #306
-INST(Staddlh          , BaseAtomicSt       , (0b0111100001100000000000, kW , 0 )                                                   , RWI_RX   , 0                         , 5  ), // #307
-INST(Stclr            , BaseAtomicSt       , (0b1011100000100000000100, kWX, 30)                                                   , RWI_RX   , 0                         , 6  ), // #308
-INST(Stclrl           , BaseAtomicSt       , (0b1011100001100000000100, kWX, 30)                                                   , RWI_RX   , 0                         , 7  ), // #309
-INST(Stclrb           , BaseAtomicSt       , (0b0011100000100000000100, kW , 0 )                                                   , RWI_RX   , 0                         , 8  ), // #310
-INST(Stclrlb          , BaseAtomicSt       , (0b0011100001100000000100, kW , 0 )                                                   , RWI_RX   , 0                         , 9  ), // #311
-INST(Stclrh           , BaseAtomicSt       , (0b0111100000100000000100, kW , 0 )                                                   , RWI_RX   , 0                         , 10 ), // #312
-INST(Stclrlh          , BaseAtomicSt       , (0b0111100001100000000100, kW , 0 )                                                   , RWI_RX   , 0                         , 11 ), // #313
-INST(Steor            , BaseAtomicSt       , (0b1011100000100000001000, kWX, 30)                                                   , RWI_RX   , 0                         , 12 ), // #314
-INST(Steorl           , BaseAtomicSt       , (0b1011100001100000001000, kWX, 30)                                                   , RWI_RX   , 0                         , 13 ), // #315
-INST(Steorb           , BaseAtomicSt       , (0b0011100000100000001000, kW , 0 )                                                   , RWI_RX   , 0                         , 14 ), // #316
-INST(Steorlb          , BaseAtomicSt       , (0b0011100001100000001000, kW , 0 )                                                   , RWI_RX   , 0                         , 15 ), // #317
-INST(Steorh           , BaseAtomicSt       , (0b0111100000100000001000, kW , 0 )                                                   , RWI_RX   , 0                         , 16 ), // #318
-INST(Steorlh          , BaseAtomicSt       , (0b0111100001100000001000, kW , 0 )                                                   , RWI_RX   , 0                         , 17 ), // #319
-INST(Stg              , BaseRMSImm9       , (0b1101100100100000000010, 0b1101100100100000000001, kX, kSP, 0, 4)                   , RWI_RW   , 0                         , 14 ), // #320
-INST(Stgm             , BaseRMNoImm       , (0b1101100110100000000000, kX , kZR, 0 )                                              , RWI_RW   , 0                         , 13 ), // #321
-INST(Stgp             , BaseLdpStp         , (0b0110100100, 0b0110100010, kX, 0, 4)                                                , RWI_RRW  , 0                         , 3  ), // #322
-INST(Stllr            , BaseRMNoImm       , (0b1000100010011111011111, kWX, kZR, 30)                                              , RWI_RW   , 0                         , 14 ), // #323
-INST(Stllrb           , BaseRMNoImm       , (0b0000100010011111011111, kW , kZR, 0 )                                              , RWI_RW   , 0                         , 15 ), // #324
-INST(Stllrh           , BaseRMNoImm       , (0b0100100010011111011111, kW , kZR, 0 )                                              , RWI_RW   , 0                         , 16 ), // #325
-INST(Stlr             , BaseRMNoImm       , (0b1000100010011111111111, kWX, kZR, 30)                                              , RWI_RW   , 0                         , 17 ), // #326
-INST(Stlrb            , BaseRMNoImm       , (0b0000100010011111111111, kW , kZR, 0 )                                              , RWI_RW   , 0                         , 18 ), // #327
-INST(Stlrh            , BaseRMNoImm       , (0b0100100010011111111111, kW , kZR, 0 )                                              , RWI_RW   , 0                         , 19 ), // #328
-INST(Stlxp            , BaseStxp           , (0b1000100000100000100000, kWX, 30)                                                   , RWI_WRRX , 0                         , 0  ), // #329
-INST(Stlxr            , BaseAtomicOp       , (0b1000100000000000111111, kWX, 30, 1)                                                , RWI_WRX  , 0                         , 108), // #330
-INST(Stlxrb           , BaseAtomicOp       , (0b0000100000000000111111, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 109), // #331
-INST(Stlxrh           , BaseAtomicOp       , (0b0100100000000000111111, kW , 0 , 1)                                                , RWI_WRX  , 0                         , 110), // #332
-INST(Stnp             , BaseLdpStp         , (0b0010100000, 0           , kWX, 31, 2)                                              , RWI_RRW  , 0                         , 4  ), // #333
-INST(Stp              , BaseLdpStp         , (0b0010100100, 0b0010100010, kWX, 31, 2)                                              , RWI_RRW  , 0                         , 5  ), // #334
-INST(Str              , BaseLdSt           , (0b1011100100, 0b10111000000, 0b10111000001, 0         , kWX, 30, 2, InstId::Stur)   , RWI_RW   , 0                         , 6  ), // #335
-INST(Strb             , BaseLdSt           , (0b0011100100, 0b00111000000, 0b00111000001, 0         , kW , 30, 0, InstId::Sturb)  , RWI_RW   , 0                         , 7  ), // #336
-INST(Strh             , BaseLdSt           , (0b0111100100, 0b01111000000, 0b01111000001, 0         , kWX, 30, 1, InstId::Sturh)  , RWI_RW   , 0                         , 8  ), // #337
-INST(Stset            , BaseAtomicSt       , (0b1011100000100000001100, kWX, 30)                                                   , RWI_RX   , 0                         , 18 ), // #338
-INST(Stsetl           , BaseAtomicSt       , (0b1011100001100000001100, kWX, 30)                                                   , RWI_RX   , 0                         , 19 ), // #339
-INST(Stsetb           , BaseAtomicSt       , (0b0011100000100000001100, kW , 0 )                                                   , RWI_RX   , 0                         , 20 ), // #340
-INST(Stsetlb          , BaseAtomicSt       , (0b0011100001100000001100, kW , 0 )                                                   , RWI_RX   , 0                         , 21 ), // #341
-INST(Stseth           , BaseAtomicSt       , (0b0111100000100000001100, kW , 0 )                                                   , RWI_RX   , 0                         , 22 ), // #342
-INST(Stsetlh          , BaseAtomicSt       , (0b0111100001100000001100, kW , 0 )                                                   , RWI_RX   , 0                         , 23 ), // #343
-INST(Stsmax           , BaseAtomicSt       , (0b1011100000100000010000, kWX, 30)                                                   , RWI_RX   , 0                         , 24 ), // #344
-INST(Stsmaxl          , BaseAtomicSt       , (0b1011100001100000010000, kWX, 30)                                                   , RWI_RX   , 0                         , 25 ), // #345
-INST(Stsmaxb          , BaseAtomicSt       , (0b0011100000100000010000, kW , 0 )                                                   , RWI_RX   , 0                         , 26 ), // #346
-INST(Stsmaxlb         , BaseAtomicSt       , (0b0011100001100000010000, kW , 0 )                                                   , RWI_RX   , 0                         , 27 ), // #347
-INST(Stsmaxh          , BaseAtomicSt       , (0b0111100000100000010000, kW , 0 )                                                   , RWI_RX   , 0                         , 28 ), // #348
-INST(Stsmaxlh         , BaseAtomicSt       , (0b0111100001100000010000, kW , 0 )                                                   , RWI_RX   , 0                         , 29 ), // #349
-INST(Stsmin           , BaseAtomicSt       , (0b1011100000100000010100, kWX, 30)                                                   , RWI_RX   , 0                         , 30 ), // #350
-INST(Stsminl          , BaseAtomicSt       , (0b1011100001100000010100, kWX, 30)                                                   , RWI_RX   , 0                         , 31 ), // #351
-INST(Stsminb          , BaseAtomicSt       , (0b0011100000100000010100, kW , 0 )                                                   , RWI_RX   , 0                         , 32 ), // #352
-INST(Stsminlb         , BaseAtomicSt       , (0b0011100001100000010100, kW , 0 )                                                   , RWI_RX   , 0                         , 33 ), // #353
-INST(Stsminh          , BaseAtomicSt       , (0b0111100000100000010100, kW , 0 )                                                   , RWI_RX   , 0                         , 34 ), // #354
-INST(Stsminlh         , BaseAtomicSt       , (0b0111100001100000010100, kW , 0 )                                                   , RWI_RX   , 0                         , 35 ), // #355
-INST(Sttr             , BaseRMSImm9       , (0b1011100000000000000010, 0b0000000000000000000000, kWX, kZR, 30, 0)                 , RWI_RW   , 0                         , 15 ), // #356
-INST(Sttrb            , BaseRMSImm9       , (0b0011100000000000000010, 0b0000000000000000000000, kW , kZR, 0 , 0)                 , RWI_RW   , 0                         , 16 ), // #357
-INST(Sttrh            , BaseRMSImm9       , (0b0111100000000000000010, 0b0000000000000000000000, kW , kZR, 0 , 0)                 , RWI_RW   , 0                         , 17 ), // #358
-INST(Stumax           , BaseAtomicSt       , (0b1011100000100000011000, kWX, 30)                                                   , RWI_RX   , 0                         , 36 ), // #359
-INST(Stumaxl          , BaseAtomicSt       , (0b1011100001100000011000, kWX, 30)                                                   , RWI_RX   , 0                         , 37 ), // #360
-INST(Stumaxb          , BaseAtomicSt       , (0b0011100000100000011000, kW , 0 )                                                   , RWI_RX   , 0                         , 38 ), // #361
-INST(Stumaxlb         , BaseAtomicSt       , (0b0011100001100000011000, kW , 0 )                                                   , RWI_RX   , 0                         , 39 ), // #362
-INST(Stumaxh          , BaseAtomicSt       , (0b0111100000100000011000, kW , 0 )                                                   , RWI_RX   , 0                         , 40 ), // #363
-INST(Stumaxlh         , BaseAtomicSt       , (0b0111100001100000011000, kW , 0 )                                                   , RWI_RX   , 0                         , 41 ), // #364
-INST(Stumin           , BaseAtomicSt       , (0b1011100000100000011100, kWX, 30)                                                   , RWI_RX   , 0                         , 42 ), // #365
-INST(Stuminl          , BaseAtomicSt       , (0b1011100001100000011100, kWX, 30)                                                   , RWI_RX   , 0                         , 43 ), // #366
-INST(Stuminb          , BaseAtomicSt       , (0b0011100000100000011100, kW , 0 )                                                   , RWI_RX   , 0                         , 44 ), // #367
-INST(Stuminlb         , BaseAtomicSt       , (0b0011100001100000011100, kW , 0 )                                                   , RWI_RX   , 0                         , 45 ), // #368
-INST(Stuminh          , BaseAtomicSt       , (0b0111100000100000011100, kW , 0 )                                                   , RWI_RX   , 0                         , 46 ), // #369
-INST(Stuminlh         , BaseAtomicSt       , (0b0111100001100000011100, kW , 0 )                                                   , RWI_RX   , 0                         , 47 ), // #370
-INST(Stur             , BaseRMSImm9       , (0b1011100000000000000000, 0b0000000000000000000000, kWX, kZR, 30, 0)                 , RWI_RW   , 0                         , 18 ), // #371
-INST(Sturb            , BaseRMSImm9       , (0b0011100000000000000000, 0b0000000000000000000000, kW , kZR, 0 , 0)                 , RWI_RW   , 0                         , 19 ), // #372
-INST(Sturh            , BaseRMSImm9       , (0b0111100000000000000000, 0b0000000000000000000000, kW , kZR, 0 , 0)                 , RWI_RW   , 0                         , 20 ), // #373
-INST(Stxp             , BaseStxp           , (0b1000100000100000000000, kWX, 30)                                                   , RWI_WRRW , 0                         , 1  ), // #374
-INST(Stxr             , BaseStx            , (0b1000100000000000011111, kWX, 30)                                                   , RWI_WRW  , 0                         , 0  ), // #375
-INST(Stxrb            , BaseStx            , (0b0000100000000000011111, kW , 0 )                                                   , RWI_WRW  , 0                         , 1  ), // #376
-INST(Stxrh            , BaseStx            , (0b0100100000000000011111, kW , 0 )                                                   , RWI_WRW  , 0                         , 2  ), // #377
-INST(Stz2g            , BaseRMSImm9       , (0b1101100111100000000010, 0b1101100111100000000001, kX , kSP, 0, 4)                  , RWI_RW   , 0                         , 21 ), // #378
-INST(Stzg             , BaseRMSImm9       , (0b1101100101100000000010, 0b1101100101100000000001, kX , kSP, 0, 4)                  , RWI_RW   , 0                         , 22 ), // #379
-INST(Stzgm            , BaseRMNoImm       , (0b1101100100100000000000, kX , kZR, 0)                                               , RWI_RW   , 0                         , 20 ), // #380
-INST(Sub              , BaseAddSub         , (0b1001011000, 0b1001011001, 0b1010001)                                               , RWI_W    , 0                         , 2  ), // #381
-INST(Subg             , BaseRRII           , (0b1101000110000000000000, kX, kSP, kX, kSP, 6, 4, 16, 4, 0, 10)                      , RWI_W    , 0                         , 1  ), // #382
-INST(Subp             , BaseRRR            , (0b1001101011000000000000, kX, kZR, kX, kSP, kX, kSP, false)                          , RWI_W    , 0                         , 20 ), // #383
-INST(Subps            , BaseRRR            , (0b1011101011000000000000, kX, kZR, kX, kSP, kX, kSP, false)                          , RWI_W    , 0                         , 21 ), // #384
-INST(Subs             , BaseAddSub         , (0b1101011000, 0b1101011001, 0b1110001)                                               , RWI_W    , 0                         , 3  ), // #385
-INST(Svc              , BaseOpImm          , (0b11010100000000000000000000000001, 16, 5)                                           , 0         , 0                         , 13 ), // #386
-INST(Swp              , BaseAtomicOp       , (0b1011100000100000100000, kWX, 30, 1)                                                , RWI_RWX  , 0                         , 111), // #387
-INST(Swpa             , BaseAtomicOp       , (0b1011100010100000100000, kWX, 30, 1)                                                , RWI_RWX  , 0                         , 112), // #388
-INST(Swpab            , BaseAtomicOp       , (0b0011100010100000100000, kW , 0 , 1)                                                , RWI_RWX  , 0                         , 113), // #389
-INST(Swpah            , BaseAtomicOp       , (0b0111100010100000100000, kW , 0 , 1)                                                , RWI_RWX  , 0                         , 114), // #390
-INST(Swpal            , BaseAtomicOp       , (0b1011100011100000100000, kWX, 30, 1)                                                , RWI_RWX  , 0                         , 115), // #391
-INST(Swpalb           , BaseAtomicOp       , (0b0011100011100000100000, kW , 0 , 1)                                                , RWI_RWX  , 0                         , 116), // #392
-INST(Swpalh           , BaseAtomicOp       , (0b0111100011100000100000, kW , 0 , 1)                                                , RWI_RWX  , 0                         , 117), // #393
-INST(Swpb             , BaseAtomicOp       , (0b0011100000100000100000, kW , 0 , 1)                                                , RWI_RWX  , 0                         , 118), // #394
-INST(Swph             , BaseAtomicOp       , (0b0111100000100000100000, kW , 0 , 1)                                                , RWI_RWX  , 0                         , 119), // #395
-INST(Swpl             , BaseAtomicOp       , (0b1011100001100000100000, kWX, 30, 1)                                                , RWI_RWX  , 0                         , 120), // #396
-INST(Swplb            , BaseAtomicOp       , (0b0011100001100000100000, kW , 0 , 1)                                                , RWI_RWX  , 0                         , 121), // #397
-INST(Swplh            , BaseAtomicOp       , (0b0111100001100000100000, kW , 0 , 1)                                                , RWI_RWX  , 0                         , 122), // #398
-INST(Sxtb             , BaseExtend         , (0b0001001100000000000111, kWX, 0)                                                    , RWI_W    , 0                         , 0  ), // #399
-INST(Sxth             , BaseExtend         , (0b0001001100000000001111, kWX, 0)                                                    , RWI_W    , 0                         , 1  ), // #400
-INST(Sxtw             , BaseExtend         , (0b1001001101000000011111, kX , 0)                                                    , RWI_W    , 0                         , 2  ), // #401
-INST(Sys              , BaseSys            , (_)                                                                                   , RWI_W    , 0                         , 0  ), // #402
-INST(Tlbi             , BaseAtDcIcTlbi     , (0b00011110000000, 0b00010000000000, false)                                           , RWI_RX   , 0                         , 3  ), // #403
-INST(Tst              , BaseTst            , (0b1101010000, 0b111001000)                                                           , RWI_R    , 0                         , 0  ), // #404
-INST(Tbnz             , BaseBranchTst      , (0b00110111000000000000000000000000)                                                  , RWI_R    , 0                         , 0  ), // #405
-INST(Tbz              , BaseBranchTst      , (0b00110110000000000000000000000000)                                                  , RWI_R    , 0                         , 1  ), // #406
-INST(Ubfiz            , BaseBfi            , (0b01010011000000000000000000000000)                                                  , RWI_W    , 0                         , 2  ), // #407
-INST(Ubfm             , BaseBfm            , (0b01010011000000000000000000000000)                                                  , RWI_W    , 0                         , 2  ), // #408
-INST(Ubfx             , BaseBfx            , (0b01010011000000000000000000000000)                                                  , RWI_W    , 0                         , 2  ), // #409
-INST(Udf              , BaseOpImm          , (0b00000000000000000000000000000000, 16, 0)                                           , 0         , 0                         , 14 ), // #410
-INST(Udiv             , BaseRRR            , (0b0001101011000000000010, kWX, kZR, kWX, kZR, kWX, kZR, true)                        , RWI_W    , 0                         , 22 ), // #411
-INST(Umaddl           , BaseRRRR           , (0b1001101110100000000000, kX , kZR, kW , kZR, kW , kZR, kX , kZR, false)             , RWI_W    , 0                         , 4  ), // #412
-INST(Umax             , BaseMinMax         , (0b00011010110000000110010000000000, 0b00010001110001000000000000000000)              , RWI_W    , 0                         , 2  ), // #413
-INST(Umin             , BaseMinMax         , (0b00011010110000000110110000000000, 0b00010001110011000000000000000000)              , RWI_W    , 0                         , 3  ), // #414
-INST(Umnegl           , BaseRRR            , (0b1001101110100000111111, kX , kZR, kW , kZR, kW , kZR, false)                       , RWI_W    , 0                         , 23 ), // #415
-INST(Umull            , BaseRRR            , (0b1001101110100000011111, kX , kZR, kW , kZR, kW , kZR, false)                       , RWI_W    , 0                         , 24 ), // #416
-INST(Umulh            , BaseRRR            , (0b1001101111000000011111, kX , kZR, kX , kZR, kX , kZR, false)                       , RWI_W    , 0                         , 25 ), // #417
-INST(Umsubl           , BaseRRRR           , (0b1001101110100000100000, kX , kZR, kW , kZR, kW , kZR, kX , kZR, false)             , RWI_W    , 0                         , 5  ), // #418
-INST(Uxtb             , BaseExtend         , (0b0101001100000000000111, kW, 1)                                                     , RWI_W    , 0                         , 3  ), // #419
-INST(Uxth             , BaseExtend         , (0b0101001100000000001111, kW, 1)                                                     , RWI_W    , 0                         , 4  ), // #420
-INST(Wfe              , BaseOp             , (0b11010101000000110010000001011111)                                                  , 0         , 0                         , 19 ), // #421
-INST(Wfi              , BaseOp             , (0b11010101000000110010000001111111)                                                  , 0         , 0                         , 20 ), // #422
-INST(Xaflag           , BaseOp             , (0b11010101000000000100000000111111)                                                  , 0         , 0                         , 21 ), // #423
-INST(Xpacd            , BaseR              , (0b11011010110000010100011111100000, kX, kZR, 0)                                      , RWI_X    , 0                         , 8  ), // #424
-INST(Xpaci            , BaseR              , (0b11011010110000010100001111100000, kX, kZR, 0)                                      , RWI_X    , 0                         , 9  ), // #425
-INST(Xpaclri          , BaseOp             , (0b11010101000000110010000011111111)                                                  , RWI_X    , 0                         , 22 ), // #426
-INST(Yield            , BaseOp             , (0b11010101000000110010000000111111)                                                  , 0         , 0                         , 23 ), // #427
-INST(Abs_v            , ISimdVV            , (0b0000111000100000101110, kVO_V_Any)                                                 , RWI_W    , 0                         , 0  ), // #428
-INST(Add_v            , ISimdVVV           , (0b0000111000100000100001, kVO_V_Any)                                                 , RWI_W    , 0                         , 0  ), // #429
-INST(Addhn_v          , ISimdVVV           , (0b0000111000100000010000, kVO_V_B8H4S2)                                              , RWI_W    , F!(Narrow)                 , 1  ), // #430
-INST(Addhn2_v         , ISimdVVV           , (0b0100111000100000010000, kVO_V_B16H8S4)                                             , RWI_W    , F!(Narrow)                 , 2  ), // #431
-INST(Addp_v           , ISimdPair          , (0b0101111000110001101110, 0b0000111000100000101111, kVO_V_Any)                       , RWI_W    , F!(Pair)                   , 0  ), // #432
-INST(Addv_v           , ISimdSV            , (0b0000111000110001101110, kVO_V_BH_4S)                                               , RWI_W    , 0                         , 0  ), // #433
-INST(Aesd_v           , ISimdVVx           , (0b0100111000101000010110, kOp_V16B, kOp_V16B)                                        , RWI_X    , 0                         , 0  ), // #434
-INST(Aese_v           , ISimdVVx           , (0b0100111000101000010010, kOp_V16B, kOp_V16B)                                        , RWI_X    , 0                         , 1  ), // #435
-INST(Aesimc_v         , ISimdVVx           , (0b0100111000101000011110, kOp_V16B, kOp_V16B)                                        , RWI_W    , 0                         , 2  ), // #436
-INST(Aesmc_v          , ISimdVVx           , (0b0100111000101000011010, kOp_V16B, kOp_V16B)                                        , RWI_W    , 0                         , 3  ), // #437
-INST(And_v            , ISimdVVV           , (0b0000111000100000000111, kVO_V_B)                                                   , RWI_W    , 0                         , 3  ), // #438
-INST(Bcax_v           , ISimdVVVV          , (0b1100111000100000000000, kVO_V_B16)                                                 , RWI_W    , 0                         , 0  ), // #439
-INST(Bfcvt_v          , ISimdVVx           , (0b0001111001100011010000, kOp_H, kOp_S)                                              , RWI_W    , 0                         , 4  ), // #440
-INST(Bfcvtn_v         , ISimdVVx           , (0b0000111010100001011010, kOp_V4H, kOp_V4S)                                          , RWI_W    , F!(Narrow)                 , 5  ), // #441
-INST(Bfcvtn2_v        , ISimdVVx           , (0b0100111010100001011010, kOp_V8H, kOp_V4S)                                          , RWI_W    , F!(Narrow)                 , 6  ), // #442
-INST(Bfdot_v          , SimdDot            , (0b0010111001000000111111, 0b0000111101000000111100, kET_S, kET_H, kET_2H)            , RWI_X    , 0                         , 0  ), // #443
-INST(Bfmlalb_v        , SimdFmlal          , (0b0010111011000000111111, 0b0000111111000000111100, 0, kET_S, kET_H, kET_H)          , RWI_X    , F!(VH0_15)                 , 0  ), // #444
-INST(Bfmlalt_v        , SimdFmlal          , (0b0110111011000000111111, 0b0100111111000000111100, 0, kET_S, kET_H, kET_H)          , RWI_X    , F!(VH0_15)                 , 1  ), // #445
-INST(Bfmmla_v         , ISimdVVVx          , (0b0110111001000000111011, kOp_V4S, kOp_V8H, kOp_V8H)                                 , RWI_X    , F!(Long)                   , 0  ), // #446
-INST(Bic_v            , SimdBicOrr         , (0b0000111001100000000111, 0b0010111100000000000001)                                  , RWI_W    , 0                         , 0  ), // #447
-INST(Bif_v            , ISimdVVV           , (0b0010111011100000000111, kVO_V_B)                                                   , RWI_X    , 0                         , 4  ), // #448
-INST(Bit_v            , ISimdVVV           , (0b0010111010100000000111, kVO_V_B)                                                   , RWI_X    , 0                         , 5  ), // #449
-INST(Bsl_v            , ISimdVVV           , (0b0010111001100000000111, kVO_V_B)                                                   , RWI_X    , 0                         , 6  ), // #450
-INST(Cls_v            , ISimdVV            , (0b0000111000100000010010, kVO_V_BHS)                                                 , RWI_W    , 0                         , 1  ), // #451
-INST(Clz_v            , ISimdVV            , (0b0010111000100000010010, kVO_V_BHS)                                                 , RWI_W    , 0                         , 2  ), // #452
-INST(Cmeq_v           , SimdCmp            , (0b0010111000100000100011, 0b0000111000100000100110, kVO_V_Any)                       , RWI_W    , 0                         , 0  ), // #453
-INST(Cmge_v           , SimdCmp            , (0b0000111000100000001111, 0b0010111000100000100010, kVO_V_Any)                       , RWI_W    , 0                         , 1  ), // #454
-INST(Cmgt_v           , SimdCmp            , (0b0000111000100000001101, 0b0000111000100000100010, kVO_V_Any)                       , RWI_W    , 0                         , 2  ), // #455
-INST(Cmhi_v           , SimdCmp            , (0b0010111000100000001101, 0b0000000000000000000000, kVO_V_Any)                       , RWI_W    , 0                         , 3  ), // #456
-INST(Cmhs_v           , SimdCmp            , (0b0010111000100000001111, 0b0000000000000000000000, kVO_V_Any)                       , RWI_W    , 0                         , 4  ), // #457
-INST(Cmle_v           , SimdCmp            , (0b0000000000000000000000, 0b0010111000100000100110, kVO_V_Any)                       , RWI_W    , 0                         , 5  ), // #458
-INST(Cmlt_v           , SimdCmp            , (0b0000000000000000000000, 0b0000111000100000101010, kVO_V_Any)                       , RWI_W    , 0                         , 6  ), // #459
-INST(Cmtst_v          , ISimdVVV           , (0b0000111000100000100011, kVO_V_Any)                                                 , RWI_W    , 0                         , 7  ), // #460
-INST(Cnt_v            , ISimdVV            , (0b0000111000100000010110, kVO_V_B)                                                   , RWI_W    , 0                         , 3  ), // #461
-INST(Dup_v            , SimdDup            , (_)                                                                                   , RWI_W    , 0                         , 0  ), // #462
-INST(Eor_v            , ISimdVVV           , (0b0010111000100000000111, kVO_V_B)                                                   , RWI_W    , 0                         , 8  ), // #463
-INST(Eor3_v           , ISimdVVVV          , (0b1100111000000000000000, kVO_V_B16)                                                 , RWI_W    , 0                         , 1  ), // #464
-INST(Ext_v            , ISimdVVVI          , (0b0010111000000000000000, kVO_V_B, 4, 11, 1)                                         , RWI_W    , 0                         , 0  ), // #465
-INST(Fabd_v           , FSimdVVV           , (0b0111111010100000110101, kHF_C, 0b0010111010100000110101, kHF_C)                    , RWI_W    , 0                         , 0  ), // #466
-INST(Fabs_v           , FSimdVV            , (0b0001111000100000110000, kHF_A, 0b0000111010100000111110, kHF_B)                    , RWI_W    , 0                         , 0  ), // #467
-INST(Facge_v          , FSimdVVV           , (0b0111111000100000111011, kHF_C, 0b0010111000100000111011, kHF_C)                    , RWI_W    , 0                         , 1  ), // #468
-INST(Facgt_v          , FSimdVVV           , (0b0111111010100000111011, kHF_C, 0b0010111010100000111011, kHF_C)                    , RWI_W    , 0                         , 2  ), // #469
-INST(Fadd_v           , FSimdVVV           , (0b0001111000100000001010, kHF_A, 0b0000111000100000110101, kHF_C)                    , RWI_W    , 0                         , 3  ), // #470
-INST(Faddp_v          , FSimdPair          , (0b0111111000110000110110, 0b0010111000100000110101)                                  , RWI_W    , 0                         , 0  ), // #471
-INST(Fcadd_v          , SimdFcadd          , (0b0010111000000000111001)                                                            , RWI_W    , 0                         , 0  ), // #472
-INST(Fccmp_v          , SimdFccmpFccmpe    , (0b00011110001000000000010000000000)                                                  , RWI_R    , 0                         , 0  ), // #473
-INST(Fccmpe_v         , SimdFccmpFccmpe    , (0b00011110001000000000010000010000)                                                  , RWI_R    , 0                         , 1  ), // #474
-INST(Fcmeq_v          , SimdFcm            , (0b0000111000100000111001, kHF_C, 0b0000111010100000110110)                           , RWI_W    , 0                         , 0  ), // #475
-INST(Fcmge_v          , SimdFcm            , (0b0010111000100000111001, kHF_C, 0b0010111010100000110010)                           , RWI_W    , 0                         , 1  ), // #476
-INST(Fcmgt_v          , SimdFcm            , (0b0010111010100000111001, kHF_C, 0b0000111010100000110010)                           , RWI_W    , 0                         , 2  ), // #477
-INST(Fcmla_v          , SimdFcmla          , (0b0010111000000000110001, 0b0010111100000000000100)                                  , RWI_X    , 0                         , 0  ), // #478
-INST(Fcmle_v          , SimdFcm            , (0b0000000000000000000000, kHF_C, 0b0010111010100000110110)                           , RWI_W    , 0                         , 3  ), // #479
-INST(Fcmlt_v          , SimdFcm            , (0b0000000000000000000000, kHF_C, 0b0000111010100000111010)                           , RWI_W    , 0                         , 4  ), // #480
-INST(Fcmp_v           , SimdFcmpFcmpe      , (0b00011110001000000010000000000000)                                                  , RWI_R    , 0                         , 0  ), // #481
-INST(Fcmpe_v          , SimdFcmpFcmpe      , (0b00011110001000000010000000010000)                                                  , RWI_R    , 0                         , 1  ), // #482
-INST(Fcsel_v          , SimdFcsel          , (_)                                                                                   , RWI_W    , 0                         , 0  ), // #483
-INST(Fcvt_v           , SimdFcvt           , (_)                                                                                   , RWI_W    , 0                         , 0  ), // #484
-INST(Fcvtas_v         , SimdFcvtSV         , (0b0000111000100001110010, 0b0000000000000000000000, 0b0001111000100100000000, 1)     , RWI_W    , 0                         , 0  ), // #485
-INST(Fcvtau_v         , SimdFcvtSV         , (0b0010111000100001110010, 0b0000000000000000000000, 0b0001111000100101000000, 1)     , RWI_W    , 0                         , 1  ), // #486
-INST(Fcvtl_v          , SimdFcvtLN         , (0b0000111000100001011110, 0, 0)                                                      , RWI_W    , F!(Long)                   , 0  ), // #487
-INST(Fcvtl2_v         , SimdFcvtLN         , (0b0100111000100001011110, 0, 0)                                                      , RWI_W    , F!(Long)                   , 1  ), // #488
-INST(Fcvtms_v         , SimdFcvtSV         , (0b0000111000100001101110, 0b0000000000000000000000, 0b0001111000110000000000, 1)     , RWI_W    , 0                         , 2  ), // #489
-INST(Fcvtmu_v         , SimdFcvtSV         , (0b0010111000100001101110, 0b0000000000000000000000, 0b0001111000110001000000, 1)     , RWI_W    , 0                         , 3  ), // #490
-INST(Fcvtn_v          , SimdFcvtLN         , (0b0000111000100001011010, 0, 0)                                                      , RWI_W    , F!(Narrow)                 , 2  ), // #491
-INST(Fcvtn2_v         , SimdFcvtLN         , (0b0100111000100001011010, 0, 0)                                                      , RWI_X    , F!(Narrow)                 , 3  ), // #492
-INST(Fcvtns_v         , SimdFcvtSV         , (0b0000111000100001101010, 0b0000000000000000000000, 0b0001111000100000000000, 1)     , RWI_W    , 0                         , 4  ), // #493
-INST(Fcvtnu_v         , SimdFcvtSV         , (0b0010111000100001101010, 0b0000000000000000000000, 0b0001111000100001000000, 1)     , RWI_W    , 0                         , 5  ), // #494
-INST(Fcvtps_v         , SimdFcvtSV         , (0b0000111010100001101010, 0b0000000000000000000000, 0b0001111000101000000000, 1)     , RWI_W    , 0                         , 6  ), // #495
-INST(Fcvtpu_v         , SimdFcvtSV         , (0b0010111010100001101010, 0b0000000000000000000000, 0b0001111000101001000000, 1)     , RWI_W    , 0                         , 7  ), // #496
-INST(Fcvtxn_v         , SimdFcvtLN         , (0b0010111000100001011010, 1, 1)                                                      , RWI_W    , F!(Narrow)                 , 4  ), // #497
-INST(Fcvtxn2_v        , SimdFcvtLN         , (0b0110111000100001011010, 1, 0)                                                      , RWI_X    , F!(Narrow)                 , 5  ), // #498
-INST(Fcvtzs_v         , SimdFcvtSV         , (0b0000111010100001101110, 0b0000111100000000111111, 0b0001111000111000000000, 1)     , RWI_W    , 0                         , 8  ), // #499
-INST(Fcvtzu_v         , SimdFcvtSV         , (0b0010111010100001101110, 0b0010111100000000111111, 0b0001111000111001000000, 1)     , RWI_W    , 0                         , 9  ), // #500
-INST(Fdiv_v           , FSimdVVV           , (0b0001111000100000000110, kHF_A, 0b0010111000100000111111, kHF_C)                    , RWI_W    , 0                         , 4  ), // #501
-INST(Fjcvtzs_v        , ISimdVVx           , (0b0001111001111110000000, kOp_GpW, kOp_D)                                            , RWI_W    , 0                         , 7  ), // #502
-INST(Fmadd_v          , FSimdVVVV          , (0b0001111100000000000000, kHF_A, 0b0000000000000000000000, kHF_N)                    , RWI_W    , 0                         , 0  ), // #503
-INST(Fmax_v           , FSimdVVV           , (0b0001111000100000010010, kHF_A, 0b0000111000100000111101, kHF_C)                    , RWI_W    , 0                         , 5  ), // #504
-INST(Fmaxnm_v         , FSimdVVV           , (0b0001111000100000011010, kHF_A, 0b0000111000100000110001, kHF_C)                    , RWI_W    , 0                         , 6  ), // #505
-INST(Fmaxnmp_v        , FSimdPair          , (0b0111111000110000110010, 0b0010111000100000110001)                                  , RWI_W    , 0                         , 1  ), // #506
-INST(Fmaxnmv_v        , FSimdSV            , (0b0010111000110000110010)                                                            , RWI_W    , 0                         , 0  ), // #507
-INST(Fmaxp_v          , FSimdPair          , (0b0111111000110000111110, 0b0010111000100000111101)                                  , RWI_W    , 0                         , 2  ), // #508
-INST(Fmaxv_v          , FSimdSV            , (0b0010111000110000111110)                                                            , RWI_W    , 0                         , 1  ), // #509
-INST(Fmin_v           , FSimdVVV           , (0b0001111000100000010110, kHF_A, 0b0000111010100000111101, kHF_C)                    , RWI_W    , 0                         , 7  ), // #510
-INST(Fminnm_v         , FSimdVVV           , (0b0001111000100000011110, kHF_A, 0b0000111010100000110001, kHF_C)                    , RWI_W    , 0                         , 8  ), // #511
-INST(Fminnmp_v        , FSimdPair          , (0b0111111010110000110010, 0b0010111010100000110001)                                  , RWI_W    , 0                         , 3  ), // #512
-INST(Fminnmv_v        , FSimdSV            , (0b0010111010110000110010)                                                            , RWI_W    , 0                         , 2  ), // #513
-INST(Fminp_v          , FSimdPair          , (0b0111111010110000111110, 0b0010111010100000111101)                                  , RWI_W    , 0                         , 4  ), // #514
-INST(Fminv_v          , FSimdSV            , (0b0010111010110000111110)                                                            , RWI_W    , 0                         , 3  ), // #515
-INST(Fmla_v           , FSimdVVVe          , (0b0000000000000000000000, kHF_N, 0b0000111000100000110011, 0b0000111110000000000100) , RWI_X    , F!(VH0_15)                 , 0  ), // #516
-INST(Fmlal_v          , SimdFmlal          , (0b0000111000100000111011, 0b0000111110000000000000, 1, kET_S, kET_H, kET_H)          , RWI_X    , F!(VH0_15)                 , 2  ), // #517
-INST(Fmlal2_v         , SimdFmlal          , (0b0010111000100000110011, 0b0010111110000000100000, 1, kET_S, kET_H, kET_H)          , RWI_X    , F!(VH0_15)                 , 3  ), // #518
-INST(Fmls_v           , FSimdVVVe          , (0b0000000000000000000000, kHF_N, 0b0000111010100000110011, 0b0000111110000000010100) , RWI_X    , F!(VH0_15)                 , 1  ), // #519
-INST(Fmlsl_v          , SimdFmlal          , (0b0000111010100000111011, 0b0000111110000000010000, 1, kET_S, kET_H, kET_H)          , RWI_X    , F!(VH0_15)                 , 4  ), // #520
-INST(Fmlsl2_v         , SimdFmlal          , (0b0010111010100000110011, 0b0010111110000000110000, 1, kET_S, kET_H, kET_H)          , RWI_X    , F!(VH0_15)                 , 5  ), // #521
-INST(Fmov_v           , SimdFmov           , (_)                                                                                   , RWI_W    , 0                         , 0  ), // #522
-INST(Fmsub_v          , FSimdVVVV          , (0b0001111100000000100000, kHF_A, 0b0000000000000000000000, kHF_N)                    , RWI_W    , 0                         , 1  ), // #523
-INST(Fmul_v           , FSimdVVVe          , (0b0001111000100000000010, kHF_A, 0b0010111000100000110111, 0b0000111110000000100100) , RWI_W    , F!(VH0_15)                 , 2  ), // #524
-INST(Fmulx_v          , FSimdVVVe          , (0b0101111000100000110111, kHF_C, 0b0000111000100000110111, 0b0010111110000000100100) , RWI_W    , F!(VH0_15)                 , 3  ), // #525
-INST(Fneg_v           , FSimdVV            , (0b0001111000100001010000, kHF_A, 0b0010111010100000111110, kHF_B)                    , RWI_W    , 0                         , 1  ), // #526
-INST(Fnmadd_v         , FSimdVVVV          , (0b0001111100100000000000, kHF_A, 0b0000000000000000000000, kHF_N)                    , RWI_W    , 0                         , 2  ), // #527
-INST(Fnmsub_v         , FSimdVVVV          , (0b0001111100100000100000, kHF_A, 0b0000000000000000000000, kHF_N)                    , RWI_W    , 0                         , 3  ), // #528
-INST(Fnmul_v          , FSimdVVV           , (0b0001111000100000100010, kHF_A, 0b0000000000000000000000, kHF_N)                    , RWI_W    , 0                         , 9  ), // #529
-INST(Frecpe_v         , FSimdVV            , (0b0101111010100001110110, kHF_B, 0b0000111010100001110110, kHF_B)                    , RWI_W    , 0                         , 2  ), // #530
-INST(Frecps_v         , FSimdVVV           , (0b0101111000100000111111, kHF_C, 0b0000111000100000111111, kHF_C)                    , RWI_W    , 0                         , 10 ), // #531
-INST(Frecpx_v         , FSimdVV            , (0b0101111010100001111110, kHF_B, 0b0000000000000000000000, kHF_N)                    , RWI_W    , 0                         , 3  ), // #532
-INST(Frint32x_v       , FSimdVV            , (0b0001111000101000110000, kHF_N, 0b0010111000100001111010, kHF_N)                    , RWI_W    , 0                         , 4  ), // #533
-INST(Frint32z_v       , FSimdVV            , (0b0001111000101000010000, kHF_N, 0b0000111000100001111010, kHF_N)                    , RWI_W    , 0                         , 5  ), // #534
-INST(Frint64x_v       , FSimdVV            , (0b0001111000101001110000, kHF_N, 0b0010111000100001111110, kHF_N)                    , RWI_W    , 0                         , 6  ), // #535
-INST(Frint64z_v       , FSimdVV            , (0b0001111000101001010000, kHF_N, 0b0000111000100001111110, kHF_N)                    , RWI_W    , 0                         , 7  ), // #536
-INST(Frinta_v         , FSimdVV            , (0b0001111000100110010000, kHF_A, 0b0010111000100001100010, kHF_B)                    , RWI_W    , 0                         , 8  ), // #537
-INST(Frinti_v         , FSimdVV            , (0b0001111000100111110000, kHF_A, 0b0010111010100001100110, kHF_B)                    , RWI_W    , 0                         , 9  ), // #538
-INST(Frintm_v         , FSimdVV            , (0b0001111000100101010000, kHF_A, 0b0000111000100001100110, kHF_B)                    , RWI_W    , 0                         , 10 ), // #539
-INST(Frintn_v         , FSimdVV            , (0b0001111000100100010000, kHF_A, 0b0000111000100001100010, kHF_B)                    , RWI_W    , 0                         , 11 ), // #540
-INST(Frintp_v         , FSimdVV            , (0b0001111000100100110000, kHF_A, 0b0000111010100001100010, kHF_B)                    , RWI_W    , 0                         , 12 ), // #541
-INST(Frintx_v         , FSimdVV            , (0b0001111000100111010000, kHF_A, 0b0010111000100001100110, kHF_B)                    , RWI_W    , 0                         , 13 ), // #542
-INST(Frintz_v         , FSimdVV            , (0b0001111000100101110000, kHF_A, 0b0000111010100001100110, kHF_B)                    , RWI_W    , 0                         , 14 ), // #543
-INST(Frsqrte_v        , FSimdVV            , (0b0111111010100001110110, kHF_B, 0b0010111010100001110110, kHF_B)                    , RWI_W    , 0                         , 15 ), // #544
-INST(Frsqrts_v        , FSimdVVV           , (0b0101111010100000111111, kHF_C, 0b0000111010100000111111, kHF_C)                    , RWI_W    , 0                         , 11 ), // #545
-INST(Fsqrt_v          , FSimdVV            , (0b0001111000100001110000, kHF_A, 0b0010111010100001111110, kHF_B)                    , RWI_W    , 0                         , 16 ), // #546
-INST(Fsub_v           , FSimdVVV           , (0b0001111000100000001110, kHF_A, 0b0000111010100000110101, kHF_C)                    , RWI_W    , 0                         , 12 ), // #547
-INST(Ins_v            , SimdIns            , (_)                                                                                   , RWI_X    , 0                         , 0  ), // #548
-INST(Ld1_v            , SimdLdNStN         , (0b0000110101000000000000, 0b0000110001000000001000, 1, 0)                            , RWI_LDN  , F!(Consecutive)            , 0  ), // #549
-INST(Ld1r_v           , SimdLdNStN         , (0b0000110101000000110000, 0b0000000000000000000000, 1, 1)                            , RWI_LDN  , F!(Consecutive)            , 1  ), // #550
-INST(Ld2_v            , SimdLdNStN         , (0b0000110101100000000000, 0b0000110001000000100000, 2, 0)                            , RWI_LDN  , F!(Consecutive)            , 2  ), // #551
-INST(Ld2r_v           , SimdLdNStN         , (0b0000110101100000110000, 0b0000000000000000000000, 2, 1)                            , RWI_LDN  , F!(Consecutive)            , 3  ), // #552
-INST(Ld3_v            , SimdLdNStN         , (0b0000110101000000001000, 0b0000110001000000010000, 3, 0)                            , RWI_LDN  , F!(Consecutive)            , 4  ), // #553
-INST(Ld3r_v           , SimdLdNStN         , (0b0000110101000000111000, 0b0000000000000000000000, 3, 1)                            , RWI_LDN  , F!(Consecutive)            , 5  ), // #554
-INST(Ld4_v            , SimdLdNStN         , (0b0000110101100000001000, 0b0000110001000000000000, 4, 0)                            , RWI_LDN  , F!(Consecutive)            , 6  ), // #555
-INST(Ld4r_v           , SimdLdNStN         , (0b0000110101100000111000, 0b0000000000000000000000, 4, 1)                            , RWI_LDN  , F!(Consecutive)            , 7  ), // #556
-INST(Ldnp_v           , SimdLdpStp         , (0b0010110001, 0b0000000000)                                                          , RWI_WW   , 0                         , 0  ), // #557
-INST(Ldp_v            , SimdLdpStp         , (0b0010110101, 0b0010110011)                                                          , RWI_WW   , 0                         , 1  ), // #558
-INST(Ldr_v            , SimdLdSt           , (0b0011110101, 0b00111100010, 0b00111100011, 0b00011100, InstId::Ldur_v)             , RWI_W    , 0                         , 0  ), // #559
-INST(Ldur_v           , SimdLdurStur       , (0b0011110001000000000000)                                                            , RWI_W    , 0                         , 0  ), // #560
-INST(Mla_v            , ISimdVVVe          , (0b0000111000100000100101, kVO_V_BHS, 0b0010111100000000000000, kVO_V_HS)             , RWI_X    , F!(VH0_15)                 , 0  ), // #561
-INST(Mls_v            , ISimdVVVe          , (0b0010111000100000100101, kVO_V_BHS, 0b0010111100000000010000, kVO_V_HS)             , RWI_X    , F!(VH0_15)                 , 1  ), // #562
-INST(Mov_v            , SimdMov            , (_)                                                                                   , RWI_W    , 0                         , 0  ), // #563
-INST(Movi_v           , SimdMoviMvni       , (0b0000111100000000000001, 0)                                                         , RWI_W    , 0                         , 0  ), // #564
-INST(Mul_v            , ISimdVVVe          , (0b0000111000100000100111, kVO_V_BHS, 0b0000111100000000100000, kVO_V_HS)             , RWI_W    , F!(VH0_15)                 , 2  ), // #565
-INST(Mvn_v            , ISimdVV            , (0b0010111000100000010110, kVO_V_B)                                                   , RWI_W    , 0                         , 4  ), // #566
-INST(Mvni_v           , SimdMoviMvni       , (0b0000111100000000000001, 1)                                                         , RWI_W    , 0                         , 1  ), // #567
-INST(Neg_v            , ISimdVV            , (0b0010111000100000101110, kVO_V_Any)                                                 , RWI_W    , 0                         , 5  ), // #568
-INST(Not_v            , ISimdVV            , (0b0010111000100000010110, kVO_V_B)                                                   , RWI_W    , 0                         , 6  ), // #569
-INST(Orn_v            , ISimdVVV           , (0b0000111011100000000111, kVO_V_B)                                                   , RWI_W    , 0                         , 9  ), // #570
-INST(Orr_v            , SimdBicOrr         , (0b0000111010100000000111, 0b0000111100000000000001)                                  , RWI_W    , 0                         , 1  ), // #571
-INST(Pmul_v           , ISimdVVV           , (0b0010111000100000100111, kVO_V_B)                                                   , RWI_W    , 0                         , 10 ), // #572
-INST(Pmull_v          , ISimdVVV           , (0b0000111000100000111000, kVO_V_B8D1)                                                , RWI_W    , F!(Long)                   , 11 ), // #573
-INST(Pmull2_v         , ISimdVVV           , (0b0100111000100000111000, kVO_V_B16D2)                                               , RWI_W    , F!(Long)                   , 12 ), // #574
-INST(Raddhn_v         , ISimdVVV           , (0b0010111000100000010000, kVO_V_B8H4S2)                                              , RWI_W    , F!(Narrow)                 , 13 ), // #575
-INST(Raddhn2_v        , ISimdVVV           , (0b0110111000100000010000, kVO_V_B16H8S4)                                             , RWI_X    , F!(Narrow)                 , 14 ), // #576
-INST(Rax1_v           , ISimdVVV           , (0b1100111001100000100011, kVO_V_D2)                                                  , RWI_W    , 0                         , 15 ), // #577
-INST(Rbit_v           , ISimdVV            , (0b0010111001100000010110, kVO_V_B)                                                   , RWI_W    , 0                         , 7  ), // #578
-INST(Rev16_v          , ISimdVV            , (0b0000111000100000000110, kVO_V_B)                                                   , RWI_W    , 0                         , 8  ), // #579
-INST(Rev32_v          , ISimdVV            , (0b0010111000100000000010, kVO_V_BH)                                                  , RWI_W    , 0                         , 9  ), // #580
-INST(Rev64_v          , ISimdVV            , (0b0000111000100000000010, kVO_V_BHS)                                                 , RWI_W    , 0                         , 10 ), // #581
-INST(Rshrn_v          , SimdShift          , (0b0000000000000000000000, 0b0000111100000000100011, 1, kVO_V_B8H4S2)                 , RWI_W    , F!(Narrow)                 , 0  ), // #582
-INST(Rshrn2_v         , SimdShift          , (0b0000000000000000000000, 0b0100111100000000100011, 1, kVO_V_B16H8S4)                , RWI_X    , F!(Narrow)                 , 1  ), // #583
-INST(Rsubhn_v         , ISimdVVV           , (0b0010111000100000011000, kVO_V_B8H4S2)                                              , RWI_W    , F!(Narrow)                 , 16 ), // #584
-INST(Rsubhn2_v        , ISimdVVV           , (0b0110111000100000011000, kVO_V_B16H8S4)                                             , RWI_X    , F!(Narrow)                 , 17 ), // #585
-INST(Saba_v           , ISimdVVV           , (0b0000111000100000011111, kVO_V_BHS)                                                 , RWI_X    , 0                         , 18 ), // #586
-INST(Sabal_v          , ISimdVVV           , (0b0000111000100000010100, kVO_V_B8H4S2)                                              , RWI_X    , F!(Long)                   , 19 ), // #587
-INST(Sabal2_v         , ISimdVVV           , (0b0100111000100000010100, kVO_V_B16H8S4)                                             , RWI_X    , F!(Long)                   , 20 ), // #588
-INST(Sabd_v           , ISimdVVV           , (0b0000111000100000011101, kVO_V_BHS)                                                 , RWI_W    , 0                         , 21 ), // #589
-INST(Sabdl_v          , ISimdVVV           , (0b0000111000100000011100, kVO_V_B8H4S2)                                              , RWI_W    , F!(Long)                   , 22 ), // #590
-INST(Sabdl2_v         , ISimdVVV           , (0b0100111000100000011100, kVO_V_B16H8S4)                                             , RWI_W    , F!(Long)                   , 23 ), // #591
-INST(Sadalp_v         , ISimdVV            , (0b0000111000100000011010, kVO_V_BHS)                                                 , RWI_X    , F!(Long) | F!(Pair)         , 11 ), // #592
-INST(Saddl_v          , ISimdVVV           , (0b0000111000100000000000, kVO_V_B8H4S2)                                              , RWI_W    , F!(Long)                   , 24 ), // #593
-INST(Saddl2_v         , ISimdVVV           , (0b0100111000100000000000, kVO_V_B16H8S4)                                             , RWI_W    , F!(Long)                   , 25 ), // #594
-INST(Saddlp_v         , ISimdVV            , (0b0000111000100000001010, kVO_V_BHS)                                                 , RWI_W    , F!(Long) | F!(Pair)         , 12 ), // #595
-INST(Saddlv_v         , ISimdSV            , (0b0000111000110000001110, kVO_V_BH_4S)                                               , RWI_W    , F!(Long)                   , 1  ), // #596
-INST(Saddw_v          , ISimdWWV           , (0b0000111000100000000100, kVO_V_B8H4S2)                                              , RWI_W    , 0                         , 0  ), // #597
-INST(Saddw2_v         , ISimdWWV           , (0b0000111000100000000100, kVO_V_B16H8S4)                                             , RWI_W    , 0                         , 1  ), // #598
-INST(Scvtf_v          , SimdFcvtSV         , (0b0000111000100001110110, 0b0000111100000000111001, 0b0001111000100010000000, 0)     , RWI_W    , 0                         , 10 ), // #599
-INST(Sdot_v           , SimdDot            , (0b0000111010000000100101, 0b0000111110000000111000, kET_S, kET_B, kET_4B)            , RWI_X    , 0                         , 1  ), // #600
-INST(Sha1c_v          , ISimdVVVx          , (0b0101111000000000000000, kOp_Q, kOp_S, kOp_V4S)                                     , RWI_X    , 0                         , 1  ), // #601
-INST(Sha1h_v          , ISimdVVx           , (0b0101111000101000000010, kOp_S, kOp_S)                                              , RWI_W    , 0                         , 8  ), // #602
-INST(Sha1m_v          , ISimdVVVx          , (0b0101111000000000001000, kOp_Q, kOp_S, kOp_V4S)                                     , RWI_X    , 0                         , 2  ), // #603
-INST(Sha1p_v          , ISimdVVVx          , (0b0101111000000000000100, kOp_Q, kOp_S, kOp_V4S)                                     , RWI_X    , 0                         , 3  ), // #604
-INST(Sha1su0_v        , ISimdVVVx          , (0b0101111000000000001100, kOp_V4S, kOp_V4S, kOp_V4S)                                 , RWI_X    , 0                         , 4  ), // #605
-INST(Sha1su1_v        , ISimdVVx           , (0b0101111000101000000110, kOp_V4S, kOp_V4S)                                          , RWI_X    , 0                         , 9  ), // #606
-INST(Sha256h_v        , ISimdVVVx          , (0b0101111000000000010000, kOp_Q, kOp_Q, kOp_V4S)                                     , RWI_X    , 0                         , 5  ), // #607
-INST(Sha256h2_v       , ISimdVVVx          , (0b0101111000000000010100, kOp_Q, kOp_Q, kOp_V4S)                                     , RWI_X    , 0                         , 6  ), // #608
-INST(Sha256su0_v      , ISimdVVx           , (0b0101111000101000001010, kOp_V4S, kOp_V4S)                                          , RWI_X    , 0                         , 10 ), // #609
-INST(Sha256su1_v      , ISimdVVVx          , (0b0101111000000000011000, kOp_V4S, kOp_V4S, kOp_V4S)                                 , RWI_X    , 0                         , 7  ), // #610
-INST(Sha512h_v        , ISimdVVVx          , (0b1100111001100000100000, kOp_Q, kOp_Q, kOp_V2D)                                     , RWI_X    , 0                         , 8  ), // #611
-INST(Sha512h2_v       , ISimdVVVx          , (0b1100111001100000100001, kOp_Q, kOp_Q, kOp_V2D)                                     , RWI_X    , 0                         , 9  ), // #612
-INST(Sha512su0_v      , ISimdVVx           , (0b1100111011000000100000, kOp_V2D, kOp_V2D)                                          , RWI_X    , 0                         , 11 ), // #613
-INST(Sha512su1_v      , ISimdVVVx          , (0b1100111001100000100010, kOp_V2D, kOp_V2D, kOp_V2D)                                 , RWI_X    , 0                         , 10 ), // #614
-INST(Shadd_v          , ISimdVVV           , (0b0000111000100000000001, kVO_V_BHS)                                                 , RWI_W    , 0                         , 26 ), // #615
-INST(Shl_v            , SimdShift          , (0b0000000000000000000000, 0b0000111100000000010101, 0, kVO_V_Any)                    , RWI_W    , 0                         , 2  ), // #616
-INST(Shll_v           , SimdShiftES        , (0b0010111000100001001110, kVO_V_B8H4S2)                                              , RWI_W    , F!(Long)                   , 0  ), // #617
-INST(Shll2_v          , SimdShiftES        , (0b0110111000100001001110, kVO_V_B16H8S4)                                             , RWI_W    , F!(Long)                   , 1  ), // #618
-INST(Shrn_v           , SimdShift          , (0b0000000000000000000000, 0b0000111100000000100001, 1, kVO_V_B8H4S2)                 , RWI_W    , F!(Narrow)                 , 3  ), // #619
-INST(Shrn2_v          , SimdShift          , (0b0000000000000000000000, 0b0100111100000000100001, 1, kVO_V_B16H8S4)                , RWI_X    , F!(Narrow)                 , 4  ), // #620
-INST(Shsub_v          , ISimdVVV           , (0b0000111000100000001001, kVO_V_BHS)                                                 , RWI_W    , 0                         , 27 ), // #621
-INST(Sli_v            , SimdShift          , (0b0000000000000000000000, 0b0010111100000000010101, 0, kVO_V_Any)                    , RWI_X    , 0                         , 5  ), // #622
-INST(Sm3partw1_v      , ISimdVVVx          , (0b1100111001100000110000, kOp_V4S, kOp_V4S, kOp_V4S)                                 , RWI_X    , 0                         , 11 ), // #623
-INST(Sm3partw2_v      , ISimdVVVx          , (0b1100111001100000110001, kOp_V4S, kOp_V4S, kOp_V4S)                                 , RWI_X    , 0                         , 12 ), // #624
-INST(Sm3ss1_v         , ISimdVVVVx         , (0b1100111001000000000000, kOp_V4S, kOp_V4S, kOp_V4S, kOp_V4S)                        , RWI_W    , 0                         , 0  ), // #625
-INST(Sm3tt1a_v        , SimdSm3tt          , (0b1100111001000000100000)                                                            , RWI_X    , 0                         , 0  ), // #626
-INST(Sm3tt1b_v        , SimdSm3tt          , (0b1100111001000000100001)                                                            , RWI_X    , 0                         , 1  ), // #627
-INST(Sm3tt2a_v        , SimdSm3tt          , (0b1100111001000000100010)                                                            , RWI_X    , 0                         , 2  ), // #628
-INST(Sm3tt2b_v        , SimdSm3tt          , (0b1100111001000000100011)                                                            , RWI_X    , 0                         , 3  ), // #629
-INST(Sm4e_v           , ISimdVVx           , (0b1100111011000000100001, kOp_V4S, kOp_V4S)                                          , RWI_X    , 0                         , 12 ), // #630
-INST(Sm4ekey_v        , ISimdVVVx          , (0b1100111001100000110010, kOp_V4S, kOp_V4S, kOp_V4S)                                 , RWI_X    , 0                         , 13 ), // #631
-INST(Smax_v           , ISimdVVV           , (0b0000111000100000011001, kVO_V_BHS)                                                 , RWI_W    , 0                         , 28 ), // #632
-INST(Smaxp_v          , ISimdVVV           , (0b0000111000100000101001, kVO_V_BHS)                                                 , RWI_W    , 0                         , 29 ), // #633
-INST(Smaxv_v          , ISimdSV            , (0b0000111000110000101010, kVO_V_BH_4S)                                               , RWI_W    , 0                         , 2  ), // #634
-INST(Smin_v           , ISimdVVV           , (0b0000111000100000011011, kVO_V_BHS)                                                 , RWI_W    , 0                         , 30 ), // #635
-INST(Sminp_v          , ISimdVVV           , (0b0000111000100000101011, kVO_V_BHS)                                                 , RWI_W    , 0                         , 31 ), // #636
-INST(Sminv_v          , ISimdSV            , (0b0000111000110001101010, kVO_V_BH_4S)                                               , RWI_W    , 0                         , 3  ), // #637
-INST(Smlal_v          , ISimdVVVe          , (0b0000111000100000100000, kVO_V_B8H4S2, 0b0000111100000000001000, kVO_V_H4S2)        , RWI_X    , F!(Long) | F!(VH0_15)       , 3  ), // #638
-INST(Smlal2_v         , ISimdVVVe          , (0b0100111000100000100000, kVO_V_B16H8S4, 0b0100111100000000001000, kVO_V_H8S4)       , RWI_X    , F!(Long) | F!(VH0_15)       , 4  ), // #639
-INST(Smlsl_v          , ISimdVVVe          , (0b0000111000100000101000, kVO_V_B8H4S2, 0b0000111100000000011000, kVO_V_H4S2)        , RWI_X    , F!(Long) | F!(VH0_15)       , 5  ), // #640
-INST(Smlsl2_v         , ISimdVVVe          , (0b0100111000100000101000, kVO_V_B16H8S4, 0b0100111100000000011000, kVO_V_H8S4)       , RWI_X    , F!(Long) | F!(VH0_15)       , 6  ), // #641
-INST(Smmla_v          , ISimdVVVx          , (0b0100111010000000101001, kOp_V4S, kOp_V16B, kOp_V16B)                               , RWI_X    , 0                         , 14 ), // #642
-INST(Smov_v           , SimdSmovUmov       , (0b0000111000000000001011, kVO_V_BHS, 1)                                              , RWI_W    , 0                         , 0  ), // #643
-INST(Smull_v          , ISimdVVVe          , (0b0000111000100000110000, kVO_V_B8H4S2, 0b0000111100000000101000, kVO_V_H4S2)        , RWI_W    , F!(Long) | F!(VH0_15)       , 7  ), // #644
-INST(Smull2_v         , ISimdVVVe          , (0b0100111000100000110000, kVO_V_B16H8S4, 0b0100111100000000101000, kVO_V_H8S4)       , RWI_W    , F!(Long) | F!(VH0_15)       , 8  ), // #645
-INST(Sqabs_v          , ISimdVV            , (0b0000111000100000011110, kVO_SV_Any)                                                , RWI_W    , 0                         , 13 ), // #646
-INST(Sqadd_v          , ISimdVVV           , (0b0000111000100000000011, kVO_SV_Any)                                                , RWI_W    , 0                         , 32 ), // #647
-INST(Sqdmlal_v        , ISimdVVVe          , (0b0000111000100000100100, kVO_SV_BHS, 0b0000111100000000001100, kVO_V_H4S2)          , RWI_X    , F!(Long) | F!(VH0_15)       , 9  ), // #648
-INST(Sqdmlal2_v       , ISimdVVVe          , (0b0100111000100000100100, kVO_V_B16H8S4, 0b0100111100000000001100, kVO_V_H8S4)       , RWI_X    , F!(Long) | F!(VH0_15)       , 10 ), // #649
-INST(Sqdmlsl_v        , ISimdVVVe          , (0b0000111000100000101100, kVO_SV_BHS, 0b0000111100000000011100, kVO_V_H4S2)          , RWI_X    , F!(Long) | F!(VH0_15)       , 11 ), // #650
-INST(Sqdmlsl2_v       , ISimdVVVe          , (0b0100111000100000101100, kVO_V_B16H8S4, 0b0100111100000000011100, kVO_V_H8S4)       , RWI_X    , F!(Long) | F!(VH0_15)       , 12 ), // #651
-INST(Sqdmulh_v        , ISimdVVVe          , (0b0000111000100000101101, kVO_SV_HS, 0b0000111100000000110000, kVO_SV_HS)            , RWI_W    , F!(VH0_15)                 , 13 ), // #652
-INST(Sqdmull_v        , ISimdVVVe          , (0b0000111000100000110100, kVO_SV_BHS, 0b0000111100000000101100, kVO_V_H4S2)          , RWI_W    , F!(Long) | F!(VH0_15)       , 14 ), // #653
-INST(Sqdmull2_v       , ISimdVVVe          , (0b0100111000100000110100, kVO_V_B16H8S4, 0b0100111100000000101100, kVO_V_H8S4)       , RWI_W    , F!(Long) | F!(VH0_15)       , 15 ), // #654
-INST(Sqneg_v          , ISimdVV            , (0b0010111000100000011110, kVO_SV_Any)                                                , RWI_W    , 0                         , 14 ), // #655
-INST(Sqrdmlah_v       , ISimdVVVe          , (0b0010111000000000100001, kVO_SV_HS, 0b0010111100000000110100, kVO_SV_HS)            , RWI_X    , F!(VH0_15)                 , 16 ), // #656
-INST(Sqrdmlsh_v       , ISimdVVVe          , (0b0010111000000000100011, kVO_SV_HS, 0b0010111100000000111100, kVO_SV_HS)            , RWI_X    , F!(VH0_15)                 , 17 ), // #657
-INST(Sqrdmulh_v       , ISimdVVVe          , (0b0010111000100000101101, kVO_SV_HS, 0b0000111100000000110100, kVO_SV_HS)            , RWI_W    , F!(VH0_15)                 , 18 ), // #658
-INST(Sqrshl_v         , SimdShift          , (0b0000111000100000010111, 0b0000000000000000000000, 1, kVO_SV_Any)                   , RWI_W    , 0                         , 6  ), // #659
-INST(Sqrshrn_v        , SimdShift          , (0b0000000000000000000000, 0b0000111100000000100111, 1, kVO_SV_B8H4S2)                , RWI_W    , F!(Narrow)                 , 7  ), // #660
-INST(Sqrshrn2_v       , SimdShift          , (0b0000000000000000000000, 0b0100111100000000100111, 1, kVO_V_B16H8S4)                , RWI_X    , F!(Narrow)                 , 8  ), // #661
-INST(Sqrshrun_v       , SimdShift          , (0b0000000000000000000000, 0b0010111100000000100011, 1, kVO_SV_B8H4S2)                , RWI_W    , F!(Narrow)                 , 9  ), // #662
-INST(Sqrshrun2_v      , SimdShift          , (0b0000000000000000000000, 0b0110111100000000100011, 1, kVO_V_B16H8S4)                , RWI_X    , F!(Narrow)                 , 10 ), // #663
-INST(Sqshl_v          , SimdShift          , (0b0000111000100000010011, 0b0000111100000000011101, 0, kVO_SV_Any)                   , RWI_W    , 0                         , 11 ), // #664
-INST(Sqshlu_v         , SimdShift          , (0b0000000000000000000000, 0b0010111100000000011001, 0, kVO_SV_Any)                   , RWI_W    , 0                         , 12 ), // #665
-INST(Sqshrn_v         , SimdShift          , (0b0000000000000000000000, 0b0000111100000000100101, 1, kVO_SV_B8H4S2)                , RWI_W    , F!(Narrow)                 , 13 ), // #666
-INST(Sqshrn2_v        , SimdShift          , (0b0000000000000000000000, 0b0100111100000000100101, 1, kVO_V_B16H8S4)                , RWI_X    , F!(Narrow)                 , 14 ), // #667
-INST(Sqshrun_v        , SimdShift          , (0b0000000000000000000000, 0b0010111100000000100001, 1, kVO_SV_B8H4S2)                , RWI_W    , F!(Narrow)                 , 15 ), // #668
-INST(Sqshrun2_v       , SimdShift          , (0b0000000000000000000000, 0b0110111100000000100001, 1, kVO_V_B16H8S4)                , RWI_X    , F!(Narrow)                 , 16 ), // #669
-INST(Sqsub_v          , ISimdVVV           , (0b0000111000100000001011, kVO_SV_Any)                                                , RWI_W    , 0                         , 33 ), // #670
-INST(Sqxtn_v          , ISimdVV            , (0b0000111000100001010010, kVO_SV_B8H4S2)                                             , RWI_W    , F!(Narrow)                 , 15 ), // #671
-INST(Sqxtn2_v         , ISimdVV            , (0b0100111000100001010010, kVO_V_B16H8S4)                                             , RWI_X    , F!(Narrow)                 , 16 ), // #672
-INST(Sqxtun_v         , ISimdVV            , (0b0010111000100001001010, kVO_SV_B8H4S2)                                             , RWI_W    , F!(Narrow)                 , 17 ), // #673
-INST(Sqxtun2_v        , ISimdVV            , (0b0110111000100001001010, kVO_V_B16H8S4)                                             , RWI_X    , F!(Narrow)                 , 18 ), // #674
-INST(Srhadd_v         , ISimdVVV           , (0b0000111000100000000101, kVO_V_BHS)                                                 , RWI_W    , 0                         , 34 ), // #675
-INST(Sri_v            , SimdShift          , (0b0000000000000000000000, 0b0010111100000000010001, 1, kVO_V_Any)                    , RWI_W    , 0                         , 17 ), // #676
-INST(Srshl_v          , SimdShift          , (0b0000111000100000010101, 0b0000000000000000000000, 0, kVO_V_Any)                    , RWI_W    , 0                         , 18 ), // #677
-INST(Srshr_v          , SimdShift          , (0b0000000000000000000000, 0b0000111100000000001001, 1, kVO_V_Any)                    , RWI_W    , 0                         , 19 ), // #678
-INST(Srsra_v          , SimdShift          , (0b0000000000000000000000, 0b0000111100000000001101, 1, kVO_V_Any)                    , RWI_X    , 0                         , 20 ), // #679
-INST(Sshl_v           , SimdShift          , (0b0000111000100000010001, 0b0000000000000000000000, 0, kVO_V_Any)                    , RWI_W    , 0                         , 21 ), // #680
-INST(Sshll_v          , SimdShift          , (0b0000000000000000000000, 0b0000111100000000101001, 0, kVO_V_B8H4S2)                 , RWI_W    , F!(Long)                   , 22 ), // #681
-INST(Sshll2_v         , SimdShift          , (0b0000000000000000000000, 0b0100111100000000101001, 0, kVO_V_B16H8S4)                , RWI_W    , F!(Long)                   , 23 ), // #682
-INST(Sshr_v           , SimdShift          , (0b0000000000000000000000, 0b0000111100000000000001, 1, kVO_V_Any)                    , RWI_W    , 0                         , 24 ), // #683
-INST(Ssra_v           , SimdShift          , (0b0000000000000000000000, 0b0000111100000000000101, 1, kVO_V_Any)                    , RWI_X    , 0                         , 25 ), // #684
-INST(Ssubl_v          , ISimdVVV           , (0b0000111000100000001000, kVO_V_B8H4S2)                                              , RWI_W    , F!(Long)                   , 35 ), // #685
-INST(Ssubl2_v         , ISimdVVV           , (0b0100111000100000001000, kVO_V_B16H8S4)                                             , RWI_W    , F!(Long)                   , 36 ), // #686
-INST(Ssubw_v          , ISimdWWV           , (0b0000111000100000001100, kVO_V_B8H4S2)                                              , RWI_W    , 0                         , 2  ), // #687
-INST(Ssubw2_v         , ISimdWWV           , (0b0000111000100000001100, kVO_V_B16H8S4)                                             , RWI_X    , 0                         , 3  ), // #688
-INST(St1_v            , SimdLdNStN         , (0b0000110100000000000000, 0b0000110000000000001000, 1, 0)                            , RWI_STN  , F!(Consecutive)            , 8  ), // #689
-INST(St2_v            , SimdLdNStN         , (0b0000110100100000000000, 0b0000110000000000100000, 2, 0)                            , RWI_STN  , F!(Consecutive)            , 9  ), // #690
-INST(St3_v            , SimdLdNStN         , (0b0000110100000000001000, 0b0000110000000000010000, 3, 0)                            , RWI_STN  , F!(Consecutive)            , 10 ), // #691
-INST(St4_v            , SimdLdNStN         , (0b0000110100100000001000, 0b0000110000000000000000, 4, 0)                            , RWI_STN  , F!(Consecutive)            , 11 ), // #692
-INST(Stnp_v           , SimdLdpStp         , (0b0010110000, 0b0000000000)                                                          , RWI_RRW  , 0                         , 2  ), // #693
-INST(Stp_v            , SimdLdpStp         , (0b0010110100, 0b0010110010)                                                          , RWI_RRW  , 0                         , 3  ), // #694
-INST(Str_v            , SimdLdSt           , (0b0011110100, 0b00111100000, 0b00111100001, 0b00000000, InstId::Stur_v)             , RWI_RW   , 0                         , 1  ), // #695
-INST(Stur_v           , SimdLdurStur       , (0b0011110000000000000000)                                                            , RWI_RW   , 0                         , 1  ), // #696
-INST(Sub_v            , ISimdVVV           , (0b0010111000100000100001, kVO_V_Any)                                                 , RWI_W    , 0                         , 37 ), // #697
-INST(Subhn_v          , ISimdVVV           , (0b0000111000100000011000, kVO_V_B8H4S2)                                              , RWI_W    , F!(Narrow)                 , 38 ), // #698
-INST(Subhn2_v         , ISimdVVV           , (0b0000111000100000011000, kVO_V_B16H8S4)                                             , RWI_X    , F!(Narrow)                 , 39 ), // #699
-INST(Sudot_v          , SimdDot            , (0b0000000000000000000000, 0b0000111100000000111100, kET_S, kET_B, kET_4B)            , RWI_X    , 0                         , 2  ), // #700
-INST(Suqadd_v         , ISimdVV            , (0b0000111000100000001110, kVO_SV_Any)                                                , RWI_X    , 0                         , 19 ), // #701
-INST(Sxtl_v           , SimdSxtlUxtl       , (0b0000111100000000101001, kVO_V_B8H4S2)                                              , RWI_W    , F!(Long)                   , 0  ), // #702
-INST(Sxtl2_v          , SimdSxtlUxtl       , (0b0100111100000000101001, kVO_V_B16H8S4)                                             , RWI_W    , F!(Long)                   , 1  ), // #703
-INST(Tbl_v            , SimdTblTbx         , (0b0000111000000000000000)                                                            , RWI_W    , 0                         , 0  ), // #704
-INST(Tbx_v            , SimdTblTbx         , (0b0000111000000000000100)                                                            , RWI_W    , 0                         , 1  ), // #705
-INST(Trn1_v           , ISimdVVV           , (0b0000111000000000001010, kVO_V_BHS_D2)                                              , RWI_W    , 0                         , 40 ), // #706
-INST(Trn2_v           , ISimdVVV           , (0b0000111000000000011010, kVO_V_BHS_D2)                                              , RWI_W    , 0                         , 41 ), // #707
-INST(Uaba_v           , ISimdVVV           , (0b0010111000100000011111, kVO_V_BHS)                                                 , RWI_X    , 0                         , 42 ), // #708
-INST(Uabal_v          , ISimdVVV           , (0b0010111000100000010100, kVO_V_B8H4S2)                                              , RWI_X    , F!(Long)                   , 43 ), // #709
-INST(Uabal2_v         , ISimdVVV           , (0b0110111000100000010100, kVO_V_B16H8S4)                                             , RWI_X    , F!(Long)                   , 44 ), // #710
-INST(Uabd_v           , ISimdVVV           , (0b0010111000100000011101, kVO_V_BHS)                                                 , RWI_W    , 0                         , 45 ), // #711
-INST(Uabdl_v          , ISimdVVV           , (0b0010111000100000011100, kVO_V_B8H4S2)                                              , RWI_W    , F!(Long)                   , 46 ), // #712
-INST(Uabdl2_v         , ISimdVVV           , (0b0110111000100000011100, kVO_V_B16H8S4)                                             , RWI_W    , F!(Long)                   , 47 ), // #713
-INST(Uadalp_v         , ISimdVV            , (0b0010111000100000011010, kVO_V_BHS)                                                 , RWI_X    , F!(Long) | F!(Pair)         , 20 ), // #714
-INST(Uaddl_v          , ISimdVVV           , (0b0010111000100000000000, kVO_V_B8H4S2)                                              , RWI_W    , F!(Long)                   , 48 ), // #715
-INST(Uaddl2_v         , ISimdVVV           , (0b0110111000100000000000, kVO_V_B16H8S4)                                             , RWI_W    , F!(Long)                   , 49 ), // #716
-INST(Uaddlp_v         , ISimdVV            , (0b0010111000100000001010, kVO_V_BHS)                                                 , RWI_W    , F!(Long) | F!(Pair)         , 21 ), // #717
-INST(Uaddlv_v         , ISimdSV            , (0b0010111000110000001110, kVO_V_BH_4S)                                               , RWI_W    , F!(Long)                   , 4  ), // #718
-INST(Uaddw_v          , ISimdWWV           , (0b0010111000100000000100, kVO_V_B8H4S2)                                              , RWI_W    , 0                         , 4  ), // #719
-INST(Uaddw2_v         , ISimdWWV           , (0b0010111000100000000100, kVO_V_B16H8S4)                                             , RWI_W    , 0                         , 5  ), // #720
-INST(Ucvtf_v          , SimdFcvtSV         , (0b0010111000100001110110, 0b0010111100000000111001, 0b0001111000100011000000, 0)     , RWI_W    , 0                         , 11 ), // #721
-INST(Udot_v           , SimdDot            , (0b0010111010000000100101, 0b0010111110000000111000, kET_S, kET_B, kET_4B)            , RWI_X    , 0                         , 3  ), // #722
-INST(Uhadd_v          , ISimdVVV           , (0b0010111000100000000001, kVO_V_BHS)                                                 , RWI_W    , 0                         , 50 ), // #723
-INST(Uhsub_v          , ISimdVVV           , (0b0010111000100000001001, kVO_V_BHS)                                                 , RWI_W    , 0                         , 51 ), // #724
-INST(Umax_v           , ISimdVVV           , (0b0010111000100000011001, kVO_V_BHS)                                                 , RWI_W    , 0                         , 52 ), // #725
-INST(Umaxp_v          , ISimdVVV           , (0b0010111000100000101001, kVO_V_BHS)                                                 , RWI_W    , 0                         , 53 ), // #726
-INST(Umaxv_v          , ISimdSV            , (0b0010111000110000101010, kVO_V_BH_4S)                                               , RWI_W    , 0                         , 5  ), // #727
-INST(Umin_v           , ISimdVVV           , (0b0010111000100000011011, kVO_V_BHS)                                                 , RWI_W    , 0                         , 54 ), // #728
-INST(Uminp_v          , ISimdVVV           , (0b0010111000100000101011, kVO_V_BHS)                                                 , RWI_W    , 0                         , 55 ), // #729
-INST(Uminv_v          , ISimdSV            , (0b0010111000110001101010, kVO_V_BH_4S)                                               , RWI_W    , 0                         , 6  ), // #730
-INST(Umlal_v          , ISimdVVVe          , (0b0010111000100000100000, kVO_V_B8H4S2, 0b0010111100000000001000, kVO_V_H4S2)        , RWI_X    , F!(Long) | F!(VH0_15)       , 19 ), // #731
-INST(Umlal2_v         , ISimdVVVe          , (0b0110111000100000100000, kVO_V_B16H8S4, 0b0010111100000000001000, kVO_V_H8S4)       , RWI_X    , F!(Long) | F!(VH0_15)       , 20 ), // #732
-INST(Umlsl_v          , ISimdVVVe          , (0b0010111000100000101000, kVO_V_B8H4S2, 0b0010111100000000011000, kVO_V_H4S2)        , RWI_X    , F!(Long) | F!(VH0_15)       , 21 ), // #733
-INST(Umlsl2_v         , ISimdVVVe          , (0b0110111000100000101000, kVO_V_B16H8S4, 0b0110111100000000011000, kVO_V_H8S4)       , RWI_X    , F!(Long) | F!(VH0_15)       , 22 ), // #734
-INST(Ummla_v          , ISimdVVVx          , (0b0110111010000000101001, kOp_V4S, kOp_V16B, kOp_V16B)                               , RWI_X    , 0                         , 15 ), // #735
-INST(Umov_v           , SimdSmovUmov       , (0b0000111000000000001111, kVO_V_Any, 0)                                              , RWI_W    , 0                         , 1  ), // #736
-INST(Umull_v          , ISimdVVVe          , (0b0010111000100000110000, kVO_V_B8H4S2, 0b0010111100000000101000, kVO_V_H4S2)        , RWI_W    , F!(Long) | F!(VH0_15)       , 23 ), // #737
-INST(Umull2_v         , ISimdVVVe          , (0b0110111000100000110000, kVO_V_B16H8S4, 0b0110111100000000101000, kVO_V_H8S4)       , RWI_W    , F!(Long) | F!(VH0_15)       , 24 ), // #738
-INST(Uqadd_v          , ISimdVVV           , (0b0010111000100000000011, kVO_SV_Any)                                                , RWI_W    , 0                         , 56 ), // #739
-INST(Uqrshl_v         , SimdShift          , (0b0010111000100000010111, 0b0000000000000000000000, 0, kVO_SV_Any)                   , RWI_W    , 0                         , 26 ), // #740
-INST(Uqrshrn_v        , SimdShift          , (0b0000000000000000000000, 0b0010111100000000100111, 1, kVO_SV_B8H4S2)                , RWI_W    , F!(Narrow)                 , 27 ), // #741
-INST(Uqrshrn2_v       , SimdShift          , (0b0000000000000000000000, 0b0110111100000000100111, 1, kVO_V_B16H8S4)                , RWI_X    , F!(Narrow)                 , 28 ), // #742
-INST(Uqshl_v          , SimdShift          , (0b0010111000100000010011, 0b0010111100000000011101, 0, kVO_SV_Any)                   , RWI_W    , 0                         , 29 ), // #743
-INST(Uqshrn_v         , SimdShift          , (0b0000000000000000000000, 0b0010111100000000100101, 1, kVO_SV_B8H4S2)                , RWI_W    , F!(Narrow)                 , 30 ), // #744
-INST(Uqshrn2_v        , SimdShift          , (0b0000000000000000000000, 0b0110111100000000100101, 1, kVO_V_B16H8S4)                , RWI_X    , F!(Narrow)                 , 31 ), // #745
-INST(Uqsub_v          , ISimdVVV           , (0b0010111000100000001011, kVO_SV_Any)                                                , RWI_W    , 0                         , 57 ), // #746
-INST(Uqxtn_v          , ISimdVV            , (0b0010111000100001010010, kVO_SV_B8H4S2)                                             , RWI_W    , F!(Narrow)                 , 22 ), // #747
-INST(Uqxtn2_v         , ISimdVV            , (0b0110111000100001010010, kVO_V_B16H8S4)                                             , RWI_X    , F!(Narrow)                 , 23 ), // #748
-INST(Urecpe_v         , ISimdVV            , (0b0000111010100001110010, kVO_V_S)                                                   , RWI_W    , 0                         , 24 ), // #749
-INST(Urhadd_v         , ISimdVVV           , (0b0010111000100000000101, kVO_V_BHS)                                                 , RWI_W    , 0                         , 58 ), // #750
-INST(Urshl_v          , SimdShift          , (0b0010111000100000010101, 0b0000000000000000000000, 0, kVO_V_Any)                    , RWI_W    , 0                         , 32 ), // #751
-INST(Urshr_v          , SimdShift          , (0b0000000000000000000000, 0b0010111100000000001001, 1, kVO_V_Any)                    , RWI_W    , 0                         , 33 ), // #752
-INST(Ursqrte_v        , ISimdVV            , (0b0010111010100001110010, kVO_V_S)                                                   , RWI_W    , 0                         , 25 ), // #753
-INST(Ursra_v          , SimdShift          , (0b0000000000000000000000, 0b0010111100000000001101, 1, kVO_V_Any)                    , RWI_X    , 0                         , 34 ), // #754
-INST(Usdot_v          , SimdDot            , (0b0000111010000000100111, 0b0000111110000000111100, kET_S, kET_B, kET_4B)            , RWI_X    , 0                         , 4  ), // #755
-INST(Ushl_v           , SimdShift          , (0b0010111000100000010001, 0b0000000000000000000000, 0, kVO_V_Any)                    , RWI_W    , 0                         , 35 ), // #756
-INST(Ushll_v          , SimdShift          , (0b0000000000000000000000, 0b0010111100000000101001, 0, kVO_V_B8H4S2)                 , RWI_W    , F!(Long)                   , 36 ), // #757
-INST(Ushll2_v         , SimdShift          , (0b0000000000000000000000, 0b0110111100000000101001, 0, kVO_V_B16H8S4)                , RWI_W    , F!(Long)                   , 37 ), // #758
-INST(Ushr_v           , SimdShift          , (0b0000000000000000000000, 0b0010111100000000000001, 1, kVO_V_Any)                    , RWI_W    , 0                         , 38 ), // #759
-INST(Usmmla_v         , ISimdVVVx          , (0b0100111010000000101011, kOp_V4S, kOp_V16B, kOp_V16B)                               , RWI_X    , 0                         , 16 ), // #760
-INST(Usqadd_v         , ISimdVV            , (0b0010111000100000001110, kVO_SV_Any)                                                , RWI_X    , 0                         , 26 ), // #761
-INST(Usra_v           , SimdShift          , (0b0000000000000000000000, 0b0010111100000000000101, 1, kVO_V_Any)                    , RWI_X    , 0                         , 39 ), // #762
-INST(Usubl_v          , ISimdVVV           , (0b0010111000100000001000, kVO_V_B8H4S2)                                              , RWI_W    , F!(Long)                   , 59 ), // #763
-INST(Usubl2_v         , ISimdVVV           , (0b0110111000100000001000, kVO_V_B16H8S4)                                             , RWI_W    , F!(Long)                   , 60 ), // #764
-INST(Usubw_v          , ISimdWWV           , (0b0010111000100000001100, kVO_V_B8H4S2)                                              , RWI_W    , 0                         , 6  ), // #765
-INST(Usubw2_v         , ISimdWWV           , (0b0010111000100000001100, kVO_V_B16H8S4)                                             , RWI_W    , 0                         , 7  ), // #766
-INST(Uxtl_v           , SimdSxtlUxtl       , (0b0010111100000000101001, kVO_V_B8H4S2)                                              , RWI_W    , F!(Long)                   , 2  ), // #767
-INST(Uxtl2_v          , SimdSxtlUxtl       , (0b0110111100000000101001, kVO_V_B16H8S4)                                             , RWI_W    , F!(Long)                   , 3  ), // #768
-INST(Uzp1_v           , ISimdVVV           , (0b0000111000000000000110, kVO_V_BHS_D2)                                              , RWI_W    , 0                         , 61 ), // #769
-INST(Uzp2_v           , ISimdVVV           , (0b0000111000000000010110, kVO_V_BHS_D2)                                              , RWI_W    , 0                         , 62 ), // #770
-INST(Xar_v            , ISimdVVVI          , (0b1100111001100000100011, kVO_V_D2, 6, 10, 0)                                        , RWI_W    , 0                         , 1  ), // #771
-INST(Xtn_v            , ISimdVV            , (0b0000111000100001001010, kVO_V_B8H4S2)                                              , RWI_W    , F!(Narrow)                 , 27 ), // #772
-INST(Xtn2_v           , ISimdVV            , (0b0100111000100001001010, kVO_V_B16H8S4)                                             , RWI_X    , F!(Narrow)                 , 28 ), // #773
-INST(Zip1_v           , ISimdVVV           , (0b0000111000000000001110, kVO_V_BHS_D2)                                              , RWI_W    , 0                         , 63 ), // #774
-INST(Zip2_v           , ISimdVVV           , (0b0000111000000000011110, kVO_V_BHS_D2)                                              , RWI_W    , 0                         , 64 ),  // #775
+INST(None, None, (_), 0, 0, 0), // #0
+INST(Abs, BaseRR, (0b01011010110000000010000000000000, kWX, kZR, 0, kWX, kZR, 5, true), RWI_W, 0, 0), // #1
+INST(Adc, BaseRRR, (0b0001101000000000000000, kWX, kZR, kWX, kZR, kWX, kZR, true), RWI_W, 0, 0), // #2
+INST(Adcs, BaseRRR, (0b0011101000000000000000, kWX, kZR, kWX, kZR, kWX, kZR, true), RWI_W, 0, 1), // #3
+INST(Add, BaseAddSub, (0b0001011000, 0b0001011001, 0b0010001), RWI_W, 0, 0), // #4
+INST(Addg, BaseRRII, (0b1001000110000000000000, kX, kSP, kX, kSP, 6, 4, 16, 4, 0, 10), RWI_W, 0, 0), // #5
+INST(Adds, BaseAddSub, (0b0101011000, 0b0101011001, 0b0110001), RWI_W, 0, 1), // #6
+INST(Adr, BaseAdr, (0b0001000000000000000000, OffsetType::kAArch64_ADR), RWI_W, 0, 0), // #7
+INST(Adrp, BaseAdr, (0b1001000000000000000000, OffsetType::kAArch64_ADRP), RWI_W, 0, 1), // #8
+INST(And, BaseLogical, (0b0001010000, 0b00100100, 0), RWI_W, 0, 0), // #9
+INST(Ands, BaseLogical, (0b1101010000, 0b11100100, 0), RWI_W, 0, 1), // #10
+INST(Asr, BaseShift, (0b0001101011000000001010, 0b0001001100000000011111, 0), RWI_W, 0, 0), // #11
+INST(Asrv, BaseShift, (0b0001101011000000001010, 0b0000000000000000000000, 0), RWI_W, 0, 1), // #12
+INST(At, BaseAtDcIcTlbi, (0b00011111110000, 0b00001111000000, true), RWI_RX, 0, 0), // #13
+INST(Autda, BaseRR, (0b11011010110000010001100000000000, kX, kZR, 0, kX, kSP, 5, true), RWI_X, 0, 1), // #14
+INST(Autdza, BaseR, (0b11011010110000010011101111100000, kX, kZR, 0), RWI_X, 0, 0), // #15
+INST(Autdb, BaseRR, (0b11011010110000010001110000000000, kX, kZR, 0, kX, kSP, 5, true), RWI_X, 0, 2), // #16
+INST(Autdzb, BaseR, (0b11011010110000010011111111100000, kX, kZR, 0), RWI_X, 0, 1), // #17
+INST(Autia, BaseRR, (0b11011010110000010001000000000000, kX, kZR, 0, kX, kSP, 5, true), RWI_X, 0, 3), // #18
+INST(Autia1716, BaseOp, (0b11010101000000110010000110011111), 0, 0, 0), // #19
+INST(Autiasp, BaseOp, (0b11010101000000110010001110111111), 0, 0, 1), // #20
+INST(Autiaz, BaseOp, (0b11010101000000110010001110011111), 0, 0, 2), // #21
+INST(Autib, BaseRR, (0b11011010110000010001010000000000, kX, kZR, 0, kX, kSP, 5, true), RWI_X, 0, 4), // #22
+INST(Autib1716, BaseOp, (0b11010101000000110010000111011111), 0, 0, 3), // #23
+INST(Autibsp, BaseOp, (0b11010101000000110010001111111111), 0, 0, 4), // #24
+INST(Autibz, BaseOp, (0b11010101000000110010001111011111), 0, 0, 5), // #25
+INST(Autiza, BaseR, (0b11011010110000010011001111100000, kX, kZR, 0), RWI_X, 0, 2), // #26
+INST(Autizb, BaseR, (0b11011010110000010011011111100000, kX, kZR, 0), RWI_X, 0, 3), // #27
+INST(Axflag, BaseOp, (0b11010101000000000100000001011111), 0, 0, 6), // #28
+INST(B, BaseBranchRel, (0b00010100000000000000000000000000), 0, F!(Cond), 0), // #29
+INST(Bc, BaseBranchRel, (0b00010100000000000000000000010000), 0, F!(Cond), 1), // #30
+INST(Bfc, BaseBfc, (0b00110011000000000000001111100000), RWI_X, 0, 0), // #31
+INST(Bfi, BaseBfi, (0b00110011000000000000000000000000), RWI_X, 0, 0), // #32
+INST(Bfm, BaseBfm, (0b00110011000000000000000000000000), RWI_X, 0, 0), // #33
+INST(Bfxil, BaseBfx, (0b00110011000000000000000000000000), RWI_X, 0, 0), // #34
+INST(Bic, BaseLogical, (0b0001010001, 0b00100100, 1), RWI_W, 0, 2), // #35
+INST(Bics, BaseLogical, (0b1101010001, 0b11100100, 1), RWI_W, 0, 3), // #36
+INST(Bl, BaseBranchRel, (0b10010100000000000000000000000000), 0, 0, 2), // #37
+INST(Blr, BaseBranchReg, (0b11010110001111110000000000000000), RWI_R, 0, 0), // #38
+INST(Br, BaseBranchReg, (0b11010110000111110000000000000000), RWI_R, 0, 1), // #39
+INST(Brk, BaseOpImm, (0b11010100001000000000000000000000, 16, 5), 0, 0, 0), // #40
+INST(Bti, BaseOpImm, (0b11010101000000110010010000011111, 2, 6), 0, 0, 1), // #41
+INST(Cas, BaseAtomicOp, (0b1000100010100000011111, kWX, 30, 0), RWI_XRX, 0, 0), // #42
+INST(Casa, BaseAtomicOp, (0b1000100011100000011111, kWX, 30, 1), RWI_XRX, 0, 1), // #43
+INST(Casab, BaseAtomicOp, (0b0000100011100000011111, kW , 0 , 1), RWI_XRX, 0, 2), // #44
+INST(Casah, BaseAtomicOp, (0b0100100011100000011111, kW , 0 , 1), RWI_XRX, 0, 3), // #45
+INST(Casal, BaseAtomicOp, (0b1000100011100000111111, kWX, 30, 1), RWI_XRX, 0, 4), // #46
+INST(Casalb, BaseAtomicOp, (0b0000100011100000111111, kW , 0 , 1), RWI_XRX, 0, 5), // #47
+INST(Casalh, BaseAtomicOp, (0b0100100011100000111111, kW , 0 , 1), RWI_XRX, 0, 6), // #48
+INST(Casb, BaseAtomicOp, (0b0000100010100000011111, kW , 0 , 0), RWI_XRX, 0, 7), // #49
+INST(Cash, BaseAtomicOp, (0b0100100010100000011111, kW , 0 , 0), RWI_XRX, 0, 8), // #50
+INST(Casl, BaseAtomicOp, (0b1000100010100000111111, kWX, 30, 0), RWI_XRX, 0, 9), // #51
+INST(Caslb, BaseAtomicOp, (0b0000100010100000111111, kW , 0 , 0), RWI_XRX, 0, 10), // #52
+INST(Caslh, BaseAtomicOp, (0b0100100010100000111111, kW , 0 , 0), RWI_XRX, 0, 11), // #53
+INST(Casp, BaseAtomicCasp, (0b0000100000100000011111, kWX, 30), RWI_XXRRX, F!(Consecutive), 0), // #54
+INST(Caspa, BaseAtomicCasp, (0b0000100001100000011111, kWX, 30), RWI_XXRRX, F!(Consecutive), 1), // #55
+INST(Caspal, BaseAtomicCasp, (0b0000100001100000111111, kWX, 30), RWI_XXRRX, F!(Consecutive), 2), // #56
+INST(Caspl, BaseAtomicCasp, (0b0000100000100000111111, kWX, 30), RWI_XXRRX, F!(Consecutive), 3), // #57
+INST(Cbnz, BaseBranchCmp, (0b00110101000000000000000000000000), RWI_R, 0, 0), // #58
+INST(Cbz, BaseBranchCmp, (0b00110100000000000000000000000000), RWI_R, 0, 1), // #59
+INST(Ccmn, BaseCCmp, (0b00111010010000000000000000000000), RWI_R, 0, 0), // #60
+INST(Ccmp, BaseCCmp, (0b01111010010000000000000000000000), RWI_R, 0, 1), // #61
+INST(Cfinv, BaseOp, (0b11010101000000000100000000011111), 0, 0, 7), // #62
+INST(Chkfeat, BaseOpX16, (0b11010101000000110010010100011111), 0, 0, 0), // #63
+INST(Cinc, BaseCInc, (0b00011010100000000000010000000000), RWI_W, 0, 0), // #64
+INST(Cinv, BaseCInc, (0b01011010100000000000000000000000), RWI_W, 0, 1), // #65
+INST(Clrbhb, BaseOp, (0b11010101000000110010001011011111), 0, 0, 8), // #66
+INST(Clrex, BaseOpImm, (0b11010101000000110011000001011111, 4, 8), 0, 0, 2), // #67
+INST(Cls, BaseRR, (0b01011010110000000001010000000000, kWX, kZR, 0, kWX, kZR, 5, true), RWI_W, 0, 5), // #68
+INST(Clz, BaseRR, (0b01011010110000000001000000000000, kWX, kZR, 0, kWX, kZR, 5, true), RWI_W, 0, 6), // #69
+INST(Cmn, BaseCmpCmn, (0b0101011000, 0b0101011001, 0b0110001), RWI_R, 0, 0), // #70
+INST(Cmp, BaseCmpCmn, (0b1101011000, 0b1101011001, 0b1110001), RWI_R, 0, 1), // #71
+INST(Cmpp, BaseRR, (0b10111010110000000000000000011111, kX, kSP, 5, kX, kSP, 16, true), RWI_R, 0, 7), // #72
+INST(Cneg, BaseCInc, (0b01011010100000000000010000000000), RWI_W, 0, 2), // #73
+INST(Cnt, BaseRR, (0b01011010110000000001110000000000, kWX, kZR, 0, kWX, kZR, 5, true), RWI_W, 0, 8), // #74
+INST(Crc32b, BaseRRR, (0b0001101011000000010000, kW, kZR, kW, kZR, kW, kZR, false), RWI_W, 0, 2), // #75
+INST(Crc32cb, BaseRRR, (0b0001101011000000010100, kW, kZR, kW, kZR, kW, kZR, false), RWI_W, 0, 3), // #76
+INST(Crc32ch, BaseRRR, (0b0001101011000000010101, kW, kZR, kW, kZR, kW, kZR, false), RWI_W, 0, 4), // #77
+INST(Crc32cw, BaseRRR, (0b0001101011000000010110, kW, kZR, kW, kZR, kW, kZR, false), RWI_W, 0, 5), // #78
+INST(Crc32cx, BaseRRR, (0b1001101011000000010111, kW, kZR, kW, kZR, kX, kZR, false), RWI_W, 0, 6), // #79
+INST(Crc32h, BaseRRR, (0b0001101011000000010001, kW, kZR, kW, kZR, kW, kZR, false), RWI_W, 0, 7), // #80
+INST(Crc32w, BaseRRR, (0b0001101011000000010010, kW, kZR, kW, kZR, kW, kZR, false), RWI_W, 0, 8), // #81
+INST(Crc32x, BaseRRR, (0b1001101011000000010011, kW, kZR, kW, kZR, kX, kZR, false), RWI_W, 0, 9), // #82
+INST(Csdb, BaseOp, (0b11010101000000110010001010011111), 0, 0, 9), // #83
+INST(Csel, BaseCSel, (0b00011010100000000000000000000000), RWI_W, 0, 0), // #84
+INST(Cset, BaseCSet, (0b00011010100111110000011111100000), RWI_W, 0, 0), // #85
+INST(Csetm, BaseCSet, (0b01011010100111110000001111100000), RWI_W, 0, 1), // #86
+INST(Csinc, BaseCSel, (0b00011010100000000000010000000000), RWI_W, 0, 1), // #87
+INST(Csinv, BaseCSel, (0b01011010100000000000000000000000), RWI_W, 0, 2), // #88
+INST(Csneg, BaseCSel, (0b01011010100000000000010000000000), RWI_W, 0, 3), // #89
+INST(Ctz, BaseRR, (0b01011010110000000001100000000000, kWX, kZR, 0, kWX, kZR, 5, true), RWI_W, 0, 9), // #90
+INST(Dc, BaseAtDcIcTlbi, (0b00011110000000, 0b00001110000000, true), RWI_RX, 0, 1), // #91
+INST(Dcps1, BaseOpImm, (0b11010100101000000000000000000001, 16, 5), 0, 0, 3), // #92
+INST(Dcps2, BaseOpImm, (0b11010100101000000000000000000010, 16, 5), 0, 0, 4), // #93
+INST(Dcps3, BaseOpImm, (0b11010100101000000000000000000011, 16, 5), 0, 0, 5), // #94
+INST(Dgh, BaseOp, (0b11010101000000110010000011011111), 0, 0, 10), // #95
+INST(Dmb, BaseOpImm, (0b11010101000000110011000010111111, 4, 8), 0, 0, 6), // #96
+INST(Drps, BaseOp, (0b11010110101111110000001111100000), 0, 0, 11), // #97
+INST(Dsb, BaseOpImm, (0b11010101000000110011000010011111, 4, 8), 0, 0, 7), // #98
+INST(Eon, BaseLogical, (0b1001010001, 0b10100100, 1), RWI_W, 0, 4), // #99
+INST(Eor, BaseLogical, (0b1001010000, 0b10100100, 0), RWI_W, 0, 5), // #100
+INST(Esb, BaseOp, (0b11010101000000110010001000011111), 0, 0, 12), // #101
+INST(Extr, BaseExtract, (0b00010011100000000000000000000000), RWI_W, 0, 0), // #102
+INST(Eret, BaseOp, (0b11010110100111110000001111100000), 0, 0, 13), // #103
+INST(Gmi, BaseRRR, (0b1001101011000000000101, kX , kZR, kX , kSP, kX , kZR, true), RWI_W, 0, 10), // #104
+INST(Hint, BaseOpImm, (0b11010101000000110010000000011111, 7, 5), 0, 0, 8), // #105
+INST(Hlt, BaseOpImm, (0b11010100010000000000000000000000, 16, 5), 0, 0, 9), // #106
+INST(Hvc, BaseOpImm, (0b11010100000000000000000000000010, 16, 5), 0, 0, 10), // #107
+INST(Ic, BaseAtDcIcTlbi, (0b00011110000000, 0b00001110000000, false), RWI_RX, 0, 2), // #108
+INST(Isb, BaseOpImm, (0b11010101000000110011000011011111, 4, 8), 0, 0, 11), // #109
+INST(Ldadd, BaseAtomicOp, (0b1011100000100000000000, kWX, 30, 0), RWI_WRX, 0, 12), // #110
+INST(Ldadda, BaseAtomicOp, (0b1011100010100000000000, kWX, 30, 1), RWI_WRX, 0, 13), // #111
+INST(Ldaddab, BaseAtomicOp, (0b0011100010100000000000, kW , 0 , 1), RWI_WRX, 0, 14), // #112
+INST(Ldaddah, BaseAtomicOp, (0b0111100010100000000000, kW , 0 , 1), RWI_WRX, 0, 15), // #113
+INST(Ldaddal, BaseAtomicOp, (0b1011100011100000000000, kWX, 30, 1), RWI_WRX, 0, 16), // #114
+INST(Ldaddalb, BaseAtomicOp, (0b0011100011100000000000, kW , 0 , 1), RWI_WRX, 0, 17), // #115
+INST(Ldaddalh, BaseAtomicOp, (0b0111100011100000000000, kW , 0 , 1), RWI_WRX, 0, 18), // #116
+INST(Ldaddb, BaseAtomicOp, (0b0011100000100000000000, kW , 0 , 0), RWI_WRX, 0, 19), // #117
+INST(Ldaddh, BaseAtomicOp, (0b0111100000100000000000, kW , 0 , 0), RWI_WRX, 0, 20), // #118
+INST(Ldaddl, BaseAtomicOp, (0b1011100001100000000000, kWX, 30, 0), RWI_WRX, 0, 21), // #119
+INST(Ldaddlb, BaseAtomicOp, (0b0011100001100000000000, kW , 0 , 0), RWI_WRX, 0, 22), // #120
+INST(Ldaddlh, BaseAtomicOp, (0b0111100001100000000000, kW , 0 , 0), RWI_WRX, 0, 23), // #121
+INST(Ldar, BaseRMNoImm, (0b1000100011011111111111, kWX, kZR, 30), RWI_W, 0, 0), // #122
+INST(Ldarb, BaseRMNoImm, (0b0000100011011111111111, kW , kZR, 0 ), RWI_W, 0, 1), // #123
+INST(Ldarh, BaseRMNoImm, (0b0100100011011111111111, kW , kZR, 0 ), RWI_W, 0, 2), // #124
+INST(Ldaxp, BaseLdxp, (0b1000100001111111100000, kWX, 30), RWI_WW, 0, 0), // #125
+INST(Ldaxr, BaseRMNoImm, (0b1000100001011111111111, kWX, kZR, 30), RWI_W, 0, 3), // #126
+INST(Ldaxrb, BaseRMNoImm, (0b0000100001011111111111, kW , kZR, 0 ), RWI_W, 0, 4), // #127
+INST(Ldaxrh, BaseRMNoImm, (0b0100100001011111111111, kW , kZR, 0 ), RWI_W, 0, 5), // #128
+INST(Ldclr, BaseAtomicOp, (0b1011100000100000000100, kWX, 30, 0), RWI_WRX, 0, 24), // #129
+INST(Ldclra, BaseAtomicOp, (0b1011100010100000000100, kWX, 30, 1), RWI_WRX, 0, 25), // #130
+INST(Ldclrab, BaseAtomicOp, (0b0011100010100000000100, kW , 0 , 1), RWI_WRX, 0, 26), // #131
+INST(Ldclrah, BaseAtomicOp, (0b0111100010100000000100, kW , 0 , 1), RWI_WRX, 0, 27), // #132
+INST(Ldclral, BaseAtomicOp, (0b1011100011100000000100, kWX, 30, 1), RWI_WRX, 0, 28), // #133
+INST(Ldclralb, BaseAtomicOp, (0b0011100011100000000100, kW , 0 , 1), RWI_WRX, 0, 29), // #134
+INST(Ldclralh, BaseAtomicOp, (0b0111100011100000000100, kW , 0 , 1), RWI_WRX, 0, 30), // #135
+INST(Ldclrb, BaseAtomicOp, (0b0011100000100000000100, kW , 0 , 0), RWI_WRX, 0, 31), // #136
+INST(Ldclrh, BaseAtomicOp, (0b0111100000100000000100, kW , 0 , 0), RWI_WRX, 0, 32), // #137
+INST(Ldclrl, BaseAtomicOp, (0b1011100001100000000100, kWX, 30, 0), RWI_WRX, 0, 33), // #138
+INST(Ldclrlb, BaseAtomicOp, (0b0011100001100000000100, kW , 0 , 0), RWI_WRX, 0, 34), // #139
+INST(Ldclrlh, BaseAtomicOp, (0b0111100001100000000100, kW , 0 , 0), RWI_WRX, 0, 35), // #140
+INST(Ldeor, BaseAtomicOp, (0b1011100000100000001000, kWX, 30, 0), RWI_WRX, 0, 36), // #141
+INST(Ldeora, BaseAtomicOp, (0b1011100010100000001000, kWX, 30, 1), RWI_WRX, 0, 37), // #142
+INST(Ldeorab, BaseAtomicOp, (0b0011100010100000001000, kW , 0 , 1), RWI_WRX, 0, 38), // #143
+INST(Ldeorah, BaseAtomicOp, (0b0111100010100000001000, kW , 0 , 1), RWI_WRX, 0, 39), // #144
+INST(Ldeoral, BaseAtomicOp, (0b1011100011100000001000, kWX, 30, 1), RWI_WRX, 0, 40), // #145
+INST(Ldeoralb, BaseAtomicOp, (0b0011100011100000001000, kW , 0 , 1), RWI_WRX, 0, 41), // #146
+INST(Ldeoralh, BaseAtomicOp, (0b0111100011100000001000, kW , 0 , 1), RWI_WRX, 0, 42), // #147
+INST(Ldeorb, BaseAtomicOp, (0b0011100000100000001000, kW , 0 , 0), RWI_WRX, 0, 43), // #148
+INST(Ldeorh, BaseAtomicOp, (0b0111100000100000001000, kW , 0 , 0), RWI_WRX, 0, 44), // #149
+INST(Ldeorl, BaseAtomicOp, (0b1011100001100000001000, kWX, 30, 0), RWI_WRX, 0, 45), // #150
+INST(Ldeorlb, BaseAtomicOp, (0b0011100001100000001000, kW , 0 , 0), RWI_WRX, 0, 46), // #151
+INST(Ldeorlh, BaseAtomicOp, (0b0111100001100000001000, kW , 0 , 0), RWI_WRX, 0, 47), // #152
+INST(Ldg, BaseRMSImm9, (0b1101100101100000000000, 0b0000000000000000000000, kX , kZR, 0, 4), RWI_W, 0, 0), // #153
+INST(Ldgm, BaseRMNoImm, (0b1101100111100000000000, kX , kZR, 0 ), RWI_W, 0, 6), // #154
+INST(Ldlar, BaseRMNoImm, (0b1000100011011111011111, kWX, kZR, 30), RWI_W, 0, 7), // #155
+INST(Ldlarb, BaseRMNoImm, (0b0000100011011111011111, kW , kZR, 0 ), RWI_W, 0, 8), // #156
+INST(Ldlarh, BaseRMNoImm, (0b0100100011011111011111, kW , kZR, 0 ), RWI_W, 0, 9), // #157
+INST(Ldnp, BaseLdpStp, (0b0010100001, 0           , kWX, 31, 2), RWI_WW, 0, 0), // #158
+INST(Ldp, BaseLdpStp, (0b0010100101, 0b0010100011, kWX, 31, 2), RWI_WW, 0, 1), // #159
+INST(Ldpsw, BaseLdpStp, (0b0110100101, 0b0110100011, kX , 0 , 2), RWI_WW, 0, 2), // #160
+INST(Ldr, BaseLdSt, (0b1011100101, 0b10111000010, 0b10111000011, 0b00011000, kWX, 30, 2, InstId::Ldur), RWI_W, 0, 0), // #161
+INST(Ldraa, BaseRMSImm10, (0b1111100000100000000001, kX , kZR, 0, 3), RWI_W, 0, 0), // #162
+INST(Ldrab, BaseRMSImm10, (0b1111100010100000000001, kX , kZR, 0, 3), RWI_W, 0, 1), // #163
+INST(Ldrb, BaseLdSt, (0b0011100101, 0b00111000010, 0b00111000011, 0         , kW , 0 , 0, InstId::Ldurb), RWI_W, 0, 1), // #164
+INST(Ldrh, BaseLdSt, (0b0111100101, 0b01111000010, 0b01111000011, 0         , kW , 0 , 1, InstId::Ldurh), RWI_W, 0, 2), // #165
+INST(Ldrsb, BaseLdSt, (0b0011100111, 0b00111000100, 0b00111000111, 0         , kWX, 22, 0, InstId::Ldursb), RWI_W, 0, 3), // #166
+INST(Ldrsh, BaseLdSt, (0b0111100111, 0b01111000100, 0b01111000111, 0         , kWX, 22, 1, InstId::Ldursh), RWI_W, 0, 4), // #167
+INST(Ldrsw, BaseLdSt, (0b1011100110, 0b10111000100, 0b10111000101, 0b10011000, kX , 0 , 2, InstId::Ldursw), RWI_W, 0, 5), // #168
+INST(Ldset, BaseAtomicOp, (0b1011100000100000001100, kWX, 30, 0), RWI_WRX, 0, 48), // #169
+INST(Ldseta, BaseAtomicOp, (0b1011100010100000001100, kWX, 30, 1), RWI_WRX, 0, 49), // #170
+INST(Ldsetab, BaseAtomicOp, (0b0011100010100000001100, kW , 0 , 1), RWI_WRX, 0, 50), // #171
+INST(Ldsetah, BaseAtomicOp, (0b0111100010100000001100, kW , 0 , 1), RWI_WRX, 0, 51), // #172
+INST(Ldsetal, BaseAtomicOp, (0b1011100011100000001100, kWX, 30, 1), RWI_WRX, 0, 52), // #173
+INST(Ldsetalb, BaseAtomicOp, (0b0011100011100000001100, kW , 0 , 1), RWI_WRX, 0, 53), // #174
+INST(Ldsetalh, BaseAtomicOp, (0b0111100011100000001100, kW , 0 , 1), RWI_WRX, 0, 54), // #175
+INST(Ldsetb, BaseAtomicOp, (0b0011100000100000001100, kW , 0 , 0), RWI_WRX, 0, 55), // #176
+INST(Ldseth, BaseAtomicOp, (0b0111100000100000001100, kW , 0 , 0), RWI_WRX, 0, 56), // #177
+INST(Ldsetl, BaseAtomicOp, (0b1011100001100000001100, kWX, 30, 0), RWI_WRX, 0, 57), // #178
+INST(Ldsetlb, BaseAtomicOp, (0b0011100001100000001100, kW , 0 , 0), RWI_WRX, 0, 58), // #179
+INST(Ldsetlh, BaseAtomicOp, (0b0111100001100000001100, kW , 0 , 0), RWI_WRX, 0, 59), // #180
+INST(Ldsmax, BaseAtomicOp, (0b1011100000100000010000, kWX, 30, 0), RWI_WRX, 0, 60), // #181
+INST(Ldsmaxa, BaseAtomicOp, (0b1011100010100000010000, kWX, 30, 1), RWI_WRX, 0, 61), // #182
+INST(Ldsmaxab, BaseAtomicOp, (0b0011100010100000010000, kW , 0 , 1), RWI_WRX, 0, 62), // #183
+INST(Ldsmaxah, BaseAtomicOp, (0b0111100010100000010000, kW , 0 , 1), RWI_WRX, 0, 63), // #184
+INST(Ldsmaxal, BaseAtomicOp, (0b1011100011100000010000, kWX, 30, 1), RWI_WRX, 0, 64), // #185
+INST(Ldsmaxalb, BaseAtomicOp, (0b0011100011100000010000, kW , 0 , 1), RWI_WRX, 0, 65), // #186
+INST(Ldsmaxalh, BaseAtomicOp, (0b0111100011100000010000, kW , 0 , 1), RWI_WRX, 0, 66), // #187
+INST(Ldsmaxb, BaseAtomicOp, (0b0011100000100000010000, kW , 0 , 0), RWI_WRX, 0, 67), // #188
+INST(Ldsmaxh, BaseAtomicOp, (0b0111100000100000010000, kW , 0 , 0), RWI_WRX, 0, 68), // #189
+INST(Ldsmaxl, BaseAtomicOp, (0b1011100001100000010000, kWX, 30, 0), RWI_WRX, 0, 69), // #190
+INST(Ldsmaxlb, BaseAtomicOp, (0b0011100001100000010000, kW , 0 , 0), RWI_WRX, 0, 70), // #191
+INST(Ldsmaxlh, BaseAtomicOp, (0b0111100001100000010000, kW , 0 , 0), RWI_WRX, 0, 71), // #192
+INST(Ldsmin, BaseAtomicOp, (0b1011100000100000010100, kWX, 30, 0), RWI_WRX, 0, 72), // #193
+INST(Ldsmina, BaseAtomicOp, (0b1011100010100000010100, kWX, 30, 1), RWI_WRX, 0, 73), // #194
+INST(Ldsminab, BaseAtomicOp, (0b0011100010100000010100, kW , 0 , 1), RWI_WRX, 0, 74), // #195
+INST(Ldsminah, BaseAtomicOp, (0b0111100010100000010100, kW , 0 , 1), RWI_WRX, 0, 75), // #196
+INST(Ldsminal, BaseAtomicOp, (0b1011100011100000010100, kWX, 30, 1), RWI_WRX, 0, 76), // #197
+INST(Ldsminalb, BaseAtomicOp, (0b0011100011100000010100, kW , 0 , 1), RWI_WRX, 0, 77), // #198
+INST(Ldsminalh, BaseAtomicOp, (0b0111100011100000010100, kW , 0 , 1), RWI_WRX, 0, 78), // #199
+INST(Ldsminb, BaseAtomicOp, (0b0011100000100000010100, kW , 0 , 0), RWI_WRX, 0, 79), // #200
+INST(Ldsminh, BaseAtomicOp, (0b0111100000100000010100, kW , 0 , 0), RWI_WRX, 0, 80), // #201
+INST(Ldsminl, BaseAtomicOp, (0b1011100001100000010100, kWX, 30, 0), RWI_WRX, 0, 81), // #202
+INST(Ldsminlb, BaseAtomicOp, (0b0011100001100000010100, kW , 0 , 0), RWI_WRX, 0, 82), // #203
+INST(Ldsminlh, BaseAtomicOp, (0b0111100001100000010100, kW , 0 , 0), RWI_WRX, 0, 83), // #204
+INST(Ldtr, BaseRMSImm9, (0b1011100001000000000010, 0b0000000000000000000000, kWX, kZR, 30, 0), RWI_W, 0, 1), // #205
+INST(Ldtrb, BaseRMSImm9, (0b0011100001000000000010, 0b0000000000000000000000, kW , kZR, 0 , 0), RWI_W, 0, 2), // #206
+INST(Ldtrh, BaseRMSImm9, (0b0111100001000000000010, 0b0000000000000000000000, kW , kZR, 0 , 0), RWI_W, 0, 3), // #207
+INST(Ldtrsb, BaseRMSImm9, (0b0011100011000000000010, 0b0000000000000000000000, kWX, kZR, 22, 0), RWI_W, 0, 4), // #208
+INST(Ldtrsh, BaseRMSImm9, (0b0111100011000000000010, 0b0000000000000000000000, kWX, kZR, 22, 0), RWI_W, 0, 5), // #209
+INST(Ldtrsw, BaseRMSImm9, (0b1011100010000000000010, 0b0000000000000000000000, kX , kZR, 0 , 0), RWI_W, 0, 6), // #210
+INST(Ldumax, BaseAtomicOp, (0b1011100000100000011000, kWX, 30, 0), RWI_WRX, 0, 84), // #211
+INST(Ldumaxa, BaseAtomicOp, (0b1011100010100000011000, kWX, 30, 1), RWI_WRX, 0, 85), // #212
+INST(Ldumaxab, BaseAtomicOp, (0b0011100010100000011000, kW , 0 , 1), RWI_WRX, 0, 86), // #213
+INST(Ldumaxah, BaseAtomicOp, (0b0111100010100000011000, kW , 0 , 1), RWI_WRX, 0, 87), // #214
+INST(Ldumaxal, BaseAtomicOp, (0b1011100011100000011000, kWX, 30, 1), RWI_WRX, 0, 88), // #215
+INST(Ldumaxalb, BaseAtomicOp, (0b0011100011100000011000, kW , 0 , 1), RWI_WRX, 0, 89), // #216
+INST(Ldumaxalh, BaseAtomicOp, (0b0111100011100000011000, kW , 0 , 1), RWI_WRX, 0, 90), // #217
+INST(Ldumaxb, BaseAtomicOp, (0b0011100000100000011000, kW , 0 , 0), RWI_WRX, 0, 91), // #218
+INST(Ldumaxh, BaseAtomicOp, (0b0111100000100000011000, kW , 0 , 0), RWI_WRX, 0, 92), // #219
+INST(Ldumaxl, BaseAtomicOp, (0b1011100001100000011000, kWX, 30, 0), RWI_WRX, 0, 93), // #220
+INST(Ldumaxlb, BaseAtomicOp, (0b0011100001100000011000, kW , 0 , 0), RWI_WRX, 0, 94), // #221
+INST(Ldumaxlh, BaseAtomicOp, (0b0111100001100000011000, kW , 0 , 0), RWI_WRX, 0, 95), // #222
+INST(Ldumin, BaseAtomicOp, (0b1011100000100000011100, kWX, 30, 0), RWI_WRX, 0, 96), // #223
+INST(Ldumina, BaseAtomicOp, (0b1011100010100000011100, kWX, 30, 1), RWI_WRX, 0, 97), // #224
+INST(Lduminab, BaseAtomicOp, (0b0011100010100000011100, kW , 0 , 1), RWI_WRX, 0, 98), // #225
+INST(Lduminah, BaseAtomicOp, (0b0111100010100000011100, kW , 0 , 1), RWI_WRX, 0, 99), // #226
+INST(Lduminal, BaseAtomicOp, (0b1011100011100000011100, kWX, 30, 1), RWI_WRX, 0, 100), // #227
+INST(Lduminalb, BaseAtomicOp, (0b0011100011100000011100, kW , 0 , 1), RWI_WRX, 0, 101), // #228
+INST(Lduminalh, BaseAtomicOp, (0b0111100011100000011100, kW , 0 , 1), RWI_WRX, 0, 102), // #229
+INST(Lduminb, BaseAtomicOp, (0b0011100000100000011100, kW , 0 , 0), RWI_WRX, 0, 103), // #230
+INST(Lduminh, BaseAtomicOp, (0b0111100000100000011100, kW , 0 , 0), RWI_WRX, 0, 104), // #231
+INST(Lduminl, BaseAtomicOp, (0b1011100001100000011100, kWX, 30, 0), RWI_WRX, 0, 105), // #232
+INST(Lduminlb, BaseAtomicOp, (0b0011100001100000011100, kW , 0 , 0), RWI_WRX, 0, 106), // #233
+INST(Lduminlh, BaseAtomicOp, (0b0111100001100000011100, kW , 0 , 0), RWI_WRX, 0, 107), // #234
+INST(Ldur, BaseRMSImm9, (0b1011100001000000000000, 0b0000000000000000000000, kWX, kZR, 30, 0), RWI_W, 0, 7), // #235
+INST(Ldurb, BaseRMSImm9, (0b0011100001000000000000, 0b0000000000000000000000, kW , kZR, 0 , 0), RWI_W, 0, 8), // #236
+INST(Ldurh, BaseRMSImm9, (0b0111100001000000000000, 0b0000000000000000000000, kW , kZR, 0 , 0), RWI_W, 0, 9), // #237
+INST(Ldursb, BaseRMSImm9, (0b0011100011000000000000, 0b0000000000000000000000, kWX, kZR, 22, 0), RWI_W, 0, 10), // #238
+INST(Ldursh, BaseRMSImm9, (0b0111100011000000000000, 0b0000000000000000000000, kWX, kZR, 22, 0), RWI_W, 0, 11), // #239
+INST(Ldursw, BaseRMSImm9, (0b1011100010000000000000, 0b0000000000000000000000, kX , kZR, 0 , 0), RWI_W, 0, 12), // #240
+INST(Ldxp, BaseLdxp, (0b1000100001111111000000, kWX, 30), RWI_WW, 0, 1), // #241
+INST(Ldxr, BaseRMNoImm, (0b1000100001011111011111, kWX, kZR, 30), RWI_W, 0, 10), // #242
+INST(Ldxrb, BaseRMNoImm, (0b0000100001011111011111, kW , kZR, 0 ), RWI_W, 0, 11), // #243
+INST(Ldxrh, BaseRMNoImm, (0b0100100001011111011111, kW , kZR, 0 ), RWI_W, 0, 12), // #244
+INST(Lsl, BaseShift, (0b0001101011000000001000, 0b0101001100000000000000, 0), RWI_W, 0, 2), // #245
+INST(Lslv, BaseShift, (0b0001101011000000001000, 0b0000000000000000000000, 0), RWI_W, 0, 3), // #246
+INST(Lsr, BaseShift, (0b0001101011000000001001, 0b0101001100000000011111, 0), RWI_W, 0, 4), // #247
+INST(Lsrv, BaseShift, (0b0001101011000000001001, 0b0000000000000000000000, 0), RWI_W, 0, 5), // #248
+INST(Madd, BaseRRRR, (0b0001101100000000000000, kWX, kZR, kWX, kZR, kWX, kZR, kWX, kZR, true), RWI_W, 0, 0), // #249
+INST(Mneg, BaseRRR, (0b0001101100000000111111, kWX, kZR, kWX, kZR, kWX, kZR, true), RWI_W, 0, 11), // #250
+INST(Mov, BaseMov, (_), RWI_W, 0, 0), // #251
+INST(Movk, BaseMovKNZ, (0b01110010100000000000000000000000), RWI_X, 0, 0), // #252
+INST(Movn, BaseMovKNZ, (0b00010010100000000000000000000000), RWI_W, 0, 1), // #253
+INST(Movz, BaseMovKNZ, (0b01010010100000000000000000000000), RWI_W, 0, 2), // #254
+INST(Mrs, BaseMrs, (_), RWI_W, 0, 0), // #255
+INST(Msr, BaseMsr, (_), RWI_W, 0, 0), // #256
+INST(Msub, BaseRRRR, (0b0001101100000000100000, kWX, kZR, kWX, kZR, kWX, kZR, kWX, kZR, true), RWI_W, 0, 1), // #257
+INST(Mul, BaseRRR, (0b0001101100000000011111, kWX, kZR, kWX, kZR, kWX, kZR, true), RWI_W, 0, 12), // #258
+INST(Mvn, BaseMvnNeg, (0b00101010001000000000001111100000), RWI_W, 0, 0), // #259
+INST(Neg, BaseMvnNeg, (0b01001011000000000000001111100000), RWI_W, 0, 1), // #260
+INST(Negs, BaseMvnNeg, (0b01101011000000000000001111100000), RWI_W, 0, 2), // #261
+INST(Ngc, BaseRR, (0b01011010000000000000001111100000, kWX, kZR, 0, kWX, kZR, 16, true), RWI_W, 0, 10), // #262
+INST(Ngcs, BaseRR, (0b01111010000000000000001111100000, kWX, kZR, 0, kWX, kZR, 16, true), RWI_W, 0, 11), // #263
+INST(Nop, BaseOp, (0b11010101000000110010000000011111), 0, 0, 14), // #264
+INST(Orn, BaseLogical, (0b0101010001, 0b01100100, 1), RWI_W, 0, 6), // #265
+INST(Orr, BaseLogical, (0b0101010000, 0b01100100, 0), RWI_W, 0, 7), // #266
+INST(Pacda, BaseRR, (0b11011010110000010000100000000000, kX, kZR, 0, kX, kSP, 5, true), RWI_X, 0, 12), // #267
+INST(Pacdb, BaseRR, (0b11011010110000010000110000000000, kX, kZR, 0, kX, kSP, 5, true), RWI_X, 0, 13), // #268
+INST(Pacdza, BaseR, (0b11011010110000010010101111100000, kX, kZR, 0), RWI_X, 0, 4), // #269
+INST(Pacdzb, BaseR, (0b11011010110000010010111111100000, kX, kZR, 0), RWI_X, 0, 5), // #270
+INST(Pacga, BaseRRR, (0b1001101011000000001100, kX, kZR, kX, kZR, kX, kSP, false), RWI_W, 0, 13), // #271
+INST(Prfm, BasePrfm, (0b11111000101, 0b1111100110, 0b11111000100, 0b11011000), RWI_R, 0, 0), // #272
+INST(Pssbb, BaseOp, (0b11010101000000110011010010011111), 0, 0, 15), // #273
+INST(Rbit, BaseRR, (0b01011010110000000000000000000000, kWX, kZR, 0, kWX, kZR, 5, true), RWI_W, 0, 14), // #274
+INST(Ret, BaseBranchReg, (0b11010110010111110000000000000000), RWI_R, 0, 2), // #275
+INST(Rev, BaseRev, (_), RWI_W, 0, 0), // #276
+INST(Rev16, BaseRR, (0b01011010110000000000010000000000, kWX, kZR, 0, kWX, kZR, 5, true), RWI_W, 0, 15), // #277
+INST(Rev32, BaseRR, (0b11011010110000000000100000000000, kWX, kZR, 0, kWX, kZR, 5, true), RWI_W, 0, 16), // #278
+INST(Rev64, BaseRR, (0b11011010110000000000110000000000, kWX, kZR, 0, kWX, kZR, 5, true), RWI_W, 0, 17), // #279
+INST(Ror, BaseShift, (0b0001101011000000001011, 0b0001001110000000000000, 1), RWI_W, 0, 6), // #280
+INST(Rorv, BaseShift, (0b0001101011000000001011, 0b0000000000000000000000, 1), RWI_W, 0, 7), // #281
+INST(Sbc, BaseRRR, (0b0101101000000000000000, kWX, kZR, kWX, kZR, kWX, kZR, true), RWI_W, 0, 14), // #282
+INST(Sbcs, BaseRRR, (0b0111101000000000000000, kWX, kZR, kWX, kZR, kWX, kZR, true), RWI_W, 0, 15), // #283
+INST(Sbfiz, BaseBfi, (0b00010011000000000000000000000000), RWI_W, 0, 1), // #284
+INST(Sbfm, BaseBfm, (0b00010011000000000000000000000000), RWI_W, 0, 1), // #285
+INST(Sbfx, BaseBfx, (0b00010011000000000000000000000000), RWI_W, 0, 1), // #286
+INST(Sdiv, BaseRRR, (0b0001101011000000000011, kWX, kZR, kWX, kZR, kWX, kZR, true), RWI_W, 0, 16), // #287
+INST(Setf8, BaseR, (0b00111010000000000000100000001101, kW, kZR, 5), 0, 0, 6), // #288
+INST(Setf16, BaseR, (0b00111010000000000100100000001101, kW, kZR, 5), 0, 0, 7), // #289
+INST(Sev, BaseOp, (0b11010101000000110010000010011111), 0, 0, 16), // #290
+INST(Sevl, BaseOp, (0b11010101000000110010000010111111), 0, 0, 17), // #291
+INST(Smaddl, BaseRRRR, (0b1001101100100000000000, kX , kZR, kW , kZR, kW , kZR, kX , kZR, false), RWI_W, 0, 2), // #292
+INST(Smax, BaseMinMax, (0b00011010110000000110000000000000, 0b00010001110000000000000000000000), RWI_W, 0, 0), // #293
+INST(Smc, BaseOpImm, (0b11010100000000000000000000000011, 16, 5), 0, 0, 12), // #294
+INST(Smin, BaseMinMax, (0b00011010110000000110100000000000, 0b00010001110010000000000000000000), RWI_W, 0, 1), // #295
+INST(Smnegl, BaseRRR, (0b1001101100100000111111, kX , kZR, kW , kZR, kW , kZR, false), RWI_W, 0, 17), // #296
+INST(Smsubl, BaseRRRR, (0b1001101100100000100000, kX , kZR, kW , kZR, kW , kZR, kX , kZR, false), RWI_W, 0, 3), // #297
+INST(Smulh, BaseRRR, (0b1001101101000000011111, kX , kZR, kX , kZR, kX , kZR, true), RWI_W, 0, 18), // #298
+INST(Smull, BaseRRR, (0b1001101100100000011111, kX , kZR, kW , kZR, kW , kZR, false), RWI_W, 0, 19), // #299
+INST(Ssbb, BaseOp, (0b11010101000000110011000010011111), 0, 0, 18), // #300
+INST(St2g, BaseRMSImm9, (0b1101100110100000000010, 0b1101100110100000000001, kX, kSP, 0, 4), RWI_RW, 0, 13), // #301
+INST(Stadd, BaseAtomicSt, (0b1011100000100000000000, kWX, 30), RWI_RX, 0, 0), // #302
+INST(Staddl, BaseAtomicSt, (0b1011100001100000000000, kWX, 30), RWI_RX, 0, 1), // #303
+INST(Staddb, BaseAtomicSt, (0b0011100000100000000000, kW , 0 ), RWI_RX, 0, 2), // #304
+INST(Staddlb, BaseAtomicSt, (0b0011100001100000000000, kW , 0 ), RWI_RX, 0, 3), // #305
+INST(Staddh, BaseAtomicSt, (0b0111100000100000000000, kW , 0 ), RWI_RX, 0, 4), // #306
+INST(Staddlh, BaseAtomicSt, (0b0111100001100000000000, kW , 0 ), RWI_RX, 0, 5), // #307
+INST(Stclr, BaseAtomicSt, (0b1011100000100000000100, kWX, 30), RWI_RX, 0, 6), // #308
+INST(Stclrl, BaseAtomicSt, (0b1011100001100000000100, kWX, 30), RWI_RX, 0, 7), // #309
+INST(Stclrb, BaseAtomicSt, (0b0011100000100000000100, kW , 0 ), RWI_RX, 0, 8), // #310
+INST(Stclrlb, BaseAtomicSt, (0b0011100001100000000100, kW , 0 ), RWI_RX, 0, 9), // #311
+INST(Stclrh, BaseAtomicSt, (0b0111100000100000000100, kW , 0 ), RWI_RX, 0, 10), // #312
+INST(Stclrlh, BaseAtomicSt, (0b0111100001100000000100, kW , 0 ), RWI_RX, 0, 11), // #313
+INST(Steor, BaseAtomicSt, (0b1011100000100000001000, kWX, 30), RWI_RX, 0, 12), // #314
+INST(Steorl, BaseAtomicSt, (0b1011100001100000001000, kWX, 30), RWI_RX, 0, 13), // #315
+INST(Steorb, BaseAtomicSt, (0b0011100000100000001000, kW , 0 ), RWI_RX, 0, 14), // #316
+INST(Steorlb, BaseAtomicSt, (0b0011100001100000001000, kW , 0 ), RWI_RX, 0, 15), // #317
+INST(Steorh, BaseAtomicSt, (0b0111100000100000001000, kW , 0 ), RWI_RX, 0, 16), // #318
+INST(Steorlh, BaseAtomicSt, (0b0111100001100000001000, kW , 0 ), RWI_RX, 0, 17), // #319
+INST(Stg, BaseRMSImm9, (0b1101100100100000000010, 0b1101100100100000000001, kX, kSP, 0, 4), RWI_RW, 0, 14), // #320
+INST(Stgm, BaseRMNoImm, (0b1101100110100000000000, kX , kZR, 0 ), RWI_RW, 0, 13), // #321
+INST(Stgp, BaseLdpStp, (0b0110100100, 0b0110100010, kX, 0, 4), RWI_RRW, 0, 3), // #322
+INST(Stllr, BaseRMNoImm, (0b1000100010011111011111, kWX, kZR, 30), RWI_RW, 0, 14), // #323
+INST(Stllrb, BaseRMNoImm, (0b0000100010011111011111, kW , kZR, 0 ), RWI_RW, 0, 15), // #324
+INST(Stllrh, BaseRMNoImm, (0b0100100010011111011111, kW , kZR, 0 ), RWI_RW, 0, 16), // #325
+INST(Stlr, BaseRMNoImm, (0b1000100010011111111111, kWX, kZR, 30), RWI_RW, 0, 17), // #326
+INST(Stlrb, BaseRMNoImm, (0b0000100010011111111111, kW , kZR, 0 ), RWI_RW, 0, 18), // #327
+INST(Stlrh, BaseRMNoImm, (0b0100100010011111111111, kW , kZR, 0 ), RWI_RW, 0, 19), // #328
+INST(Stlxp, BaseStxp, (0b1000100000100000100000, kWX, 30), RWI_WRRX, 0, 0), // #329
+INST(Stlxr, BaseAtomicOp, (0b1000100000000000111111, kWX, 30, 1), RWI_WRX, 0, 108), // #330
+INST(Stlxrb, BaseAtomicOp, (0b0000100000000000111111, kW , 0 , 1), RWI_WRX, 0, 109), // #331
+INST(Stlxrh, BaseAtomicOp, (0b0100100000000000111111, kW , 0 , 1), RWI_WRX, 0, 110), // #332
+INST(Stnp, BaseLdpStp, (0b0010100000, 0           , kWX, 31, 2), RWI_RRW, 0, 4), // #333
+INST(Stp, BaseLdpStp, (0b0010100100, 0b0010100010, kWX, 31, 2), RWI_RRW, 0, 5), // #334
+INST(Str, BaseLdSt, (0b1011100100, 0b10111000000, 0b10111000001, 0         , kWX, 30, 2, InstId::Stur), RWI_RW, 0, 6), // #335
+INST(Strb, BaseLdSt, (0b0011100100, 0b00111000000, 0b00111000001, 0         , kW , 30, 0, InstId::Sturb), RWI_RW, 0, 7), // #336
+INST(Strh, BaseLdSt, (0b0111100100, 0b01111000000, 0b01111000001, 0         , kWX, 30, 1, InstId::Sturh), RWI_RW, 0, 8), // #337
+INST(Stset, BaseAtomicSt, (0b1011100000100000001100, kWX, 30), RWI_RX, 0, 18), // #338
+INST(Stsetl, BaseAtomicSt, (0b1011100001100000001100, kWX, 30), RWI_RX, 0, 19), // #339
+INST(Stsetb, BaseAtomicSt, (0b0011100000100000001100, kW , 0 ), RWI_RX, 0, 20), // #340
+INST(Stsetlb, BaseAtomicSt, (0b0011100001100000001100, kW , 0 ), RWI_RX, 0, 21), // #341
+INST(Stseth, BaseAtomicSt, (0b0111100000100000001100, kW , 0 ), RWI_RX, 0, 22), // #342
+INST(Stsetlh, BaseAtomicSt, (0b0111100001100000001100, kW , 0 ), RWI_RX, 0, 23), // #343
+INST(Stsmax, BaseAtomicSt, (0b1011100000100000010000, kWX, 30), RWI_RX, 0, 24), // #344
+INST(Stsmaxl, BaseAtomicSt, (0b1011100001100000010000, kWX, 30), RWI_RX, 0, 25), // #345
+INST(Stsmaxb, BaseAtomicSt, (0b0011100000100000010000, kW , 0 ), RWI_RX, 0, 26), // #346
+INST(Stsmaxlb, BaseAtomicSt, (0b0011100001100000010000, kW , 0 ), RWI_RX, 0, 27), // #347
+INST(Stsmaxh, BaseAtomicSt, (0b0111100000100000010000, kW , 0 ), RWI_RX, 0, 28), // #348
+INST(Stsmaxlh, BaseAtomicSt, (0b0111100001100000010000, kW , 0 ), RWI_RX, 0, 29), // #349
+INST(Stsmin, BaseAtomicSt, (0b1011100000100000010100, kWX, 30), RWI_RX, 0, 30), // #350
+INST(Stsminl, BaseAtomicSt, (0b1011100001100000010100, kWX, 30), RWI_RX, 0, 31), // #351
+INST(Stsminb, BaseAtomicSt, (0b0011100000100000010100, kW , 0 ), RWI_RX, 0, 32), // #352
+INST(Stsminlb, BaseAtomicSt, (0b0011100001100000010100, kW , 0 ), RWI_RX, 0, 33), // #353
+INST(Stsminh, BaseAtomicSt, (0b0111100000100000010100, kW , 0 ), RWI_RX, 0, 34), // #354
+INST(Stsminlh, BaseAtomicSt, (0b0111100001100000010100, kW , 0 ), RWI_RX, 0, 35), // #355
+INST(Sttr, BaseRMSImm9, (0b1011100000000000000010, 0b0000000000000000000000, kWX, kZR, 30, 0), RWI_RW, 0, 15), // #356
+INST(Sttrb, BaseRMSImm9, (0b0011100000000000000010, 0b0000000000000000000000, kW , kZR, 0 , 0), RWI_RW, 0, 16), // #357
+INST(Sttrh, BaseRMSImm9, (0b0111100000000000000010, 0b0000000000000000000000, kW , kZR, 0 , 0), RWI_RW, 0, 17), // #358
+INST(Stumax, BaseAtomicSt, (0b1011100000100000011000, kWX, 30), RWI_RX, 0, 36), // #359
+INST(Stumaxl, BaseAtomicSt, (0b1011100001100000011000, kWX, 30), RWI_RX, 0, 37), // #360
+INST(Stumaxb, BaseAtomicSt, (0b0011100000100000011000, kW , 0 ), RWI_RX, 0, 38), // #361
+INST(Stumaxlb, BaseAtomicSt, (0b0011100001100000011000, kW , 0 ), RWI_RX, 0, 39), // #362
+INST(Stumaxh, BaseAtomicSt, (0b0111100000100000011000, kW , 0 ), RWI_RX, 0, 40), // #363
+INST(Stumaxlh, BaseAtomicSt, (0b0111100001100000011000, kW , 0 ), RWI_RX, 0, 41), // #364
+INST(Stumin, BaseAtomicSt, (0b1011100000100000011100, kWX, 30), RWI_RX, 0, 42), // #365
+INST(Stuminl, BaseAtomicSt, (0b1011100001100000011100, kWX, 30), RWI_RX, 0, 43), // #366
+INST(Stuminb, BaseAtomicSt, (0b0011100000100000011100, kW , 0 ), RWI_RX, 0, 44), // #367
+INST(Stuminlb, BaseAtomicSt, (0b0011100001100000011100, kW , 0 ), RWI_RX, 0, 45), // #368
+INST(Stuminh, BaseAtomicSt, (0b0111100000100000011100, kW , 0 ), RWI_RX, 0, 46), // #369
+INST(Stuminlh, BaseAtomicSt, (0b0111100001100000011100, kW , 0 ), RWI_RX, 0, 47), // #370
+INST(Stur, BaseRMSImm9, (0b1011100000000000000000, 0b0000000000000000000000, kWX, kZR, 30, 0), RWI_RW, 0, 18), // #371
+INST(Sturb, BaseRMSImm9, (0b0011100000000000000000, 0b0000000000000000000000, kW , kZR, 0 , 0), RWI_RW, 0, 19), // #372
+INST(Sturh, BaseRMSImm9, (0b0111100000000000000000, 0b0000000000000000000000, kW , kZR, 0 , 0), RWI_RW, 0, 20), // #373
+INST(Stxp, BaseStxp, (0b1000100000100000000000, kWX, 30), RWI_WRRW, 0, 1), // #374
+INST(Stxr, BaseStx, (0b1000100000000000011111, kWX, 30), RWI_WRW, 0, 0), // #375
+INST(Stxrb, BaseStx, (0b0000100000000000011111, kW , 0 ), RWI_WRW, 0, 1), // #376
+INST(Stxrh, BaseStx, (0b0100100000000000011111, kW , 0 ), RWI_WRW, 0, 2), // #377
+INST(Stz2g, BaseRMSImm9, (0b1101100111100000000010, 0b1101100111100000000001, kX , kSP, 0, 4), RWI_RW, 0, 21), // #378
+INST(Stzg, BaseRMSImm9, (0b1101100101100000000010, 0b1101100101100000000001, kX , kSP, 0, 4), RWI_RW, 0, 22), // #379
+INST(Stzgm, BaseRMNoImm, (0b1101100100100000000000, kX , kZR, 0), RWI_RW, 0, 20), // #380
+INST(Sub, BaseAddSub, (0b1001011000, 0b1001011001, 0b1010001), RWI_W, 0, 2), // #381
+INST(Subg, BaseRRII, (0b1101000110000000000000, kX, kSP, kX, kSP, 6, 4, 16, 4, 0, 10), RWI_W, 0, 1), // #382
+INST(Subp, BaseRRR, (0b1001101011000000000000, kX, kZR, kX, kSP, kX, kSP, false), RWI_W, 0, 20), // #383
+INST(Subps, BaseRRR, (0b1011101011000000000000, kX, kZR, kX, kSP, kX, kSP, false), RWI_W, 0, 21), // #384
+INST(Subs, BaseAddSub, (0b1101011000, 0b1101011001, 0b1110001), RWI_W, 0, 3), // #385
+INST(Svc, BaseOpImm, (0b11010100000000000000000000000001, 16, 5), 0, 0, 13), // #386
+INST(Swp, BaseAtomicOp, (0b1011100000100000100000, kWX, 30, 1), RWI_RWX, 0, 111), // #387
+INST(Swpa, BaseAtomicOp, (0b1011100010100000100000, kWX, 30, 1), RWI_RWX, 0, 112), // #388
+INST(Swpab, BaseAtomicOp, (0b0011100010100000100000, kW , 0 , 1), RWI_RWX, 0, 113), // #389
+INST(Swpah, BaseAtomicOp, (0b0111100010100000100000, kW , 0 , 1), RWI_RWX, 0, 114), // #390
+INST(Swpal, BaseAtomicOp, (0b1011100011100000100000, kWX, 30, 1), RWI_RWX, 0, 115), // #391
+INST(Swpalb, BaseAtomicOp, (0b0011100011100000100000, kW , 0 , 1), RWI_RWX, 0, 116), // #392
+INST(Swpalh, BaseAtomicOp, (0b0111100011100000100000, kW , 0 , 1), RWI_RWX, 0, 117), // #393
+INST(Swpb, BaseAtomicOp, (0b0011100000100000100000, kW , 0 , 1), RWI_RWX, 0, 118), // #394
+INST(Swph, BaseAtomicOp, (0b0111100000100000100000, kW , 0 , 1), RWI_RWX, 0, 119), // #395
+INST(Swpl, BaseAtomicOp, (0b1011100001100000100000, kWX, 30, 1), RWI_RWX, 0, 120), // #396
+INST(Swplb, BaseAtomicOp, (0b0011100001100000100000, kW , 0 , 1), RWI_RWX, 0, 121), // #397
+INST(Swplh, BaseAtomicOp, (0b0111100001100000100000, kW , 0 , 1), RWI_RWX, 0, 122), // #398
+INST(Sxtb, BaseExtend, (0b0001001100000000000111, kWX, 0), RWI_W, 0, 0), // #399
+INST(Sxth, BaseExtend, (0b0001001100000000001111, kWX, 0), RWI_W, 0, 1), // #400
+INST(Sxtw, BaseExtend, (0b1001001101000000011111, kX , 0), RWI_W, 0, 2), // #401
+INST(Sys, BaseSys, (_), RWI_W, 0, 0), // #402
+INST(Tlbi, BaseAtDcIcTlbi, (0b00011110000000, 0b00010000000000, false), RWI_RX, 0, 3), // #403
+INST(Tst, BaseTst, (0b1101010000, 0b111001000), RWI_R, 0, 0), // #404
+INST(Tbnz, BaseBranchTst, (0b00110111000000000000000000000000), RWI_R, 0, 0), // #405
+INST(Tbz, BaseBranchTst, (0b00110110000000000000000000000000), RWI_R, 0, 1), // #406
+INST(Ubfiz, BaseBfi, (0b01010011000000000000000000000000), RWI_W, 0, 2), // #407
+INST(Ubfm, BaseBfm, (0b01010011000000000000000000000000), RWI_W, 0, 2), // #408
+INST(Ubfx, BaseBfx, (0b01010011000000000000000000000000), RWI_W, 0, 2), // #409
+INST(Udf, BaseOpImm, (0b00000000000000000000000000000000, 16, 0), 0, 0, 14), // #410
+INST(Udiv, BaseRRR, (0b0001101011000000000010, kWX, kZR, kWX, kZR, kWX, kZR, true), RWI_W, 0, 22), // #411
+INST(Umaddl, BaseRRRR, (0b1001101110100000000000, kX , kZR, kW , kZR, kW , kZR, kX , kZR, false), RWI_W, 0, 4), // #412
+INST(Umax, BaseMinMax, (0b00011010110000000110010000000000, 0b00010001110001000000000000000000), RWI_W, 0, 2), // #413
+INST(Umin, BaseMinMax, (0b00011010110000000110110000000000, 0b00010001110011000000000000000000), RWI_W, 0, 3), // #414
+INST(Umnegl, BaseRRR, (0b1001101110100000111111, kX , kZR, kW , kZR, kW , kZR, false), RWI_W, 0, 23), // #415
+INST(Umull, BaseRRR, (0b1001101110100000011111, kX , kZR, kW , kZR, kW , kZR, false), RWI_W, 0, 24), // #416
+INST(Umulh, BaseRRR, (0b1001101111000000011111, kX , kZR, kX , kZR, kX , kZR, false), RWI_W, 0, 25), // #417
+INST(Umsubl, BaseRRRR, (0b1001101110100000100000, kX , kZR, kW , kZR, kW , kZR, kX , kZR, false), RWI_W, 0, 5), // #418
+INST(Uxtb, BaseExtend, (0b0101001100000000000111, kW, 1), RWI_W, 0, 3), // #419
+INST(Uxth, BaseExtend, (0b0101001100000000001111, kW, 1), RWI_W, 0, 4), // #420
+INST(Wfe, BaseOp, (0b11010101000000110010000001011111), 0, 0, 19), // #421
+INST(Wfi, BaseOp, (0b11010101000000110010000001111111), 0, 0, 20), // #422
+INST(Xaflag, BaseOp, (0b11010101000000000100000000111111), 0, 0, 21), // #423
+INST(Xpacd, BaseR, (0b11011010110000010100011111100000, kX, kZR, 0), RWI_X, 0, 8), // #424
+INST(Xpaci, BaseR, (0b11011010110000010100001111100000, kX, kZR, 0), RWI_X, 0, 9), // #425
+INST(Xpaclri, BaseOp, (0b11010101000000110010000011111111), RWI_X, 0, 22), // #426
+INST(Yield, BaseOp, (0b11010101000000110010000000111111), 0, 0, 23), // #427
+INST(Abs_v, ISimdVV, (0b0000111000100000101110, kVO_V_Any), RWI_W, 0, 0), // #428
+INST(Add_v, ISimdVVV, (0b0000111000100000100001, kVO_V_Any), RWI_W, 0, 0), // #429
+INST(Addhn_v, ISimdVVV, (0b0000111000100000010000, kVO_V_B8H4S2), RWI_W, F!(Narrow), 1), // #430
+INST(Addhn2_v, ISimdVVV, (0b0100111000100000010000, kVO_V_B16H8S4), RWI_W, F!(Narrow), 2), // #431
+INST(Addp_v, ISimdPair, (0b0101111000110001101110, 0b0000111000100000101111, kVO_V_Any), RWI_W, F!(Pair), 0), // #432
+INST(Addv_v, ISimdSV, (0b0000111000110001101110, kVO_V_BH_4S), RWI_W, 0, 0), // #433
+INST(Aesd_v, ISimdVVx, (0b0100111000101000010110, kOp_V16B, kOp_V16B), RWI_X, 0, 0), // #434
+INST(Aese_v, ISimdVVx, (0b0100111000101000010010, kOp_V16B, kOp_V16B), RWI_X, 0, 1), // #435
+INST(Aesimc_v, ISimdVVx, (0b0100111000101000011110, kOp_V16B, kOp_V16B), RWI_W, 0, 2), // #436
+INST(Aesmc_v, ISimdVVx, (0b0100111000101000011010, kOp_V16B, kOp_V16B), RWI_W, 0, 3), // #437
+INST(And_v, ISimdVVV, (0b0000111000100000000111, kVO_V_B), RWI_W, 0, 3), // #438
+INST(Bcax_v, ISimdVVVV, (0b1100111000100000000000, kVO_V_B16), RWI_W, 0, 0), // #439
+INST(Bfcvt_v, ISimdVVx, (0b0001111001100011010000, kOp_H, kOp_S), RWI_W, 0, 4), // #440
+INST(Bfcvtn_v, ISimdVVx, (0b0000111010100001011010, kOp_V4H, kOp_V4S), RWI_W, F!(Narrow), 5), // #441
+INST(Bfcvtn2_v, ISimdVVx, (0b0100111010100001011010, kOp_V8H, kOp_V4S), RWI_W, F!(Narrow), 6), // #442
+INST(Bfdot_v, SimdDot, (0b0010111001000000111111, 0b0000111101000000111100, kET_S, kET_H, kET_2H), RWI_X, 0, 0), // #443
+INST(Bfmlalb_v, SimdFmlal, (0b0010111011000000111111, 0b0000111111000000111100, 0, kET_S, kET_H, kET_H), RWI_X, F!(VH0_15), 0), // #444
+INST(Bfmlalt_v, SimdFmlal, (0b0110111011000000111111, 0b0100111111000000111100, 0, kET_S, kET_H, kET_H), RWI_X, F!(VH0_15), 1), // #445
+INST(Bfmmla_v, ISimdVVVx, (0b0110111001000000111011, kOp_V4S, kOp_V8H, kOp_V8H), RWI_X, F!(Long), 0), // #446
+INST(Bic_v, SimdBicOrr, (0b0000111001100000000111, 0b0010111100000000000001), RWI_W, 0, 0), // #447
+INST(Bif_v, ISimdVVV, (0b0010111011100000000111, kVO_V_B), RWI_X, 0, 4), // #448
+INST(Bit_v, ISimdVVV, (0b0010111010100000000111, kVO_V_B), RWI_X, 0, 5), // #449
+INST(Bsl_v, ISimdVVV, (0b0010111001100000000111, kVO_V_B), RWI_X, 0, 6), // #450
+INST(Cls_v, ISimdVV, (0b0000111000100000010010, kVO_V_BHS), RWI_W, 0, 1), // #451
+INST(Clz_v, ISimdVV, (0b0010111000100000010010, kVO_V_BHS), RWI_W, 0, 2), // #452
+INST(Cmeq_v, SimdCmp, (0b0010111000100000100011, 0b0000111000100000100110, kVO_V_Any), RWI_W, 0, 0), // #453
+INST(Cmge_v, SimdCmp, (0b0000111000100000001111, 0b0010111000100000100010, kVO_V_Any), RWI_W, 0, 1), // #454
+INST(Cmgt_v, SimdCmp, (0b0000111000100000001101, 0b0000111000100000100010, kVO_V_Any), RWI_W, 0, 2), // #455
+INST(Cmhi_v, SimdCmp, (0b0010111000100000001101, 0b0000000000000000000000, kVO_V_Any), RWI_W, 0, 3), // #456
+INST(Cmhs_v, SimdCmp, (0b0010111000100000001111, 0b0000000000000000000000, kVO_V_Any), RWI_W, 0, 4), // #457
+INST(Cmle_v, SimdCmp, (0b0000000000000000000000, 0b0010111000100000100110, kVO_V_Any), RWI_W, 0, 5), // #458
+INST(Cmlt_v, SimdCmp, (0b0000000000000000000000, 0b0000111000100000101010, kVO_V_Any), RWI_W, 0, 6), // #459
+INST(Cmtst_v, ISimdVVV, (0b0000111000100000100011, kVO_V_Any), RWI_W, 0, 7), // #460
+INST(Cnt_v, ISimdVV, (0b0000111000100000010110, kVO_V_B), RWI_W, 0, 3), // #461
+INST(Dup_v, SimdDup, (_), RWI_W, 0, 0), // #462
+INST(Eor_v, ISimdVVV, (0b0010111000100000000111, kVO_V_B), RWI_W, 0, 8), // #463
+INST(Eor3_v, ISimdVVVV, (0b1100111000000000000000, kVO_V_B16), RWI_W, 0, 1), // #464
+INST(Ext_v, ISimdVVVI, (0b0010111000000000000000, kVO_V_B, 4, 11, 1), RWI_W, 0, 0), // #465
+INST(Fabd_v, FSimdVVV, (0b0111111010100000110101, kHF_C, 0b0010111010100000110101, kHF_C), RWI_W, 0, 0), // #466
+INST(Fabs_v, FSimdVV, (0b0001111000100000110000, kHF_A, 0b0000111010100000111110, kHF_B), RWI_W, 0, 0), // #467
+INST(Facge_v, FSimdVVV, (0b0111111000100000111011, kHF_C, 0b0010111000100000111011, kHF_C), RWI_W, 0, 1), // #468
+INST(Facgt_v, FSimdVVV, (0b0111111010100000111011, kHF_C, 0b0010111010100000111011, kHF_C), RWI_W, 0, 2), // #469
+INST(Fadd_v, FSimdVVV, (0b0001111000100000001010, kHF_A, 0b0000111000100000110101, kHF_C), RWI_W, 0, 3), // #470
+INST(Faddp_v, FSimdPair, (0b0111111000110000110110, 0b0010111000100000110101), RWI_W, 0, 0), // #471
+INST(Fcadd_v, SimdFcadd, (0b0010111000000000111001), RWI_W, 0, 0), // #472
+INST(Fccmp_v, SimdFccmpFccmpe, (0b00011110001000000000010000000000), RWI_R, 0, 0), // #473
+INST(Fccmpe_v, SimdFccmpFccmpe, (0b00011110001000000000010000010000), RWI_R, 0, 1), // #474
+INST(Fcmeq_v, SimdFcm, (0b0000111000100000111001, kHF_C, 0b0000111010100000110110), RWI_W, 0, 0), // #475
+INST(Fcmge_v, SimdFcm, (0b0010111000100000111001, kHF_C, 0b0010111010100000110010), RWI_W, 0, 1), // #476
+INST(Fcmgt_v, SimdFcm, (0b0010111010100000111001, kHF_C, 0b0000111010100000110010), RWI_W, 0, 2), // #477
+INST(Fcmla_v, SimdFcmla, (0b0010111000000000110001, 0b0010111100000000000100), RWI_X, 0, 0), // #478
+INST(Fcmle_v, SimdFcm, (0b0000000000000000000000, kHF_C, 0b0010111010100000110110), RWI_W, 0, 3), // #479
+INST(Fcmlt_v, SimdFcm, (0b0000000000000000000000, kHF_C, 0b0000111010100000111010), RWI_W, 0, 4), // #480
+INST(Fcmp_v, SimdFcmpFcmpe, (0b00011110001000000010000000000000), RWI_R, 0, 0), // #481
+INST(Fcmpe_v, SimdFcmpFcmpe, (0b00011110001000000010000000010000), RWI_R, 0, 1), // #482
+INST(Fcsel_v, SimdFcsel, (_), RWI_W, 0, 0), // #483
+INST(Fcvt_v, SimdFcvt, (_), RWI_W, 0, 0), // #484
+INST(Fcvtas_v, SimdFcvtSV, (0b0000111000100001110010, 0b0000000000000000000000, 0b0001111000100100000000, 1), RWI_W, 0, 0), // #485
+INST(Fcvtau_v, SimdFcvtSV, (0b0010111000100001110010, 0b0000000000000000000000, 0b0001111000100101000000, 1), RWI_W, 0, 1), // #486
+INST(Fcvtl_v, SimdFcvtLN, (0b0000111000100001011110, 0, 0), RWI_W, F!(Long), 0), // #487
+INST(Fcvtl2_v, SimdFcvtLN, (0b0100111000100001011110, 0, 0), RWI_W, F!(Long), 1), // #488
+INST(Fcvtms_v, SimdFcvtSV, (0b0000111000100001101110, 0b0000000000000000000000, 0b0001111000110000000000, 1), RWI_W, 0, 2), // #489
+INST(Fcvtmu_v, SimdFcvtSV, (0b0010111000100001101110, 0b0000000000000000000000, 0b0001111000110001000000, 1), RWI_W, 0, 3), // #490
+INST(Fcvtn_v, SimdFcvtLN, (0b0000111000100001011010, 0, 0), RWI_W, F!(Narrow), 2), // #491
+INST(Fcvtn2_v, SimdFcvtLN, (0b0100111000100001011010, 0, 0), RWI_X, F!(Narrow), 3), // #492
+INST(Fcvtns_v, SimdFcvtSV, (0b0000111000100001101010, 0b0000000000000000000000, 0b0001111000100000000000, 1), RWI_W, 0, 4), // #493
+INST(Fcvtnu_v, SimdFcvtSV, (0b0010111000100001101010, 0b0000000000000000000000, 0b0001111000100001000000, 1), RWI_W, 0, 5), // #494
+INST(Fcvtps_v, SimdFcvtSV, (0b0000111010100001101010, 0b0000000000000000000000, 0b0001111000101000000000, 1), RWI_W, 0, 6), // #495
+INST(Fcvtpu_v, SimdFcvtSV, (0b0010111010100001101010, 0b0000000000000000000000, 0b0001111000101001000000, 1), RWI_W, 0, 7), // #496
+INST(Fcvtxn_v, SimdFcvtLN, (0b0010111000100001011010, 1, 1), RWI_W, F!(Narrow), 4), // #497
+INST(Fcvtxn2_v, SimdFcvtLN, (0b0110111000100001011010, 1, 0), RWI_X, F!(Narrow), 5), // #498
+INST(Fcvtzs_v, SimdFcvtSV, (0b0000111010100001101110, 0b0000111100000000111111, 0b0001111000111000000000, 1), RWI_W, 0, 8), // #499
+INST(Fcvtzu_v, SimdFcvtSV, (0b0010111010100001101110, 0b0010111100000000111111, 0b0001111000111001000000, 1), RWI_W, 0, 9), // #500
+INST(Fdiv_v, FSimdVVV, (0b0001111000100000000110, kHF_A, 0b0010111000100000111111, kHF_C), RWI_W, 0, 4), // #501
+INST(Fjcvtzs_v, ISimdVVx, (0b0001111001111110000000, kOp_GpW, kOp_D), RWI_W, 0, 7), // #502
+INST(Fmadd_v, FSimdVVVV, (0b0001111100000000000000, kHF_A, 0b0000000000000000000000, kHF_N), RWI_W, 0, 0), // #503
+INST(Fmax_v, FSimdVVV, (0b0001111000100000010010, kHF_A, 0b0000111000100000111101, kHF_C), RWI_W, 0, 5), // #504
+INST(Fmaxnm_v, FSimdVVV, (0b0001111000100000011010, kHF_A, 0b0000111000100000110001, kHF_C), RWI_W, 0, 6), // #505
+INST(Fmaxnmp_v, FSimdPair, (0b0111111000110000110010, 0b0010111000100000110001), RWI_W, 0, 1), // #506
+INST(Fmaxnmv_v, FSimdSV, (0b0010111000110000110010), RWI_W, 0, 0), // #507
+INST(Fmaxp_v, FSimdPair, (0b0111111000110000111110, 0b0010111000100000111101), RWI_W, 0, 2), // #508
+INST(Fmaxv_v, FSimdSV, (0b0010111000110000111110), RWI_W, 0, 1), // #509
+INST(Fmin_v, FSimdVVV, (0b0001111000100000010110, kHF_A, 0b0000111010100000111101, kHF_C), RWI_W, 0, 7), // #510
+INST(Fminnm_v, FSimdVVV, (0b0001111000100000011110, kHF_A, 0b0000111010100000110001, kHF_C), RWI_W, 0, 8), // #511
+INST(Fminnmp_v, FSimdPair, (0b0111111010110000110010, 0b0010111010100000110001), RWI_W, 0, 3), // #512
+INST(Fminnmv_v, FSimdSV, (0b0010111010110000110010), RWI_W, 0, 2), // #513
+INST(Fminp_v, FSimdPair, (0b0111111010110000111110, 0b0010111010100000111101), RWI_W, 0, 4), // #514
+INST(Fminv_v, FSimdSV, (0b0010111010110000111110), RWI_W, 0, 3), // #515
+INST(Fmla_v, FSimdVVVe, (0b0000000000000000000000, kHF_N, 0b0000111000100000110011, 0b0000111110000000000100), RWI_X, F!(VH0_15), 0), // #516
+INST(Fmlal_v, SimdFmlal, (0b0000111000100000111011, 0b0000111110000000000000, 1, kET_S, kET_H, kET_H), RWI_X, F!(VH0_15), 2), // #517
+INST(Fmlal2_v, SimdFmlal, (0b0010111000100000110011, 0b0010111110000000100000, 1, kET_S, kET_H, kET_H), RWI_X, F!(VH0_15), 3), // #518
+INST(Fmls_v, FSimdVVVe, (0b0000000000000000000000, kHF_N, 0b0000111010100000110011, 0b0000111110000000010100), RWI_X, F!(VH0_15), 1), // #519
+INST(Fmlsl_v, SimdFmlal, (0b0000111010100000111011, 0b0000111110000000010000, 1, kET_S, kET_H, kET_H), RWI_X, F!(VH0_15), 4), // #520
+INST(Fmlsl2_v, SimdFmlal, (0b0010111010100000110011, 0b0010111110000000110000, 1, kET_S, kET_H, kET_H), RWI_X, F!(VH0_15), 5), // #521
+INST(Fmov_v, SimdFmov, (_), RWI_W, 0, 0), // #522
+INST(Fmsub_v, FSimdVVVV, (0b0001111100000000100000, kHF_A, 0b0000000000000000000000, kHF_N), RWI_W, 0, 1), // #523
+INST(Fmul_v, FSimdVVVe, (0b0001111000100000000010, kHF_A, 0b0010111000100000110111, 0b0000111110000000100100), RWI_W, F!(VH0_15), 2), // #524
+INST(Fmulx_v, FSimdVVVe, (0b0101111000100000110111, kHF_C, 0b0000111000100000110111, 0b0010111110000000100100), RWI_W, F!(VH0_15), 3), // #525
+INST(Fneg_v, FSimdVV, (0b0001111000100001010000, kHF_A, 0b0010111010100000111110, kHF_B), RWI_W, 0, 1), // #526
+INST(Fnmadd_v, FSimdVVVV, (0b0001111100100000000000, kHF_A, 0b0000000000000000000000, kHF_N), RWI_W, 0, 2), // #527
+INST(Fnmsub_v, FSimdVVVV, (0b0001111100100000100000, kHF_A, 0b0000000000000000000000, kHF_N), RWI_W, 0, 3), // #528
+INST(Fnmul_v, FSimdVVV, (0b0001111000100000100010, kHF_A, 0b0000000000000000000000, kHF_N), RWI_W, 0, 9), // #529
+INST(Frecpe_v, FSimdVV, (0b0101111010100001110110, kHF_B, 0b0000111010100001110110, kHF_B), RWI_W, 0, 2), // #530
+INST(Frecps_v, FSimdVVV, (0b0101111000100000111111, kHF_C, 0b0000111000100000111111, kHF_C), RWI_W, 0, 10), // #531
+INST(Frecpx_v, FSimdVV, (0b0101111010100001111110, kHF_B, 0b0000000000000000000000, kHF_N), RWI_W, 0, 3), // #532
+INST(Frint32x_v, FSimdVV, (0b0001111000101000110000, kHF_N, 0b0010111000100001111010, kHF_N), RWI_W, 0, 4), // #533
+INST(Frint32z_v, FSimdVV, (0b0001111000101000010000, kHF_N, 0b0000111000100001111010, kHF_N), RWI_W, 0, 5), // #534
+INST(Frint64x_v, FSimdVV, (0b0001111000101001110000, kHF_N, 0b0010111000100001111110, kHF_N), RWI_W, 0, 6), // #535
+INST(Frint64z_v, FSimdVV, (0b0001111000101001010000, kHF_N, 0b0000111000100001111110, kHF_N), RWI_W, 0, 7), // #536
+INST(Frinta_v, FSimdVV, (0b0001111000100110010000, kHF_A, 0b0010111000100001100010, kHF_B), RWI_W, 0, 8), // #537
+INST(Frinti_v, FSimdVV, (0b0001111000100111110000, kHF_A, 0b0010111010100001100110, kHF_B), RWI_W, 0, 9), // #538
+INST(Frintm_v, FSimdVV, (0b0001111000100101010000, kHF_A, 0b0000111000100001100110, kHF_B), RWI_W, 0, 10), // #539
+INST(Frintn_v, FSimdVV, (0b0001111000100100010000, kHF_A, 0b0000111000100001100010, kHF_B), RWI_W, 0, 11), // #540
+INST(Frintp_v, FSimdVV, (0b0001111000100100110000, kHF_A, 0b0000111010100001100010, kHF_B), RWI_W, 0, 12), // #541
+INST(Frintx_v, FSimdVV, (0b0001111000100111010000, kHF_A, 0b0010111000100001100110, kHF_B), RWI_W, 0, 13), // #542
+INST(Frintz_v, FSimdVV, (0b0001111000100101110000, kHF_A, 0b0000111010100001100110, kHF_B), RWI_W, 0, 14), // #543
+INST(Frsqrte_v, FSimdVV, (0b0111111010100001110110, kHF_B, 0b0010111010100001110110, kHF_B), RWI_W, 0, 15), // #544
+INST(Frsqrts_v, FSimdVVV, (0b0101111010100000111111, kHF_C, 0b0000111010100000111111, kHF_C), RWI_W, 0, 11), // #545
+INST(Fsqrt_v, FSimdVV, (0b0001111000100001110000, kHF_A, 0b0010111010100001111110, kHF_B), RWI_W, 0, 16), // #546
+INST(Fsub_v, FSimdVVV, (0b0001111000100000001110, kHF_A, 0b0000111010100000110101, kHF_C), RWI_W, 0, 12), // #547
+INST(Ins_v, SimdIns, (_), RWI_X, 0, 0), // #548
+INST(Ld1_v, SimdLdNStN, (0b0000110101000000000000, 0b0000110001000000001000, 1, 0), RWI_LDN, F!(Consecutive), 0), // #549
+INST(Ld1r_v, SimdLdNStN, (0b0000110101000000110000, 0b0000000000000000000000, 1, 1), RWI_LDN, F!(Consecutive), 1), // #550
+INST(Ld2_v, SimdLdNStN, (0b0000110101100000000000, 0b0000110001000000100000, 2, 0), RWI_LDN, F!(Consecutive), 2), // #551
+INST(Ld2r_v, SimdLdNStN, (0b0000110101100000110000, 0b0000000000000000000000, 2, 1), RWI_LDN, F!(Consecutive), 3), // #552
+INST(Ld3_v, SimdLdNStN, (0b0000110101000000001000, 0b0000110001000000010000, 3, 0), RWI_LDN, F!(Consecutive), 4), // #553
+INST(Ld3r_v, SimdLdNStN, (0b0000110101000000111000, 0b0000000000000000000000, 3, 1), RWI_LDN, F!(Consecutive), 5), // #554
+INST(Ld4_v, SimdLdNStN, (0b0000110101100000001000, 0b0000110001000000000000, 4, 0), RWI_LDN, F!(Consecutive), 6), // #555
+INST(Ld4r_v, SimdLdNStN, (0b0000110101100000111000, 0b0000000000000000000000, 4, 1), RWI_LDN, F!(Consecutive), 7), // #556
+INST(Ldnp_v, SimdLdpStp, (0b0010110001, 0b0000000000), RWI_WW, 0, 0), // #557
+INST(Ldp_v, SimdLdpStp, (0b0010110101, 0b0010110011), RWI_WW, 0, 1), // #558
+INST(Ldr_v, SimdLdSt, (0b0011110101, 0b00111100010, 0b00111100011, 0b00011100, InstId::Ldur_v), RWI_W, 0, 0), // #559
+INST(Ldur_v, SimdLdurStur, (0b0011110001000000000000), RWI_W, 0, 0), // #560
+INST(Mla_v, ISimdVVVe, (0b0000111000100000100101, kVO_V_BHS, 0b0010111100000000000000, kVO_V_HS), RWI_X, F!(VH0_15), 0), // #561
+INST(Mls_v, ISimdVVVe, (0b0010111000100000100101, kVO_V_BHS, 0b0010111100000000010000, kVO_V_HS), RWI_X, F!(VH0_15), 1), // #562
+INST(Mov_v, SimdMov, (_), RWI_W, 0, 0), // #563
+INST(Movi_v, SimdMoviMvni, (0b0000111100000000000001, 0), RWI_W, 0, 0), // #564
+INST(Mul_v, ISimdVVVe, (0b0000111000100000100111, kVO_V_BHS, 0b0000111100000000100000, kVO_V_HS), RWI_W, F!(VH0_15), 2), // #565
+INST(Mvn_v, ISimdVV, (0b0010111000100000010110, kVO_V_B), RWI_W, 0, 4), // #566
+INST(Mvni_v, SimdMoviMvni, (0b0000111100000000000001, 1), RWI_W, 0, 1), // #567
+INST(Neg_v, ISimdVV, (0b0010111000100000101110, kVO_V_Any), RWI_W, 0, 5), // #568
+INST(Not_v, ISimdVV, (0b0010111000100000010110, kVO_V_B), RWI_W, 0, 6), // #569
+INST(Orn_v, ISimdVVV, (0b0000111011100000000111, kVO_V_B), RWI_W, 0, 9), // #570
+INST(Orr_v, SimdBicOrr, (0b0000111010100000000111, 0b0000111100000000000001), RWI_W, 0, 1), // #571
+INST(Pmul_v, ISimdVVV, (0b0010111000100000100111, kVO_V_B), RWI_W, 0, 10), // #572
+INST(Pmull_v, ISimdVVV, (0b0000111000100000111000, kVO_V_B8D1), RWI_W, F!(Long), 11), // #573
+INST(Pmull2_v, ISimdVVV, (0b0100111000100000111000, kVO_V_B16D2), RWI_W, F!(Long), 12), // #574
+INST(Raddhn_v, ISimdVVV, (0b0010111000100000010000, kVO_V_B8H4S2), RWI_W, F!(Narrow), 13), // #575
+INST(Raddhn2_v, ISimdVVV, (0b0110111000100000010000, kVO_V_B16H8S4), RWI_X, F!(Narrow), 14), // #576
+INST(Rax1_v, ISimdVVV, (0b1100111001100000100011, kVO_V_D2), RWI_W, 0, 15), // #577
+INST(Rbit_v, ISimdVV, (0b0010111001100000010110, kVO_V_B), RWI_W, 0, 7), // #578
+INST(Rev16_v, ISimdVV, (0b0000111000100000000110, kVO_V_B), RWI_W, 0, 8), // #579
+INST(Rev32_v, ISimdVV, (0b0010111000100000000010, kVO_V_BH), RWI_W, 0, 9), // #580
+INST(Rev64_v, ISimdVV, (0b0000111000100000000010, kVO_V_BHS), RWI_W, 0, 10), // #581
+INST(Rshrn_v, SimdShift, (0b0000000000000000000000, 0b0000111100000000100011, 1, kVO_V_B8H4S2), RWI_W, F!(Narrow), 0), // #582
+INST(Rshrn2_v, SimdShift, (0b0000000000000000000000, 0b0100111100000000100011, 1, kVO_V_B16H8S4), RWI_X, F!(Narrow), 1), // #583
+INST(Rsubhn_v, ISimdVVV, (0b0010111000100000011000, kVO_V_B8H4S2), RWI_W, F!(Narrow), 16), // #584
+INST(Rsubhn2_v, ISimdVVV, (0b0110111000100000011000, kVO_V_B16H8S4), RWI_X, F!(Narrow), 17), // #585
+INST(Saba_v, ISimdVVV, (0b0000111000100000011111, kVO_V_BHS), RWI_X, 0, 18), // #586
+INST(Sabal_v, ISimdVVV, (0b0000111000100000010100, kVO_V_B8H4S2), RWI_X, F!(Long), 19), // #587
+INST(Sabal2_v, ISimdVVV, (0b0100111000100000010100, kVO_V_B16H8S4), RWI_X, F!(Long), 20), // #588
+INST(Sabd_v, ISimdVVV, (0b0000111000100000011101, kVO_V_BHS), RWI_W, 0, 21), // #589
+INST(Sabdl_v, ISimdVVV, (0b0000111000100000011100, kVO_V_B8H4S2), RWI_W, F!(Long), 22), // #590
+INST(Sabdl2_v, ISimdVVV, (0b0100111000100000011100, kVO_V_B16H8S4), RWI_W, F!(Long), 23), // #591
+INST(Sadalp_v, ISimdVV, (0b0000111000100000011010, kVO_V_BHS), RWI_X, F!(Long) | F!(Pair), 11), // #592
+INST(Saddl_v, ISimdVVV, (0b0000111000100000000000, kVO_V_B8H4S2), RWI_W, F!(Long), 24), // #593
+INST(Saddl2_v, ISimdVVV, (0b0100111000100000000000, kVO_V_B16H8S4), RWI_W, F!(Long), 25), // #594
+INST(Saddlp_v, ISimdVV, (0b0000111000100000001010, kVO_V_BHS), RWI_W, F!(Long) | F!(Pair), 12), // #595
+INST(Saddlv_v, ISimdSV, (0b0000111000110000001110, kVO_V_BH_4S), RWI_W, F!(Long), 1), // #596
+INST(Saddw_v, ISimdWWV, (0b0000111000100000000100, kVO_V_B8H4S2), RWI_W, 0, 0), // #597
+INST(Saddw2_v, ISimdWWV, (0b0000111000100000000100, kVO_V_B16H8S4), RWI_W, 0, 1), // #598
+INST(Scvtf_v, SimdFcvtSV, (0b0000111000100001110110, 0b0000111100000000111001, 0b0001111000100010000000, 0), RWI_W, 0, 10), // #599
+INST(Sdot_v, SimdDot, (0b0000111010000000100101, 0b0000111110000000111000, kET_S, kET_B, kET_4B), RWI_X, 0, 1), // #600
+INST(Sha1c_v, ISimdVVVx, (0b0101111000000000000000, kOp_Q, kOp_S, kOp_V4S), RWI_X, 0, 1), // #601
+INST(Sha1h_v, ISimdVVx, (0b0101111000101000000010, kOp_S, kOp_S), RWI_W, 0, 8), // #602
+INST(Sha1m_v, ISimdVVVx, (0b0101111000000000001000, kOp_Q, kOp_S, kOp_V4S), RWI_X, 0, 2), // #603
+INST(Sha1p_v, ISimdVVVx, (0b0101111000000000000100, kOp_Q, kOp_S, kOp_V4S), RWI_X, 0, 3), // #604
+INST(Sha1su0_v, ISimdVVVx, (0b0101111000000000001100, kOp_V4S, kOp_V4S, kOp_V4S), RWI_X, 0, 4), // #605
+INST(Sha1su1_v, ISimdVVx, (0b0101111000101000000110, kOp_V4S, kOp_V4S), RWI_X, 0, 9), // #606
+INST(Sha256h_v, ISimdVVVx, (0b0101111000000000010000, kOp_Q, kOp_Q, kOp_V4S), RWI_X, 0, 5), // #607
+INST(Sha256h2_v, ISimdVVVx, (0b0101111000000000010100, kOp_Q, kOp_Q, kOp_V4S), RWI_X, 0, 6), // #608
+INST(Sha256su0_v, ISimdVVx, (0b0101111000101000001010, kOp_V4S, kOp_V4S), RWI_X, 0, 10), // #609
+INST(Sha256su1_v, ISimdVVVx, (0b0101111000000000011000, kOp_V4S, kOp_V4S, kOp_V4S), RWI_X, 0, 7), // #610
+INST(Sha512h_v, ISimdVVVx, (0b1100111001100000100000, kOp_Q, kOp_Q, kOp_V2D), RWI_X, 0, 8), // #611
+INST(Sha512h2_v, ISimdVVVx, (0b1100111001100000100001, kOp_Q, kOp_Q, kOp_V2D), RWI_X, 0, 9), // #612
+INST(Sha512su0_v, ISimdVVx, (0b1100111011000000100000, kOp_V2D, kOp_V2D), RWI_X, 0, 11), // #613
+INST(Sha512su1_v, ISimdVVVx, (0b1100111001100000100010, kOp_V2D, kOp_V2D, kOp_V2D), RWI_X, 0, 10), // #614
+INST(Shadd_v, ISimdVVV, (0b0000111000100000000001, kVO_V_BHS), RWI_W, 0, 26), // #615
+INST(Shl_v, SimdShift, (0b0000000000000000000000, 0b0000111100000000010101, 0, kVO_V_Any), RWI_W, 0, 2), // #616
+INST(Shll_v, SimdShiftES, (0b0010111000100001001110, kVO_V_B8H4S2), RWI_W, F!(Long), 0), // #617
+INST(Shll2_v, SimdShiftES, (0b0110111000100001001110, kVO_V_B16H8S4), RWI_W, F!(Long), 1), // #618
+INST(Shrn_v, SimdShift, (0b0000000000000000000000, 0b0000111100000000100001, 1, kVO_V_B8H4S2), RWI_W, F!(Narrow), 3), // #619
+INST(Shrn2_v, SimdShift, (0b0000000000000000000000, 0b0100111100000000100001, 1, kVO_V_B16H8S4), RWI_X, F!(Narrow), 4), // #620
+INST(Shsub_v, ISimdVVV, (0b0000111000100000001001, kVO_V_BHS), RWI_W, 0, 27), // #621
+INST(Sli_v, SimdShift, (0b0000000000000000000000, 0b0010111100000000010101, 0, kVO_V_Any), RWI_X, 0, 5), // #622
+INST(Sm3partw1_v, ISimdVVVx, (0b1100111001100000110000, kOp_V4S, kOp_V4S, kOp_V4S), RWI_X, 0, 11), // #623
+INST(Sm3partw2_v, ISimdVVVx, (0b1100111001100000110001, kOp_V4S, kOp_V4S, kOp_V4S), RWI_X, 0, 12), // #624
+INST(Sm3ss1_v, ISimdVVVVx, (0b1100111001000000000000, kOp_V4S, kOp_V4S, kOp_V4S, kOp_V4S), RWI_W, 0, 0), // #625
+INST(Sm3tt1a_v, SimdSm3tt, (0b1100111001000000100000), RWI_X, 0, 0), // #626
+INST(Sm3tt1b_v, SimdSm3tt, (0b1100111001000000100001), RWI_X, 0, 1), // #627
+INST(Sm3tt2a_v, SimdSm3tt, (0b1100111001000000100010), RWI_X, 0, 2), // #628
+INST(Sm3tt2b_v, SimdSm3tt, (0b1100111001000000100011), RWI_X, 0, 3), // #629
+INST(Sm4e_v, ISimdVVx, (0b1100111011000000100001, kOp_V4S, kOp_V4S), RWI_X, 0, 12), // #630
+INST(Sm4ekey_v, ISimdVVVx, (0b1100111001100000110010, kOp_V4S, kOp_V4S, kOp_V4S), RWI_X, 0, 13), // #631
+INST(Smax_v, ISimdVVV, (0b0000111000100000011001, kVO_V_BHS), RWI_W, 0, 28), // #632
+INST(Smaxp_v, ISimdVVV, (0b0000111000100000101001, kVO_V_BHS), RWI_W, 0, 29), // #633
+INST(Smaxv_v, ISimdSV, (0b0000111000110000101010, kVO_V_BH_4S), RWI_W, 0, 2), // #634
+INST(Smin_v, ISimdVVV, (0b0000111000100000011011, kVO_V_BHS), RWI_W, 0, 30), // #635
+INST(Sminp_v, ISimdVVV, (0b0000111000100000101011, kVO_V_BHS), RWI_W, 0, 31), // #636
+INST(Sminv_v, ISimdSV, (0b0000111000110001101010, kVO_V_BH_4S), RWI_W, 0, 3), // #637
+INST(Smlal_v, ISimdVVVe, (0b0000111000100000100000, kVO_V_B8H4S2, 0b0000111100000000001000, kVO_V_H4S2), RWI_X, F!(Long) | F!(VH0_15), 3), // #638
+INST(Smlal2_v, ISimdVVVe, (0b0100111000100000100000, kVO_V_B16H8S4, 0b0100111100000000001000, kVO_V_H8S4), RWI_X, F!(Long) | F!(VH0_15), 4), // #639
+INST(Smlsl_v, ISimdVVVe, (0b0000111000100000101000, kVO_V_B8H4S2, 0b0000111100000000011000, kVO_V_H4S2), RWI_X, F!(Long) | F!(VH0_15), 5), // #640
+INST(Smlsl2_v, ISimdVVVe, (0b0100111000100000101000, kVO_V_B16H8S4, 0b0100111100000000011000, kVO_V_H8S4), RWI_X, F!(Long) | F!(VH0_15), 6), // #641
+INST(Smmla_v, ISimdVVVx, (0b0100111010000000101001, kOp_V4S, kOp_V16B, kOp_V16B), RWI_X, 0, 14), // #642
+INST(Smov_v, SimdSmovUmov, (0b0000111000000000001011, kVO_V_BHS, 1), RWI_W, 0, 0), // #643
+INST(Smull_v, ISimdVVVe, (0b0000111000100000110000, kVO_V_B8H4S2, 0b0000111100000000101000, kVO_V_H4S2), RWI_W, F!(Long) | F!(VH0_15), 7), // #644
+INST(Smull2_v, ISimdVVVe, (0b0100111000100000110000, kVO_V_B16H8S4, 0b0100111100000000101000, kVO_V_H8S4), RWI_W, F!(Long) | F!(VH0_15), 8), // #645
+INST(Sqabs_v, ISimdVV, (0b0000111000100000011110, kVO_SV_Any), RWI_W, 0, 13), // #646
+INST(Sqadd_v, ISimdVVV, (0b0000111000100000000011, kVO_SV_Any), RWI_W, 0, 32), // #647
+INST(Sqdmlal_v, ISimdVVVe, (0b0000111000100000100100, kVO_SV_BHS, 0b0000111100000000001100, kVO_V_H4S2), RWI_X, F!(Long) | F!(VH0_15), 9), // #648
+INST(Sqdmlal2_v, ISimdVVVe, (0b0100111000100000100100, kVO_V_B16H8S4, 0b0100111100000000001100, kVO_V_H8S4), RWI_X, F!(Long) | F!(VH0_15), 10), // #649
+INST(Sqdmlsl_v, ISimdVVVe, (0b0000111000100000101100, kVO_SV_BHS, 0b0000111100000000011100, kVO_V_H4S2), RWI_X, F!(Long) | F!(VH0_15), 11), // #650
+INST(Sqdmlsl2_v, ISimdVVVe, (0b0100111000100000101100, kVO_V_B16H8S4, 0b0100111100000000011100, kVO_V_H8S4), RWI_X, F!(Long) | F!(VH0_15), 12), // #651
+INST(Sqdmulh_v, ISimdVVVe, (0b0000111000100000101101, kVO_SV_HS, 0b0000111100000000110000, kVO_SV_HS), RWI_W, F!(VH0_15), 13), // #652
+INST(Sqdmull_v, ISimdVVVe, (0b0000111000100000110100, kVO_SV_BHS, 0b0000111100000000101100, kVO_V_H4S2), RWI_W, F!(Long) | F!(VH0_15), 14), // #653
+INST(Sqdmull2_v, ISimdVVVe, (0b0100111000100000110100, kVO_V_B16H8S4, 0b0100111100000000101100, kVO_V_H8S4), RWI_W, F!(Long) | F!(VH0_15), 15), // #654
+INST(Sqneg_v, ISimdVV, (0b0010111000100000011110, kVO_SV_Any), RWI_W, 0, 14), // #655
+INST(Sqrdmlah_v, ISimdVVVe, (0b0010111000000000100001, kVO_SV_HS, 0b0010111100000000110100, kVO_SV_HS), RWI_X, F!(VH0_15), 16), // #656
+INST(Sqrdmlsh_v, ISimdVVVe, (0b0010111000000000100011, kVO_SV_HS, 0b0010111100000000111100, kVO_SV_HS), RWI_X, F!(VH0_15), 17), // #657
+INST(Sqrdmulh_v, ISimdVVVe, (0b0010111000100000101101, kVO_SV_HS, 0b0000111100000000110100, kVO_SV_HS), RWI_W, F!(VH0_15), 18), // #658
+INST(Sqrshl_v, SimdShift, (0b0000111000100000010111, 0b0000000000000000000000, 1, kVO_SV_Any), RWI_W, 0, 6), // #659
+INST(Sqrshrn_v, SimdShift, (0b0000000000000000000000, 0b0000111100000000100111, 1, kVO_SV_B8H4S2), RWI_W, F!(Narrow), 7), // #660
+INST(Sqrshrn2_v, SimdShift, (0b0000000000000000000000, 0b0100111100000000100111, 1, kVO_V_B16H8S4), RWI_X, F!(Narrow), 8), // #661
+INST(Sqrshrun_v, SimdShift, (0b0000000000000000000000, 0b0010111100000000100011, 1, kVO_SV_B8H4S2), RWI_W, F!(Narrow), 9), // #662
+INST(Sqrshrun2_v, SimdShift, (0b0000000000000000000000, 0b0110111100000000100011, 1, kVO_V_B16H8S4), RWI_X, F!(Narrow), 10), // #663
+INST(Sqshl_v, SimdShift, (0b0000111000100000010011, 0b0000111100000000011101, 0, kVO_SV_Any), RWI_W, 0, 11), // #664
+INST(Sqshlu_v, SimdShift, (0b0000000000000000000000, 0b0010111100000000011001, 0, kVO_SV_Any), RWI_W, 0, 12), // #665
+INST(Sqshrn_v, SimdShift, (0b0000000000000000000000, 0b0000111100000000100101, 1, kVO_SV_B8H4S2), RWI_W, F!(Narrow), 13), // #666
+INST(Sqshrn2_v, SimdShift, (0b0000000000000000000000, 0b0100111100000000100101, 1, kVO_V_B16H8S4), RWI_X, F!(Narrow), 14), // #667
+INST(Sqshrun_v, SimdShift, (0b0000000000000000000000, 0b0010111100000000100001, 1, kVO_SV_B8H4S2), RWI_W, F!(Narrow), 15), // #668
+INST(Sqshrun2_v, SimdShift, (0b0000000000000000000000, 0b0110111100000000100001, 1, kVO_V_B16H8S4), RWI_X, F!(Narrow), 16), // #669
+INST(Sqsub_v, ISimdVVV, (0b0000111000100000001011, kVO_SV_Any), RWI_W, 0, 33), // #670
+INST(Sqxtn_v, ISimdVV, (0b0000111000100001010010, kVO_SV_B8H4S2), RWI_W, F!(Narrow), 15), // #671
+INST(Sqxtn2_v, ISimdVV, (0b0100111000100001010010, kVO_V_B16H8S4), RWI_X, F!(Narrow), 16), // #672
+INST(Sqxtun_v, ISimdVV, (0b0010111000100001001010, kVO_SV_B8H4S2), RWI_W, F!(Narrow), 17), // #673
+INST(Sqxtun2_v, ISimdVV, (0b0110111000100001001010, kVO_V_B16H8S4), RWI_X, F!(Narrow), 18), // #674
+INST(Srhadd_v, ISimdVVV, (0b0000111000100000000101, kVO_V_BHS), RWI_W, 0, 34), // #675
+INST(Sri_v, SimdShift, (0b0000000000000000000000, 0b0010111100000000010001, 1, kVO_V_Any), RWI_W, 0, 17), // #676
+INST(Srshl_v, SimdShift, (0b0000111000100000010101, 0b0000000000000000000000, 0, kVO_V_Any), RWI_W, 0, 18), // #677
+INST(Srshr_v, SimdShift, (0b0000000000000000000000, 0b0000111100000000001001, 1, kVO_V_Any), RWI_W, 0, 19), // #678
+INST(Srsra_v, SimdShift, (0b0000000000000000000000, 0b0000111100000000001101, 1, kVO_V_Any), RWI_X, 0, 20), // #679
+INST(Sshl_v, SimdShift, (0b0000111000100000010001, 0b0000000000000000000000, 0, kVO_V_Any), RWI_W, 0, 21), // #680
+INST(Sshll_v, SimdShift, (0b0000000000000000000000, 0b0000111100000000101001, 0, kVO_V_B8H4S2), RWI_W, F!(Long), 22), // #681
+INST(Sshll2_v, SimdShift, (0b0000000000000000000000, 0b0100111100000000101001, 0, kVO_V_B16H8S4), RWI_W, F!(Long), 23), // #682
+INST(Sshr_v, SimdShift, (0b0000000000000000000000, 0b0000111100000000000001, 1, kVO_V_Any), RWI_W, 0, 24), // #683
+INST(Ssra_v, SimdShift, (0b0000000000000000000000, 0b0000111100000000000101, 1, kVO_V_Any), RWI_X, 0, 25), // #684
+INST(Ssubl_v, ISimdVVV, (0b0000111000100000001000, kVO_V_B8H4S2), RWI_W, F!(Long), 35), // #685
+INST(Ssubl2_v, ISimdVVV, (0b0100111000100000001000, kVO_V_B16H8S4), RWI_W, F!(Long), 36), // #686
+INST(Ssubw_v, ISimdWWV, (0b0000111000100000001100, kVO_V_B8H4S2), RWI_W, 0, 2), // #687
+INST(Ssubw2_v, ISimdWWV, (0b0000111000100000001100, kVO_V_B16H8S4), RWI_X, 0, 3), // #688
+INST(St1_v, SimdLdNStN, (0b0000110100000000000000, 0b0000110000000000001000, 1, 0), RWI_STN, F!(Consecutive), 8), // #689
+INST(St2_v, SimdLdNStN, (0b0000110100100000000000, 0b0000110000000000100000, 2, 0), RWI_STN, F!(Consecutive), 9), // #690
+INST(St3_v, SimdLdNStN, (0b0000110100000000001000, 0b0000110000000000010000, 3, 0), RWI_STN, F!(Consecutive), 10), // #691
+INST(St4_v, SimdLdNStN, (0b0000110100100000001000, 0b0000110000000000000000, 4, 0), RWI_STN, F!(Consecutive), 11), // #692
+INST(Stnp_v, SimdLdpStp, (0b0010110000, 0b0000000000), RWI_RRW, 0, 2), // #693
+INST(Stp_v, SimdLdpStp, (0b0010110100, 0b0010110010), RWI_RRW, 0, 3), // #694
+INST(Str_v, SimdLdSt, (0b0011110100, 0b00111100000, 0b00111100001, 0b00000000, InstId::Stur_v), RWI_RW, 0, 1), // #695
+INST(Stur_v, SimdLdurStur, (0b0011110000000000000000), RWI_RW, 0, 1), // #696
+INST(Sub_v, ISimdVVV, (0b0010111000100000100001, kVO_V_Any), RWI_W, 0, 37), // #697
+INST(Subhn_v, ISimdVVV, (0b0000111000100000011000, kVO_V_B8H4S2), RWI_W, F!(Narrow), 38), // #698
+INST(Subhn2_v, ISimdVVV, (0b0000111000100000011000, kVO_V_B16H8S4), RWI_X, F!(Narrow), 39), // #699
+INST(Sudot_v, SimdDot, (0b0000000000000000000000, 0b0000111100000000111100, kET_S, kET_B, kET_4B), RWI_X, 0, 2), // #700
+INST(Suqadd_v, ISimdVV, (0b0000111000100000001110, kVO_SV_Any), RWI_X, 0, 19), // #701
+INST(Sxtl_v, SimdSxtlUxtl, (0b0000111100000000101001, kVO_V_B8H4S2), RWI_W, F!(Long), 0), // #702
+INST(Sxtl2_v, SimdSxtlUxtl, (0b0100111100000000101001, kVO_V_B16H8S4), RWI_W, F!(Long), 1), // #703
+INST(Tbl_v, SimdTblTbx, (0b0000111000000000000000), RWI_W, 0, 0), // #704
+INST(Tbx_v, SimdTblTbx, (0b0000111000000000000100), RWI_W, 0, 1), // #705
+INST(Trn1_v, ISimdVVV, (0b0000111000000000001010, kVO_V_BHS_D2), RWI_W, 0, 40), // #706
+INST(Trn2_v, ISimdVVV, (0b0000111000000000011010, kVO_V_BHS_D2), RWI_W, 0, 41), // #707
+INST(Uaba_v, ISimdVVV, (0b0010111000100000011111, kVO_V_BHS), RWI_X, 0, 42), // #708
+INST(Uabal_v, ISimdVVV, (0b0010111000100000010100, kVO_V_B8H4S2), RWI_X, F!(Long), 43), // #709
+INST(Uabal2_v, ISimdVVV, (0b0110111000100000010100, kVO_V_B16H8S4), RWI_X, F!(Long), 44), // #710
+INST(Uabd_v, ISimdVVV, (0b0010111000100000011101, kVO_V_BHS), RWI_W, 0, 45), // #711
+INST(Uabdl_v, ISimdVVV, (0b0010111000100000011100, kVO_V_B8H4S2), RWI_W, F!(Long), 46), // #712
+INST(Uabdl2_v, ISimdVVV, (0b0110111000100000011100, kVO_V_B16H8S4), RWI_W, F!(Long), 47), // #713
+INST(Uadalp_v, ISimdVV, (0b0010111000100000011010, kVO_V_BHS), RWI_X, F!(Long) | F!(Pair), 20), // #714
+INST(Uaddl_v, ISimdVVV, (0b0010111000100000000000, kVO_V_B8H4S2), RWI_W, F!(Long), 48), // #715
+INST(Uaddl2_v, ISimdVVV, (0b0110111000100000000000, kVO_V_B16H8S4), RWI_W, F!(Long), 49), // #716
+INST(Uaddlp_v, ISimdVV, (0b0010111000100000001010, kVO_V_BHS), RWI_W, F!(Long) | F!(Pair), 21), // #717
+INST(Uaddlv_v, ISimdSV, (0b0010111000110000001110, kVO_V_BH_4S), RWI_W, F!(Long), 4), // #718
+INST(Uaddw_v, ISimdWWV, (0b0010111000100000000100, kVO_V_B8H4S2), RWI_W, 0, 4), // #719
+INST(Uaddw2_v, ISimdWWV, (0b0010111000100000000100, kVO_V_B16H8S4), RWI_W, 0, 5), // #720
+INST(Ucvtf_v, SimdFcvtSV, (0b0010111000100001110110, 0b0010111100000000111001, 0b0001111000100011000000, 0), RWI_W, 0, 11), // #721
+INST(Udot_v, SimdDot, (0b0010111010000000100101, 0b0010111110000000111000, kET_S, kET_B, kET_4B), RWI_X, 0, 3), // #722
+INST(Uhadd_v, ISimdVVV, (0b0010111000100000000001, kVO_V_BHS), RWI_W, 0, 50), // #723
+INST(Uhsub_v, ISimdVVV, (0b0010111000100000001001, kVO_V_BHS), RWI_W, 0, 51), // #724
+INST(Umax_v, ISimdVVV, (0b0010111000100000011001, kVO_V_BHS), RWI_W, 0, 52), // #725
+INST(Umaxp_v, ISimdVVV, (0b0010111000100000101001, kVO_V_BHS), RWI_W, 0, 53), // #726
+INST(Umaxv_v, ISimdSV, (0b0010111000110000101010, kVO_V_BH_4S), RWI_W, 0, 5), // #727
+INST(Umin_v, ISimdVVV, (0b0010111000100000011011, kVO_V_BHS), RWI_W, 0, 54), // #728
+INST(Uminp_v, ISimdVVV, (0b0010111000100000101011, kVO_V_BHS), RWI_W, 0, 55), // #729
+INST(Uminv_v, ISimdSV, (0b0010111000110001101010, kVO_V_BH_4S), RWI_W, 0, 6), // #730
+INST(Umlal_v, ISimdVVVe, (0b0010111000100000100000, kVO_V_B8H4S2, 0b0010111100000000001000, kVO_V_H4S2), RWI_X, F!(Long) | F!(VH0_15), 19), // #731
+INST(Umlal2_v, ISimdVVVe, (0b0110111000100000100000, kVO_V_B16H8S4, 0b0010111100000000001000, kVO_V_H8S4), RWI_X, F!(Long) | F!(VH0_15), 20), // #732
+INST(Umlsl_v, ISimdVVVe, (0b0010111000100000101000, kVO_V_B8H4S2, 0b0010111100000000011000, kVO_V_H4S2), RWI_X, F!(Long) | F!(VH0_15), 21), // #733
+INST(Umlsl2_v, ISimdVVVe, (0b0110111000100000101000, kVO_V_B16H8S4, 0b0110111100000000011000, kVO_V_H8S4), RWI_X, F!(Long) | F!(VH0_15), 22), // #734
+INST(Ummla_v, ISimdVVVx, (0b0110111010000000101001, kOp_V4S, kOp_V16B, kOp_V16B), RWI_X, 0, 15), // #735
+INST(Umov_v, SimdSmovUmov, (0b0000111000000000001111, kVO_V_Any, 0), RWI_W, 0, 1), // #736
+INST(Umull_v, ISimdVVVe, (0b0010111000100000110000, kVO_V_B8H4S2, 0b0010111100000000101000, kVO_V_H4S2), RWI_W, F!(Long) | F!(VH0_15), 23), // #737
+INST(Umull2_v, ISimdVVVe, (0b0110111000100000110000, kVO_V_B16H8S4, 0b0110111100000000101000, kVO_V_H8S4), RWI_W, F!(Long) | F!(VH0_15), 24), // #738
+INST(Uqadd_v, ISimdVVV, (0b0010111000100000000011, kVO_SV_Any), RWI_W, 0, 56), // #739
+INST(Uqrshl_v, SimdShift, (0b0010111000100000010111, 0b0000000000000000000000, 0, kVO_SV_Any), RWI_W, 0, 26), // #740
+INST(Uqrshrn_v, SimdShift, (0b0000000000000000000000, 0b0010111100000000100111, 1, kVO_SV_B8H4S2), RWI_W, F!(Narrow), 27), // #741
+INST(Uqrshrn2_v, SimdShift, (0b0000000000000000000000, 0b0110111100000000100111, 1, kVO_V_B16H8S4), RWI_X, F!(Narrow), 28), // #742
+INST(Uqshl_v, SimdShift, (0b0010111000100000010011, 0b0010111100000000011101, 0, kVO_SV_Any), RWI_W, 0, 29), // #743
+INST(Uqshrn_v, SimdShift, (0b0000000000000000000000, 0b0010111100000000100101, 1, kVO_SV_B8H4S2), RWI_W, F!(Narrow), 30), // #744
+INST(Uqshrn2_v, SimdShift, (0b0000000000000000000000, 0b0110111100000000100101, 1, kVO_V_B16H8S4), RWI_X, F!(Narrow), 31), // #745
+INST(Uqsub_v, ISimdVVV, (0b0010111000100000001011, kVO_SV_Any), RWI_W, 0, 57), // #746
+INST(Uqxtn_v, ISimdVV, (0b0010111000100001010010, kVO_SV_B8H4S2), RWI_W, F!(Narrow), 22), // #747
+INST(Uqxtn2_v, ISimdVV, (0b0110111000100001010010, kVO_V_B16H8S4), RWI_X, F!(Narrow), 23), // #748
+INST(Urecpe_v, ISimdVV, (0b0000111010100001110010, kVO_V_S), RWI_W, 0, 24), // #749
+INST(Urhadd_v, ISimdVVV, (0b0010111000100000000101, kVO_V_BHS), RWI_W, 0, 58), // #750
+INST(Urshl_v, SimdShift, (0b0010111000100000010101, 0b0000000000000000000000, 0, kVO_V_Any), RWI_W, 0, 32), // #751
+INST(Urshr_v, SimdShift, (0b0000000000000000000000, 0b0010111100000000001001, 1, kVO_V_Any), RWI_W, 0, 33), // #752
+INST(Ursqrte_v, ISimdVV, (0b0010111010100001110010, kVO_V_S), RWI_W, 0, 25), // #753
+INST(Ursra_v, SimdShift, (0b0000000000000000000000, 0b0010111100000000001101, 1, kVO_V_Any), RWI_X, 0, 34), // #754
+INST(Usdot_v, SimdDot, (0b0000111010000000100111, 0b0000111110000000111100, kET_S, kET_B, kET_4B), RWI_X, 0, 4), // #755
+INST(Ushl_v, SimdShift, (0b0010111000100000010001, 0b0000000000000000000000, 0, kVO_V_Any), RWI_W, 0, 35), // #756
+INST(Ushll_v, SimdShift, (0b0000000000000000000000, 0b0010111100000000101001, 0, kVO_V_B8H4S2), RWI_W, F!(Long), 36), // #757
+INST(Ushll2_v, SimdShift, (0b0000000000000000000000, 0b0110111100000000101001, 0, kVO_V_B16H8S4), RWI_W, F!(Long), 37), // #758
+INST(Ushr_v, SimdShift, (0b0000000000000000000000, 0b0010111100000000000001, 1, kVO_V_Any), RWI_W, 0, 38), // #759
+INST(Usmmla_v, ISimdVVVx, (0b0100111010000000101011, kOp_V4S, kOp_V16B, kOp_V16B), RWI_X, 0, 16), // #760
+INST(Usqadd_v, ISimdVV, (0b0010111000100000001110, kVO_SV_Any), RWI_X, 0, 26), // #761
+INST(Usra_v, SimdShift, (0b0000000000000000000000, 0b0010111100000000000101, 1, kVO_V_Any), RWI_X, 0, 39), // #762
+INST(Usubl_v, ISimdVVV, (0b0010111000100000001000, kVO_V_B8H4S2), RWI_W, F!(Long), 59), // #763
+INST(Usubl2_v, ISimdVVV, (0b0110111000100000001000, kVO_V_B16H8S4), RWI_W, F!(Long), 60), // #764
+INST(Usubw_v, ISimdWWV, (0b0010111000100000001100, kVO_V_B8H4S2), RWI_W, 0, 6), // #765
+INST(Usubw2_v, ISimdWWV, (0b0010111000100000001100, kVO_V_B16H8S4), RWI_W, 0, 7), // #766
+INST(Uxtl_v, SimdSxtlUxtl, (0b0010111100000000101001, kVO_V_B8H4S2), RWI_W, F!(Long), 2), // #767
+INST(Uxtl2_v, SimdSxtlUxtl, (0b0110111100000000101001, kVO_V_B16H8S4), RWI_W, F!(Long), 3), // #768
+INST(Uzp1_v, ISimdVVV, (0b0000111000000000000110, kVO_V_BHS_D2), RWI_W, 0, 61), // #769
+INST(Uzp2_v, ISimdVVV, (0b0000111000000000010110, kVO_V_BHS_D2), RWI_W, 0, 62), // #770
+INST(Xar_v, ISimdVVVI, (0b1100111001100000100011, kVO_V_D2, 6, 10, 0), RWI_W, 0, 1), // #771
+INST(Xtn_v, ISimdVV, (0b0000111000100001001010, kVO_V_B8H4S2), RWI_W, F!(Narrow), 27), // #772
+INST(Xtn2_v, ISimdVV, (0b0100111000100001001010, kVO_V_B16H8S4), RWI_X, F!(Narrow), 28), // #773
+INST(Zip1_v, ISimdVVV, (0b0000111000000000001110, kVO_V_BHS_D2), RWI_W, 0, 63), // #774
+INST(Zip2_v, ISimdVVV, (0b0000111000000000011110, kVO_V_BHS_D2), RWI_W, 0, 64), // #775
 
   });
 
@@ -2406,178 +2406,178 @@ pub const BASE_ATOMIC_CASP: [BaseAtomicCasp; 4] = table_new!(BaseAtomicCasp, {
 pub const BASE_ATOMIC_OP: [BaseAtomicOp; 123] = table_new!(BaseAtomicOp, {
     { 0b1000100010100000011111, kWX, 30, 0 }, // cas
     { 0b1000100011100000011111, kWX, 30, 1 }, // casa
-    { 0b0000100011100000011111, kW , 0 , 1 }, // casab
-    { 0b0100100011100000011111, kW , 0 , 1 }, // casah
+    { 0b0000100011100000011111, kW, 0, 1 }, // casab
+    { 0b0100100011100000011111, kW, 0, 1 }, // casah
     { 0b1000100011100000111111, kWX, 30, 1 }, // casal
-    { 0b0000100011100000111111, kW , 0 , 1 }, // casalb
-    { 0b0100100011100000111111, kW , 0 , 1 }, // casalh
-    { 0b0000100010100000011111, kW , 0 , 0 }, // casb
-    { 0b0100100010100000011111, kW , 0 , 0 }, // cash
+    { 0b0000100011100000111111, kW, 0, 1 }, // casalb
+    { 0b0100100011100000111111, kW, 0, 1 }, // casalh
+    { 0b0000100010100000011111, kW, 0, 0 }, // casb
+    { 0b0100100010100000011111, kW, 0, 0 }, // cash
     { 0b1000100010100000111111, kWX, 30, 0 }, // casl
-    { 0b0000100010100000111111, kW , 0 , 0 }, // caslb
-    { 0b0100100010100000111111, kW , 0 , 0 }, // caslh
+    { 0b0000100010100000111111, kW, 0, 0 }, // caslb
+    { 0b0100100010100000111111, kW, 0, 0 }, // caslh
     { 0b1011100000100000000000, kWX, 30, 0 }, // ldadd
     { 0b1011100010100000000000, kWX, 30, 1 }, // ldadda
-    { 0b0011100010100000000000, kW , 0 , 1 }, // ldaddab
-    { 0b0111100010100000000000, kW , 0 , 1 }, // ldaddah
+    { 0b0011100010100000000000, kW, 0, 1 }, // ldaddab
+    { 0b0111100010100000000000, kW, 0, 1 }, // ldaddah
     { 0b1011100011100000000000, kWX, 30, 1 }, // ldaddal
-    { 0b0011100011100000000000, kW , 0 , 1 }, // ldaddalb
-    { 0b0111100011100000000000, kW , 0 , 1 }, // ldaddalh
-    { 0b0011100000100000000000, kW , 0 , 0 }, // ldaddb
-    { 0b0111100000100000000000, kW , 0 , 0 }, // ldaddh
+    { 0b0011100011100000000000, kW, 0, 1 }, // ldaddalb
+    { 0b0111100011100000000000, kW, 0, 1 }, // ldaddalh
+    { 0b0011100000100000000000, kW, 0, 0 }, // ldaddb
+    { 0b0111100000100000000000, kW, 0, 0 }, // ldaddh
     { 0b1011100001100000000000, kWX, 30, 0 }, // ldaddl
-    { 0b0011100001100000000000, kW , 0 , 0 }, // ldaddlb
-    { 0b0111100001100000000000, kW , 0 , 0 }, // ldaddlh
+    { 0b0011100001100000000000, kW, 0, 0 }, // ldaddlb
+    { 0b0111100001100000000000, kW, 0, 0 }, // ldaddlh
     { 0b1011100000100000000100, kWX, 30, 0 }, // ldclr
     { 0b1011100010100000000100, kWX, 30, 1 }, // ldclra
-    { 0b0011100010100000000100, kW , 0 , 1 }, // ldclrab
-    { 0b0111100010100000000100, kW , 0 , 1 }, // ldclrah
+    { 0b0011100010100000000100, kW, 0, 1 }, // ldclrab
+    { 0b0111100010100000000100, kW, 0, 1 }, // ldclrah
     { 0b1011100011100000000100, kWX, 30, 1 }, // ldclral
-    { 0b0011100011100000000100, kW , 0 , 1 }, // ldclralb
-    { 0b0111100011100000000100, kW , 0 , 1 }, // ldclralh
-    { 0b0011100000100000000100, kW , 0 , 0 }, // ldclrb
-    { 0b0111100000100000000100, kW , 0 , 0 }, // ldclrh
+    { 0b0011100011100000000100, kW, 0, 1 }, // ldclralb
+    { 0b0111100011100000000100, kW, 0, 1 }, // ldclralh
+    { 0b0011100000100000000100, kW, 0, 0 }, // ldclrb
+    { 0b0111100000100000000100, kW, 0, 0 }, // ldclrh
     { 0b1011100001100000000100, kWX, 30, 0 }, // ldclrl
-    { 0b0011100001100000000100, kW , 0 , 0 }, // ldclrlb
-    { 0b0111100001100000000100, kW , 0 , 0 }, // ldclrlh
+    { 0b0011100001100000000100, kW, 0, 0 }, // ldclrlb
+    { 0b0111100001100000000100, kW, 0, 0 }, // ldclrlh
     { 0b1011100000100000001000, kWX, 30, 0 }, // ldeor
     { 0b1011100010100000001000, kWX, 30, 1 }, // ldeora
-    { 0b0011100010100000001000, kW , 0 , 1 }, // ldeorab
-    { 0b0111100010100000001000, kW , 0 , 1 }, // ldeorah
+    { 0b0011100010100000001000, kW, 0, 1 }, // ldeorab
+    { 0b0111100010100000001000, kW, 0, 1 }, // ldeorah
     { 0b1011100011100000001000, kWX, 30, 1 }, // ldeoral
-    { 0b0011100011100000001000, kW , 0 , 1 }, // ldeoralb
-    { 0b0111100011100000001000, kW , 0 , 1 }, // ldeoralh
-    { 0b0011100000100000001000, kW , 0 , 0 }, // ldeorb
-    { 0b0111100000100000001000, kW , 0 , 0 }, // ldeorh
+    { 0b0011100011100000001000, kW, 0, 1 }, // ldeoralb
+    { 0b0111100011100000001000, kW, 0, 1 }, // ldeoralh
+    { 0b0011100000100000001000, kW, 0, 0 }, // ldeorb
+    { 0b0111100000100000001000, kW, 0, 0 }, // ldeorh
     { 0b1011100001100000001000, kWX, 30, 0 }, // ldeorl
-    { 0b0011100001100000001000, kW , 0 , 0 }, // ldeorlb
-    { 0b0111100001100000001000, kW , 0 , 0 }, // ldeorlh
+    { 0b0011100001100000001000, kW, 0, 0 }, // ldeorlb
+    { 0b0111100001100000001000, kW, 0, 0 }, // ldeorlh
     { 0b1011100000100000001100, kWX, 30, 0 }, // ldset
     { 0b1011100010100000001100, kWX, 30, 1 }, // ldseta
-    { 0b0011100010100000001100, kW , 0 , 1 }, // ldsetab
-    { 0b0111100010100000001100, kW , 0 , 1 }, // ldsetah
+    { 0b0011100010100000001100, kW, 0, 1 }, // ldsetab
+    { 0b0111100010100000001100, kW, 0, 1 }, // ldsetah
     { 0b1011100011100000001100, kWX, 30, 1 }, // ldsetal
-    { 0b0011100011100000001100, kW , 0 , 1 }, // ldsetalb
-    { 0b0111100011100000001100, kW , 0 , 1 }, // ldsetalh
-    { 0b0011100000100000001100, kW , 0 , 0 }, // ldsetb
-    { 0b0111100000100000001100, kW , 0 , 0 }, // ldseth
+    { 0b0011100011100000001100, kW, 0, 1 }, // ldsetalb
+    { 0b0111100011100000001100, kW, 0, 1 }, // ldsetalh
+    { 0b0011100000100000001100, kW, 0, 0 }, // ldsetb
+    { 0b0111100000100000001100, kW, 0, 0 }, // ldseth
     { 0b1011100001100000001100, kWX, 30, 0 }, // ldsetl
-    { 0b0011100001100000001100, kW , 0 , 0 }, // ldsetlb
-    { 0b0111100001100000001100, kW , 0 , 0 }, // ldsetlh
+    { 0b0011100001100000001100, kW, 0, 0 }, // ldsetlb
+    { 0b0111100001100000001100, kW, 0, 0 }, // ldsetlh
     { 0b1011100000100000010000, kWX, 30, 0 }, // ldsmax
     { 0b1011100010100000010000, kWX, 30, 1 }, // ldsmaxa
-    { 0b0011100010100000010000, kW , 0 , 1 }, // ldsmaxab
-    { 0b0111100010100000010000, kW , 0 , 1 }, // ldsmaxah
+    { 0b0011100010100000010000, kW, 0, 1 }, // ldsmaxab
+    { 0b0111100010100000010000, kW, 0, 1 }, // ldsmaxah
     { 0b1011100011100000010000, kWX, 30, 1 }, // ldsmaxal
-    { 0b0011100011100000010000, kW , 0 , 1 }, // ldsmaxalb
-    { 0b0111100011100000010000, kW , 0 , 1 }, // ldsmaxalh
-    { 0b0011100000100000010000, kW , 0 , 0 }, // ldsmaxb
-    { 0b0111100000100000010000, kW , 0 , 0 }, // ldsmaxh
+    { 0b0011100011100000010000, kW, 0, 1 }, // ldsmaxalb
+    { 0b0111100011100000010000, kW, 0, 1 }, // ldsmaxalh
+    { 0b0011100000100000010000, kW, 0, 0 }, // ldsmaxb
+    { 0b0111100000100000010000, kW, 0, 0 }, // ldsmaxh
     { 0b1011100001100000010000, kWX, 30, 0 }, // ldsmaxl
-    { 0b0011100001100000010000, kW , 0 , 0 }, // ldsmaxlb
-    { 0b0111100001100000010000, kW , 0 , 0 }, // ldsmaxlh
+    { 0b0011100001100000010000, kW, 0, 0 }, // ldsmaxlb
+    { 0b0111100001100000010000, kW, 0, 0 }, // ldsmaxlh
     { 0b1011100000100000010100, kWX, 30, 0 }, // ldsmin
     { 0b1011100010100000010100, kWX, 30, 1 }, // ldsmina
-    { 0b0011100010100000010100, kW , 0 , 1 }, // ldsminab
-    { 0b0111100010100000010100, kW , 0 , 1 }, // ldsminah
+    { 0b0011100010100000010100, kW, 0, 1 }, // ldsminab
+    { 0b0111100010100000010100, kW, 0, 1 }, // ldsminah
     { 0b1011100011100000010100, kWX, 30, 1 }, // ldsminal
-    { 0b0011100011100000010100, kW , 0 , 1 }, // ldsminalb
-    { 0b0111100011100000010100, kW , 0 , 1 }, // ldsminalh
-    { 0b0011100000100000010100, kW , 0 , 0 }, // ldsminb
-    { 0b0111100000100000010100, kW , 0 , 0 }, // ldsminh
+    { 0b0011100011100000010100, kW, 0, 1 }, // ldsminalb
+    { 0b0111100011100000010100, kW, 0, 1 }, // ldsminalh
+    { 0b0011100000100000010100, kW, 0, 0 }, // ldsminb
+    { 0b0111100000100000010100, kW, 0, 0 }, // ldsminh
     { 0b1011100001100000010100, kWX, 30, 0 }, // ldsminl
-    { 0b0011100001100000010100, kW , 0 , 0 }, // ldsminlb
-    { 0b0111100001100000010100, kW , 0 , 0 }, // ldsminlh
+    { 0b0011100001100000010100, kW, 0, 0 }, // ldsminlb
+    { 0b0111100001100000010100, kW, 0, 0 }, // ldsminlh
     { 0b1011100000100000011000, kWX, 30, 0 }, // ldumax
     { 0b1011100010100000011000, kWX, 30, 1 }, // ldumaxa
-    { 0b0011100010100000011000, kW , 0 , 1 }, // ldumaxab
-    { 0b0111100010100000011000, kW , 0 , 1 }, // ldumaxah
+    { 0b0011100010100000011000, kW, 0, 1 }, // ldumaxab
+    { 0b0111100010100000011000, kW, 0, 1 }, // ldumaxah
     { 0b1011100011100000011000, kWX, 30, 1 }, // ldumaxal
-    { 0b0011100011100000011000, kW , 0 , 1 }, // ldumaxalb
-    { 0b0111100011100000011000, kW , 0 , 1 }, // ldumaxalh
-    { 0b0011100000100000011000, kW , 0 , 0 }, // ldumaxb
-    { 0b0111100000100000011000, kW , 0 , 0 }, // ldumaxh
+    { 0b0011100011100000011000, kW, 0, 1 }, // ldumaxalb
+    { 0b0111100011100000011000, kW, 0, 1 }, // ldumaxalh
+    { 0b0011100000100000011000, kW, 0, 0 }, // ldumaxb
+    { 0b0111100000100000011000, kW, 0, 0 }, // ldumaxh
     { 0b1011100001100000011000, kWX, 30, 0 }, // ldumaxl
-    { 0b0011100001100000011000, kW , 0 , 0 }, // ldumaxlb
-    { 0b0111100001100000011000, kW , 0 , 0 }, // ldumaxlh
+    { 0b0011100001100000011000, kW, 0, 0 }, // ldumaxlb
+    { 0b0111100001100000011000, kW, 0, 0 }, // ldumaxlh
     { 0b1011100000100000011100, kWX, 30, 0 }, // ldumin
     { 0b1011100010100000011100, kWX, 30, 1 }, // ldumina
-    { 0b0011100010100000011100, kW , 0 , 1 }, // lduminab
-    { 0b0111100010100000011100, kW , 0 , 1 }, // lduminah
+    { 0b0011100010100000011100, kW, 0, 1 }, // lduminab
+    { 0b0111100010100000011100, kW, 0, 1 }, // lduminah
     { 0b1011100011100000011100, kWX, 30, 1 }, // lduminal
-    { 0b0011100011100000011100, kW , 0 , 1 }, // lduminalb
-    { 0b0111100011100000011100, kW , 0 , 1 }, // lduminalh
-    { 0b0011100000100000011100, kW , 0 , 0 }, // lduminb
-    { 0b0111100000100000011100, kW , 0 , 0 }, // lduminh
+    { 0b0011100011100000011100, kW, 0, 1 }, // lduminalb
+    { 0b0111100011100000011100, kW, 0, 1 }, // lduminalh
+    { 0b0011100000100000011100, kW, 0, 0 }, // lduminb
+    { 0b0111100000100000011100, kW, 0, 0 }, // lduminh
     { 0b1011100001100000011100, kWX, 30, 0 }, // lduminl
-    { 0b0011100001100000011100, kW , 0 , 0 }, // lduminlb
-    { 0b0111100001100000011100, kW , 0 , 0 }, // lduminlh
+    { 0b0011100001100000011100, kW, 0, 0 }, // lduminlb
+    { 0b0111100001100000011100, kW, 0, 0 }, // lduminlh
     { 0b1000100000000000111111, kWX, 30, 1 }, // stlxr
-    { 0b0000100000000000111111, kW , 0 , 1 }, // stlxrb
-    { 0b0100100000000000111111, kW , 0 , 1 }, // stlxrh
+    { 0b0000100000000000111111, kW, 0, 1 }, // stlxrb
+    { 0b0100100000000000111111, kW, 0, 1 }, // stlxrh
     { 0b1011100000100000100000, kWX, 30, 1 }, // swp
     { 0b1011100010100000100000, kWX, 30, 1 }, // swpa
-    { 0b0011100010100000100000, kW , 0 , 1 }, // swpab
-    { 0b0111100010100000100000, kW , 0 , 1 }, // swpah
+    { 0b0011100010100000100000, kW, 0, 1 }, // swpab
+    { 0b0111100010100000100000, kW, 0, 1 }, // swpah
     { 0b1011100011100000100000, kWX, 30, 1 }, // swpal
-    { 0b0011100011100000100000, kW , 0 , 1 }, // swpalb
-    { 0b0111100011100000100000, kW , 0 , 1 }, // swpalh
-    { 0b0011100000100000100000, kW , 0 , 1 }, // swpb
-    { 0b0111100000100000100000, kW , 0 , 1 }, // swph
+    { 0b0011100011100000100000, kW, 0, 1 }, // swpalb
+    { 0b0111100011100000100000, kW, 0, 1 }, // swpalh
+    { 0b0011100000100000100000, kW, 0, 1 }, // swpb
+    { 0b0111100000100000100000, kW, 0, 1 }, // swph
     { 0b1011100001100000100000, kWX, 30, 1 }, // swpl
-    { 0b0011100001100000100000, kW , 0 , 1 }, // swplb
-    { 0b0111100001100000100000, kW , 0 , 1 }  // swplh
+    { 0b0011100001100000100000, kW, 0, 1 }, // swplb
+    { 0b0111100001100000100000, kW, 0, 1 }  // swplh
 });
 
 pub const BASE_ATOMIC_ST: [BaseAtomicSt; 48] = table_new!(BaseAtomicSt, {
     { 0b1011100000100000000000, kWX, 30 }, // stadd
     { 0b1011100001100000000000, kWX, 30 }, // staddl
-    { 0b0011100000100000000000, kW , 0  }, // staddb
-    { 0b0011100001100000000000, kW , 0  }, // staddlb
-    { 0b0111100000100000000000, kW , 0  }, // staddh
-    { 0b0111100001100000000000, kW , 0  }, // staddlh
+    { 0b0011100000100000000000, kW, 0 }, // staddb
+    { 0b0011100001100000000000, kW, 0 }, // staddlb
+    { 0b0111100000100000000000, kW, 0 }, // staddh
+    { 0b0111100001100000000000, kW, 0 }, // staddlh
     { 0b1011100000100000000100, kWX, 30 }, // stclr
     { 0b1011100001100000000100, kWX, 30 }, // stclrl
-    { 0b0011100000100000000100, kW , 0  }, // stclrb
-    { 0b0011100001100000000100, kW , 0  }, // stclrlb
-    { 0b0111100000100000000100, kW , 0  }, // stclrh
-    { 0b0111100001100000000100, kW , 0  }, // stclrlh
+    { 0b0011100000100000000100, kW, 0 }, // stclrb
+    { 0b0011100001100000000100, kW, 0 }, // stclrlb
+    { 0b0111100000100000000100, kW, 0 }, // stclrh
+    { 0b0111100001100000000100, kW, 0 }, // stclrlh
     { 0b1011100000100000001000, kWX, 30 }, // steor
     { 0b1011100001100000001000, kWX, 30 }, // steorl
-    { 0b0011100000100000001000, kW , 0  }, // steorb
-    { 0b0011100001100000001000, kW , 0  }, // steorlb
-    { 0b0111100000100000001000, kW , 0  }, // steorh
-    { 0b0111100001100000001000, kW , 0  }, // steorlh
+    { 0b0011100000100000001000, kW, 0 }, // steorb
+    { 0b0011100001100000001000, kW, 0 }, // steorlb
+    { 0b0111100000100000001000, kW, 0 }, // steorh
+    { 0b0111100001100000001000, kW, 0 }, // steorlh
     { 0b1011100000100000001100, kWX, 30 }, // stset
     { 0b1011100001100000001100, kWX, 30 }, // stsetl
-    { 0b0011100000100000001100, kW , 0  }, // stsetb
-    { 0b0011100001100000001100, kW , 0  }, // stsetlb
-    { 0b0111100000100000001100, kW , 0  }, // stseth
-    { 0b0111100001100000001100, kW , 0  }, // stsetlh
+    { 0b0011100000100000001100, kW, 0 }, // stsetb
+    { 0b0011100001100000001100, kW, 0 }, // stsetlb
+    { 0b0111100000100000001100, kW, 0 }, // stseth
+    { 0b0111100001100000001100, kW, 0 }, // stsetlh
     { 0b1011100000100000010000, kWX, 30 }, // stsmax
     { 0b1011100001100000010000, kWX, 30 }, // stsmaxl
-    { 0b0011100000100000010000, kW , 0  }, // stsmaxb
-    { 0b0011100001100000010000, kW , 0  }, // stsmaxlb
-    { 0b0111100000100000010000, kW , 0  }, // stsmaxh
-    { 0b0111100001100000010000, kW , 0  }, // stsmaxlh
+    { 0b0011100000100000010000, kW, 0 }, // stsmaxb
+    { 0b0011100001100000010000, kW, 0 }, // stsmaxlb
+    { 0b0111100000100000010000, kW, 0 }, // stsmaxh
+    { 0b0111100001100000010000, kW, 0 }, // stsmaxlh
     { 0b1011100000100000010100, kWX, 30 }, // stsmin
     { 0b1011100001100000010100, kWX, 30 }, // stsminl
-    { 0b0011100000100000010100, kW , 0  }, // stsminb
-    { 0b0011100001100000010100, kW , 0  }, // stsminlb
-    { 0b0111100000100000010100, kW , 0  }, // stsminh
-    { 0b0111100001100000010100, kW , 0  }, // stsminlh
+    { 0b0011100000100000010100, kW, 0 }, // stsminb
+    { 0b0011100001100000010100, kW, 0 }, // stsminlb
+    { 0b0111100000100000010100, kW, 0 }, // stsminh
+    { 0b0111100001100000010100, kW, 0 }, // stsminlh
     { 0b1011100000100000011000, kWX, 30 }, // stumax
     { 0b1011100001100000011000, kWX, 30 }, // stumaxl
-    { 0b0011100000100000011000, kW , 0  }, // stumaxb
-    { 0b0011100001100000011000, kW , 0  }, // stumaxlb
-    { 0b0111100000100000011000, kW , 0  }, // stumaxh
-    { 0b0111100001100000011000, kW , 0  }, // stumaxlh
+    { 0b0011100000100000011000, kW, 0 }, // stumaxb
+    { 0b0011100001100000011000, kW, 0 }, // stumaxlb
+    { 0b0111100000100000011000, kW, 0 }, // stumaxh
+    { 0b0111100001100000011000, kW, 0 }, // stumaxlh
     { 0b1011100000100000011100, kWX, 30 }, // stumin
     { 0b1011100001100000011100, kWX, 30 }, // stuminl
-    { 0b0011100000100000011100, kW , 0  }, // stuminb
-    { 0b0011100001100000011100, kW , 0  }, // stuminlb
-    { 0b0111100000100000011100, kW , 0  }, // stuminh
-    { 0b0111100001100000011100, kW , 0  }  // stuminlh
+    { 0b0011100000100000011100, kW, 0 }, // stuminb
+    { 0b0011100001100000011100, kW, 0 }, // stuminlb
+    { 0b0111100000100000011100, kW, 0 }, // stuminh
+    { 0b0111100001100000011100, kW, 0 }  // stuminlh
 });
 
 pub const BASE_BFC: [BaseBfc; 1] = table_new!(BaseBfc, {
@@ -2655,7 +2655,7 @@ pub const BASE_CMP_CMN: [BaseCmpCmn; 2] = table_new!(BaseCmpCmn, {
 pub const BASE_EXTEND: [BaseExtend; 5] = table_new!(BaseExtend, {
     { 0b0001001100000000000111, kWX, 0 }, // sxtb
     { 0b0001001100000000001111, kWX, 0 }, // sxth
-    { 0b1001001101000000011111, kX , 0 }, // sxtw
+    { 0b1001001101000000011111, kX, 0 }, // sxtw
     { 0b0101001100000000000111, kW, 1 }, // uxtb
     { 0b0101001100000000001111, kW, 1 }  // uxth
 });
@@ -2666,22 +2666,22 @@ pub const BASE_EXTRACT: [BaseExtract; 1] = table_new!(BaseExtract, {
 
 pub const BASE_LD_ST: [BaseLdSt; 9] = table_new!(BaseLdSt, {
     { 0b1011100101, 0b10111000010, 0b10111000011, 0b00011000, kWX, 30, 2, InstId::Ldur }, // ldr
-    { 0b0011100101, 0b00111000010, 0b00111000011, 0         , kW , 0 , 0, InstId::Ldurb }, // ldrb
-    { 0b0111100101, 0b01111000010, 0b01111000011, 0         , kW , 0 , 1, InstId::Ldurh }, // ldrh
-    { 0b0011100111, 0b00111000100, 0b00111000111, 0         , kWX, 22, 0, InstId::Ldursb }, // ldrsb
-    { 0b0111100111, 0b01111000100, 0b01111000111, 0         , kWX, 22, 1, InstId::Ldursh }, // ldrsh
-    { 0b1011100110, 0b10111000100, 0b10111000101, 0b10011000, kX , 0 , 2, InstId::Ldursw }, // ldrsw
-    { 0b1011100100, 0b10111000000, 0b10111000001, 0         , kWX, 30, 2, InstId::Stur }, // str
-    { 0b0011100100, 0b00111000000, 0b00111000001, 0         , kW , 30, 0, InstId::Sturb }, // strb
-    { 0b0111100100, 0b01111000000, 0b01111000001, 0         , kWX, 30, 1, InstId::Sturh }  // strh
+    { 0b0011100101, 0b00111000010, 0b00111000011, 0, kW, 0, 0, InstId::Ldurb }, // ldrb
+    { 0b0111100101, 0b01111000010, 0b01111000011, 0, kW, 0, 1, InstId::Ldurh }, // ldrh
+    { 0b0011100111, 0b00111000100, 0b00111000111, 0, kWX, 22, 0, InstId::Ldursb }, // ldrsb
+    { 0b0111100111, 0b01111000100, 0b01111000111, 0, kWX, 22, 1, InstId::Ldursh }, // ldrsh
+    { 0b1011100110, 0b10111000100, 0b10111000101, 0b10011000, kX, 0, 2, InstId::Ldursw }, // ldrsw
+    { 0b1011100100, 0b10111000000, 0b10111000001, 0, kWX, 30, 2, InstId::Stur }, // str
+    { 0b0011100100, 0b00111000000, 0b00111000001, 0, kW, 30, 0, InstId::Sturb }, // strb
+    { 0b0111100100, 0b01111000000, 0b01111000001, 0, kWX, 30, 1, InstId::Sturh }  // strh
 });
 
 pub const BASE_LDP_STP: [BaseLdpStp; 6] = table_new!(BaseLdpStp, {
-    { 0b0010100001, 0           , kWX, 31, 2 }, // ldnp
+    { 0b0010100001, 0, kWX, 31, 2 }, // ldnp
     { 0b0010100101, 0b0010100011, kWX, 31, 2 }, // ldp
-    { 0b0110100101, 0b0110100011, kX , 0 , 2 }, // ldpsw
+    { 0b0110100101, 0b0110100011, kX, 0, 2 }, // ldpsw
     { 0b0110100100, 0b0110100010, kX, 0, 4 }, // stgp
-    { 0b0010100000, 0           , kWX, 31, 2 }, // stnp
+    { 0b0010100000, 0, kWX, 31, 2 }, // stnp
     { 0b0010100100, 0b0010100010, kWX, 31, 2 }  // stp
 });
 
@@ -2788,57 +2788,57 @@ pub const BASE_R: [BaseR; 10] = table_new!(BaseR, {
 
 pub const BASE_RM_NO_IMM: [BaseRMNoImm; 21] = table_new!(BaseRMNoImm, {
     { 0b1000100011011111111111, kWX, kZR, 30 }, // ldar
-    { 0b0000100011011111111111, kW , kZR, 0  }, // ldarb
-    { 0b0100100011011111111111, kW , kZR, 0  }, // ldarh
+    { 0b0000100011011111111111, kW, kZR, 0 }, // ldarb
+    { 0b0100100011011111111111, kW, kZR, 0 }, // ldarh
     { 0b1000100001011111111111, kWX, kZR, 30 }, // ldaxr
-    { 0b0000100001011111111111, kW , kZR, 0  }, // ldaxrb
-    { 0b0100100001011111111111, kW , kZR, 0  }, // ldaxrh
-    { 0b1101100111100000000000, kX , kZR, 0  }, // ldgm
+    { 0b0000100001011111111111, kW, kZR, 0 }, // ldaxrb
+    { 0b0100100001011111111111, kW, kZR, 0 }, // ldaxrh
+    { 0b1101100111100000000000, kX, kZR, 0 }, // ldgm
     { 0b1000100011011111011111, kWX, kZR, 30 }, // ldlar
-    { 0b0000100011011111011111, kW , kZR, 0  }, // ldlarb
-    { 0b0100100011011111011111, kW , kZR, 0  }, // ldlarh
+    { 0b0000100011011111011111, kW, kZR, 0 }, // ldlarb
+    { 0b0100100011011111011111, kW, kZR, 0 }, // ldlarh
     { 0b1000100001011111011111, kWX, kZR, 30 }, // ldxr
-    { 0b0000100001011111011111, kW , kZR, 0  }, // ldxrb
-    { 0b0100100001011111011111, kW , kZR, 0  }, // ldxrh
-    { 0b1101100110100000000000, kX , kZR, 0  }, // stgm
+    { 0b0000100001011111011111, kW, kZR, 0 }, // ldxrb
+    { 0b0100100001011111011111, kW, kZR, 0 }, // ldxrh
+    { 0b1101100110100000000000, kX, kZR, 0 }, // stgm
     { 0b1000100010011111011111, kWX, kZR, 30 }, // stllr
-    { 0b0000100010011111011111, kW , kZR, 0  }, // stllrb
-    { 0b0100100010011111011111, kW , kZR, 0  }, // stllrh
+    { 0b0000100010011111011111, kW, kZR, 0 }, // stllrb
+    { 0b0100100010011111011111, kW, kZR, 0 }, // stllrh
     { 0b1000100010011111111111, kWX, kZR, 30 }, // stlr
-    { 0b0000100010011111111111, kW , kZR, 0  }, // stlrb
-    { 0b0100100010011111111111, kW , kZR, 0  }, // stlrh
-    { 0b1101100100100000000000, kX , kZR, 0 }  // stzgm
+    { 0b0000100010011111111111, kW, kZR, 0 }, // stlrb
+    { 0b0100100010011111111111, kW, kZR, 0 }, // stlrh
+    { 0b1101100100100000000000, kX, kZR, 0 }  // stzgm
 });
 
 pub const BASE_RM_SIMM10: [BaseRMSImm10; 2] = table_new!(BaseRMSImm10, {
-    { 0b1111100000100000000001, kX , kZR, 0, 3 }, // ldraa
-    { 0b1111100010100000000001, kX , kZR, 0, 3 }  // ldrab
+    { 0b1111100000100000000001, kX, kZR, 0, 3 }, // ldraa
+    { 0b1111100010100000000001, kX, kZR, 0, 3 }  // ldrab
 });
 
 pub const BASE_RM_SIMM9: [BaseRMSImm9; 23] = table_new!(BaseRMSImm9, {
-    { 0b1101100101100000000000, 0b0000000000000000000000, kX , kZR, 0, 4 }, // ldg
+    { 0b1101100101100000000000, 0b0000000000000000000000, kX, kZR, 0, 4 }, // ldg
     { 0b1011100001000000000010, 0b0000000000000000000000, kWX, kZR, 30, 0 }, // ldtr
-    { 0b0011100001000000000010, 0b0000000000000000000000, kW , kZR, 0 , 0 }, // ldtrb
-    { 0b0111100001000000000010, 0b0000000000000000000000, kW , kZR, 0 , 0 }, // ldtrh
+    { 0b0011100001000000000010, 0b0000000000000000000000, kW, kZR, 0, 0 }, // ldtrb
+    { 0b0111100001000000000010, 0b0000000000000000000000, kW, kZR, 0, 0 }, // ldtrh
     { 0b0011100011000000000010, 0b0000000000000000000000, kWX, kZR, 22, 0 }, // ldtrsb
     { 0b0111100011000000000010, 0b0000000000000000000000, kWX, kZR, 22, 0 }, // ldtrsh
-    { 0b1011100010000000000010, 0b0000000000000000000000, kX , kZR, 0 , 0 }, // ldtrsw
+    { 0b1011100010000000000010, 0b0000000000000000000000, kX, kZR, 0, 0 }, // ldtrsw
     { 0b1011100001000000000000, 0b0000000000000000000000, kWX, kZR, 30, 0 }, // ldur
-    { 0b0011100001000000000000, 0b0000000000000000000000, kW , kZR, 0 , 0 }, // ldurb
-    { 0b0111100001000000000000, 0b0000000000000000000000, kW , kZR, 0 , 0 }, // ldurh
+    { 0b0011100001000000000000, 0b0000000000000000000000, kW, kZR, 0, 0 }, // ldurb
+    { 0b0111100001000000000000, 0b0000000000000000000000, kW, kZR, 0, 0 }, // ldurh
     { 0b0011100011000000000000, 0b0000000000000000000000, kWX, kZR, 22, 0 }, // ldursb
     { 0b0111100011000000000000, 0b0000000000000000000000, kWX, kZR, 22, 0 }, // ldursh
-    { 0b1011100010000000000000, 0b0000000000000000000000, kX , kZR, 0 , 0 }, // ldursw
+    { 0b1011100010000000000000, 0b0000000000000000000000, kX, kZR, 0, 0 }, // ldursw
     { 0b1101100110100000000010, 0b1101100110100000000001, kX, kSP, 0, 4 }, // st2g
     { 0b1101100100100000000010, 0b1101100100100000000001, kX, kSP, 0, 4 }, // stg
     { 0b1011100000000000000010, 0b0000000000000000000000, kWX, kZR, 30, 0 }, // sttr
-    { 0b0011100000000000000010, 0b0000000000000000000000, kW , kZR, 0 , 0 }, // sttrb
-    { 0b0111100000000000000010, 0b0000000000000000000000, kW , kZR, 0 , 0 }, // sttrh
+    { 0b0011100000000000000010, 0b0000000000000000000000, kW, kZR, 0, 0 }, // sttrb
+    { 0b0111100000000000000010, 0b0000000000000000000000, kW, kZR, 0, 0 }, // sttrh
     { 0b1011100000000000000000, 0b0000000000000000000000, kWX, kZR, 30, 0 }, // stur
-    { 0b0011100000000000000000, 0b0000000000000000000000, kW , kZR, 0 , 0 }, // sturb
-    { 0b0111100000000000000000, 0b0000000000000000000000, kW , kZR, 0 , 0 }, // sturh
-    { 0b1101100111100000000010, 0b1101100111100000000001, kX , kSP, 0, 4 }, // stz2g
-    { 0b1101100101100000000010, 0b1101100101100000000001, kX , kSP, 0, 4 }  // stzg
+    { 0b0011100000000000000000, 0b0000000000000000000000, kW, kZR, 0, 0 }, // sturb
+    { 0b0111100000000000000000, 0b0000000000000000000000, kW, kZR, 0, 0 }, // sturh
+    { 0b1101100111100000000010, 0b1101100111100000000001, kX, kSP, 0, 4 }, // stz2g
+    { 0b1101100101100000000010, 0b1101100101100000000001, kX, kSP, 0, 4 }  // stzg
 });
 
 pub const BASE_RR: [BaseRR; 18] = table_new!(BaseRR, {
@@ -2878,31 +2878,31 @@ pub const BASE_RRR: [BaseRRR; 26] = table_new!(BaseRRR, {
     { 0b0001101011000000010001, kW, kZR, kW, kZR, kW, kZR, false }, // crc32h
     { 0b0001101011000000010010, kW, kZR, kW, kZR, kW, kZR, false }, // crc32w
     { 0b1001101011000000010011, kW, kZR, kW, kZR, kX, kZR, false }, // crc32x
-    { 0b1001101011000000000101, kX , kZR, kX , kSP, kX , kZR, true }, // gmi
+    { 0b1001101011000000000101, kX, kZR, kX, kSP, kX, kZR, true }, // gmi
     { 0b0001101100000000111111, kWX, kZR, kWX, kZR, kWX, kZR, true }, // mneg
     { 0b0001101100000000011111, kWX, kZR, kWX, kZR, kWX, kZR, true }, // mul
     { 0b1001101011000000001100, kX, kZR, kX, kZR, kX, kSP, false }, // pacga
     { 0b0101101000000000000000, kWX, kZR, kWX, kZR, kWX, kZR, true }, // sbc
     { 0b0111101000000000000000, kWX, kZR, kWX, kZR, kWX, kZR, true }, // sbcs
     { 0b0001101011000000000011, kWX, kZR, kWX, kZR, kWX, kZR, true }, // sdiv
-    { 0b1001101100100000111111, kX , kZR, kW , kZR, kW , kZR, false }, // smnegl
-    { 0b1001101101000000011111, kX , kZR, kX , kZR, kX , kZR, true }, // smulh
-    { 0b1001101100100000011111, kX , kZR, kW , kZR, kW , kZR, false }, // smull
+    { 0b1001101100100000111111, kX, kZR, kW, kZR, kW, kZR, false }, // smnegl
+    { 0b1001101101000000011111, kX, kZR, kX, kZR, kX, kZR, true }, // smulh
+    { 0b1001101100100000011111, kX, kZR, kW, kZR, kW, kZR, false }, // smull
     { 0b1001101011000000000000, kX, kZR, kX, kSP, kX, kSP, false }, // subp
     { 0b1011101011000000000000, kX, kZR, kX, kSP, kX, kSP, false }, // subps
     { 0b0001101011000000000010, kWX, kZR, kWX, kZR, kWX, kZR, true }, // udiv
-    { 0b1001101110100000111111, kX , kZR, kW , kZR, kW , kZR, false }, // umnegl
-    { 0b1001101110100000011111, kX , kZR, kW , kZR, kW , kZR, false }, // umull
-    { 0b1001101111000000011111, kX , kZR, kX , kZR, kX , kZR, false }  // umulh
+    { 0b1001101110100000111111, kX, kZR, kW, kZR, kW, kZR, false }, // umnegl
+    { 0b1001101110100000011111, kX, kZR, kW, kZR, kW, kZR, false }, // umull
+    { 0b1001101111000000011111, kX, kZR, kX, kZR, kX, kZR, false }  // umulh
 });
 
 pub const BASE_RRRR: [BaseRRRR; 6] = table_new!(BaseRRRR, {
     { 0b0001101100000000000000, kWX, kZR, kWX, kZR, kWX, kZR, kWX, kZR, true }, // madd
     { 0b0001101100000000100000, kWX, kZR, kWX, kZR, kWX, kZR, kWX, kZR, true }, // msub
-    { 0b1001101100100000000000, kX , kZR, kW , kZR, kW , kZR, kX , kZR, false }, // smaddl
-    { 0b1001101100100000100000, kX , kZR, kW , kZR, kW , kZR, kX , kZR, false }, // smsubl
-    { 0b1001101110100000000000, kX , kZR, kW , kZR, kW , kZR, kX , kZR, false }, // umaddl
-    { 0b1001101110100000100000, kX , kZR, kW , kZR, kW , kZR, kX , kZR, false }  // umsubl
+    { 0b1001101100100000000000, kX, kZR, kW, kZR, kW, kZR, kX, kZR, false }, // smaddl
+    { 0b1001101100100000100000, kX, kZR, kW, kZR, kW, kZR, kX, kZR, false }, // smsubl
+    { 0b1001101110100000000000, kX, kZR, kW, kZR, kW, kZR, kX, kZR, false }, // umaddl
+    { 0b1001101110100000100000, kX, kZR, kW, kZR, kW, kZR, kX, kZR, false }  // umsubl
 });
 
 pub const BASE_SHIFT: [BaseShift; 8] = table_new!(BaseShift, {
@@ -2918,8 +2918,8 @@ pub const BASE_SHIFT: [BaseShift; 8] = table_new!(BaseShift, {
 
 pub const BASE_STX: [BaseStx; 3] = table_new!(BaseStx, {
     { 0b1000100000000000011111, kWX, 30 }, // stxr
-    { 0b0000100000000000011111, kW , 0  }, // stxrb
-    { 0b0100100000000000011111, kW , 0  }  // stxrh
+    { 0b0000100000000000011111, kW, 0 }, // stxrb
+    { 0b0100100000000000011111, kW, 0 }  // stxrh
 });
 
 pub const BASE_STXP: [BaseStxp; 2] = table_new!(BaseStxp, {
@@ -3393,7 +3393,7 @@ pub const SIMD_TBL_TBX: [SimdTblTbx; 2] = table_new!(SimdTblTbx, {
 pub static INST_NAME_STRING_TABLE: &[u8] = b"autia1716autibldsmaxalhldsminalldumaxallduminalsha256su0sha512su1sm3partwsqrshrunldaddalldclralldeoralldsetallbstsmaxstsminstumaxstuminfrint32z64x64zh2sqdmlalsl2sqdmulsqrdmlaulhn2sqshruuqrshrspchkfeacrc32cstaddstclrsteorstsetxpaclbfcvtbfmlaltfcvtxfjcvtzfmaxnmfminnmfrsqrraddrsubsha1sm3tt12a2bsm4ekeysqxtuuqshrursqrsetfrev8";
 #[rustfmt::skip]
 pub static INST_NAME_INDEX_TABLE: &[u32] = &[
-        0x80000000, // Small ''.
+    0x80000000, // Small ''.
     0x80004C41, // Small 'abs'.
     0x80000C81, // Small 'adc'.
     0x80098C81, // Small 'adcs'.
@@ -4168,7 +4168,7 @@ pub static INST_NAME_INDEX_TABLE: &[u32] = &[
     0x80003A98, // Small 'xtn'.
     0x800EBA98, // Small 'xtn2'.
     0x800E413A, // Small 'zip1'.
-    0x800EC13A  // Small 'zip2'.
+    0x800EC13A // Small 'zip2'.
 ];
 
 #[rustfmt::skip]
@@ -4176,781 +4176,781 @@ pub static INST_NAME_INDEX_TABLE: &[u32] = &[
 #[allow(non_camel_case_types)]
 #[repr(u32)]
 pub enum InstId {
-    None = 0,                         // Instruction ''.
-    Abs,                              // Instruction 'abs'.
-    Adc,                              // Instruction 'adc'.
-    Adcs,                             // Instruction 'adcs'.
-    Add,                              // Instruction 'add'.
-    Addg,                             // Instruction 'addg'.
-    Adds,                             // Instruction 'adds'.
-    Adr,                              // Instruction 'adr'.
-    Adrp,                             // Instruction 'adrp'.
-    And,                              // Instruction 'and'.
-    Ands,                             // Instruction 'ands'.
-    Asr,                              // Instruction 'asr'.
-    Asrv,                             // Instruction 'asrv'.
-    At,                               // Instruction 'at'.
-    Autda,                            // Instruction 'autda'.
-    Autdza,                           // Instruction 'autdza'.
-    Autdb,                            // Instruction 'autdb'.
-    Autdzb,                           // Instruction 'autdzb'.
-    Autia,                            // Instruction 'autia'.
-    Autia1716,                        // Instruction 'autia1716'.
-    Autiasp,                          // Instruction 'autiasp'.
-    Autiaz,                           // Instruction 'autiaz'.
-    Autib,                            // Instruction 'autib'.
-    Autib1716,                        // Instruction 'autib1716'.
-    Autibsp,                          // Instruction 'autibsp'.
-    Autibz,                           // Instruction 'autibz'.
-    Autiza,                           // Instruction 'autiza'.
-    Autizb,                           // Instruction 'autizb'.
-    Axflag,                           // Instruction 'axflag'.
-    B,                                // Instruction 'b'.
-    Bc,                               // Instruction 'bc'.
-    Bfc,                              // Instruction 'bfc'.
-    Bfi,                              // Instruction 'bfi'.
-    Bfm,                              // Instruction 'bfm'.
-    Bfxil,                            // Instruction 'bfxil'.
-    Bic,                              // Instruction 'bic'.
-    Bics,                             // Instruction 'bics'.
-    Bl,                               // Instruction 'bl'.
-    Blr,                              // Instruction 'blr'.
-    Br,                               // Instruction 'br'.
-    Brk,                              // Instruction 'brk'.
-    Bti,                              // Instruction 'bti'.
-    Cas,                              // Instruction 'cas'.
-    Casa,                             // Instruction 'casa'.
-    Casab,                            // Instruction 'casab'.
-    Casah,                            // Instruction 'casah'.
-    Casal,                            // Instruction 'casal'.
-    Casalb,                           // Instruction 'casalb'.
-    Casalh,                           // Instruction 'casalh'.
-    Casb,                             // Instruction 'casb'.
-    Cash,                             // Instruction 'cash'.
-    Casl,                             // Instruction 'casl'.
-    Caslb,                            // Instruction 'caslb'.
-    Caslh,                            // Instruction 'caslh'.
-    Casp,                             // Instruction 'casp'.
-    Caspa,                            // Instruction 'caspa'.
-    Caspal,                           // Instruction 'caspal'.
-    Caspl,                            // Instruction 'caspl'.
-    Cbnz,                             // Instruction 'cbnz'.
-    Cbz,                              // Instruction 'cbz'.
-    Ccmn,                             // Instruction 'ccmn'.
-    Ccmp,                             // Instruction 'ccmp'.
-    Cfinv,                            // Instruction 'cfinv'.
-    Chkfeat,                          // Instruction 'chkfeat'.
-    Cinc,                             // Instruction 'cinc'.
-    Cinv,                             // Instruction 'cinv'.
-    Clrbhb,                           // Instruction 'clrbhb'.
-    Clrex,                            // Instruction 'clrex'.
-    Cls,                              // Instruction 'cls'.
-    Clz,                              // Instruction 'clz'.
-    Cmn,                              // Instruction 'cmn'.
-    Cmp,                              // Instruction 'cmp'.
-    Cmpp,                             // Instruction 'cmpp'.
-    Cneg,                             // Instruction 'cneg'.
-    Cnt,                              // Instruction 'cnt'.
-    Crc32b,                           // Instruction 'crc32b'.
-    Crc32cb,                          // Instruction 'crc32cb'.
-    Crc32ch,                          // Instruction 'crc32ch'.
-    Crc32cw,                          // Instruction 'crc32cw'.
-    Crc32cx,                          // Instruction 'crc32cx'.
-    Crc32h,                           // Instruction 'crc32h'.
-    Crc32w,                           // Instruction 'crc32w'.
-    Crc32x,                           // Instruction 'crc32x'.
-    Csdb,                             // Instruction 'csdb'.
-    Csel,                             // Instruction 'csel'.
-    Cset,                             // Instruction 'cset'.
-    Csetm,                            // Instruction 'csetm'.
-    Csinc,                            // Instruction 'csinc'.
-    Csinv,                            // Instruction 'csinv'.
-    Csneg,                            // Instruction 'csneg'.
-    Ctz,                              // Instruction 'ctz'.
-    Dc,                               // Instruction 'dc'.
-    Dcps1,                            // Instruction 'dcps1'.
-    Dcps2,                            // Instruction 'dcps2'.
-    Dcps3,                            // Instruction 'dcps3'.
-    Dgh,                              // Instruction 'dgh'.
-    Dmb,                              // Instruction 'dmb'.
-    Drps,                             // Instruction 'drps'.
-    Dsb,                              // Instruction 'dsb'.
-    Eon,                              // Instruction 'eon'.
-    Eor,                              // Instruction 'eor'.
-    Esb,                              // Instruction 'esb'.
-    Extr,                             // Instruction 'extr'.
-    Eret,                             // Instruction 'eret'.
-    Gmi,                              // Instruction 'gmi'.
-    Hint,                             // Instruction 'hint'.
-    Hlt,                              // Instruction 'hlt'.
-    Hvc,                              // Instruction 'hvc'.
-    Ic,                               // Instruction 'ic'.
-    Isb,                              // Instruction 'isb'.
-    Ldadd,                            // Instruction 'ldadd'.
-    Ldadda,                           // Instruction 'ldadda'.
-    Ldaddab,                          // Instruction 'ldaddab'.
-    Ldaddah,                          // Instruction 'ldaddah'.
-    Ldaddal,                          // Instruction 'ldaddal'.
-    Ldaddalb,                         // Instruction 'ldaddalb'.
-    Ldaddalh,                         // Instruction 'ldaddalh'.
-    Ldaddb,                           // Instruction 'ldaddb'.
-    Ldaddh,                           // Instruction 'ldaddh'.
-    Ldaddl,                           // Instruction 'ldaddl'.
-    Ldaddlb,                          // Instruction 'ldaddlb'.
-    Ldaddlh,                          // Instruction 'ldaddlh'.
-    Ldar,                             // Instruction 'ldar'.
-    Ldarb,                            // Instruction 'ldarb'.
-    Ldarh,                            // Instruction 'ldarh'.
-    Ldaxp,                            // Instruction 'ldaxp'.
-    Ldaxr,                            // Instruction 'ldaxr'.
-    Ldaxrb,                           // Instruction 'ldaxrb'.
-    Ldaxrh,                           // Instruction 'ldaxrh'.
-    Ldclr,                            // Instruction 'ldclr'.
-    Ldclra,                           // Instruction 'ldclra'.
-    Ldclrab,                          // Instruction 'ldclrab'.
-    Ldclrah,                          // Instruction 'ldclrah'.
-    Ldclral,                          // Instruction 'ldclral'.
-    Ldclralb,                         // Instruction 'ldclralb'.
-    Ldclralh,                         // Instruction 'ldclralh'.
-    Ldclrb,                           // Instruction 'ldclrb'.
-    Ldclrh,                           // Instruction 'ldclrh'.
-    Ldclrl,                           // Instruction 'ldclrl'.
-    Ldclrlb,                          // Instruction 'ldclrlb'.
-    Ldclrlh,                          // Instruction 'ldclrlh'.
-    Ldeor,                            // Instruction 'ldeor'.
-    Ldeora,                           // Instruction 'ldeora'.
-    Ldeorab,                          // Instruction 'ldeorab'.
-    Ldeorah,                          // Instruction 'ldeorah'.
-    Ldeoral,                          // Instruction 'ldeoral'.
-    Ldeoralb,                         // Instruction 'ldeoralb'.
-    Ldeoralh,                         // Instruction 'ldeoralh'.
-    Ldeorb,                           // Instruction 'ldeorb'.
-    Ldeorh,                           // Instruction 'ldeorh'.
-    Ldeorl,                           // Instruction 'ldeorl'.
-    Ldeorlb,                          // Instruction 'ldeorlb'.
-    Ldeorlh,                          // Instruction 'ldeorlh'.
-    Ldg,                              // Instruction 'ldg'.
-    Ldgm,                             // Instruction 'ldgm'.
-    Ldlar,                            // Instruction 'ldlar'.
-    Ldlarb,                           // Instruction 'ldlarb'.
-    Ldlarh,                           // Instruction 'ldlarh'.
-    Ldnp,                             // Instruction 'ldnp'.
-    Ldp,                              // Instruction 'ldp'.
-    Ldpsw,                            // Instruction 'ldpsw'.
-    Ldr,                              // Instruction 'ldr'.
-    Ldraa,                            // Instruction 'ldraa'.
-    Ldrab,                            // Instruction 'ldrab'.
-    Ldrb,                             // Instruction 'ldrb'.
-    Ldrh,                             // Instruction 'ldrh'.
-    Ldrsb,                            // Instruction 'ldrsb'.
-    Ldrsh,                            // Instruction 'ldrsh'.
-    Ldrsw,                            // Instruction 'ldrsw'.
-    Ldset,                            // Instruction 'ldset'.
-    Ldseta,                           // Instruction 'ldseta'.
-    Ldsetab,                          // Instruction 'ldsetab'.
-    Ldsetah,                          // Instruction 'ldsetah'.
-    Ldsetal,                          // Instruction 'ldsetal'.
-    Ldsetalb,                         // Instruction 'ldsetalb'.
-    Ldsetalh,                         // Instruction 'ldsetalh'.
-    Ldsetb,                           // Instruction 'ldsetb'.
-    Ldseth,                           // Instruction 'ldseth'.
-    Ldsetl,                           // Instruction 'ldsetl'.
-    Ldsetlb,                          // Instruction 'ldsetlb'.
-    Ldsetlh,                          // Instruction 'ldsetlh'.
-    Ldsmax,                           // Instruction 'ldsmax'.
-    Ldsmaxa,                          // Instruction 'ldsmaxa'.
-    Ldsmaxab,                         // Instruction 'ldsmaxab'.
-    Ldsmaxah,                         // Instruction 'ldsmaxah'.
-    Ldsmaxal,                         // Instruction 'ldsmaxal'.
-    Ldsmaxalb,                        // Instruction 'ldsmaxalb'.
-    Ldsmaxalh,                        // Instruction 'ldsmaxalh'.
-    Ldsmaxb,                          // Instruction 'ldsmaxb'.
-    Ldsmaxh,                          // Instruction 'ldsmaxh'.
-    Ldsmaxl,                          // Instruction 'ldsmaxl'.
-    Ldsmaxlb,                         // Instruction 'ldsmaxlb'.
-    Ldsmaxlh,                         // Instruction 'ldsmaxlh'.
-    Ldsmin,                           // Instruction 'ldsmin'.
-    Ldsmina,                          // Instruction 'ldsmina'.
-    Ldsminab,                         // Instruction 'ldsminab'.
-    Ldsminah,                         // Instruction 'ldsminah'.
-    Ldsminal,                         // Instruction 'ldsminal'.
-    Ldsminalb,                        // Instruction 'ldsminalb'.
-    Ldsminalh,                        // Instruction 'ldsminalh'.
-    Ldsminb,                          // Instruction 'ldsminb'.
-    Ldsminh,                          // Instruction 'ldsminh'.
-    Ldsminl,                          // Instruction 'ldsminl'.
-    Ldsminlb,                         // Instruction 'ldsminlb'.
-    Ldsminlh,                         // Instruction 'ldsminlh'.
-    Ldtr,                             // Instruction 'ldtr'.
-    Ldtrb,                            // Instruction 'ldtrb'.
-    Ldtrh,                            // Instruction 'ldtrh'.
-    Ldtrsb,                           // Instruction 'ldtrsb'.
-    Ldtrsh,                           // Instruction 'ldtrsh'.
-    Ldtrsw,                           // Instruction 'ldtrsw'.
-    Ldumax,                           // Instruction 'ldumax'.
-    Ldumaxa,                          // Instruction 'ldumaxa'.
-    Ldumaxab,                         // Instruction 'ldumaxab'.
-    Ldumaxah,                         // Instruction 'ldumaxah'.
-    Ldumaxal,                         // Instruction 'ldumaxal'.
-    Ldumaxalb,                        // Instruction 'ldumaxalb'.
-    Ldumaxalh,                        // Instruction 'ldumaxalh'.
-    Ldumaxb,                          // Instruction 'ldumaxb'.
-    Ldumaxh,                          // Instruction 'ldumaxh'.
-    Ldumaxl,                          // Instruction 'ldumaxl'.
-    Ldumaxlb,                         // Instruction 'ldumaxlb'.
-    Ldumaxlh,                         // Instruction 'ldumaxlh'.
-    Ldumin,                           // Instruction 'ldumin'.
-    Ldumina,                          // Instruction 'ldumina'.
-    Lduminab,                         // Instruction 'lduminab'.
-    Lduminah,                         // Instruction 'lduminah'.
-    Lduminal,                         // Instruction 'lduminal'.
-    Lduminalb,                        // Instruction 'lduminalb'.
-    Lduminalh,                        // Instruction 'lduminalh'.
-    Lduminb,                          // Instruction 'lduminb'.
-    Lduminh,                          // Instruction 'lduminh'.
-    Lduminl,                          // Instruction 'lduminl'.
-    Lduminlb,                         // Instruction 'lduminlb'.
-    Lduminlh,                         // Instruction 'lduminlh'.
-    Ldur,                             // Instruction 'ldur'.
-    Ldurb,                            // Instruction 'ldurb'.
-    Ldurh,                            // Instruction 'ldurh'.
-    Ldursb,                           // Instruction 'ldursb'.
-    Ldursh,                           // Instruction 'ldursh'.
-    Ldursw,                           // Instruction 'ldursw'.
-    Ldxp,                             // Instruction 'ldxp'.
-    Ldxr,                             // Instruction 'ldxr'.
-    Ldxrb,                            // Instruction 'ldxrb'.
-    Ldxrh,                            // Instruction 'ldxrh'.
-    Lsl,                              // Instruction 'lsl'.
-    Lslv,                             // Instruction 'lslv'.
-    Lsr,                              // Instruction 'lsr'.
-    Lsrv,                             // Instruction 'lsrv'.
-    Madd,                             // Instruction 'madd'.
-    Mneg,                             // Instruction 'mneg'.
-    Mov,                              // Instruction 'mov'.
-    Movk,                             // Instruction 'movk'.
-    Movn,                             // Instruction 'movn'.
-    Movz,                             // Instruction 'movz'.
-    Mrs,                              // Instruction 'mrs'.
-    Msr,                              // Instruction 'msr'.
-    Msub,                             // Instruction 'msub'.
-    Mul,                              // Instruction 'mul'.
-    Mvn,                              // Instruction 'mvn'.
-    Neg,                              // Instruction 'neg'.
-    Negs,                             // Instruction 'negs'.
-    Ngc,                              // Instruction 'ngc'.
-    Ngcs,                             // Instruction 'ngcs'.
-    Nop,                              // Instruction 'nop'.
-    Orn,                              // Instruction 'orn'.
-    Orr,                              // Instruction 'orr'.
-    Pacda,                            // Instruction 'pacda'.
-    Pacdb,                            // Instruction 'pacdb'.
-    Pacdza,                           // Instruction 'pacdza'.
-    Pacdzb,                           // Instruction 'pacdzb'.
-    Pacga,                            // Instruction 'pacga'.
-    Prfm,                             // Instruction 'prfm'.
-    Pssbb,                            // Instruction 'pssbb'.
-    Rbit,                             // Instruction 'rbit'.
-    Ret,                              // Instruction 'ret'.
-    Rev,                              // Instruction 'rev'.
-    Rev16,                            // Instruction 'rev16'.
-    Rev32,                            // Instruction 'rev32'.
-    Rev64,                            // Instruction 'rev64'.
-    Ror,                              // Instruction 'ror'.
-    Rorv,                             // Instruction 'rorv'.
-    Sbc,                              // Instruction 'sbc'.
-    Sbcs,                             // Instruction 'sbcs'.
-    Sbfiz,                            // Instruction 'sbfiz'.
-    Sbfm,                             // Instruction 'sbfm'.
-    Sbfx,                             // Instruction 'sbfx'.
-    Sdiv,                             // Instruction 'sdiv'.
-    Setf8,                            // Instruction 'setf8'.
-    Setf16,                           // Instruction 'setf16'.
-    Sev,                              // Instruction 'sev'.
-    Sevl,                             // Instruction 'sevl'.
-    Smaddl,                           // Instruction 'smaddl'.
-    Smax,                             // Instruction 'smax'.
-    Smc,                              // Instruction 'smc'.
-    Smin,                             // Instruction 'smin'.
-    Smnegl,                           // Instruction 'smnegl'.
-    Smsubl,                           // Instruction 'smsubl'.
-    Smulh,                            // Instruction 'smulh'.
-    Smull,                            // Instruction 'smull'.
-    Ssbb,                             // Instruction 'ssbb'.
-    St2g,                             // Instruction 'st2g'.
-    Stadd,                            // Instruction 'stadd'.
-    Staddl,                           // Instruction 'staddl'.
-    Staddb,                           // Instruction 'staddb'.
-    Staddlb,                          // Instruction 'staddlb'.
-    Staddh,                           // Instruction 'staddh'.
-    Staddlh,                          // Instruction 'staddlh'.
-    Stclr,                            // Instruction 'stclr'.
-    Stclrl,                           // Instruction 'stclrl'.
-    Stclrb,                           // Instruction 'stclrb'.
-    Stclrlb,                          // Instruction 'stclrlb'.
-    Stclrh,                           // Instruction 'stclrh'.
-    Stclrlh,                          // Instruction 'stclrlh'.
-    Steor,                            // Instruction 'steor'.
-    Steorl,                           // Instruction 'steorl'.
-    Steorb,                           // Instruction 'steorb'.
-    Steorlb,                          // Instruction 'steorlb'.
-    Steorh,                           // Instruction 'steorh'.
-    Steorlh,                          // Instruction 'steorlh'.
-    Stg,                              // Instruction 'stg'.
-    Stgm,                             // Instruction 'stgm'.
-    Stgp,                             // Instruction 'stgp'.
-    Stllr,                            // Instruction 'stllr'.
-    Stllrb,                           // Instruction 'stllrb'.
-    Stllrh,                           // Instruction 'stllrh'.
-    Stlr,                             // Instruction 'stlr'.
-    Stlrb,                            // Instruction 'stlrb'.
-    Stlrh,                            // Instruction 'stlrh'.
-    Stlxp,                            // Instruction 'stlxp'.
-    Stlxr,                            // Instruction 'stlxr'.
-    Stlxrb,                           // Instruction 'stlxrb'.
-    Stlxrh,                           // Instruction 'stlxrh'.
-    Stnp,                             // Instruction 'stnp'.
-    Stp,                              // Instruction 'stp'.
-    Str,                              // Instruction 'str'.
-    Strb,                             // Instruction 'strb'.
-    Strh,                             // Instruction 'strh'.
-    Stset,                            // Instruction 'stset'.
-    Stsetl,                           // Instruction 'stsetl'.
-    Stsetb,                           // Instruction 'stsetb'.
-    Stsetlb,                          // Instruction 'stsetlb'.
-    Stseth,                           // Instruction 'stseth'.
-    Stsetlh,                          // Instruction 'stsetlh'.
-    Stsmax,                           // Instruction 'stsmax'.
-    Stsmaxl,                          // Instruction 'stsmaxl'.
-    Stsmaxb,                          // Instruction 'stsmaxb'.
-    Stsmaxlb,                         // Instruction 'stsmaxlb'.
-    Stsmaxh,                          // Instruction 'stsmaxh'.
-    Stsmaxlh,                         // Instruction 'stsmaxlh'.
-    Stsmin,                           // Instruction 'stsmin'.
-    Stsminl,                          // Instruction 'stsminl'.
-    Stsminb,                          // Instruction 'stsminb'.
-    Stsminlb,                         // Instruction 'stsminlb'.
-    Stsminh,                          // Instruction 'stsminh'.
-    Stsminlh,                         // Instruction 'stsminlh'.
-    Sttr,                             // Instruction 'sttr'.
-    Sttrb,                            // Instruction 'sttrb'.
-    Sttrh,                            // Instruction 'sttrh'.
-    Stumax,                           // Instruction 'stumax'.
-    Stumaxl,                          // Instruction 'stumaxl'.
-    Stumaxb,                          // Instruction 'stumaxb'.
-    Stumaxlb,                         // Instruction 'stumaxlb'.
-    Stumaxh,                          // Instruction 'stumaxh'.
-    Stumaxlh,                         // Instruction 'stumaxlh'.
-    Stumin,                           // Instruction 'stumin'.
-    Stuminl,                          // Instruction 'stuminl'.
-    Stuminb,                          // Instruction 'stuminb'.
-    Stuminlb,                         // Instruction 'stuminlb'.
-    Stuminh,                          // Instruction 'stuminh'.
-    Stuminlh,                         // Instruction 'stuminlh'.
-    Stur,                             // Instruction 'stur'.
-    Sturb,                            // Instruction 'sturb'.
-    Sturh,                            // Instruction 'sturh'.
-    Stxp,                             // Instruction 'stxp'.
-    Stxr,                             // Instruction 'stxr'.
-    Stxrb,                            // Instruction 'stxrb'.
-    Stxrh,                            // Instruction 'stxrh'.
-    Stz2g,                            // Instruction 'stz2g'.
-    Stzg,                             // Instruction 'stzg'.
-    Stzgm,                            // Instruction 'stzgm'.
-    Sub,                              // Instruction 'sub'.
-    Subg,                             // Instruction 'subg'.
-    Subp,                             // Instruction 'subp'.
-    Subps,                            // Instruction 'subps'.
-    Subs,                             // Instruction 'subs'.
-    Svc,                              // Instruction 'svc'.
-    Swp,                              // Instruction 'swp'.
-    Swpa,                             // Instruction 'swpa'.
-    Swpab,                            // Instruction 'swpab'.
-    Swpah,                            // Instruction 'swpah'.
-    Swpal,                            // Instruction 'swpal'.
-    Swpalb,                           // Instruction 'swpalb'.
-    Swpalh,                           // Instruction 'swpalh'.
-    Swpb,                             // Instruction 'swpb'.
-    Swph,                             // Instruction 'swph'.
-    Swpl,                             // Instruction 'swpl'.
-    Swplb,                            // Instruction 'swplb'.
-    Swplh,                            // Instruction 'swplh'.
-    Sxtb,                             // Instruction 'sxtb'.
-    Sxth,                             // Instruction 'sxth'.
-    Sxtw,                             // Instruction 'sxtw'.
-    Sys,                              // Instruction 'sys'.
-    Tlbi,                             // Instruction 'tlbi'.
-    Tst,                              // Instruction 'tst'.
-    Tbnz,                             // Instruction 'tbnz'.
-    Tbz,                              // Instruction 'tbz'.
-    Ubfiz,                            // Instruction 'ubfiz'.
-    Ubfm,                             // Instruction 'ubfm'.
-    Ubfx,                             // Instruction 'ubfx'.
-    Udf,                              // Instruction 'udf'.
-    Udiv,                             // Instruction 'udiv'.
-    Umaddl,                           // Instruction 'umaddl'.
-    Umax,                             // Instruction 'umax'.
-    Umin,                             // Instruction 'umin'.
-    Umnegl,                           // Instruction 'umnegl'.
-    Umull,                            // Instruction 'umull'.
-    Umulh,                            // Instruction 'umulh'.
-    Umsubl,                           // Instruction 'umsubl'.
-    Uxtb,                             // Instruction 'uxtb'.
-    Uxth,                             // Instruction 'uxth'.
-    Wfe,                              // Instruction 'wfe'.
-    Wfi,                              // Instruction 'wfi'.
-    Xaflag,                           // Instruction 'xaflag'.
-    Xpacd,                            // Instruction 'xpacd'.
-    Xpaci,                            // Instruction 'xpaci'.
-    Xpaclri,                          // Instruction 'xpaclri'.
-    Yield,                            // Instruction 'yield'.
-    Abs_v,                            // Instruction 'abs' {ASIMD}.
-    Add_v,                            // Instruction 'add' {ASIMD}.
-    Addhn_v,                          // Instruction 'addhn' {ASIMD}.
-    Addhn2_v,                         // Instruction 'addhn2' {ASIMD}.
-    Addp_v,                           // Instruction 'addp' {ASIMD}.
-    Addv_v,                           // Instruction 'addv' {ASIMD}.
-    Aesd_v,                           // Instruction 'aesd' {ASIMD}.
-    Aese_v,                           // Instruction 'aese' {ASIMD}.
-    Aesimc_v,                         // Instruction 'aesimc' {ASIMD}.
-    Aesmc_v,                          // Instruction 'aesmc' {ASIMD}.
-    And_v,                            // Instruction 'and' {ASIMD}.
-    Bcax_v,                           // Instruction 'bcax' {ASIMD}.
-    Bfcvt_v,                          // Instruction 'bfcvt' {ASIMD}.
-    Bfcvtn_v,                         // Instruction 'bfcvtn' {ASIMD}.
-    Bfcvtn2_v,                        // Instruction 'bfcvtn2' {ASIMD}.
-    Bfdot_v,                          // Instruction 'bfdot' {ASIMD}.
-    Bfmlalb_v,                        // Instruction 'bfmlalb' {ASIMD}.
-    Bfmlalt_v,                        // Instruction 'bfmlalt' {ASIMD}.
-    Bfmmla_v,                         // Instruction 'bfmmla' {ASIMD}.
-    Bic_v,                            // Instruction 'bic' {ASIMD}.
-    Bif_v,                            // Instruction 'bif' {ASIMD}.
-    Bit_v,                            // Instruction 'bit' {ASIMD}.
-    Bsl_v,                            // Instruction 'bsl' {ASIMD}.
-    Cls_v,                            // Instruction 'cls' {ASIMD}.
-    Clz_v,                            // Instruction 'clz' {ASIMD}.
-    Cmeq_v,                           // Instruction 'cmeq' {ASIMD}.
-    Cmge_v,                           // Instruction 'cmge' {ASIMD}.
-    Cmgt_v,                           // Instruction 'cmgt' {ASIMD}.
-    Cmhi_v,                           // Instruction 'cmhi' {ASIMD}.
-    Cmhs_v,                           // Instruction 'cmhs' {ASIMD}.
-    Cmle_v,                           // Instruction 'cmle' {ASIMD}.
-    Cmlt_v,                           // Instruction 'cmlt' {ASIMD}.
-    Cmtst_v,                          // Instruction 'cmtst' {ASIMD}.
-    Cnt_v,                            // Instruction 'cnt' {ASIMD}.
-    Dup_v,                            // Instruction 'dup' {ASIMD}.
-    Eor_v,                            // Instruction 'eor' {ASIMD}.
-    Eor3_v,                           // Instruction 'eor3' {ASIMD}.
-    Ext_v,                            // Instruction 'ext' {ASIMD}.
-    Fabd_v,                           // Instruction 'fabd' {ASIMD}.
-    Fabs_v,                           // Instruction 'fabs' {ASIMD}.
-    Facge_v,                          // Instruction 'facge' {ASIMD}.
-    Facgt_v,                          // Instruction 'facgt' {ASIMD}.
-    Fadd_v,                           // Instruction 'fadd' {ASIMD}.
-    Faddp_v,                          // Instruction 'faddp' {ASIMD}.
-    Fcadd_v,                          // Instruction 'fcadd' {ASIMD}.
-    Fccmp_v,                          // Instruction 'fccmp' {ASIMD}.
-    Fccmpe_v,                         // Instruction 'fccmpe' {ASIMD}.
-    Fcmeq_v,                          // Instruction 'fcmeq' {ASIMD}.
-    Fcmge_v,                          // Instruction 'fcmge' {ASIMD}.
-    Fcmgt_v,                          // Instruction 'fcmgt' {ASIMD}.
-    Fcmla_v,                          // Instruction 'fcmla' {ASIMD}.
-    Fcmle_v,                          // Instruction 'fcmle' {ASIMD}.
-    Fcmlt_v,                          // Instruction 'fcmlt' {ASIMD}.
-    Fcmp_v,                           // Instruction 'fcmp' {ASIMD}.
-    Fcmpe_v,                          // Instruction 'fcmpe' {ASIMD}.
-    Fcsel_v,                          // Instruction 'fcsel' {ASIMD}.
-    Fcvt_v,                           // Instruction 'fcvt' {ASIMD}.
-    Fcvtas_v,                         // Instruction 'fcvtas' {ASIMD}.
-    Fcvtau_v,                         // Instruction 'fcvtau' {ASIMD}.
-    Fcvtl_v,                          // Instruction 'fcvtl' {ASIMD}.
-    Fcvtl2_v,                         // Instruction 'fcvtl2' {ASIMD}.
-    Fcvtms_v,                         // Instruction 'fcvtms' {ASIMD}.
-    Fcvtmu_v,                         // Instruction 'fcvtmu' {ASIMD}.
-    Fcvtn_v,                          // Instruction 'fcvtn' {ASIMD}.
-    Fcvtn2_v,                         // Instruction 'fcvtn2' {ASIMD}.
-    Fcvtns_v,                         // Instruction 'fcvtns' {ASIMD}.
-    Fcvtnu_v,                         // Instruction 'fcvtnu' {ASIMD}.
-    Fcvtps_v,                         // Instruction 'fcvtps' {ASIMD}.
-    Fcvtpu_v,                         // Instruction 'fcvtpu' {ASIMD}.
-    Fcvtxn_v,                         // Instruction 'fcvtxn' {ASIMD}.
-    Fcvtxn2_v,                        // Instruction 'fcvtxn2' {ASIMD}.
-    Fcvtzs_v,                         // Instruction 'fcvtzs' {ASIMD}.
-    Fcvtzu_v,                         // Instruction 'fcvtzu' {ASIMD}.
-    Fdiv_v,                           // Instruction 'fdiv' {ASIMD}.
-    Fjcvtzs_v,                        // Instruction 'fjcvtzs' {ASIMD}.
-    Fmadd_v,                          // Instruction 'fmadd' {ASIMD}.
-    Fmax_v,                           // Instruction 'fmax' {ASIMD}.
-    Fmaxnm_v,                         // Instruction 'fmaxnm' {ASIMD}.
-    Fmaxnmp_v,                        // Instruction 'fmaxnmp' {ASIMD}.
-    Fmaxnmv_v,                        // Instruction 'fmaxnmv' {ASIMD}.
-    Fmaxp_v,                          // Instruction 'fmaxp' {ASIMD}.
-    Fmaxv_v,                          // Instruction 'fmaxv' {ASIMD}.
-    Fmin_v,                           // Instruction 'fmin' {ASIMD}.
-    Fminnm_v,                         // Instruction 'fminnm' {ASIMD}.
-    Fminnmp_v,                        // Instruction 'fminnmp' {ASIMD}.
-    Fminnmv_v,                        // Instruction 'fminnmv' {ASIMD}.
-    Fminp_v,                          // Instruction 'fminp' {ASIMD}.
-    Fminv_v,                          // Instruction 'fminv' {ASIMD}.
-    Fmla_v,                           // Instruction 'fmla' {ASIMD}.
-    Fmlal_v,                          // Instruction 'fmlal' {ASIMD}.
-    Fmlal2_v,                         // Instruction 'fmlal2' {ASIMD}.
-    Fmls_v,                           // Instruction 'fmls' {ASIMD}.
-    Fmlsl_v,                          // Instruction 'fmlsl' {ASIMD}.
-    Fmlsl2_v,                         // Instruction 'fmlsl2' {ASIMD}.
-    Fmov_v,                           // Instruction 'fmov' {ASIMD}.
-    Fmsub_v,                          // Instruction 'fmsub' {ASIMD}.
-    Fmul_v,                           // Instruction 'fmul' {ASIMD}.
-    Fmulx_v,                          // Instruction 'fmulx' {ASIMD}.
-    Fneg_v,                           // Instruction 'fneg' {ASIMD}.
-    Fnmadd_v,                         // Instruction 'fnmadd' {ASIMD}.
-    Fnmsub_v,                         // Instruction 'fnmsub' {ASIMD}.
-    Fnmul_v,                          // Instruction 'fnmul' {ASIMD}.
-    Frecpe_v,                         // Instruction 'frecpe' {ASIMD}.
-    Frecps_v,                         // Instruction 'frecps' {ASIMD}.
-    Frecpx_v,                         // Instruction 'frecpx' {ASIMD}.
-    Frint32x_v,                       // Instruction 'frint32x' {ASIMD}.
-    Frint32z_v,                       // Instruction 'frint32z' {ASIMD}.
-    Frint64x_v,                       // Instruction 'frint64x' {ASIMD}.
-    Frint64z_v,                       // Instruction 'frint64z' {ASIMD}.
-    Frinta_v,                         // Instruction 'frinta' {ASIMD}.
-    Frinti_v,                         // Instruction 'frinti' {ASIMD}.
-    Frintm_v,                         // Instruction 'frintm' {ASIMD}.
-    Frintn_v,                         // Instruction 'frintn' {ASIMD}.
-    Frintp_v,                         // Instruction 'frintp' {ASIMD}.
-    Frintx_v,                         // Instruction 'frintx' {ASIMD}.
-    Frintz_v,                         // Instruction 'frintz' {ASIMD}.
-    Frsqrte_v,                        // Instruction 'frsqrte' {ASIMD}.
-    Frsqrts_v,                        // Instruction 'frsqrts' {ASIMD}.
-    Fsqrt_v,                          // Instruction 'fsqrt' {ASIMD}.
-    Fsub_v,                           // Instruction 'fsub' {ASIMD}.
-    Ins_v,                            // Instruction 'ins' {ASIMD}.
-    Ld1_v,                            // Instruction 'ld1' {ASIMD}.
-    Ld1r_v,                           // Instruction 'ld1r' {ASIMD}.
-    Ld2_v,                            // Instruction 'ld2' {ASIMD}.
-    Ld2r_v,                           // Instruction 'ld2r' {ASIMD}.
-    Ld3_v,                            // Instruction 'ld3' {ASIMD}.
-    Ld3r_v,                           // Instruction 'ld3r' {ASIMD}.
-    Ld4_v,                            // Instruction 'ld4' {ASIMD}.
-    Ld4r_v,                           // Instruction 'ld4r' {ASIMD}.
-    Ldnp_v,                           // Instruction 'ldnp' {ASIMD}.
-    Ldp_v,                            // Instruction 'ldp' {ASIMD}.
-    Ldr_v,                            // Instruction 'ldr' {ASIMD}.
-    Ldur_v,                           // Instruction 'ldur' {ASIMD}.
-    Mla_v,                            // Instruction 'mla' {ASIMD}.
-    Mls_v,                            // Instruction 'mls' {ASIMD}.
-    Mov_v,                            // Instruction 'mov' {ASIMD}.
-    Movi_v,                           // Instruction 'movi' {ASIMD}.
-    Mul_v,                            // Instruction 'mul' {ASIMD}.
-    Mvn_v,                            // Instruction 'mvn' {ASIMD}.
-    Mvni_v,                           // Instruction 'mvni' {ASIMD}.
-    Neg_v,                            // Instruction 'neg' {ASIMD}.
-    Not_v,                            // Instruction 'not' {ASIMD}.
-    Orn_v,                            // Instruction 'orn' {ASIMD}.
-    Orr_v,                            // Instruction 'orr' {ASIMD}.
-    Pmul_v,                           // Instruction 'pmul' {ASIMD}.
-    Pmull_v,                          // Instruction 'pmull' {ASIMD}.
-    Pmull2_v,                         // Instruction 'pmull2' {ASIMD}.
-    Raddhn_v,                         // Instruction 'raddhn' {ASIMD}.
-    Raddhn2_v,                        // Instruction 'raddhn2' {ASIMD}.
-    Rax1_v,                           // Instruction 'rax1' {ASIMD}.
-    Rbit_v,                           // Instruction 'rbit' {ASIMD}.
-    Rev16_v,                          // Instruction 'rev16' {ASIMD}.
-    Rev32_v,                          // Instruction 'rev32' {ASIMD}.
-    Rev64_v,                          // Instruction 'rev64' {ASIMD}.
-    Rshrn_v,                          // Instruction 'rshrn' {ASIMD}.
-    Rshrn2_v,                         // Instruction 'rshrn2' {ASIMD}.
-    Rsubhn_v,                         // Instruction 'rsubhn' {ASIMD}.
-    Rsubhn2_v,                        // Instruction 'rsubhn2' {ASIMD}.
-    Saba_v,                           // Instruction 'saba' {ASIMD}.
-    Sabal_v,                          // Instruction 'sabal' {ASIMD}.
-    Sabal2_v,                         // Instruction 'sabal2' {ASIMD}.
-    Sabd_v,                           // Instruction 'sabd' {ASIMD}.
-    Sabdl_v,                          // Instruction 'sabdl' {ASIMD}.
-    Sabdl2_v,                         // Instruction 'sabdl2' {ASIMD}.
-    Sadalp_v,                         // Instruction 'sadalp' {ASIMD}.
-    Saddl_v,                          // Instruction 'saddl' {ASIMD}.
-    Saddl2_v,                         // Instruction 'saddl2' {ASIMD}.
-    Saddlp_v,                         // Instruction 'saddlp' {ASIMD}.
-    Saddlv_v,                         // Instruction 'saddlv' {ASIMD}.
-    Saddw_v,                          // Instruction 'saddw' {ASIMD}.
-    Saddw2_v,                         // Instruction 'saddw2' {ASIMD}.
-    Scvtf_v,                          // Instruction 'scvtf' {ASIMD}.
-    Sdot_v,                           // Instruction 'sdot' {ASIMD}.
-    Sha1c_v,                          // Instruction 'sha1c' {ASIMD}.
-    Sha1h_v,                          // Instruction 'sha1h' {ASIMD}.
-    Sha1m_v,                          // Instruction 'sha1m' {ASIMD}.
-    Sha1p_v,                          // Instruction 'sha1p' {ASIMD}.
-    Sha1su0_v,                        // Instruction 'sha1su0' {ASIMD}.
-    Sha1su1_v,                        // Instruction 'sha1su1' {ASIMD}.
-    Sha256h_v,                        // Instruction 'sha256h' {ASIMD}.
-    Sha256h2_v,                       // Instruction 'sha256h2' {ASIMD}.
-    Sha256su0_v,                      // Instruction 'sha256su0' {ASIMD}.
-    Sha256su1_v,                      // Instruction 'sha256su1' {ASIMD}.
-    Sha512h_v,                        // Instruction 'sha512h' {ASIMD}.
-    Sha512h2_v,                       // Instruction 'sha512h2' {ASIMD}.
-    Sha512su0_v,                      // Instruction 'sha512su0' {ASIMD}.
-    Sha512su1_v,                      // Instruction 'sha512su1' {ASIMD}.
-    Shadd_v,                          // Instruction 'shadd' {ASIMD}.
-    Shl_v,                            // Instruction 'shl' {ASIMD}.
-    Shll_v,                           // Instruction 'shll' {ASIMD}.
-    Shll2_v,                          // Instruction 'shll2' {ASIMD}.
-    Shrn_v,                           // Instruction 'shrn' {ASIMD}.
-    Shrn2_v,                          // Instruction 'shrn2' {ASIMD}.
-    Shsub_v,                          // Instruction 'shsub' {ASIMD}.
-    Sli_v,                            // Instruction 'sli' {ASIMD}.
-    Sm3partw1_v,                      // Instruction 'sm3partw1' {ASIMD}.
-    Sm3partw2_v,                      // Instruction 'sm3partw2' {ASIMD}.
-    Sm3ss1_v,                         // Instruction 'sm3ss1' {ASIMD}.
-    Sm3tt1a_v,                        // Instruction 'sm3tt1a' {ASIMD}.
-    Sm3tt1b_v,                        // Instruction 'sm3tt1b' {ASIMD}.
-    Sm3tt2a_v,                        // Instruction 'sm3tt2a' {ASIMD}.
-    Sm3tt2b_v,                        // Instruction 'sm3tt2b' {ASIMD}.
-    Sm4e_v,                           // Instruction 'sm4e' {ASIMD}.
-    Sm4ekey_v,                        // Instruction 'sm4ekey' {ASIMD}.
-    Smax_v,                           // Instruction 'smax' {ASIMD}.
-    Smaxp_v,                          // Instruction 'smaxp' {ASIMD}.
-    Smaxv_v,                          // Instruction 'smaxv' {ASIMD}.
-    Smin_v,                           // Instruction 'smin' {ASIMD}.
-    Sminp_v,                          // Instruction 'sminp' {ASIMD}.
-    Sminv_v,                          // Instruction 'sminv' {ASIMD}.
-    Smlal_v,                          // Instruction 'smlal' {ASIMD}.
-    Smlal2_v,                         // Instruction 'smlal2' {ASIMD}.
-    Smlsl_v,                          // Instruction 'smlsl' {ASIMD}.
-    Smlsl2_v,                         // Instruction 'smlsl2' {ASIMD}.
-    Smmla_v,                          // Instruction 'smmla' {ASIMD}.
-    Smov_v,                           // Instruction 'smov' {ASIMD}.
-    Smull_v,                          // Instruction 'smull' {ASIMD}.
-    Smull2_v,                         // Instruction 'smull2' {ASIMD}.
-    Sqabs_v,                          // Instruction 'sqabs' {ASIMD}.
-    Sqadd_v,                          // Instruction 'sqadd' {ASIMD}.
-    Sqdmlal_v,                        // Instruction 'sqdmlal' {ASIMD}.
-    Sqdmlal2_v,                       // Instruction 'sqdmlal2' {ASIMD}.
-    Sqdmlsl_v,                        // Instruction 'sqdmlsl' {ASIMD}.
-    Sqdmlsl2_v,                       // Instruction 'sqdmlsl2' {ASIMD}.
-    Sqdmulh_v,                        // Instruction 'sqdmulh' {ASIMD}.
-    Sqdmull_v,                        // Instruction 'sqdmull' {ASIMD}.
-    Sqdmull2_v,                       // Instruction 'sqdmull2' {ASIMD}.
-    Sqneg_v,                          // Instruction 'sqneg' {ASIMD}.
-    Sqrdmlah_v,                       // Instruction 'sqrdmlah' {ASIMD}.
-    Sqrdmlsh_v,                       // Instruction 'sqrdmlsh' {ASIMD}.
-    Sqrdmulh_v,                       // Instruction 'sqrdmulh' {ASIMD}.
-    Sqrshl_v,                         // Instruction 'sqrshl' {ASIMD}.
-    Sqrshrn_v,                        // Instruction 'sqrshrn' {ASIMD}.
-    Sqrshrn2_v,                       // Instruction 'sqrshrn2' {ASIMD}.
-    Sqrshrun_v,                       // Instruction 'sqrshrun' {ASIMD}.
-    Sqrshrun2_v,                      // Instruction 'sqrshrun2' {ASIMD}.
-    Sqshl_v,                          // Instruction 'sqshl' {ASIMD}.
-    Sqshlu_v,                         // Instruction 'sqshlu' {ASIMD}.
-    Sqshrn_v,                         // Instruction 'sqshrn' {ASIMD}.
-    Sqshrn2_v,                        // Instruction 'sqshrn2' {ASIMD}.
-    Sqshrun_v,                        // Instruction 'sqshrun' {ASIMD}.
-    Sqshrun2_v,                       // Instruction 'sqshrun2' {ASIMD}.
-    Sqsub_v,                          // Instruction 'sqsub' {ASIMD}.
-    Sqxtn_v,                          // Instruction 'sqxtn' {ASIMD}.
-    Sqxtn2_v,                         // Instruction 'sqxtn2' {ASIMD}.
-    Sqxtun_v,                         // Instruction 'sqxtun' {ASIMD}.
-    Sqxtun2_v,                        // Instruction 'sqxtun2' {ASIMD}.
-    Srhadd_v,                         // Instruction 'srhadd' {ASIMD}.
-    Sri_v,                            // Instruction 'sri' {ASIMD}.
-    Srshl_v,                          // Instruction 'srshl' {ASIMD}.
-    Srshr_v,                          // Instruction 'srshr' {ASIMD}.
-    Srsra_v,                          // Instruction 'srsra' {ASIMD}.
-    Sshl_v,                           // Instruction 'sshl' {ASIMD}.
-    Sshll_v,                          // Instruction 'sshll' {ASIMD}.
-    Sshll2_v,                         // Instruction 'sshll2' {ASIMD}.
-    Sshr_v,                           // Instruction 'sshr' {ASIMD}.
-    Ssra_v,                           // Instruction 'ssra' {ASIMD}.
-    Ssubl_v,                          // Instruction 'ssubl' {ASIMD}.
-    Ssubl2_v,                         // Instruction 'ssubl2' {ASIMD}.
-    Ssubw_v,                          // Instruction 'ssubw' {ASIMD}.
-    Ssubw2_v,                         // Instruction 'ssubw2' {ASIMD}.
-    St1_v,                            // Instruction 'st1' {ASIMD}.
-    St2_v,                            // Instruction 'st2' {ASIMD}.
-    St3_v,                            // Instruction 'st3' {ASIMD}.
-    St4_v,                            // Instruction 'st4' {ASIMD}.
-    Stnp_v,                           // Instruction 'stnp' {ASIMD}.
-    Stp_v,                            // Instruction 'stp' {ASIMD}.
-    Str_v,                            // Instruction 'str' {ASIMD}.
-    Stur_v,                           // Instruction 'stur' {ASIMD}.
-    Sub_v,                            // Instruction 'sub' {ASIMD}.
-    Subhn_v,                          // Instruction 'subhn' {ASIMD}.
-    Subhn2_v,                         // Instruction 'subhn2' {ASIMD}.
-    Sudot_v,                          // Instruction 'sudot' {ASIMD}.
-    Suqadd_v,                         // Instruction 'suqadd' {ASIMD}.
-    Sxtl_v,                           // Instruction 'sxtl' {ASIMD}.
-    Sxtl2_v,                          // Instruction 'sxtl2' {ASIMD}.
-    Tbl_v,                            // Instruction 'tbl' {ASIMD}.
-    Tbx_v,                            // Instruction 'tbx' {ASIMD}.
-    Trn1_v,                           // Instruction 'trn1' {ASIMD}.
-    Trn2_v,                           // Instruction 'trn2' {ASIMD}.
-    Uaba_v,                           // Instruction 'uaba' {ASIMD}.
-    Uabal_v,                          // Instruction 'uabal' {ASIMD}.
-    Uabal2_v,                         // Instruction 'uabal2' {ASIMD}.
-    Uabd_v,                           // Instruction 'uabd' {ASIMD}.
-    Uabdl_v,                          // Instruction 'uabdl' {ASIMD}.
-    Uabdl2_v,                         // Instruction 'uabdl2' {ASIMD}.
-    Uadalp_v,                         // Instruction 'uadalp' {ASIMD}.
-    Uaddl_v,                          // Instruction 'uaddl' {ASIMD}.
-    Uaddl2_v,                         // Instruction 'uaddl2' {ASIMD}.
-    Uaddlp_v,                         // Instruction 'uaddlp' {ASIMD}.
-    Uaddlv_v,                         // Instruction 'uaddlv' {ASIMD}.
-    Uaddw_v,                          // Instruction 'uaddw' {ASIMD}.
-    Uaddw2_v,                         // Instruction 'uaddw2' {ASIMD}.
-    Ucvtf_v,                          // Instruction 'ucvtf' {ASIMD}.
-    Udot_v,                           // Instruction 'udot' {ASIMD}.
-    Uhadd_v,                          // Instruction 'uhadd' {ASIMD}.
-    Uhsub_v,                          // Instruction 'uhsub' {ASIMD}.
-    Umax_v,                           // Instruction 'umax' {ASIMD}.
-    Umaxp_v,                          // Instruction 'umaxp' {ASIMD}.
-    Umaxv_v,                          // Instruction 'umaxv' {ASIMD}.
-    Umin_v,                           // Instruction 'umin' {ASIMD}.
-    Uminp_v,                          // Instruction 'uminp' {ASIMD}.
-    Uminv_v,                          // Instruction 'uminv' {ASIMD}.
-    Umlal_v,                          // Instruction 'umlal' {ASIMD}.
-    Umlal2_v,                         // Instruction 'umlal2' {ASIMD}.
-    Umlsl_v,                          // Instruction 'umlsl' {ASIMD}.
-    Umlsl2_v,                         // Instruction 'umlsl2' {ASIMD}.
-    Ummla_v,                          // Instruction 'ummla' {ASIMD}.
-    Umov_v,                           // Instruction 'umov' {ASIMD}.
-    Umull_v,                          // Instruction 'umull' {ASIMD}.
-    Umull2_v,                         // Instruction 'umull2' {ASIMD}.
-    Uqadd_v,                          // Instruction 'uqadd' {ASIMD}.
-    Uqrshl_v,                         // Instruction 'uqrshl' {ASIMD}.
-    Uqrshrn_v,                        // Instruction 'uqrshrn' {ASIMD}.
-    Uqrshrn2_v,                       // Instruction 'uqrshrn2' {ASIMD}.
-    Uqshl_v,                          // Instruction 'uqshl' {ASIMD}.
-    Uqshrn_v,                         // Instruction 'uqshrn' {ASIMD}.
-    Uqshrn2_v,                        // Instruction 'uqshrn2' {ASIMD}.
-    Uqsub_v,                          // Instruction 'uqsub' {ASIMD}.
-    Uqxtn_v,                          // Instruction 'uqxtn' {ASIMD}.
-    Uqxtn2_v,                         // Instruction 'uqxtn2' {ASIMD}.
-    Urecpe_v,                         // Instruction 'urecpe' {ASIMD}.
-    Urhadd_v,                         // Instruction 'urhadd' {ASIMD}.
-    Urshl_v,                          // Instruction 'urshl' {ASIMD}.
-    Urshr_v,                          // Instruction 'urshr' {ASIMD}.
-    Ursqrte_v,                        // Instruction 'ursqrte' {ASIMD}.
-    Ursra_v,                          // Instruction 'ursra' {ASIMD}.
-    Usdot_v,                          // Instruction 'usdot' {ASIMD}.
-    Ushl_v,                           // Instruction 'ushl' {ASIMD}.
-    Ushll_v,                          // Instruction 'ushll' {ASIMD}.
-    Ushll2_v,                         // Instruction 'ushll2' {ASIMD}.
-    Ushr_v,                           // Instruction 'ushr' {ASIMD}.
-    Usmmla_v,                         // Instruction 'usmmla' {ASIMD}.
-    Usqadd_v,                         // Instruction 'usqadd' {ASIMD}.
-    Usra_v,                           // Instruction 'usra' {ASIMD}.
-    Usubl_v,                          // Instruction 'usubl' {ASIMD}.
-    Usubl2_v,                         // Instruction 'usubl2' {ASIMD}.
-    Usubw_v,                          // Instruction 'usubw' {ASIMD}.
-    Usubw2_v,                         // Instruction 'usubw2' {ASIMD}.
-    Uxtl_v,                           // Instruction 'uxtl' {ASIMD}.
-    Uxtl2_v,                          // Instruction 'uxtl2' {ASIMD}.
-    Uzp1_v,                           // Instruction 'uzp1' {ASIMD}.
-    Uzp2_v,                           // Instruction 'uzp2' {ASIMD}.
-    Xar_v,                            // Instruction 'xar' {ASIMD}.
-    Xtn_v,                            // Instruction 'xtn' {ASIMD}.
-    Xtn2_v,                           // Instruction 'xtn2' {ASIMD}.
-    Zip1_v,                           // Instruction 'zip1' {ASIMD}.
-    Zip2_v,                           // Instruction 'zip2' {ASIMD}.
+    None = 0, // Instruction ''.
+    Abs, // Instruction 'abs'.
+    Adc, // Instruction 'adc'.
+    Adcs, // Instruction 'adcs'.
+    Add, // Instruction 'add'.
+    Addg, // Instruction 'addg'.
+    Adds, // Instruction 'adds'.
+    Adr, // Instruction 'adr'.
+    Adrp, // Instruction 'adrp'.
+    And, // Instruction 'and'.
+    Ands, // Instruction 'ands'.
+    Asr, // Instruction 'asr'.
+    Asrv, // Instruction 'asrv'.
+    At, // Instruction 'at'.
+    Autda, // Instruction 'autda'.
+    Autdza, // Instruction 'autdza'.
+    Autdb, // Instruction 'autdb'.
+    Autdzb, // Instruction 'autdzb'.
+    Autia, // Instruction 'autia'.
+    Autia1716, // Instruction 'autia1716'.
+    Autiasp, // Instruction 'autiasp'.
+    Autiaz, // Instruction 'autiaz'.
+    Autib, // Instruction 'autib'.
+    Autib1716, // Instruction 'autib1716'.
+    Autibsp, // Instruction 'autibsp'.
+    Autibz, // Instruction 'autibz'.
+    Autiza, // Instruction 'autiza'.
+    Autizb, // Instruction 'autizb'.
+    Axflag, // Instruction 'axflag'.
+    B, // Instruction 'b'.
+    Bc, // Instruction 'bc'.
+    Bfc, // Instruction 'bfc'.
+    Bfi, // Instruction 'bfi'.
+    Bfm, // Instruction 'bfm'.
+    Bfxil, // Instruction 'bfxil'.
+    Bic, // Instruction 'bic'.
+    Bics, // Instruction 'bics'.
+    Bl, // Instruction 'bl'.
+    Blr, // Instruction 'blr'.
+    Br, // Instruction 'br'.
+    Brk, // Instruction 'brk'.
+    Bti, // Instruction 'bti'.
+    Cas, // Instruction 'cas'.
+    Casa, // Instruction 'casa'.
+    Casab, // Instruction 'casab'.
+    Casah, // Instruction 'casah'.
+    Casal, // Instruction 'casal'.
+    Casalb, // Instruction 'casalb'.
+    Casalh, // Instruction 'casalh'.
+    Casb, // Instruction 'casb'.
+    Cash, // Instruction 'cash'.
+    Casl, // Instruction 'casl'.
+    Caslb, // Instruction 'caslb'.
+    Caslh, // Instruction 'caslh'.
+    Casp, // Instruction 'casp'.
+    Caspa, // Instruction 'caspa'.
+    Caspal, // Instruction 'caspal'.
+    Caspl, // Instruction 'caspl'.
+    Cbnz, // Instruction 'cbnz'.
+    Cbz, // Instruction 'cbz'.
+    Ccmn, // Instruction 'ccmn'.
+    Ccmp, // Instruction 'ccmp'.
+    Cfinv, // Instruction 'cfinv'.
+    Chkfeat, // Instruction 'chkfeat'.
+    Cinc, // Instruction 'cinc'.
+    Cinv, // Instruction 'cinv'.
+    Clrbhb, // Instruction 'clrbhb'.
+    Clrex, // Instruction 'clrex'.
+    Cls, // Instruction 'cls'.
+    Clz, // Instruction 'clz'.
+    Cmn, // Instruction 'cmn'.
+    Cmp, // Instruction 'cmp'.
+    Cmpp, // Instruction 'cmpp'.
+    Cneg, // Instruction 'cneg'.
+    Cnt, // Instruction 'cnt'.
+    Crc32b, // Instruction 'crc32b'.
+    Crc32cb, // Instruction 'crc32cb'.
+    Crc32ch, // Instruction 'crc32ch'.
+    Crc32cw, // Instruction 'crc32cw'.
+    Crc32cx, // Instruction 'crc32cx'.
+    Crc32h, // Instruction 'crc32h'.
+    Crc32w, // Instruction 'crc32w'.
+    Crc32x, // Instruction 'crc32x'.
+    Csdb, // Instruction 'csdb'.
+    Csel, // Instruction 'csel'.
+    Cset, // Instruction 'cset'.
+    Csetm, // Instruction 'csetm'.
+    Csinc, // Instruction 'csinc'.
+    Csinv, // Instruction 'csinv'.
+    Csneg, // Instruction 'csneg'.
+    Ctz, // Instruction 'ctz'.
+    Dc, // Instruction 'dc'.
+    Dcps1, // Instruction 'dcps1'.
+    Dcps2, // Instruction 'dcps2'.
+    Dcps3, // Instruction 'dcps3'.
+    Dgh, // Instruction 'dgh'.
+    Dmb, // Instruction 'dmb'.
+    Drps, // Instruction 'drps'.
+    Dsb, // Instruction 'dsb'.
+    Eon, // Instruction 'eon'.
+    Eor, // Instruction 'eor'.
+    Esb, // Instruction 'esb'.
+    Extr, // Instruction 'extr'.
+    Eret, // Instruction 'eret'.
+    Gmi, // Instruction 'gmi'.
+    Hint, // Instruction 'hint'.
+    Hlt, // Instruction 'hlt'.
+    Hvc, // Instruction 'hvc'.
+    Ic, // Instruction 'ic'.
+    Isb, // Instruction 'isb'.
+    Ldadd, // Instruction 'ldadd'.
+    Ldadda, // Instruction 'ldadda'.
+    Ldaddab, // Instruction 'ldaddab'.
+    Ldaddah, // Instruction 'ldaddah'.
+    Ldaddal, // Instruction 'ldaddal'.
+    Ldaddalb, // Instruction 'ldaddalb'.
+    Ldaddalh, // Instruction 'ldaddalh'.
+    Ldaddb, // Instruction 'ldaddb'.
+    Ldaddh, // Instruction 'ldaddh'.
+    Ldaddl, // Instruction 'ldaddl'.
+    Ldaddlb, // Instruction 'ldaddlb'.
+    Ldaddlh, // Instruction 'ldaddlh'.
+    Ldar, // Instruction 'ldar'.
+    Ldarb, // Instruction 'ldarb'.
+    Ldarh, // Instruction 'ldarh'.
+    Ldaxp, // Instruction 'ldaxp'.
+    Ldaxr, // Instruction 'ldaxr'.
+    Ldaxrb, // Instruction 'ldaxrb'.
+    Ldaxrh, // Instruction 'ldaxrh'.
+    Ldclr, // Instruction 'ldclr'.
+    Ldclra, // Instruction 'ldclra'.
+    Ldclrab, // Instruction 'ldclrab'.
+    Ldclrah, // Instruction 'ldclrah'.
+    Ldclral, // Instruction 'ldclral'.
+    Ldclralb, // Instruction 'ldclralb'.
+    Ldclralh, // Instruction 'ldclralh'.
+    Ldclrb, // Instruction 'ldclrb'.
+    Ldclrh, // Instruction 'ldclrh'.
+    Ldclrl, // Instruction 'ldclrl'.
+    Ldclrlb, // Instruction 'ldclrlb'.
+    Ldclrlh, // Instruction 'ldclrlh'.
+    Ldeor, // Instruction 'ldeor'.
+    Ldeora, // Instruction 'ldeora'.
+    Ldeorab, // Instruction 'ldeorab'.
+    Ldeorah, // Instruction 'ldeorah'.
+    Ldeoral, // Instruction 'ldeoral'.
+    Ldeoralb, // Instruction 'ldeoralb'.
+    Ldeoralh, // Instruction 'ldeoralh'.
+    Ldeorb, // Instruction 'ldeorb'.
+    Ldeorh, // Instruction 'ldeorh'.
+    Ldeorl, // Instruction 'ldeorl'.
+    Ldeorlb, // Instruction 'ldeorlb'.
+    Ldeorlh, // Instruction 'ldeorlh'.
+    Ldg, // Instruction 'ldg'.
+    Ldgm, // Instruction 'ldgm'.
+    Ldlar, // Instruction 'ldlar'.
+    Ldlarb, // Instruction 'ldlarb'.
+    Ldlarh, // Instruction 'ldlarh'.
+    Ldnp, // Instruction 'ldnp'.
+    Ldp, // Instruction 'ldp'.
+    Ldpsw, // Instruction 'ldpsw'.
+    Ldr, // Instruction 'ldr'.
+    Ldraa, // Instruction 'ldraa'.
+    Ldrab, // Instruction 'ldrab'.
+    Ldrb, // Instruction 'ldrb'.
+    Ldrh, // Instruction 'ldrh'.
+    Ldrsb, // Instruction 'ldrsb'.
+    Ldrsh, // Instruction 'ldrsh'.
+    Ldrsw, // Instruction 'ldrsw'.
+    Ldset, // Instruction 'ldset'.
+    Ldseta, // Instruction 'ldseta'.
+    Ldsetab, // Instruction 'ldsetab'.
+    Ldsetah, // Instruction 'ldsetah'.
+    Ldsetal, // Instruction 'ldsetal'.
+    Ldsetalb, // Instruction 'ldsetalb'.
+    Ldsetalh, // Instruction 'ldsetalh'.
+    Ldsetb, // Instruction 'ldsetb'.
+    Ldseth, // Instruction 'ldseth'.
+    Ldsetl, // Instruction 'ldsetl'.
+    Ldsetlb, // Instruction 'ldsetlb'.
+    Ldsetlh, // Instruction 'ldsetlh'.
+    Ldsmax, // Instruction 'ldsmax'.
+    Ldsmaxa, // Instruction 'ldsmaxa'.
+    Ldsmaxab, // Instruction 'ldsmaxab'.
+    Ldsmaxah, // Instruction 'ldsmaxah'.
+    Ldsmaxal, // Instruction 'ldsmaxal'.
+    Ldsmaxalb, // Instruction 'ldsmaxalb'.
+    Ldsmaxalh, // Instruction 'ldsmaxalh'.
+    Ldsmaxb, // Instruction 'ldsmaxb'.
+    Ldsmaxh, // Instruction 'ldsmaxh'.
+    Ldsmaxl, // Instruction 'ldsmaxl'.
+    Ldsmaxlb, // Instruction 'ldsmaxlb'.
+    Ldsmaxlh, // Instruction 'ldsmaxlh'.
+    Ldsmin, // Instruction 'ldsmin'.
+    Ldsmina, // Instruction 'ldsmina'.
+    Ldsminab, // Instruction 'ldsminab'.
+    Ldsminah, // Instruction 'ldsminah'.
+    Ldsminal, // Instruction 'ldsminal'.
+    Ldsminalb, // Instruction 'ldsminalb'.
+    Ldsminalh, // Instruction 'ldsminalh'.
+    Ldsminb, // Instruction 'ldsminb'.
+    Ldsminh, // Instruction 'ldsminh'.
+    Ldsminl, // Instruction 'ldsminl'.
+    Ldsminlb, // Instruction 'ldsminlb'.
+    Ldsminlh, // Instruction 'ldsminlh'.
+    Ldtr, // Instruction 'ldtr'.
+    Ldtrb, // Instruction 'ldtrb'.
+    Ldtrh, // Instruction 'ldtrh'.
+    Ldtrsb, // Instruction 'ldtrsb'.
+    Ldtrsh, // Instruction 'ldtrsh'.
+    Ldtrsw, // Instruction 'ldtrsw'.
+    Ldumax, // Instruction 'ldumax'.
+    Ldumaxa, // Instruction 'ldumaxa'.
+    Ldumaxab, // Instruction 'ldumaxab'.
+    Ldumaxah, // Instruction 'ldumaxah'.
+    Ldumaxal, // Instruction 'ldumaxal'.
+    Ldumaxalb, // Instruction 'ldumaxalb'.
+    Ldumaxalh, // Instruction 'ldumaxalh'.
+    Ldumaxb, // Instruction 'ldumaxb'.
+    Ldumaxh, // Instruction 'ldumaxh'.
+    Ldumaxl, // Instruction 'ldumaxl'.
+    Ldumaxlb, // Instruction 'ldumaxlb'.
+    Ldumaxlh, // Instruction 'ldumaxlh'.
+    Ldumin, // Instruction 'ldumin'.
+    Ldumina, // Instruction 'ldumina'.
+    Lduminab, // Instruction 'lduminab'.
+    Lduminah, // Instruction 'lduminah'.
+    Lduminal, // Instruction 'lduminal'.
+    Lduminalb, // Instruction 'lduminalb'.
+    Lduminalh, // Instruction 'lduminalh'.
+    Lduminb, // Instruction 'lduminb'.
+    Lduminh, // Instruction 'lduminh'.
+    Lduminl, // Instruction 'lduminl'.
+    Lduminlb, // Instruction 'lduminlb'.
+    Lduminlh, // Instruction 'lduminlh'.
+    Ldur, // Instruction 'ldur'.
+    Ldurb, // Instruction 'ldurb'.
+    Ldurh, // Instruction 'ldurh'.
+    Ldursb, // Instruction 'ldursb'.
+    Ldursh, // Instruction 'ldursh'.
+    Ldursw, // Instruction 'ldursw'.
+    Ldxp, // Instruction 'ldxp'.
+    Ldxr, // Instruction 'ldxr'.
+    Ldxrb, // Instruction 'ldxrb'.
+    Ldxrh, // Instruction 'ldxrh'.
+    Lsl, // Instruction 'lsl'.
+    Lslv, // Instruction 'lslv'.
+    Lsr, // Instruction 'lsr'.
+    Lsrv, // Instruction 'lsrv'.
+    Madd, // Instruction 'madd'.
+    Mneg, // Instruction 'mneg'.
+    Mov, // Instruction 'mov'.
+    Movk, // Instruction 'movk'.
+    Movn, // Instruction 'movn'.
+    Movz, // Instruction 'movz'.
+    Mrs, // Instruction 'mrs'.
+    Msr, // Instruction 'msr'.
+    Msub, // Instruction 'msub'.
+    Mul, // Instruction 'mul'.
+    Mvn, // Instruction 'mvn'.
+    Neg, // Instruction 'neg'.
+    Negs, // Instruction 'negs'.
+    Ngc, // Instruction 'ngc'.
+    Ngcs, // Instruction 'ngcs'.
+    Nop, // Instruction 'nop'.
+    Orn, // Instruction 'orn'.
+    Orr, // Instruction 'orr'.
+    Pacda, // Instruction 'pacda'.
+    Pacdb, // Instruction 'pacdb'.
+    Pacdza, // Instruction 'pacdza'.
+    Pacdzb, // Instruction 'pacdzb'.
+    Pacga, // Instruction 'pacga'.
+    Prfm, // Instruction 'prfm'.
+    Pssbb, // Instruction 'pssbb'.
+    Rbit, // Instruction 'rbit'.
+    Ret, // Instruction 'ret'.
+    Rev, // Instruction 'rev'.
+    Rev16, // Instruction 'rev16'.
+    Rev32, // Instruction 'rev32'.
+    Rev64, // Instruction 'rev64'.
+    Ror, // Instruction 'ror'.
+    Rorv, // Instruction 'rorv'.
+    Sbc, // Instruction 'sbc'.
+    Sbcs, // Instruction 'sbcs'.
+    Sbfiz, // Instruction 'sbfiz'.
+    Sbfm, // Instruction 'sbfm'.
+    Sbfx, // Instruction 'sbfx'.
+    Sdiv, // Instruction 'sdiv'.
+    Setf8, // Instruction 'setf8'.
+    Setf16, // Instruction 'setf16'.
+    Sev, // Instruction 'sev'.
+    Sevl, // Instruction 'sevl'.
+    Smaddl, // Instruction 'smaddl'.
+    Smax, // Instruction 'smax'.
+    Smc, // Instruction 'smc'.
+    Smin, // Instruction 'smin'.
+    Smnegl, // Instruction 'smnegl'.
+    Smsubl, // Instruction 'smsubl'.
+    Smulh, // Instruction 'smulh'.
+    Smull, // Instruction 'smull'.
+    Ssbb, // Instruction 'ssbb'.
+    St2g, // Instruction 'st2g'.
+    Stadd, // Instruction 'stadd'.
+    Staddl, // Instruction 'staddl'.
+    Staddb, // Instruction 'staddb'.
+    Staddlb, // Instruction 'staddlb'.
+    Staddh, // Instruction 'staddh'.
+    Staddlh, // Instruction 'staddlh'.
+    Stclr, // Instruction 'stclr'.
+    Stclrl, // Instruction 'stclrl'.
+    Stclrb, // Instruction 'stclrb'.
+    Stclrlb, // Instruction 'stclrlb'.
+    Stclrh, // Instruction 'stclrh'.
+    Stclrlh, // Instruction 'stclrlh'.
+    Steor, // Instruction 'steor'.
+    Steorl, // Instruction 'steorl'.
+    Steorb, // Instruction 'steorb'.
+    Steorlb, // Instruction 'steorlb'.
+    Steorh, // Instruction 'steorh'.
+    Steorlh, // Instruction 'steorlh'.
+    Stg, // Instruction 'stg'.
+    Stgm, // Instruction 'stgm'.
+    Stgp, // Instruction 'stgp'.
+    Stllr, // Instruction 'stllr'.
+    Stllrb, // Instruction 'stllrb'.
+    Stllrh, // Instruction 'stllrh'.
+    Stlr, // Instruction 'stlr'.
+    Stlrb, // Instruction 'stlrb'.
+    Stlrh, // Instruction 'stlrh'.
+    Stlxp, // Instruction 'stlxp'.
+    Stlxr, // Instruction 'stlxr'.
+    Stlxrb, // Instruction 'stlxrb'.
+    Stlxrh, // Instruction 'stlxrh'.
+    Stnp, // Instruction 'stnp'.
+    Stp, // Instruction 'stp'.
+    Str, // Instruction 'str'.
+    Strb, // Instruction 'strb'.
+    Strh, // Instruction 'strh'.
+    Stset, // Instruction 'stset'.
+    Stsetl, // Instruction 'stsetl'.
+    Stsetb, // Instruction 'stsetb'.
+    Stsetlb, // Instruction 'stsetlb'.
+    Stseth, // Instruction 'stseth'.
+    Stsetlh, // Instruction 'stsetlh'.
+    Stsmax, // Instruction 'stsmax'.
+    Stsmaxl, // Instruction 'stsmaxl'.
+    Stsmaxb, // Instruction 'stsmaxb'.
+    Stsmaxlb, // Instruction 'stsmaxlb'.
+    Stsmaxh, // Instruction 'stsmaxh'.
+    Stsmaxlh, // Instruction 'stsmaxlh'.
+    Stsmin, // Instruction 'stsmin'.
+    Stsminl, // Instruction 'stsminl'.
+    Stsminb, // Instruction 'stsminb'.
+    Stsminlb, // Instruction 'stsminlb'.
+    Stsminh, // Instruction 'stsminh'.
+    Stsminlh, // Instruction 'stsminlh'.
+    Sttr, // Instruction 'sttr'.
+    Sttrb, // Instruction 'sttrb'.
+    Sttrh, // Instruction 'sttrh'.
+    Stumax, // Instruction 'stumax'.
+    Stumaxl, // Instruction 'stumaxl'.
+    Stumaxb, // Instruction 'stumaxb'.
+    Stumaxlb, // Instruction 'stumaxlb'.
+    Stumaxh, // Instruction 'stumaxh'.
+    Stumaxlh, // Instruction 'stumaxlh'.
+    Stumin, // Instruction 'stumin'.
+    Stuminl, // Instruction 'stuminl'.
+    Stuminb, // Instruction 'stuminb'.
+    Stuminlb, // Instruction 'stuminlb'.
+    Stuminh, // Instruction 'stuminh'.
+    Stuminlh, // Instruction 'stuminlh'.
+    Stur, // Instruction 'stur'.
+    Sturb, // Instruction 'sturb'.
+    Sturh, // Instruction 'sturh'.
+    Stxp, // Instruction 'stxp'.
+    Stxr, // Instruction 'stxr'.
+    Stxrb, // Instruction 'stxrb'.
+    Stxrh, // Instruction 'stxrh'.
+    Stz2g, // Instruction 'stz2g'.
+    Stzg, // Instruction 'stzg'.
+    Stzgm, // Instruction 'stzgm'.
+    Sub, // Instruction 'sub'.
+    Subg, // Instruction 'subg'.
+    Subp, // Instruction 'subp'.
+    Subps, // Instruction 'subps'.
+    Subs, // Instruction 'subs'.
+    Svc, // Instruction 'svc'.
+    Swp, // Instruction 'swp'.
+    Swpa, // Instruction 'swpa'.
+    Swpab, // Instruction 'swpab'.
+    Swpah, // Instruction 'swpah'.
+    Swpal, // Instruction 'swpal'.
+    Swpalb, // Instruction 'swpalb'.
+    Swpalh, // Instruction 'swpalh'.
+    Swpb, // Instruction 'swpb'.
+    Swph, // Instruction 'swph'.
+    Swpl, // Instruction 'swpl'.
+    Swplb, // Instruction 'swplb'.
+    Swplh, // Instruction 'swplh'.
+    Sxtb, // Instruction 'sxtb'.
+    Sxth, // Instruction 'sxth'.
+    Sxtw, // Instruction 'sxtw'.
+    Sys, // Instruction 'sys'.
+    Tlbi, // Instruction 'tlbi'.
+    Tst, // Instruction 'tst'.
+    Tbnz, // Instruction 'tbnz'.
+    Tbz, // Instruction 'tbz'.
+    Ubfiz, // Instruction 'ubfiz'.
+    Ubfm, // Instruction 'ubfm'.
+    Ubfx, // Instruction 'ubfx'.
+    Udf, // Instruction 'udf'.
+    Udiv, // Instruction 'udiv'.
+    Umaddl, // Instruction 'umaddl'.
+    Umax, // Instruction 'umax'.
+    Umin, // Instruction 'umin'.
+    Umnegl, // Instruction 'umnegl'.
+    Umull, // Instruction 'umull'.
+    Umulh, // Instruction 'umulh'.
+    Umsubl, // Instruction 'umsubl'.
+    Uxtb, // Instruction 'uxtb'.
+    Uxth, // Instruction 'uxth'.
+    Wfe, // Instruction 'wfe'.
+    Wfi, // Instruction 'wfi'.
+    Xaflag, // Instruction 'xaflag'.
+    Xpacd, // Instruction 'xpacd'.
+    Xpaci, // Instruction 'xpaci'.
+    Xpaclri, // Instruction 'xpaclri'.
+    Yield, // Instruction 'yield'.
+    Abs_v, // Instruction 'abs' {ASIMD}.
+    Add_v, // Instruction 'add' {ASIMD}.
+    Addhn_v, // Instruction 'addhn' {ASIMD}.
+    Addhn2_v, // Instruction 'addhn2' {ASIMD}.
+    Addp_v, // Instruction 'addp' {ASIMD}.
+    Addv_v, // Instruction 'addv' {ASIMD}.
+    Aesd_v, // Instruction 'aesd' {ASIMD}.
+    Aese_v, // Instruction 'aese' {ASIMD}.
+    Aesimc_v, // Instruction 'aesimc' {ASIMD}.
+    Aesmc_v, // Instruction 'aesmc' {ASIMD}.
+    And_v, // Instruction 'and' {ASIMD}.
+    Bcax_v, // Instruction 'bcax' {ASIMD}.
+    Bfcvt_v, // Instruction 'bfcvt' {ASIMD}.
+    Bfcvtn_v, // Instruction 'bfcvtn' {ASIMD}.
+    Bfcvtn2_v, // Instruction 'bfcvtn2' {ASIMD}.
+    Bfdot_v, // Instruction 'bfdot' {ASIMD}.
+    Bfmlalb_v, // Instruction 'bfmlalb' {ASIMD}.
+    Bfmlalt_v, // Instruction 'bfmlalt' {ASIMD}.
+    Bfmmla_v, // Instruction 'bfmmla' {ASIMD}.
+    Bic_v, // Instruction 'bic' {ASIMD}.
+    Bif_v, // Instruction 'bif' {ASIMD}.
+    Bit_v, // Instruction 'bit' {ASIMD}.
+    Bsl_v, // Instruction 'bsl' {ASIMD}.
+    Cls_v, // Instruction 'cls' {ASIMD}.
+    Clz_v, // Instruction 'clz' {ASIMD}.
+    Cmeq_v, // Instruction 'cmeq' {ASIMD}.
+    Cmge_v, // Instruction 'cmge' {ASIMD}.
+    Cmgt_v, // Instruction 'cmgt' {ASIMD}.
+    Cmhi_v, // Instruction 'cmhi' {ASIMD}.
+    Cmhs_v, // Instruction 'cmhs' {ASIMD}.
+    Cmle_v, // Instruction 'cmle' {ASIMD}.
+    Cmlt_v, // Instruction 'cmlt' {ASIMD}.
+    Cmtst_v, // Instruction 'cmtst' {ASIMD}.
+    Cnt_v, // Instruction 'cnt' {ASIMD}.
+    Dup_v, // Instruction 'dup' {ASIMD}.
+    Eor_v, // Instruction 'eor' {ASIMD}.
+    Eor3_v, // Instruction 'eor3' {ASIMD}.
+    Ext_v, // Instruction 'ext' {ASIMD}.
+    Fabd_v, // Instruction 'fabd' {ASIMD}.
+    Fabs_v, // Instruction 'fabs' {ASIMD}.
+    Facge_v, // Instruction 'facge' {ASIMD}.
+    Facgt_v, // Instruction 'facgt' {ASIMD}.
+    Fadd_v, // Instruction 'fadd' {ASIMD}.
+    Faddp_v, // Instruction 'faddp' {ASIMD}.
+    Fcadd_v, // Instruction 'fcadd' {ASIMD}.
+    Fccmp_v, // Instruction 'fccmp' {ASIMD}.
+    Fccmpe_v, // Instruction 'fccmpe' {ASIMD}.
+    Fcmeq_v, // Instruction 'fcmeq' {ASIMD}.
+    Fcmge_v, // Instruction 'fcmge' {ASIMD}.
+    Fcmgt_v, // Instruction 'fcmgt' {ASIMD}.
+    Fcmla_v, // Instruction 'fcmla' {ASIMD}.
+    Fcmle_v, // Instruction 'fcmle' {ASIMD}.
+    Fcmlt_v, // Instruction 'fcmlt' {ASIMD}.
+    Fcmp_v, // Instruction 'fcmp' {ASIMD}.
+    Fcmpe_v, // Instruction 'fcmpe' {ASIMD}.
+    Fcsel_v, // Instruction 'fcsel' {ASIMD}.
+    Fcvt_v, // Instruction 'fcvt' {ASIMD}.
+    Fcvtas_v, // Instruction 'fcvtas' {ASIMD}.
+    Fcvtau_v, // Instruction 'fcvtau' {ASIMD}.
+    Fcvtl_v, // Instruction 'fcvtl' {ASIMD}.
+    Fcvtl2_v, // Instruction 'fcvtl2' {ASIMD}.
+    Fcvtms_v, // Instruction 'fcvtms' {ASIMD}.
+    Fcvtmu_v, // Instruction 'fcvtmu' {ASIMD}.
+    Fcvtn_v, // Instruction 'fcvtn' {ASIMD}.
+    Fcvtn2_v, // Instruction 'fcvtn2' {ASIMD}.
+    Fcvtns_v, // Instruction 'fcvtns' {ASIMD}.
+    Fcvtnu_v, // Instruction 'fcvtnu' {ASIMD}.
+    Fcvtps_v, // Instruction 'fcvtps' {ASIMD}.
+    Fcvtpu_v, // Instruction 'fcvtpu' {ASIMD}.
+    Fcvtxn_v, // Instruction 'fcvtxn' {ASIMD}.
+    Fcvtxn2_v, // Instruction 'fcvtxn2' {ASIMD}.
+    Fcvtzs_v, // Instruction 'fcvtzs' {ASIMD}.
+    Fcvtzu_v, // Instruction 'fcvtzu' {ASIMD}.
+    Fdiv_v, // Instruction 'fdiv' {ASIMD}.
+    Fjcvtzs_v, // Instruction 'fjcvtzs' {ASIMD}.
+    Fmadd_v, // Instruction 'fmadd' {ASIMD}.
+    Fmax_v, // Instruction 'fmax' {ASIMD}.
+    Fmaxnm_v, // Instruction 'fmaxnm' {ASIMD}.
+    Fmaxnmp_v, // Instruction 'fmaxnmp' {ASIMD}.
+    Fmaxnmv_v, // Instruction 'fmaxnmv' {ASIMD}.
+    Fmaxp_v, // Instruction 'fmaxp' {ASIMD}.
+    Fmaxv_v, // Instruction 'fmaxv' {ASIMD}.
+    Fmin_v, // Instruction 'fmin' {ASIMD}.
+    Fminnm_v, // Instruction 'fminnm' {ASIMD}.
+    Fminnmp_v, // Instruction 'fminnmp' {ASIMD}.
+    Fminnmv_v, // Instruction 'fminnmv' {ASIMD}.
+    Fminp_v, // Instruction 'fminp' {ASIMD}.
+    Fminv_v, // Instruction 'fminv' {ASIMD}.
+    Fmla_v, // Instruction 'fmla' {ASIMD}.
+    Fmlal_v, // Instruction 'fmlal' {ASIMD}.
+    Fmlal2_v, // Instruction 'fmlal2' {ASIMD}.
+    Fmls_v, // Instruction 'fmls' {ASIMD}.
+    Fmlsl_v, // Instruction 'fmlsl' {ASIMD}.
+    Fmlsl2_v, // Instruction 'fmlsl2' {ASIMD}.
+    Fmov_v, // Instruction 'fmov' {ASIMD}.
+    Fmsub_v, // Instruction 'fmsub' {ASIMD}.
+    Fmul_v, // Instruction 'fmul' {ASIMD}.
+    Fmulx_v, // Instruction 'fmulx' {ASIMD}.
+    Fneg_v, // Instruction 'fneg' {ASIMD}.
+    Fnmadd_v, // Instruction 'fnmadd' {ASIMD}.
+    Fnmsub_v, // Instruction 'fnmsub' {ASIMD}.
+    Fnmul_v, // Instruction 'fnmul' {ASIMD}.
+    Frecpe_v, // Instruction 'frecpe' {ASIMD}.
+    Frecps_v, // Instruction 'frecps' {ASIMD}.
+    Frecpx_v, // Instruction 'frecpx' {ASIMD}.
+    Frint32x_v, // Instruction 'frint32x' {ASIMD}.
+    Frint32z_v, // Instruction 'frint32z' {ASIMD}.
+    Frint64x_v, // Instruction 'frint64x' {ASIMD}.
+    Frint64z_v, // Instruction 'frint64z' {ASIMD}.
+    Frinta_v, // Instruction 'frinta' {ASIMD}.
+    Frinti_v, // Instruction 'frinti' {ASIMD}.
+    Frintm_v, // Instruction 'frintm' {ASIMD}.
+    Frintn_v, // Instruction 'frintn' {ASIMD}.
+    Frintp_v, // Instruction 'frintp' {ASIMD}.
+    Frintx_v, // Instruction 'frintx' {ASIMD}.
+    Frintz_v, // Instruction 'frintz' {ASIMD}.
+    Frsqrte_v, // Instruction 'frsqrte' {ASIMD}.
+    Frsqrts_v, // Instruction 'frsqrts' {ASIMD}.
+    Fsqrt_v, // Instruction 'fsqrt' {ASIMD}.
+    Fsub_v, // Instruction 'fsub' {ASIMD}.
+    Ins_v, // Instruction 'ins' {ASIMD}.
+    Ld1_v, // Instruction 'ld1' {ASIMD}.
+    Ld1r_v, // Instruction 'ld1r' {ASIMD}.
+    Ld2_v, // Instruction 'ld2' {ASIMD}.
+    Ld2r_v, // Instruction 'ld2r' {ASIMD}.
+    Ld3_v, // Instruction 'ld3' {ASIMD}.
+    Ld3r_v, // Instruction 'ld3r' {ASIMD}.
+    Ld4_v, // Instruction 'ld4' {ASIMD}.
+    Ld4r_v, // Instruction 'ld4r' {ASIMD}.
+    Ldnp_v, // Instruction 'ldnp' {ASIMD}.
+    Ldp_v, // Instruction 'ldp' {ASIMD}.
+    Ldr_v, // Instruction 'ldr' {ASIMD}.
+    Ldur_v, // Instruction 'ldur' {ASIMD}.
+    Mla_v, // Instruction 'mla' {ASIMD}.
+    Mls_v, // Instruction 'mls' {ASIMD}.
+    Mov_v, // Instruction 'mov' {ASIMD}.
+    Movi_v, // Instruction 'movi' {ASIMD}.
+    Mul_v, // Instruction 'mul' {ASIMD}.
+    Mvn_v, // Instruction 'mvn' {ASIMD}.
+    Mvni_v, // Instruction 'mvni' {ASIMD}.
+    Neg_v, // Instruction 'neg' {ASIMD}.
+    Not_v, // Instruction 'not' {ASIMD}.
+    Orn_v, // Instruction 'orn' {ASIMD}.
+    Orr_v, // Instruction 'orr' {ASIMD}.
+    Pmul_v, // Instruction 'pmul' {ASIMD}.
+    Pmull_v, // Instruction 'pmull' {ASIMD}.
+    Pmull2_v, // Instruction 'pmull2' {ASIMD}.
+    Raddhn_v, // Instruction 'raddhn' {ASIMD}.
+    Raddhn2_v, // Instruction 'raddhn2' {ASIMD}.
+    Rax1_v, // Instruction 'rax1' {ASIMD}.
+    Rbit_v, // Instruction 'rbit' {ASIMD}.
+    Rev16_v, // Instruction 'rev16' {ASIMD}.
+    Rev32_v, // Instruction 'rev32' {ASIMD}.
+    Rev64_v, // Instruction 'rev64' {ASIMD}.
+    Rshrn_v, // Instruction 'rshrn' {ASIMD}.
+    Rshrn2_v, // Instruction 'rshrn2' {ASIMD}.
+    Rsubhn_v, // Instruction 'rsubhn' {ASIMD}.
+    Rsubhn2_v, // Instruction 'rsubhn2' {ASIMD}.
+    Saba_v, // Instruction 'saba' {ASIMD}.
+    Sabal_v, // Instruction 'sabal' {ASIMD}.
+    Sabal2_v, // Instruction 'sabal2' {ASIMD}.
+    Sabd_v, // Instruction 'sabd' {ASIMD}.
+    Sabdl_v, // Instruction 'sabdl' {ASIMD}.
+    Sabdl2_v, // Instruction 'sabdl2' {ASIMD}.
+    Sadalp_v, // Instruction 'sadalp' {ASIMD}.
+    Saddl_v, // Instruction 'saddl' {ASIMD}.
+    Saddl2_v, // Instruction 'saddl2' {ASIMD}.
+    Saddlp_v, // Instruction 'saddlp' {ASIMD}.
+    Saddlv_v, // Instruction 'saddlv' {ASIMD}.
+    Saddw_v, // Instruction 'saddw' {ASIMD}.
+    Saddw2_v, // Instruction 'saddw2' {ASIMD}.
+    Scvtf_v, // Instruction 'scvtf' {ASIMD}.
+    Sdot_v, // Instruction 'sdot' {ASIMD}.
+    Sha1c_v, // Instruction 'sha1c' {ASIMD}.
+    Sha1h_v, // Instruction 'sha1h' {ASIMD}.
+    Sha1m_v, // Instruction 'sha1m' {ASIMD}.
+    Sha1p_v, // Instruction 'sha1p' {ASIMD}.
+    Sha1su0_v, // Instruction 'sha1su0' {ASIMD}.
+    Sha1su1_v, // Instruction 'sha1su1' {ASIMD}.
+    Sha256h_v, // Instruction 'sha256h' {ASIMD}.
+    Sha256h2_v, // Instruction 'sha256h2' {ASIMD}.
+    Sha256su0_v, // Instruction 'sha256su0' {ASIMD}.
+    Sha256su1_v, // Instruction 'sha256su1' {ASIMD}.
+    Sha512h_v, // Instruction 'sha512h' {ASIMD}.
+    Sha512h2_v, // Instruction 'sha512h2' {ASIMD}.
+    Sha512su0_v, // Instruction 'sha512su0' {ASIMD}.
+    Sha512su1_v, // Instruction 'sha512su1' {ASIMD}.
+    Shadd_v, // Instruction 'shadd' {ASIMD}.
+    Shl_v, // Instruction 'shl' {ASIMD}.
+    Shll_v, // Instruction 'shll' {ASIMD}.
+    Shll2_v, // Instruction 'shll2' {ASIMD}.
+    Shrn_v, // Instruction 'shrn' {ASIMD}.
+    Shrn2_v, // Instruction 'shrn2' {ASIMD}.
+    Shsub_v, // Instruction 'shsub' {ASIMD}.
+    Sli_v, // Instruction 'sli' {ASIMD}.
+    Sm3partw1_v, // Instruction 'sm3partw1' {ASIMD}.
+    Sm3partw2_v, // Instruction 'sm3partw2' {ASIMD}.
+    Sm3ss1_v, // Instruction 'sm3ss1' {ASIMD}.
+    Sm3tt1a_v, // Instruction 'sm3tt1a' {ASIMD}.
+    Sm3tt1b_v, // Instruction 'sm3tt1b' {ASIMD}.
+    Sm3tt2a_v, // Instruction 'sm3tt2a' {ASIMD}.
+    Sm3tt2b_v, // Instruction 'sm3tt2b' {ASIMD}.
+    Sm4e_v, // Instruction 'sm4e' {ASIMD}.
+    Sm4ekey_v, // Instruction 'sm4ekey' {ASIMD}.
+    Smax_v, // Instruction 'smax' {ASIMD}.
+    Smaxp_v, // Instruction 'smaxp' {ASIMD}.
+    Smaxv_v, // Instruction 'smaxv' {ASIMD}.
+    Smin_v, // Instruction 'smin' {ASIMD}.
+    Sminp_v, // Instruction 'sminp' {ASIMD}.
+    Sminv_v, // Instruction 'sminv' {ASIMD}.
+    Smlal_v, // Instruction 'smlal' {ASIMD}.
+    Smlal2_v, // Instruction 'smlal2' {ASIMD}.
+    Smlsl_v, // Instruction 'smlsl' {ASIMD}.
+    Smlsl2_v, // Instruction 'smlsl2' {ASIMD}.
+    Smmla_v, // Instruction 'smmla' {ASIMD}.
+    Smov_v, // Instruction 'smov' {ASIMD}.
+    Smull_v, // Instruction 'smull' {ASIMD}.
+    Smull2_v, // Instruction 'smull2' {ASIMD}.
+    Sqabs_v, // Instruction 'sqabs' {ASIMD}.
+    Sqadd_v, // Instruction 'sqadd' {ASIMD}.
+    Sqdmlal_v, // Instruction 'sqdmlal' {ASIMD}.
+    Sqdmlal2_v, // Instruction 'sqdmlal2' {ASIMD}.
+    Sqdmlsl_v, // Instruction 'sqdmlsl' {ASIMD}.
+    Sqdmlsl2_v, // Instruction 'sqdmlsl2' {ASIMD}.
+    Sqdmulh_v, // Instruction 'sqdmulh' {ASIMD}.
+    Sqdmull_v, // Instruction 'sqdmull' {ASIMD}.
+    Sqdmull2_v, // Instruction 'sqdmull2' {ASIMD}.
+    Sqneg_v, // Instruction 'sqneg' {ASIMD}.
+    Sqrdmlah_v, // Instruction 'sqrdmlah' {ASIMD}.
+    Sqrdmlsh_v, // Instruction 'sqrdmlsh' {ASIMD}.
+    Sqrdmulh_v, // Instruction 'sqrdmulh' {ASIMD}.
+    Sqrshl_v, // Instruction 'sqrshl' {ASIMD}.
+    Sqrshrn_v, // Instruction 'sqrshrn' {ASIMD}.
+    Sqrshrn2_v, // Instruction 'sqrshrn2' {ASIMD}.
+    Sqrshrun_v, // Instruction 'sqrshrun' {ASIMD}.
+    Sqrshrun2_v, // Instruction 'sqrshrun2' {ASIMD}.
+    Sqshl_v, // Instruction 'sqshl' {ASIMD}.
+    Sqshlu_v, // Instruction 'sqshlu' {ASIMD}.
+    Sqshrn_v, // Instruction 'sqshrn' {ASIMD}.
+    Sqshrn2_v, // Instruction 'sqshrn2' {ASIMD}.
+    Sqshrun_v, // Instruction 'sqshrun' {ASIMD}.
+    Sqshrun2_v, // Instruction 'sqshrun2' {ASIMD}.
+    Sqsub_v, // Instruction 'sqsub' {ASIMD}.
+    Sqxtn_v, // Instruction 'sqxtn' {ASIMD}.
+    Sqxtn2_v, // Instruction 'sqxtn2' {ASIMD}.
+    Sqxtun_v, // Instruction 'sqxtun' {ASIMD}.
+    Sqxtun2_v, // Instruction 'sqxtun2' {ASIMD}.
+    Srhadd_v, // Instruction 'srhadd' {ASIMD}.
+    Sri_v, // Instruction 'sri' {ASIMD}.
+    Srshl_v, // Instruction 'srshl' {ASIMD}.
+    Srshr_v, // Instruction 'srshr' {ASIMD}.
+    Srsra_v, // Instruction 'srsra' {ASIMD}.
+    Sshl_v, // Instruction 'sshl' {ASIMD}.
+    Sshll_v, // Instruction 'sshll' {ASIMD}.
+    Sshll2_v, // Instruction 'sshll2' {ASIMD}.
+    Sshr_v, // Instruction 'sshr' {ASIMD}.
+    Ssra_v, // Instruction 'ssra' {ASIMD}.
+    Ssubl_v, // Instruction 'ssubl' {ASIMD}.
+    Ssubl2_v, // Instruction 'ssubl2' {ASIMD}.
+    Ssubw_v, // Instruction 'ssubw' {ASIMD}.
+    Ssubw2_v, // Instruction 'ssubw2' {ASIMD}.
+    St1_v, // Instruction 'st1' {ASIMD}.
+    St2_v, // Instruction 'st2' {ASIMD}.
+    St3_v, // Instruction 'st3' {ASIMD}.
+    St4_v, // Instruction 'st4' {ASIMD}.
+    Stnp_v, // Instruction 'stnp' {ASIMD}.
+    Stp_v, // Instruction 'stp' {ASIMD}.
+    Str_v, // Instruction 'str' {ASIMD}.
+    Stur_v, // Instruction 'stur' {ASIMD}.
+    Sub_v, // Instruction 'sub' {ASIMD}.
+    Subhn_v, // Instruction 'subhn' {ASIMD}.
+    Subhn2_v, // Instruction 'subhn2' {ASIMD}.
+    Sudot_v, // Instruction 'sudot' {ASIMD}.
+    Suqadd_v, // Instruction 'suqadd' {ASIMD}.
+    Sxtl_v, // Instruction 'sxtl' {ASIMD}.
+    Sxtl2_v, // Instruction 'sxtl2' {ASIMD}.
+    Tbl_v, // Instruction 'tbl' {ASIMD}.
+    Tbx_v, // Instruction 'tbx' {ASIMD}.
+    Trn1_v, // Instruction 'trn1' {ASIMD}.
+    Trn2_v, // Instruction 'trn2' {ASIMD}.
+    Uaba_v, // Instruction 'uaba' {ASIMD}.
+    Uabal_v, // Instruction 'uabal' {ASIMD}.
+    Uabal2_v, // Instruction 'uabal2' {ASIMD}.
+    Uabd_v, // Instruction 'uabd' {ASIMD}.
+    Uabdl_v, // Instruction 'uabdl' {ASIMD}.
+    Uabdl2_v, // Instruction 'uabdl2' {ASIMD}.
+    Uadalp_v, // Instruction 'uadalp' {ASIMD}.
+    Uaddl_v, // Instruction 'uaddl' {ASIMD}.
+    Uaddl2_v, // Instruction 'uaddl2' {ASIMD}.
+    Uaddlp_v, // Instruction 'uaddlp' {ASIMD}.
+    Uaddlv_v, // Instruction 'uaddlv' {ASIMD}.
+    Uaddw_v, // Instruction 'uaddw' {ASIMD}.
+    Uaddw2_v, // Instruction 'uaddw2' {ASIMD}.
+    Ucvtf_v, // Instruction 'ucvtf' {ASIMD}.
+    Udot_v, // Instruction 'udot' {ASIMD}.
+    Uhadd_v, // Instruction 'uhadd' {ASIMD}.
+    Uhsub_v, // Instruction 'uhsub' {ASIMD}.
+    Umax_v, // Instruction 'umax' {ASIMD}.
+    Umaxp_v, // Instruction 'umaxp' {ASIMD}.
+    Umaxv_v, // Instruction 'umaxv' {ASIMD}.
+    Umin_v, // Instruction 'umin' {ASIMD}.
+    Uminp_v, // Instruction 'uminp' {ASIMD}.
+    Uminv_v, // Instruction 'uminv' {ASIMD}.
+    Umlal_v, // Instruction 'umlal' {ASIMD}.
+    Umlal2_v, // Instruction 'umlal2' {ASIMD}.
+    Umlsl_v, // Instruction 'umlsl' {ASIMD}.
+    Umlsl2_v, // Instruction 'umlsl2' {ASIMD}.
+    Ummla_v, // Instruction 'ummla' {ASIMD}.
+    Umov_v, // Instruction 'umov' {ASIMD}.
+    Umull_v, // Instruction 'umull' {ASIMD}.
+    Umull2_v, // Instruction 'umull2' {ASIMD}.
+    Uqadd_v, // Instruction 'uqadd' {ASIMD}.
+    Uqrshl_v, // Instruction 'uqrshl' {ASIMD}.
+    Uqrshrn_v, // Instruction 'uqrshrn' {ASIMD}.
+    Uqrshrn2_v, // Instruction 'uqrshrn2' {ASIMD}.
+    Uqshl_v, // Instruction 'uqshl' {ASIMD}.
+    Uqshrn_v, // Instruction 'uqshrn' {ASIMD}.
+    Uqshrn2_v, // Instruction 'uqshrn2' {ASIMD}.
+    Uqsub_v, // Instruction 'uqsub' {ASIMD}.
+    Uqxtn_v, // Instruction 'uqxtn' {ASIMD}.
+    Uqxtn2_v, // Instruction 'uqxtn2' {ASIMD}.
+    Urecpe_v, // Instruction 'urecpe' {ASIMD}.
+    Urhadd_v, // Instruction 'urhadd' {ASIMD}.
+    Urshl_v, // Instruction 'urshl' {ASIMD}.
+    Urshr_v, // Instruction 'urshr' {ASIMD}.
+    Ursqrte_v, // Instruction 'ursqrte' {ASIMD}.
+    Ursra_v, // Instruction 'ursra' {ASIMD}.
+    Usdot_v, // Instruction 'usdot' {ASIMD}.
+    Ushl_v, // Instruction 'ushl' {ASIMD}.
+    Ushll_v, // Instruction 'ushll' {ASIMD}.
+    Ushll2_v, // Instruction 'ushll2' {ASIMD}.
+    Ushr_v, // Instruction 'ushr' {ASIMD}.
+    Usmmla_v, // Instruction 'usmmla' {ASIMD}.
+    Usqadd_v, // Instruction 'usqadd' {ASIMD}.
+    Usra_v, // Instruction 'usra' {ASIMD}.
+    Usubl_v, // Instruction 'usubl' {ASIMD}.
+    Usubl2_v, // Instruction 'usubl2' {ASIMD}.
+    Usubw_v, // Instruction 'usubw' {ASIMD}.
+    Usubw2_v, // Instruction 'usubw2' {ASIMD}.
+    Uxtl_v, // Instruction 'uxtl' {ASIMD}.
+    Uxtl2_v, // Instruction 'uxtl2' {ASIMD}.
+    Uzp1_v, // Instruction 'uzp1' {ASIMD}.
+    Uzp2_v, // Instruction 'uzp2' {ASIMD}.
+    Xar_v, // Instruction 'xar' {ASIMD}.
+    Xtn_v, // Instruction 'xtn' {ASIMD}.
+    Xtn2_v, // Instruction 'xtn2' {ASIMD}.
+    Zip1_v, // Instruction 'zip1' {ASIMD}.
+    Zip2_v, // Instruction 'zip2' {ASIMD}.
     _Count
 }

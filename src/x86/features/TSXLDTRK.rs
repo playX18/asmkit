@@ -1,13 +1,13 @@
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
 
-/// `XRESLDTRK` (XRESLDTRK). 
+/// `XRESLDTRK` (XRESLDTRK).
 /// The instruction marks the end of an Intel TSX (RTM) suspend load address tracking region. If the instruction is used inside a suspend load address tracking region it will end the suspend region and all following load addresses will be added to the transaction read set. If this instruction is used inside an active transaction but not in a suspend region it will cause transaction abort.
 ///
 ///
@@ -32,7 +32,7 @@ impl<'a> XresldtrkEmitter for Assembler<'a> {
     }
 }
 
-/// `XSUSLDTRK` (XSUSLDTRK). 
+/// `XSUSLDTRK` (XSUSLDTRK).
 /// The instruction marks the start of an Intel TSX (RTM) suspend load address tracking region. If the instruction is used inside a transactional region, subsequent loads are not added to the read set of the transaction. If the instruction is used inside a suspend load address tracking region it will cause transaction abort.
 ///
 ///
@@ -57,9 +57,8 @@ impl<'a> XsusldtrkEmitter for Assembler<'a> {
     }
 }
 
-
 impl<'a> Assembler<'a> {
-    /// `XRESLDTRK` (XRESLDTRK). 
+    /// `XRESLDTRK` (XRESLDTRK).
     /// The instruction marks the end of an Intel TSX (RTM) suspend load address tracking region. If the instruction is used inside a suspend load address tracking region it will end the suspend region and all following load addresses will be added to the transaction read set. If this instruction is used inside an active transaction but not in a suspend region it will cause transaction abort.
     ///
     ///
@@ -76,10 +75,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn xresldtrk(&mut self)
-    where Assembler<'a>: XresldtrkEmitter {
+    where
+        Assembler<'a>: XresldtrkEmitter,
+    {
         <Self as XresldtrkEmitter>::xresldtrk(self);
     }
-    /// `XSUSLDTRK` (XSUSLDTRK). 
+    /// `XSUSLDTRK` (XSUSLDTRK).
     /// The instruction marks the start of an Intel TSX (RTM) suspend load address tracking region. If the instruction is used inside a transactional region, subsequent loads are not added to the read set of the transaction. If the instruction is used inside a suspend load address tracking region it will cause transaction abort.
     ///
     ///
@@ -96,7 +97,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn xsusldtrk(&mut self)
-    where Assembler<'a>: XsusldtrkEmitter {
+    where
+        Assembler<'a>: XsusldtrkEmitter,
+    {
         <Self as XsusldtrkEmitter>::xsusldtrk(self);
     }
 }

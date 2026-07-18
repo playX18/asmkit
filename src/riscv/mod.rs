@@ -1,11 +1,15 @@
+pub mod arch_traits;
 pub mod assembler;
 pub mod emitter;
+pub mod instapi;
+pub mod instdb;
 pub mod opcodes;
 pub mod operands;
 
 pub use crate::core::operand::imm;
 pub use assembler::*;
 pub use emitter::EmitterExplicit;
+pub use instapi::query_rw_info;
 pub use opcodes::{Inst, InstructionValue, Opcode};
 pub use operands::*;
 pub use regs::*;

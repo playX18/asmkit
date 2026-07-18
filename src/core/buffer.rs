@@ -345,6 +345,32 @@ impl CodeBuffer {
         &mut self.data
     }
 
+    /// Returns the byte at `offset`.
+    ///
+    /// Used by encoder patch-up paths (e.g. X86 LEA/abs32 fixups).
+    pub fn byte_at(&self, offset: CodeOffset) -> u8 {
+        self.data[offset as usize]
+    }
+
+    /// Overwrites the byte at `offset`.
+    pub fn set_byte_at(&mut self, offset: CodeOffset, value: u8) {
+        self.data[offset as usize] = value;
+    }
+
+    /// Inserts a byte at `offset`, shifting all subsequent bytes.
+    ///
+    /// This is a rare encoder patch-up operation; prefer appending.
+    pub fn insert_at(&mut self, offset: CodeOffset, value: u8) {
+        self.data.insert(offset as usize, value);
+    }
+
+    /// Removes the byte at `offset`, shifting all subsequent bytes.
+    ///
+    /// This is a rare encoder patch-up operation; prefer appending.
+    pub fn remove_at(&mut self, offset: CodeOffset) {
+        self.data.remove(offset as usize);
+    }
+
     pub fn relocs(&self) -> &[AsmReloc] {
         &self.relocs
     }
@@ -407,6 +433,11 @@ impl CodeBuffer {
 
     pub fn is_bound(&mut self, label: Label) -> bool {
         self.label_offsets[label.id() as usize] != u32::MAX
+    }
+
+    /// Number of labels created so far; label ids below this count are valid.
+    pub fn label_count(&self) -> u32 {
+        self.label_offsets.len() as u32
     }
 
     pub fn get_label_for_constant(&mut self, constant: Constant) -> Label {

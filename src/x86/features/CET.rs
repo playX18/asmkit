@@ -1,13 +1,13 @@
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
 
-/// `CLRSSBSY` (CLRSSBSY). 
+/// `CLRSSBSY` (CLRSSBSY).
 /// Clear busy flag in supervisor shadow stack token reference by m64. Subsequent to marking the shadow stack as not busy the SSP is loaded with value 0.
 ///
 ///
@@ -32,7 +32,7 @@ impl<'a> ClrssbsyEmitter<Mem> for Assembler<'a> {
     }
 }
 
-/// `ENDBR32` (ENDBR32). 
+/// `ENDBR32` (ENDBR32).
 /// Terminate an indirect branch in 32 bit and compatibility mode.
 ///
 ///
@@ -57,7 +57,7 @@ impl<'a> Endbr32Emitter for Assembler<'a> {
     }
 }
 
-/// `ENDBR64` (ENDBR64). 
+/// `ENDBR64` (ENDBR64).
 /// Terminate an indirect branch in 64 bit mode.
 ///
 ///
@@ -180,7 +180,7 @@ impl<'a> SaveprevsspEmitter for Assembler<'a> {
     }
 }
 
-/// `SETSSBSY` (SETSSBSY). 
+/// `SETSSBSY` (SETSSBSY).
 /// The SETSSBSY instruction verifies the presence of a non-busy supervisor shadow stack token at the address in the IA32_PL0_SSP MSR and marks it busy. Following successful execution of the instruction, the SSP is set to the value of the IA32_PL0_SSP MSR.
 ///
 ///
@@ -251,19 +251,30 @@ pub trait WrussEmitter<A, B> {
 
 impl<'a> WrussEmitter<Mem, Gpd> for Assembler<'a> {
     fn wruss(&mut self, op0: Mem, op1: Gpd) {
-        self.emit(WRUSS32MR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            WRUSS32MR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
 impl<'a> WrussEmitter<Mem, Gpq> for Assembler<'a> {
     fn wruss(&mut self, op0: Mem, op1: Gpq) {
-        self.emit(WRUSS64MR, op0.as_operand(), op1.as_operand(), &NOREG, &NOREG);
+        self.emit(
+            WRUSS64MR,
+            op0.as_operand(),
+            op1.as_operand(),
+            &NOREG,
+            &NOREG,
+        );
     }
 }
 
-
 impl<'a> Assembler<'a> {
-    /// `CLRSSBSY` (CLRSSBSY). 
+    /// `CLRSSBSY` (CLRSSBSY).
     /// Clear busy flag in supervisor shadow stack token reference by m64. Subsequent to marking the shadow stack as not busy the SSP is loaded with value 0.
     ///
     ///
@@ -280,10 +291,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn clrssbsy<A>(&mut self, op0: A)
-    where Assembler<'a>: ClrssbsyEmitter<A> {
+    where
+        Assembler<'a>: ClrssbsyEmitter<A>,
+    {
         <Self as ClrssbsyEmitter<A>>::clrssbsy(self, op0);
     }
-    /// `ENDBR32` (ENDBR32). 
+    /// `ENDBR32` (ENDBR32).
     /// Terminate an indirect branch in 32 bit and compatibility mode.
     ///
     ///
@@ -300,10 +313,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn endbr32(&mut self)
-    where Assembler<'a>: Endbr32Emitter {
+    where
+        Assembler<'a>: Endbr32Emitter,
+    {
         <Self as Endbr32Emitter>::endbr32(self);
     }
-    /// `ENDBR64` (ENDBR64). 
+    /// `ENDBR64` (ENDBR64).
     /// Terminate an indirect branch in 64 bit mode.
     ///
     ///
@@ -320,7 +335,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn endbr64(&mut self)
-    where Assembler<'a>: Endbr64Emitter {
+    where
+        Assembler<'a>: Endbr64Emitter,
+    {
         <Self as Endbr64Emitter>::endbr64(self);
     }
     /// `INCSSP`.
@@ -337,7 +354,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn incssp<A>(&mut self, op0: A)
-    where Assembler<'a>: IncsspEmitter<A> {
+    where
+        Assembler<'a>: IncsspEmitter<A>,
+    {
         <Self as IncsspEmitter<A>>::incssp(self, op0);
     }
     /// `RDSSP`.
@@ -354,7 +373,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn rdssp<A>(&mut self, op0: A)
-    where Assembler<'a>: RdsspEmitter<A> {
+    where
+        Assembler<'a>: RdsspEmitter<A>,
+    {
         <Self as RdsspEmitter<A>>::rdssp(self, op0);
     }
     /// `RSTORSSP`.
@@ -370,7 +391,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn rstorssp<A>(&mut self, op0: A)
-    where Assembler<'a>: RstorsspEmitter<A> {
+    where
+        Assembler<'a>: RstorsspEmitter<A>,
+    {
         <Self as RstorsspEmitter<A>>::rstorssp(self, op0);
     }
     /// `SAVEPREVSSP`.
@@ -386,10 +409,12 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn saveprevssp(&mut self)
-    where Assembler<'a>: SaveprevsspEmitter {
+    where
+        Assembler<'a>: SaveprevsspEmitter,
+    {
         <Self as SaveprevsspEmitter>::saveprevssp(self);
     }
-    /// `SETSSBSY` (SETSSBSY). 
+    /// `SETSSBSY` (SETSSBSY).
     /// The SETSSBSY instruction verifies the presence of a non-busy supervisor shadow stack token at the address in the IA32_PL0_SSP MSR and marks it busy. Following successful execution of the instruction, the SSP is set to the value of the IA32_PL0_SSP MSR.
     ///
     ///
@@ -406,7 +431,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn setssbsy(&mut self)
-    where Assembler<'a>: SetssbsyEmitter {
+    where
+        Assembler<'a>: SetssbsyEmitter,
+    {
         <Self as SetssbsyEmitter>::setssbsy(self);
     }
     /// `WRSS`.
@@ -423,7 +450,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn wrss<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: WrssEmitter<A, B> {
+    where
+        Assembler<'a>: WrssEmitter<A, B>,
+    {
         <Self as WrssEmitter<A, B>>::wrss(self, op0, op1);
     }
     /// `WRUSS`.
@@ -440,7 +469,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn wruss<A, B>(&mut self, op0: A, op1: B)
-    where Assembler<'a>: WrussEmitter<A, B> {
+    where
+        Assembler<'a>: WrussEmitter<A, B>,
+    {
         <Self as WrussEmitter<A, B>>::wruss(self, op0, op1);
     }
 }

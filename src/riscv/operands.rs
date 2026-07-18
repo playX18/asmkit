@@ -53,7 +53,7 @@ impl Reg {
     }
 
     pub fn is_vec(&self) -> bool {
-        self.has_base_signature(RISCVFp::SIGNATURE)
+        self.has_base_signature(RISCVVec::SIGNATURE)
     }
 
     pub fn set_reg_t<T: RegTraits>(&mut self, rid: u32) {

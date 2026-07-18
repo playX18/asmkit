@@ -1,8 +1,8 @@
-use crate::x86::assembler::*;
-use crate::x86::operands::*;
 use super::super::opcodes::*;
 use crate::core::emitter::*;
 use crate::core::operand::*;
+use crate::x86::assembler::*;
+use crate::x86::operands::*;
 
 /// A dummy operand that represents no register. Here just for simplicity.
 const NOREG: Operand = Operand::new();
@@ -28,7 +28,6 @@ impl<'a> RmpqueryEmitter for Assembler<'a> {
     }
 }
 
-
 impl<'a> Assembler<'a> {
     /// `RMPQUERY`.
     ///
@@ -43,7 +42,9 @@ impl<'a> Assembler<'a> {
     /// ```
     #[inline]
     pub fn rmpquery(&mut self)
-    where Assembler<'a>: RmpqueryEmitter {
+    where
+        Assembler<'a>: RmpqueryEmitter,
+    {
         <Self as RmpqueryEmitter>::rmpquery(self);
     }
 }

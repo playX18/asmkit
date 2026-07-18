@@ -1,0 +1,43 @@
+/// Operand signature: all possible operand combinations, memory size
+/// information, and a fixed register id (port of AsmJit's `InstDB::OpSignature`).
+#[derive(Debug, Clone, Copy, Default)]
+pub struct OpSignature {
+    pub flags: u64,
+    pub reg_mask: u8,
+}
+
+impl OpSignature {
+    pub const fn new(flags: u64, reg_mask: u8) -> Self {
+        Self { flags, reg_mask }
+    }
+}
+
+/// Instruction signature: a sequence of operand combinations and other
+/// metadata defining a single instruction (port of AsmJit's `InstDB::InstSignature`).
+#[derive(Debug, Clone, Copy, Default)]
+pub struct InstSignature {
+    pub op_count: u8,
+    pub mode: u8,
+    pub implicit_op_count: u8,
+    pub reserved: u8,
+    pub op_signature_indexes: [u8; 6],
+}
+
+impl InstSignature {
+    pub const fn new(
+        op_count: u8,
+        mode: u8,
+        implicit_op_count: u8,
+        reserved: u8,
+        op_signature_indexes: [u8; 6],
+    ) -> Self {
+        Self {
+            op_count,
+            mode,
+            implicit_op_count,
+            reserved,
+            op_signature_indexes,
+        }
+    }
+}
+

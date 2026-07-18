@@ -1,0 +1,183 @@
+/// Aggregated information shared across one or more instructions
+/// (port of AsmJit's `InstDB::CommonInfo`).
+#[derive(Debug, Clone, Copy, Default)]
+pub struct CommonInfo {
+    pub flags: u32,
+    pub avx512_flags: u32,
+    pub signature_index: u32,
+    pub signature_count: u32,
+    pub control_flow: InstControlFlow,
+    pub same_reg_hint: InstSameRegHint,
+}
+
+impl CommonInfo {
+    pub const fn new(
+        flags: u32,
+        avx512_flags: u32,
+        signature_index: u32,
+        signature_count: u32,
+        control_flow: InstControlFlow,
+        same_reg_hint: InstSameRegHint,
+    ) -> Self {
+        Self {
+            flags,
+            avx512_flags,
+            signature_index,
+            signature_count,
+            control_flow,
+            same_reg_hint,
+        }
+    }
+
+    pub const fn has_flag(&self, flag: InstFlags) -> bool {
+        self.flags & flag.bits() != 0
+    }
+
+    pub const fn has_avx512_flag(&self, flag: Avx512Flags) -> bool {
+        self.avx512_flags & flag.bits() != 0
+    }
+}
+
+/// Instruction information (port of AsmJit's `InstDB::InstInfo`).
+#[derive(Debug, Clone, Copy, Default)]
+pub struct InstInfo {
+    pub reserved: u32,
+    pub common_info_index: u32,
+    pub additional_info_index: u32,
+    pub encoding: u8,
+    pub main_opcode_value: u8,
+    pub main_opcode_index: u8,
+    pub alt_opcode_index: u8,
+}
+
+impl InstInfo {
+    pub const fn new(
+        common_info_index: u32,
+        additional_info_index: u32,
+        encoding: u8,
+        main_opcode_value: u8,
+        main_opcode_index: u8,
+        alt_opcode_index: u8,
+    ) -> Self {
+        Self {
+            reserved: 0,
+            common_info_index,
+            additional_info_index,
+            encoding,
+            main_opcode_value,
+            main_opcode_index,
+            alt_opcode_index,
+        }
+    }
+}
+
+/// Additional information table entry: CPU extensions required to execute an
+/// instruction plus RW flags (port of AsmJit's `InstDB::AdditionalInfo`).
+#[derive(Debug, Clone, Copy, Default)]
+pub struct AdditionalInfo {
+    pub inst_flags_index: u8,
+    pub rw_flags_index: u8,
+    pub features: [u8; 6],
+}
+
+impl AdditionalInfo {
+    pub const fn new(inst_flags_index: u8, rw_flags_index: u8, features: [u8; 6]) -> Self {
+        Self {
+            inst_flags_index,
+            rw_flags_index,
+            features,
+        }
+    }
+}
+
+/// Read/write information of an instruction (port of AsmJit's `InstDB::RWInfo`).
+#[derive(Debug, Clone, Copy, Default)]
+pub struct RwInfo {
+    pub category: RwInfoCategory,
+    pub rm_info: u8,
+    pub op_info_index: [u8; 6],
+}
+
+impl RwInfo {
+    pub const fn new(category: RwInfoCategory, rm_info: u8, op_info_index: [u8; 6]) -> Self {
+        Self {
+            category,
+            rm_info,
+            op_info_index,
+        }
+    }
+}
+
+/// Read/write information of a single operand (port of AsmJit's `InstDB::RWInfoOp`).
+#[derive(Debug, Clone, Copy, Default)]
+pub struct RwInfoOp {
+    pub r_byte_mask: u64,
+    pub w_byte_mask: u64,
+    pub phys_id: u8,
+    pub consecutive_lead_count: u8,
+    pub flags: OpRwFlags,
+}
+
+impl RwInfoOp {
+    pub const fn new(
+        r_byte_mask: u64,
+        w_byte_mask: u64,
+        phys_id: u8,
+        consecutive_lead_count: u8,
+        flags: u32,
+    ) -> Self {
+        Self {
+            r_byte_mask,
+            w_byte_mask,
+            phys_id,
+            consecutive_lead_count,
+            flags: OpRwFlags::from_bits_retain(flags),
+        }
+    }
+}
+
+/// R/M information, used to replace a register operand by a memory operand
+/// reliably (port of AsmJit's `InstDB::RWInfoRm`).
+#[derive(Debug, Clone, Copy, Default)]
+pub struct RwInfoRm {
+    pub category: RwInfoRmCategory,
+    pub rm_ops_mask: u8,
+    pub fixed_size: u8,
+    pub flags: u8,
+    pub rm_feature: u8,
+}
+
+impl RwInfoRm {
+    pub const fn new(
+        category: RwInfoRmCategory,
+        rm_ops_mask: u8,
+        fixed_size: u8,
+        flags: u8,
+        rm_feature: u8,
+    ) -> Self {
+        Self {
+            category,
+            rm_ops_mask,
+            fixed_size,
+            flags,
+            rm_feature,
+        }
+    }
+}
+
+/// CPU/FPU flags read/written information (port of AsmJit's `InstDB::RWFlagsInfoTable`).
+#[derive(Debug, Clone, Copy, Default)]
+pub struct RwFlagsInfo {
+    pub read_flags: u32,
+    pub write_flags: u32,
+}
+
+impl RwFlagsInfo {
+    pub const fn new(read_flags: u32, write_flags: u32) -> Self {
+        Self {
+            read_flags,
+            write_flags,
+        }
+    }
+}
+
