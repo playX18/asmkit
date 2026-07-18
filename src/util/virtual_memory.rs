@@ -1120,8 +1120,6 @@ mod windows_support {
                 return Err(AsmError::OutOfMemory);
             }
 
-            dbg!();
-
             Ok(result as *mut u8)
         }
     }
