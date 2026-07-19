@@ -1,12 +1,13 @@
 pub fn get_tick_count() -> u32 {
-    cfgenius::cond! {
-        if cfg(windows) {
-            extern "C" {
+    cfg_select! {
+        windows => {
+            unsafe extern "C" {
                 fn GetTickCount() -> u32;
             }
 
             unsafe { GetTickCount() }
-        } else {
+        }
+        _ => {
             use core::mem::MaybeUninit;
             let mut ts: MaybeUninit<libc::timespec> = MaybeUninit::zeroed();
 

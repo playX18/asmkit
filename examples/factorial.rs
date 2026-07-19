@@ -1,6 +1,7 @@
 use asmkit::core::jit_allocator::{JitAllocator, JitAllocatorOptions};
 use capstone::prelude::*;
 fn main() {
+    #[cfg(unix)]
     {
         use asmkit::core::buffer::CodeBuffer;
         use asmkit::x86::*;
@@ -28,6 +29,90 @@ fn main() {
             asm.mov(RAX, RBX);
             asm.imul_2(RAX, RDX);
             asm.pop(RBX);
+            asm.ret();
+        }
+
+        let result = buf.finish();
+
+        let mut jit = JitAllocator::new(JitAllocatorOptions::default());
+
+        let mut span = jit
+            .alloc(result.data().len())
+            .expect("failed to allocate code");
+        unsafe {
+            jit.write(&mut span, |span| {
+                span.rw()
+                    .copy_from_nonoverlapping(result.data().as_ptr(), result.data().len());
+            })
+            .unwrap();
+
+            let cs = Capstone::new()
+                .x86()
+                .mode(arch::x86::ArchMode::Mode64)
+                .build()
+                .unwrap();
+
+            let insns = cs
+                .disasm_all(
+                    std::slice::from_raw_parts(span.rx(), result.data().len()),
+                    span.rx() as u64,
+                )
+                .unwrap();
+
+            for i in insns.iter() {
+                println!(
+                    "0x{:x}:\t{}\t{}",
+                    i.address(),
+                    i.mnemonic().unwrap(),
+                    i.op_str().unwrap()
+                );
+            }
+
+            #[cfg(target_arch = "x86_64")]
+            {
+                let f: extern "C" fn(u64) -> u64 = std::mem::transmute(span.rx());
+
+                println!("X86 factorial(5) = {:}", f(5));
+            }
+        }
+    }
+    #[cfg(windows)]
+    {
+        use asmkit::core::buffer::CodeBuffer;
+        use asmkit::x86::*;
+
+        let mut buf = CodeBuffer::new();
+        let mut asm = Assembler::new(&mut buf);
+
+        let fac = asm.get_label();
+
+        asm.bind_label(fac);
+        asm.mov(RAX, imm(1));
+        asm.test(RCX, RCX);
+        let label = asm.get_label();
+        asm.jnz(label);
+        asm.ret();
+
+        {
+            use asmkit::core::operand::BaseMem;
+
+            asm.bind_label(label);
+            asm.push(RBX);
+            asm.push(RSI);
+            asm.sub(RSP, imm(32));
+
+            asm.mov(RBX, RCX);
+            asm.lea(RCX, Mem(BaseMem::from_base_disp(RCX, -1)));
+            asm.call(fac);
+
+            asm.mov(RSI, RAX);
+            asm.mov(RAX, RBX);
+            asm.imul_2(RAX, RSI);
+
+            asm.add(RSP, imm(32));
+            asm.pop(RSI);
+            asm.pop(RBX);
+
             asm.ret();
         }
 

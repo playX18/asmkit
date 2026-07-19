@@ -7,6 +7,7 @@ unsafe extern "C" {
 }
 
 fn main() {
+    #[cfg(unix)]
     {
         use asmkit::x86::*;
 
@@ -65,6 +66,72 @@ fn main() {
                 let f: extern "C" fn() = std::mem::transmute(span.rx());
 
                 f();
+            }
+        }
+    }
+    #[cfg(windows)]
+    {
+        {
+            use asmkit::x86::*;
+
+            let mut buf = CodeBuffer::new();
+            let mut asm = Assembler::new(&mut buf);
+
+            let str_constant = asm.add_constant("Hello, World!\0");
+            let puts_sym = asm
+                .buffer
+                .add_symbol(ExternalName::Symbol("puts".into()), RelocDistance::Far);
+
+            asm.lea(RCX, ptr64_label(str_constant, 0));
+            asm.sub(RSP, imm(32));
+            asm.call(ptr64_sym(puts_sym, 0));
+            asm.add(RSP, imm(32));
+            asm.ret();
+            let end = asm.get_label();
+            asm.bind_label(end);
+            let off = asm.buffer.label_offset(end);
+
+            let result = buf.finish();
+
+            for reloc in result.relocs() {
+                println!("{:?}", reloc);
+            }
+
+            let mut jit = JitAllocator::new(Default::default());
+            let loaded = result
+                .allocate_relocated(&mut jit, |_| puts as *const u8, |_| puts as *const u8)
+                .unwrap();
+            let span = loaded.span();
+
+            unsafe {
+                let cs = Capstone::new()
+                    .x86()
+                    .mode(arch::x86::ArchMode::Mode64)
+                    .build()
+                    .unwrap();
+
+                let insns = cs
+                    .disasm_all(
+                        std::slice::from_raw_parts(span.rx(), off as usize),
+                        span.rx() as u64,
+                    )
+                    .unwrap();
+
+                for i in insns.iter() {
+                    println!(
+                        "0x{:x}:\t{}\t{}",
+                        i.address(),
+                        i.mnemonic().unwrap(),
+                        i.op_str().unwrap()
+                    );
+                }
+
+                #[cfg(target_arch = "x86_64")]
+                {
+                    let f: extern "C" fn() = std::mem::transmute(span.rx());
+
+                    f();
+                }
             }
         }
     }

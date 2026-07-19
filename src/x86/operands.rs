@@ -467,6 +467,12 @@ pub struct Gpq(pub Gp);
 
 impl_deref_for_wrapper!(Gpq, Gp);
 
+impl AsRef<BaseReg> for Gpq {
+    fn as_ref(&self) -> &BaseReg {
+        &self.0.0.0
+    }
+}
+
 impl Gpq {
     pub const fn signature_of(typ: RegType) -> OperandSignature {
         ArchTraits::by_arch(Arch::X86).reg_type_to_signature(typ)
