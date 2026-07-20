@@ -1,4 +1,5 @@
 use alloc::{borrow::Cow, collections::BinaryHeap, vec::Vec};
+use core::fmt;
 
 use smallvec::SmallVec;
 
@@ -31,7 +32,7 @@ pub struct CodeBuffer {
     data: SmallVec<[u8; 1024]>,
     relocs: SmallVec<[AsmReloc; 16]>,
     symbols: SmallVec<[SymData; 16]>,
-    defined_symbols: SmallVec<[(Cow<'static, str>, Label); 4]>,
+    defined_symbols: SmallVec<[(ExternalName, Label); 4]>,
     label_offsets: SmallVec<[CodeOffset; 16]>,
     pending_fixup_records: SmallVec<[AsmFixup; 16]>,
     pending_fixup_deadline: u32,
@@ -106,10 +107,79 @@ struct PendingPatchSite {
     addend: i64,
 }
 
-#[derive(Clone, PartialEq, Eq, Hash, Debug)]
+/// An external name in a user-defined symbol table.
+///
+/// Cranelift-style opaque key: asmkit does not interpret `namespace` or `index`.
+/// Hosts commonly use separate namespaces for functions vs data, but that
+/// convention is not enforced here.
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
+pub struct UserExternalName {
+    pub namespace: u32,
+    pub index: u32,
+}
+
+impl UserExternalName {
+    /// Creates a new user external name.
+    pub const fn new(namespace: u32, index: u32) -> Self {
+        Self { namespace, index }
+    }
+}
+
+impl fmt::Display for UserExternalName {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "u{}:{}", self.namespace, self.index)
+    }
+}
+
+/// Name of an external (or exported) symbol.
+///
+/// Either a string [`Symbol`](ExternalName::Symbol) for human-readable /
+/// ELF-like names, or a [`User`](ExternalName::User) namespace+index key for
+/// backends that do not use string symbols.
+#[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Hash, Debug)]
 pub enum ExternalName {
     Symbol(Cow<'static, str>),
-    UserName(u32),
+    User(UserExternalName),
+}
+
+impl ExternalName {
+    /// Creates a user-defined external name from `namespace` and `index`.
+    pub const fn user(namespace: u32, index: u32) -> Self {
+        Self::User(UserExternalName::new(namespace, index))
+    }
+}
+
+impl fmt::Display for ExternalName {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::Symbol(name) => f.write_str(name),
+            Self::User(name) => fmt::Display::fmt(name, f),
+        }
+    }
+}
+
+impl From<UserExternalName> for ExternalName {
+    fn from(name: UserExternalName) -> Self {
+        Self::User(name)
+    }
+}
+
+impl From<&'static str> for ExternalName {
+    fn from(name: &'static str) -> Self {
+        Self::Symbol(Cow::Borrowed(name))
+    }
+}
+
+impl From<alloc::string::String> for ExternalName {
+    fn from(name: alloc::string::String) -> Self {
+        Self::Symbol(Cow::Owned(name))
+    }
+}
+
+impl From<Cow<'static, str>> for ExternalName {
+    fn from(name: Cow<'static, str>) -> Self {
+        Self::Symbol(name)
+    }
 }
 #[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub enum RelocTarget {
@@ -175,7 +245,7 @@ pub struct CodeBufferFinalized {
     pub(crate) relocs: SmallVec<[AsmReloc; 16]>,
     pub(crate) symbols: SmallVec<[SymData; 16]>,
     pub(crate) label_offsets: SmallVec<[CodeOffset; 16]>,
-    pub(crate) defined_symbols: SmallVec<[(Cow<'static, str>, CodeOffset); 4]>,
+    pub(crate) defined_symbols: SmallVec<[(ExternalName, CodeOffset); 4]>,
     pub(crate) alignment: u32,
     pub(crate) patch_catalog: PatchCatalog,
 }
@@ -263,10 +333,18 @@ impl CodeBufferFinalized {
     /// Offset of a symbol exported with [`CodeBuffer::bind_symbol`], if present.
     ///
     /// After loading, the runtime address of the symbol is `rx + offset`.
-    pub fn defined_symbol_offset(&self, name: &str) -> Option<CodeOffset> {
+    pub fn defined_symbol_offset(&self, name: &ExternalName) -> Option<CodeOffset> {
         self.defined_symbols
             .iter()
-            .find(|(defined, _)| defined.as_ref() == name)
+            .find(|(defined, _)| defined == name)
+            .map(|(_, offset)| *offset)
+    }
+
+    /// Like [`Self::defined_symbol_offset`], for string [`ExternalName::Symbol`] exports.
+    pub fn defined_symbol_str(&self, name: &str) -> Option<CodeOffset> {
+        self.defined_symbols
+            .iter()
+            .find(|(defined, _)| matches!(defined, ExternalName::Symbol(s) if s.as_ref() == name))
             .map(|(_, offset)| *offset)
     }
 
@@ -394,26 +472,24 @@ impl CodeBufferFinalized {
     }
 
     /// Allocate executable memory and apply relocations, resolving external
-    /// symbols by name through `resolve`.
+    /// symbols through `resolve`.
     ///
     /// This is the ergonomic counterpart of [`Self::allocate_relocated`]: every
-    /// undefined external symbol (declared with [`CodeBuffer::extern_sym`] or
-    /// surviving a [`Linker`](crate::core::linker::Linker) link) is passed to
-    /// `resolve`, which must return its address. Symbols defined inside the
-    /// image (label targets and linked-in definitions) are resolved internally.
-    ///
-    /// `ExternalName::UserName` symbols cannot be resolved by name and yield a
-    /// null address, which most relocation kinds will reject.
+    /// undefined external symbol (declared with [`CodeBuffer::extern_sym`],
+    /// [`CodeBuffer::extern_user`], or surviving a
+    /// [`Linker`](crate::core::linker::Linker) link) is passed to `resolve`,
+    /// which must return its address. Symbols defined inside the image (label
+    /// targets and linked-in definitions) are resolved internally.
     #[cfg(feature = "jit")]
     pub fn allocate_resolved(
         &self,
         jit_allocator: &mut JitAllocator,
-        resolve: impl Fn(&str) -> *const u8,
+        resolve: impl Fn(&ExternalName) -> *const u8,
     ) -> Result<LoadedRelocatedCode, AsmError> {
         let by_name = |target: &RelocTarget| match target {
             RelocTarget::Sym(sym) => match self.symbol_name(*sym) {
-                Some(ExternalName::Symbol(name)) => resolve(name),
-                Some(ExternalName::UserName(_)) | None => core::ptr::null(),
+                Some(name) => resolve(name),
+                None => core::ptr::null(),
             },
             // Label targets are resolved internally by `allocate_relocated`.
             RelocTarget::Label(_) => core::ptr::null(),
@@ -689,9 +765,27 @@ impl CodeBuffer {
         self.add_symbol(name, distance)
     }
 
+    /// Declares an external symbol by user namespace+index, deduplicating:
+    /// repeated calls with the same key return the same `Sym` (the distance of
+    /// the first declaration wins).
+    pub fn extern_user(&mut self, namespace: u32, index: u32, distance: RelocDistance) -> Sym {
+        if self.error.is_some() {
+            return Sym::new();
+        }
+        let name = ExternalName::user(namespace, index);
+        if let Some(ix) = self.symbols.iter().position(|sym| sym.name == name) {
+            return Sym::from_id(ix as u32);
+        }
+
+        self.add_symbol(name, distance)
+    }
+
     /// Exports `label` under `name`, making it a defined symbol that other
     /// modules can resolve at link time (see [`crate::core::linker::Linker`]).
-    pub fn bind_symbol(&mut self, name: impl Into<Cow<'static, str>>, label: Label) {
+    ///
+    /// `name` may be a string ([`ExternalName::Symbol`]) or a user key
+    /// ([`ExternalName::User`]).
+    pub fn bind_symbol(&mut self, name: impl Into<ExternalName>, label: Label) {
         if self.error.is_some() {
             return;
         }
@@ -1559,7 +1653,7 @@ impl CodeBuffer {
         Ok(PatchCatalog::with_parts(self.env.arch(), blocks, sites))
     }
 
-    fn resolved_defined_symbols(&self) -> SmallVec<[(Cow<'static, str>, CodeOffset); 4]> {
+    fn resolved_defined_symbols(&self) -> SmallVec<[(ExternalName, CodeOffset); 4]> {
         // Unbound labels keep the sentinel offset; the linker reports them as
         // an error.
         self.defined_symbols
@@ -2712,7 +2806,7 @@ mod tests {
         buffer.put8(2);
         assert!(
             !buffer
-                .add_symbol(ExternalName::UserName(1), RelocDistance::Far)
+                .add_symbol(ExternalName::user(0, 1), RelocDistance::Far)
                 .is_valid()
         );
         assert_eq!(buffer.add_constant(3u64), Constant(u32::MAX));
@@ -2847,9 +2941,9 @@ mod tests {
 
     #[cfg(feature = "jit")]
     #[test]
-    fn allocate_resolved_rejects_user_name_symbols() {
+    fn allocate_resolved_rejects_unresolved_symbols() {
         let mut buffer = CodeBuffer::new(Environment::new(Arch::X64));
-        let symbol = buffer.add_symbol(ExternalName::UserName(7), RelocDistance::Far);
+        let symbol = buffer.add_symbol(ExternalName::user(0, 7), RelocDistance::Far);
         buffer.add_reloc(Reloc::Abs8, RelocTarget::Sym(symbol), 0);
         buffer.write_u64(0);
         let code = buffer.finish().unwrap();
@@ -2858,6 +2952,31 @@ mod tests {
         let result = code.allocate_resolved(&mut allocator, |_| core::ptr::null());
 
         assert_eq!(result.err(), Some(AsmError::InvalidArgument));
+    }
+
+    #[cfg(feature = "jit")]
+    #[test]
+    fn allocate_resolved_resolves_user_external_names() {
+        let mut buffer = CodeBuffer::new(Environment::new(Arch::X64));
+        let symbol = buffer.extern_user(1, 2, RelocDistance::Far);
+        buffer.add_reloc(Reloc::Abs8, RelocTarget::Sym(symbol), 0);
+        buffer.write_u64(0);
+        let code = buffer.finish().unwrap();
+        let mut allocator = JitAllocator::new(Default::default());
+
+        // Any non-null address is accepted; Abs8 just patches the pointer.
+        let target = 0x1000usize as *const u8;
+        let loaded = code
+            .allocate_resolved(&mut allocator, |name| match name {
+                ExternalName::User(u) if u.namespace == 1 && u.index == 2 => target,
+                _ => core::ptr::null(),
+            })
+            .unwrap();
+
+        unsafe {
+            let patched = core::ptr::read_unaligned(loaded.rx() as *const usize);
+            assert_eq!(patched, target as usize);
+        }
     }
 
     #[test]
@@ -2872,6 +2991,24 @@ mod tests {
         // The first declaration's distance wins.
         assert_eq!(buf.symbol_distance(first), Some(RelocDistance::Far));
         assert_eq!(buf.symbol_distance(other), Some(RelocDistance::Near));
+    }
+
+    #[test]
+    fn extern_user_deduplicates_by_namespace_and_index() {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let first = buf.extern_user(0, 1, RelocDistance::Far);
+        let other_ns = buf.extern_user(1, 1, RelocDistance::Near);
+        let other_idx = buf.extern_user(0, 2, RelocDistance::Near);
+        let again = buf.extern_user(0, 1, RelocDistance::Near);
+
+        assert_eq!(first, again);
+        assert_ne!(first, other_ns);
+        assert_ne!(first, other_idx);
+        assert_eq!(buf.symbol_distance(first), Some(RelocDistance::Far));
+        assert_eq!(
+            buf.symbol_name(first),
+            Some(&ExternalName::user(0, 1))
+        );
     }
 
     #[test]
@@ -2897,8 +3034,12 @@ mod tests {
         buf.write_u8(0xC3);
 
         let result = buf.finish().unwrap();
-        assert_eq!(result.defined_symbol_offset("entry"), Some(1));
-        assert_eq!(result.defined_symbol_offset("missing"), None);
+        assert_eq!(result.defined_symbol_str("entry"), Some(1));
+        assert_eq!(result.defined_symbol_str("missing"), None);
+        assert_eq!(
+            result.defined_symbol_offset(&ExternalName::from("entry")),
+            Some(1)
+        );
     }
 
     #[test]
@@ -3200,7 +3341,7 @@ mod tests {
 
         let first = buf.finish().unwrap();
         assert_eq!(&first.data()[..3], &[0xEB, 1, 0x90]);
-        assert_eq!(first.defined_symbol_offset("target"), Some(3));
+        assert_eq!(first.defined_symbol_str("target"), Some(3));
         assert_eq!(first.relocs()[0].offset, 3);
         assert_eq!(first.patch_catalog().block(block).unwrap().offset, 7);
         let patch_site = first.patch_catalog().site(site).unwrap();

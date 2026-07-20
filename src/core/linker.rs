@@ -19,9 +19,9 @@ use crate::core::section::FinalizedSection;
 /// its alignment. Symbols exported with
 /// [`CodeBuffer::bind_symbol`](crate::core::buffer::CodeBuffer::bind_symbol) are
 /// resolved against the final layout: a relocation in any module that references
-/// a defined name is rebound to the definition, so a symbol defined in module A
-/// can be called from module B. Remaining undefined symbols stay external and are
-/// resolved at load time, e.g. by name with
+/// a defined [`ExternalName`] is rebound to the definition, so a symbol defined
+/// in module A can be called from module B. Remaining undefined symbols stay
+/// external and are resolved at load time with
 /// [`CodeBufferFinalized::allocate_resolved`](crate::core::buffer::CodeBufferFinalized::allocate_resolved).
 ///
 /// This is deliberately not an ELF, COFF, or Mach-O linker: it emits no file
@@ -42,12 +42,12 @@ pub enum LinkError {
         section: Cow<'static, str>,
     },
     DuplicateSymbol {
-        name: Cow<'static, str>,
+        name: ExternalName,
         first_section: Cow<'static, str>,
         section: Cow<'static, str>,
     },
     UnboundSymbol {
-        name: Cow<'static, str>,
+        name: ExternalName,
         section: Cow<'static, str>,
     },
     InvalidRelocation {
@@ -76,12 +76,12 @@ impl fmt::Display for LinkError {
                 section,
             } => write!(
                 f,
-                "symbol {name:?} is defined by both {first_section:?} and {section:?}"
+                "symbol {name} is defined by both {first_section:?} and {section:?}"
             ),
             Self::UnboundSymbol { name, section } => {
                 write!(
                     f,
-                    "symbol {name:?} in section {section:?} is bound to no label"
+                    "symbol {name} in section {section:?} is bound to no label"
                 )
             }
             Self::InvalidRelocation {
@@ -156,7 +156,7 @@ impl Linker {
         let total_size = offset;
 
         // 2. Collect defined symbols (name -> global offset) in link order.
-        let mut defined: Vec<(Cow<'static, str>, CodeOffset, Cow<'static, str>)> = Vec::new();
+        let mut defined: Vec<(ExternalName, CodeOffset, Cow<'static, str>)> = Vec::new();
         for (section, &base) in self.sections.iter().zip(&bases) {
             for (name, local_offset) in &section.code.defined_symbols {
                 let local_offset = *local_offset;
@@ -283,12 +283,8 @@ impl Linker {
                             .get(sym.id() as usize)
                             .ok_or_else(|| invalid_reloc("symbol id is outside the section"))?
                             .name;
-                        let defined_index = match name {
-                            ExternalName::Symbol(symbol_name) => defined
-                                .iter()
-                                .position(|(defined_name, _, _)| defined_name == symbol_name),
-                            ExternalName::UserName(_) => None,
-                        };
+                        let defined_index =
+                            defined.iter().position(|(defined_name, _, _)| defined_name == name);
                         match defined_index {
                             // Defined in this link: bind to the synthetic label.
                             Some(index) => RelocTarget::Label(Label::from_id(
@@ -409,8 +405,8 @@ mod tests {
         // The image alignment also covers each buffer's constant alignment
         // (32 by default).
         assert_eq!(image.alignment(), 32);
-        assert_eq!(image.defined_symbol_offset("entry"), Some(0));
-        assert_eq!(image.defined_symbol_offset("data_sym"), Some(16));
+        assert_eq!(image.defined_symbol_str("entry"), Some(0));
+        assert_eq!(image.defined_symbol_str("data_sym"), Some(16));
         assert_eq!(image.data()[0], 0xC3);
         assert_eq!(image.data()[16], 0xAA);
     }
@@ -437,7 +433,7 @@ mod tests {
         linker.add_buffer(b.finish().unwrap());
 
         let image = linker.link().unwrap();
-        assert_eq!(image.defined_symbol_offset("callee"), Some(0));
+        assert_eq!(image.defined_symbol_str("callee"), Some(0));
         assert_eq!(image.relocs().len(), 2);
 
         // The resolved reference targets a label at the definition offset...
@@ -487,6 +483,80 @@ mod tests {
             }
             target => panic!("expected label target, got {target:?}"),
         }
+    }
+
+    #[test]
+    fn cross_module_user_symbol_resolution() {
+        const FUNC: u32 = 0;
+        // Module A defines user key (0, 1).
+        let mut a = CodeBuffer::new(Environment::new(Arch::X64));
+        let label = a.get_label();
+        a.bind_label(label);
+        a.bind_symbol(ExternalName::user(FUNC, 1), label);
+        a.write_u8(0xC3);
+
+        // Module B references the same user key as an undefined external.
+        let mut b = CodeBuffer::new(Environment::new(Arch::X64));
+        let callee = b.extern_user(FUNC, 1, RelocDistance::Far);
+        let missing = b.extern_user(FUNC, 2, RelocDistance::Far);
+        b.add_reloc(Reloc::Abs8, RelocTarget::Sym(callee), 0);
+        b.write_u64(0);
+        b.add_reloc(Reloc::Abs8, RelocTarget::Sym(missing), 0);
+        b.write_u64(0);
+
+        let mut linker = Linker::new();
+        linker.add_buffer(a.finish().unwrap());
+        linker.add_buffer(b.finish().unwrap());
+
+        let image = linker.link().unwrap();
+        assert_eq!(
+            image.defined_symbol_offset(&ExternalName::user(FUNC, 1)),
+            Some(0)
+        );
+        assert_eq!(image.relocs().len(), 2);
+
+        match &image.relocs()[0].target {
+            RelocTarget::Label(label) => {
+                assert_eq!(image.label_offsets[label.id() as usize], 0);
+            }
+            target => panic!("expected label target, got {target:?}"),
+        }
+        match &image.relocs()[1].target {
+            RelocTarget::Sym(sym) => {
+                assert_eq!(
+                    image.symbol_name(*sym),
+                    Some(&ExternalName::user(FUNC, 2))
+                );
+            }
+            target => panic!("expected symbol target, got {target:?}"),
+        }
+    }
+
+    #[test]
+    fn duplicate_user_definition_is_an_error() {
+        const FUNC: u32 = 0;
+        let mut a = CodeBuffer::new(Environment::new(Arch::X64));
+        let label = a.get_label();
+        a.bind_label(label);
+        a.bind_symbol(ExternalName::user(FUNC, 7), label);
+
+        let mut b = CodeBuffer::new(Environment::new(Arch::X64));
+        let label = b.get_label();
+        b.bind_label(label);
+        b.bind_symbol(ExternalName::user(FUNC, 7), label);
+
+        let mut linker = Linker::new();
+        linker.add_buffer(a.finish().unwrap());
+        linker.add_buffer(b.finish().unwrap());
+
+        assert_eq!(
+            linker.link().err(),
+            Some(AsmError::Link(LinkError::DuplicateSymbol {
+                name: ExternalName::user(FUNC, 7),
+                first_section: ".text".into(),
+                section: ".text".into(),
+            }))
+        );
     }
 
     #[test]
@@ -665,7 +735,7 @@ mod tests {
         linker.add_buffer(b.finish().unwrap());
         let image = linker.link().unwrap();
 
-        let entry = image.defined_symbol_offset("main").unwrap();
+        let entry = image.defined_symbol_str("main").unwrap();
         let mut jit = JitAllocator::new(Default::default());
         let loaded = image
             .allocate_resolved(&mut jit, |name| {

@@ -1,5 +1,5 @@
 use asmkit::Linker;
-use asmkit::{Arch, Environment, JitAllocator};
+use asmkit::{Arch, Environment, ExternalName, JitAllocator};
 use asmkit::{CodeBuffer, RelocDistance};
 
 use capstone::prelude::*;
@@ -7,10 +7,10 @@ unsafe extern "C" {
     fn puts(_: *const i8);
 }
 
-/// Resolves external symbols by name at load time.
-fn resolve(name: &str) -> *const u8 {
+/// Resolves external symbols at load time by [`ExternalName`].
+fn resolve(name: &ExternalName) -> *const u8 {
     match name {
-        "puts" => puts as *const u8,
+        ExternalName::Symbol(s) if s == "puts" => puts as *const u8,
         _ => std::ptr::null(),
     }
 }
@@ -42,7 +42,7 @@ fn main() {
         let mut linker = Linker::new();
         linker.add_buffer(buf.finish().unwrap());
         let image = linker.link().unwrap();
-        let entry_offset = image.defined_symbol_offset("main").unwrap();
+        let entry_offset = image.defined_symbol_str("main").unwrap();
 
         let mut jit = JitAllocator::new(Default::default());
         let loaded = image.allocate_resolved(&mut jit, resolve).unwrap();
@@ -106,7 +106,7 @@ fn main() {
         let mut linker = Linker::new();
         linker.add_buffer(buf.finish().unwrap());
         let image = linker.link().unwrap();
-        let entry_offset = image.defined_symbol_offset("main").unwrap();
+        let entry_offset = image.defined_symbol_str("main").unwrap();
 
         let mut jit = JitAllocator::new(Default::default());
         let loaded = image.allocate_resolved(&mut jit, resolve).unwrap();

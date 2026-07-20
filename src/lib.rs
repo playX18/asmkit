@@ -36,10 +36,15 @@
 //! 3. Load with [`CodeBufferFinalized::allocate`] (no relocations),
 //!    [`allocate_relocated`](CodeBufferFinalized::allocate_relocated),
 //!    or [`allocate_resolved`](CodeBufferFinalized::allocate_resolved)
-//!    (external symbols resolved by name).
+//!    (external symbols resolved via [`ExternalName`]).
 //! 4. Find entry points with
-//!    [`CodeBufferFinalized::defined_symbol_offset`]
+//!    [`CodeBufferFinalized::defined_symbol_offset`] /
+//!    [`defined_symbol_str`](CodeBufferFinalized::defined_symbol_str)
 //!    and call through `rx() + offset`.
+//!
+//! External names are either string [`ExternalName::Symbol`]s or Cranelift-style
+//! [`ExternalName::User`] namespace+index keys (`extern_user` / `bind_symbol`), so
+//! hosts that do not use string symbols can still link and resolve.
 //!
 //! Void mnemonic methods retain the first emission error in the [`CodeBuffer`].
 //! [`CodeBuffer::finish`] returns it, alongside finalization, linking, loading,
@@ -110,7 +115,7 @@ pub use core::{
     arch_traits::Arch,
     buffer::{
         Addend, AsmReloc, CodeBuffer, CodeBufferFinalized, CodeOffset, Constant, ConstantData,
-        ExternalName, LabelUse, Reloc, RelocDistance, RelocTarget,
+        ExternalName, LabelUse, Reloc, RelocDistance, RelocTarget, UserExternalName,
     },
     builder::{Builder, InstSink, Node},
     globals::{CondCode, InstOptions},

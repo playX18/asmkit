@@ -29,9 +29,10 @@ The minimum supported Rust version (MSRV) is Rust 1.85 (edition 2024).
 - Relocations are provided by the `CodeBuffer` interface and the assembler will use them if
   you use symbols in the API.
 - Multi-module linking: `Section` + `Linker` (src/core/{section,linker}.rs) lay out named
-  sections, resolve cross-module symbol references, and leave undefined symbols external for
-  load-time resolution (`CodeBufferFinalized::allocate_resolved`); entry points are looked up
-  with `CodeBufferFinalized::defined_symbol_offset`.
+  sections, resolve cross-module references keyed by `ExternalName` (string `Symbol` or
+  Cranelift-style `User` namespace+index), and leave undefined symbols external for load-time
+  resolution (`CodeBufferFinalized::allocate_resolved`); entry points are looked up with
+  `defined_symbol_offset` / `defined_symbol_str`.
 
 # Architecture in one paragraph
 
