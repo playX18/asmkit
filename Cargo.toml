@@ -25,18 +25,23 @@ bitflags = "2.11.0"
 [target.'cfg(target_arch="riscv64")'.dependencies]
 wasmtime-jit-icache-coherence = { version = "26.0.1", optional = true }
 
-[target.'cfg(windows)'.dependencies]
-windows-sys = { version = "0.61", optional = true, features = ["Win32_Foundation", "Win32_Security", "Win32_System_Memory", "Win32_System_SystemInformation"] }
+[target.'cfg(windows)'.dependencies.windows]
+version = "0.62"
+features = [
+	"Win32_Foundation",
+	"Win32_System_SystemInformation",
+	"Win32_System_Memory",
+	"Win32_Security",
+]
 
 [features]
 default = ["x86", "riscv", "aarch64"]
 x86 = []
 riscv = []
 aarch64 = []
-jit = ["wasmtime-jit-icache-coherence", "libc", "errno", "windows-sys"]
+jit = ["wasmtime-jit-icache-coherence", "libc", "errno"]
 # Exposes instruction-database metadata used by the exhaustive validation suites.
 validation = []
-
 
 [dev-dependencies]
 criterion = { version = "0.5", features = ["html_reports"] }

@@ -6,6 +6,7 @@ use capstone::prelude::*;
 // matching host the code is also executed through the JIT.
 fn main() {
     println!("X86:");
+    #[cfg(unix)]
     {
         use asmkit::CodeBuffer;
         use asmkit::CondCode;
@@ -31,6 +32,81 @@ fn main() {
             asm.sub(RDI, imm(1));
             asm.call(fac);
             asm.imul(RAX, RBX);
+            asm.pop(RBX);
+            asm.ret();
+        }
+        let result = buf.finish().unwrap();
+
+        let mut jit = JitAllocator::new(JitAllocatorOptions::default());
+
+        let mut span = jit
+            .alloc(result.data().len())
+            .expect("failed to allocate code");
+        unsafe {
+            jit.write(&mut span, |span| {
+                span.rw()
+                    .copy_from_nonoverlapping(result.data().as_ptr(), result.data().len());
+            })
+            .unwrap();
+
+            let cs = Capstone::new()
+                .x86()
+                .mode(arch::x86::ArchMode::Mode64)
+                .build()
+                .unwrap();
+
+            let insns = cs
+                .disasm_all(
+                    std::slice::from_raw_parts(span.rx(), result.data().len()),
+                    span.rx() as u64,
+                )
+                .unwrap();
+
+            for i in insns.iter() {
+                println!(
+                    "0x{:x}:\t{}\t{}",
+                    i.address(),
+                    i.mnemonic().unwrap(),
+                    i.op_str().unwrap()
+                );
+            }
+
+            #[cfg(target_arch = "x86_64")]
+            {
+                let f: extern "C" fn(u64) -> u64 = std::mem::transmute(span.rx());
+
+                println!("X86 factorial(5) = {:}", f(5));
+            }
+        }
+    }
+    #[cfg(windows)]
+    {
+        use asmkit::CodeBuffer;
+        use asmkit::CondCode;
+        use asmkit::x86::*;
+
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let mut asm = Assembler::new(&mut buf);
+
+        let fac = asm.get_label();
+        let rec = asm.get_label();
+
+        // fn fac(n: u64) -> u64 (Win64: n in rcx, result in rax).
+        asm.bind_label(fac);
+        asm.cmp(RCX, imm(1));
+        asm.j(CondCode::GT, rec);
+        asm.mov(RAX, imm(1));
+        asm.ret();
+        {
+            asm.bind_label(rec);
+            // Save rbx (n), then allocate the 32-byte Win64 shadow space.
+            asm.push(RBX);
+            asm.sub(RSP, imm(32));
+            asm.mov(RBX, RCX);
+            asm.sub(RCX, imm(1));
+            asm.call(fac);
+            asm.imul(RAX, RBX);
+            asm.add(RSP, imm(32));
             asm.pop(RBX);
             asm.ret();
         }

@@ -16,6 +16,7 @@ fn resolve(name: &str) -> *const u8 {
 }
 
 fn main() {
+    #[cfg(unix)]
     {
         use asmkit::x86::*;
 
@@ -38,6 +39,70 @@ fn main() {
         buf.bind_symbol("main", entry);
 
         // Link the module (only one here; linking is what resolves `main`).
+        let mut linker = Linker::new();
+        linker.add_buffer(buf.finish().unwrap());
+        let image = linker.link().unwrap();
+        let entry_offset = image.defined_symbol_offset("main").unwrap();
+
+        let mut jit = JitAllocator::new(Default::default());
+        let loaded = image.allocate_resolved(&mut jit, resolve).unwrap();
+        let span = loaded.span();
+
+        unsafe {
+            let cs = Capstone::new()
+                .x86()
+                .mode(arch::x86::ArchMode::Mode64)
+                .build()
+                .unwrap();
+
+            let insns = cs
+                .disasm_all(
+                    std::slice::from_raw_parts(span.rx(), code_len as usize),
+                    span.rx() as u64,
+                )
+                .unwrap();
+
+            for i in insns.iter() {
+                println!(
+                    "0x{:x}:\t{}\t{}",
+                    i.address(),
+                    i.mnemonic().unwrap(),
+                    i.op_str().unwrap()
+                );
+            }
+
+            #[cfg(target_arch = "x86_64")]
+            {
+                let f: extern "C" fn() = std::mem::transmute(span.rx().add(entry_offset as usize));
+
+                f();
+            }
+        }
+    }
+    #[cfg(windows)]
+    {
+        use asmkit::x86::*;
+
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let puts_sym = buf.extern_sym("puts", RelocDistance::Far);
+
+        let (entry, code_len) = {
+            let mut asm = Assembler::new(&mut buf);
+            let str_constant = asm.add_constant("Hello, World!\0");
+            let entry = asm.get_label();
+            asm.bind_label(entry);
+            // Win64: first arg in rcx, 32-byte shadow space before the call.
+            asm.sub(RSP, imm(40));
+            asm.lea(RCX, ptr64_label(str_constant, 0));
+            asm.call(ptr64_sym(puts_sym, 0));
+            asm.add(RSP, imm(40));
+            asm.ret();
+            let end = asm.get_label();
+            asm.bind_label(end);
+            (entry, asm.label_offset(end))
+        };
+        buf.bind_symbol("main", entry);
+
         let mut linker = Linker::new();
         linker.add_buffer(buf.finish().unwrap());
         let image = linker.link().unwrap();

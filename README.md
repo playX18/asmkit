@@ -83,7 +83,7 @@ disassembly), `reloc.rs` (relocations), `a64.rs` (AArch64).
 # Cargo features
 
 - `x86`, `riscv`, `aarch64` — per-architecture backends (enabled by default)
-- `jit` — JIT allocator (`libc`/`errno` on Unix and `windows-sys` on Windows)
+- `jit` — JIT allocator (`libc`/`errno` on Unix and `windows` on Windows)
 - default: `x86`, `riscv`, `aarch64`; add `jit` explicitly for executable-memory allocation
 
 The default x86/x64 target enables AVX, AVX2, and all AVX-512 families represented by the

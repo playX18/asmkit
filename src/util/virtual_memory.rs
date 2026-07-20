@@ -1069,206 +1069,226 @@ pub(crate) fn jit_access_for_test() -> ProtectJitAccess {
     TEST_JIT_ACCESS.with(core::cell::Cell::get)
 }
 
-cfgenius::cond! {
+#[cfg(windows)]
+mod windows_support {
+    use core::mem::MaybeUninit;
 
-    if cfg(windows) {
-
-        use windows_sys::Win32::{
+    use windows::{
+        Win32::{
             Foundation::{CloseHandle, HANDLE, INVALID_HANDLE_VALUE},
             System::{
                 Memory::{
-                    CreateFileMappingW, MapViewOfFile, UnmapViewOfFile, VirtualAlloc, VirtualFree,
-                    VirtualProtect, FILE_MAP_EXECUTE, FILE_MAP_READ, FILE_MAP_WRITE,
-                    MEMORY_MAPPED_VIEW_ADDRESS,
-                    MEM_COMMIT, MEM_RELEASE, MEM_RESERVE, PAGE_EXECUTE_READ, PAGE_EXECUTE_READWRITE,
-                    PAGE_READONLY, PAGE_READWRITE,
+                    CreateFileMappingW, FILE_MAP, FILE_MAP_EXECUTE, FILE_MAP_READ, FILE_MAP_WRITE,
+                    MEM_COMMIT, MEM_RELEASE, MEM_RESERVE, MEMORY_MAPPED_VIEW_ADDRESS,
+                    MapViewOfFile, PAGE_EXECUTE_READ, PAGE_EXECUTE_READWRITE,
+                    PAGE_PROTECTION_FLAGS, PAGE_READONLY, PAGE_READWRITE, UnmapViewOfFile,
+                    VirtualAlloc, VirtualFree, VirtualProtect,
                 },
                 SystemInformation::{GetSystemInfo, SYSTEM_INFO},
             },
-        };
+        },
+        core::PCWSTR,
+    };
 
+    use crate::{
+        AsmError,
+        util::virtual_memory::{DUAL_MAPPING_FILTER, DualMapping, Info, MemoryFlags},
+    };
 
-        struct ScopedHandle {
-            value: HANDLE
-        }
+    pub(super) struct ScopedHandle {
+        value: HANDLE,
+    }
 
-        impl ScopedHandle {
-            fn new() -> Self {
-                Self { value: core::ptr::null_mut() }
-            }
-        }
-
-        impl Drop for ScopedHandle {
-            fn drop(&mut self) {
-                if !self.value.is_null() {
-                    unsafe {
-                        CloseHandle(self.value);
-                    }
-                }
-            }
-        }
-
-        fn get_vm_info() -> Info {
-            let mut system_info = MaybeUninit::<SYSTEM_INFO>::uninit();
-            unsafe {
-                GetSystemInfo(system_info.as_mut_ptr());
-
-                let system_info = system_info.assume_init();
-
-                Info {
-                    page_size: system_info.dwPageSize as u32,
-                    page_granularity: system_info.dwAllocationGranularity as u32,
-                }
-            }
-        }
-
-        fn protect_flags_from_memory_flags(memory_flags: MemoryFlags) -> u32 {
-            let protect_flags;
-
-            if memory_flags.contains(MemoryFlags::ACCESS_EXECUTE) {
-                protect_flags = if memory_flags.contains(MemoryFlags::ACCESS_WRITE) {
-                    PAGE_EXECUTE_READWRITE
-                } else {
-                    PAGE_EXECUTE_READ
-                };
-            } else if memory_flags.contains(MemoryFlags::ACCESS_RW) {
-                protect_flags = if memory_flags.contains(MemoryFlags::ACCESS_WRITE) {
-                    PAGE_READWRITE
-                } else {
-                    PAGE_READONLY
-                };
-            } else {
-                protect_flags = PAGE_READONLY;
-            }
-
-            protect_flags
-        }
-
-        fn desired_access_from_memory_flags(memory_flags: MemoryFlags) -> u32 {
-            let mut access = if memory_flags.contains(MemoryFlags::ACCESS_WRITE) {
-                FILE_MAP_WRITE
-            } else {
-                FILE_MAP_READ
-            };
-
-            if memory_flags.contains(MemoryFlags::ACCESS_EXECUTE) {
-                access |= FILE_MAP_EXECUTE;
-            }
-
-            access
-        }
-
-        pub fn alloc(size: usize, memory_flags: MemoryFlags) -> Result<*mut u8, AsmError> {
-            if size == 0 {
-                return Err(AsmError::InvalidArgument)
-            }
-
-            unsafe {
-                let protect = protect_flags_from_memory_flags(memory_flags);
-                let result = VirtualAlloc(core::ptr::null_mut(), size, MEM_COMMIT | MEM_RESERVE, protect);
-
-                if result.is_null() {
-                    return Err(AsmError::OutOfMemory)
-                }
-
-                Ok(result as *mut u8)
-            }
-        }
-
-        pub fn release(ptr: *mut u8, size: usize) -> Result<(), AsmError> {
-            if size == 0 || ptr.is_null() {
-                return Err(AsmError::InvalidArgument)
-            }
-
-            unsafe {
-                if VirtualFree(ptr as *mut _, 0, MEM_RELEASE) == 0 {
-                    return Err(AsmError::InvalidArgument)
-                }
-            }
-
-            Ok(())
-        }
-
-        pub fn protect(p: *mut u8, size: usize, memory_flags: MemoryFlags) -> Result<(), AsmError> {
-            let protect_flags = protect_flags_from_memory_flags(memory_flags);
-            let mut old_flags = 0;
-
-            unsafe {
-                if VirtualProtect(p as _, size, protect_flags, &mut old_flags) != 0 {
-                    return Ok(())
-                }
-
-                Err(AsmError::InvalidArgument)
-            }
-        }
-
-        pub fn alloc_dual_mapping(size: usize, memory_flags: MemoryFlags) -> Result<DualMapping, AsmError> {
-            if size == 0 {
-                return Err(AsmError::InvalidArgument)
-            }
-
-            let mut handle = ScopedHandle::new();
-
-            unsafe {
-                handle.value = CreateFileMappingW(
-                    INVALID_HANDLE_VALUE,
-                    core::ptr::null_mut(),
-                    PAGE_EXECUTE_READWRITE,
-                    ((size as u64) >> 32) as _,
-                    (size & 0xFFFFFFFF) as _,
-                    core::ptr::null_mut()
-                );
-
-                if handle.value.is_null() {
-                    return Err(AsmError::OutOfMemory);
-                }
-
-                let mut ptr = [core::ptr::null_mut(), core::ptr::null_mut()];
-
-                for i in 0..2 {
-                    let access_flags = memory_flags.0 & !DUAL_MAPPING_FILTER[i];
-                    let desired_access = desired_access_from_memory_flags(access_flags.into());
-                    ptr[i] = MapViewOfFile(handle.value, desired_access, 0, 0, size).Value;
-
-                    if ptr[i].is_null() {
-                        if i == 1 {
-                            UnmapViewOfFile(MEMORY_MAPPED_VIEW_ADDRESS { Value: ptr[0] });
-                        }
-
-                        return Err(AsmError::OutOfMemory);
-                    }
-                }
-
-                Ok(DualMapping {
-                    rx: ptr[0] as _,
-                    rw: ptr[1] as _,
-                })
-            }
-        }
-
-        pub fn release_dual_mapping(dm: &mut DualMapping, _size: usize) -> Result<(), AsmError> {
-            let mut failed = false;
-
-            unsafe {
-                if UnmapViewOfFile(MEMORY_MAPPED_VIEW_ADDRESS { Value: dm.rx as _ }) == 0 {
-                    failed = true;
-                }
-
-                if dm.rx != dm.rw
-                    && UnmapViewOfFile(MEMORY_MAPPED_VIEW_ADDRESS { Value: dm.rw as _ }) == 0
-                {
-                    failed = true;
-                }
-
-                if failed {
-                    return Err(AsmError::InvalidArgument);
-                }
-
-                dm.rx = core::ptr::null_mut();
-                dm.rw = core::ptr::null_mut();
-
-                Ok(())
+    impl ScopedHandle {
+        fn new() -> Self {
+            Self {
+                value: HANDLE(core::ptr::null_mut()),
             }
         }
     }
+
+    impl Drop for ScopedHandle {
+        fn drop(&mut self) {
+            if !self.value.is_invalid() {
+                unsafe {
+                    let _ = CloseHandle(self.value);
+                }
+            }
+        }
+    }
+
+    pub(super) fn get_vm_info() -> Info {
+        let mut system_info = MaybeUninit::<SYSTEM_INFO>::uninit();
+        unsafe {
+            GetSystemInfo(system_info.as_mut_ptr());
+
+            let system_info = system_info.assume_init();
+
+            Info {
+                page_size: system_info.dwPageSize as u32,
+                page_granularity: system_info.dwAllocationGranularity as u32,
+            }
+        }
+    }
+
+    pub(super) fn protect_flags_from_memory_flags(
+        memory_flags: MemoryFlags,
+    ) -> PAGE_PROTECTION_FLAGS {
+        let protect_flags;
+
+        if memory_flags.contains(MemoryFlags::ACCESS_EXECUTE) {
+            protect_flags = if memory_flags.contains(MemoryFlags::ACCESS_WRITE) {
+                PAGE_EXECUTE_READWRITE
+            } else {
+                PAGE_EXECUTE_READ
+            };
+        } else if memory_flags.contains(MemoryFlags::ACCESS_RW) {
+            protect_flags = if memory_flags.contains(MemoryFlags::ACCESS_WRITE) {
+                PAGE_READWRITE
+            } else {
+                PAGE_READONLY
+            };
+        } else {
+            protect_flags = PAGE_READONLY;
+        }
+
+        protect_flags
+    }
+
+    pub(super) fn desired_access_from_memory_flags(memory_flags: MemoryFlags) -> FILE_MAP {
+        let mut access = if memory_flags.contains(MemoryFlags::ACCESS_WRITE) {
+            FILE_MAP_WRITE
+        } else {
+            FILE_MAP_READ
+        };
+
+        if memory_flags.contains(MemoryFlags::ACCESS_EXECUTE) {
+            access |= FILE_MAP_EXECUTE;
+        }
+
+        access
+    }
+
+    pub fn alloc(size: usize, memory_flags: MemoryFlags) -> Result<*mut u8, AsmError> {
+        if size == 0 {
+            return Err(AsmError::InvalidArgument);
+        }
+
+        unsafe {
+            let protect = protect_flags_from_memory_flags(memory_flags);
+            let result = VirtualAlloc(None, size, MEM_COMMIT | MEM_RESERVE, protect);
+
+            if result.is_null() {
+                return Err(AsmError::OutOfMemory);
+            }
+
+            Ok(result as *mut u8)
+        }
+    }
+
+    pub fn release(ptr: *mut u8, size: usize) -> Result<(), AsmError> {
+        if size == 0 || ptr.is_null() {
+            return Err(AsmError::InvalidArgument);
+        }
+
+        unsafe {
+            if VirtualFree(ptr as *mut _, 0, MEM_RELEASE).is_err() {
+                return Err(AsmError::InvalidArgument);
+            }
+        }
+
+        Ok(())
+    }
+
+    pub fn protect(p: *mut u8, size: usize, memory_flags: MemoryFlags) -> Result<(), AsmError> {
+        let protect_flags = protect_flags_from_memory_flags(memory_flags);
+        let mut old_flags = PAGE_PROTECTION_FLAGS(0);
+
+        unsafe {
+            if VirtualProtect(p as _, size, protect_flags, &mut old_flags).is_ok() {
+                return Ok(());
+            }
+
+            Err(AsmError::InvalidArgument)
+        }
+    }
+
+    pub fn alloc_dual_mapping(
+        size: usize,
+        memory_flags: MemoryFlags,
+    ) -> Result<DualMapping, AsmError> {
+        if size == 0 {
+            return Err(AsmError::InvalidArgument);
+        }
+
+        let mut handle = ScopedHandle::new();
+
+        unsafe {
+            handle.value = CreateFileMappingW(
+                INVALID_HANDLE_VALUE,
+                None,
+                PAGE_EXECUTE_READWRITE,
+                ((size as u64) >> 32) as _,
+                (size & 0xFFFFFFFF) as _,
+                PCWSTR::null(),
+            )
+            .unwrap_or_default();
+
+            if handle.value.is_invalid() {
+                return Err(AsmError::OutOfMemory);
+            }
+
+            let mut ptr = [
+                MEMORY_MAPPED_VIEW_ADDRESS::default(),
+                MEMORY_MAPPED_VIEW_ADDRESS::default(),
+            ];
+
+            for i in 0..2 {
+                let access_flags = memory_flags.0 & !DUAL_MAPPING_FILTER[i];
+                let desired_access = desired_access_from_memory_flags(access_flags.into());
+                ptr[i] = MapViewOfFile(handle.value, desired_access, 0, 0, size);
+
+                if ptr[i].Value.is_null() {
+                    if i == 1 {
+                        let _ = UnmapViewOfFile(ptr[0]);
+                    }
+
+                    return Err(AsmError::OutOfMemory);
+                }
+            }
+
+            Ok(DualMapping {
+                rx: ptr[0].Value as _,
+                rw: ptr[1].Value as _,
+            })
+        }
+    }
+
+    pub fn release_dual_mapping(dm: &mut DualMapping, _size: usize) -> Result<(), AsmError> {
+        let mut failed = false;
+
+        unsafe {
+            if UnmapViewOfFile(MEMORY_MAPPED_VIEW_ADDRESS { Value: dm.rx as _ }).is_err() {
+                failed = true;
+            }
+
+            if dm.rx != dm.rw
+                && UnmapViewOfFile(MEMORY_MAPPED_VIEW_ADDRESS { Value: dm.rw as _ }).is_err()
+            {
+                failed = true;
+            }
+
+            if failed {
+                return Err(AsmError::InvalidArgument);
+            }
+
+            dm.rx = core::ptr::null_mut();
+            dm.rw = core::ptr::null_mut();
+
+            Ok(())
+        }
+    }
 }
+
+#[cfg(windows)]
+pub use windows_support::*;
