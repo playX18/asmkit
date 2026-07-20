@@ -1413,6 +1413,8 @@ pub const MATCH_LH: u32 = 0x1003;
 pub const MASK_LH: u32 = 0x707f;
 pub const MATCH_LHU: u32 = 0x5003;
 pub const MASK_LHU: u32 = 0x707f;
+pub const MATCH_LPAD: u32 = 0x17;
+pub const MASK_LPAD: u32 = 0xfff;
 pub const MATCH_LR_D: u32 = 0x1000302f;
 pub const MASK_LR_D: u32 = 0xf9f0707f;
 pub const MATCH_LR_W: u32 = 0x1000202f;
@@ -1733,6 +1735,20 @@ pub const MATCH_SRLIW: u32 = 0x501b;
 pub const MASK_SRLIW: u32 = 0xfe00707f;
 pub const MATCH_SRLW: u32 = 0x503b;
 pub const MASK_SRLW: u32 = 0xfe00707f;
+pub const MATCH_SSAMOSWAP_D: u32 = 0x4800302f;
+pub const MASK_SSAMOSWAP_D: u32 = 0xf800707f;
+pub const MATCH_SSAMOSWAP_W: u32 = 0x4800202f;
+pub const MASK_SSAMOSWAP_W: u32 = 0xf800707f;
+pub const MATCH_SSPOPCHK_X1: u32 = 0xcdc0c073;
+pub const MASK_SSPOPCHK_X1: u32 = 0xffffffff;
+pub const MATCH_SSPOPCHK_X5: u32 = 0xcdc2c073;
+pub const MASK_SSPOPCHK_X5: u32 = 0xffffffff;
+pub const MATCH_SSPUSH_X1: u32 = 0xce104073;
+pub const MASK_SSPUSH_X1: u32 = 0xffffffff;
+pub const MATCH_SSPUSH_X5: u32 = 0xce504073;
+pub const MASK_SSPUSH_X5: u32 = 0xffffffff;
+pub const MATCH_SSRDP: u32 = 0xcdc04073;
+pub const MASK_SSRDP: u32 = 0xfffff07f;
 pub const MATCH_SUB: u32 = 0x40000033;
 pub const MASK_SUB: u32 = 0xfe00707f;
 pub const MATCH_SUBW: u32 = 0x4000003b;
@@ -3110,7 +3126,7 @@ pub const CAUSE_FETCH_GUEST_PAGE_FAULT: u8 = 0x14;
 pub const CAUSE_LOAD_GUEST_PAGE_FAULT: u8 = 0x15;
 pub const CAUSE_VIRTUAL_INSTRUCTION: u8 = 0x16;
 pub const CAUSE_STORE_GUEST_PAGE_FAULT: u8 = 0x17;
-pub static OPCODE32_MATCH: [u32; 1031] = [
+pub static OPCODE32_MATCH: [u32; 1039] = [
     0x33,        /* add */
     0xffff_ffff, /* add_uw */
     0x13,        /* addi */
@@ -3225,8 +3241,8 @@ pub static OPCODE32_MATCH: [u32; 1031] = [
     0x9002,      /* c_jalr */
     0x8002,      /* c_jr */
     0x8000,      /* c_lbu */
-    0xffff_ffff, /* c_ld */
-    0xffff_ffff, /* c_ldsp */
+    0x6000,      /* c_ld */
+    0x6002,      /* c_ldsp */
     0x8440,      /* c_lh */
     0x8400,      /* c_lhu */
     0x4001,      /* c_li */
@@ -3252,8 +3268,8 @@ pub static OPCODE32_MATCH: [u32; 1031] = [
     0x9012,      /* c_ntl_s1 */
     0x8c41,      /* c_or */
     0x8800,      /* c_sb */
-    0xffff_ffff, /* c_sd */
-    0xffff_ffff, /* c_sdsp */
+    0xe000,      /* c_sd */
+    0xe002,      /* c_sdsp */
     0x9c65,      /* c_sext_b */
     0x9c6d,      /* c_sext_h */
     0xffff_ffff, /* c_sext_w */
@@ -3534,6 +3550,7 @@ pub static OPCODE32_MATCH: [u32; 1031] = [
     0xffff_ffff, /* ld */
     0x1003,      /* lh */
     0x5003,      /* lhu */
+    0x17,        /* lpad */
     0xffff_ffff, /* lr_d */
     0x1000202f,  /* lr_w */
     0x37,        /* lui */
@@ -3694,6 +3711,13 @@ pub static OPCODE32_MATCH: [u32; 1031] = [
     0x5013,      /* srli_rv32 */
     0xffff_ffff, /* srliw */
     0xffff_ffff, /* srlw */
+    0xffff_ffff, /* ssamoswap_d */
+    0x4800202f,  /* ssamoswap_w */
+    0xcdc0c073,  /* sspopchk_x1 */
+    0xcdc2c073,  /* sspopchk_x5 */
+    0xce104073,  /* sspush_x1 */
+    0xce504073,  /* sspush_x5 */
+    0xcdc04073,  /* ssrdp */
     0x40000033,  /* sub */
     0xffff_ffff, /* subw */
     0x2023,      /* sw */
@@ -4143,7 +4167,7 @@ pub static OPCODE32_MATCH: [u32; 1031] = [
     0xffff_ffff, /* zext_w */
     0x8f01013,   /* zip */
 ];
-pub static OPCODE32_MASK: [u32; 1031] = [
+pub static OPCODE32_MASK: [u32; 1039] = [
     0xfe00707f,  /* add */
     0xffff_ffff, /* add_uw */
     0x707f,      /* addi */
@@ -4258,8 +4282,8 @@ pub static OPCODE32_MASK: [u32; 1031] = [
     0xf07f,      /* c_jalr */
     0xf07f,      /* c_jr */
     0xfc03,      /* c_lbu */
-    0xffff_ffff, /* c_ld */
-    0xffff_ffff, /* c_ldsp */
+    0xe003,      /* c_ld */
+    0xe003,      /* c_ldsp */
     0xfc43,      /* c_lh */
     0xfc43,      /* c_lhu */
     0xe003,      /* c_li */
@@ -4285,8 +4309,8 @@ pub static OPCODE32_MASK: [u32; 1031] = [
     0xffff,      /* c_ntl_s1 */
     0xfc63,      /* c_or */
     0xfc03,      /* c_sb */
-    0xffff_ffff, /* c_sd */
-    0xffff_ffff, /* c_sdsp */
+    0xe003,      /* c_sd */
+    0xe003,      /* c_sdsp */
     0xfc7f,      /* c_sext_b */
     0xfc7f,      /* c_sext_h */
     0xffff_ffff, /* c_sext_w */
@@ -4567,6 +4591,7 @@ pub static OPCODE32_MASK: [u32; 1031] = [
     0xffff_ffff, /* ld */
     0x707f,      /* lh */
     0x707f,      /* lhu */
+    0xfff,       /* lpad */
     0xffff_ffff, /* lr_d */
     0xf9f0707f,  /* lr_w */
     0x7f,        /* lui */
@@ -4727,6 +4752,13 @@ pub static OPCODE32_MASK: [u32; 1031] = [
     0xfe00707f,  /* srli_rv32 */
     0xffff_ffff, /* srliw */
     0xffff_ffff, /* srlw */
+    0xffff_ffff, /* ssamoswap_d */
+    0xf800707f,  /* ssamoswap_w */
+    0xffffffff,  /* sspopchk_x1 */
+    0xffffffff,  /* sspopchk_x5 */
+    0xffffffff,  /* sspush_x1 */
+    0xffffffff,  /* sspush_x5 */
+    0xfffff07f,  /* ssrdp */
     0xfe00707f,  /* sub */
     0xffff_ffff, /* subw */
     0x707f,      /* sw */
@@ -5176,7 +5208,7 @@ pub static OPCODE32_MASK: [u32; 1031] = [
     0xffff_ffff, /* zext_w */
     0xfff0707f,  /* zip */
 ];
-pub static OPCODE64_MATCH: [u32; 1031] = [
+pub static OPCODE64_MATCH: [u32; 1039] = [
     0x33,        /* add */
     0x800003b,   /* add_uw */
     0x13,        /* addi */
@@ -5600,6 +5632,7 @@ pub static OPCODE64_MATCH: [u32; 1031] = [
     0x3003,      /* ld */
     0x1003,      /* lh */
     0x5003,      /* lhu */
+    0x17,        /* lpad */
     0x1000302f,  /* lr_d */
     0x1000202f,  /* lr_w */
     0x37,        /* lui */
@@ -5760,6 +5793,13 @@ pub static OPCODE64_MATCH: [u32; 1031] = [
     0xffff_ffff, /* srli_rv32 */
     0x501b,      /* srliw */
     0x503b,      /* srlw */
+    0x4800302f,  /* ssamoswap_d */
+    0x4800202f,  /* ssamoswap_w */
+    0xcdc0c073,  /* sspopchk_x1 */
+    0xcdc2c073,  /* sspopchk_x5 */
+    0xce104073,  /* sspush_x1 */
+    0xce504073,  /* sspush_x5 */
+    0xcdc04073,  /* ssrdp */
     0x40000033,  /* sub */
     0x4000003b,  /* subw */
     0x2023,      /* sw */
@@ -6209,7 +6249,7 @@ pub static OPCODE64_MATCH: [u32; 1031] = [
     0x800003b,   /* zext_w */
     0xffff_ffff, /* zip */
 ];
-pub static OPCODE64_MASK: [u32; 1031] = [
+pub static OPCODE64_MASK: [u32; 1039] = [
     0xfe00707f,  /* add */
     0xfe00707f,  /* add_uw */
     0x707f,      /* addi */
@@ -6633,6 +6673,7 @@ pub static OPCODE64_MASK: [u32; 1031] = [
     0x707f,      /* ld */
     0x707f,      /* lh */
     0x707f,      /* lhu */
+    0xfff,       /* lpad */
     0xf9f0707f,  /* lr_d */
     0xf9f0707f,  /* lr_w */
     0x7f,        /* lui */
@@ -6793,6 +6834,13 @@ pub static OPCODE64_MASK: [u32; 1031] = [
     0xffff_ffff, /* srli_rv32 */
     0xfe00707f,  /* srliw */
     0xfe00707f,  /* srlw */
+    0xf800707f,  /* ssamoswap_d */
+    0xf800707f,  /* ssamoswap_w */
+    0xffffffff,  /* sspopchk_x1 */
+    0xffffffff,  /* sspopchk_x5 */
+    0xffffffff,  /* sspush_x1 */
+    0xffffffff,  /* sspush_x5 */
+    0xfffff07f,  /* ssrdp */
     0xfe00707f,  /* sub */
     0xfe00707f,  /* subw */
     0x707f,      /* sw */
@@ -7242,7 +7290,7 @@ pub static OPCODE64_MASK: [u32; 1031] = [
     0xfff0707f,  /* zext_w */
     0xffff_ffff, /* zip */
 ];
-pub static OPCODE_MATCH: [u32; 1031] = [
+pub static OPCODE_MATCH: [u32; 1039] = [
     0x33,       /* add */
     0x800003b,  /* add_uw */
     0x13,       /* addi */
@@ -7666,6 +7714,7 @@ pub static OPCODE_MATCH: [u32; 1031] = [
     0x3003,     /* ld */
     0x1003,     /* lh */
     0x5003,     /* lhu */
+    0x17,       /* lpad */
     0x1000302f, /* lr_d */
     0x1000202f, /* lr_w */
     0x37,       /* lui */
@@ -7826,6 +7875,13 @@ pub static OPCODE_MATCH: [u32; 1031] = [
     0x5013,     /* srli_rv32 */
     0x501b,     /* srliw */
     0x503b,     /* srlw */
+    0x4800302f, /* ssamoswap_d */
+    0x4800202f, /* ssamoswap_w */
+    0xcdc0c073, /* sspopchk_x1 */
+    0xcdc2c073, /* sspopchk_x5 */
+    0xce104073, /* sspush_x1 */
+    0xce504073, /* sspush_x5 */
+    0xcdc04073, /* ssrdp */
     0x40000033, /* sub */
     0x4000003b, /* subw */
     0x2023,     /* sw */
@@ -8275,7 +8331,7 @@ pub static OPCODE_MATCH: [u32; 1031] = [
     0x800003b,  /* zext_w */
     0x8f01013,  /* zip */
 ];
-pub static OPCODE_MASK: [u32; 1031] = [
+pub static OPCODE_MASK: [u32; 1039] = [
     0xfe00707f, /* add */
     0xfe00707f, /* add_uw */
     0x707f,     /* addi */
@@ -8699,6 +8755,7 @@ pub static OPCODE_MASK: [u32; 1031] = [
     0x707f,     /* ld */
     0x707f,     /* lh */
     0x707f,     /* lhu */
+    0xfff,      /* lpad */
     0xf9f0707f, /* lr_d */
     0xf9f0707f, /* lr_w */
     0x7f,       /* lui */
@@ -8859,6 +8916,13 @@ pub static OPCODE_MASK: [u32; 1031] = [
     0xfe00707f, /* srli_rv32 */
     0xfe00707f, /* srliw */
     0xfe00707f, /* srlw */
+    0xf800707f, /* ssamoswap_d */
+    0xf800707f, /* ssamoswap_w */
+    0xffffffff, /* sspopchk_x1 */
+    0xffffffff, /* sspopchk_x5 */
+    0xffffffff, /* sspush_x1 */
+    0xffffffff, /* sspush_x5 */
+    0xfffff07f, /* ssrdp */
     0xfe00707f, /* sub */
     0xfe00707f, /* subw */
     0x707f,     /* sw */
@@ -9308,7 +9372,7 @@ pub static OPCODE_MASK: [u32; 1031] = [
     0xfff0707f, /* zext_w */
     0xfff0707f, /* zip */
 ];
-pub static OPCODE_MASK_COMPRESSED: [u16; 1031] = [
+pub static OPCODE_MASK_COMPRESSED: [u16; 1039] = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 61443, 57347,
@@ -9317,10 +9381,9 @@ pub static OPCODE_MASK_COMPRESSED: [u16; 1031] = [
     57347, 57347, 57347, 57347, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 65535, 63743,
     64611, 61443, 61315, 64639, 65535, 65535, 65535, 65535, 64611, 64515, 57347, 57347, 64639,
     64639, 61567, 64579, 57347, 61443, 60419, 64515, 60419, 64515, 65535, 65535, 64611, 64611,
-    57347, 57347, 64611, 64639, 64639, 64639, 32767, 32767, 32767, 32767, 28799, 28799, 28799,
-    28799, 28799, 64515, 64611, 64611, 65283, 65283, 65283, 65283, 28799, 28799, 32767, 32767,
-    61567, 28799, 28799, 28799, 28799, 28799, 28799, 32767, 32767, 32767, 32767, 28799, 28799,
-    28799, 28799, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    57347, 57347, 64611, 64639, 64639, 64639, 0, 0, 0, 0, 0, 0, 0, 0, 0, 64515, 64611, 64611,
+    65283, 65283, 65283, 65283, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -9348,7 +9411,7 @@ pub static OPCODE_MASK_COMPRESSED: [u16; 1031] = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0,
 ];
-pub static OPCODE_MATCH_COMPRESSED: [u16; 1031] = [
+pub static OPCODE_MATCH_COMPRESSED: [u16; 1039] = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 36866, 1, 24833,
@@ -9357,9 +9420,7 @@ pub static OPCODE_MATCH_COMPRESSED: [u16; 1031] = [
     16384, 16386, 24705, 25985, 26241, 26497, 24961, 25217, 25473, 25729, 24705, 40001, 32770, 1,
     40053, 36886, 36874, 36878, 36882, 35905, 34816, 57344, 57346, 40037, 40045, 8193, 35840, 2, 2,
     33793, 33793, 32769, 32769, 25217, 24705, 35841, 39937, 49152, 49154, 35873, 40033, 40041,
-    40049, 8207, 8207, 8207, 8207, 4147, 12339, 8243, 4115, 4123, 40962, 44130, 44066, 47618,
-    48642, 48130, 47106, 4115, 4123, 12403, 28787, 8307, 12403, 28787, 8307, 24691, 4211, 20595,
-    8307, 24691, 4211, 20595, 4115, 4123, 20531, 28723, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    40049, 0, 0, 0, 0, 0, 0, 0, 0, 0, 40962, 44130, 44066, 47618, 48642, 48130, 47106, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -9385,10 +9446,1052 @@ pub static OPCODE_MATCH_COMPRESSED: [u16; 1031] = [
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+];
+pub static OPCODE_XLEN: [u8; 1039] = [
+    3, /* add */
+    2, /* add_uw */
+    3, /* addi */
+    2, /* addiw */
+    2, /* addw */
+    1, /* aes32dsi */
+    1, /* aes32dsmi */
+    1, /* aes32esi */
+    1, /* aes32esmi */
+    2, /* aes64ds */
+    2, /* aes64dsm */
+    2, /* aes64es */
+    2, /* aes64esm */
+    2, /* aes64im */
+    2, /* aes64ks1i */
+    2, /* aes64ks2 */
+    3, /* amoadd_b */
+    2, /* amoadd_d */
+    3, /* amoadd_h */
+    3, /* amoadd_w */
+    3, /* amoand_b */
+    2, /* amoand_d */
+    3, /* amoand_h */
+    3, /* amoand_w */
+    3, /* amocas_b */
+    3, /* amocas_d */
+    3, /* amocas_h */
+    2, /* amocas_q */
+    3, /* amocas_w */
+    3, /* amomax_b */
+    2, /* amomax_d */
+    3, /* amomax_h */
+    3, /* amomax_w */
+    3, /* amomaxu_b */
+    2, /* amomaxu_d */
+    3, /* amomaxu_h */
+    3, /* amomaxu_w */
+    3, /* amomin_b */
+    2, /* amomin_d */
+    3, /* amomin_h */
+    3, /* amomin_w */
+    3, /* amominu_b */
+    2, /* amominu_d */
+    3, /* amominu_h */
+    3, /* amominu_w */
+    3, /* amoor_b */
+    2, /* amoor_d */
+    3, /* amoor_h */
+    3, /* amoor_w */
+    3, /* amoswap_b */
+    2, /* amoswap_d */
+    3, /* amoswap_h */
+    3, /* amoswap_w */
+    3, /* amoxor_b */
+    2, /* amoxor_d */
+    3, /* amoxor_h */
+    3, /* amoxor_w */
+    3, /* and */
+    3, /* andi */
+    3, /* andn */
+    3, /* auipc */
+    3, /* bclr */
+    2, /* bclri */
+    1, /* bclri_rv32 */
+    3, /* beq */
+    3, /* beqz */
+    3, /* bext */
+    2, /* bexti */
+    1, /* bexti_rv32 */
+    3, /* bge */
+    3, /* bgeu */
+    3, /* bgez */
+    3, /* bgt */
+    3, /* bgtu */
+    3, /* bgtz */
+    3, /* binv */
+    2, /* binvi */
+    1, /* binvi_rv32 */
+    3, /* ble */
+    3, /* bleu */
+    3, /* blez */
+    3, /* blt */
+    3, /* bltu */
+    3, /* bltz */
+    3, /* bne */
+    3, /* bnez */
+    3, /* brev8 */
+    3, /* bset */
+    2, /* bseti */
+    1, /* bseti_rv32 */
+    3, /* c_add */
+    3, /* c_addi */
+    3, /* c_addi16sp */
+    3, /* c_addi4spn */
+    2, /* c_addiw */
+    2, /* c_addw */
+    3, /* c_and */
+    3, /* c_andi */
+    3, /* c_beqz */
+    3, /* c_bnez */
+    3, /* c_ebreak */
+    3, /* c_fld */
+    3, /* c_fldsp */
+    1, /* c_flw */
+    1, /* c_flwsp */
+    3, /* c_fsd */
+    3, /* c_fsdsp */
+    1, /* c_fsw */
+    1, /* c_fswsp */
+    3, /* c_j */
+    1, /* c_jal */
+    3, /* c_jalr */
+    3, /* c_jr */
+    3, /* c_lbu */
+    3, /* c_ld */
+    3, /* c_ldsp */
+    3, /* c_lh */
+    3, /* c_lhu */
+    3, /* c_li */
+    3, /* c_lui */
+    3, /* c_lw */
+    3, /* c_lwsp */
+    3, /* c_mop_1 */
+    3, /* c_mop_11 */
+    3, /* c_mop_13 */
+    3, /* c_mop_15 */
+    3, /* c_mop_3 */
+    3, /* c_mop_5 */
+    3, /* c_mop_7 */
+    3, /* c_mop_9 */
+    3, /* c_mop_N */
+    3, /* c_mul */
+    3, /* c_mv */
+    3, /* c_nop */
+    3, /* c_not */
+    3, /* c_ntl_all */
+    3, /* c_ntl_p1 */
+    3, /* c_ntl_pall */
+    3, /* c_ntl_s1 */
+    3, /* c_or */
+    3, /* c_sb */
+    3, /* c_sd */
+    3, /* c_sdsp */
+    3, /* c_sext_b */
+    3, /* c_sext_h */
+    2, /* c_sext_w */
+    3, /* c_sh */
+    3, /* c_slli */
+    1, /* c_slli_rv32 */
+    3, /* c_srai */
+    1, /* c_srai_rv32 */
+    3, /* c_srli */
+    1, /* c_srli_rv32 */
+    3, /* c_sspopchk_x5 */
+    3, /* c_sspush_x1 */
+    3, /* c_sub */
+    2, /* c_subw */
+    3, /* c_sw */
+    3, /* c_swsp */
+    3, /* c_xor */
+    3, /* c_zext_b */
+    3, /* c_zext_h */
+    2, /* c_zext_w */
+    3, /* cbo_clean */
+    3, /* cbo_flush */
+    3, /* cbo_inval */
+    3, /* cbo_zero */
+    3, /* clmul */
+    3, /* clmulh */
+    3, /* clmulr */
+    3, /* clz */
+    2, /* clzw */
+    3, /* cm_jalt */
+    3, /* cm_mva01s */
+    3, /* cm_mvsa01 */
+    3, /* cm_pop */
+    3, /* cm_popret */
+    3, /* cm_popretz */
+    3, /* cm_push */
+    3, /* cpop */
+    2, /* cpopw */
+    3, /* csrc */
+    3, /* csrci */
+    3, /* csrr */
+    3, /* csrrc */
+    3, /* csrrci */
+    3, /* csrrs */
+    3, /* csrrsi */
+    3, /* csrrw */
+    3, /* csrrwi */
+    3, /* csrs */
+    3, /* csrsi */
+    3, /* csrw */
+    3, /* csrwi */
+    3, /* ctz */
+    2, /* ctzw */
+    3, /* czero_eqz */
+    3, /* czero_nez */
+    3, /* div */
+    3, /* divu */
+    2, /* divuw */
+    2, /* divw */
+    3, /* dret */
+    3, /* ebreak */
+    3, /* ecall */
+    3, /* fabs_d */
+    3, /* fabs_h */
+    3, /* fabs_q */
+    3, /* fabs_s */
+    3, /* fadd_d */
+    3, /* fadd_h */
+    3, /* fadd_q */
+    3, /* fadd_s */
+    3, /* fclass_d */
+    3, /* fclass_h */
+    3, /* fclass_q */
+    3, /* fclass_s */
+    3, /* fcvt_bf16_s */
+    3, /* fcvt_d_h */
+    2, /* fcvt_d_l */
+    2, /* fcvt_d_lu */
+    3, /* fcvt_d_q */
+    3, /* fcvt_d_s */
+    3, /* fcvt_d_w */
+    3, /* fcvt_d_wu */
+    3, /* fcvt_h_d */
+    2, /* fcvt_h_l */
+    2, /* fcvt_h_lu */
+    3, /* fcvt_h_q */
+    3, /* fcvt_h_s */
+    3, /* fcvt_h_w */
+    3, /* fcvt_h_wu */
+    2, /* fcvt_l_d */
+    2, /* fcvt_l_h */
+    2, /* fcvt_l_q */
+    2, /* fcvt_l_s */
+    2, /* fcvt_lu_d */
+    2, /* fcvt_lu_h */
+    2, /* fcvt_lu_q */
+    2, /* fcvt_lu_s */
+    3, /* fcvt_q_d */
+    3, /* fcvt_q_h */
+    2, /* fcvt_q_l */
+    2, /* fcvt_q_lu */
+    3, /* fcvt_q_s */
+    3, /* fcvt_q_w */
+    3, /* fcvt_q_wu */
+    3, /* fcvt_s_bf16 */
+    3, /* fcvt_s_d */
+    3, /* fcvt_s_h */
+    2, /* fcvt_s_l */
+    2, /* fcvt_s_lu */
+    3, /* fcvt_s_q */
+    3, /* fcvt_s_w */
+    3, /* fcvt_s_wu */
+    3, /* fcvt_w_d */
+    3, /* fcvt_w_h */
+    3, /* fcvt_w_q */
+    3, /* fcvt_w_s */
+    3, /* fcvt_wu_d */
+    3, /* fcvt_wu_h */
+    3, /* fcvt_wu_q */
+    3, /* fcvt_wu_s */
+    3, /* fcvtmod_w_d */
+    3, /* fdiv_d */
+    3, /* fdiv_h */
+    3, /* fdiv_q */
+    3, /* fdiv_s */
+    3, /* fence */
+    3, /* fence_i */
+    3, /* fence_tso */
+    3, /* feq_d */
+    3, /* feq_h */
+    3, /* feq_q */
+    3, /* feq_s */
+    3, /* fld */
+    3, /* fle_d */
+    3, /* fle_h */
+    3, /* fle_q */
+    3, /* fle_s */
+    3, /* fleq_d */
+    3, /* fleq_h */
+    3, /* fleq_q */
+    3, /* fleq_s */
+    3, /* flh */
+    3, /* fli_d */
+    3, /* fli_h */
+    3, /* fli_q */
+    3, /* fli_s */
+    3, /* flq */
+    3, /* flt_d */
+    3, /* flt_h */
+    3, /* flt_q */
+    3, /* flt_s */
+    3, /* fltq_d */
+    3, /* fltq_h */
+    3, /* fltq_q */
+    3, /* fltq_s */
+    3, /* flw */
+    3, /* fmadd_d */
+    3, /* fmadd_h */
+    3, /* fmadd_q */
+    3, /* fmadd_s */
+    3, /* fmax_d */
+    3, /* fmax_h */
+    3, /* fmax_q */
+    3, /* fmax_s */
+    3, /* fmaxm_d */
+    3, /* fmaxm_h */
+    3, /* fmaxm_q */
+    3, /* fmaxm_s */
+    3, /* fmin_d */
+    3, /* fmin_h */
+    3, /* fmin_q */
+    3, /* fmin_s */
+    3, /* fminm_d */
+    3, /* fminm_h */
+    3, /* fminm_q */
+    3, /* fminm_s */
+    3, /* fmsub_d */
+    3, /* fmsub_h */
+    3, /* fmsub_q */
+    3, /* fmsub_s */
+    3, /* fmul_d */
+    3, /* fmul_h */
+    3, /* fmul_q */
+    3, /* fmul_s */
+    3, /* fmv_d */
+    2, /* fmv_d_x */
+    3, /* fmv_h */
+    3, /* fmv_h_x */
+    3, /* fmv_q */
+    3, /* fmv_s */
+    3, /* fmv_s_x */
+    3, /* fmv_w_x */
+    2, /* fmv_x_d */
+    3, /* fmv_x_h */
+    3, /* fmv_x_s */
+    3, /* fmv_x_w */
+    1, /* fmvh_x_d */
+    2, /* fmvh_x_q */
+    1, /* fmvp_d_x */
+    2, /* fmvp_q_x */
+    3, /* fneg_d */
+    3, /* fneg_h */
+    3, /* fneg_q */
+    3, /* fneg_s */
+    3, /* fnmadd_d */
+    3, /* fnmadd_h */
+    3, /* fnmadd_q */
+    3, /* fnmadd_s */
+    3, /* fnmsub_d */
+    3, /* fnmsub_h */
+    3, /* fnmsub_q */
+    3, /* fnmsub_s */
+    3, /* frcsr */
+    3, /* frflags */
+    3, /* fround_d */
+    3, /* fround_h */
+    3, /* fround_q */
+    3, /* fround_s */
+    3, /* froundnx_d */
+    3, /* froundnx_h */
+    3, /* froundnx_q */
+    3, /* froundnx_s */
+    3, /* frrm */
+    3, /* fscsr */
+    3, /* fsd */
+    3, /* fsflags */
+    3, /* fsflagsi */
+    3, /* fsgnj_d */
+    3, /* fsgnj_h */
+    3, /* fsgnj_q */
+    3, /* fsgnj_s */
+    3, /* fsgnjn_d */
+    3, /* fsgnjn_h */
+    3, /* fsgnjn_q */
+    3, /* fsgnjn_s */
+    3, /* fsgnjx_d */
+    3, /* fsgnjx_h */
+    3, /* fsgnjx_q */
+    3, /* fsgnjx_s */
+    3, /* fsh */
+    3, /* fsq */
+    3, /* fsqrt_d */
+    3, /* fsqrt_h */
+    3, /* fsqrt_q */
+    3, /* fsqrt_s */
+    3, /* fsrm */
+    3, /* fsrmi */
+    3, /* fsub_d */
+    3, /* fsub_h */
+    3, /* fsub_q */
+    3, /* fsub_s */
+    3, /* fsw */
+    3, /* hfence_gvma */
+    3, /* hfence_vvma */
+    3, /* hinval_gvma */
+    3, /* hinval_vvma */
+    3, /* hlv_b */
+    3, /* hlv_bu */
+    2, /* hlv_d */
+    3, /* hlv_h */
+    3, /* hlv_hu */
+    3, /* hlv_w */
+    2, /* hlv_wu */
+    3, /* hlvx_hu */
+    3, /* hlvx_wu */
+    3, /* hsv_b */
+    2, /* hsv_d */
+    3, /* hsv_h */
+    3, /* hsv_w */
+    3, /* j */
+    3, /* jal */
+    3, /* jal_pseudo */
+    3, /* jalr */
+    3, /* jalr_pseudo */
+    3, /* jr */
+    3, /* lb */
+    3, /* lbu */
+    2, /* ld */
+    3, /* lh */
+    3, /* lhu */
+    3, /* lpad */
+    2, /* lr_d */
+    3, /* lr_w */
+    3, /* lui */
+    3, /* lw */
+    2, /* lwu */
+    3, /* max */
+    3, /* maxu */
+    3, /* min */
+    3, /* minu */
+    3, /* mnret */
+    3, /* mop_r_0 */
+    3, /* mop_r_1 */
+    3, /* mop_r_10 */
+    3, /* mop_r_11 */
+    3, /* mop_r_12 */
+    3, /* mop_r_13 */
+    3, /* mop_r_14 */
+    3, /* mop_r_15 */
+    3, /* mop_r_16 */
+    3, /* mop_r_17 */
+    3, /* mop_r_18 */
+    3, /* mop_r_19 */
+    3, /* mop_r_2 */
+    3, /* mop_r_20 */
+    3, /* mop_r_21 */
+    3, /* mop_r_22 */
+    3, /* mop_r_23 */
+    3, /* mop_r_24 */
+    3, /* mop_r_25 */
+    3, /* mop_r_26 */
+    3, /* mop_r_27 */
+    3, /* mop_r_28 */
+    3, /* mop_r_29 */
+    3, /* mop_r_3 */
+    3, /* mop_r_30 */
+    3, /* mop_r_31 */
+    3, /* mop_r_4 */
+    3, /* mop_r_5 */
+    3, /* mop_r_6 */
+    3, /* mop_r_7 */
+    3, /* mop_r_8 */
+    3, /* mop_r_9 */
+    3, /* mop_r_N */
+    3, /* mop_rr_0 */
+    3, /* mop_rr_1 */
+    3, /* mop_rr_2 */
+    3, /* mop_rr_3 */
+    3, /* mop_rr_4 */
+    3, /* mop_rr_5 */
+    3, /* mop_rr_6 */
+    3, /* mop_rr_7 */
+    3, /* mop_rr_N */
+    3, /* mret */
+    3, /* mul */
+    3, /* mulh */
+    3, /* mulhsu */
+    3, /* mulhu */
+    2, /* mulw */
+    3, /* mv */
+    3, /* neg */
+    3, /* nop */
+    3, /* ntl_all */
+    3, /* ntl_p1 */
+    3, /* ntl_pall */
+    3, /* ntl_s1 */
+    3, /* or */
+    3, /* orc_b */
+    3, /* ori */
+    3, /* orn */
+    3, /* pack */
+    3, /* packh */
+    2, /* packw */
+    3, /* pause */
+    3, /* prefetch_i */
+    3, /* prefetch_r */
+    3, /* prefetch_w */
+    3, /* rdcycle */
+    1, /* rdcycleh */
+    3, /* rdinstret */
+    1, /* rdinstreth */
+    3, /* rdtime */
+    1, /* rdtimeh */
+    3, /* rem */
+    3, /* remu */
+    2, /* remuw */
+    2, /* remw */
+    3, /* ret */
+    2, /* rev8 */
+    1, /* rev8_rv32 */
+    3, /* rol */
+    2, /* rolw */
+    3, /* ror */
+    2, /* rori */
+    1, /* rori_rv32 */
+    2, /* roriw */
+    2, /* rorw */
+    3, /* sb */
+    3, /* sbreak */
+    2, /* sc_d */
+    3, /* sc_w */
+    3, /* scall */
+    3, /* sctrclr */
+    2, /* sd */
+    3, /* seqz */
+    3, /* sext_b */
+    3, /* sext_h */
+    2, /* sext_w */
+    3, /* sfence_inval_ir */
+    3, /* sfence_vma */
+    3, /* sfence_w_inval */
+    3, /* sgtz */
+    3, /* sh */
+    3, /* sh1add */
+    2, /* sh1add_uw */
+    3, /* sh2add */
+    2, /* sh2add_uw */
+    3, /* sh3add */
+    2, /* sh3add_uw */
+    3, /* sha256sig0 */
+    3, /* sha256sig1 */
+    3, /* sha256sum0 */
+    3, /* sha256sum1 */
+    2, /* sha512sig0 */
+    1, /* sha512sig0h */
+    1, /* sha512sig0l */
+    2, /* sha512sig1 */
+    1, /* sha512sig1h */
+    1, /* sha512sig1l */
+    2, /* sha512sum0 */
+    1, /* sha512sum0r */
+    2, /* sha512sum1 */
+    1, /* sha512sum1r */
+    3, /* sinval_vma */
+    3, /* sll */
+    3, /* slli */
+    1, /* slli_rv32 */
+    2, /* slli_uw */
+    2, /* slliw */
+    2, /* sllw */
+    3, /* slt */
+    3, /* slti */
+    3, /* sltiu */
+    3, /* sltu */
+    3, /* sltz */
+    3, /* sm3p0 */
+    3, /* sm3p1 */
+    3, /* sm4ed */
+    3, /* sm4ks */
+    3, /* snez */
+    3, /* sra */
+    3, /* srai */
+    1, /* srai_rv32 */
+    2, /* sraiw */
+    2, /* sraw */
+    3, /* sret */
+    3, /* srl */
+    3, /* srli */
+    1, /* srli_rv32 */
+    2, /* srliw */
+    2, /* srlw */
+    2, /* ssamoswap_d */
+    3, /* ssamoswap_w */
+    3, /* sspopchk_x1 */
+    3, /* sspopchk_x5 */
+    3, /* sspush_x1 */
+    3, /* sspush_x5 */
+    3, /* ssrdp */
+    3, /* sub */
+    2, /* subw */
+    3, /* sw */
+    1, /* unzip */
+    3, /* vaadd_vv */
+    3, /* vaadd_vx */
+    3, /* vaaddu_vv */
+    3, /* vaaddu_vx */
+    3, /* vadc_vim */
+    3, /* vadc_vvm */
+    3, /* vadc_vxm */
+    3, /* vadd_vi */
+    3, /* vadd_vv */
+    3, /* vadd_vx */
+    3, /* vaesdf_vs */
+    3, /* vaesdf_vv */
+    3, /* vaesdm_vs */
+    3, /* vaesdm_vv */
+    3, /* vaesef_vs */
+    3, /* vaesef_vv */
+    3, /* vaesem_vs */
+    3, /* vaesem_vv */
+    3, /* vaeskf1_vi */
+    3, /* vaeskf2_vi */
+    3, /* vaesz_vs */
+    3, /* vand_vi */
+    3, /* vand_vv */
+    3, /* vand_vx */
+    3, /* vandn_vv */
+    3, /* vandn_vx */
+    3, /* vasub_vv */
+    3, /* vasub_vx */
+    3, /* vasubu_vv */
+    3, /* vasubu_vx */
+    3, /* vbrev8_v */
+    3, /* vbrev_v */
+    3, /* vclmul_vv */
+    3, /* vclmul_vx */
+    3, /* vclmulh_vv */
+    3, /* vclmulh_vx */
+    3, /* vclz_v */
+    3, /* vcompress_vm */
+    3, /* vcpop_m */
+    3, /* vcpop_v */
+    3, /* vctz_v */
+    3, /* vdiv_vv */
+    3, /* vdiv_vx */
+    3, /* vdivu_vv */
+    3, /* vdivu_vx */
+    3, /* vfadd_vf */
+    3, /* vfadd_vv */
+    3, /* vfclass_v */
+    3, /* vfcvt_f_x_v */
+    3, /* vfcvt_f_xu_v */
+    3, /* vfcvt_rtz_x_f_v */
+    3, /* vfcvt_rtz_xu_f_v */
+    3, /* vfcvt_x_f_v */
+    3, /* vfcvt_xu_f_v */
+    3, /* vfdiv_vf */
+    3, /* vfdiv_vv */
+    3, /* vfirst_m */
+    3, /* vfmacc_vf */
+    3, /* vfmacc_vv */
+    3, /* vfmadd_vf */
+    3, /* vfmadd_vv */
+    3, /* vfmax_vf */
+    3, /* vfmax_vv */
+    3, /* vfmerge_vfm */
+    3, /* vfmin_vf */
+    3, /* vfmin_vv */
+    3, /* vfmsac_vf */
+    3, /* vfmsac_vv */
+    3, /* vfmsub_vf */
+    3, /* vfmsub_vv */
+    3, /* vfmul_vf */
+    3, /* vfmul_vv */
+    3, /* vfmv_f_s */
+    3, /* vfmv_s_f */
+    3, /* vfmv_v_f */
+    3, /* vfncvt_f_f_w */
+    3, /* vfncvt_f_x_w */
+    3, /* vfncvt_f_xu_w */
+    3, /* vfncvt_rod_f_f_w */
+    3, /* vfncvt_rtz_x_f_w */
+    3, /* vfncvt_rtz_xu_f_w */
+    3, /* vfncvt_x_f_w */
+    3, /* vfncvt_xu_f_w */
+    3, /* vfncvtbf16_f_f_w */
+    3, /* vfnmacc_vf */
+    3, /* vfnmacc_vv */
+    3, /* vfnmadd_vf */
+    3, /* vfnmadd_vv */
+    3, /* vfnmsac_vf */
+    3, /* vfnmsac_vv */
+    3, /* vfnmsub_vf */
+    3, /* vfnmsub_vv */
+    3, /* vfrdiv_vf */
+    3, /* vfrec7_v */
+    3, /* vfredmax_vs */
+    3, /* vfredmin_vs */
+    3, /* vfredosum_vs */
+    3, /* vfredsum_vs */
+    3, /* vfredusum_vs */
+    3, /* vfrsqrt7_v */
+    3, /* vfrsub_vf */
+    3, /* vfsgnj_vf */
+    3, /* vfsgnj_vv */
+    3, /* vfsgnjn_vf */
+    3, /* vfsgnjn_vv */
+    3, /* vfsgnjx_vf */
+    3, /* vfsgnjx_vv */
+    3, /* vfslide1down_vf */
+    3, /* vfslide1up_vf */
+    3, /* vfsqrt_v */
+    3, /* vfsub_vf */
+    3, /* vfsub_vv */
+    3, /* vfwadd_vf */
+    3, /* vfwadd_vv */
+    3, /* vfwadd_wf */
+    3, /* vfwadd_wv */
+    3, /* vfwcvt_f_f_v */
+    3, /* vfwcvt_f_x_v */
+    3, /* vfwcvt_f_xu_v */
+    3, /* vfwcvt_rtz_x_f_v */
+    3, /* vfwcvt_rtz_xu_f_v */
+    3, /* vfwcvt_x_f_v */
+    3, /* vfwcvt_xu_f_v */
+    3, /* vfwcvtbf16_f_f_v */
+    3, /* vfwmacc_vf */
+    3, /* vfwmacc_vv */
+    3, /* vfwmaccbf16_vf */
+    3, /* vfwmaccbf16_vv */
+    3, /* vfwmsac_vf */
+    3, /* vfwmsac_vv */
+    3, /* vfwmul_vf */
+    3, /* vfwmul_vv */
+    3, /* vfwnmacc_vf */
+    3, /* vfwnmacc_vv */
+    3, /* vfwnmsac_vf */
+    3, /* vfwnmsac_vv */
+    3, /* vfwredosum_vs */
+    3, /* vfwredsum_vs */
+    3, /* vfwredusum_vs */
+    3, /* vfwsub_vf */
+    3, /* vfwsub_vv */
+    3, /* vfwsub_wf */
+    3, /* vfwsub_wv */
+    3, /* vghsh_vv */
+    3, /* vgmul_vv */
+    3, /* vid_v */
+    3, /* viota_m */
+    3, /* vl1r_v */
+    3, /* vl1re16_v */
+    3, /* vl1re32_v */
+    3, /* vl1re64_v */
+    3, /* vl1re8_v */
+    3, /* vl2r_v */
+    3, /* vl2re16_v */
+    3, /* vl2re32_v */
+    3, /* vl2re64_v */
+    3, /* vl2re8_v */
+    3, /* vl4r_v */
+    3, /* vl4re16_v */
+    3, /* vl4re32_v */
+    3, /* vl4re64_v */
+    3, /* vl4re8_v */
+    3, /* vl8r_v */
+    3, /* vl8re16_v */
+    3, /* vl8re32_v */
+    3, /* vl8re64_v */
+    3, /* vl8re8_v */
+    3, /* vle16_v */
+    3, /* vle16ff_v */
+    3, /* vle1_v */
+    3, /* vle32_v */
+    3, /* vle32ff_v */
+    3, /* vle64_v */
+    3, /* vle64ff_v */
+    3, /* vle8_v */
+    3, /* vle8ff_v */
+    3, /* vlm_v */
+    3, /* vloxei16_v */
+    3, /* vloxei32_v */
+    3, /* vloxei64_v */
+    3, /* vloxei8_v */
+    3, /* vlse16_v */
+    3, /* vlse32_v */
+    3, /* vlse64_v */
+    3, /* vlse8_v */
+    3, /* vluxei16_v */
+    3, /* vluxei32_v */
+    3, /* vluxei64_v */
+    3, /* vluxei8_v */
+    3, /* vmacc_vv */
+    3, /* vmacc_vx */
+    3, /* vmadc_vi */
+    3, /* vmadc_vim */
+    3, /* vmadc_vv */
+    3, /* vmadc_vvm */
+    3, /* vmadc_vx */
+    3, /* vmadc_vxm */
+    3, /* vmadd_vv */
+    3, /* vmadd_vx */
+    3, /* vmand_mm */
+    3, /* vmandn_mm */
+    3, /* vmandnot_mm */
+    3, /* vmax_vv */
+    3, /* vmax_vx */
+    3, /* vmaxu_vv */
+    3, /* vmaxu_vx */
+    3, /* vmerge_vim */
+    3, /* vmerge_vvm */
+    3, /* vmerge_vxm */
+    3, /* vmfeq_vf */
+    3, /* vmfeq_vv */
+    3, /* vmfge_vf */
+    3, /* vmfgt_vf */
+    3, /* vmfle_vf */
+    3, /* vmfle_vv */
+    3, /* vmflt_vf */
+    3, /* vmflt_vv */
+    3, /* vmfne_vf */
+    3, /* vmfne_vv */
+    3, /* vmin_vv */
+    3, /* vmin_vx */
+    3, /* vminu_vv */
+    3, /* vminu_vx */
+    3, /* vmnand_mm */
+    3, /* vmnor_mm */
+    3, /* vmor_mm */
+    3, /* vmorn_mm */
+    3, /* vmornot_mm */
+    3, /* vmsbc_vv */
+    3, /* vmsbc_vvm */
+    3, /* vmsbc_vx */
+    3, /* vmsbc_vxm */
+    3, /* vmsbf_m */
+    3, /* vmseq_vi */
+    3, /* vmseq_vv */
+    3, /* vmseq_vx */
+    3, /* vmsgt_vi */
+    3, /* vmsgt_vx */
+    3, /* vmsgtu_vi */
+    3, /* vmsgtu_vx */
+    3, /* vmsif_m */
+    3, /* vmsle_vi */
+    3, /* vmsle_vv */
+    3, /* vmsle_vx */
+    3, /* vmsleu_vi */
+    3, /* vmsleu_vv */
+    3, /* vmsleu_vx */
+    3, /* vmslt_vv */
+    3, /* vmslt_vx */
+    3, /* vmsltu_vv */
+    3, /* vmsltu_vx */
+    3, /* vmsne_vi */
+    3, /* vmsne_vv */
+    3, /* vmsne_vx */
+    3, /* vmsof_m */
+    3, /* vmul_vv */
+    3, /* vmul_vx */
+    3, /* vmulh_vv */
+    3, /* vmulh_vx */
+    3, /* vmulhsu_vv */
+    3, /* vmulhsu_vx */
+    3, /* vmulhu_vv */
+    3, /* vmulhu_vx */
+    3, /* vmv1r_v */
+    3, /* vmv2r_v */
+    3, /* vmv4r_v */
+    3, /* vmv8r_v */
+    3, /* vmv_s_x */
+    3, /* vmv_v_i */
+    3, /* vmv_v_v */
+    3, /* vmv_v_x */
+    3, /* vmv_x_s */
+    3, /* vmxnor_mm */
+    3, /* vmxor_mm */
+    3, /* vnclip_wi */
+    3, /* vnclip_wv */
+    3, /* vnclip_wx */
+    3, /* vnclipu_wi */
+    3, /* vnclipu_wv */
+    3, /* vnclipu_wx */
+    3, /* vnmsac_vv */
+    3, /* vnmsac_vx */
+    3, /* vnmsub_vv */
+    3, /* vnmsub_vx */
+    3, /* vnsra_wi */
+    3, /* vnsra_wv */
+    3, /* vnsra_wx */
+    3, /* vnsrl_wi */
+    3, /* vnsrl_wv */
+    3, /* vnsrl_wx */
+    3, /* vor_vi */
+    3, /* vor_vv */
+    3, /* vor_vx */
+    3, /* vpopc_m */
+    3, /* vredand_vs */
+    3, /* vredmax_vs */
+    3, /* vredmaxu_vs */
+    3, /* vredmin_vs */
+    3, /* vredminu_vs */
+    3, /* vredor_vs */
+    3, /* vredsum_vs */
+    3, /* vredxor_vs */
+    3, /* vrem_vv */
+    3, /* vrem_vx */
+    3, /* vremu_vv */
+    3, /* vremu_vx */
+    3, /* vrev8_v */
+    3, /* vrgather_vi */
+    3, /* vrgather_vv */
+    3, /* vrgather_vx */
+    3, /* vrgatherei16_vv */
+    3, /* vrol_vv */
+    3, /* vrol_vx */
+    3, /* vror_vi */
+    3, /* vror_vv */
+    3, /* vror_vx */
+    3, /* vrsub_vi */
+    3, /* vrsub_vx */
+    3, /* vs1r_v */
+    3, /* vs2r_v */
+    3, /* vs4r_v */
+    3, /* vs8r_v */
+    3, /* vsadd_vi */
+    3, /* vsadd_vv */
+    3, /* vsadd_vx */
+    3, /* vsaddu_vi */
+    3, /* vsaddu_vv */
+    3, /* vsaddu_vx */
+    3, /* vsbc_vvm */
+    3, /* vsbc_vxm */
+    3, /* vse16_v */
+    3, /* vse1_v */
+    3, /* vse32_v */
+    3, /* vse64_v */
+    3, /* vse8_v */
+    3, /* vsetivli */
+    3, /* vsetvl */
+    3, /* vsetvli */
+    3, /* vsext_vf2 */
+    3, /* vsext_vf4 */
+    3, /* vsext_vf8 */
+    3, /* vsha2ch_vv */
+    3, /* vsha2cl_vv */
+    3, /* vsha2ms_vv */
+    3, /* vslide1down_vx */
+    3, /* vslide1up_vx */
+    3, /* vslidedown_vi */
+    3, /* vslidedown_vx */
+    3, /* vslideup_vi */
+    3, /* vslideup_vx */
+    3, /* vsll_vi */
+    3, /* vsll_vv */
+    3, /* vsll_vx */
+    3, /* vsm3c_vi */
+    3, /* vsm3me_vv */
+    3, /* vsm4k_vi */
+    3, /* vsm4r_vs */
+    3, /* vsm4r_vv */
+    3, /* vsm_v */
+    3, /* vsmul_vv */
+    3, /* vsmul_vx */
+    3, /* vsoxei16_v */
+    3, /* vsoxei32_v */
+    3, /* vsoxei64_v */
+    3, /* vsoxei8_v */
+    3, /* vsra_vi */
+    3, /* vsra_vv */
+    3, /* vsra_vx */
+    3, /* vsrl_vi */
+    3, /* vsrl_vv */
+    3, /* vsrl_vx */
+    3, /* vsse16_v */
+    3, /* vsse32_v */
+    3, /* vsse64_v */
+    3, /* vsse8_v */
+    3, /* vssra_vi */
+    3, /* vssra_vv */
+    3, /* vssra_vx */
+    3, /* vssrl_vi */
+    3, /* vssrl_vv */
+    3, /* vssrl_vx */
+    3, /* vssub_vv */
+    3, /* vssub_vx */
+    3, /* vssubu_vv */
+    3, /* vssubu_vx */
+    3, /* vsub_vv */
+    3, /* vsub_vx */
+    3, /* vsuxei16_v */
+    3, /* vsuxei32_v */
+    3, /* vsuxei64_v */
+    3, /* vsuxei8_v */
+    3, /* vwadd_vv */
+    3, /* vwadd_vx */
+    3, /* vwadd_wv */
+    3, /* vwadd_wx */
+    3, /* vwaddu_vv */
+    3, /* vwaddu_vx */
+    3, /* vwaddu_wv */
+    3, /* vwaddu_wx */
+    3, /* vwmacc_vv */
+    3, /* vwmacc_vx */
+    3, /* vwmaccsu_vv */
+    3, /* vwmaccsu_vx */
+    3, /* vwmaccu_vv */
+    3, /* vwmaccu_vx */
+    3, /* vwmaccus_vx */
+    3, /* vwmul_vv */
+    3, /* vwmul_vx */
+    3, /* vwmulsu_vv */
+    3, /* vwmulsu_vx */
+    3, /* vwmulu_vv */
+    3, /* vwmulu_vx */
+    3, /* vwredsum_vs */
+    3, /* vwredsumu_vs */
+    3, /* vwsll_vi */
+    3, /* vwsll_vv */
+    3, /* vwsll_vx */
+    3, /* vwsub_vv */
+    3, /* vwsub_vx */
+    3, /* vwsub_wv */
+    3, /* vwsub_wx */
+    3, /* vwsubu_vv */
+    3, /* vwsubu_vx */
+    3, /* vwsubu_wv */
+    3, /* vwsubu_wx */
+    3, /* vxor_vi */
+    3, /* vxor_vv */
+    3, /* vxor_vx */
+    3, /* vzext_vf2 */
+    3, /* vzext_vf4 */
+    3, /* vzext_vf8 */
+    3, /* wfi */
+    3, /* wrs_nto */
+    3, /* wrs_sto */
+    3, /* xnor */
+    3, /* xor */
+    3, /* xori */
+    3, /* xperm4 */
+    3, /* xperm8 */
+    3, /* zext_b */
+    2, /* zext_h */
+    1, /* zext_h_rv32 */
+    2, /* zext_w */
+    1, /* zip */
 ];
 
-pub static ALL_OPCODES: [Opcode; 1031] = [
+pub static ALL_OPCODES: [Opcode; 1039] = [
     Opcode::ADD,
     Opcode::ADDUW,
     Opcode::ADDI,
@@ -9812,6 +10915,7 @@ pub static ALL_OPCODES: [Opcode; 1031] = [
     Opcode::LD,
     Opcode::LH,
     Opcode::LHU,
+    Opcode::LPAD,
     Opcode::LRD,
     Opcode::LRW,
     Opcode::LUI,
@@ -9972,6 +11076,13 @@ pub static ALL_OPCODES: [Opcode; 1031] = [
     Opcode::SRLIRV32,
     Opcode::SRLIW,
     Opcode::SRLW,
+    Opcode::SSAMOSWAPD,
+    Opcode::SSAMOSWAPW,
+    Opcode::SSPOPCHKX1,
+    Opcode::SSPOPCHKX5,
+    Opcode::SSPUSHX1,
+    Opcode::SSPUSHX5,
+    Opcode::SSRDP,
     Opcode::SUB,
     Opcode::SUBW,
     Opcode::SW,
@@ -10422,7 +11533,7 @@ pub static ALL_OPCODES: [Opcode; 1031] = [
     Opcode::ZIP,
 ];
 
-pub static SHORT_OPCODE: [bool; 1031] = [
+pub static SHORT_OPCODE: [bool; 1039] = [
     false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false,
@@ -10434,9 +11545,8 @@ pub static SHORT_OPCODE: [bool; 1031] = [
     true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
     true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
     true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-    true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-    true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true,
-    true, true, true, true, true, true, true, true, true, true, false, false, false, false, false,
+    true, true, true, true, true, true, true, false, false, false, false, false, false, false,
+    false, false, true, true, true, true, true, true, true, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false,
@@ -10500,9 +11610,11 @@ pub static SHORT_OPCODE: [bool; 1031] = [
     false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false,
     false, false, false, false, false, false, false, false, false, false, false, false, false,
-    false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false, false, false, false,
+    false, false, false, false, false, false, false, false, false, false,
 ];
-pub const SHORT_OPCODES: [Opcode; 108] = [
+pub const SHORT_OPCODES: [Opcode; 80] = [
     Opcode::CADD,
     Opcode::CADDI,
     Opcode::CADDI16SP,
@@ -10576,15 +11688,6 @@ pub const SHORT_OPCODES: [Opcode; 108] = [
     Opcode::CZEXTB,
     Opcode::CZEXTH,
     Opcode::CZEXTW,
-    Opcode::CBOCLEAN,
-    Opcode::CBOFLUSH,
-    Opcode::CBOINVAL,
-    Opcode::CBOZERO,
-    Opcode::CLMUL,
-    Opcode::CLMULH,
-    Opcode::CLMULR,
-    Opcode::CLZ,
-    Opcode::CLZW,
     Opcode::CMJALT,
     Opcode::CMMVA01S,
     Opcode::CMMVSA01,
@@ -10592,25 +11695,6 @@ pub const SHORT_OPCODES: [Opcode; 108] = [
     Opcode::CMPOPRET,
     Opcode::CMPOPRETZ,
     Opcode::CMPUSH,
-    Opcode::CPOP,
-    Opcode::CPOPW,
-    Opcode::CSRC,
-    Opcode::CSRCI,
-    Opcode::CSRR,
-    Opcode::CSRRC,
-    Opcode::CSRRCI,
-    Opcode::CSRRS,
-    Opcode::CSRRSI,
-    Opcode::CSRRW,
-    Opcode::CSRRWI,
-    Opcode::CSRS,
-    Opcode::CSRSI,
-    Opcode::CSRW,
-    Opcode::CSRWI,
-    Opcode::CTZ,
-    Opcode::CTZW,
-    Opcode::CZEROEQZ,
-    Opcode::CZERONEZ,
 ];
 #[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]
 #[repr(u32)]
@@ -10620,6 +11704,7 @@ pub enum Opcode {
     /// Add the value in rs1 to rs2, and store the result in rd.
     /// Any overflow is thrown away.
     ///
+    /// # Forms
     /// Assembly: `add xd, xs1, xs2`
     ADD,
     /// Add unsigned word
@@ -10627,18 +11712,21 @@ pub enum Opcode {
     /// This instruction performs an XLEN-wide addition between rs2 and the
     /// zero-extended least-significant word of rs1.
     ///
+    /// # Forms
     /// Assembly: `add.uw xd, xs1, xs2`
     ADDUW,
     /// Add immediate
     ///
     /// Add an immediate to the value in rs1, and store the result in rd
     ///
+    /// # Forms
     /// Assembly: `addi xd, xs1, imm`
     ADDI,
     /// Add immediate word
     ///
     /// Add an immediate to the 32-bit value in rs1, and store the sign extended result in rd
     ///
+    /// # Forms
     /// Assembly: `addiw xd, xs1, imm`
     ADDIW,
     /// Add word
@@ -10646,30 +11734,67 @@ pub enum Opcode {
     /// Add the 32-bit values in rs1 to rs2, and store the sign-extended result in rd.
     /// Any overflow is thrown away.
     ///
+    /// # Forms
     /// Assembly: `addw xd, xs1, xs2`
     ADDW,
+    /// RISC-V `aes32dsi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `aes32dsi xd, xs1, xs2, bs`
     AES32DSI,
+    /// RISC-V `aes32dsmi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `aes32dsmi xd, xs1, xs2, bs`
     AES32DSMI,
+    /// RISC-V `aes32esi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `aes32esi xd, xs1, xs2, bs`
     AES32ESI,
+    /// RISC-V `aes32esmi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `aes32esmi xd, xs1, xs2, bs`
     AES32ESMI,
+    /// RISC-V `aes64ds` instruction.
+    ///
+    /// # Forms
     /// Assembly: `aes64ds xd, xs1, xs2`
     AES64DS,
+    /// RISC-V `aes64dsm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `aes64dsm xd, xs1, xs2`
     AES64DSM,
+    /// RISC-V `aes64es` instruction.
+    ///
+    /// # Forms
     /// Assembly: `aes64es xd, xs1, xs2`
     AES64ES,
+    /// RISC-V `aes64esm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `aes64esm xd, xs1, xs2`
     AES64ESM,
+    /// RISC-V `aes64im` instruction.
+    ///
+    /// # Forms
     /// Assembly: `aes64im xd, xs1`
     AES64IM,
+    /// RISC-V `aes64ks1i` instruction.
+    ///
+    /// # Forms
     /// Assembly: `aes64ks1i xd, xs1, rnum`
     AES64KS1I,
+    /// RISC-V `aes64ks2` instruction.
+    ///
+    /// # Forms
     /// Assembly: `aes64ks2 xd, xs1, xs2`
     AES64KS2,
+    /// RISC-V `amoadd.b` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amoadd.b xd, xs1, xs2, aq, rl`
     AMOADDB,
     /// Atomic fetch-and-add doubleword
@@ -10681,8 +11806,12 @@ pub enum Opcode {
     ///   * Add the value of register _rs2_ to the loaded value
     ///   * Write the sum to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amoadd.d xd, xs2, (xs1)`
     AMOADDD,
+    /// RISC-V `amoadd.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amoadd.h xd, xs1, xs2, aq, rl`
     AMOADDH,
     /// Atomic fetch-and-add word
@@ -10694,8 +11823,12 @@ pub enum Opcode {
     ///   * Add the least-significant word of register _rs2_ to the loaded value
     ///   * Write the sum to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amoadd.w xd, xs2, (xrs1)`
     AMOADDW,
+    /// RISC-V `amoand.b` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amoand.b xd, xs1, xs2, aq, rl`
     AMOANDB,
     /// Atomic fetch-and-and doubleword
@@ -10707,8 +11840,12 @@ pub enum Opcode {
     ///   * AND the value of register _rs2_ to the loaded value
     ///   * Write the result to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amoand.d xd, xs2, (xrs1)`
     AMOANDD,
+    /// RISC-V `amoand.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amoand.h xd, xs1, xs2, aq, rl`
     AMOANDH,
     /// Atomic fetch-and-and word
@@ -10720,18 +11857,37 @@ pub enum Opcode {
     ///   * AND the least-significant word of register _rs2_ to the loaded value
     ///   * Write the result to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amoand.w xd, xs2, (xrs1)`
     AMOANDW,
+    /// RISC-V `amocas.b` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amocas.b xd, xs1, xs2, aq, rl`
     AMOCASB,
+    /// RISC-V `amocas.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amocas.d xd, xs1, xs2, aq, rl`
     AMOCASD,
+    /// RISC-V `amocas.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amocas.h xd, xs1, xs2, aq, rl`
     AMOCASH,
+    /// RISC-V `amocas.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amocas.q xd, xs1, xs2, aq, rl`
     AMOCASQ,
+    /// RISC-V `amocas.w` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amocas.w xd, xs1, xs2, aq, rl`
     AMOCASW,
+    /// RISC-V `amomax.b` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amomax.b xd, xs1, xs2, aq, rl`
     AMOMAXB,
     /// Atomic MAX doubleword
@@ -10743,8 +11899,12 @@ pub enum Opcode {
     ///   * Signed compare the value of register _rs2_ to the loaded value, and select the maximum value
     ///   * Write the maximum to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amomax.d xd, xs2, (xrs1)`
     AMOMAXD,
+    /// RISC-V `amomax.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amomax.h xd, xs1, xs2, aq, rl`
     AMOMAXH,
     /// Atomic MAX word
@@ -10756,8 +11916,12 @@ pub enum Opcode {
     ///   * Signed compare the least-significant word of register _rs2_ to the loaded value, and select the maximum value
     ///   * Write the maximum to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amomax.w xd, xs2, (xrs1)`
     AMOMAXW,
+    /// RISC-V `amomaxu.b` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amomaxu.b xd, xs1, xs2, aq, rl`
     AMOMAXUB,
     /// Atomic MAX unsigned doubleword
@@ -10769,8 +11933,12 @@ pub enum Opcode {
     ///   * Unsigned compare the value of register _rs2_ to the loaded value, and select the maximum value
     ///   * Write the maximum to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amomaxu.d xd, xs2, (xrs1)`
     AMOMAXUD,
+    /// RISC-V `amomaxu.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amomaxu.h xd, xs1, xs2, aq, rl`
     AMOMAXUH,
     /// Atomic MAX unsigned word
@@ -10782,8 +11950,12 @@ pub enum Opcode {
     ///   * Unsigned compare the least-significant word of register _rs2_ to the loaded value, and select the maximum value
     ///   * Write the maximum to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amomaxu.w xd, xs2, (xrs1)`
     AMOMAXUW,
+    /// RISC-V `amomin.b` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amomin.b xd, xs1, xs2, aq, rl`
     AMOMINB,
     /// Atomic MIN doubleword
@@ -10795,8 +11967,12 @@ pub enum Opcode {
     ///   * Signed compare the value of register _rs2_ to the loaded value, and select the minimum value
     ///   * Write the minimum to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amomin.d xd, xs2, (xrs1)`
     AMOMIND,
+    /// RISC-V `amomin.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amomin.h xd, xs1, xs2, aq, rl`
     AMOMINH,
     /// Atomic MIN word
@@ -10808,8 +11984,12 @@ pub enum Opcode {
     ///   * Signed compare the least-significant word of register _rs2_ to the loaded value, and select the minimum value
     ///   * Write the result to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amomin.w xd, xs2, (xrs1)`
     AMOMINW,
+    /// RISC-V `amominu.b` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amominu.b xd, xs1, xs2, aq, rl`
     AMOMINUB,
     /// Atomic MIN unsigned doubleword
@@ -10821,8 +12001,12 @@ pub enum Opcode {
     ///   * Unsigned compare the value of register _rs2_ to the loaded value, and select the minimum value
     ///   * Write the minimum to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amominu.d xd, xs2, (xrs1)`
     AMOMINUD,
+    /// RISC-V `amominu.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amominu.h xd, xs1, xs2, aq, rl`
     AMOMINUH,
     /// Atomic MIN unsigned word
@@ -10834,8 +12018,12 @@ pub enum Opcode {
     ///   * Unsigned compare the least-significant word of register _rs2_ to the loaded word, and select the minimum value
     ///   * Write the result to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amominu.w xd, xs2, (xrs1)`
     AMOMINUW,
+    /// RISC-V `amoor.b` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amoor.b xd, xs1, xs2, aq, rl`
     AMOORB,
     /// Atomic fetch-and-or doubleword
@@ -10847,8 +12035,12 @@ pub enum Opcode {
     ///   * OR the value of register _rs2_ to the loaded value
     ///   * Write the result to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amoor.d xd, xs2, (xrs1)`
     AMOORD,
+    /// RISC-V `amoor.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amoor.h xd, xs1, xs2, aq, rl`
     AMOORH,
     /// Atomic fetch-and-or word
@@ -10860,8 +12052,12 @@ pub enum Opcode {
     ///   * OR the least-significant word of register _rs2_ to the loaded value
     ///   * Write the result to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amoor.w xd, xs2, (xrs1)`
     AMOORW,
+    /// RISC-V `amoswap.b` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amoswap.b xd, xs1, xs2, aq, rl`
     AMOSWAPB,
     /// Atomic SWAP doubleword
@@ -10872,8 +12068,12 @@ pub enum Opcode {
     ///   * Write the value into _rd_
     ///   * Store the value of register _rs2_ to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amoswap.d xd, xs2, (xrs1)`
     AMOSWAPD,
+    /// RISC-V `amoswap.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amoswap.h xd, xs1, xs2, aq, rl`
     AMOSWAPH,
     /// Atomic SWAP word
@@ -10884,8 +12084,12 @@ pub enum Opcode {
     ///   * Write the sign-extended value into _rd_
     ///   * Store the least-significant word of register _rs2_ to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amoswap.w xd, xs2, (xrs1)`
     AMOSWAPW,
+    /// RISC-V `amoxor.b` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amoxor.b xd, xs1, xs2, aq, rl`
     AMOXORB,
     /// Atomic fetch-and-xor doubleword
@@ -10897,8 +12101,12 @@ pub enum Opcode {
     ///   * XOR the value of register _rs2_ to the loaded value
     ///   * Write the result to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amoxor.d xd, xs2, (xrs1)`
     AMOXORD,
+    /// RISC-V `amoxor.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `amoxor.h xd, xs1, xs2, aq, rl`
     AMOXORH,
     /// Atomic fetch-and-xor word
@@ -10910,18 +12118,21 @@ pub enum Opcode {
     ///   * XOR the least-significant word of register _rs2_ to the loaded value
     ///   * Write the result to the address in _rs1_
     ///
+    /// # Forms
     /// Assembly: `amoxor.w xd, xs2, (xrs1)`
     AMOXORW,
     /// And
     ///
     /// And rs1 with rs2, and store the result in rd
     ///
+    /// # Forms
     /// Assembly: `and xd, xs1, xs2`
     AND,
     /// And immediate
     ///
     /// And an immediate to the value in rs1, and store the result in rd
     ///
+    /// # Forms
     /// Assembly: `andi xd, xs1, imm`
     ANDI,
     /// AND with inverted operand
@@ -10929,12 +12140,14 @@ pub enum Opcode {
     /// This instruction performs the bitwise logical AND operation between `rs1` and the
     /// bitwise inversion of `rs2`.
     ///
+    /// # Forms
     /// Assembly: `andn xd, xs1, xs2`
     ANDN,
     /// Add upper immediate to pc
     ///
     /// Add an immediate to the current PC.
     ///
+    /// # Forms
     /// Assembly: `auipc xd, imm`
     AUIPC,
     /// Single-Bit clear (Register)
@@ -10942,22 +12155,25 @@ pub enum Opcode {
     /// This instruction returns rs1 with a single bit cleared at the index specified in rs2.
     /// The index is read from the lower log2(XLEN) bits of rs2.
     ///
+    /// # Forms
     /// Assembly: `bclr xd, xs1, xs2`
     BCLR,
     /// Single-Bit clear (Immediate)
     ///
     /// This instruction returns rs1 with a single bit cleared at the index specified in shamt. The
     /// index is read from the lower log2(XLEN) bits of shamt. For RV32, the encodings corresponding
-    /// to shamt[5]=1 are reserved.
+    /// to shamt\[5\]=1 are reserved.
     ///
+    /// # Forms
     /// Assembly: `bclri xd, xs1, shamt`
     BCLRI,
     /// Single-Bit clear (Immediate)
     ///
     /// This instruction returns rs1 with a single bit cleared at the index specified in shamt. The
     /// index is read from the lower log2(XLEN) bits of shamt. For RV32, the encodings corresponding
-    /// to shamt[5]=1 are reserved.
+    /// to shamt\[5\]=1 are reserved.
     ///
+    /// # Forms
     /// Assembly: `bclri.rv32 xd, xs1, shamt`
     BCLRIRV32,
     /// Branch if equal
@@ -10967,31 +12183,38 @@ pub enum Opcode {
     ///
     /// Raise a `MisalignedAddress` exception if PC + imm is misaligned.
     ///
+    /// # Forms
     /// Assembly: `beq xs1, xs2, imm`
     BEQ,
-    /// Syntax: `beqz rs1 imm`
+    /// RISC-V `beqz` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `beqz rs1 bimm12lohi`
     BEQZ,
     /// Single-Bit extract (Register)
     ///
     /// This instruction returns a single bit extracted from rs1 at the index specified in rs2.
     /// The index is read from the lower log2(XLEN) bits of rs2.
     ///
+    /// # Forms
     /// Assembly: `bext xd, xs1, xs2`
     BEXT,
     /// Single-Bit extract (Immediate)
     ///
     /// This instruction returns a single bit extracted from rs1 at the index specified in rs2.
     /// The index is read from the lower log2(XLEN) bits of shamt. For RV32, the encodings
-    /// corresponding to shamt[5]=1 are reserved.
+    /// corresponding to shamt\[5\]=1 are reserved.
     ///
+    /// # Forms
     /// Assembly: `bexti xd, xs1, shamt`
     BEXTI,
     /// Single-Bit extract (Immediate)
     ///
     /// This instruction returns a single bit extracted from rs1 at the index specified in rs2.
     /// The index is read from the lower log2(XLEN) bits of shamt. For RV32, the encodings
-    /// corresponding to shamt[5]=1 are reserved.
+    /// corresponding to shamt\[5\]=1 are reserved.
     ///
+    /// # Forms
     /// Assembly: `bexti.rv32 xd, xs1, shamt`
     BEXTIRV32,
     /// Branch if greater than or equal
@@ -11001,6 +12224,7 @@ pub enum Opcode {
     ///
     /// Raise a `MisalignedAddress` exception if PC + imm is misaligned.
     ///
+    /// # Forms
     /// Assembly: `bge xs1, xs2, imm`
     BGE,
     /// Branch if greater than or equal unsigned
@@ -11010,44 +12234,69 @@ pub enum Opcode {
     ///
     /// Raise a `MisalignedAddress` exception if PC + imm is misaligned.
     ///
+    /// # Forms
     /// Assembly: `bgeu xs1, xs2, imm`
     BGEU,
-    /// Syntax: `bgez rs1 imm`
+    /// RISC-V `bgez` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `bgez rs1 bimm12lohi`
     BGEZ,
-    /// Syntax: `bgt rs2 rs1 imm`
+    /// RISC-V `bgt` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `bgt rs1 rs2 bimm12lohi`
     BGT,
-    /// Syntax: `bgtu rs2 rs1 imm`
+    /// RISC-V `bgtu` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `bgtu rs1 rs2 bimm12lohi`
     BGTU,
-    /// Syntax: `bgtz rs2 imm`
+    /// RISC-V `bgtz` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `bgtz rs2 bimm12lohi`
     BGTZ,
     /// Single-Bit invert (Register)
     ///
     /// This instruction returns rs1 with a single bit inverted at the index specified in rs2.
     /// The index is read from the lower log2(XLEN) bits of rs2.
     ///
+    /// # Forms
     /// Assembly: `binv xd, xs1, xs2`
     BINV,
     /// Single-Bit invert (Immediate)
     ///
     /// This instruction returns rs1 with a single bit inverted at the index specified in shamt.
     /// The index is read from the lower log2(XLEN) bits of shamt.
-    /// For RV32, the encodings corresponding to shamt[5]=1 are reserved.
+    /// For RV32, the encodings corresponding to shamt\[5\]=1 are reserved.
     ///
+    /// # Forms
     /// Assembly: `binvi xd, xs1, shamt`
     BINVI,
     /// Single-Bit invert (Immediate)
     ///
     /// This instruction returns rs1 with a single bit inverted at the index specified in shamt.
     /// The index is read from the lower log2(XLEN) bits of shamt.
-    /// For RV32, the encodings corresponding to shamt[5]=1 are reserved.
+    /// For RV32, the encodings corresponding to shamt\[5\]=1 are reserved.
     ///
+    /// # Forms
     /// Assembly: `binvi.rv32 xd, xs1, shamt`
     BINVIRV32,
-    /// Syntax: `ble rs2 rs1 imm`
+    /// RISC-V `ble` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `ble rs1 rs2 bimm12lohi`
     BLE,
-    /// Syntax: `bleu rs2 rs1 imm`
+    /// RISC-V `bleu` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `bleu rs1 rs2 bimm12lohi`
     BLEU,
-    /// Syntax: `blez rs2 imm`
+    /// RISC-V `blez` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `blez rs2 bimm12lohi`
     BLEZ,
     /// Branch if less than
     ///
@@ -11056,6 +12305,7 @@ pub enum Opcode {
     ///
     /// Raise a `MisalignedAddress` exception if PC + imm is misaligned.
     ///
+    /// # Forms
     /// Assembly: `blt xs1, xs2, imm`
     BLT,
     /// Branch if less than unsigned
@@ -11065,9 +12315,13 @@ pub enum Opcode {
     ///
     /// Raise a `MisalignedAddress` exception if PC + imm is misaligned.
     ///
+    /// # Forms
     /// Assembly: `bltu xs1, xs2, imm`
     BLTU,
-    /// Syntax: `bltz rs1 imm`
+    /// RISC-V `bltz` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `bltz rs1 bimm12lohi`
     BLTZ,
     /// Branch if not equal
     ///
@@ -11076,14 +12330,19 @@ pub enum Opcode {
     ///
     /// Raise a `MisalignedAddress` exception if PC + imm is misaligned.
     ///
+    /// # Forms
     /// Assembly: `bne xs1, xs2, imm`
     BNE,
-    /// Syntax: `bnez rs1 imm`
+    /// RISC-V `bnez` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `bnez rs1 bimm12lohi`
     BNEZ,
     /// Reverse bits in bytes
     ///
     /// This instruction reverses the order of the bits in every byte of a register.
     ///
+    /// # Forms
     /// Assembly: `brev8 xd, xs1`
     BREV8,
     /// Single-Bit set (Register)
@@ -11091,22 +12350,25 @@ pub enum Opcode {
     /// This instruction returns rs1 with a single bit set at the index specified in rs2.
     /// The index is read from the lower log2(XLEN) bits of rs2.
     ///
+    /// # Forms
     /// Assembly: `bset xd, xs1, xs2`
     BSET,
     /// Single-Bit set (Immediate)
     ///
     /// This instruction returns rs1 with a single bit set at the index specified in shamt.
     /// The index is read from the lower log2(XLEN) bits of shamt.
-    /// For RV32, the encodings corresponding to shamt[5]=1 are reserved.
+    /// For RV32, the encodings corresponding to shamt\[5\]=1 are reserved.
     ///
+    /// # Forms
     /// Assembly: `bseti xd, xs1, shamt`
     BSETI,
     /// Single-Bit set (Immediate)
     ///
     /// This instruction returns rs1 with a single bit set at the index specified in shamt.
     /// The index is read from the lower log2(XLEN) bits of shamt.
-    /// For RV32, the encodings corresponding to shamt[5]=1 are reserved.
+    /// For RV32, the encodings corresponding to shamt\[5\]=1 are reserved.
     ///
+    /// # Forms
     /// Assembly: `bseti.rv32 xd, xs1, shamt`
     BSETIRV32,
     /// Add
@@ -11114,6 +12376,7 @@ pub enum Opcode {
     /// Add the value in rs2 to rd, and store the result in rd.
     /// C.ADD expands into `add rd, rd, rs2`.
     ///
+    /// # Forms
     /// Assembly: `c.add xd, rs2`
     CADD,
     /// Add a sign-extended non-zero immediate
@@ -11123,24 +12386,27 @@ pub enum Opcode {
     /// C.ADDI is only valid when rd &ne; x0 and imm &ne; 0.
     /// The code points with rd=x0 encode the C.NOP instruction; the remaining code points with imm=0 encode HINTs.
     ///
+    /// # Forms
     /// Assembly: `c.addi xd, imm`
     CADDI,
     /// Add a sign-extended non-zero immediate
     ///
     /// C.ADDI16SP adds the non-zero sign-extended 6-bit immediate to the value in the stack pointer (sp=x2), where the immediate is scaled to represent multiples of 16 in the range (-512,496).
     /// C.ADDI16SP is used to adjust the stack pointer in procedure prologues and epilogues.
-    /// It expands into `addi x2, x2, nzimm[9:4]`.
+    /// It expands into `addi x2, x2, nzimm\[9:4\]`.
     /// C.ADDI16SP is only valid when nzimm &ne; 0; the code point with nzimm=0 is reserved.
     ///
+    /// # Forms
     /// Assembly: `c.addi16sp imm`
     CADDI16SP,
     /// Add a zero-extended non-zero immediate, scaled by 4, to the stack pointer
     ///
     /// Adds a zero-extended non-zero immediate, scaled by 4, to the stack pointer, x2, and writes the result to rd'.
     /// This instruction is used to generate pointers to stack-allocated variables.
-    /// It expands to `addi rd', x2, nzuimm[9:2]`.
+    /// It expands to `addi rd', x2, nzuimm\[9:2\]`.
     /// C.ADDI4SPN is only valid when nzuimm &ne; 0; the code points with nzuimm=0 are reserved.
     ///
+    /// # Forms
     /// Assembly: `c.addi4spn xd, imm`
     CADDI4SPN,
     /// Add a sign-extended non-zero immediate
@@ -11150,6 +12416,7 @@ pub enum Opcode {
     /// The immediate can be zero for C.ADDIW, where this corresponds to `sext.w rd`.
     /// C.ADDIW is only valid when rd &ne; x0; the code points with rd=x0 are reserved.
     ///
+    /// # Forms
     /// Assembly: `c.addiw xd, imm`
     CADDIW,
     /// Add word
@@ -11158,6 +12425,7 @@ pub enum Opcode {
     /// The rd and rs2 register indexes should be used as rd+8 and rs2+8 (registers x8-x15).
     /// C.ADDW expands into `addw rd, rd, rs2`.
     ///
+    /// # Forms
     /// Assembly: `c.addw xd, rs2`
     CADDW,
     /// And
@@ -11166,6 +12434,7 @@ pub enum Opcode {
     /// The rd and rs2 register indexes should be used as rd+8 and rs2+8 (registers x8-x15).
     /// C.AND expands into `and rd, rd, rs2`.
     ///
+    /// # Forms
     /// Assembly: `c.and xd, rs2`
     CAND,
     /// And immediate
@@ -11174,6 +12443,7 @@ pub enum Opcode {
     /// The rd register index should be used as rd+8 (registers x8-x15).
     /// C.ANDI expands into `andi rd, rd, imm`.
     ///
+    /// # Forms
     /// Assembly: `c.andi xd, imm`
     CANDI,
     /// Branch if Equal Zero
@@ -11181,6 +12451,7 @@ pub enum Opcode {
     /// C.BEQZ performs conditional control transfers. The offset is sign-extended and added to the pc to form the branch target address. It can therefore target a &pm;256 B range. C.BEQZ takes the branch if the value in register rs1' is zero.
     /// It expands to `beq` `rs1, x0, offset`.
     ///
+    /// # Forms
     /// Assembly: `c.beqz xs1, imm`
     CBEQZ,
     /// Branch if NOT Equal Zero
@@ -11188,6 +12459,7 @@ pub enum Opcode {
     /// C.BEQZ performs conditional control transfers. The offset is sign-extended and added to the pc to form the branch target address. It can therefore target a &pm;256 B range. C.BEQZ takes the branch if the value in register rs1' is NOT zero.
     /// It expands to `beq` `rs1, x0, offset`.
     ///
+    /// # Forms
     /// Assembly: `c.bnez xs1, imm`
     CBNEZ,
     /// Breakpoint exception.
@@ -11196,7 +12468,7 @@ pub enum Opcode {
     /// a debugging environment. Unless overridden by an external debug environment,
     /// C.EBREAK raises a breakpoint exception and performs no other operation.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// As described in the `C` Standard Extension for Compressed Instructions, the `c.ebreak`
     /// instruction performs the same operation as the EBREAK instruction.
     ///
@@ -11205,6 +12477,7 @@ pub enum Opcode {
     /// As EBREAK causes a synchronous exception, it is not considered to retire,
     /// and should not increment the `minstret` CSR.
     ///
+    /// # Forms
     /// Assembly: `c.ebreak " "`
     CEBREAK,
     /// Load double-precision
@@ -11214,6 +12487,7 @@ pub enum Opcode {
     /// to the base address in register rs1.
     /// It expands to `fld` `rd, offset(rs1)`.
     ///
+    /// # Forms
     /// Assembly: `c.fld xd, imm(xs1)`
     CFLD,
     /// Load doubleword into floating-point register from stack
@@ -11223,6 +12497,7 @@ pub enum Opcode {
     /// to the stack pointer, x2.
     /// It expands to `fld` `rd, offset(x2)`.
     ///
+    /// # Forms
     /// Assembly: `c.fldsp fd, imm(sp)`
     CFLDSP,
     /// Load single-precision
@@ -11232,6 +12507,7 @@ pub enum Opcode {
     /// to the base address in register rs1.
     /// It expands to `flw` `rd, offset(rs1)`.
     ///
+    /// # Forms
     /// Assembly: `c.flw xd, imm(xs1)`
     CFLW,
     /// Load word into floating-point register from stack
@@ -11241,6 +12517,7 @@ pub enum Opcode {
     /// to the stack pointer, x2.
     /// It expands to `flw` `rd, offset(x2)`.
     ///
+    /// # Forms
     /// Assembly: `c.flwsp fd, imm(sp)`
     CFLWSP,
     /// Store double-precision
@@ -11250,6 +12527,7 @@ pub enum Opcode {
     /// to the base address in register rs1.
     /// It expands to `fsd` `rs2, offset(rs1)`.
     ///
+    /// # Forms
     /// Assembly: `c.fsd xs2, imm(xs1)`
     CFSD,
     /// Store double-precision value to stack
@@ -11259,6 +12537,7 @@ pub enum Opcode {
     /// to the stack pointer, x2.
     /// It expands to `fsd` `rs2, offset(x2)`.
     ///
+    /// # Forms
     /// Assembly: `c.fsdsp fs2, imm(sp)`
     CFSDSP,
     /// Store single-precision
@@ -11268,6 +12547,7 @@ pub enum Opcode {
     /// to the base address in register rs1.
     /// It expands to `fsw` `rs2, offset(rs1)`.
     ///
+    /// # Forms
     /// Assembly: `c.fsw xs2, imm(xs1)`
     CFSW,
     /// Store single-precision value to stack
@@ -11277,6 +12557,7 @@ pub enum Opcode {
     /// to the stack pointer, x2.
     /// It expands to `fsw` `rs2, offset(x2)`.
     ///
+    /// # Forms
     /// Assembly: `c.fswsp fs2, imm(sp)`
     CFSWSP,
     /// Jump
@@ -11284,6 +12565,7 @@ pub enum Opcode {
     /// C.J performs an unconditional control transfer. The offset is sign-extended and added to the pc to form the jump target address. C.J can therefore target a &pm;2 KiB range.
     /// It expands to `jal` `x0, offset`.
     ///
+    /// # Forms
     /// Assembly: `c.j imm`
     CJ,
     /// Jump and Link
@@ -11291,6 +12573,7 @@ pub enum Opcode {
     /// C.JAL is an RV32C-only instruction that performs the same operation as C.J, but additionally writes the address of the instruction following the jump (pc+2) to the link register, x1.
     /// It expands to `jal` `x1, offset`.
     ///
+    /// # Forms
     /// Assembly: `c.jal imm`
     CJAL,
     /// Jump and Link Register.
@@ -11298,6 +12581,7 @@ pub enum Opcode {
     /// C.JALR (jump and link register) performs the same operation as C.JR, but additionally writes the address of the instruction following the jump (pc+2) to the link register, x1.
     /// C.JALR expands to jalr x1, 0(rs1).
     ///
+    /// # Forms
     /// Assembly: `c.jalr xs1`
     CJALR,
     /// Jump Register
@@ -11305,6 +12589,7 @@ pub enum Opcode {
     /// C.JR (jump register) performs an unconditional control transfer to the address in register rs1.
     /// C.JR expands to jalr x0, 0(rs1).
     ///
+    /// # Forms
     /// Assembly: `c.jr xs1`
     CJR,
     /// Load unsigned byte, 16-bit encoding
@@ -11313,6 +12598,7 @@ pub enum Opcode {
     /// It computes an effective address by adding the zero-extended offset, to the base address in register rs1.
     /// It expands to `lbu` `rd, offset(rs1)`.
     ///
+    /// # Forms
     /// Assembly: `c.lbu xd, imm(xs1)`
     CLBU,
     /// Load double
@@ -11322,6 +12608,7 @@ pub enum Opcode {
     /// to the base address in register rs1.
     /// It expands to `ld` `rd, offset(rs1)`.
     ///
+    /// # Forms
     /// Assembly: `c.ld xd, imm(xs1)`
     CLD,
     /// Load doubleword from stack pointer
@@ -11333,6 +12620,7 @@ pub enum Opcode {
     /// It expands to `ld` `rd, offset(x2)`.
     /// C.LDSP is only valid when rd &ne; x0 the code points with rd=x0 are reserved.
     ///
+    /// # Forms
     /// Assembly: `c.ldsp xd, imm(sp)`
     CLDSP,
     /// Load signed halfword, 16-bit encoding
@@ -11341,6 +12629,7 @@ pub enum Opcode {
     /// It computes an effective address by adding the zero-extended offset, to the base address in register rs1.
     /// It expands to `lh` `rd, offset(rs1)`.
     ///
+    /// # Forms
     /// Assembly: `c.lh xd, imm(xs1)`
     CLH,
     /// Load unsigned halfword, 16-bit encoding
@@ -11349,6 +12638,7 @@ pub enum Opcode {
     /// It computes an effective address by adding the zero-extended offset, to the base address in register rs1.
     /// It expands to `lhu` `rd, offset(rs1)`.
     ///
+    /// # Forms
     /// Assembly: `c.lhu xd, imm(xs1)`
     CLHU,
     /// Load the sign-extended 6-bit immediate
@@ -11357,6 +12647,7 @@ pub enum Opcode {
     /// C.LI expands into `addi rd, x0, imm`.
     /// C.LI is only valid when rd &ne; x0; the code points with rd=x0 encode HINTs.
     ///
+    /// # Forms
     /// Assembly: `c.li xd, imm`
     CLI,
     /// Load the non-zero 6-bit immediate field into bits 17-12 of the destination register
@@ -11366,6 +12657,7 @@ pub enum Opcode {
     /// C.LUI is only valid when rd&ne;x0 and rd&ne;x2, and when the immediate is not equal to zero.
     /// The code points with imm=0 are reserved; the remaining code points with rd=x0 are HINTs; and the remaining code points with rd=x2 correspond to the C.ADDI16SP instruction
     ///
+    /// # Forms
     /// Assembly: `c.lui xd, imm`
     CLUI,
     /// Load word
@@ -11375,6 +12667,7 @@ pub enum Opcode {
     /// to the base address in register rs1.
     /// It expands to `lw` `rd, offset(rs1)`.
     ///
+    /// # Forms
     /// Assembly: `c.lw xd, imm(xs1)`
     CLW,
     /// Load word from stack pointer
@@ -11385,30 +12678,59 @@ pub enum Opcode {
     /// It expands to `lw` `rd, offset(x2)`.
     /// C.LWSP is only valid when rd &ne; x0. The code points with rd=x0 are reserved.
     ///
+    /// # Forms
     /// Assembly: `c.lwsp xd, imm(sp)`
     CLWSP,
-    /// Syntax: `c.mop.1`
+    /// RISC-V `c.mop.1` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `c.mop.1`
     CMOP1,
-    /// Syntax: `c.mop.11`
+    /// RISC-V `c.mop.11` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `c.mop.11`
     CMOP11,
-    /// Syntax: `c.mop.13`
+    /// RISC-V `c.mop.13` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `c.mop.13`
     CMOP13,
-    /// Syntax: `c.mop.15`
+    /// RISC-V `c.mop.15` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `c.mop.15`
     CMOP15,
-    /// Syntax: `c.mop.3`
+    /// RISC-V `c.mop.3` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `c.mop.3`
     CMOP3,
-    /// Syntax: `c.mop.5`
+    /// RISC-V `c.mop.5` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `c.mop.5`
     CMOP5,
-    /// Syntax: `c.mop.7`
+    /// RISC-V `c.mop.7` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `c.mop.7`
     CMOP7,
-    /// Syntax: `c.mop.9`
+    /// RISC-V `c.mop.9` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `c.mop.9`
     CMOP9,
-    /// Syntax: `c.mop.n c_mop_t`
+    /// RISC-V `c.mop.n` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `c.mop.n c_mop_t`
     CMOPN,
     /// Multiply, 16-bit encoding
     ///
     /// This instruction multiplies XLEN bits of the source operands from rsd' and rs2' and writes the lowest XLEN bits of the result to rsd'.
     ///
+    /// # Forms
     /// Assembly: `c.mul xd, xs2`
     CMUL,
     /// Move Register
@@ -11416,12 +12738,14 @@ pub enum Opcode {
     /// C.MV (move register) performs copy of the data in register rs2 to register rd
     /// C.MV expands to addi rd, x0, rs2.
     ///
+    /// # Forms
     /// Assembly: `c.mv xd, xs2`
     CMV,
     /// Non-operation
     ///
     /// C.NOP expands into `addi x0, x0, imm`.
     ///
+    /// # Forms
     /// Assembly: `c.nop imm`
     CNOP,
     /// Bitwise not, 16-bit encoding
@@ -11429,15 +12753,28 @@ pub enum Opcode {
     /// This instruction takes a single source/destination operand.
     /// This instruction takes the one's complement of rd'/rs1' and writes the result to the same register.
     ///
+    /// # Forms
     /// Assembly: `c.not xd`
     CNOT,
-    /// Syntax: `c.ntl.all`
+    /// RISC-V `c.ntl.all` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `c.ntl.all`
     CNTLALL,
-    /// Syntax: `c.ntl.p1`
+    /// RISC-V `c.ntl.p1` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `c.ntl.p1`
     CNTLP1,
-    /// Syntax: `c.ntl.pall`
+    /// RISC-V `c.ntl.pall` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `c.ntl.pall`
     CNTLPALL,
-    /// Syntax: `c.ntl.s1`
+    /// RISC-V `c.ntl.s1` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `c.ntl.s1`
     CNTLS1,
     /// Or
     ///
@@ -11445,6 +12782,7 @@ pub enum Opcode {
     /// The rd and rs2 register indexes should be used as rd+8 and rs2+8 (registers x8-x15).
     /// C.OR expands into `or rd, rd, rs2`.
     ///
+    /// # Forms
     /// Assembly: `c.or xd, rs2`
     COR,
     /// Store unsigned byte, 16-bit encoding
@@ -11453,6 +12791,7 @@ pub enum Opcode {
     /// It computes an effective address by adding the zero-extended offset, to the base address in register rs1.
     /// It expands to `sb` `rs2, offset(rs1)`.
     ///
+    /// # Forms
     /// Assembly: `c.sb xs2, imm(xs1)`
     CSB,
     /// Store double
@@ -11462,6 +12801,7 @@ pub enum Opcode {
     /// to the base address in register rs1.
     /// It expands to `sd` `rs2, offset(rs1)`.
     ///
+    /// # Forms
     /// Assembly: `c.sd xs2, imm(xs1)`
     CSD,
     /// Store doubleword to stack
@@ -11471,6 +12811,7 @@ pub enum Opcode {
     /// to the stack pointer, x2.
     /// It expands to `sd` `rs2, offset(x2)`.
     ///
+    /// # Forms
     /// Assembly: `c.sdsp xs2, imm(sp)`
     CSDSP,
     /// Sign-extend byte, 16-bit encoding
@@ -11479,6 +12820,7 @@ pub enum Opcode {
     /// This instruction sign-extends the least-significant byte of the source to XLEN by copying
     /// the most-significant bit in the byte (i.e., bit 7) to all of the more-significant bits.
     ///
+    /// # Forms
     /// Assembly: `c.sext.b xd`
     CSEXTB,
     /// Sign-extend halfword, 16-bit encoding
@@ -11487,9 +12829,13 @@ pub enum Opcode {
     /// This instruction sign-extends the least-significant halfword of the source to XLEN by copying
     /// the most-significant bit in the halfword (i.e., bit 15) to all of the more-significant bits.
     ///
+    /// # Forms
     /// Assembly: `c.sext.h xd`
     CSEXTH,
-    /// Syntax: `c.sext.w rd_rs1_n0`
+    /// RISC-V `c.sext.w` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `c.sext.w rd_rs1_n0`
     CSEXTW,
     /// Store unsigned halfword, 16-bit encoding
     ///
@@ -11497,6 +12843,7 @@ pub enum Opcode {
     /// It computes an effective address by adding the zero-extended offset, to the base address in register rs1.
     /// It expands to `sh` `rs2, offset(rs1)`.
     ///
+    /// # Forms
     /// Assembly: `c.sh xs2, imm(xs1)`
     CSH,
     /// Shift left logical immediate
@@ -11504,6 +12851,7 @@ pub enum Opcode {
     /// Shift the value in rd left by shamt, and store the result back in rd.
     /// C.SLLI expands into `slli rd, rd, shamt`.
     ///
+    /// # Forms
     /// Assembly: `c.slli xd, shamt`
     CSLLI,
     /// Shift left logical immediate
@@ -11511,6 +12859,7 @@ pub enum Opcode {
     /// Shift the value in rd left by shamt, and store the result back in rd.
     /// C.SLLI expands into `slli rd, rd, shamt`.
     ///
+    /// # Forms
     /// Assembly: `c.slli.rv32 xd, shamt`
     CSLLIRV32,
     /// Shift right arithmetical immediate
@@ -11519,6 +12868,7 @@ pub enum Opcode {
     /// The rd register index should be used as rd+8 (registers x8-x15).
     /// C.SRAI expands into `srai rd, rd, shamt`.
     ///
+    /// # Forms
     /// Assembly: `c.srai xd, shamt`
     CSRAI,
     /// Shift right arithmetical immediate
@@ -11527,6 +12877,7 @@ pub enum Opcode {
     /// The rd register index should be used as rd+8 (registers x8-x15).
     /// C.SRAI expands into `srai rd, rd, shamt`.
     ///
+    /// # Forms
     /// Assembly: `c.srai.rv32 xd, shamt`
     CSRAIRV32,
     /// Shift right logical immediate
@@ -11535,6 +12886,7 @@ pub enum Opcode {
     /// The rd register index should be used as rd+8 (registers x8-x15).
     /// C.SRLI expands into `srli rd, rd, shamt`.
     ///
+    /// # Forms
     /// Assembly: `c.srli xd, shamt`
     CSRLI,
     /// Shift right logical immediate
@@ -11543,11 +12895,18 @@ pub enum Opcode {
     /// The rd register index should be used as rd+8 (registers x8-x15).
     /// C.SRLI expands into `srli rd, rd, shamt`.
     ///
+    /// # Forms
     /// Assembly: `c.srli.rv32 xd, shamt`
     CSRLIRV32,
-    /// Syntax: `c.sspopchk.x5`
+    /// RISC-V `c.sspopchk.x5` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `c.sspopchk.x5`
     CSSPOPCHKX5,
-    /// Syntax: `c.sspush.x1`
+    /// RISC-V `c.sspush.x1` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `c.sspush.x1`
     CSSPUSHX1,
     /// Subtract
     ///
@@ -11555,6 +12914,7 @@ pub enum Opcode {
     /// The rd and rs2 register indexes should be used as rd+8 and rs2+8 (registers x8-x15).
     /// C.SUB expands into `sub rd, rd, rs2`.
     ///
+    /// # Forms
     /// Assembly: `c.sub xd, rs2`
     CSUB,
     /// Subtract word
@@ -11563,6 +12923,7 @@ pub enum Opcode {
     /// The rd and rs2 register indexes should be used as rd+8 and rs2+8 (registers x8-x15).
     /// C.SUBW expands into `subw rd, rd, rs2`.
     ///
+    /// # Forms
     /// Assembly: `c.subw xd, rs2`
     CSUBW,
     /// Store word
@@ -11572,6 +12933,7 @@ pub enum Opcode {
     /// to the base address in register rs1.
     /// It expands to `sw` `rs2, offset(rs1)`.
     ///
+    /// # Forms
     /// Assembly: `c.sw xs2, imm(xs1)`
     CSW,
     /// Store word to stack
@@ -11581,6 +12943,7 @@ pub enum Opcode {
     /// to the stack pointer, x2.
     /// It expands to `sw` `rs2, offset(x2)`.
     ///
+    /// # Forms
     /// Assembly: `c.swsp xs2, imm(sp)`
     CSWSP,
     /// Exclusive Or
@@ -11589,6 +12952,7 @@ pub enum Opcode {
     /// The rd and rs2 register indexes should be used as rd+8 and rs2+8 (registers x8-x15).
     /// C.XOR expands into `xor rd, rd, rs2`.
     ///
+    /// # Forms
     /// Assembly: `c.xor xd, rs2`
     CXOR,
     /// Zero-extend byte, 16-bit encoding
@@ -11597,6 +12961,7 @@ pub enum Opcode {
     /// This instruction zero-extends the least-significant byte of the source to XLEN by inserting
     /// 0's into all of the bits more significant than 7.
     ///
+    /// # Forms
     /// Assembly: `c.zext.b xd`
     CZEXTB,
     /// Zero-extend halfword, 16-bit encoding
@@ -11605,6 +12970,7 @@ pub enum Opcode {
     /// This instruction zero-extends the least-significant halfword of the source to XLEN by inserting
     /// 0's into all of the bits more significant than 15.
     ///
+    /// # Forms
     /// Assembly: `c.zext.h xd`
     CZEXTH,
     /// Zero-extend word, 16-bit encoding
@@ -11612,6 +12978,7 @@ pub enum Opcode {
     /// This instruction takes a single source/destination operand.
     /// It zero-extends the least-significant word of the operand to XLEN bits by inserting zeros into all of the bits more significant than 31.
     ///
+    /// # Forms
     /// Assembly: `c.zext.w xd`
     CZEXTW,
     /// Cache Block Clean
@@ -11626,26 +12993,27 @@ pub enum Opcode {
     ///
     /// `cbo.clean` is ordered by `FENCE` instructions but not `FENCE.I` or `SFENCE.VMA`.
     ///
-    /// <%- if CACHE_BLOCK_SIZE.bit_length > [PMP_GRANULARITY, PMA_GRANULARITY].min -%>
+    /// &lt;%- if CACHE_BLOCK_SIZE.bit_length &gt; \[PMP_GRANULARITY, PMA_GRANULARITY\].min -%&gt;
     /// Both PMP and PMA access control must be the same for all bytes in the block; otherwise, `cbo.clean` has UNSPECIFIED behavior.
-    /// <%- end -%>
+    /// &lt;%- end -%&gt;
     ///
     /// Clean operations are treated as stores for page and access permissions. If permission checks fail,
     /// one of the following exceptions will occur:
     ///
-    ///   <%- if ext?(:H) -%>
+    ///   &lt;%- if ext?(:H) -%&gt;
     ///   * `Store/AMO Guest-Page Fault` if virtual memory translation fails during G-stage translation.
-    ///   <%- end -%>
-    ///   * `Store/AMO Page Fault` if virtual memory translation fails <% if ext?(:H) %>when V=0 or during VS-stage translation<% end %>
+    ///   &lt;%- end -%&gt;
+    ///   * `Store/AMO Page Fault` if virtual memory translation fails &lt;% if ext?(:H) %&gt;when V=0 or during VS-stage translation&lt;% end %&gt;
     ///   * `Store/AMO Access Fault` if a PMP or PMA access check fails
     ///
-    /// <%- if CACHE_BLOCK_SIZE.bit_length <= [PMP_GRANULARITY, PMA_GRANULARITY].min -%>
+    /// &lt;%- if CACHE_BLOCK_SIZE.bit_length &lt;= \[PMP_GRANULARITY, PMA_GRANULARITY\].min -%&gt;
     /// Because cache blocks are naturally aligned and always fit in a single PMP or PMA regions, the PMP
     /// and PMA access checks only need to check a single address in the line.
-    /// <%- end -%>
+    /// &lt;%- end -%&gt;
     ///
     /// CBO operations never raise a misaligned address fault.
     ///
+    /// # Forms
     /// Assembly: `cbo.clean "TODO"`
     CBOCLEAN,
     /// Cache Block Flush
@@ -11654,26 +13022,27 @@ pub enum Opcode {
     ///
     /// `cbo.flush` is ordered by `FENCE` instructions but not `FENCE.I` or `SFENCE.VMA`.
     ///
-    /// <%- if CACHE_BLOCK_SIZE.bit_length > [PMP_GRANULARITY, PMA_GRANULARITY].min -%>
+    /// &lt;%- if CACHE_BLOCK_SIZE.bit_length &gt; \[PMP_GRANULARITY, PMA_GRANULARITY\].min -%&gt;
     /// Both PMP and PMA access control must be the same for all bytes in the block; otherwise, `cbo.flush` has UNSPECIFIED behavior.
-    /// <%- end -%>
+    /// &lt;%- end -%&gt;
     ///
     /// Flush operations are treated as stores for page and access permissions. If permission checks fail,
     /// one of the following exceptions will occur:
     ///
-    ///   <%- if ext?(:H) -%>
+    ///   &lt;%- if ext?(:H) -%&gt;
     ///   * `Store/AMO Guest-Page Fault` if virtual memory translation fails during G-stage translation.
-    ///   <%- end -%>
-    ///   * `Store/AMO Page Fault` if virtual memory translation fails <% if ext?(:H) %>when V=0 or during VS-stage translation<% end %>
+    ///   &lt;%- end -%&gt;
+    ///   * `Store/AMO Page Fault` if virtual memory translation fails &lt;% if ext?(:H) %&gt;when V=0 or during VS-stage translation&lt;% end %&gt;
     ///   * `Store/AMO Access Fault` if a PMP or PMA access check fails.
     ///
-    /// <%- if CACHE_BLOCK_SIZE.bit_length <= [PMP_GRANULARITY, PMA_GRANULARITY].min -%>
+    /// &lt;%- if CACHE_BLOCK_SIZE.bit_length &lt;= \[PMP_GRANULARITY, PMA_GRANULARITY\].min -%&gt;
     /// Because cache blocks are naturally aligned and always fit in a single PMP or PMA regions, the PMP
     /// and PMA access checks only need to check a single address in the line.
-    /// <%- end -%>
+    /// &lt;%- end -%&gt;
     ///
     /// CBO operations never raise a misaligned address fault.
     ///
+    /// # Forms
     /// Assembly: `cbo.flush "TODO"`
     CBOFLUSH,
     /// Cache Block Invalidate
@@ -11692,10 +13061,10 @@ pub enum Opcode {
     /// Otherwise, if the instruction does not trap (see Access section), the operation is a flush.
     /// The table below summarizes the options.
     ///
-    /// [%autowidth,cols="1,1,1,1,1,1,1,1",separator="!"]
+    /// \[%autowidth,cols="1,1,1,1,1,1,1,1",separator="!"\]
     /// !===
-    /// .2+h![.rotate]#`menvcfg.CBIE`# .2+h! [.rotate]#`senvcfg.CBIE`# .2+h! [.rotate]#`henvcfg.CBIE`#
-    /// 5+^.>h! `cbe.inval` Operation
+    /// .2+h!\[.rotate\]#`menvcfg.CBIE`# .2+h! \[.rotate\]#`senvcfg.CBIE`# .2+h! \[.rotate\]#`henvcfg.CBIE`#
+    /// 5+^.&gt;h! `cbe.inval` Operation
     /// .^h! M-mode .^h! S-mode .^h! U-mode .^h! VS-mode .^h! VU-mode
     ///
     /// ! 00 ! - ! - ! Invalidate ! `Illegal Instruction` ! `Illegal Instruction` ! `Virtual Instruction` ! `Virtual Instruction`
@@ -11721,26 +13090,27 @@ pub enum Opcode {
     ///
     /// `cbo.inval` is ordered by `FENCE` instructions but not `FENCE.I` or `SFENCE.VMA`.
     ///
-    /// <%- if CACHE_BLOCK_SIZE.bit_length > [PMP_GRANULARITY, PMA_GRANULARITY].min -%>
+    /// &lt;%- if CACHE_BLOCK_SIZE.bit_length &gt; \[PMP_GRANULARITY, PMA_GRANULARITY\].min -%&gt;
     /// Both PMP and PMA access control must be the same for all bytes in the block; otherwise, `cbo.zero` has UNSPECIFIED behavior.
-    /// <%- end -%>
+    /// &lt;%- end -%&gt;
     ///
     /// Invalidate operations are treated as stores for page and access permissions. If permission checks fail,
     /// one of the following exceptions will occur:
     ///
-    ///   <%- if ext?(:H) -%>
+    ///   &lt;%- if ext?(:H) -%&gt;
     ///   * `Store/AMO Guest-Page Fault` if virtual memory translation fails during G-stage translation.
-    ///   <%- end -%>
-    ///   * `Store/AMO Page Fault` if virtual memory translation fails <% if ext?(:H) %>when V=0 or during VS-stage translation<% end %>
+    ///   &lt;%- end -%&gt;
+    ///   * `Store/AMO Page Fault` if virtual memory translation fails &lt;% if ext?(:H) %&gt;when V=0 or during VS-stage translation&lt;% end %&gt;
     ///   * `Store/AMO Access Fault` if a PMP or PMA access check fails.
     ///
-    /// <%- if CACHE_BLOCK_SIZE.bit_length <= [PMP_GRANULARITY, PMA_GRANULARITY].min -%>
+    /// &lt;%- if CACHE_BLOCK_SIZE.bit_length &lt;= \[PMP_GRANULARITY, PMA_GRANULARITY\].min -%&gt;
     /// Because cache blocks are naturally aligned and always fit in a single PMP or PMA regions, the PMP
     /// and PMA access checks only need to check a single address in the line.
-    /// <%- end -%>
+    /// &lt;%- end -%&gt;
     ///
     /// CBO operations never raise a misaligned address fault.
     ///
+    /// # Forms
     /// Assembly: `cbo.inval "TODO"`
     CBOINVAL,
     /// Cache Block Zero
@@ -11751,44 +13121,48 @@ pub enum Opcode {
     ///
     /// `cbo.zero` is ordered by `FENCE` instructions but not `FENCE.I` or `SFENCE.VMA`.
     ///
-    /// <%- if CACHE_BLOCK_SIZE.bit_length > [PMP_GRANULARITY, PMA_GRANULARITY].min -%>
+    /// &lt;%- if CACHE_BLOCK_SIZE.bit_length &gt; \[PMP_GRANULARITY, PMA_GRANULARITY\].min -%&gt;
     /// Both PMP and PMA access control must be the same for all bytes in the block; otherwise, `cbo.zero` has UNSPECIFIED behavior.
-    /// <%- end -%>
+    /// &lt;%- end -%&gt;
     ///
     /// Clean operations are treated as stores for page and access permissions. If permission checks fail,
     /// one of the following exceptions will occur:
     ///
-    ///   <%- if ext?(:H) -%>
+    ///   &lt;%- if ext?(:H) -%&gt;
     ///   * `Store/AMO Guest-Page Fault` if virtual memory translation fails during G-stage translation.
-    ///   <%- end -%>
-    ///   * `Store/AMO Page Fault` if virtual memory translation fails <% if ext?(:H) %>when V=0 or during VS-stage translation<% end %>
+    ///   &lt;%- end -%&gt;
+    ///   * `Store/AMO Page Fault` if virtual memory translation fails &lt;% if ext?(:H) %&gt;when V=0 or during VS-stage translation&lt;% end %&gt;
     ///   * `Store/AMO Access Fault` if a PMP or PMA access check fails.
     ///
-    /// <%- if CACHE_BLOCK_SIZE.bit_length <= [PMP_GRANULARITY, PMA_GRANULARITY].min -%>
+    /// &lt;%- if CACHE_BLOCK_SIZE.bit_length &lt;= \[PMP_GRANULARITY, PMA_GRANULARITY\].min -%&gt;
     /// Because cache blocks are naturally aligned and always fit in a single PMP or PMA regions, the PMP
     /// and PMA access checks only need to check a single address in the line.
-    /// <%- end -%>
+    /// &lt;%- end -%&gt;
     ///
     /// CBO operations never raise a misaligned address fault.
     ///
+    /// # Forms
     /// Assembly: `cbo.zero "TODO"`
     CBOZERO,
     /// Carry-less multiply (low-part)
     ///
     /// `clmul` produces the lower half of the 2*XLEN carry-less product
     ///
+    /// # Forms
     /// Assembly: `clmul xd, xs1, xs2`
     CLMUL,
     /// Carry-less multiply (high-part)
     ///
     /// `clmulh` produces the upper half of the 2*XLEN carry-less product
     ///
+    /// # Forms
     /// Assembly: `clmulh xd, xs1, xs2`
     CLMULH,
     /// Carry-less multiply (reversed)
     ///
     /// `clmulr` produces bits 2*XLEN-2:XLEN-1 of the 2*XLEN carry-less product
     ///
+    /// # Forms
     /// Assembly: `clmulr xd, xs1, xs2`
     CLMULR,
     /// Count leading zero bits
@@ -11798,6 +13172,7 @@ pub enum Opcode {
     /// Accordingly, if the input is 0, the output is XLEN, and if the most-significant
     /// bit of the input is a 1, the output is 0.
     ///
+    /// # Forms
     /// Assembly: `clz xd, xs1`
     CLZ,
     /// Count leading zero bits in word
@@ -11806,15 +13181,20 @@ pub enum Opcode {
     /// Accordingly, if the least-significant word is 0, the output is 32, and if the most-significant
     /// bit of the word (_i.e._, bit 31) is a 1, the output is 0.
     ///
+    /// # Forms
     /// Assembly: `clzw xd, xs1`
     CLZW,
-    /// Syntax: `cm.jalt c_index`
+    /// RISC-V `cm.jalt` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `cm.jalt c_index`
     CMJALT,
     /// Move two s0-s7 registers into a0-a1
     ///
     /// This instruction moves r1s' into a0 and r2s' into a1. The execution is atomic, so it is not possible to observe state where only one of a0 or a1 have been updated.
     /// The encoding uses sreg number specifiers instead of xreg number specifiers to save encoding space. The mapping between them is specified in the pseudo-code below.
     ///
+    /// # Forms
     /// Assembly: `cm.mva01s r1s, r2s`
     CMMVA01S,
     /// Move a0-a1 into two registers of s0-s7
@@ -11824,6 +13204,7 @@ pub enum Opcode {
     /// The encoding uses sreg number specifiers instead of xreg number specifiers to save encoding space.
     /// The mapping between them is specified in the pseudo-code below.
     ///
+    /// # Forms
     /// Assembly: `cm.mvsa01 r1s, r2s`
     CMMVSA01,
     /// Destroy function call stack frame
@@ -11838,6 +13219,7 @@ pub enum Opcode {
     /// ** for RV32 the allowed values are: 16, 32, 48, 64, 80, 96, 112
     /// ** for RV64 the allowed values are: 16, 32, 48, 64, 80, 96, 112, 128, 144, 160
     ///
+    /// # Forms
     /// Assembly: `cm.pop reg_list, stack_adj`
     CMPOP,
     /// Destroy function call stack frame and return to `ra`.
@@ -11852,6 +13234,7 @@ pub enum Opcode {
     /// ** for RV32 the allowed values are: 16, 32, 48, 64, 80, 96, 112
     /// ** for RV64 the allowed values are: 16, 32, 48, 64, 80, 96, 112, 128, 144, 160
     ///
+    /// # Forms
     /// Assembly: `cm.popret reg_list, stack_adj`
     CMPOPRET,
     /// Destroy function call stack frame, move zero to `a0` and return to `ra`.
@@ -11866,6 +13249,7 @@ pub enum Opcode {
     /// ** for RV32 the allowed values are: 16, 32, 48, 64, 80, 96, 112
     /// ** for RV64 the allowed values are: 16, 32, 48, 64, 80, 96, 112, 128, 144, 160
     ///
+    /// # Forms
     /// Assembly: `cm.popretz reg_list, stack_adj`
     CMPOPRETZ,
     /// Create function call stack frame
@@ -11881,6 +13265,7 @@ pub enum Opcode {
     /// ** for RV32 the allowed values are: 16, 32, 48, 64, 80, 96, 112
     /// ** for RV64 the allowed values are: 16, 32, 48, 64, 80, 96, 112, 128, 144, 160
     ///
+    /// # Forms
     /// Assembly: `cm.push reg_list, -stack_adj`
     CMPUSH,
     /// Count set bits
@@ -11888,7 +13273,7 @@ pub enum Opcode {
     /// This instructions counts the number of 1's (i.e., set bits) in the source register.
     ///
     /// .Software Hint
-    /// [NOTE]
+    /// \[NOTE\]
     /// ----
     /// This operations is known as population count, popcount, sideways sum,
     /// bit summation, or Hamming weight.
@@ -11899,6 +13284,7 @@ pub enum Opcode {
     /// implemented by cpop on RV64.
     /// ----
     ///
+    /// # Forms
     /// Assembly: `cpop xd, xs1`
     CPOP,
     /// Count set bits in word
@@ -11906,7 +13292,7 @@ pub enum Opcode {
     /// This instructions counts the number of 1's (i.e., set bits) in the least-significant word of the source register.
     ///
     /// .Software Hint
-    /// [NOTE]
+    /// \[NOTE\]
     /// ----
     /// This operations is known as population count, popcount, sideways sum,
     /// bit summation, or Hamming weight.
@@ -11917,16 +13303,32 @@ pub enum Opcode {
     /// implemented by cpop on RV64.
     /// ----
     ///
+    /// # Forms
     /// Assembly: `cpopw xd, xs1`
     CPOPW,
-    /// Syntax: `csrc rs1 csr`
+    /// RISC-V `csrc` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `csrc rs1 csr`
     CSRC,
-    /// Syntax: `csrci csr zimm5`
+    /// RISC-V `csrci` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `csrci csr zimm5`
     CSRCI,
-    /// Syntax: `csrr rd csr`
+    /// RISC-V `csrr` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `csrr rd csr`
     CSRR,
+    /// RISC-V `csrrc` instruction.
+    ///
+    /// # Forms
     /// Assembly: `csrrc xd, xs1, csr`
     CSRRC,
+    /// RISC-V `csrrci` instruction.
+    ///
+    /// # Forms
     /// Assembly: `csrrci xd, csr, imm`
     CSRRCI,
     /// Atomic Read and Set Bits in CSR
@@ -11940,8 +13342,12 @@ pub enum Opcode {
     /// corresponding bit to be set in the CSR, if that CSR bit is writable.
     /// Other bits in the CSR are not explicitly written.
     ///
+    /// # Forms
     /// Assembly: `csrrs xd, xs1, csr`
     CSRRS,
+    /// RISC-V `csrrsi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `csrrsi xd, csr, imm`
     CSRRSI,
     /// Atomic Read/Write CSR
@@ -11954,6 +13360,7 @@ pub enum Opcode {
     /// If `rd=x0`, then the instruction shall not read the CSR and shall not
     /// cause any of the side effects that might occur on a CSR read.
     ///
+    /// # Forms
     /// Assembly: `csrrw xd, xs1, csr`
     CSRRW,
     /// Atomic Read/Write CSR Immediate
@@ -11966,15 +13373,28 @@ pub enum Opcode {
     /// If `rd=x0`, then the instruction shall not read the CSR and shall not
     /// cause any of the side effects that might occur on a CSR read.
     ///
+    /// # Forms
     /// Assembly: `csrrwi xd, zimm, csr`
     CSRRWI,
-    /// Syntax: `csrs rs1 csr`
+    /// RISC-V `csrs` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `csrs rs1 csr`
     CSRS,
-    /// Syntax: `csrsi csr zimm5`
+    /// RISC-V `csrsi` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `csrsi csr zimm5`
     CSRSI,
-    /// Syntax: `csrw rs1 csr`
+    /// RISC-V `csrw` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `csrw rs1 csr`
     CSRW,
-    /// Syntax: `csrwi csr zimm5`
+    /// RISC-V `csrwi` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `csrwi csr zimm5`
     CSRWI,
     /// Count trailing zero bits
     ///
@@ -11984,6 +13404,7 @@ pub enum Opcode {
     /// input is 0, the output is XLEN, and if the least-significant bit
     /// of the input is a 1, the output is 0.
     ///
+    /// # Forms
     /// Assembly: `ctz xd, xs1`
     CTZ,
     /// Count trailing zero bits in word
@@ -11994,10 +13415,17 @@ pub enum Opcode {
     /// least-significant word is 0, the output is 32, and if the least-significant bit
     /// of the input is a 1, the output is 0.
     ///
+    /// # Forms
     /// Assembly: `ctzw xd, xs1`
     CTZW,
+    /// RISC-V `czero.eqz` instruction.
+    ///
+    /// # Forms
     /// Assembly: `czero.eqz xd, xs1, xs2`
     CZEROEQZ,
+    /// RISC-V `czero.nez` instruction.
+    ///
+    /// # Forms
     /// Assembly: `czero.nez xd, xs1, xs2`
     CZERONEZ,
     /// Signed division
@@ -12009,6 +13437,7 @@ pub enum Opcode {
     /// Division resulting in signed overflow (when most negative number is divided by -1)
     /// will put the most negative number into rd;
     ///
+    /// # Forms
     /// Assembly: `div xd, xs1, xs2`
     DIV,
     /// Unsigned division
@@ -12019,6 +13448,7 @@ pub enum Opcode {
     ///
     /// If the value in rs2 is zero, rd gets the largest unsigned value.
     ///
+    /// # Forms
     /// Assembly: `divu xd, xs1, xs2`
     DIVU,
     /// Unsigned 32-bit division
@@ -12029,6 +13459,7 @@ pub enum Opcode {
     ///
     /// If the value in rs2 is zero, rd is written with all 1s.
     ///
+    /// # Forms
     /// Assembly: `divuw xd, xs1, xs2`
     DIVUW,
     /// Signed 32-bit division
@@ -12043,8 +13474,12 @@ pub enum Opcode {
     /// Division resulting in signed overflow (when most negative number is divided by -1)
     /// will put the most negative number into rd;
     ///
+    /// # Forms
     /// Assembly: `divw xd, xs1, xs2`
     DIVW,
+    /// RISC-V `dret` instruction.
+    ///
+    /// # Forms
     /// Assembly: `dret dret`
     DRET,
     /// Breakpoint exception
@@ -12053,7 +13488,7 @@ pub enum Opcode {
     /// a debugging environment. Unless overridden by an external debug environment,
     /// EBREAK raises a breakpoint exception and performs no other operation.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// As described in the `C` Standard Extension for Compressed Instructions, the `c.ebreak`
     /// instruction performs the same operation as the EBREAK instruction.
     ///
@@ -12062,6 +13497,7 @@ pub enum Opcode {
     /// As EBREAK causes a synchronous exception, it is not considered to retire,
     /// and should not increment the `minstret` CSR.
     ///
+    /// # Forms
     /// Assembly: `ebreak ""`
     EBREAK,
     /// Environment call
@@ -12071,7 +13507,7 @@ pub enum Opcode {
     /// exception, environment-call-from-S-mode exception, or environment-call-from-M-mode
     /// exception, respectively, and performs no other operation.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// ECALL generates a different exception for each originating privilege mode so that
     /// environment call exceptions can be selectively delegated.
     /// A typical use case for Unix-like operating systems is to delegate to S-mode
@@ -12082,20 +13518,42 @@ pub enum Opcode {
     /// As ECALL causes a synchronous exception, it is not considered to retire,
     /// and should not increment the `minstret` CSR.
     ///
+    /// # Forms
     /// Assembly: `ecall ""`
     ECALL,
-    /// Syntax: `fabs.d rd rs1 rs2_eq_rs1`
+    /// RISC-V `fabs.d` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fabs.d rd rs1 rs2_eq_rs1`
     FABSD,
-    /// Syntax: `fabs.h rd rs1 rs2_eq_rs1`
+    /// RISC-V `fabs.h` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fabs.h rd rs1 rs2_eq_rs1`
     FABSH,
-    /// Syntax: `fabs.q rd rs1 rs2_eq_rs1`
+    /// RISC-V `fabs.q` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fabs.q rd rs1 rs2_eq_rs1`
     FABSQ,
-    /// Syntax: `fabs.s rd rs1 rs2_eq_rs1`
+    /// RISC-V `fabs.s` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fabs.s rd rs1 rs2_eq_rs1`
     FABSS,
+    /// RISC-V `fadd.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fadd.d xd, xs1, xs2, rm`
     FADDD,
+    /// RISC-V `fadd.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fadd.h xd, xs1, xs2, rm`
     FADDH,
+    /// RISC-V `fadd.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fadd.q qd, qs1, qs2, rm`
     FADDQ,
     /// Single-precision floating-point addition
@@ -12103,12 +13561,22 @@ pub enum Opcode {
     /// Do the single-precision floating-point addition of fs1 and fs2 and store the result in fd.
     /// rm is the dynamic Rounding Mode.
     ///
+    /// # Forms
     /// Assembly: `fadd.s fd, fs1, fs2, rm`
     FADDS,
+    /// RISC-V `fclass.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fclass.d xd, xs1`
     FCLASSD,
+    /// RISC-V `fclass.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fclass.h xd, xs1`
     FCLASSH,
+    /// RISC-V `fclass.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fclass.q xd, qs1`
     FCLASSQ,
     /// Single-precision floating-point classify.
@@ -12124,45 +13592,82 @@ pub enum Opcode {
     /// `fclass.s` does not set the floating-point exception flags.
     ///
     /// .Format of result of `fclass` instruction.
-    /// [%autowidth,float="center",align="center",cols="^,<",options="header",]
+    /// \[%autowidth,float="center",align="center",cols="^,&lt;",options="header",\]
     /// |===
     /// |_rd_ bit |Meaning
-    /// |0 |_rs1_ is latexmath:[$-\infty$].
+    /// |0 |_rs1_ is latexmath:\[$-\infty$\].
     /// |1 |_rs1_ is a negative normal number.
     /// |2 |_rs1_ is a negative subnormal number.
-    /// |3 |_rs1_ is latexmath:[$-0$].
-    /// |4 |_rs1_ is latexmath:[$+0$].
+    /// |3 |_rs1_ is latexmath:\[$-0$\].
+    /// |4 |_rs1_ is latexmath:\[$+0$\].
     /// |5 |_rs1_ is a positive subnormal number.
     /// |6 |_rs1_ is a positive normal number.
-    /// |7 |_rs1_ is latexmath:[$+\infty$].
+    /// |7 |_rs1_ is latexmath:\[$+\infty$\].
     /// |8 |_rs1_ is a signaling NaN.
     /// |9 |_rs1_ is a quiet NaN.
     /// |===
     ///
+    /// # Forms
     /// Assembly: `fclass.s xd, fs1`
     FCLASSS,
+    /// RISC-V `fcvt.bf16.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.bf16.s xd, xs1, rm`
     FCVTBF16S,
+    /// RISC-V `fcvt.d.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.d.h xd, xs1, rm`
     FCVTDH,
+    /// RISC-V `fcvt.d.l` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.d.l xd, xs1, rm`
     FCVTDL,
+    /// RISC-V `fcvt.d.lu` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.d.lu xd, xs1, rm`
     FCVTDLU,
+    /// RISC-V `fcvt.d.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.d.q xd, qs1, rm`
     FCVTDQ,
+    /// RISC-V `fcvt.d.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.d.s xd, xs1, rm`
     FCVTDS,
+    /// RISC-V `fcvt.d.w` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.d.w xd, xs1, rm`
     FCVTDW,
+    /// RISC-V `fcvt.d.wu` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.d.wu xd, xs1, rm`
     FCVTDWU,
+    /// RISC-V `fcvt.h.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.h.d xd, xs1, rm`
     FCVTHD,
+    /// RISC-V `fcvt.h.l` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.h.l xd, xs1, rm`
     FCVTHL,
+    /// RISC-V `fcvt.h.lu` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.h.lu xd, xs1, rm`
     FCVTHLU,
+    /// RISC-V `fcvt.h.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.h.q xd, qs1, rm`
     FCVTHQ,
     /// Convert half-precision float to a single-precision float
@@ -12175,44 +13680,102 @@ pub enum Opcode {
     /// All floating-point conversion instructions set the Inexact exception flag if the rounded
     /// result differs from the operand value and the Invalid exception flag is not set.
     ///
+    /// # Forms
     /// Assembly: `fcvt.h.s fd, xs1`
     FCVTHS,
+    /// RISC-V `fcvt.h.w` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.h.w xd, xs1, rm`
     FCVTHW,
+    /// RISC-V `fcvt.h.wu` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.h.wu xd, xs1, rm`
     FCVTHWU,
+    /// RISC-V `fcvt.l.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.l.d xd, xs1, rm`
     FCVTLD,
+    /// RISC-V `fcvt.l.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.l.h xd, xs1, rm`
     FCVTLH,
+    /// RISC-V `fcvt.l.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.l.q xd, qs1, rm`
     FCVTLQ,
+    /// RISC-V `fcvt.l.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.l.s xd, fs1, rm`
     FCVTLS,
+    /// RISC-V `fcvt.lu.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.lu.d xd, xs1, rm`
     FCVTLUD,
+    /// RISC-V `fcvt.lu.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.lu.h xd, xs1, rm`
     FCVTLUH,
+    /// RISC-V `fcvt.lu.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.lu.q qd, hs1, rm`
     FCVTLUQ,
+    /// RISC-V `fcvt.lu.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.lu.s xd, fs1, rm`
     FCVTLUS,
+    /// RISC-V `fcvt.q.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.q.d dd, fs1, rm`
     FCVTQD,
+    /// RISC-V `fcvt.q.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.q.h hd, qs1, rm`
     FCVTQH,
+    /// RISC-V `fcvt.q.l` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.q.l qd, xs1, rm`
     FCVTQL,
+    /// RISC-V `fcvt.q.lu` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.q.lu qd, xs1, rm`
     FCVTQLU,
+    /// RISC-V `fcvt.q.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.q.s qd, fs1, rm`
     FCVTQS,
+    /// RISC-V `fcvt.q.w` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.q.w fd, xs1, rm`
     FCVTQW,
+    /// RISC-V `fcvt.q.wu` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.q.wu qd, xs1, rm`
     FCVTQWU,
+    /// RISC-V `fcvt.s.bf16` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.s.bf16 xd, xs1, rm`
     FCVTSBF16,
+    /// RISC-V `fcvt.s.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.s.d xd, xs1, rm`
     FCVTSD,
     /// Convert single-precision float to a half-precision float
@@ -12222,12 +13785,22 @@ pub enum Opcode {
     ///
     /// `fcvt.s.h` will never round, and so the 'rm' field is effectively ignored.
     ///
+    /// # Forms
     /// Assembly: `fcvt.s.h fd, xs1`
     FCVTSH,
+    /// RISC-V `fcvt.s.l` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.s.l fd, xs1, rm`
     FCVTSL,
+    /// RISC-V `fcvt.s.lu` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.s.lu fd, xs1, rm`
     FCVTSLU,
+    /// RISC-V `fcvt.s.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.s.q fd, qs1, rm`
     FCVTSQ,
     /// Convert signed 32-bit integer to single-precision float
@@ -12243,14 +13816,27 @@ pub enum Opcode {
     /// All floating-point conversion instructions set the Inexact exception flag if the rounded
     /// result differs from the operand value and the Invalid exception flag is not set.
     ///
+    /// # Forms
     /// Assembly: `fcvt.s.w fd, xs1`
     FCVTSW,
+    /// RISC-V `fcvt.s.wu` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.s.wu fd, xs1, rm`
     FCVTSWU,
+    /// RISC-V `fcvt.w.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.w.d xd, xs1, rm`
     FCVTWD,
+    /// RISC-V `fcvt.w.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.w.h xd, xs1, rm`
     FCVTWH,
+    /// RISC-V `fcvt.w.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.w.q xd, qs1, rm`
     FCVTWQ,
     /// Convert single-precision float to integer word to signed 32-bit integer.
@@ -12265,7 +13851,7 @@ pub enum Opcode {
     ///
     /// The range of valid inputs and behavior for invalid inputs are:
     ///
-    /// [separator="!"]
+    /// \[separator="!"\]
     /// !===
     /// ! ! Value
     ///
@@ -12285,24 +13871,52 @@ pub enum Opcode {
     /// All floating-point conversion instructions set the Inexact exception flag if the rounded
     /// result differs from the operand value and the Invalid exception flag is not set.
     ///
+    /// # Forms
     /// Assembly: `fcvt.w.s xd, fs1`
     FCVTWS,
+    /// RISC-V `fcvt.wu.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.wu.d xd, xs1, rm`
     FCVTWUD,
+    /// RISC-V `fcvt.wu.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.wu.h xd, xs1, rm`
     FCVTWUH,
+    /// RISC-V `fcvt.wu.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.wu.q xd, xs1, rm`
     FCVTWUQ,
+    /// RISC-V `fcvt.wu.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvt.wu.s xd, fs1, rm`
     FCVTWUS,
+    /// RISC-V `fcvtmod.w.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fcvtmod.w.d xd, xs1`
     FCVTMODWD,
+    /// RISC-V `fdiv.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fdiv.d xd, xs1, xs2, rm`
     FDIVD,
+    /// RISC-V `fdiv.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fdiv.h xd, xs1, xs2, rm`
     FDIVH,
+    /// RISC-V `fdiv.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fdiv.q qd, qs1, qs2, rm`
     FDIVQ,
+    /// RISC-V `fdiv.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fdiv.s fd, fs1, fs2, rm`
     FDIVS,
     /// Memory ordering fence
@@ -12319,7 +13933,7 @@ pub enum Opcode {
     ///
     /// The predecessor and successor fields have the same format to specify operation types:
     ///
-    /// [%autowidth]
+    /// \[%autowidth\]
     /// |===
     /// 4+| `pred` 4+| `succ`
     ///
@@ -12327,7 +13941,7 @@ pub enum Opcode {
     /// | PI | PO |PR | PW | SI | SO |SR | SW
     /// |===
     ///
-    /// [%autowidth,align="center",cols="^1,^1,<3",options="header"]
+    /// \[%autowidth,align="center",cols="^1,^1,&lt;3",options="header"\]
     /// .Fence mode encoding
     /// |===
     /// |_fm_ field |Mnemonic |Meaning
@@ -12350,20 +13964,20 @@ pub enum Opcode {
     /// The `rs1` and `rd` fields are unused and ignored.
     ///
     /// In modes other than M-mode, `fence` is further affected by `menvcfg.FIOM`,
-    /// `senvcfg.FIOM`<% if ext?(:H) %>, and/or `henvcfg.FIOM`<% end %>
+    /// `senvcfg.FIOM`&lt;% if ext?(:H) %&gt;, and/or `henvcfg.FIOM`&lt;% end %&gt;
     /// as follows:
     ///
     /// .Effective PR/PW/SR/SW in (H)S-mode
-    /// [%autowidth,cols=",,,",options="header",separator="!"]
+    /// \[%autowidth,cols=",,,",options="header",separator="!"\]
     /// !===
-    /// ! [.rotate]#`menvcfg.FIOM`# ! `pred.PI` +
+    /// ! \[.rotate\]#`menvcfg.FIOM`# ! `pred.PI` +
     /// `pred.PO` +
     /// `succ.SI` +
     /// `succ.SO`
-    /// ! -> +
-    /// -> +
-    /// -> +
-    /// ->
+    /// ! -&gt; +
+    /// -&gt; +
+    /// -&gt; +
+    /// -&gt;
     /// ! effective `PR` +
     /// effective `PW` +
     /// effective `SR` +
@@ -12375,16 +13989,16 @@ pub enum Opcode {
     /// !===
     ///
     /// .Effective PR/PW/SR/SW in U-mode
-    /// [%autowidth,options="header",separator="!",cols=",,,,"]
+    /// \[%autowidth,options="header",separator="!",cols=",,,,"\]
     /// !===
-    /// ! [.rotate]#`menvcfg.FIOM`# ! [.rotate]#`senvcfg.FIOM`# !  `pred.PI` +
+    /// ! \[.rotate\]#`menvcfg.FIOM`# ! \[.rotate\]#`senvcfg.FIOM`# !  `pred.PI` +
     /// `pred.PO` +
     /// `succ.SI` +
     /// `succ.SO`
-    /// ! -> +
-    /// -> +
-    /// -> +
-    /// ->
+    /// ! -&gt; +
+    /// -&gt; +
+    /// -&gt; +
+    /// -&gt;
     /// ! effective `PR` +
     /// effective `PW` +
     /// effective `SR` +
@@ -12397,18 +14011,18 @@ pub enum Opcode {
     /// ! 1 ! - ! 1 ! ! 1
     /// !===
     ///
-    /// <%- if ext?(:H) -%>
+    /// &lt;%- if ext?(:H) -%&gt;
     /// .Effective PR/PW/SR/SW in VS-mode and VU-mode
-    /// [%autowidth,options="header",separator="!",cols=",,,,"]
+    /// \[%autowidth,options="header",separator="!",cols=",,,,"\]
     /// !===
-    /// ! [.rotate]#`menvcfg.FIOM`# ! [.rotate]#`henvcfg.FIOM`# !  `pred.PI` +
+    /// ! \[.rotate\]#`menvcfg.FIOM`# ! \[.rotate\]#`henvcfg.FIOM`# !  `pred.PI` +
     /// `pred.PO` +
     /// `succ.SI` +
     /// `succ.SO`
-    /// ! -> +
-    /// -> +
-    /// -> +
-    /// ->
+    /// ! -&gt; +
+    /// -&gt; +
+    /// -&gt; +
+    /// -&gt;
     /// ! effective `PR` +
     /// effective `PW` +
     /// effective `SR` +
@@ -12420,8 +14034,9 @@ pub enum Opcode {
     /// ! 1 ! - ! 0 ! ! from encoding
     /// ! 1 ! - ! 1 ! ! 1
     /// !===
-    /// <%- end -%>
+    /// &lt;%- end -%&gt;
     ///
+    /// # Forms
     /// Assembly: `fence "TODO"`
     FENCE,
     /// Instruction fence
@@ -12438,14 +14053,14 @@ pub enum Opcode {
     /// has to execute a data FENCE before requesting that all remote RISC-V
     /// harts execute a FENCE.I.
     ///
-    /// The unused fields in the FENCE.I instruction, _imm[11:0]_, _rs1_, and
+    /// The unused fields in the FENCE.I instruction, _imm\[11:0\]_, _rs1_, and
     /// _rd_, are reserved for finer-grain fences in future extensions. For
     /// forward compatibility, base implementations shall ignore these fields,
     /// and standard software shall zero these fields.
     /// (((FENCE.I, finer-grained)))
     /// (((FENCE.I, forward compatibility)))
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// ====
     /// Because FENCE.I only orders stores with a hart's own instruction
     /// fetches, application code should only rely upon FENCE.I if the
@@ -12454,14 +14069,27 @@ pub enum Opcode {
     /// synchronization.
     /// ====
     ///
+    /// # Forms
     /// Assembly: `fence.i ""`
     FENCEI,
-    /// Syntax: `fence.tso rs1 rd`
+    /// RISC-V `fence.tso` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fence.tso`
     FENCETSO,
+    /// RISC-V `feq.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `feq.d xd, xs1, xs2`
     FEQD,
+    /// RISC-V `feq.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `feq.h xd, xs1, xs2`
     FEQH,
+    /// RISC-V `feq.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `feq.q xd, qs1, qs2`
     FEQQ,
     /// Single-precision floating-point equal
@@ -12472,14 +14100,27 @@ pub enum Opcode {
     ///
     /// Positive zero is considered equal to negative zero.
     ///
+    /// # Forms
     /// Assembly: `feq.s xd, fs1, fs2`
     FEQS,
+    /// RISC-V `fld` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fld xd, xs1, imm`
     FLD,
+    /// RISC-V `fle.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fle.d xd, xs1, xs2`
     FLED,
+    /// RISC-V `fle.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fle.h xd, xs1, xs2`
     FLEH,
+    /// RISC-V `fle.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fle.q xd, qs1, qs2`
     FLEQ,
     /// Single-precision floating-point less than or equal
@@ -12491,14 +14132,27 @@ pub enum Opcode {
     ///
     /// Positive zero and negative zero are considered equal.
     ///
+    /// # Forms
     /// Assembly: `fle.s xd, fs1, fs2`
     FLES,
+    /// RISC-V `fleq.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fleq.d xd, xs1, xs2`
     FLEQD,
+    /// RISC-V `fleq.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fleq.h xd, xs1, xs2`
     FLEQH,
+    /// RISC-V `fleq.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fleq.q xd, qs1, qs2`
     FLEQQ,
+    /// RISC-V `fleq.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fleq.s xd, fs1, fs2`
     FLEQS,
     /// Half-precision floating-point load
@@ -12509,22 +14163,47 @@ pub enum Opcode {
     ///
     /// `flh` is only guaranteed to execute atomically if the effective address is naturally aligned.
     ///
+    /// # Forms
     /// Assembly: `flh fd, imm(xs1)`
     FLH,
+    /// RISC-V `fli.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fli.d xd, xs1`
     FLID,
+    /// RISC-V `fli.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fli.h xd, xs1`
     FLIH,
+    /// RISC-V `fli.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fli.q fd, qs1`
     FLIQ,
+    /// RISC-V `fli.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fli.s fd, fs1`
     FLIS,
+    /// RISC-V `flq` instruction.
+    ///
+    /// # Forms
     /// Assembly: `flq qd, xs1, imm`
     FLQ,
+    /// RISC-V `flt.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `flt.d xd, xs1, xs2`
     FLTD,
+    /// RISC-V `flt.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `flt.h xd, xs1, xs2`
     FLTH,
+    /// RISC-V `flt.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `flt.q xd, qs1, qs2`
     FLTQ,
     /// Single-precision floating-point less than
@@ -12534,14 +14213,27 @@ pub enum Opcode {
     /// If either operand is NaN, the result is 0 (not equal).
     /// If either operand is a NaN (signaling or quiet), the invalid flag is set.
     ///
+    /// # Forms
     /// Assembly: `flt.s xd, fs1, fs2`
     FLTS,
+    /// RISC-V `fltq.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fltq.d xd, xs1, xs2`
     FLTQD,
+    /// RISC-V `fltq.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fltq.h xd, xs1, xs2`
     FLTQH,
+    /// RISC-V `fltq.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fltq.q qd, qs1, qs2`
     FLTQQ,
+    /// RISC-V `fltq.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fltq.s xd, fs1, fs2`
     FLTQS,
     /// Single-precision floating-point load
@@ -12550,69 +14242,163 @@ pub enum Opcode {
     ///
     /// `flw` does not modify the bits being transferred; in particular, the payloads of non-canonical NaNs are preserved.
     ///
+    /// # Forms
     /// Assembly: `flw fd, xs1, imm`
     FLW,
+    /// RISC-V `fmadd.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmadd.d xd, xs1, xs2, xs3, rm`
     FMADDD,
+    /// RISC-V `fmadd.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmadd.h xd, xs1, xs2, xs3, rm`
     FMADDH,
+    /// RISC-V `fmadd.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmadd.q qd, qs1, qs2, qs3, rm`
     FMADDQ,
+    /// RISC-V `fmadd.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmadd.s fd, fs1, fs2, fs3, rm`
     FMADDS,
+    /// RISC-V `fmax.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmax.d xd, xs1, xs2`
     FMAXD,
+    /// RISC-V `fmax.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmax.h xd, xs1, xs2`
     FMAXH,
+    /// RISC-V `fmax.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmax.q qd, qs1, qs2`
     FMAXQ,
+    /// RISC-V `fmax.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmax.s fd, fs1, fs2`
     FMAXS,
+    /// RISC-V `fmaxm.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmaxm.d xd, xs1, xs2`
     FMAXMD,
+    /// RISC-V `fmaxm.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmaxm.h xd, xs1, xs2`
     FMAXMH,
+    /// RISC-V `fmaxm.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmaxm.q qd, qs1, qs2`
     FMAXMQ,
+    /// RISC-V `fmaxm.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmaxm.s xd, xs1, xs2`
     FMAXMS,
+    /// RISC-V `fmin.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmin.d xd, xs1, xs2`
     FMIND,
+    /// RISC-V `fmin.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmin.h xd, xs1, xs2`
     FMINH,
+    /// RISC-V `fmin.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmin.q xd, xs1, xs2`
     FMINQ,
+    /// RISC-V `fmin.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmin.s xd, xs1, xs2`
     FMINS,
+    /// RISC-V `fminm.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fminm.d xd, xs1, xs2`
     FMINMD,
+    /// RISC-V `fminm.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fminm.h xd, xs1, xs2`
     FMINMH,
+    /// RISC-V `fminm.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fminm.q qd, qs1, qs2`
     FMINMQ,
+    /// RISC-V `fminm.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fminm.s fd, fs1, fs2`
     FMINMS,
+    /// RISC-V `fmsub.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmsub.d xd, xs1, xs2, xs3, rm`
     FMSUBD,
+    /// RISC-V `fmsub.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmsub.h xd, xs1, xs2, xs3, rm`
     FMSUBH,
+    /// RISC-V `fmsub.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmsub.q qd, qs1, qs2, qs3, rm`
     FMSUBQ,
+    /// RISC-V `fmsub.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmsub.s fd, fs1, fs2, fs3, rm`
     FMSUBS,
+    /// RISC-V `fmul.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmul.d xd, xs1, xs2, rm`
     FMULD,
+    /// RISC-V `fmul.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmul.h xd, xs1, xs2, rm`
     FMULH,
+    /// RISC-V `fmul.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmul.q qd, qs1, qs2, rm`
     FMULQ,
+    /// RISC-V `fmul.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmul.s fd, fs1, fs2, rm`
     FMULS,
-    /// Syntax: `fmv.d rd rs1 rs2_eq_rs1`
+    /// RISC-V `fmv.d` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fmv.d rd rs1 rs2_eq_rs1`
     FMVD,
+    /// RISC-V `fmv.d.x` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmv.d.x xd, xs1`
     FMVDX,
-    /// Syntax: `fmv.h rd rs1 rs2_eq_rs1`
+    /// RISC-V `fmv.h` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fmv.h rd rs1 rs2_eq_rs1`
     FMVH,
     /// Half-precision floating-point move from integer
     ///
@@ -12621,13 +14407,23 @@ pub enum Opcode {
     /// register `fd`. The bits are not modified in the transfer, and in particular,
     /// the payloads of non-canonical NaNs are preserved.
     ///
+    /// # Forms
     /// Assembly: `fmv.h.x fd, xs1`
     FMVHX,
-    /// Syntax: `fmv.q rd rs1 rs2_eq_rs1`
+    /// RISC-V `fmv.q` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fmv.q rd rs1 rs2_eq_rs1`
     FMVQ,
-    /// Syntax: `fmv.s rd rs1 rs2_eq_rs1`
+    /// RISC-V `fmv.s` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fmv.s rd rs1 rs2_eq_rs1`
     FMVS,
-    /// Syntax: `fmv.s.x rd rs1`
+    /// RISC-V `fmv.s.x` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fmv.s.x rd rs1`
     FMVSX,
     /// Single-precision floating-point move from integer
     ///
@@ -12636,8 +14432,12 @@ pub enum Opcode {
     /// register `fd`. The bits are not modified in the transfer, and in particular,
     /// the payloads of non-canonical NaNs are preserved.
     ///
+    /// # Forms
     /// Assembly: `fmv.w.x fd, xs1`
     FMVWX,
+    /// RISC-V `fmv.x.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmv.x.d xd, xs1`
     FMVXD,
     /// Move half-precision value from floating-point to integer register
@@ -12651,9 +14451,13 @@ pub enum Opcode {
     /// The highest XLEN-16 bits of the destination register are filled with copies of the
     /// floating-point number's sign bit.
     ///
+    /// # Forms
     /// Assembly: `fmv.x.h rd, fs1`
     FMVXH,
-    /// Syntax: `fmv.x.s rd rs1`
+    /// RISC-V `fmv.x.s` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fmv.x.s rd rs1`
     FMVXS,
     /// Move single-precision value from floating-point to integer register
     ///
@@ -12664,74 +14468,177 @@ pub enum Opcode {
     /// For RV64, the higher 32 bits of the destination register are filled with copies of the
     /// floating-point number's sign bit.
     ///
+    /// # Forms
     /// Assembly: `fmv.x.w xd, fs1`
     FMVXW,
+    /// RISC-V `fmvh.x.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmvh.x.d xd, xs1`
     FMVHXD,
+    /// RISC-V `fmvh.x.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmvh.x.q xd, qs1`
     FMVHXQ,
+    /// RISC-V `fmvp.d.x` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmvp.d.x xd, xs1, xs2`
     FMVPDX,
+    /// RISC-V `fmvp.q.x` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fmvp.q.x qd, xs1, xs2`
     FMVPQX,
-    /// Syntax: `fneg.d rd rs1 rs2_eq_rs1`
+    /// RISC-V `fneg.d` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fneg.d rd rs1 rs2_eq_rs1`
     FNEGD,
-    /// Syntax: `fneg.h rd rs1 rs2_eq_rs1`
+    /// RISC-V `fneg.h` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fneg.h rd rs1 rs2_eq_rs1`
     FNEGH,
-    /// Syntax: `fneg.q rd rs1 rs2_eq_rs1`
+    /// RISC-V `fneg.q` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fneg.q rd rs1 rs2_eq_rs1`
     FNEGQ,
-    /// Syntax: `fneg.s rd rs1 rs2_eq_rs1`
+    /// RISC-V `fneg.s` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fneg.s rd rs1 rs2_eq_rs1`
     FNEGS,
+    /// RISC-V `fnmadd.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fnmadd.d xd, xs1, xs2, xs3, rm`
     FNMADDD,
+    /// RISC-V `fnmadd.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fnmadd.h xd, xs1, xs2, xs3, rm`
     FNMADDH,
+    /// RISC-V `fnmadd.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fnmadd.q qd, qs1, qs2, qs3, rm`
     FNMADDQ,
+    /// RISC-V `fnmadd.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fnmadd.s fd, fs1, fs2, fs3, rm`
     FNMADDS,
+    /// RISC-V `fnmsub.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fnmsub.d xd, xs1, xs2, xs3, rm`
     FNMSUBD,
+    /// RISC-V `fnmsub.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fnmsub.h xd, xs1, xs2, xs3, rm`
     FNMSUBH,
+    /// RISC-V `fnmsub.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fnmsub.q qd, qs1, qs2, qs3, rm`
     FNMSUBQ,
+    /// RISC-V `fnmsub.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fnmsub.s xd, xs1, xs2, xs3, rm`
     FNMSUBS,
-    /// Syntax: `frcsr rd`
+    /// RISC-V `frcsr` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `frcsr rd`
     FRCSR,
-    /// Syntax: `frflags rd`
+    /// RISC-V `frflags` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `frflags rd`
     FRFLAGS,
+    /// RISC-V `fround.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fround.d xd, xs1, rm`
     FROUNDD,
+    /// RISC-V `fround.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fround.h xd, xs1, rm`
     FROUNDH,
+    /// RISC-V `fround.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fround.q qd, qs1, rm`
     FROUNDQ,
+    /// RISC-V `fround.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fround.s fd, xs1, rm`
     FROUNDS,
+    /// RISC-V `froundnx.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `froundnx.d xd, xs1, rm`
     FROUNDNXD,
+    /// RISC-V `froundnx.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `froundnx.h xd, xs1, rm`
     FROUNDNXH,
+    /// RISC-V `froundnx.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `froundnx.q qd, qs1, rm`
     FROUNDNXQ,
+    /// RISC-V `froundnx.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `froundnx.s fd, rs1, rm`
     FROUNDNXS,
-    /// Syntax: `frrm rd`
+    /// RISC-V `frrm` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `frrm rd`
     FRRM,
-    /// Syntax: `fscsr rd rs1`
+    /// RISC-V `fscsr` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fscsr rd rs1`
     FSCSR,
+    /// RISC-V `fsd` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsd xs1, xs2, imm`
     FSD,
-    /// Syntax: `fsflags rd rs1`
+    /// RISC-V `fsflags` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fsflags rd rs1`
     FSFLAGS,
-    /// Syntax: `fsflagsi rd zimm5`
+    /// RISC-V `fsflagsi` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fsflagsi rd zimm5`
     FSFLAGSI,
+    /// RISC-V `fsgnj.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsgnj.d xd, xs1, xs2`
     FSGNJD,
+    /// RISC-V `fsgnj.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsgnj.h xd, xs1, xs2`
     FSGNJH,
+    /// RISC-V `fsgnj.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsgnj.q qd, qs1, qs2`
     FSGNJQ,
     /// Single-precision sign inject
@@ -12740,12 +14647,22 @@ pub enum Opcode {
     ///
     /// Sign-injection instructions do not set floating-point exception flags, nor do they canonicalize NaNs.
     ///
+    /// # Forms
     /// Assembly: `fsgnj.s fd, fs1, fs2`
     FSGNJS,
+    /// RISC-V `fsgnjn.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsgnjn.d xd, xs1, xs2`
     FSGNJND,
+    /// RISC-V `fsgnjn.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsgnjn.h xd, xs1, xs2`
     FSGNJNH,
+    /// RISC-V `fsgnjn.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsgnjn.q qd, qs1, qs2`
     FSGNJNQ,
     /// Single-precision sign inject negate
@@ -12754,12 +14671,22 @@ pub enum Opcode {
     ///
     /// Sign-injection instructions do not set floating-point exception flags, nor do they canonicalize NaNs.
     ///
+    /// # Forms
     /// Assembly: `fsgnjn.s fd, fs1, fs2`
     FSGNJNS,
+    /// RISC-V `fsgnjx.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsgnjx.d xd, xs1, xs2`
     FSGNJXD,
+    /// RISC-V `fsgnjx.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsgnjx.h xd, xs1, xs2`
     FSGNJXH,
+    /// RISC-V `fsgnjx.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsgnjx.q qd, qs1, qs2`
     FSGNJXQ,
     /// Single-precision sign inject exclusive or
@@ -12768,6 +14695,7 @@ pub enum Opcode {
     ///
     /// Sign-injection instructions do not set floating-point exception flags, nor do they canonicalize NaNs.
     ///
+    /// # Forms
     /// Assembly: `fsgnjx.s fd, fs1, fs2`
     FSGNJXS,
     /// Half-precision floating-point store
@@ -12781,26 +14709,57 @@ pub enum Opcode {
     ///
     /// `fsh` is only guaranteed to execute atomically if the effective address is naturally aligned.
     ///
+    /// # Forms
     /// Assembly: `fsh fs2, imm(xs1)`
     FSH,
+    /// RISC-V `fsq` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsq xs1, qs2, imm`
     FSQ,
+    /// RISC-V `fsqrt.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsqrt.d xd, xs1, rm`
     FSQRTD,
+    /// RISC-V `fsqrt.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsqrt.h xd, xs1, rm`
     FSQRTH,
+    /// RISC-V `fsqrt.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsqrt.q qd, qs1, rm`
     FSQRTQ,
+    /// RISC-V `fsqrt.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsqrt.s fd, fs1, rm`
     FSQRTS,
-    /// Syntax: `fsrm rd rs1`
+    /// RISC-V `fsrm` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fsrm rd rs1`
     FSRM,
-    /// Syntax: `fsrmi rd zimm5`
+    /// RISC-V `fsrmi` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `fsrmi rd zimm5`
     FSRMI,
+    /// RISC-V `fsub.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsub.d xd, xs1, xs2, rm`
     FSUBD,
+    /// RISC-V `fsub.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsub.h xd, xs1, xs2, rm`
     FSUBH,
+    /// RISC-V `fsub.q` instruction.
+    ///
+    /// # Forms
     /// Assembly: `fsub.q qd, qs1, qs2, rm`
     FSUBQ,
     /// Single-precision floating-point subtraction
@@ -12808,6 +14767,7 @@ pub enum Opcode {
     /// Do the single-precision floating-point subtraction of fs2 from fs1 and store the result in fd.
     /// rm is the dynamic Rounding Mode.
     ///
+    /// # Forms
     /// Assembly: `fsub.s fd, fs1, fs2, rm`
     FSUBS,
     /// Single-precision floating-point store
@@ -12816,10 +14776,17 @@ pub enum Opcode {
     ///
     /// `fsw` does not modify the bits being transferred; in particular, the payloads of non-canonical NaNs are preserved.
     ///
+    /// # Forms
     /// Assembly: `fsw fs2, xs1, imm`
     FSW,
+    /// RISC-V `hfence.gvma` instruction.
+    ///
+    /// # Forms
     /// Assembly: `hfence.gvma xs1, xs2`
     HFENCEGVMA,
+    /// RISC-V `hfence.vvma` instruction.
+    ///
+    /// # Forms
     /// Assembly: `hfence.vvma xs1, xs2`
     HFENCEVVMA,
     /// Invalidate cached address translations
@@ -12827,6 +14794,7 @@ pub enum Opcode {
     /// `hinval.gvma` has the same semantics as `sinval.vma` except that it combines with
     /// `sfence.w.inval` and `sfence.inval.ir` to replace `hfence.gvma` and uses VMID instead of ASID.
     ///
+    /// # Forms
     /// Assembly: `hinval.gvma xs1, xs2`
     HINVALGVMA,
     /// Invalidate cached address translations
@@ -12834,44 +14802,91 @@ pub enum Opcode {
     /// `hinval.vvma` has the same semantics as `sinval.vma` except that it combines with
     /// `sfence.w.inval` and `sfence.inval.ir` to replace `hfence.vvma`.
     ///
+    /// # Forms
     /// Assembly: `hinval.vvma xs1, xs2`
     HINVALVVMA,
+    /// RISC-V `hlv.b` instruction.
+    ///
+    /// # Forms
     /// Assembly: `hlv.b xd, xs1`
     HLVB,
+    /// RISC-V `hlv.bu` instruction.
+    ///
+    /// # Forms
     /// Assembly: `hlv.bu xd, xs1`
     HLVBU,
+    /// RISC-V `hlv.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `hlv.d xd, xs1`
     HLVD,
+    /// RISC-V `hlv.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `hlv.h xd, xs1`
     HLVH,
+    /// RISC-V `hlv.hu` instruction.
+    ///
+    /// # Forms
     /// Assembly: `hlv.hu xd, xs1`
     HLVHU,
+    /// RISC-V `hlv.w` instruction.
+    ///
+    /// # Forms
     /// Assembly: `hlv.w xd, xs1`
     HLVW,
+    /// RISC-V `hlv.wu` instruction.
+    ///
+    /// # Forms
     /// Assembly: `hlv.wu xd, xs1`
     HLVWU,
+    /// RISC-V `hlvx.hu` instruction.
+    ///
+    /// # Forms
     /// Assembly: `hlvx.hu xd, xs1`
     HLVXHU,
+    /// RISC-V `hlvx.wu` instruction.
+    ///
+    /// # Forms
     /// Assembly: `hlvx.wu xd, xs1`
     HLVXWU,
+    /// RISC-V `hsv.b` instruction.
+    ///
+    /// # Forms
     /// Assembly: `hsv.b xs1, xs2`
     HSVB,
+    /// RISC-V `hsv.d` instruction.
+    ///
+    /// # Forms
     /// Assembly: `hsv.d xs1, xs2`
     HSVD,
+    /// RISC-V `hsv.h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `hsv.h xs1, xs2`
     HSVH,
+    /// RISC-V `hsv.w` instruction.
+    ///
+    /// # Forms
     /// Assembly: `hsv.w xs1, xs2`
     HSVW,
-    /// Syntax: `j jimm20`
+    /// RISC-V `j` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `j jimm20`
     J,
     /// Jump and link
     ///
     /// Jump to a PC-relative offset and store the return
     /// address in rd.
     ///
+    /// # Forms
     /// Assembly: `jal xd, imm`
     JAL,
-    /// Syntax: `jal.pseudo jimm20`
+    /// RISC-V `jal.pseudo` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `jal.pseudo jimm20`
     JALPSEUDO,
     /// Jump and link register
     ///
@@ -12880,11 +14895,18 @@ pub enum Opcode {
     /// significant bit, and store the return address
     /// in rd.
     ///
+    /// # Forms
     /// Assembly: `jalr xd, imm(rs1)`
     JALR,
-    /// Syntax: `jalr.pseudo rs1`
+    /// RISC-V `jalr.pseudo` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `jalr.pseudo rs1`
     JALRPSEUDO,
-    /// Syntax: `jr rs1`
+    /// RISC-V `jr` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `jr rs1`
     JR,
     /// Load byte
     ///
@@ -12892,6 +14914,7 @@ pub enum Opcode {
     /// address formed by adding `rs1` to a signed offset.
     /// Sign extend the result.
     ///
+    /// # Forms
     /// Assembly: `lb xd, imm(rs1)`
     LB,
     /// Load byte unsigned
@@ -12900,6 +14923,7 @@ pub enum Opcode {
     /// address formed by adding `rs1` to a signed offset.
     /// Zero extend the result.
     ///
+    /// # Forms
     /// Assembly: `lbu xd, imm(rs1)`
     LBU,
     /// Load doubleword
@@ -12907,6 +14931,7 @@ pub enum Opcode {
     /// Load 64 bits of data into register `rd` from an
     /// address formed by adding `rs1` to a signed offset.
     ///
+    /// # Forms
     /// Assembly: `ld xd, imm(rs1)`
     LD,
     /// Load halfword
@@ -12915,6 +14940,7 @@ pub enum Opcode {
     /// address formed by adding `rs1` to a signed offset.
     /// Sign extend the result.
     ///
+    /// # Forms
     /// Assembly: `lh xd, imm(rs1)`
     LH,
     /// Load halfword unsigned
@@ -12923,8 +14949,14 @@ pub enum Opcode {
     /// address formed by adding `rs1` to a signed offset.
     /// Zero extend the result.
     ///
+    /// # Forms
     /// Assembly: `lhu xd, imm(rs1)`
     LHU,
+    /// RISC-V `lpad` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `lpad imm`
+    LPAD,
     /// Load reserved doubleword
     ///
     /// Loads a word from the address in rs1, places the value in rd,
@@ -12949,7 +14981,7 @@ pub enum Opcode {
     /// might have had a different effective address and data size, but reserved the SC's
     /// address as part of the reservation set.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// ----
     /// Following this model, in systems with memory translation, an SC is allowed to succeed if the
     /// earlier LR reserved the same location using an alias with a different virtual address, but is
@@ -12965,6 +14997,7 @@ pub enum Opcode {
     /// LR.rl and SC.aq instructions are not guaranteed to provide any stronger ordering than those
     /// with both bits clear, but may result in lower performance.
     ///
+    /// # Forms
     /// Assembly: `lr.d xd, xs1`
     LRD,
     /// Load reserved word
@@ -12973,9 +15006,9 @@ pub enum Opcode {
     /// and registers a _reservation set_  -- a set of bytes that subsumes the bytes in the
     /// addressed word.
     ///
-    /// <%- if XLEN == 64 -%>
+    /// &lt;%- if XLEN == 64 -%&gt;
     /// The 32-bit load result is sign-extended to 64-bits.
-    /// <%- end -%>
+    /// &lt;%- end -%&gt;
     ///
     /// The address in rs1 must be naturally aligned to the size of the operand
     /// (_i.e._, eight-byte aligned for doublewords and four-byte aligned for words).
@@ -12996,7 +15029,7 @@ pub enum Opcode {
     /// might have had a different effective address and data size, but reserved the SC's
     /// address as part of the reservation set.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// ----
     /// Following this model, in systems with memory translation, an SC is allowed to succeed if the
     /// earlier LR reserved the same location using an alias with a different virtual address, but is
@@ -13012,12 +15045,14 @@ pub enum Opcode {
     /// LR.rl and SC.aq instructions are not guaranteed to provide any stronger ordering than those
     /// with both bits clear, but may result in lower performance.
     ///
+    /// # Forms
     /// Assembly: `lr.w xd, xs1`
     LRW,
     /// Load upper immediate
     ///
     /// Load the zero-extended imm into rd.
     ///
+    /// # Forms
     /// Assembly: `lui xd, imm`
     LUI,
     /// Load word
@@ -13026,6 +15061,7 @@ pub enum Opcode {
     /// address formed by adding `rs1` to a signed offset.
     /// Sign extend the result.
     ///
+    /// # Forms
     /// Assembly: `lw xd, imm(rs1)`
     LW,
     /// Load word unsigned
@@ -13034,6 +15070,7 @@ pub enum Opcode {
     /// address formed by adding `rs1` to a signed offset.
     /// Zero extend the result.
     ///
+    /// # Forms
     /// Assembly: `lwu xd, imm(rs1)`
     LWU,
     /// Maximum
@@ -13041,123 +15078,257 @@ pub enum Opcode {
     /// This instruction returns the larger of two signed integers.
     ///
     /// .Software Hint
-    /// [NOTE]
+    /// \[NOTE\]
     /// Calculating the absolute value of a signed integer can be performed using the
     /// following sequence: `neg rD,rS` followed by `max rD,rS,rD. When using this
     /// common sequence, it is suggested that they are scheduled with no intervening
     /// instructions so that implementations that are so optimized can fuse them
     /// together.
     ///
+    /// # Forms
     /// Assembly: `max xd, xs1, xs2`
     MAX,
     /// Unsigned maximum
     ///
     /// This instruction returns the larger of two unsigned integers.
     ///
+    /// # Forms
     /// Assembly: `maxu xd, xs1, xs2`
     MAXU,
     /// Minimum
     ///
     /// This instruction returns the smaller of two signed integers.
     ///
+    /// # Forms
     /// Assembly: `min xd, xs1, xs2`
     MIN,
     /// Unsigned minimum
     ///
     /// This instruction returns the smaller of two unsigned integers.
     ///
+    /// # Forms
     /// Assembly: `minu xd, xs1, xs2`
     MINU,
+    /// RISC-V `mnret` instruction.
+    ///
+    /// # Forms
     /// Assembly: `mnret mnret`
     MNRET,
-    /// Syntax: `mop.r.0 rd rs1`
+    /// RISC-V `mop.r.0` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.0 rd rs1`
     MOPR0,
-    /// Syntax: `mop.r.1 rd rs1`
+    /// RISC-V `mop.r.1` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.1 rd rs1`
     MOPR1,
-    /// Syntax: `mop.r.10 rd rs1`
+    /// RISC-V `mop.r.10` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.10 rd rs1`
     MOPR10,
-    /// Syntax: `mop.r.11 rd rs1`
+    /// RISC-V `mop.r.11` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.11 rd rs1`
     MOPR11,
-    /// Syntax: `mop.r.12 rd rs1`
+    /// RISC-V `mop.r.12` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.12 rd rs1`
     MOPR12,
-    /// Syntax: `mop.r.13 rd rs1`
+    /// RISC-V `mop.r.13` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.13 rd rs1`
     MOPR13,
-    /// Syntax: `mop.r.14 rd rs1`
+    /// RISC-V `mop.r.14` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.14 rd rs1`
     MOPR14,
-    /// Syntax: `mop.r.15 rd rs1`
+    /// RISC-V `mop.r.15` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.15 rd rs1`
     MOPR15,
-    /// Syntax: `mop.r.16 rd rs1`
+    /// RISC-V `mop.r.16` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.16 rd rs1`
     MOPR16,
-    /// Syntax: `mop.r.17 rd rs1`
+    /// RISC-V `mop.r.17` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.17 rd rs1`
     MOPR17,
-    /// Syntax: `mop.r.18 rd rs1`
+    /// RISC-V `mop.r.18` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.18 rd rs1`
     MOPR18,
-    /// Syntax: `mop.r.19 rd rs1`
+    /// RISC-V `mop.r.19` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.19 rd rs1`
     MOPR19,
-    /// Syntax: `mop.r.2 rd rs1`
+    /// RISC-V `mop.r.2` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.2 rd rs1`
     MOPR2,
-    /// Syntax: `mop.r.20 rd rs1`
+    /// RISC-V `mop.r.20` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.20 rd rs1`
     MOPR20,
-    /// Syntax: `mop.r.21 rd rs1`
+    /// RISC-V `mop.r.21` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.21 rd rs1`
     MOPR21,
-    /// Syntax: `mop.r.22 rd rs1`
+    /// RISC-V `mop.r.22` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.22 rd rs1`
     MOPR22,
-    /// Syntax: `mop.r.23 rd rs1`
+    /// RISC-V `mop.r.23` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.23 rd rs1`
     MOPR23,
-    /// Syntax: `mop.r.24 rd rs1`
+    /// RISC-V `mop.r.24` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.24 rd rs1`
     MOPR24,
-    /// Syntax: `mop.r.25 rd rs1`
+    /// RISC-V `mop.r.25` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.25 rd rs1`
     MOPR25,
-    /// Syntax: `mop.r.26 rd rs1`
+    /// RISC-V `mop.r.26` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.26 rd rs1`
     MOPR26,
-    /// Syntax: `mop.r.27 rd rs1`
+    /// RISC-V `mop.r.27` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.27 rd rs1`
     MOPR27,
-    /// Syntax: `mop.r.28 rd rs1`
+    /// RISC-V `mop.r.28` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.28 rd rs1`
     MOPR28,
-    /// Syntax: `mop.r.29 rd rs1`
+    /// RISC-V `mop.r.29` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.29 rd rs1`
     MOPR29,
-    /// Syntax: `mop.r.3 rd rs1`
+    /// RISC-V `mop.r.3` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.3 rd rs1`
     MOPR3,
-    /// Syntax: `mop.r.30 rd rs1`
+    /// RISC-V `mop.r.30` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.30 rd rs1`
     MOPR30,
-    /// Syntax: `mop.r.31 rd rs1`
+    /// RISC-V `mop.r.31` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.31 rd rs1`
     MOPR31,
-    /// Syntax: `mop.r.4 rd rs1`
+    /// RISC-V `mop.r.4` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.4 rd rs1`
     MOPR4,
-    /// Syntax: `mop.r.5 rd rs1`
+    /// RISC-V `mop.r.5` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.5 rd rs1`
     MOPR5,
-    /// Syntax: `mop.r.6 rd rs1`
+    /// RISC-V `mop.r.6` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.6 rd rs1`
     MOPR6,
-    /// Syntax: `mop.r.7 rd rs1`
+    /// RISC-V `mop.r.7` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.7 rd rs1`
     MOPR7,
-    /// Syntax: `mop.r.8 rd rs1`
+    /// RISC-V `mop.r.8` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.8 rd rs1`
     MOPR8,
-    /// Syntax: `mop.r.9 rd rs1`
+    /// RISC-V `mop.r.9` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.r.9 rd rs1`
     MOPR9,
+    /// RISC-V `mop.r.n` instruction.
+    ///
+    /// # Forms
     /// Assembly: `mop.r.n mop_r_t_30, mop_r_t_27_26, mop_r_t_21_20, xd, xs1`
     MOPRN,
-    /// Syntax: `mop.rr.0 rd rs1 rs2`
+    /// RISC-V `mop.rr.0` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.rr.0 rd rs1 rs2`
     MOPRR0,
-    /// Syntax: `mop.rr.1 rd rs1 rs2`
+    /// RISC-V `mop.rr.1` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.rr.1 rd rs1 rs2`
     MOPRR1,
-    /// Syntax: `mop.rr.2 rd rs1 rs2`
+    /// RISC-V `mop.rr.2` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.rr.2 rd rs1 rs2`
     MOPRR2,
-    /// Syntax: `mop.rr.3 rd rs1 rs2`
+    /// RISC-V `mop.rr.3` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.rr.3 rd rs1 rs2`
     MOPRR3,
-    /// Syntax: `mop.rr.4 rd rs1 rs2`
+    /// RISC-V `mop.rr.4` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.rr.4 rd rs1 rs2`
     MOPRR4,
-    /// Syntax: `mop.rr.5 rd rs1 rs2`
+    /// RISC-V `mop.rr.5` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.rr.5 rd rs1 rs2`
     MOPRR5,
-    /// Syntax: `mop.rr.6 rd rs1 rs2`
+    /// RISC-V `mop.rr.6` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.rr.6 rd rs1 rs2`
     MOPRR6,
-    /// Syntax: `mop.rr.7 rd rs1 rs2`
+    /// RISC-V `mop.rr.7` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mop.rr.7 rd rs1 rs2`
     MOPRR7,
+    /// RISC-V `mop.rr.n` instruction.
+    ///
+    /// # Forms
     /// Assembly: `mop.rr.n mop_rr_t_30, mop_rr_t_27_26, xd, xs1, xs2`
     MOPRRN,
     /// Machine Exception Return
     ///
     /// Returns from an exception in M-mode.
     ///
+    /// # Forms
     /// Assembly: `mret ""`
     MRET,
     /// Signed multiply
@@ -13166,14 +15337,15 @@ pub enum Opcode {
     /// XLEN bits in the destination register.
     /// Any overflow is thrown away.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// If both the high and low bits of the same product are required, then the recommended code
     /// sequence is:
-    /// MULH[[S]U] rdh, rs1, rs2; MUL rdl, rs1, rs2
+    /// MULH\[\[S\]U\] rdh, rs1, rs2; MUL rdl, rs1, rs2
     /// (source register specifiers must be in same order and rdh cannot be the same as rs1 or rs2).
     /// Microarchitectures can then fuse these into a single multiply operation instead of
     /// performing two separate multiplies.
     ///
+    /// # Forms
     /// Assembly: `mul xd, xs1, xs2`
     MUL,
     /// Signed multiply high
@@ -13190,6 +15362,7 @@ pub enum Opcode {
     ///
     /// Microarchitectures may look for that sequence and fuse the operations.
     ///
+    /// # Forms
     /// Assembly: `mulh xd, xs1, xs2`
     MULH,
     /// Signed/unsigned multiply high
@@ -13206,6 +15379,7 @@ pub enum Opcode {
     ///
     /// Microarchitectures may look for that sequence and fuse the operations.
     ///
+    /// # Forms
     /// Assembly: `mulhsu xd, xs1, xs2`
     MULHSU,
     /// Unsigned multiply high
@@ -13222,6 +15396,7 @@ pub enum Opcode {
     ///
     /// Microarchitectures may look for that sequence and fuse the operations.
     ///
+    /// # Forms
     /// Assembly: `mulhu xd, xs1, xs2`
     MULHU,
     /// Signed 32-bit multiply
@@ -13231,32 +15406,55 @@ pub enum Opcode {
     ///
     /// Any overflow is thrown away.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// In RV64, MUL can be used to obtain the upper 32 bits of the 64-bit product,
     /// but signed arguments must be proper 32-bit signed values, whereas unsigned arguments
     /// must have their upper 32 bits clear. If the arguments are not known to be sign- or zero-extended,
-    /// an alternative is to shift both arguments left by 32 bits, then use MULH[[S]U].
+    /// an alternative is to shift both arguments left by 32 bits, then use MULH\[\[S\]U\].
     ///
+    /// # Forms
     /// Assembly: `mulw xd, xs1, xs2`
     MULW,
-    /// Syntax: `mv rd rs1`
+    /// RISC-V `mv` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `mv rd rs1`
     MV,
-    /// Syntax: `neg rd rs1`
+    /// RISC-V `neg` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `neg rd rs1`
     NEG,
-    /// Syntax: `nop`
+    /// RISC-V `nop` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `nop`
     NOP,
-    /// Syntax: `ntl.all`
+    /// RISC-V `ntl.all` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `ntl.all`
     NTLALL,
-    /// Syntax: `ntl.p1`
+    /// RISC-V `ntl.p1` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `ntl.p1`
     NTLP1,
-    /// Syntax: `ntl.pall`
+    /// RISC-V `ntl.pall` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `ntl.pall`
     NTLPALL,
-    /// Syntax: `ntl.s1`
+    /// RISC-V `ntl.s1` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `ntl.s1`
     NTLS1,
     /// Or
     ///
     /// Or rs1 with rs2, and store the result in rd
     ///
+    /// # Forms
     /// Assembly: `or xd, xs1, xs2`
     OR,
     /// Bitware OR-combine, byte granule
@@ -13265,45 +15463,87 @@ pub enum Opcode {
     /// of each byte in the result rd to all zeros if no bit within the respective byte
     /// of rs is set, or to all ones if any bit within the respective byte of rs is set.
     ///
+    /// # Forms
     /// Assembly: `orc.b xd, xs1, xs2`
     ORCB,
     /// Or immediate
     ///
     /// Or an immediate to the value in rs1, and store the result in rd
     ///
+    /// # Forms
     /// Assembly: `ori xd, xs1, imm`
     ORI,
     /// OR with inverted operand
     ///
     /// This instruction performs the bitwise logical OR operation between rs1 and the bitwise inversion of rs2.
     ///
+    /// # Forms
     /// Assembly: `orn xd, xs1, xs2`
     ORN,
+    /// RISC-V `pack` instruction.
+    ///
+    /// # Forms
     /// Assembly: `pack xd, xs1, xs2`
     PACK,
+    /// RISC-V `packh` instruction.
+    ///
+    /// # Forms
     /// Assembly: `packh xd, xs1, xs2`
     PACKH,
+    /// RISC-V `packw` instruction.
+    ///
+    /// # Forms
     /// Assembly: `packw xd, xs1, xs2`
     PACKW,
-    /// Syntax: `pause`
+    /// RISC-V `pause` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `pause`
     PAUSE,
-    /// Syntax: `prefetch.i rs1 imm`
+    /// RISC-V `prefetch.i` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `prefetch.i rs1 imm12lohi`
     PREFETCHI,
-    /// Syntax: `prefetch.r rs1 imm`
+    /// RISC-V `prefetch.r` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `prefetch.r rs1 imm12lohi`
     PREFETCHR,
-    /// Syntax: `prefetch.w rs1 imm`
+    /// RISC-V `prefetch.w` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `prefetch.w rs1 imm12lohi`
     PREFETCHW,
-    /// Syntax: `rdcycle rd`
+    /// RISC-V `rdcycle` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `rdcycle rd`
     RDCYCLE,
-    /// Syntax: `rdcycleh rd`
+    /// RISC-V `rdcycleh` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `rdcycleh rd`
     RDCYCLEH,
-    /// Syntax: `rdinstret rd`
+    /// RISC-V `rdinstret` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `rdinstret rd`
     RDINSTRET,
-    /// Syntax: `rdinstreth rd`
+    /// RISC-V `rdinstreth` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `rdinstreth rd`
     RDINSTRETH,
-    /// Syntax: `rdtime rd`
+    /// RISC-V `rdtime` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `rdtime rd`
     RDTIME,
-    /// Syntax: `rdtimeh rd`
+    /// RISC-V `rdtimeh` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `rdtimeh rd`
     RDTIMEH,
     /// Signed remainder
     ///
@@ -13313,12 +15553,14 @@ pub enum Opcode {
     ///
     /// If the result of the division overflows, write zero into rd;
     ///
+    /// # Forms
     /// Assembly: `rem xd, xs1, xs2`
     REM,
     /// Unsigned remainder
     ///
     /// Calculate the remainder of unsigned division of rs1 by rs2, and store the result in rd.
     ///
+    /// # Forms
     /// Assembly: `remu xd, xs1, xs2`
     REMU,
     /// Unsigned 32-bit remainder
@@ -13328,6 +15570,7 @@ pub enum Opcode {
     ///
     /// If the value in rs2 is zero, rd gets the sign-extended value in rs1.
     ///
+    /// # Forms
     /// Assembly: `remuw xd, xs1, xs2`
     REMUW,
     /// Signed 32-bit remainder
@@ -13339,42 +15582,49 @@ pub enum Opcode {
     ///
     /// If the result of the division overflows, write zero into rd;
     ///
+    /// # Forms
     /// Assembly: `remw xd, xs1, xs2`
     REMW,
-    /// Syntax: `ret`
+    /// RISC-V `ret` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `ret`
     RET,
     /// Byte-reverse register (RV64 encoding)
     ///
     /// This instruction reverses the order of the bytes in rs1.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// The rev8 mnemonic corresponds to different instruction encodings in RV32 and RV64.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// The byte-reverse operation is only available for the full register width. To emulate word-sized
     /// and halfword-sized byte-reversal, perform a `rev8 rd,rs` followed by a `srai rd,rd,K`, where K
     /// is XLEN-32 and XLEN-16, respectively.
     ///
+    /// # Forms
     /// Assembly: `rev8 xd, xs1`
     REV8,
     /// Byte-reverse register (RV64 encoding)
     ///
     /// This instruction reverses the order of the bytes in rs1.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// The rev8 mnemonic corresponds to different instruction encodings in RV32 and RV64.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// The byte-reverse operation is only available for the full register width. To emulate word-sized
     /// and halfword-sized byte-reversal, perform a `rev8 rd,rs` followed by a `srai rd,rd,K`, where K
     /// is XLEN-32 and XLEN-16, respectively.
     ///
+    /// # Forms
     /// Assembly: `rev8.rv32 xd, xs1`
     REV8RV32,
     /// Rotate left (Register)
     ///
     /// This instruction performs a rotate left of rs1 by the amount in least-significant `log2(XLEN)` bits of rs2.
     ///
+    /// # Forms
     /// Assembly: `rol xd, xs1, xs2`
     ROL,
     /// Rotate left word (Register)
@@ -13382,26 +15632,30 @@ pub enum Opcode {
     /// This instruction performs a rotate left of the least-significant word of rs1 by the amount in least-significant 5 bits of rs2.
     /// The resulting word value is sign-extended by copying bit 31 to all of the more-significant bits.
     ///
+    /// # Forms
     /// Assembly: `rolw xd, xs1, xs2`
     ROLW,
     /// Rotate right (Register)
     ///
     /// This instruction performs a rotate right of rs1 by the amount in least-significant `log2(XLEN)` bits of rs2.
     ///
+    /// # Forms
     /// Assembly: `ror xd, xs1, xs2`
     ROR,
     /// Rotate right (Immediate)
     ///
     /// This instruction performs a rotate right of rs1 by the amount in the least-significant log2(XLEN) bits of shamt.
-    /// For RV32, the encodings corresponding to shamt[5]=1 are reserved.
+    /// For RV32, the encodings corresponding to shamt\[5\]=1 are reserved.
     ///
+    /// # Forms
     /// Assembly: `rori xd, xs1, shamt`
     RORI,
     /// Rotate right (Immediate)
     ///
     /// This instruction performs a rotate right of rs1 by the amount in the least-significant log2(XLEN) bits of shamt.
-    /// For RV32, the encodings corresponding to shamt[5]=1 are reserved.
+    /// For RV32, the encodings corresponding to shamt\[5\]=1 are reserved.
     ///
+    /// # Forms
     /// Assembly: `rori.rv32 xd, xs1, shamt`
     RORIRV32,
     /// Rotate right word (Immediate)
@@ -13410,6 +15664,7 @@ pub enum Opcode {
     /// the least-significant log2(XLEN) bits of shamt. The resulting word value is sign-extended by
     /// copying bit 31 to all of the more-significant bits.
     ///
+    /// # Forms
     /// Assembly: `roriw xd, xs1, shamt`
     RORIW,
     /// Rotate right word (Register)
@@ -13418,6 +15673,7 @@ pub enum Opcode {
     /// least-significant 5 bits of rs2. The resultant word is sign-extended by copying bit 31 to all
     /// of the more-significant bits.
     ///
+    /// # Forms
     /// Assembly: `rorw xd, xs1, xs2`
     RORW,
     /// Store byte
@@ -13425,9 +15681,13 @@ pub enum Opcode {
     /// Store 8 bits of data from register `rs2` to an
     /// address formed by adding `rs1` to a signed offset.
     ///
+    /// # Forms
     /// Assembly: `sb xs2, imm(xs1)`
     SB,
-    /// Syntax: `sbreak`
+    /// RISC-V `sbreak` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `sbreak`
     SBREAK,
     /// Store conditional doubleword
     ///
@@ -13452,7 +15712,7 @@ pub enum Opcode {
     /// be able to complete except for the misalignment,
     /// if the misaligned access should not be emulated.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// --
     /// Emulating misaligned LR/SC sequences is impractical in most systems.
     ///
@@ -13473,7 +15733,7 @@ pub enum Opcode {
     /// Note this LR might have had a different effective address and data size,
     /// but reserved the SC's address as part of the reservation set.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// ----
     /// Following this model, in systems with memory translation, an SC is allowed to succeed if the
     /// earlier LR reserved the same location using an alias with a different virtual address, but is
@@ -13498,7 +15758,7 @@ pub enum Opcode {
     /// The precise statement of the atomicity requirements for successful LR/SC sequences
     /// is defined by the Atomicity Axiom of the memory model.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// --
     /// The platform should provide a means to determine the size and shape of the reservation set.
     ///
@@ -13514,7 +15774,7 @@ pub enum Opcode {
     ///
     /// An SC instruction can never be observed by another RISC-V hart before the LR instruction that established the reservation.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// --
     /// The LR/SC sequence can be given acquire semantics by setting the aq bit on the LR instruction. The LR/SC sequence can be given release semantics by by setting the rl bit on the SC instruction. Assuming suitable mappings for other atomic operations, setting the aq bit on the LR instruction, and setting the rl bit on the SC instruction makes the LR/SC sequence sequentially consistent in the C++ memory_order_seq_cst sense. Such a sequence does not act as a fence for ordering ordinary load and store instructions before and after the sequence. Specific instruction mappings for other C++ atomic operations, or stronger notions of "sequential consistency", may require both bits to be set on either or both of the LR or SC instruction.
     ///
@@ -13525,6 +15785,7 @@ pub enum Opcode {
     /// LR.rl and SC.aq instructions are not guaranteed to provide any stronger ordering than those
     /// with both bits clear, but may result in lower performance.
     ///
+    /// # Forms
     /// Assembly: `sc.d xd, xs2, xs1`
     SCD,
     /// Store conditional word
@@ -13538,11 +15799,11 @@ pub enum Opcode {
     /// may be treated like a store. Regardless of success or failure, executing an
     /// `sc.w` instruction invalidates any reservation held by this hart.
     ///
-    /// <%- if XLEN == 64 -%>
-    /// [NOTE]
+    /// &lt;%- if XLEN == 64 -%&gt;
+    /// \[NOTE\]
     /// If a value other than 0 or 1 is defined as a result for `sc.w`, the value will before
     /// sign-extended into _rd_.
-    /// <%- end -%>
+    /// &lt;%- end -%&gt;
     ///
     /// The failure code with value 1 encodes an unspecified failure.
     /// Other failure codes are reserved at this time.
@@ -13556,7 +15817,7 @@ pub enum Opcode {
     /// be able to complete except for the misalignment,
     /// if the misaligned access should not be emulated.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// --
     /// Emulating misaligned LR/SC sequences is impractical in most systems.
     ///
@@ -13577,7 +15838,7 @@ pub enum Opcode {
     /// Note this LR might have had a different effective address and data size,
     /// but reserved the SC's address as part of the reservation set.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// ----
     /// Following this model, in systems with memory translation, an SC is allowed to succeed if the
     /// earlier LR reserved the same location using an alias with a different virtual address, but is
@@ -13602,7 +15863,7 @@ pub enum Opcode {
     /// The precise statement of the atomicity requirements for successful LR/SC sequences
     /// is defined by the Atomicity Axiom of the memory model.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// --
     /// The platform should provide a means to determine the size and shape of the reservation set.
     ///
@@ -13618,7 +15879,7 @@ pub enum Opcode {
     ///
     /// An SC instruction can never be observed by another RISC-V hart before the LR instruction that established the reservation.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// --
     /// The LR/SC sequence can be given acquire semantics by setting the aq bit on the LR instruction. The LR/SC sequence can be given release semantics by by setting the rl bit on the SC instruction. Assuming suitable mappings for other atomic operations, setting the aq bit on the LR instruction, and setting the rl bit on the SC instruction makes the LR/SC sequence sequentially consistent in the C++ memory_order_seq_cst sense. Such a sequence does not act as a fence for ordering ordinary load and store instructions before and after the sequence. Specific instruction mappings for other C++ atomic operations, or stronger notions of "sequential consistency", may require both bits to be set on either or both of the LR or SC instruction.
     ///
@@ -13629,10 +15890,17 @@ pub enum Opcode {
     /// LR.rl and SC.aq instructions are not guaranteed to provide any stronger ordering than those
     /// with both bits clear, but may result in lower performance.
     ///
+    /// # Forms
     /// Assembly: `sc.w xd, xs2, xs1`
     SCW,
-    /// Syntax: `scall`
+    /// RISC-V `scall` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `scall`
     SCALL,
+    /// RISC-V `sctrclr` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sctrclr sctrclr`
     SCTRCLR,
     /// Store doubleword
@@ -13640,15 +15908,20 @@ pub enum Opcode {
     /// Store 64 bits of data from register `rs2` to an
     /// address formed by adding `rs1` to a signed offset.
     ///
+    /// # Forms
     /// Assembly: `sd xs2, imm(xs1)`
     SD,
-    /// Syntax: `seqz rd rs1`
+    /// RISC-V `seqz` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `seqz rd rs1`
     SEQZ,
     /// Sign-extend byte
     ///
     /// This instruction sign-extends the least-significant byte in the source to XLEN by copying the
     /// most-significant bit in the byte (i.e., bit 7) to all of the more-significant bits.
     ///
+    /// # Forms
     /// Assembly: `sext.b xd, xs1`
     SEXTB,
     /// Sign-extend halfword
@@ -13656,9 +15929,13 @@ pub enum Opcode {
     /// This instruction sign-extends the least-significant halfword in the source to XLEN by copying the
     /// most-significant bit in the halfword (i.e., bit 15) to all of the more-significant bits.
     ///
+    /// # Forms
     /// Assembly: `sext.h xd, xs1`
     SEXTH,
-    /// Syntax: `sext.w rd rs1`
+    /// RISC-V `sext.w` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `sext.w rd rs1`
     SEXTW,
     /// Order implicit page table reads after invalidation
     ///
@@ -13666,6 +15943,7 @@ pub enum Opcode {
     /// instructions executed by the current hart are ordered before subsequent implicit references by
     /// that hart to the memory-management data structures.
     ///
+    /// # Forms
     /// Assembly: `sfence.inval.ir ""`
     SFENCEINVALIR,
     /// Supervisor memory-management fence
@@ -13681,9 +15959,9 @@ pub enum Opcode {
     /// memory-management data structures. The specific set of operations
     /// ordered by SFENCE.VMA is determined by _rs1_ and _rs2_, as described
     /// below. SFENCE.VMA is also used to invalidate entries in the
-    /// address-translation cache associated with a hart (see <<sv32algorithm>>). Further details on the behavior of this instruction are described in <<virt-control>> and <<pmp-vmem>>.
+    /// address-translation cache associated with a hart (see &lt;&lt;sv32algorithm&gt;&gt;). Further details on the behavior of this instruction are described in &lt;&lt;virt-control&gt;&gt; and &lt;&lt;pmp-vmem&gt;&gt;.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// ====
     /// The SFENCE.VMA is used to flush any local hardware caches related to
     /// address translation. It is specified as a fence rather than a TLB flush
@@ -13697,7 +15975,7 @@ pub enum Opcode {
     /// SFENCE.VMA orders only the local hart's implicit references to the
     /// memory-management data structures.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// ====
     /// Consequently, other harts must be notified separately when the
     /// memory-management data structures have been modified. One approach is to
@@ -13723,7 +16001,7 @@ pub enum Opcode {
     /// * If __rs1__=`x0` and __rs2__&#8800;``x0``, the fence orders all
     /// reads and writes made to any level of the page tables, but only for the
     /// address space identified by integer register _rs2_. Accesses to _global_
-    /// mappings (see <<translation>>) are not ordered. The
+    /// mappings (see &lt;&lt;translation&gt;&gt;) are not ordered. The
     /// fence also invalidates all address-translation cache entries matching
     /// the address space identified by integer register _rs2_, except for
     /// entries containing global mappings.
@@ -13750,10 +16028,10 @@ pub enum Opcode {
     /// in _rs2_ are reserved for future standard use. Until their use is
     /// defined by a standard extension, they should be zeroed by software and
     /// ignored by current implementations. Furthermore, if
-    /// ASIDLEN<ASIDMAX, the implementation shall ignore bits
+    /// ASIDLEN&lt;ASIDMAX, the implementation shall ignore bits
     /// ASIDMAX-1:ASIDLEN of the value held in _rs2_.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// ====
     /// It is always legal to over-fence, e.g., by fencing only based on a
     /// subset of the bits in _rs1_ and/or _rs2_, and/or by simply treating all
@@ -13778,7 +16056,7 @@ pub enum Opcode {
     /// otherwise obey normal program order semantics with respect to prior
     /// loads or stores to the same address.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// ====
     /// A consequence of this specification is that an implementation may use
     /// any translation for an address that was valid at any time since the most
@@ -13819,7 +16097,7 @@ pub enum Opcode {
     /// immediately, without the need to execute an SFENCE.VMA instruction.
     /// Likewise, changes to `satp`.ASID take effect immediately.
     ///
-    /// [TIP]
+    /// \[TIP\]
     /// ====
     /// The following common situations typically require executing an
     /// SFENCE.VMA instruction:
@@ -13858,7 +16136,7 @@ pub enum Opcode {
     /// local to a hart; software may choose to use the same ASID to refer to
     /// different address spaces on different harts.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// ====
     /// A future extension could redefine ASIDs to be global across the SEE,
     /// enabling such options as shared translation caches and hardware support
@@ -13872,6 +16150,7 @@ pub enum Opcode {
     /// attempts to execute an SFENCE.VMA instruction might raise an
     /// illegal-instruction exception.
     ///
+    /// # Forms
     /// Assembly: `sfence.vma xs1, xs2`
     SFENCEVMA,
     /// Order writes before sfence
@@ -13880,21 +16159,27 @@ pub enum Opcode {
     /// current RISC-V hart are ordered before subsequent `sinval.vma` instructions executed by the
     /// same hart.
     ///
+    /// # Forms
     /// Assembly: `sfence.w.inval ""`
     SFENCEWINVAL,
-    /// Syntax: `sgtz rd rs2`
+    /// RISC-V `sgtz` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `sgtz rd rs2`
     SGTZ,
     /// Store halfword
     ///
     /// Store 16 bits of data from register `rs2` to an
     /// address formed by adding `rs1` to a signed offset.
     ///
+    /// # Forms
     /// Assembly: `sh xs2, imm(xs1)`
     SH,
     /// Shift left by 1 and add
     ///
     /// This instruction shifts `rs1` to the left by 1 bit and adds it to `rs2`.
     ///
+    /// # Forms
     /// Assembly: `sh1add xd, xs1, xs2`
     SH1ADD,
     /// Shift unsigned word left by 1 and add
@@ -13903,12 +16188,14 @@ pub enum Opcode {
     /// The second addend is the unsigned value formed by extracting the least-significant word of rs1
     /// and shifting it left by 1 place.
     ///
+    /// # Forms
     /// Assembly: `sh1add.uw xd, xs1, xs2`
     SH1ADDUW,
     /// Shift left by 2 and add
     ///
     /// This instruction shifts `rs1` to the left by 2 places and adds it to `rs2`.
     ///
+    /// # Forms
     /// Assembly: `sh2add xd, xs1, xs2`
     SH2ADD,
     /// Shift unsigned word left by 2 and add
@@ -13917,12 +16204,14 @@ pub enum Opcode {
     /// The second addend is the unsigned value formed by extracting the least-significant word of rs1
     /// and shifting it left by 2 places.
     ///
+    /// # Forms
     /// Assembly: `sh2add.uw xd, xs1, xs2`
     SH2ADDUW,
     /// Shift left by 3 and add
     ///
     /// This instruction shifts `rs1` to the left by 3 places and adds it to `rs2`.
     ///
+    /// # Forms
     /// Assembly: `sh3add xd, xs1, xs2`
     SH3ADD,
     /// Shift unsigned word left by 3 and add
@@ -13931,56 +16220,103 @@ pub enum Opcode {
     /// The second addend is the unsigned value formed by extracting the least-significant word of rs1
     /// and shifting it left by 3 places.
     ///
+    /// # Forms
     /// Assembly: `sh3add.uw xd, xs1, xs2`
     SH3ADDUW,
+    /// RISC-V `sha256sig0` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sha256sig0 xd, xs1`
     SHA256SIG0,
+    /// RISC-V `sha256sig1` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sha256sig1 xd, xs1`
     SHA256SIG1,
+    /// RISC-V `sha256sum0` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sha256sum0 xd, xs1`
     SHA256SUM0,
+    /// RISC-V `sha256sum1` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sha256sum1 xd, xs1`
     SHA256SUM1,
+    /// RISC-V `sha512sig0` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sha512sig0 xd, xs1`
     SHA512SIG0,
+    /// RISC-V `sha512sig0h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sha512sig0h xd, xs1, xs2`
     SHA512SIG0H,
+    /// RISC-V `sha512sig0l` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sha512sig0l xd, xs1, xs2`
     SHA512SIG0L,
+    /// RISC-V `sha512sig1` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sha512sig1 xd, xs1`
     SHA512SIG1,
+    /// RISC-V `sha512sig1h` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sha512sig1h xd, xs1, xs2`
     SHA512SIG1H,
+    /// RISC-V `sha512sig1l` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sha512sig1l xd, xs1, xs2`
     SHA512SIG1L,
+    /// RISC-V `sha512sum0` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sha512sum0 xd, xs1`
     SHA512SUM0,
+    /// RISC-V `sha512sum0r` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sha512sum0r xd, xs1, xs2`
     SHA512SUM0R,
+    /// RISC-V `sha512sum1` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sha512sum1 xd, xs1`
     SHA512SUM1,
+    /// RISC-V `sha512sum1r` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sha512sum1r xd, xs1, xs2`
     SHA512SUM1R,
     /// Invalidate cached address translations
     ///
+    /// # Forms
     /// Assembly: `sinval.vma xs1, xs2`
     SINVALVMA,
     /// Shift left logical
     ///
     /// Shift the value in `rs1` left by the value in the lower 6 bits of `rs2`, and store the result in `rd`.
     ///
+    /// # Forms
     /// Assembly: `sll xd, xs1, xs2`
     SLL,
     /// Shift left logical immediate
     ///
     /// Shift the value in rs1 left by shamt, and store the result in rd
     ///
+    /// # Forms
     /// Assembly: `slli xd, xs1, shamt`
     SLLI,
     /// Shift left logical immediate
     ///
     /// Shift the value in rs1 left by shamt, and store the result in rd
     ///
+    /// # Forms
     /// Assembly: `slli.rv32 xd, xs1, shamt`
     SLLIRV32,
     /// Shift left unsigned word (Immediate)
@@ -13988,21 +16324,24 @@ pub enum Opcode {
     /// This instruction takes the least-significant word of rs1, zero-extends it, and shifts it
     /// left by the immediate.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// This instruction is the same as `slli` with `zext.w` performed on rs1 before shifting.
     ///
+    /// # Forms
     /// Assembly: `slli.uw xd, xs1, shamt`
     SLLIUW,
     /// Shift left logical immediate word
     ///
     /// Shift the 32-bit value in rs1 left by shamt, and store the sign-extended result in rd
     ///
+    /// # Forms
     /// Assembly: `slliw xd, xs1, shamt`
     SLLIW,
     /// Shift left logical word
     ///
     /// Shift the 32-bit value in `rs1` left by the value in the lower 5 bits of `rs2`, and store the sign-extended result in `rd`.
     ///
+    /// # Forms
     /// Assembly: `sllw xd, xs1, xs2`
     SLLW,
     /// Set on less than
@@ -14010,6 +16349,7 @@ pub enum Opcode {
     /// Places the value 1 in register `rd` if register `rs1` is less than the value in register `rs2`, where
     /// both sources are treated as signed numbers, else 0 is written to `rd`.
     ///
+    /// # Forms
     /// Assembly: `slt xd, xs1, rs2`
     SLT,
     /// Set on less than immediate
@@ -14017,6 +16357,7 @@ pub enum Opcode {
     /// Places the value 1 in register `rd` if register `rs1` is less than the sign-extended immediate
     /// when both are treated as signed numbers, else 0 is written to `rd`.
     ///
+    /// # Forms
     /// Assembly: `slti xd, xs1, imm`
     SLTI,
     /// Set on less than immediate unsigned
@@ -14028,6 +16369,7 @@ pub enum Opcode {
     /// NOTE: `sltiu rd, rs1, 1` sets `rd` to 1 if `rs1` equals zero, otherwise sets `rd` to 0
     /// (assembler pseudoinstruction `SEQZ rd, rs`).
     ///
+    /// # Forms
     /// Assembly: `sltiu xd, xs1, imm`
     SLTIU,
     /// Set on less than unsigned
@@ -14035,24 +16377,44 @@ pub enum Opcode {
     /// Places the value 1 in register `rd` if register `rs1` is less than the value in register `rs2`, where
     /// both sources are treated as unsigned numbers, else 0 is written to `rd`.
     ///
+    /// # Forms
     /// Assembly: `sltu xd, xs1, xs2`
     SLTU,
-    /// Syntax: `sltz rd rs1`
+    /// RISC-V `sltz` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `sltz rd rs1`
     SLTZ,
+    /// RISC-V `sm3p0` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sm3p0 xd, xs1`
     SM3P0,
+    /// RISC-V `sm3p1` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sm3p1 xd, xs1`
     SM3P1,
+    /// RISC-V `sm4ed` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sm4ed xd, xs1, xs2, bs`
     SM4ED,
+    /// RISC-V `sm4ks` instruction.
+    ///
+    /// # Forms
     /// Assembly: `sm4ks xd, xs1, xs2, bs`
     SM4KS,
-    /// Syntax: `snez rd rs2`
+    /// RISC-V `snez` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `snez rd rs2`
     SNEZ,
     /// Shift right arithmetic
     ///
     /// Arithmetic shift the value in `rs1` right by the value in the lower 5 bits of `rs2`, and store the result in `rd`.
     ///
+    /// # Forms
     /// Assembly: `sra xd, xs1, xs2`
     SRA,
     /// Shift right arithmetic immediate
@@ -14060,6 +16422,7 @@ pub enum Opcode {
     /// Arithmetic shift (the original sign bit is copied into the vacated upper bits) the
     /// value in rs1 right by shamt, and store the result in rd.
     ///
+    /// # Forms
     /// Assembly: `srai xd, xs1, shamt`
     SRAI,
     /// Shift right arithmetic immediate
@@ -14067,6 +16430,7 @@ pub enum Opcode {
     /// Arithmetic shift (the original sign bit is copied into the vacated upper bits) the
     /// value in rs1 right by shamt, and store the result in rd.
     ///
+    /// # Forms
     /// Assembly: `srai.rv32 xd, xs1, shamt`
     SRAIRV32,
     /// Shift right arithmetic immediate word
@@ -14074,12 +16438,14 @@ pub enum Opcode {
     /// Arithmetic shift (the original sign bit is copied into the vacated upper bits) the
     /// 32-bit value in rs1 right by shamt, and store the sign-extended result in rd.
     ///
+    /// # Forms
     /// Assembly: `sraiw xd, xs1, shamt`
     SRAIW,
     /// Shift right arithmetic word
     ///
     /// Arithmetic shift the 32-bit value in `rs1` right by the value in the lower 5 bits of `rs2`, and store the sign-extended result in `rd`.
     ///
+    /// # Forms
     /// Assembly: `sraw xd, xs1, xs2`
     SRAW,
     /// Supervisor Exception Return
@@ -14097,9 +16463,9 @@ pub enum Opcode {
     /// and then jumps to the address in `sepc`.
     ///
     /// .Next privilege mode following an `sret` in (H)S-mode or M-mode
-    /// [%autowidth]
+    /// \[%autowidth\]
     /// |===
-    /// | [.rotate]#`mstatus.SPP`# | [.rotate]#`hstatus.SPV`# .>| Mode after `sret`
+    /// | \[.rotate\]#`mstatus.SPP`# | \[.rotate\]#`hstatus.SPV`# .&gt;| Mode after `sret`
     ///
     /// | 0 | 0 | U-mode
     /// | 0 | 1 | VU-mode
@@ -14115,56 +16481,99 @@ pub enum Opcode {
     /// and then jumps to the address in `vsepc`.
     ///
     /// .Next privilege mode following an `sret` in (H)S-mode or M-mode
-    /// [%autowidth]
+    /// \[%autowidth\]
     /// |===
-    /// | [.rotate]#`vsstatus.SPP`# .>| Mode after `sret`
+    /// | \[.rotate\]#`vsstatus.SPP`# .&gt;| Mode after `sret`
     ///
     /// | 0 | VU-mode
     /// | 1 | VS-mode
     /// |===
     ///
+    /// # Forms
     /// Assembly: `sret ""`
     SRET,
     /// Shift right logical
     ///
     /// Logical shift the value in `rs1` right by the value in the lower bits of `rs2`, and store the result in `rd`.
     ///
+    /// # Forms
     /// Assembly: `srl xd, xs1, xs2`
     SRL,
     /// Shift right logical immediate
     ///
     /// Shift the value in rs1 right by shamt, and store the result in rd
     ///
+    /// # Forms
     /// Assembly: `srli xd, xs1, shamt`
     SRLI,
     /// Shift right logical immediate
     ///
     /// Shift the value in rs1 right by shamt, and store the result in rd
     ///
+    /// # Forms
     /// Assembly: `srli.rv32 xd, xs1, shamt`
     SRLIRV32,
     /// Shift right logical immediate word
     ///
     /// Shift the 32-bit value in rs1 right by shamt, and store the sign-extended result in rd
     ///
+    /// # Forms
     /// Assembly: `srliw xd, xs1, shamt`
     SRLIW,
     /// Shift right logical word
     ///
     /// Logical shift the 32-bit value in `rs1` right by the value in the lower 5 bits of `rs2`, and store the sign-extended result in `rd`.
     ///
+    /// # Forms
     /// Assembly: `srlw xd, xs1, xs2`
     SRLW,
+    /// RISC-V `ssamoswap.d` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `ssamoswap.d xd, xs1, xs2, aq, rl`
+    SSAMOSWAPD,
+    /// RISC-V `ssamoswap.w` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `ssamoswap.w xd, xs1, xs2, aq, rl`
+    SSAMOSWAPW,
+    /// RISC-V `sspopchk.x1` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `sspopchk.x1 sspopchk_x1`
+    SSPOPCHKX1,
+    /// RISC-V `sspopchk.x5` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `sspopchk.x5 sspopchk_x5`
+    SSPOPCHKX5,
+    /// RISC-V `sspush.x1` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `sspush.x1 sspush_x1`
+    SSPUSHX1,
+    /// RISC-V `sspush.x5` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `sspush.x5 sspush_x5`
+    SSPUSHX5,
+    /// RISC-V `ssrdp` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `ssrdp xd`
+    SSRDP,
     /// Subtract
     ///
     /// Subtract the value in rs2 from rs1, and store the result in rd
     ///
+    /// # Forms
     /// Assembly: `sub xd, xs1, xs2`
     SUB,
     /// Subtract word
     ///
     /// Subtract the 32-bit values in rs2 from rs1, and store the sign-extended result in rd
     ///
+    /// # Forms
     /// Assembly: `subw xd, xs1, xs2`
     SUBW,
     /// Store word
@@ -14172,6 +16581,7 @@ pub enum Opcode {
     /// Store 32 bits of data from register `rs2` to an
     /// address formed by adding `rs1` to a signed offset.
     ///
+    /// # Forms
     /// Assembly: `sw xs2, imm(xs1)`
     SW,
     /// Bit deinterleave
@@ -14180,883 +16590,2175 @@ pub enum Opcode {
     /// positions in the destination word. It is the inverse of the zip instruction. This instruction is
     /// available only on RV32.
     ///
+    /// # Forms
     /// Assembly: `unzip xd, xs1`
     UNZIP,
+    /// RISC-V `vaadd.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vaadd.vv vm, vs2, vs1, vd`
     VAADDVV,
+    /// RISC-V `vaadd.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vaadd.vx vm, vs2, xs1, vd`
     VAADDVX,
+    /// RISC-V `vaaddu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vaaddu.vv vm, vs2, vs1, vd`
     VAADDUVV,
+    /// RISC-V `vaaddu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vaaddu.vx vm, vs2, xs1, vd`
     VAADDUVX,
+    /// RISC-V `vadc.vim` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vadc.vim vs2, vd, imm`
     VADCVIM,
+    /// RISC-V `vadc.vvm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vadc.vvm vs2, vs1, vd`
     VADCVVM,
+    /// RISC-V `vadc.vxm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vadc.vxm vs2, xs1, vd`
     VADCVXM,
+    /// RISC-V `vadd.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vadd.vi vm, vs2, vd, imm`
     VADDVI,
+    /// RISC-V `vadd.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vadd.vv vm, vs2, vs1, vd`
     VADDVV,
+    /// RISC-V `vadd.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vadd.vx vm, vs2, xs1, vd`
     VADDVX,
+    /// RISC-V `vaesdf.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vaesdf.vs vs2, vd`
     VAESDFVS,
+    /// RISC-V `vaesdf.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vaesdf.vv vs2, vd`
     VAESDFVV,
+    /// RISC-V `vaesdm.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vaesdm.vs vs2, vd`
     VAESDMVS,
+    /// RISC-V `vaesdm.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vaesdm.vv vs2, vd`
     VAESDMVV,
+    /// RISC-V `vaesef.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vaesef.vs vs2, vd`
     VAESEFVS,
+    /// RISC-V `vaesef.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vaesef.vv vs2, vd`
     VAESEFVV,
+    /// RISC-V `vaesem.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vaesem.vs vs2, vd`
     VAESEMVS,
+    /// RISC-V `vaesem.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vaesem.vv vs2, vd`
     VAESEMVV,
+    /// RISC-V `vaeskf1.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vaeskf1.vi vs2, vd, imm`
     VAESKF1VI,
+    /// RISC-V `vaeskf2.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vaeskf2.vi vs2, vd, imm`
     VAESKF2VI,
     /// Vector AES round zero
     ///
+    /// # Forms
     /// Assembly: `vaesz.vs vs2, vd`
     VAESZVS,
+    /// RISC-V `vand.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vand.vi vm, vs2, vd, imm`
     VANDVI,
+    /// RISC-V `vand.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vand.vv vm, vs2, vs1, vd`
     VANDVV,
+    /// RISC-V `vand.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vand.vx vm, vs2, xs1, vd`
     VANDVX,
+    /// RISC-V `vandn.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vandn.vv vm, vs2, vs1, vd`
     VANDNVV,
+    /// RISC-V `vandn.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vandn.vx vm, vs2, xs1, vd`
     VANDNVX,
+    /// RISC-V `vasub.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vasub.vv vm, vs2, vs1, vd`
     VASUBVV,
+    /// RISC-V `vasub.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vasub.vx vm, vs2, xs1, vd`
     VASUBVX,
+    /// RISC-V `vasubu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vasubu.vv vm, vs2, vs1, vd`
     VASUBUVV,
+    /// RISC-V `vasubu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vasubu.vx vm, vs2, xs1, vd`
     VASUBUVX,
+    /// RISC-V `vbrev8.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vbrev8.v vm, vs2, vd`
     VBREV8V,
+    /// RISC-V `vbrev.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vbrev.v vm, vs2, vd`
     VBREVV,
+    /// RISC-V `vclmul.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vclmul.vv vm, vs2, vs1, vd`
     VCLMULVV,
+    /// RISC-V `vclmul.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vclmul.vx vm, vs2, xs1, vd`
     VCLMULVX,
+    /// RISC-V `vclmulh.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vclmulh.vv vm, vs2, vs1, vd`
     VCLMULHVV,
+    /// RISC-V `vclmulh.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vclmulh.vx vm, vs2, xs1, vd`
     VCLMULHVX,
+    /// RISC-V `vclz.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vclz.v vm, vs2, vd`
     VCLZV,
+    /// RISC-V `vcompress.vm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vcompress.vm vs2, vs1, vd`
     VCOMPRESSVM,
+    /// RISC-V `vcpop.m` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vcpop.m vm, vs2, xd`
     VCPOPM,
+    /// RISC-V `vcpop.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vcpop.v vm, vs2, vd`
     VCPOPV,
+    /// RISC-V `vctz.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vctz.v vm, vs2, vd`
     VCTZV,
+    /// RISC-V `vdiv.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vdiv.vv vm, vs2, vs1, vd`
     VDIVVV,
+    /// RISC-V `vdiv.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vdiv.vx vm, vs2, xs1, vd`
     VDIVVX,
+    /// RISC-V `vdivu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vdivu.vv vm, vs2, vs1, vd`
     VDIVUVV,
+    /// RISC-V `vdivu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vdivu.vx vm, vs2, xs1, vd`
     VDIVUVX,
+    /// RISC-V `vfadd.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfadd.vf vm, vs2, xs1, vd`
     VFADDVF,
+    /// RISC-V `vfadd.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfadd.vv vm, vs2, vs1, vd`
     VFADDVV,
+    /// RISC-V `vfclass.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfclass.v vm, vs2, vd`
     VFCLASSV,
+    /// RISC-V `vfcvt.f.x.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfcvt.f.x.v vm, vs2, vd`
     VFCVTFXV,
+    /// RISC-V `vfcvt.f.xu.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfcvt.f.xu.v vm, vs2, vd`
     VFCVTFXUV,
+    /// RISC-V `vfcvt.rtz.x.f.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfcvt.rtz.x.f.v vm, vs2, vd`
     VFCVTRTZXFV,
+    /// RISC-V `vfcvt.rtz.xu.f.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfcvt.rtz.xu.f.v vm, vs2, vd`
     VFCVTRTZXUFV,
+    /// RISC-V `vfcvt.x.f.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfcvt.x.f.v vm, vs2, vd`
     VFCVTXFV,
+    /// RISC-V `vfcvt.xu.f.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfcvt.xu.f.v vm, vs2, vd`
     VFCVTXUFV,
+    /// RISC-V `vfdiv.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfdiv.vf vm, vs2, xs1, vd`
     VFDIVVF,
+    /// RISC-V `vfdiv.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfdiv.vv vm, vs2, vs1, vd`
     VFDIVVV,
+    /// RISC-V `vfirst.m` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfirst.m vm, vs2, xd`
     VFIRSTM,
+    /// RISC-V `vfmacc.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmacc.vf vm, vs2, xs1, vd`
     VFMACCVF,
+    /// RISC-V `vfmacc.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmacc.vv vm, vs2, vs1, vd`
     VFMACCVV,
+    /// RISC-V `vfmadd.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmadd.vf vm, vs2, xs1, vd`
     VFMADDVF,
+    /// RISC-V `vfmadd.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmadd.vv vm, vs2, vs1, vd`
     VFMADDVV,
+    /// RISC-V `vfmax.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmax.vf vm, vs2, xs1, vd`
     VFMAXVF,
+    /// RISC-V `vfmax.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmax.vv vm, vs2, vs1, vd`
     VFMAXVV,
+    /// RISC-V `vfmerge.vfm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmerge.vfm vs2, xs1, vd`
     VFMERGEVFM,
+    /// RISC-V `vfmin.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmin.vf vm, vs2, xs1, vd`
     VFMINVF,
+    /// RISC-V `vfmin.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmin.vv vm, vs2, vs1, vd`
     VFMINVV,
+    /// RISC-V `vfmsac.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmsac.vf vm, vs2, xs1, vd`
     VFMSACVF,
+    /// RISC-V `vfmsac.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmsac.vv vm, vs2, vs1, vd`
     VFMSACVV,
+    /// RISC-V `vfmsub.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmsub.vf vm, vs2, xs1, vd`
     VFMSUBVF,
+    /// RISC-V `vfmsub.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmsub.vv vm, vs2, vs1, vd`
     VFMSUBVV,
+    /// RISC-V `vfmul.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmul.vf vm, vs2, xs1, vd`
     VFMULVF,
+    /// RISC-V `vfmul.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmul.vv vm, vs2, vs1, vd`
     VFMULVV,
+    /// RISC-V `vfmv.f.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmv.f.s vs2, xd`
     VFMVFS,
+    /// RISC-V `vfmv.s.f` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmv.s.f xs1, vd`
     VFMVSF,
+    /// RISC-V `vfmv.v.f` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfmv.v.f xs1, vd`
     VFMVVF,
+    /// RISC-V `vfncvt.f.f.w` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfncvt.f.f.w vm, vs2, vd`
     VFNCVTFFW,
+    /// RISC-V `vfncvt.f.x.w` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfncvt.f.x.w vm, vs2, vd`
     VFNCVTFXW,
+    /// RISC-V `vfncvt.f.xu.w` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfncvt.f.xu.w vm, vs2, vd`
     VFNCVTFXUW,
+    /// RISC-V `vfncvt.rod.f.f.w` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfncvt.rod.f.f.w vm, vs2, vd`
     VFNCVTRODFFW,
+    /// RISC-V `vfncvt.rtz.x.f.w` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfncvt.rtz.x.f.w vm, vs2, vd`
     VFNCVTRTZXFW,
+    /// RISC-V `vfncvt.rtz.xu.f.w` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfncvt.rtz.xu.f.w vm, vs2, vd`
     VFNCVTRTZXUFW,
+    /// RISC-V `vfncvt.x.f.w` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfncvt.x.f.w vm, vs2, vd`
     VFNCVTXFW,
+    /// RISC-V `vfncvt.xu.f.w` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfncvt.xu.f.w vm, vs2, vd`
     VFNCVTXUFW,
+    /// RISC-V `vfncvtbf16.f.f.w` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfncvtbf16.f.f.w vm, vs2, vd`
     VFNCVTBF16FFW,
+    /// RISC-V `vfnmacc.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfnmacc.vf vm, vs2, xs1, vd`
     VFNMACCVF,
+    /// RISC-V `vfnmacc.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfnmacc.vv vm, vs2, vs1, vd`
     VFNMACCVV,
+    /// RISC-V `vfnmadd.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfnmadd.vf vm, vs2, xs1, vd`
     VFNMADDVF,
+    /// RISC-V `vfnmadd.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfnmadd.vv vm, vs2, vs1, vd`
     VFNMADDVV,
+    /// RISC-V `vfnmsac.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfnmsac.vf vm, vs2, xs1, vd`
     VFNMSACVF,
+    /// RISC-V `vfnmsac.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfnmsac.vv vm, vs2, vs1, vd`
     VFNMSACVV,
+    /// RISC-V `vfnmsub.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfnmsub.vf vm, vs2, xs1, vd`
     VFNMSUBVF,
+    /// RISC-V `vfnmsub.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfnmsub.vv vm, vs2, vs1, vd`
     VFNMSUBVV,
+    /// RISC-V `vfrdiv.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfrdiv.vf vm, vs2, xs1, vd`
     VFRDIVVF,
+    /// RISC-V `vfrec7.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfrec7.v vm, vs2, vd`
     VFREC7V,
+    /// RISC-V `vfredmax.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfredmax.vs vm, vs2, vs1, vd`
     VFREDMAXVS,
+    /// RISC-V `vfredmin.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfredmin.vs vm, vs2, vs1, vd`
     VFREDMINVS,
+    /// RISC-V `vfredosum.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfredosum.vs vm, vs2, vs1, vd`
     VFREDOSUMVS,
-    /// Syntax: `vfredsum.vs vm vs2 vs1 vd`
+    /// RISC-V `vfredsum.vs` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `vfredsum.vs vd vs1 vs2 vm`
     VFREDSUMVS,
+    /// RISC-V `vfredusum.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfredusum.vs vm, vs2, vs1, vd`
     VFREDUSUMVS,
+    /// RISC-V `vfrsqrt7.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfrsqrt7.v vm, vs2, vd`
     VFRSQRT7V,
+    /// RISC-V `vfrsub.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfrsub.vf vm, vs2, xs1, vd`
     VFRSUBVF,
+    /// RISC-V `vfsgnj.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfsgnj.vf vm, vs2, xs1, vd`
     VFSGNJVF,
+    /// RISC-V `vfsgnj.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfsgnj.vv vm, vs2, vs1, vd`
     VFSGNJVV,
+    /// RISC-V `vfsgnjn.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfsgnjn.vf vm, vs2, xs1, vd`
     VFSGNJNVF,
+    /// RISC-V `vfsgnjn.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfsgnjn.vv vm, vs2, vs1, vd`
     VFSGNJNVV,
+    /// RISC-V `vfsgnjx.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfsgnjx.vf vm, vs2, xs1, vd`
     VFSGNJXVF,
+    /// RISC-V `vfsgnjx.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfsgnjx.vv vm, vs2, vs1, vd`
     VFSGNJXVV,
+    /// RISC-V `vfslide1down.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfslide1down.vf vm, vs2, xs1, vd`
     VFSLIDE1DOWNVF,
+    /// RISC-V `vfslide1up.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfslide1up.vf vm, vs2, xs1, vd`
     VFSLIDE1UPVF,
+    /// RISC-V `vfsqrt.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfsqrt.v vm, vs2, vd`
     VFSQRTV,
+    /// RISC-V `vfsub.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfsub.vf vm, vs2, xs1, vd`
     VFSUBVF,
+    /// RISC-V `vfsub.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfsub.vv vm, vs2, vs1, vd`
     VFSUBVV,
+    /// RISC-V `vfwadd.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwadd.vf vm, vs2, xs1, vd`
     VFWADDVF,
+    /// RISC-V `vfwadd.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwadd.vv vm, vs2, vs1, vd`
     VFWADDVV,
+    /// RISC-V `vfwadd.wf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwadd.wf vm, vs2, xs1, vd`
     VFWADDWF,
+    /// RISC-V `vfwadd.wv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwadd.wv vm, vs2, vs1, vd`
     VFWADDWV,
+    /// RISC-V `vfwcvt.f.f.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwcvt.f.f.v vm, vs2, vd`
     VFWCVTFFV,
+    /// RISC-V `vfwcvt.f.x.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwcvt.f.x.v vm, vs2, vd`
     VFWCVTFXV,
+    /// RISC-V `vfwcvt.f.xu.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwcvt.f.xu.v vm, vs2, vd`
     VFWCVTFXUV,
+    /// RISC-V `vfwcvt.rtz.x.f.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwcvt.rtz.x.f.v vm, vs2, vd`
     VFWCVTRTZXFV,
+    /// RISC-V `vfwcvt.rtz.xu.f.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwcvt.rtz.xu.f.v vm, vs2, vd`
     VFWCVTRTZXUFV,
+    /// RISC-V `vfwcvt.x.f.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwcvt.x.f.v vm, vs2, vd`
     VFWCVTXFV,
+    /// RISC-V `vfwcvt.xu.f.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwcvt.xu.f.v vm, vs2, vd`
     VFWCVTXUFV,
+    /// RISC-V `vfwcvtbf16.f.f.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwcvtbf16.f.f.v vm, vs2, vd`
     VFWCVTBF16FFV,
+    /// RISC-V `vfwmacc.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwmacc.vf vm, vs2, xs1, vd`
     VFWMACCVF,
+    /// RISC-V `vfwmacc.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwmacc.vv vm, vs2, vs1, vd`
     VFWMACCVV,
+    /// RISC-V `vfwmaccbf16.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwmaccbf16.vf vm, vs2, xs1, vd`
     VFWMACCBF16VF,
+    /// RISC-V `vfwmaccbf16.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwmaccbf16.vv vm, vs2, vs1, vd`
     VFWMACCBF16VV,
+    /// RISC-V `vfwmsac.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwmsac.vf vm, vs2, xs1, vd`
     VFWMSACVF,
+    /// RISC-V `vfwmsac.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwmsac.vv vm, vs2, vs1, vd`
     VFWMSACVV,
+    /// RISC-V `vfwmul.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwmul.vf vm, vs2, xs1, vd`
     VFWMULVF,
+    /// RISC-V `vfwmul.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwmul.vv vm, vs2, vs1, vd`
     VFWMULVV,
+    /// RISC-V `vfwnmacc.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwnmacc.vf vm, vs2, xs1, vd`
     VFWNMACCVF,
+    /// RISC-V `vfwnmacc.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwnmacc.vv vm, vs2, vs1, vd`
     VFWNMACCVV,
+    /// RISC-V `vfwnmsac.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwnmsac.vf vm, vs2, xs1, vd`
     VFWNMSACVF,
+    /// RISC-V `vfwnmsac.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwnmsac.vv vm, vs2, vs1, vd`
     VFWNMSACVV,
+    /// RISC-V `vfwredosum.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwredosum.vs vm, vs2, vs1, vd`
     VFWREDOSUMVS,
-    /// Syntax: `vfwredsum.vs vm vs2 vs1 vd`
+    /// RISC-V `vfwredsum.vs` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `vfwredsum.vs vd vs1 vs2 vm`
     VFWREDSUMVS,
+    /// RISC-V `vfwredusum.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwredusum.vs vm, vs2, vs1, vd`
     VFWREDUSUMVS,
+    /// RISC-V `vfwsub.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwsub.vf vm, vs2, xs1, vd`
     VFWSUBVF,
+    /// RISC-V `vfwsub.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwsub.vv vm, vs2, vs1, vd`
     VFWSUBVV,
+    /// RISC-V `vfwsub.wf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwsub.wf vm, vs2, xs1, vd`
     VFWSUBWF,
+    /// RISC-V `vfwsub.wv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vfwsub.wv vm, vs2, vs1, vd`
     VFWSUBWV,
+    /// RISC-V `vghsh.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vghsh.vv vs2, vs1, vd`
     VGHSHVV,
+    /// RISC-V `vgmul.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vgmul.vv vs2, vd`
     VGMULVV,
+    /// RISC-V `vid.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vid.v vm, vd`
     VIDV,
+    /// RISC-V `viota.m` instruction.
+    ///
+    /// # Forms
     /// Assembly: `viota.m vm, vs2, vd`
     VIOTAM,
-    /// Syntax: `vl1r.v rs1 vd`
+    /// RISC-V `vl1r.v` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `vl1r.v vd rs1`
     VL1RV,
+    /// RISC-V `vl1re16.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vl1re16.v xs1, vd`
     VL1RE16V,
+    /// RISC-V `vl1re32.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vl1re32.v xs1, vd`
     VL1RE32V,
+    /// RISC-V `vl1re64.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vl1re64.v xs1, vd`
     VL1RE64V,
+    /// RISC-V `vl1re8.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vl1re8.v xs1, vd`
     VL1RE8V,
-    /// Syntax: `vl2r.v rs1 vd`
+    /// RISC-V `vl2r.v` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `vl2r.v vd rs1`
     VL2RV,
+    /// RISC-V `vl2re16.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vl2re16.v xs1, vd`
     VL2RE16V,
+    /// RISC-V `vl2re32.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vl2re32.v xs1, vd`
     VL2RE32V,
+    /// RISC-V `vl2re64.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vl2re64.v xs1, vd`
     VL2RE64V,
+    /// RISC-V `vl2re8.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vl2re8.v xs1, vd`
     VL2RE8V,
-    /// Syntax: `vl4r.v rs1 vd`
+    /// RISC-V `vl4r.v` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `vl4r.v vd rs1`
     VL4RV,
+    /// RISC-V `vl4re16.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vl4re16.v xs1, vd`
     VL4RE16V,
+    /// RISC-V `vl4re32.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vl4re32.v xs1, vd`
     VL4RE32V,
+    /// RISC-V `vl4re64.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vl4re64.v xs1, vd`
     VL4RE64V,
+    /// RISC-V `vl4re8.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vl4re8.v xs1, vd`
     VL4RE8V,
-    /// Syntax: `vl8r.v rs1 vd`
+    /// RISC-V `vl8r.v` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `vl8r.v vd rs1`
     VL8RV,
+    /// RISC-V `vl8re16.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vl8re16.v xs1, vd`
     VL8RE16V,
+    /// RISC-V `vl8re32.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vl8re32.v xs1, vd`
     VL8RE32V,
+    /// RISC-V `vl8re64.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vl8re64.v xs1, vd`
     VL8RE64V,
+    /// RISC-V `vl8re8.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vl8re8.v xs1, vd`
     VL8RE8V,
+    /// RISC-V `vle16.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vle16.v vm, xs1, vd`
     VLE16V,
+    /// RISC-V `vle16ff.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vle16ff.v vm, xs1, vd`
     VLE16FFV,
-    /// Syntax: `vle1.v rs1 vd`
+    /// RISC-V `vle1.v` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `vle1.v vd rs1`
     VLE1V,
+    /// RISC-V `vle32.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vle32.v vm, xs1, vd`
     VLE32V,
+    /// RISC-V `vle32ff.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vle32ff.v vm, xs1, vd`
     VLE32FFV,
+    /// RISC-V `vle64.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vle64.v vm, xs1, vd`
     VLE64V,
+    /// RISC-V `vle64ff.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vle64ff.v vm, xs1, vd`
     VLE64FFV,
+    /// RISC-V `vle8.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vle8.v vm, xs1, vd`
     VLE8V,
+    /// RISC-V `vle8ff.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vle8ff.v vm, xs1, vd`
     VLE8FFV,
+    /// RISC-V `vlm.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vlm.v xs1, vd`
     VLMV,
+    /// RISC-V `vloxei16.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vloxei16.v vm, vs2, xs1, vd`
     VLOXEI16V,
+    /// RISC-V `vloxei32.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vloxei32.v vm, vs2, xs1, vd`
     VLOXEI32V,
+    /// RISC-V `vloxei64.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vloxei64.v vm, vs2, xs1, vd`
     VLOXEI64V,
+    /// RISC-V `vloxei8.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vloxei8.v vm, vs2, xs1, vd`
     VLOXEI8V,
+    /// RISC-V `vlse16.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vlse16.v vm, xs2, xs1, vd`
     VLSE16V,
+    /// RISC-V `vlse32.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vlse32.v vm, xs2, xs1, vd`
     VLSE32V,
+    /// RISC-V `vlse64.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vlse64.v vm, xs2, xs1, vd`
     VLSE64V,
+    /// RISC-V `vlse8.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vlse8.v vm, xs2, xs1, vd`
     VLSE8V,
+    /// RISC-V `vluxei16.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vluxei16.v vm, vs2, xs1, vd`
     VLUXEI16V,
+    /// RISC-V `vluxei32.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vluxei32.v vm, vs2, xs1, vd`
     VLUXEI32V,
+    /// RISC-V `vluxei64.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vluxei64.v vm, vs2, xs1, vd`
     VLUXEI64V,
+    /// RISC-V `vluxei8.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vluxei8.v vm, vs2, xs1, vd`
     VLUXEI8V,
+    /// RISC-V `vmacc.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmacc.vv vm, vs2, vs1, vd`
     VMACCVV,
+    /// RISC-V `vmacc.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmacc.vx vm, vs2, xs1, vd`
     VMACCVX,
+    /// RISC-V `vmadc.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmadc.vi vs2, vd, imm`
     VMADCVI,
+    /// RISC-V `vmadc.vim` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmadc.vim vs2, vd, imm`
     VMADCVIM,
+    /// RISC-V `vmadc.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmadc.vv vs2, vs1, vd`
     VMADCVV,
+    /// RISC-V `vmadc.vvm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmadc.vvm vs2, vs1, vd`
     VMADCVVM,
+    /// RISC-V `vmadc.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmadc.vx vs2, xs1, vd`
     VMADCVX,
+    /// RISC-V `vmadc.vxm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmadc.vxm vs2, xs1, vd`
     VMADCVXM,
+    /// RISC-V `vmadd.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmadd.vv vm, vs2, vs1, vd`
     VMADDVV,
+    /// RISC-V `vmadd.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmadd.vx vm, vs2, xs1, vd`
     VMADDVX,
+    /// RISC-V `vmand.mm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmand.mm vs2, vs1, vd`
     VMANDMM,
+    /// RISC-V `vmandn.mm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmandn.mm vs2, vs1, vd`
     VMANDNMM,
-    /// Syntax: `vmandnot.mm vm vs2 vs1 vd`
+    /// RISC-V `vmandnot.mm` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `vmandnot.mm vd vs1 vs2 vm`
     VMANDNOTMM,
+    /// RISC-V `vmax.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmax.vv vm, vs2, vs1, vd`
     VMAXVV,
+    /// RISC-V `vmax.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmax.vx vm, vs2, xs1, vd`
     VMAXVX,
+    /// RISC-V `vmaxu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmaxu.vv vm, vs2, vs1, vd`
     VMAXUVV,
+    /// RISC-V `vmaxu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmaxu.vx vm, vs2, xs1, vd`
     VMAXUVX,
+    /// RISC-V `vmerge.vim` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmerge.vim vs2, vd, imm`
     VMERGEVIM,
+    /// RISC-V `vmerge.vvm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmerge.vvm vs2, vs1, vd`
     VMERGEVVM,
+    /// RISC-V `vmerge.vxm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmerge.vxm vs2, xs1, vd`
     VMERGEVXM,
+    /// RISC-V `vmfeq.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmfeq.vf vm, vs2, xs1, vd`
     VMFEQVF,
+    /// RISC-V `vmfeq.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmfeq.vv vm, vs2, vs1, vd`
     VMFEQVV,
+    /// RISC-V `vmfge.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmfge.vf vm, vs2, xs1, vd`
     VMFGEVF,
+    /// RISC-V `vmfgt.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmfgt.vf vm, vs2, xs1, vd`
     VMFGTVF,
+    /// RISC-V `vmfle.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmfle.vf vm, vs2, xs1, vd`
     VMFLEVF,
+    /// RISC-V `vmfle.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmfle.vv vm, vs2, vs1, vd`
     VMFLEVV,
+    /// RISC-V `vmflt.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmflt.vf vm, vs2, xs1, vd`
     VMFLTVF,
+    /// RISC-V `vmflt.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmflt.vv vm, vs2, vs1, vd`
     VMFLTVV,
+    /// RISC-V `vmfne.vf` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmfne.vf vm, vs2, xs1, vd`
     VMFNEVF,
+    /// RISC-V `vmfne.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmfne.vv vm, vs2, vs1, vd`
     VMFNEVV,
+    /// RISC-V `vmin.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmin.vv vm, vs2, vs1, vd`
     VMINVV,
+    /// RISC-V `vmin.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmin.vx vm, vs2, xs1, vd`
     VMINVX,
+    /// RISC-V `vminu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vminu.vv vm, vs2, vs1, vd`
     VMINUVV,
+    /// RISC-V `vminu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vminu.vx vm, vs2, xs1, vd`
     VMINUVX,
+    /// RISC-V `vmnand.mm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmnand.mm vs2, vs1, vd`
     VMNANDMM,
+    /// RISC-V `vmnor.mm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmnor.mm vs2, vs1, vd`
     VMNORMM,
+    /// RISC-V `vmor.mm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmor.mm vs2, vs1, vd`
     VMORMM,
+    /// RISC-V `vmorn.mm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmorn.mm vs2, vs1, vd`
     VMORNMM,
-    /// Syntax: `vmornot.mm vm vs2 vs1 vd`
+    /// RISC-V `vmornot.mm` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `vmornot.mm vd vs1 vs2 vm`
     VMORNOTMM,
+    /// RISC-V `vmsbc.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsbc.vv vs2, vs1, vd`
     VMSBCVV,
+    /// RISC-V `vmsbc.vvm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsbc.vvm vs2, vs1, vd`
     VMSBCVVM,
+    /// RISC-V `vmsbc.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsbc.vx vs2, xs1, vd`
     VMSBCVX,
+    /// RISC-V `vmsbc.vxm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsbc.vxm vs2, xs1, vd`
     VMSBCVXM,
+    /// RISC-V `vmsbf.m` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsbf.m vm, vs2, vd`
     VMSBFM,
+    /// RISC-V `vmseq.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmseq.vi vm, vs2, vd, imm`
     VMSEQVI,
+    /// RISC-V `vmseq.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmseq.vv vm, vs2, vs1, vd`
     VMSEQVV,
+    /// RISC-V `vmseq.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmseq.vx vm, vs2, xs1, vd`
     VMSEQVX,
+    /// RISC-V `vmsgt.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsgt.vi vm, vs2, vd, imm`
     VMSGTVI,
+    /// RISC-V `vmsgt.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsgt.vx vm, vs2, xs1, vd`
     VMSGTVX,
+    /// RISC-V `vmsgtu.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsgtu.vi vm, vs2, vd, imm`
     VMSGTUVI,
+    /// RISC-V `vmsgtu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsgtu.vx vm, vs2, xs1, vd`
     VMSGTUVX,
+    /// RISC-V `vmsif.m` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsif.m vm, vs2, vd`
     VMSIFM,
+    /// RISC-V `vmsle.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsle.vi vm, vs2, vd, imm`
     VMSLEVI,
+    /// RISC-V `vmsle.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsle.vv vm, vs2, vs1, vd`
     VMSLEVV,
+    /// RISC-V `vmsle.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsle.vx vm, vs2, xs1, vd`
     VMSLEVX,
+    /// RISC-V `vmsleu.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsleu.vi vm, vs2, vd, imm`
     VMSLEUVI,
+    /// RISC-V `vmsleu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsleu.vv vm, vs2, vs1, vd`
     VMSLEUVV,
+    /// RISC-V `vmsleu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsleu.vx vm, vs2, xs1, vd`
     VMSLEUVX,
+    /// RISC-V `vmslt.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmslt.vv vm, vs2, vs1, vd`
     VMSLTVV,
+    /// RISC-V `vmslt.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmslt.vx vm, vs2, xs1, vd`
     VMSLTVX,
+    /// RISC-V `vmsltu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsltu.vv vm, vs2, vs1, vd`
     VMSLTUVV,
+    /// RISC-V `vmsltu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsltu.vx vm, vs2, xs1, vd`
     VMSLTUVX,
+    /// RISC-V `vmsne.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsne.vi vm, vs2, vd, imm`
     VMSNEVI,
+    /// RISC-V `vmsne.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsne.vv vm, vs2, vs1, vd`
     VMSNEVV,
+    /// RISC-V `vmsne.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsne.vx vm, vs2, xs1, vd`
     VMSNEVX,
+    /// RISC-V `vmsof.m` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmsof.m vm, vs2, vd`
     VMSOFM,
+    /// RISC-V `vmul.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmul.vv vm, vs2, vs1, vd`
     VMULVV,
+    /// RISC-V `vmul.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmul.vx vm, vs2, xs1, vd`
     VMULVX,
+    /// RISC-V `vmulh.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmulh.vv vm, vs2, vs1, vd`
     VMULHVV,
+    /// RISC-V `vmulh.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmulh.vx vm, vs2, xs1, vd`
     VMULHVX,
+    /// RISC-V `vmulhsu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmulhsu.vv vm, vs2, vs1, vd`
     VMULHSUVV,
+    /// RISC-V `vmulhsu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmulhsu.vx vm, vs2, xs1, vd`
     VMULHSUVX,
+    /// RISC-V `vmulhu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmulhu.vv vm, vs2, vs1, vd`
     VMULHUVV,
+    /// RISC-V `vmulhu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmulhu.vx vm, vs2, xs1, vd`
     VMULHUVX,
+    /// RISC-V `vmv1r.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmv1r.v vs2, vd`
     VMV1RV,
+    /// RISC-V `vmv2r.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmv2r.v vs2, vd`
     VMV2RV,
+    /// RISC-V `vmv4r.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmv4r.v vs2, vd`
     VMV4RV,
+    /// RISC-V `vmv8r.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmv8r.v vs2, vd`
     VMV8RV,
+    /// RISC-V `vmv.s.x` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmv.s.x xs1, vd`
     VMVSX,
+    /// RISC-V `vmv.v.i` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmv.v.i vd, imm`
     VMVVI,
+    /// RISC-V `vmv.v.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmv.v.v vs1, vd`
     VMVVV,
+    /// RISC-V `vmv.v.x` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmv.v.x xs1, vd`
     VMVVX,
+    /// RISC-V `vmv.x.s` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmv.x.s vs2, xd`
     VMVXS,
+    /// RISC-V `vmxnor.mm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmxnor.mm vs2, vs1, vd`
     VMXNORMM,
+    /// RISC-V `vmxor.mm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vmxor.mm vs2, vs1, vd`
     VMXORMM,
+    /// RISC-V `vnclip.wi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vnclip.wi vm, vs2, vd, imm`
     VNCLIPWI,
+    /// RISC-V `vnclip.wv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vnclip.wv vm, vs2, vs1, vd`
     VNCLIPWV,
+    /// RISC-V `vnclip.wx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vnclip.wx vm, vs2, xs1, vd`
     VNCLIPWX,
+    /// RISC-V `vnclipu.wi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vnclipu.wi vm, vs2, vd, imm`
     VNCLIPUWI,
+    /// RISC-V `vnclipu.wv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vnclipu.wv vm, vs2, vs1, vd`
     VNCLIPUWV,
+    /// RISC-V `vnclipu.wx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vnclipu.wx vm, vs2, xs1, vd`
     VNCLIPUWX,
+    /// RISC-V `vnmsac.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vnmsac.vv vm, vs2, vs1, vd`
     VNMSACVV,
+    /// RISC-V `vnmsac.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vnmsac.vx vm, vs2, xs1, vd`
     VNMSACVX,
+    /// RISC-V `vnmsub.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vnmsub.vv vm, vs2, vs1, vd`
     VNMSUBVV,
+    /// RISC-V `vnmsub.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vnmsub.vx vm, vs2, xs1, vd`
     VNMSUBVX,
+    /// RISC-V `vnsra.wi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vnsra.wi vm, vs2, vd, imm`
     VNSRAWI,
+    /// RISC-V `vnsra.wv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vnsra.wv vm, vs2, vs1, vd`
     VNSRAWV,
+    /// RISC-V `vnsra.wx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vnsra.wx vm, vs2, xs1, vd`
     VNSRAWX,
+    /// RISC-V `vnsrl.wi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vnsrl.wi vm, vs2, vd, imm`
     VNSRLWI,
+    /// RISC-V `vnsrl.wv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vnsrl.wv vm, vs2, vs1, vd`
     VNSRLWV,
+    /// RISC-V `vnsrl.wx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vnsrl.wx vm, vs2, xs1, vd`
     VNSRLWX,
+    /// RISC-V `vor.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vor.vi vm, vs2, vd, imm`
     VORVI,
+    /// RISC-V `vor.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vor.vv vm, vs2, vs1, vd`
     VORVV,
+    /// RISC-V `vor.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vor.vx vm, vs2, xs1, vd`
     VORVX,
-    /// Syntax: `vpopc.m vm vs2 rd`
+    /// RISC-V `vpopc.m` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `vpopc.m rd vs2 vm`
     VPOPCM,
+    /// RISC-V `vredand.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vredand.vs vm, vs2, vs1, vd`
     VREDANDVS,
+    /// RISC-V `vredmax.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vredmax.vs vm, vs2, vs1, vd`
     VREDMAXVS,
+    /// RISC-V `vredmaxu.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vredmaxu.vs vm, vs2, vs1, vd`
     VREDMAXUVS,
+    /// RISC-V `vredmin.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vredmin.vs vm, vs2, vs1, vd`
     VREDMINVS,
+    /// RISC-V `vredminu.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vredminu.vs vm, vs2, vs1, vd`
     VREDMINUVS,
+    /// RISC-V `vredor.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vredor.vs vm, vs2, vs1, vd`
     VREDORVS,
+    /// RISC-V `vredsum.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vredsum.vs vm, vs2, vs1, vd`
     VREDSUMVS,
+    /// RISC-V `vredxor.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vredxor.vs vm, vs2, vs1, vd`
     VREDXORVS,
+    /// RISC-V `vrem.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vrem.vv vm, vs2, vs1, vd`
     VREMVV,
+    /// RISC-V `vrem.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vrem.vx vm, vs2, xs1, vd`
     VREMVX,
+    /// RISC-V `vremu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vremu.vv vm, vs2, vs1, vd`
     VREMUVV,
+    /// RISC-V `vremu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vremu.vx vm, vs2, xs1, vd`
     VREMUVX,
+    /// RISC-V `vrev8.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vrev8.v vm, vs2, vd`
     VREV8V,
+    /// RISC-V `vrgather.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vrgather.vi vm, vs2, vd, imm`
     VRGATHERVI,
+    /// RISC-V `vrgather.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vrgather.vv vm, vs2, vs1, vd`
     VRGATHERVV,
+    /// RISC-V `vrgather.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vrgather.vx vm, vs2, xs1, vd`
     VRGATHERVX,
+    /// RISC-V `vrgatherei16.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vrgatherei16.vv vm, vs2, vs1, vd`
     VRGATHEREI16VV,
+    /// RISC-V `vrol.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vrol.vv vm, vs2, vs1, vd`
     VROLVV,
+    /// RISC-V `vrol.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vrol.vx vm, vs2, xs1, vd`
     VROLVX,
+    /// RISC-V `vror.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vror.vi vm, vs2, vd, imm`
     VRORVI,
+    /// RISC-V `vror.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vror.vv vm, vs2, vs1, vd`
     VRORVV,
+    /// RISC-V `vror.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vror.vx vm, vs2, xs1, vd`
     VRORVX,
+    /// RISC-V `vrsub.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vrsub.vi vm, vs2, vd, imm`
     VRSUBVI,
+    /// RISC-V `vrsub.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vrsub.vx vm, vs2, xs1, vd`
     VRSUBVX,
+    /// RISC-V `vs1r.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vs1r.v xs1, vs3`
     VS1RV,
+    /// RISC-V `vs2r.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vs2r.v xs1, vs3`
     VS2RV,
+    /// RISC-V `vs4r.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vs4r.v xs1, vs3`
     VS4RV,
+    /// RISC-V `vs8r.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vs8r.v xs1, vs3`
     VS8RV,
+    /// RISC-V `vsadd.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsadd.vi vm, vs2, vd, imm`
     VSADDVI,
+    /// RISC-V `vsadd.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsadd.vv vm, vs2, vs1, vd`
     VSADDVV,
+    /// RISC-V `vsadd.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsadd.vx vm, vs2, xs1, vd`
     VSADDVX,
+    /// RISC-V `vsaddu.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsaddu.vi vm, vs2, vd, imm`
     VSADDUVI,
+    /// RISC-V `vsaddu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsaddu.vv vm, vs2, vs1, vd`
     VSADDUVV,
+    /// RISC-V `vsaddu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsaddu.vx vm, vs2, xs1, vd`
     VSADDUVX,
+    /// RISC-V `vsbc.vvm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsbc.vvm vs2, vs1, vd`
     VSBCVVM,
+    /// RISC-V `vsbc.vxm` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsbc.vxm vs2, xs1, vd`
     VSBCVXM,
+    /// RISC-V `vse16.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vse16.v vm, xs1, vs3`
     VSE16V,
-    /// Syntax: `vse1.v rs1 vs3`
+    /// RISC-V `vse1.v` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `vse1.v vs3 rs1`
     VSE1V,
+    /// RISC-V `vse32.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vse32.v vm, xs1, vs3`
     VSE32V,
+    /// RISC-V `vse64.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vse64.v vm, xs1, vs3`
     VSE64V,
+    /// RISC-V `vse8.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vse8.v vm, xs1, vs3`
     VSE8V,
+    /// RISC-V `vsetivli` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsetivli xd, imm`
     VSETIVLI,
+    /// RISC-V `vsetvl` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsetvl xs2, xs1, xd`
     VSETVL,
+    /// RISC-V `vsetvli` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsetvli xs1, xd, imm`
     VSETVLI,
+    /// RISC-V `vsext.vf2` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsext.vf2 vm, vs2, vd`
     VSEXTVF2,
+    /// RISC-V `vsext.vf4` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsext.vf4 vm, vs2, vd`
     VSEXTVF4,
+    /// RISC-V `vsext.vf8` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsext.vf8 vm, vs2, vd`
     VSEXTVF8,
+    /// RISC-V `vsha2ch.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsha2ch.vv vs2, vs1, vd`
     VSHA2CHVV,
+    /// RISC-V `vsha2cl.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsha2cl.vv vs2, vs1, vd`
     VSHA2CLVV,
+    /// RISC-V `vsha2ms.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsha2ms.vv vs2, vs1, vd`
     VSHA2MSVV,
+    /// RISC-V `vslide1down.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vslide1down.vx vm, vs2, xs1, vd`
     VSLIDE1DOWNVX,
+    /// RISC-V `vslide1up.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vslide1up.vx vm, vs2, xs1, vd`
     VSLIDE1UPVX,
+    /// RISC-V `vslidedown.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vslidedown.vi vm, vs2, vd, imm`
     VSLIDEDOWNVI,
+    /// RISC-V `vslidedown.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vslidedown.vx vm, vs2, xs1, vd`
     VSLIDEDOWNVX,
+    /// RISC-V `vslideup.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vslideup.vi vm, vs2, vd, imm`
     VSLIDEUPVI,
+    /// RISC-V `vslideup.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vslideup.vx vm, vs2, xs1, vd`
     VSLIDEUPVX,
+    /// RISC-V `vsll.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsll.vi vm, vs2, vd, imm`
     VSLLVI,
+    /// RISC-V `vsll.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsll.vv vm, vs2, vs1, vd`
     VSLLVV,
+    /// RISC-V `vsll.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsll.vx vm, vs2, xs1, vd`
     VSLLVX,
+    /// RISC-V `vsm3c.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsm3c.vi vs2, vd, imm`
     VSM3CVI,
+    /// RISC-V `vsm3me.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsm3me.vv vs2, vs1, vd`
     VSM3MEVV,
+    /// RISC-V `vsm4k.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsm4k.vi vs2, vd, imm`
     VSM4KVI,
+    /// RISC-V `vsm4r.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsm4r.vs vs2, vd`
     VSM4RVS,
+    /// RISC-V `vsm4r.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsm4r.vv vs2, vd`
     VSM4RVV,
+    /// RISC-V `vsm.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsm.v xs1, vs3`
     VSMV,
+    /// RISC-V `vsmul.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsmul.vv vm, vs2, vs1, vd`
     VSMULVV,
+    /// RISC-V `vsmul.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsmul.vx vm, vs2, xs1, vd`
     VSMULVX,
+    /// RISC-V `vsoxei16.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsoxei16.v vm, vs2, xs1, vs3`
     VSOXEI16V,
+    /// RISC-V `vsoxei32.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsoxei32.v vm, vs2, xs1, vs3`
     VSOXEI32V,
+    /// RISC-V `vsoxei64.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsoxei64.v vm, vs2, xs1, vs3`
     VSOXEI64V,
+    /// RISC-V `vsoxei8.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsoxei8.v vm, vs2, xs1, vs3`
     VSOXEI8V,
+    /// RISC-V `vsra.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsra.vi vm, vs2, vd, imm`
     VSRAVI,
+    /// RISC-V `vsra.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsra.vv vm, vs2, vs1, vd`
     VSRAVV,
+    /// RISC-V `vsra.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsra.vx vm, vs2, xs1, vd`
     VSRAVX,
+    /// RISC-V `vsrl.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsrl.vi vm, vs2, vd, imm`
     VSRLVI,
+    /// RISC-V `vsrl.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsrl.vv vm, vs2, vs1, vd`
     VSRLVV,
+    /// RISC-V `vsrl.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsrl.vx vm, vs2, xs1, vd`
     VSRLVX,
+    /// RISC-V `vsse16.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsse16.v vm, xs2, xs1, vs3`
     VSSE16V,
+    /// RISC-V `vsse32.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsse32.v vm, xs2, xs1, vs3`
     VSSE32V,
+    /// RISC-V `vsse64.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsse64.v vm, xs2, xs1, vs3`
     VSSE64V,
+    /// RISC-V `vsse8.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsse8.v vm, xs2, xs1, vs3`
     VSSE8V,
+    /// RISC-V `vssra.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vssra.vi vm, vs2, vd, imm`
     VSSRAVI,
+    /// RISC-V `vssra.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vssra.vv vm, vs2, vs1, vd`
     VSSRAVV,
+    /// RISC-V `vssra.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vssra.vx vm, vs2, xs1, vd`
     VSSRAVX,
+    /// RISC-V `vssrl.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vssrl.vi vm, vs2, vd, imm`
     VSSRLVI,
+    /// RISC-V `vssrl.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vssrl.vv vm, vs2, vs1, vd`
     VSSRLVV,
+    /// RISC-V `vssrl.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vssrl.vx vm, vs2, xs1, vd`
     VSSRLVX,
+    /// RISC-V `vssub.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vssub.vv vm, vs2, vs1, vd`
     VSSUBVV,
+    /// RISC-V `vssub.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vssub.vx vm, vs2, xs1, vd`
     VSSUBVX,
+    /// RISC-V `vssubu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vssubu.vv vm, vs2, vs1, vd`
     VSSUBUVV,
+    /// RISC-V `vssubu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vssubu.vx vm, vs2, xs1, vd`
     VSSUBUVX,
+    /// RISC-V `vsub.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsub.vv vm, vs2, vs1, vd`
     VSUBVV,
+    /// RISC-V `vsub.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsub.vx vm, vs2, xs1, vd`
     VSUBVX,
+    /// RISC-V `vsuxei16.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsuxei16.v vm, vs2, xs1, vs3`
     VSUXEI16V,
+    /// RISC-V `vsuxei32.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsuxei32.v vm, vs2, xs1, vs3`
     VSUXEI32V,
+    /// RISC-V `vsuxei64.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsuxei64.v vm, vs2, xs1, vs3`
     VSUXEI64V,
+    /// RISC-V `vsuxei8.v` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vsuxei8.v vm, vs2, xs1, vs3`
     VSUXEI8V,
+    /// RISC-V `vwadd.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwadd.vv vm, vs2, vs1, vd`
     VWADDVV,
+    /// RISC-V `vwadd.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwadd.vx vm, vs2, xs1, vd`
     VWADDVX,
+    /// RISC-V `vwadd.wv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwadd.wv vm, vs2, vs1, vd`
     VWADDWV,
+    /// RISC-V `vwadd.wx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwadd.wx vm, vs2, xs1, vd`
     VWADDWX,
+    /// RISC-V `vwaddu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwaddu.vv vm, vs2, vs1, vd`
     VWADDUVV,
+    /// RISC-V `vwaddu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwaddu.vx vm, vs2, xs1, vd`
     VWADDUVX,
+    /// RISC-V `vwaddu.wv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwaddu.wv vm, vs2, vs1, vd`
     VWADDUWV,
+    /// RISC-V `vwaddu.wx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwaddu.wx vm, vs2, xs1, vd`
     VWADDUWX,
+    /// RISC-V `vwmacc.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwmacc.vv vm, vs2, vs1, vd`
     VWMACCVV,
+    /// RISC-V `vwmacc.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwmacc.vx vm, vs2, xs1, vd`
     VWMACCVX,
+    /// RISC-V `vwmaccsu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwmaccsu.vv vm, vs2, vs1, vd`
     VWMACCSUVV,
+    /// RISC-V `vwmaccsu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwmaccsu.vx vm, vs2, xs1, vd`
     VWMACCSUVX,
+    /// RISC-V `vwmaccu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwmaccu.vv vm, vs2, vs1, vd`
     VWMACCUVV,
+    /// RISC-V `vwmaccu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwmaccu.vx vm, vs2, xs1, vd`
     VWMACCUVX,
+    /// RISC-V `vwmaccus.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwmaccus.vx vm, vs2, xs1, vd`
     VWMACCUSVX,
+    /// RISC-V `vwmul.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwmul.vv vm, vs2, vs1, vd`
     VWMULVV,
+    /// RISC-V `vwmul.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwmul.vx vm, vs2, xs1, vd`
     VWMULVX,
+    /// RISC-V `vwmulsu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwmulsu.vv vm, vs2, vs1, vd`
     VWMULSUVV,
+    /// RISC-V `vwmulsu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwmulsu.vx vm, vs2, xs1, vd`
     VWMULSUVX,
+    /// RISC-V `vwmulu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwmulu.vv vm, vs2, vs1, vd`
     VWMULUVV,
+    /// RISC-V `vwmulu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwmulu.vx vm, vs2, xs1, vd`
     VWMULUVX,
+    /// RISC-V `vwredsum.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwredsum.vs vm, vs2, vs1, vd`
     VWREDSUMVS,
+    /// RISC-V `vwredsumu.vs` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwredsumu.vs vm, vs2, vs1, vd`
     VWREDSUMUVS,
+    /// RISC-V `vwsll.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwsll.vi vm, vs2, vd, imm`
     VWSLLVI,
+    /// RISC-V `vwsll.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwsll.vv vm, vs2, vs1, vd`
     VWSLLVV,
+    /// RISC-V `vwsll.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwsll.vx vm, vs2, xs1, vd`
     VWSLLVX,
+    /// RISC-V `vwsub.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwsub.vv vm, vs2, vs1, vd`
     VWSUBVV,
+    /// RISC-V `vwsub.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwsub.vx vm, vs2, xs1, vd`
     VWSUBVX,
+    /// RISC-V `vwsub.wv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwsub.wv vm, vs2, vs1, vd`
     VWSUBWV,
+    /// RISC-V `vwsub.wx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwsub.wx vm, vs2, xs1, vd`
     VWSUBWX,
+    /// RISC-V `vwsubu.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwsubu.vv vm, vs2, vs1, vd`
     VWSUBUVV,
+    /// RISC-V `vwsubu.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwsubu.vx vm, vs2, xs1, vd`
     VWSUBUVX,
+    /// RISC-V `vwsubu.wv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwsubu.wv vm, vs2, vs1, vd`
     VWSUBUWV,
+    /// RISC-V `vwsubu.wx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vwsubu.wx vm, vs2, xs1, vd`
     VWSUBUWX,
+    /// RISC-V `vxor.vi` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vxor.vi vm, vs2, vd, imm`
     VXORVI,
+    /// RISC-V `vxor.vv` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vxor.vv vm, vs2, vs1, vd`
     VXORVV,
+    /// RISC-V `vxor.vx` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vxor.vx vm, vs2, xs1, vd`
     VXORVX,
+    /// RISC-V `vzext.vf2` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vzext.vf2 vm, vs2, vd`
     VZEXTVF2,
+    /// RISC-V `vzext.vf4` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vzext.vf4 vm, vs2, vd`
     VZEXTVF4,
+    /// RISC-V `vzext.vf8` instruction.
+    ///
+    /// # Forms
     /// Assembly: `vzext.vf8 vm, vs2, vd`
     VZEXTVF8,
     /// Wait for interrupt
     ///
     /// Can causes the processor to enter a low-power state until the next interrupt occurs.
     ///
-    /// <%- if ext?(:H) -%>
+    /// &lt;%- if ext?(:H) -%&gt;
     /// The behavior of `wfi` is affected by the `mstatus.TW`
     /// and `hstatus.VTW` bits, as summarized below.
     ///
-    /// [%autowidth,%footer]
+    /// \[%autowidth,%footer\]
     /// |===
-    /// .2+| [.rotate]#`mstatus.TW`# .2+| [.rotate]#`hstatus.VTW`# 4+^.>| `wfi` behavior
+    /// .2+| \[.rotate\]#`mstatus.TW`# .2+| \[.rotate\]#`hstatus.VTW`# 4+^.&gt;| `wfi` behavior
     /// h| HS-mode h| U-mode h| VS-mode h| in VU-mode
     ///
     /// | 0 | 0 | Wait | Trap (I) | Wait | Trap (V)
@@ -15067,12 +18769,12 @@ pub enum Opcode {
     /// Trap (V) - Trap with `Virtual Instruction` code
     /// |===
     ///
-    /// <%- else -%>
+    /// &lt;%- else -%&gt;
     /// The `wfi` instruction is also affected by `mstatus.TW`, as shown below:
     ///
-    /// [%autowidth,%footer]
+    /// \[%autowidth,%footer\]
     /// |===
-    /// .2+| [.rotate]#`mstatus.TW`# 2+^.>| `wfi` behavior
+    /// .2+| \[.rotate\]#`mstatus.TW`# 2+^.&gt;| `wfi` behavior
     /// h| S-mode h| U-mode
     ///
     /// | 0 | Wait | Trap (I)
@@ -15081,35 +18783,45 @@ pub enum Opcode {
     /// 3+| Trap (I) - Trap with `Illegal Instruction` code
     /// |===
     ///
-    /// <%- end -%>
+    /// &lt;%- end -%&gt;
     ///
     /// When `wfi` is marked as causing a trap above, the implementation is allowed to wait
     /// for an unspecified period of time to see if an interrupt occurs before raising the trap.
     /// That period of time can be zero (_i.e._, `wfi` always causes a trap in the cases identified
     /// above).
     ///
+    /// # Forms
     /// Assembly: `wfi ""`
     WFI,
+    /// RISC-V `wrs.nto` instruction.
+    ///
+    /// # Forms
     /// Assembly: `wrs.nto wrs_nto`
     WRSNTO,
+    /// RISC-V `wrs.sto` instruction.
+    ///
+    /// # Forms
     /// Assembly: `wrs.sto wrs_sto`
     WRSSTO,
     /// Exclusive NOR
     ///
     /// This instruction performs the bit-wise exclusive-NOR operation on rs1 and rs2.
     ///
+    /// # Forms
     /// Assembly: `xnor xd, xs1, xs2`
     XNOR,
     /// Exclusive Or
     ///
     /// Exclusive or rs1 with rs2, and store the result in rd
     ///
+    /// # Forms
     /// Assembly: `xor xd, xs1, xs2`
     XOR,
     /// Exclusive Or immediate
     ///
     /// Exclusive or an immediate to the value in rs1, and store the result in rd
     ///
+    /// # Forms
     /// Assembly: `xori xd, xs1, imm`
     XORI,
     /// Crossbar permutation (nibbles)
@@ -15118,6 +18830,7 @@ pub enum Opcode {
     /// elements. The rs2 register contains a vector of XLEN/4 4-bit indexes. The result is each element in
     /// rs2 replaced by the indexed element in rs1, or zero if the index into rs2 is out of bounds.
     ///
+    /// # Forms
     /// Assembly: `xperm4 xd, xs1, xs2`
     XPERM4,
     /// Crossbar permutation (bytes)
@@ -15126,21 +18839,26 @@ pub enum Opcode {
     /// elements. The rs2 register contains a vector of XLEN/8 8-bit indexes. The result is each element in
     /// rs2 replaced by the indexed element in rs1, or zero if the index into rs2 is out of bounds.
     ///
+    /// # Forms
     /// Assembly: `xperm8 xd, xs1, xs2`
     XPERM8,
-    /// Syntax: `zext.b rd rs1`
+    /// RISC-V `zext.b` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `zext.b rd rs1`
     ZEXTB,
     /// Zero-extend halfword
     ///
     /// This instruction zero-extends the least-significant halfword of the source to XLEN by inserting
     /// 0's into all of the bits more significant than 15.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// The *zext.h* instruction is a pseudo-op for `pack` when `Zbkb` is implemented and XLEN == 32.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// The *zext.h* instruction is a pseudo-op for `packw` when `Zbkb` is implemented and XLEN == 64.
     ///
+    /// # Forms
     /// Assembly: `zext.h xd, xs1`
     ZEXTH,
     /// Zero-extend halfword
@@ -15148,15 +18866,19 @@ pub enum Opcode {
     /// This instruction zero-extends the least-significant halfword of the source to XLEN by inserting
     /// 0's into all of the bits more significant than 15.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// The *zext.h* instruction is a pseudo-op for `pack` when `Zbkb` is implemented and XLEN == 32.
     ///
-    /// [NOTE]
+    /// \[NOTE\]
     /// The *zext.h* instruction is a pseudo-op for `packw` when `Zbkb` is implemented and XLEN == 64.
     ///
+    /// # Forms
     /// Assembly: `zext.h.rv32 xd, xs1`
     ZEXTHRV32,
-    /// Syntax: `zext.w rd rs1`
+    /// RISC-V `zext.w` instruction.
+    ///
+    /// # Forms
+    /// Assembly: `zext.w rd rs1`
     ZEXTW,
     /// Bit interleave
     ///
@@ -15164,6 +18886,7 @@ pub enum Opcode {
     /// of a destination word. It is the inverse of the unzip instruction. This instruction is available only on
     /// RV32.
     ///
+    /// # Forms
     /// Assembly: `zip xd, xs1`
     ZIP,
     Invalid,
@@ -15593,6 +19316,7 @@ pub const OPCODE_STR: &[&str] = &[
     "ld",
     "lh",
     "lhu",
+    "lpad",
     "lr.d",
     "lr.w",
     "lui",
@@ -15753,6 +19477,13 @@ pub const OPCODE_STR: &[&str] = &[
     "srli.rv32",
     "srliw",
     "srlw",
+    "ssamoswap.d",
+    "ssamoswap.w",
+    "sspopchk.x1",
+    "sspopchk.x5",
+    "sspush.x1",
+    "sspush.x5",
+    "ssrdp",
     "sub",
     "subw",
     "sw",
@@ -16206,8276 +19937,1056 @@ pub const OPCODE_STR: &[&str] = &[
 
 #[derive(Copy, Clone, PartialEq, Eq, Hash, Debug)]
 pub struct Inst {
-    pub opcode: u32,
-    pub funct3: u32,
-    pub rs1: u32,
-    pub rs2: u32,
-    pub csr: i64,
-    pub funct7: u32,
+    value: u32,
 }
 
 impl Inst {
     pub const fn encode(&self) -> InstructionValue {
-        InstructionValue::new(
-            0 | (self.funct7 << 25)
-                | (self.rs2 << 20)
-                | (self.rs1 << 15)
-                | (self.funct3 << 12)
-                | self.opcode,
-        )
+        InstructionValue::new(self.value)
     }
 
     pub const fn new(op: Opcode) -> Self {
         match op {
             Opcode::Invalid => unreachable!(),
-            Opcode::ADD => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::ADDUW => Inst {
-                opcode: 0x3b,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::ADDI => Inst {
-                opcode: 0x13,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::ADDIW => Inst {
-                opcode: 0x1b,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::ADDW => Inst {
-                opcode: 0x3b,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::AES32DSI => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2a0,
-                funct7: 0x15,
-            },
-            Opcode::AES32DSMI => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2e0,
-                funct7: 0x17,
-            },
-            Opcode::AES32ESI => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x220,
-                funct7: 0x11,
-            },
-            Opcode::AES32ESMI => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x260,
-                funct7: 0x13,
-            },
-            Opcode::AES64DS => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x3a0,
-                funct7: 0x1d,
-            },
-            Opcode::AES64DSM => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x3e0,
-                funct7: 0x1f,
-            },
-            Opcode::AES64ES => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x320,
-                funct7: 0x19,
-            },
-            Opcode::AES64ESM => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x360,
-                funct7: 0x1b,
-            },
-            Opcode::AES64IM => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x300,
-                funct7: 0x18,
-            },
-            Opcode::AES64KS1I => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x10,
-                csr: 0x310,
-                funct7: 0x18,
-            },
-            Opcode::AES64KS2 => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x7e0,
-                funct7: 0x3f,
-            },
-            Opcode::AMOADDB => Inst {
-                opcode: 0x2f,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::AMOADDD => Inst {
-                opcode: 0x2f,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::AMOADDH => Inst {
-                opcode: 0x2f,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::AMOADDW => Inst {
-                opcode: 0x2f,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::AMOANDB => Inst {
-                opcode: 0x2f,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::AMOANDD => Inst {
-                opcode: 0x2f,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::AMOANDH => Inst {
-                opcode: 0x2f,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::AMOANDW => Inst {
-                opcode: 0x2f,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::AMOCASB => Inst {
-                opcode: 0x2f,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::AMOCASD => Inst {
-                opcode: 0x2f,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::AMOCASH => Inst {
-                opcode: 0x2f,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::AMOCASQ => Inst {
-                opcode: 0x2f,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::AMOCASW => Inst {
-                opcode: 0x2f,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::AMOMAXB => Inst {
-                opcode: 0x2f,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa00,
-                funct7: 0x50,
-            },
-            Opcode::AMOMAXD => Inst {
-                opcode: 0x2f,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa00,
-                funct7: 0x50,
-            },
-            Opcode::AMOMAXH => Inst {
-                opcode: 0x2f,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa00,
-                funct7: 0x50,
-            },
-            Opcode::AMOMAXW => Inst {
-                opcode: 0x2f,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa00,
-                funct7: 0x50,
-            },
-            Opcode::AMOMAXUB => Inst {
-                opcode: 0x2f,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe00,
-                funct7: 0x70,
-            },
-            Opcode::AMOMAXUD => Inst {
-                opcode: 0x2f,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe00,
-                funct7: 0x70,
-            },
-            Opcode::AMOMAXUH => Inst {
-                opcode: 0x2f,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe00,
-                funct7: 0x70,
-            },
-            Opcode::AMOMAXUW => Inst {
-                opcode: 0x2f,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe00,
-                funct7: 0x70,
-            },
-            Opcode::AMOMINB => Inst {
-                opcode: 0x2f,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x800,
-                funct7: 0x40,
-            },
-            Opcode::AMOMIND => Inst {
-                opcode: 0x2f,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x800,
-                funct7: 0x40,
-            },
-            Opcode::AMOMINH => Inst {
-                opcode: 0x2f,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x800,
-                funct7: 0x40,
-            },
-            Opcode::AMOMINW => Inst {
-                opcode: 0x2f,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x800,
-                funct7: 0x40,
-            },
-            Opcode::AMOMINUB => Inst {
-                opcode: 0x2f,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc00,
-                funct7: 0x60,
-            },
-            Opcode::AMOMINUD => Inst {
-                opcode: 0x2f,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc00,
-                funct7: 0x60,
-            },
-            Opcode::AMOMINUH => Inst {
-                opcode: 0x2f,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc00,
-                funct7: 0x60,
-            },
-            Opcode::AMOMINUW => Inst {
-                opcode: 0x2f,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc00,
-                funct7: 0x60,
-            },
-            Opcode::AMOORB => Inst {
-                opcode: 0x2f,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::AMOORD => Inst {
-                opcode: 0x2f,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::AMOORH => Inst {
-                opcode: 0x2f,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::AMOORW => Inst {
-                opcode: 0x2f,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::AMOSWAPB => Inst {
-                opcode: 0x2f,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::AMOSWAPD => Inst {
-                opcode: 0x2f,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::AMOSWAPH => Inst {
-                opcode: 0x2f,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::AMOSWAPW => Inst {
-                opcode: 0x2f,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::AMOXORB => Inst {
-                opcode: 0x2f,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::AMOXORD => Inst {
-                opcode: 0x2f,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::AMOXORH => Inst {
-                opcode: 0x2f,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::AMOXORW => Inst {
-                opcode: 0x2f,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::AND => Inst {
-                opcode: 0x33,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::ANDI => Inst {
-                opcode: 0x13,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::ANDN => Inst {
-                opcode: 0x33,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::AUIPC => Inst {
-                opcode: 0x17,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::BCLR => Inst {
-                opcode: 0x33,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::BCLRI => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::BCLRIRV32 => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::BEQ => Inst {
-                opcode: 0x63,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::BEQZ => Inst {
-                opcode: 0x63,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::BEXT => Inst {
-                opcode: 0x33,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::BEXTI => Inst {
-                opcode: 0x13,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::BEXTIRV32 => Inst {
-                opcode: 0x13,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::BGE => Inst {
-                opcode: 0x63,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::BGEU => Inst {
-                opcode: 0x63,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::BGEZ => Inst {
-                opcode: 0x63,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::BGT => Inst {
-                opcode: 0x63,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::BGTU => Inst {
-                opcode: 0x63,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::BGTZ => Inst {
-                opcode: 0x63,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::BINV => Inst {
-                opcode: 0x33,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x680,
-                funct7: 0x34,
-            },
-            Opcode::BINVI => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x680,
-                funct7: 0x34,
-            },
-            Opcode::BINVIRV32 => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x680,
-                funct7: 0x34,
-            },
-            Opcode::BLE => Inst {
-                opcode: 0x63,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::BLEU => Inst {
-                opcode: 0x63,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::BLEZ => Inst {
-                opcode: 0x63,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::BLT => Inst {
-                opcode: 0x63,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::BLTU => Inst {
-                opcode: 0x63,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::BLTZ => Inst {
-                opcode: 0x63,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::BNE => Inst {
-                opcode: 0x63,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::BNEZ => Inst {
-                opcode: 0x63,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::BREV8 => Inst {
-                opcode: 0x13,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x7,
-                csr: 0x687,
-                funct7: 0x34,
-            },
-            Opcode::BSET => Inst {
-                opcode: 0x33,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::BSETI => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::BSETIRV32 => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::CADD => Inst {
-                opcode: 0x2,
-                funct3: 0x1,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CADDI => Inst {
-                opcode: 0x1,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CADDI16SP => Inst {
-                opcode: 0x1,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CADDI4SPN => Inst {
-                opcode: 0x0,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CADDIW => Inst {
-                opcode: 0x1,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CADDW => Inst {
-                opcode: 0x21,
-                funct3: 0x1,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CAND => Inst {
-                opcode: 0x61,
-                funct3: 0x0,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CANDI => Inst {
-                opcode: 0x1,
-                funct3: 0x0,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CBEQZ => Inst {
-                opcode: 0x1,
-                funct3: 0x4,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CBNEZ => Inst {
-                opcode: 0x1,
-                funct3: 0x6,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CEBREAK => Inst {
-                opcode: 0x2,
-                funct3: 0x1,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CFLD => Inst {
-                opcode: 0x0,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CFLDSP => Inst {
-                opcode: 0x2,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CFLW => Inst {
-                opcode: 0x0,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CFLWSP => Inst {
-                opcode: 0x2,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CFSD => Inst {
-                opcode: 0x0,
-                funct3: 0x2,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CFSDSP => Inst {
-                opcode: 0x2,
-                funct3: 0x2,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CFSW => Inst {
-                opcode: 0x0,
-                funct3: 0x6,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CFSWSP => Inst {
-                opcode: 0x2,
-                funct3: 0x6,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CJ => Inst {
-                opcode: 0x1,
-                funct3: 0x2,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CJAL => Inst {
-                opcode: 0x1,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CJALR => Inst {
-                opcode: 0x2,
-                funct3: 0x1,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CJR => Inst {
-                opcode: 0x2,
-                funct3: 0x0,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CLBU => Inst {
-                opcode: 0x0,
-                funct3: 0x0,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CLD => Inst {
-                opcode: 0x0,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CLDSP => Inst {
-                opcode: 0x2,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CLH => Inst {
-                opcode: 0x40,
-                funct3: 0x0,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CLHU => Inst {
-                opcode: 0x0,
-                funct3: 0x0,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CLI => Inst {
-                opcode: 0x1,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CLUI => Inst {
-                opcode: 0x1,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CLW => Inst {
-                opcode: 0x0,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CLWSP => Inst {
-                opcode: 0x2,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CMOP1 => Inst {
-                opcode: 0x1,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CMOP11 => Inst {
-                opcode: 0x1,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CMOP13 => Inst {
-                opcode: 0x1,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CMOP15 => Inst {
-                opcode: 0x1,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CMOP3 => Inst {
-                opcode: 0x1,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CMOP5 => Inst {
-                opcode: 0x1,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CMOP7 => Inst {
-                opcode: 0x1,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CMOP9 => Inst {
-                opcode: 0x1,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CMOPN => Inst {
-                opcode: 0x1,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CMUL => Inst {
-                opcode: 0x41,
-                funct3: 0x1,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CMV => Inst {
-                opcode: 0x2,
-                funct3: 0x0,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CNOP => Inst {
-                opcode: 0x1,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CNOT => Inst {
-                opcode: 0x75,
-                funct3: 0x1,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CNTLALL => Inst {
-                opcode: 0x16,
-                funct3: 0x1,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CNTLP1 => Inst {
-                opcode: 0xa,
-                funct3: 0x1,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CNTLPALL => Inst {
-                opcode: 0xe,
-                funct3: 0x1,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CNTLS1 => Inst {
-                opcode: 0x12,
-                funct3: 0x1,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::COR => Inst {
-                opcode: 0x41,
-                funct3: 0x0,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSB => Inst {
-                opcode: 0x0,
-                funct3: 0x0,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSD => Inst {
-                opcode: 0x0,
-                funct3: 0x6,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSDSP => Inst {
-                opcode: 0x2,
-                funct3: 0x6,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSEXTB => Inst {
-                opcode: 0x65,
-                funct3: 0x1,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSEXTH => Inst {
-                opcode: 0x6d,
-                funct3: 0x1,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSEXTW => Inst {
-                opcode: 0x1,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSH => Inst {
-                opcode: 0x0,
-                funct3: 0x0,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSLLI => Inst {
-                opcode: 0x2,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSLLIRV32 => Inst {
-                opcode: 0x2,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSRAI => Inst {
-                opcode: 0x1,
-                funct3: 0x0,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSRAIRV32 => Inst {
-                opcode: 0x1,
-                funct3: 0x0,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSRLI => Inst {
-                opcode: 0x1,
-                funct3: 0x0,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSRLIRV32 => Inst {
-                opcode: 0x1,
-                funct3: 0x0,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSSPOPCHKX5 => Inst {
-                opcode: 0x1,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSSPUSHX1 => Inst {
-                opcode: 0x1,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSUB => Inst {
-                opcode: 0x1,
-                funct3: 0x0,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSUBW => Inst {
-                opcode: 0x1,
-                funct3: 0x1,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSW => Inst {
-                opcode: 0x0,
-                funct3: 0x4,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSWSP => Inst {
-                opcode: 0x2,
-                funct3: 0x4,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CXOR => Inst {
-                opcode: 0x21,
-                funct3: 0x0,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CZEXTB => Inst {
-                opcode: 0x61,
-                funct3: 0x1,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CZEXTH => Inst {
-                opcode: 0x69,
-                funct3: 0x1,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CZEXTW => Inst {
-                opcode: 0x71,
-                funct3: 0x1,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CBOCLEAN => Inst {
-                opcode: 0xf,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x1,
-                funct7: 0x0,
-            },
-            Opcode::CBOFLUSH => Inst {
-                opcode: 0xf,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0x2,
-                funct7: 0x0,
-            },
-            Opcode::CBOINVAL => Inst {
-                opcode: 0xf,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CBOZERO => Inst {
-                opcode: 0xf,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x4,
-                csr: 0x4,
-                funct7: 0x0,
-            },
-            Opcode::CLMUL => Inst {
-                opcode: 0x33,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa0,
-                funct7: 0x5,
-            },
-            Opcode::CLMULH => Inst {
-                opcode: 0x33,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa0,
-                funct7: 0x5,
-            },
-            Opcode::CLMULR => Inst {
-                opcode: 0x33,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa0,
-                funct7: 0x5,
-            },
-            Opcode::CLZ => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::CLZW => Inst {
-                opcode: 0x1b,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::CMJALT => Inst {
-                opcode: 0x2,
-                funct3: 0x2,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CMMVA01S => Inst {
-                opcode: 0x62,
-                funct3: 0x2,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CMMVSA01 => Inst {
-                opcode: 0x22,
-                funct3: 0x2,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CMPOP => Inst {
-                opcode: 0x2,
-                funct3: 0x3,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CMPOPRET => Inst {
-                opcode: 0x2,
-                funct3: 0x3,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CMPOPRETZ => Inst {
-                opcode: 0x2,
-                funct3: 0x3,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CMPUSH => Inst {
-                opcode: 0x2,
-                funct3: 0x3,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CPOP => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0x602,
-                funct7: 0x30,
-            },
-            Opcode::CPOPW => Inst {
-                opcode: 0x1b,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0x602,
-                funct7: 0x30,
-            },
-            Opcode::CSRC => Inst {
-                opcode: 0x73,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSRCI => Inst {
-                opcode: 0x73,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSRR => Inst {
-                opcode: 0x73,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSRRC => Inst {
-                opcode: 0x73,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSRRCI => Inst {
-                opcode: 0x73,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSRRS => Inst {
-                opcode: 0x73,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSRRSI => Inst {
-                opcode: 0x73,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSRRW => Inst {
-                opcode: 0x73,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSRRWI => Inst {
-                opcode: 0x73,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSRS => Inst {
-                opcode: 0x73,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSRSI => Inst {
-                opcode: 0x73,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSRW => Inst {
-                opcode: 0x73,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CSRWI => Inst {
-                opcode: 0x73,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::CTZ => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x601,
-                funct7: 0x30,
-            },
-            Opcode::CTZW => Inst {
-                opcode: 0x1b,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x601,
-                funct7: 0x30,
-            },
-            Opcode::CZEROEQZ => Inst {
-                opcode: 0x33,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe0,
-                funct7: 0x7,
-            },
-            Opcode::CZERONEZ => Inst {
-                opcode: 0x33,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe0,
-                funct7: 0x7,
-            },
-            Opcode::DIV => Inst {
-                opcode: 0x33,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::DIVU => Inst {
-                opcode: 0x33,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::DIVUW => Inst {
-                opcode: 0x3b,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::DIVW => Inst {
-                opcode: 0x3b,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::DRET => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x12,
-                csr: 0x7b2,
-                funct7: 0x3d,
-            },
-            Opcode::EBREAK => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x1,
-                funct7: 0x0,
-            },
-            Opcode::ECALL => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::FABSD => Inst {
-                opcode: 0x53,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x220,
-                funct7: 0x11,
-            },
-            Opcode::FABSH => Inst {
-                opcode: 0x53,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x240,
-                funct7: 0x12,
-            },
-            Opcode::FABSQ => Inst {
-                opcode: 0x53,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x260,
-                funct7: 0x13,
-            },
-            Opcode::FABSS => Inst {
-                opcode: 0x53,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::FADDD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::FADDH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::FADDQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x60,
-                funct7: 0x3,
-            },
-            Opcode::FADDS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::FCLASSD => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe20,
-                funct7: 0x71,
-            },
-            Opcode::FCLASSH => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe40,
-                funct7: 0x72,
-            },
-            Opcode::FCLASSQ => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe60,
-                funct7: 0x73,
-            },
-            Opcode::FCLASSS => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe00,
-                funct7: 0x70,
-            },
-            Opcode::FCVTBF16S => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x448,
-                funct7: 0x22,
-            },
-            Opcode::FCVTDH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0x422,
-                funct7: 0x21,
-            },
-            Opcode::FCVTDL => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0xd22,
-                funct7: 0x69,
-            },
-            Opcode::FCVTDLU => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0xd23,
-                funct7: 0x69,
-            },
-            Opcode::FCVTDQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0x423,
-                funct7: 0x21,
-            },
-            Opcode::FCVTDS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x420,
-                funct7: 0x21,
-            },
-            Opcode::FCVTDW => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xd20,
-                funct7: 0x69,
-            },
-            Opcode::FCVTDWU => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0xd21,
-                funct7: 0x69,
-            },
-            Opcode::FCVTHD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x441,
-                funct7: 0x22,
-            },
-            Opcode::FCVTHL => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0xd42,
-                funct7: 0x6a,
-            },
-            Opcode::FCVTHLU => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0xd43,
-                funct7: 0x6a,
-            },
-            Opcode::FCVTHQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0x443,
-                funct7: 0x22,
-            },
-            Opcode::FCVTHS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x440,
-                funct7: 0x22,
-            },
-            Opcode::FCVTHW => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xd40,
-                funct7: 0x6a,
-            },
-            Opcode::FCVTHWU => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0xd41,
-                funct7: 0x6a,
-            },
-            Opcode::FCVTLD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0xc22,
-                funct7: 0x61,
-            },
-            Opcode::FCVTLH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0xc42,
-                funct7: 0x62,
-            },
-            Opcode::FCVTLQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0xc62,
-                funct7: 0x63,
-            },
-            Opcode::FCVTLS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0xc02,
-                funct7: 0x60,
-            },
-            Opcode::FCVTLUD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0xc23,
-                funct7: 0x61,
-            },
-            Opcode::FCVTLUH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0xc43,
-                funct7: 0x62,
-            },
-            Opcode::FCVTLUQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0xc63,
-                funct7: 0x63,
-            },
-            Opcode::FCVTLUS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0xc03,
-                funct7: 0x60,
-            },
-            Opcode::FCVTQD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x461,
-                funct7: 0x23,
-            },
-            Opcode::FCVTQH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0x462,
-                funct7: 0x23,
-            },
-            Opcode::FCVTQL => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0xd62,
-                funct7: 0x6b,
-            },
-            Opcode::FCVTQLU => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0xd63,
-                funct7: 0x6b,
-            },
-            Opcode::FCVTQS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x460,
-                funct7: 0x23,
-            },
-            Opcode::FCVTQW => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xd60,
-                funct7: 0x6b,
-            },
-            Opcode::FCVTQWU => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0xd61,
-                funct7: 0x6b,
-            },
-            Opcode::FCVTSBF16 => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x6,
-                csr: 0x406,
-                funct7: 0x20,
-            },
-            Opcode::FCVTSD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x401,
-                funct7: 0x20,
-            },
-            Opcode::FCVTSH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0x402,
-                funct7: 0x20,
-            },
-            Opcode::FCVTSL => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0xd02,
-                funct7: 0x68,
-            },
-            Opcode::FCVTSLU => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0xd03,
-                funct7: 0x68,
-            },
-            Opcode::FCVTSQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0x403,
-                funct7: 0x20,
-            },
-            Opcode::FCVTSW => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xd00,
-                funct7: 0x68,
-            },
-            Opcode::FCVTSWU => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0xd01,
-                funct7: 0x68,
-            },
-            Opcode::FCVTWD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc20,
-                funct7: 0x61,
-            },
-            Opcode::FCVTWH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc40,
-                funct7: 0x62,
-            },
-            Opcode::FCVTWQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc60,
-                funct7: 0x63,
-            },
-            Opcode::FCVTWS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc00,
-                funct7: 0x60,
-            },
-            Opcode::FCVTWUD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0xc21,
-                funct7: 0x61,
-            },
-            Opcode::FCVTWUH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0xc41,
-                funct7: 0x62,
-            },
-            Opcode::FCVTWUQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0xc61,
-                funct7: 0x63,
-            },
-            Opcode::FCVTWUS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0xc01,
-                funct7: 0x60,
-            },
-            Opcode::FCVTMODWD => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0xc28,
-                funct7: 0x61,
-            },
-            Opcode::FDIVD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x1a0,
-                funct7: 0xd,
-            },
-            Opcode::FDIVH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x1c0,
-                funct7: 0xe,
-            },
-            Opcode::FDIVQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x1e0,
-                funct7: 0xf,
-            },
-            Opcode::FDIVS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x180,
-                funct7: 0xc,
-            },
-            Opcode::FENCE => Inst {
-                opcode: 0xf,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::FENCEI => Inst {
-                opcode: 0xf,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::FENCETSO => Inst {
-                opcode: 0xf,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x13,
-                csr: 0x833,
-                funct7: 0x41,
-            },
-            Opcode::FEQD => Inst {
-                opcode: 0x53,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa20,
-                funct7: 0x51,
-            },
-            Opcode::FEQH => Inst {
-                opcode: 0x53,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa40,
-                funct7: 0x52,
-            },
-            Opcode::FEQQ => Inst {
-                opcode: 0x53,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa60,
-                funct7: 0x53,
-            },
-            Opcode::FEQS => Inst {
-                opcode: 0x53,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa00,
-                funct7: 0x50,
-            },
-            Opcode::FLD => Inst {
-                opcode: 0x7,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::FLED => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa20,
-                funct7: 0x51,
-            },
-            Opcode::FLEH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa40,
-                funct7: 0x52,
-            },
-            Opcode::FLEQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa60,
-                funct7: 0x53,
-            },
-            Opcode::FLES => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa00,
-                funct7: 0x50,
-            },
-            Opcode::FLEQD => Inst {
-                opcode: 0x53,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa20,
-                funct7: 0x51,
-            },
-            Opcode::FLEQH => Inst {
-                opcode: 0x53,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa40,
-                funct7: 0x52,
-            },
-            Opcode::FLEQQ => Inst {
-                opcode: 0x53,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa60,
-                funct7: 0x53,
-            },
-            Opcode::FLEQS => Inst {
-                opcode: 0x53,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa00,
-                funct7: 0x50,
-            },
-            Opcode::FLH => Inst {
-                opcode: 0x7,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::FLID => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0xf21,
-                funct7: 0x79,
-            },
-            Opcode::FLIH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0xf41,
-                funct7: 0x7a,
-            },
-            Opcode::FLIQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0xf61,
-                funct7: 0x7b,
-            },
-            Opcode::FLIS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0xf01,
-                funct7: 0x78,
-            },
-            Opcode::FLQ => Inst {
-                opcode: 0x7,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::FLTD => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa20,
-                funct7: 0x51,
-            },
-            Opcode::FLTH => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa40,
-                funct7: 0x52,
-            },
-            Opcode::FLTQ => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa60,
-                funct7: 0x53,
-            },
-            Opcode::FLTS => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa00,
-                funct7: 0x50,
-            },
-            Opcode::FLTQD => Inst {
-                opcode: 0x53,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa20,
-                funct7: 0x51,
-            },
-            Opcode::FLTQH => Inst {
-                opcode: 0x53,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa40,
-                funct7: 0x52,
-            },
-            Opcode::FLTQQ => Inst {
-                opcode: 0x53,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa60,
-                funct7: 0x53,
-            },
-            Opcode::FLTQS => Inst {
-                opcode: 0x53,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa00,
-                funct7: 0x50,
-            },
-            Opcode::FLW => Inst {
-                opcode: 0x7,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::FMADDD => Inst {
-                opcode: 0x43,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::FMADDH => Inst {
-                opcode: 0x43,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::FMADDQ => Inst {
-                opcode: 0x43,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x60,
-                funct7: 0x3,
-            },
-            Opcode::FMADDS => Inst {
-                opcode: 0x43,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::FMAXD => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2a0,
-                funct7: 0x15,
-            },
-            Opcode::FMAXH => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2c0,
-                funct7: 0x16,
-            },
-            Opcode::FMAXQ => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2e0,
-                funct7: 0x17,
-            },
-            Opcode::FMAXS => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::FMAXMD => Inst {
-                opcode: 0x53,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2a0,
-                funct7: 0x15,
-            },
-            Opcode::FMAXMH => Inst {
-                opcode: 0x53,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2c0,
-                funct7: 0x16,
-            },
-            Opcode::FMAXMQ => Inst {
-                opcode: 0x53,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2e0,
-                funct7: 0x17,
-            },
-            Opcode::FMAXMS => Inst {
-                opcode: 0x53,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::FMIND => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2a0,
-                funct7: 0x15,
-            },
-            Opcode::FMINH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2c0,
-                funct7: 0x16,
-            },
-            Opcode::FMINQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2e0,
-                funct7: 0x17,
-            },
-            Opcode::FMINS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::FMINMD => Inst {
-                opcode: 0x53,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2a0,
-                funct7: 0x15,
-            },
-            Opcode::FMINMH => Inst {
-                opcode: 0x53,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2c0,
-                funct7: 0x16,
-            },
-            Opcode::FMINMQ => Inst {
-                opcode: 0x53,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2e0,
-                funct7: 0x17,
-            },
-            Opcode::FMINMS => Inst {
-                opcode: 0x53,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::FMSUBD => Inst {
-                opcode: 0x47,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::FMSUBH => Inst {
-                opcode: 0x47,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::FMSUBQ => Inst {
-                opcode: 0x47,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x60,
-                funct7: 0x3,
-            },
-            Opcode::FMSUBS => Inst {
-                opcode: 0x47,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::FMULD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x120,
-                funct7: 0x9,
-            },
-            Opcode::FMULH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x140,
-                funct7: 0xa,
-            },
-            Opcode::FMULQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x160,
-                funct7: 0xb,
-            },
-            Opcode::FMULS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x100,
-                funct7: 0x8,
-            },
-            Opcode::FMVD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x220,
-                funct7: 0x11,
-            },
-            Opcode::FMVDX => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xf20,
-                funct7: 0x79,
-            },
-            Opcode::FMVH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x240,
-                funct7: 0x12,
-            },
-            Opcode::FMVHX => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xf40,
-                funct7: 0x7a,
-            },
-            Opcode::FMVQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x260,
-                funct7: 0x13,
-            },
-            Opcode::FMVS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::FMVSX => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xf00,
-                funct7: 0x78,
-            },
-            Opcode::FMVWX => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xf00,
-                funct7: 0x78,
-            },
-            Opcode::FMVXD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe20,
-                funct7: 0x71,
-            },
-            Opcode::FMVXH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe40,
-                funct7: 0x72,
-            },
-            Opcode::FMVXS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe00,
-                funct7: 0x70,
-            },
-            Opcode::FMVXW => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe00,
-                funct7: 0x70,
-            },
-            Opcode::FMVHXD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0xe21,
-                funct7: 0x71,
-            },
-            Opcode::FMVHXQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0xe61,
-                funct7: 0x73,
-            },
-            Opcode::FMVPDX => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb20,
-                funct7: 0x59,
-            },
-            Opcode::FMVPQX => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb60,
-                funct7: 0x5b,
-            },
-            Opcode::FNEGD => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x220,
-                funct7: 0x11,
-            },
-            Opcode::FNEGH => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x240,
-                funct7: 0x12,
-            },
-            Opcode::FNEGQ => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x260,
-                funct7: 0x13,
-            },
-            Opcode::FNEGS => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::FNMADDD => Inst {
-                opcode: 0x4f,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::FNMADDH => Inst {
-                opcode: 0x4f,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::FNMADDQ => Inst {
-                opcode: 0x4f,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x60,
-                funct7: 0x3,
-            },
-            Opcode::FNMADDS => Inst {
-                opcode: 0x4f,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::FNMSUBD => Inst {
-                opcode: 0x4b,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::FNMSUBH => Inst {
-                opcode: 0x4b,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::FNMSUBQ => Inst {
-                opcode: 0x4b,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x60,
-                funct7: 0x3,
-            },
-            Opcode::FNMSUBS => Inst {
-                opcode: 0x4b,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::FRCSR => Inst {
-                opcode: 0x73,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0x3,
-                funct7: 0x0,
-            },
-            Opcode::FRFLAGS => Inst {
-                opcode: 0x73,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x1,
-                funct7: 0x0,
-            },
-            Opcode::FROUNDD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x4,
-                csr: 0x424,
-                funct7: 0x21,
-            },
-            Opcode::FROUNDH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x4,
-                csr: 0x444,
-                funct7: 0x22,
-            },
-            Opcode::FROUNDQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x4,
-                csr: 0x464,
-                funct7: 0x23,
-            },
-            Opcode::FROUNDS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x4,
-                csr: 0x404,
-                funct7: 0x20,
-            },
-            Opcode::FROUNDNXD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x5,
-                csr: 0x425,
-                funct7: 0x21,
-            },
-            Opcode::FROUNDNXH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x5,
-                csr: 0x445,
-                funct7: 0x22,
-            },
-            Opcode::FROUNDNXQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x5,
-                csr: 0x465,
-                funct7: 0x23,
-            },
-            Opcode::FROUNDNXS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x5,
-                csr: 0x405,
-                funct7: 0x20,
-            },
-            Opcode::FRRM => Inst {
-                opcode: 0x73,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0x2,
-                funct7: 0x0,
-            },
-            Opcode::FSCSR => Inst {
-                opcode: 0x73,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0x3,
-                funct7: 0x0,
-            },
-            Opcode::FSD => Inst {
-                opcode: 0x27,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::FSFLAGS => Inst {
-                opcode: 0x73,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x1,
-                funct7: 0x0,
-            },
-            Opcode::FSFLAGSI => Inst {
-                opcode: 0x73,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x1,
-                funct7: 0x0,
-            },
-            Opcode::FSGNJD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x220,
-                funct7: 0x11,
-            },
-            Opcode::FSGNJH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x240,
-                funct7: 0x12,
-            },
-            Opcode::FSGNJQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x260,
-                funct7: 0x13,
-            },
-            Opcode::FSGNJS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::FSGNJND => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x220,
-                funct7: 0x11,
-            },
-            Opcode::FSGNJNH => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x240,
-                funct7: 0x12,
-            },
-            Opcode::FSGNJNQ => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x260,
-                funct7: 0x13,
-            },
-            Opcode::FSGNJNS => Inst {
-                opcode: 0x53,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::FSGNJXD => Inst {
-                opcode: 0x53,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x220,
-                funct7: 0x11,
-            },
-            Opcode::FSGNJXH => Inst {
-                opcode: 0x53,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x240,
-                funct7: 0x12,
-            },
-            Opcode::FSGNJXQ => Inst {
-                opcode: 0x53,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x260,
-                funct7: 0x13,
-            },
-            Opcode::FSGNJXS => Inst {
-                opcode: 0x53,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::FSH => Inst {
-                opcode: 0x27,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::FSQ => Inst {
-                opcode: 0x27,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::FSQRTD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x5a0,
-                funct7: 0x2d,
-            },
-            Opcode::FSQRTH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x5c0,
-                funct7: 0x2e,
-            },
-            Opcode::FSQRTQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x5e0,
-                funct7: 0x2f,
-            },
-            Opcode::FSQRTS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x580,
-                funct7: 0x2c,
-            },
-            Opcode::FSRM => Inst {
-                opcode: 0x73,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0x2,
-                funct7: 0x0,
-            },
-            Opcode::FSRMI => Inst {
-                opcode: 0x73,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0x2,
-                funct7: 0x0,
-            },
-            Opcode::FSUBD => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa0,
-                funct7: 0x5,
-            },
-            Opcode::FSUBH => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc0,
-                funct7: 0x6,
-            },
-            Opcode::FSUBQ => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe0,
-                funct7: 0x7,
-            },
-            Opcode::FSUBS => Inst {
-                opcode: 0x53,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::FSW => Inst {
-                opcode: 0x27,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::HFENCEGVMA => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x620,
-                funct7: 0x31,
-            },
-            Opcode::HFENCEVVMA => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x220,
-                funct7: 0x11,
-            },
-            Opcode::HINVALGVMA => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x660,
-                funct7: 0x33,
-            },
-            Opcode::HINVALVVMA => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x260,
-                funct7: 0x13,
-            },
-            Opcode::HLVB => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::HLVBU => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x601,
-                funct7: 0x30,
-            },
-            Opcode::HLVD => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x6c0,
-                funct7: 0x36,
-            },
-            Opcode::HLVH => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x640,
-                funct7: 0x32,
-            },
-            Opcode::HLVHU => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x641,
-                funct7: 0x32,
-            },
-            Opcode::HLVW => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x680,
-                funct7: 0x34,
-            },
-            Opcode::HLVWU => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x681,
-                funct7: 0x34,
-            },
-            Opcode::HLVXHU => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0x643,
-                funct7: 0x32,
-            },
-            Opcode::HLVXWU => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0x683,
-                funct7: 0x34,
-            },
-            Opcode::HSVB => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x620,
-                funct7: 0x31,
-            },
-            Opcode::HSVD => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x6e0,
-                funct7: 0x37,
-            },
-            Opcode::HSVH => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x660,
-                funct7: 0x33,
-            },
-            Opcode::HSVW => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x6a0,
-                funct7: 0x35,
-            },
-            Opcode::J => Inst {
-                opcode: 0x6f,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::JAL => Inst {
-                opcode: 0x6f,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::JALPSEUDO => Inst {
-                opcode: 0x6f,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::JALR => Inst {
-                opcode: 0x67,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::JALRPSEUDO => Inst {
-                opcode: 0x67,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::JR => Inst {
-                opcode: 0x67,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::LB => Inst {
-                opcode: 0x3,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::LBU => Inst {
-                opcode: 0x3,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::LD => Inst {
-                opcode: 0x3,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::LH => Inst {
-                opcode: 0x3,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::LHU => Inst {
-                opcode: 0x3,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::LRD => Inst {
-                opcode: 0x2f,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x100,
-                funct7: 0x8,
-            },
-            Opcode::LRW => Inst {
-                opcode: 0x2f,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x100,
-                funct7: 0x8,
-            },
-            Opcode::LUI => Inst {
-                opcode: 0x37,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::LW => Inst {
-                opcode: 0x3,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::LWU => Inst {
-                opcode: 0x3,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::MAX => Inst {
-                opcode: 0x33,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa0,
-                funct7: 0x5,
-            },
-            Opcode::MAXU => Inst {
-                opcode: 0x33,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa0,
-                funct7: 0x5,
-            },
-            Opcode::MIN => Inst {
-                opcode: 0x33,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa0,
-                funct7: 0x5,
-            },
-            Opcode::MINU => Inst {
-                opcode: 0x33,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa0,
-                funct7: 0x5,
-            },
-            Opcode::MNRET => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0x702,
-                funct7: 0x38,
-            },
-            Opcode::MOPR0 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1c,
-                csr: 0x81c,
-                funct7: 0x40,
-            },
-            Opcode::MOPR1 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1d,
-                csr: 0x81d,
-                funct7: 0x40,
-            },
-            Opcode::MOPR10 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1e,
-                csr: 0x89e,
-                funct7: 0x44,
-            },
-            Opcode::MOPR11 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1f,
-                csr: 0x89f,
-                funct7: 0x44,
-            },
-            Opcode::MOPR12 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1c,
-                csr: 0x8dc,
-                funct7: 0x46,
-            },
-            Opcode::MOPR13 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1d,
-                csr: 0x8dd,
-                funct7: 0x46,
-            },
-            Opcode::MOPR14 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1e,
-                csr: 0x8de,
-                funct7: 0x46,
-            },
-            Opcode::MOPR15 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1f,
-                csr: 0x8df,
-                funct7: 0x46,
-            },
-            Opcode::MOPR16 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1c,
-                csr: 0xc1c,
-                funct7: 0x60,
-            },
-            Opcode::MOPR17 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1d,
-                csr: 0xc1d,
-                funct7: 0x60,
-            },
-            Opcode::MOPR18 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1e,
-                csr: 0xc1e,
-                funct7: 0x60,
-            },
-            Opcode::MOPR19 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1f,
-                csr: 0xc1f,
-                funct7: 0x60,
-            },
-            Opcode::MOPR2 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1e,
-                csr: 0x81e,
-                funct7: 0x40,
-            },
-            Opcode::MOPR20 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1c,
-                csr: 0xc5c,
-                funct7: 0x62,
-            },
-            Opcode::MOPR21 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1d,
-                csr: 0xc5d,
-                funct7: 0x62,
-            },
-            Opcode::MOPR22 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1e,
-                csr: 0xc5e,
-                funct7: 0x62,
-            },
-            Opcode::MOPR23 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1f,
-                csr: 0xc5f,
-                funct7: 0x62,
-            },
-            Opcode::MOPR24 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1c,
-                csr: 0xc9c,
-                funct7: 0x64,
-            },
-            Opcode::MOPR25 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1d,
-                csr: 0xc9d,
-                funct7: 0x64,
-            },
-            Opcode::MOPR26 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1e,
-                csr: 0xc9e,
-                funct7: 0x64,
-            },
-            Opcode::MOPR27 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1f,
-                csr: 0xc9f,
-                funct7: 0x64,
-            },
-            Opcode::MOPR28 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1c,
-                csr: 0xcdc,
-                funct7: 0x66,
-            },
-            Opcode::MOPR29 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1d,
-                csr: 0xcdd,
-                funct7: 0x66,
-            },
-            Opcode::MOPR3 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1f,
-                csr: 0x81f,
-                funct7: 0x40,
-            },
-            Opcode::MOPR30 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1e,
-                csr: 0xcde,
-                funct7: 0x66,
-            },
-            Opcode::MOPR31 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1f,
-                csr: 0xcdf,
-                funct7: 0x66,
-            },
-            Opcode::MOPR4 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1c,
-                csr: 0x85c,
-                funct7: 0x42,
-            },
-            Opcode::MOPR5 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1d,
-                csr: 0x85d,
-                funct7: 0x42,
-            },
-            Opcode::MOPR6 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1e,
-                csr: 0x85e,
-                funct7: 0x42,
-            },
-            Opcode::MOPR7 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1f,
-                csr: 0x85f,
-                funct7: 0x42,
-            },
-            Opcode::MOPR8 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1c,
-                csr: 0x89c,
-                funct7: 0x44,
-            },
-            Opcode::MOPR9 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1d,
-                csr: 0x89d,
-                funct7: 0x44,
-            },
-            Opcode::MOPRN => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x1c,
-                csr: 0x81c,
-                funct7: 0x40,
-            },
-            Opcode::MOPRR0 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x820,
-                funct7: 0x41,
-            },
-            Opcode::MOPRR1 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x860,
-                funct7: 0x43,
-            },
-            Opcode::MOPRR2 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x8a0,
-                funct7: 0x45,
-            },
-            Opcode::MOPRR3 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x8e0,
-                funct7: 0x47,
-            },
-            Opcode::MOPRR4 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc20,
-                funct7: 0x61,
-            },
-            Opcode::MOPRR5 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc60,
-                funct7: 0x63,
-            },
-            Opcode::MOPRR6 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xca0,
-                funct7: 0x65,
-            },
-            Opcode::MOPRR7 => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xce0,
-                funct7: 0x67,
-            },
-            Opcode::MOPRRN => Inst {
-                opcode: 0x73,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x820,
-                funct7: 0x41,
-            },
-            Opcode::MRET => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0x302,
-                funct7: 0x18,
-            },
-            Opcode::MUL => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::MULH => Inst {
-                opcode: 0x33,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::MULHSU => Inst {
-                opcode: 0x33,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::MULHU => Inst {
-                opcode: 0x33,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::MULW => Inst {
-                opcode: 0x3b,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::MV => Inst {
-                opcode: 0x13,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::NEG => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::NOP => Inst {
-                opcode: 0x13,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::NTLALL => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x5,
-                csr: 0x5,
-                funct7: 0x0,
-            },
-            Opcode::NTLP1 => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0x2,
-                funct7: 0x0,
-            },
-            Opcode::NTLPALL => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0x3,
-                funct7: 0x0,
-            },
-            Opcode::NTLS1 => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x4,
-                csr: 0x4,
-                funct7: 0x0,
-            },
-            Opcode::OR => Inst {
-                opcode: 0x33,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::ORCB => Inst {
-                opcode: 0x13,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x7,
-                csr: 0x287,
-                funct7: 0x14,
-            },
-            Opcode::ORI => Inst {
-                opcode: 0x13,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::ORN => Inst {
-                opcode: 0x33,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::PACK => Inst {
-                opcode: 0x33,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::PACKH => Inst {
-                opcode: 0x33,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::PACKW => Inst {
-                opcode: 0x3b,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::PAUSE => Inst {
-                opcode: 0xf,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x10,
-                csr: 0x10,
-                funct7: 0x0,
-            },
-            Opcode::PREFETCHI => Inst {
-                opcode: 0x13,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::PREFETCHR => Inst {
-                opcode: 0x13,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x1,
-                funct7: 0x0,
-            },
-            Opcode::PREFETCHW => Inst {
-                opcode: 0x13,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0x3,
-                funct7: 0x0,
-            },
-            Opcode::RDCYCLE => Inst {
-                opcode: 0x73,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc00,
-                funct7: 0x60,
-            },
-            Opcode::RDCYCLEH => Inst {
-                opcode: 0x73,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc80,
-                funct7: 0x64,
-            },
-            Opcode::RDINSTRET => Inst {
-                opcode: 0x73,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0xc02,
-                funct7: 0x60,
-            },
-            Opcode::RDINSTRETH => Inst {
-                opcode: 0x73,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0xc82,
-                funct7: 0x64,
-            },
-            Opcode::RDTIME => Inst {
-                opcode: 0x73,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0xc01,
-                funct7: 0x60,
-            },
-            Opcode::RDTIMEH => Inst {
-                opcode: 0x73,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0xc81,
-                funct7: 0x64,
-            },
-            Opcode::REM => Inst {
-                opcode: 0x33,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::REMU => Inst {
-                opcode: 0x33,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::REMUW => Inst {
-                opcode: 0x3b,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::REMW => Inst {
-                opcode: 0x3b,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x20,
-                funct7: 0x1,
-            },
-            Opcode::RET => Inst {
-                opcode: 0x67,
-                funct3: 0x0,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::REV8 => Inst {
-                opcode: 0x13,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x18,
-                csr: 0x6b8,
-                funct7: 0x35,
-            },
-            Opcode::REV8RV32 => Inst {
-                opcode: 0x13,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x18,
-                csr: 0x698,
-                funct7: 0x34,
-            },
-            Opcode::ROL => Inst {
-                opcode: 0x33,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::ROLW => Inst {
-                opcode: 0x3b,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::ROR => Inst {
-                opcode: 0x33,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::RORI => Inst {
-                opcode: 0x13,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::RORIRV32 => Inst {
-                opcode: 0x13,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::RORIW => Inst {
-                opcode: 0x1b,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::RORW => Inst {
-                opcode: 0x3b,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::SB => Inst {
-                opcode: 0x23,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SBREAK => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x1,
-                funct7: 0x0,
-            },
-            Opcode::SCD => Inst {
-                opcode: 0x2f,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x180,
-                funct7: 0xc,
-            },
-            Opcode::SCW => Inst {
-                opcode: 0x2f,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x180,
-                funct7: 0xc,
-            },
-            Opcode::SCALL => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SCTRCLR => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x4,
-                csr: 0x104,
-                funct7: 0x8,
-            },
-            Opcode::SD => Inst {
-                opcode: 0x23,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SEQZ => Inst {
-                opcode: 0x13,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x1,
-                funct7: 0x0,
-            },
-            Opcode::SEXTB => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x4,
-                csr: 0x604,
-                funct7: 0x30,
-            },
-            Opcode::SEXTH => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x5,
-                csr: 0x605,
-                funct7: 0x30,
-            },
-            Opcode::SEXTW => Inst {
-                opcode: 0x1b,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SFENCEINVALIR => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x181,
-                funct7: 0xc,
-            },
-            Opcode::SFENCEVMA => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x120,
-                funct7: 0x9,
-            },
-            Opcode::SFENCEWINVAL => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x180,
-                funct7: 0xc,
-            },
-            Opcode::SGTZ => Inst {
-                opcode: 0x33,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SH => Inst {
-                opcode: 0x23,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SH1ADD => Inst {
-                opcode: 0x33,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::SH1ADDUW => Inst {
-                opcode: 0x3b,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::SH2ADD => Inst {
-                opcode: 0x33,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::SH2ADDUW => Inst {
-                opcode: 0x3b,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::SH3ADD => Inst {
-                opcode: 0x33,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::SH3ADDUW => Inst {
-                opcode: 0x3b,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::SHA256SIG0 => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0x102,
-                funct7: 0x8,
-            },
-            Opcode::SHA256SIG1 => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x3,
-                csr: 0x103,
-                funct7: 0x8,
-            },
-            Opcode::SHA256SUM0 => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x100,
-                funct7: 0x8,
-            },
-            Opcode::SHA256SUM1 => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x1,
-                csr: 0x101,
-                funct7: 0x8,
-            },
-            Opcode::SHA512SIG0 => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x6,
-                csr: 0x106,
-                funct7: 0x8,
-            },
-            Opcode::SHA512SIG0H => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x5c0,
-                funct7: 0x2e,
-            },
-            Opcode::SHA512SIG0L => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x540,
-                funct7: 0x2a,
-            },
-            Opcode::SHA512SIG1 => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x7,
-                csr: 0x107,
-                funct7: 0x8,
-            },
-            Opcode::SHA512SIG1H => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x5e0,
-                funct7: 0x2f,
-            },
-            Opcode::SHA512SIG1L => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x560,
-                funct7: 0x2b,
-            },
-            Opcode::SHA512SUM0 => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x4,
-                csr: 0x104,
-                funct7: 0x8,
-            },
-            Opcode::SHA512SUM0R => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x500,
-                funct7: 0x28,
-            },
-            Opcode::SHA512SUM1 => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x5,
-                csr: 0x105,
-                funct7: 0x8,
-            },
-            Opcode::SHA512SUM1R => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x520,
-                funct7: 0x29,
-            },
-            Opcode::SINVALVMA => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x160,
-                funct7: 0xb,
-            },
-            Opcode::SLL => Inst {
-                opcode: 0x33,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SLLI => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SLLIRV32 => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SLLIUW => Inst {
-                opcode: 0x1b,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::SLLIW => Inst {
-                opcode: 0x1b,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SLLW => Inst {
-                opcode: 0x3b,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SLT => Inst {
-                opcode: 0x33,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SLTI => Inst {
-                opcode: 0x13,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SLTIU => Inst {
-                opcode: 0x13,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SLTU => Inst {
-                opcode: 0x33,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SLTZ => Inst {
-                opcode: 0x33,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SM3P0 => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x108,
-                funct7: 0x8,
-            },
-            Opcode::SM3P1 => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x9,
-                csr: 0x109,
-                funct7: 0x8,
-            },
-            Opcode::SM4ED => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x300,
-                funct7: 0x18,
-            },
-            Opcode::SM4KS => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x340,
-                funct7: 0x1a,
-            },
-            Opcode::SNEZ => Inst {
-                opcode: 0x33,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SRA => Inst {
-                opcode: 0x33,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::SRAI => Inst {
-                opcode: 0x13,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::SRAIRV32 => Inst {
-                opcode: 0x13,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::SRAIW => Inst {
-                opcode: 0x1b,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::SRAW => Inst {
-                opcode: 0x3b,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::SRET => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x2,
-                csr: 0x102,
-                funct7: 0x8,
-            },
-            Opcode::SRL => Inst {
-                opcode: 0x33,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SRLI => Inst {
-                opcode: 0x13,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SRLIRV32 => Inst {
-                opcode: 0x13,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SRLIW => Inst {
-                opcode: 0x1b,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SRLW => Inst {
-                opcode: 0x3b,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::SUB => Inst {
-                opcode: 0x33,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::SUBW => Inst {
-                opcode: 0x3b,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::SW => Inst {
-                opcode: 0x23,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::UNZIP => Inst {
-                opcode: 0x13,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0xf,
-                csr: 0x8f,
-                funct7: 0x4,
-            },
-            Opcode::VAADDVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x240,
-                funct7: 0x12,
-            },
-            Opcode::VAADDVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x240,
-                funct7: 0x12,
-            },
-            Opcode::VAADDUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::VAADDUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::VADCVIM => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::VADCVVM => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::VADCVXM => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::VADDVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::VADDVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::VADDVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::VAESDFVS => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0xa60,
-                funct7: 0x53,
-            },
-            Opcode::VAESDFVV => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0xa20,
-                funct7: 0x51,
-            },
-            Opcode::VAESDMVS => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa60,
-                funct7: 0x53,
-            },
-            Opcode::VAESDMVV => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa20,
-                funct7: 0x51,
-            },
-            Opcode::VAESEFVS => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x3,
-                rs2: 0x0,
-                csr: 0xa60,
-                funct7: 0x53,
-            },
-            Opcode::VAESEFVV => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x3,
-                rs2: 0x0,
-                csr: 0xa20,
-                funct7: 0x51,
-            },
-            Opcode::VAESEMVS => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x2,
-                rs2: 0x0,
-                csr: 0xa60,
-                funct7: 0x53,
-            },
-            Opcode::VAESEMVV => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x2,
-                rs2: 0x0,
-                csr: 0xa20,
-                funct7: 0x51,
-            },
-            Opcode::VAESKF1VI => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x8a0,
-                funct7: 0x45,
-            },
-            Opcode::VAESKF2VI => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xaa0,
-                funct7: 0x55,
-            },
-            Opcode::VAESZVS => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x7,
-                rs2: 0x0,
-                csr: 0xa60,
-                funct7: 0x53,
-            },
-            Opcode::VANDVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x240,
-                funct7: 0x12,
-            },
-            Opcode::VANDVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x240,
-                funct7: 0x12,
-            },
-            Opcode::VANDVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x240,
-                funct7: 0x12,
-            },
-            Opcode::VANDNVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::VANDNVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::VASUBVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2c0,
-                funct7: 0x16,
-            },
-            Opcode::VASUBVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2c0,
-                funct7: 0x16,
-            },
-            Opcode::VASUBUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::VASUBUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::VBREV8V => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x8,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VBREVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0xa,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VCLMULVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x300,
-                funct7: 0x18,
-            },
-            Opcode::VCLMULVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x300,
-                funct7: 0x18,
-            },
-            Opcode::VCLMULHVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x340,
-                funct7: 0x1a,
-            },
-            Opcode::VCLMULHVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x340,
-                funct7: 0x1a,
-            },
-            Opcode::VCLZV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0xc,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VCOMPRESSVM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x5e0,
-                funct7: 0x2f,
-            },
-            Opcode::VCPOPM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x10,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::VCPOPV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0xe,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VCTZV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0xd,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VDIVVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x840,
-                funct7: 0x42,
-            },
-            Opcode::VDIVVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x840,
-                funct7: 0x42,
-            },
-            Opcode::VDIVUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x800,
-                funct7: 0x40,
-            },
-            Opcode::VDIVUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x800,
-                funct7: 0x40,
-            },
-            Opcode::VFADDVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::VFADDVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::VFCLASSV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x10,
-                rs2: 0x0,
-                csr: 0x4c0,
-                funct7: 0x26,
-            },
-            Opcode::VFCVTFXV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x3,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFCVTFXUV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x2,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFCVTRTZXFV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x7,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFCVTRTZXUFV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x6,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFCVTXFV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFCVTXUFV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFDIVVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x800,
-                funct7: 0x40,
-            },
-            Opcode::VFDIVVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x800,
-                funct7: 0x40,
-            },
-            Opcode::VFIRSTM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x11,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::VFMACCVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb00,
-                funct7: 0x58,
-            },
-            Opcode::VFMACCVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb00,
-                funct7: 0x58,
-            },
-            Opcode::VFMADDVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa00,
-                funct7: 0x50,
-            },
-            Opcode::VFMADDVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa00,
-                funct7: 0x50,
-            },
-            Opcode::VFMAXVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x180,
-                funct7: 0xc,
-            },
-            Opcode::VFMAXVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x180,
-                funct7: 0xc,
-            },
-            Opcode::VFMERGEVFM => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x5c0,
-                funct7: 0x2e,
-            },
-            Opcode::VFMINVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x100,
-                funct7: 0x8,
-            },
-            Opcode::VFMINVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x100,
-                funct7: 0x8,
-            },
-            Opcode::VFMSACVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb80,
-                funct7: 0x5c,
-            },
-            Opcode::VFMSACVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb80,
-                funct7: 0x5c,
-            },
-            Opcode::VFMSUBVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa80,
-                funct7: 0x54,
-            },
-            Opcode::VFMSUBVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa80,
-                funct7: 0x54,
-            },
-            Opcode::VFMULVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x900,
-                funct7: 0x48,
-            },
-            Opcode::VFMULVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x900,
-                funct7: 0x48,
-            },
-            Opcode::VFMVFS => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x420,
-                funct7: 0x21,
-            },
-            Opcode::VFMVSF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x420,
-                funct7: 0x21,
-            },
-            Opcode::VFMVVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x5e0,
-                funct7: 0x2f,
-            },
-            Opcode::VFNCVTFFW => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x14,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFNCVTFXW => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x13,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFNCVTFXUW => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x12,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFNCVTRODFFW => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x15,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFNCVTRTZXFW => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x17,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFNCVTRTZXUFW => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x16,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFNCVTXFW => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x11,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFNCVTXUFW => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x10,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFNCVTBF16FFW => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x1d,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFNMACCVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb40,
-                funct7: 0x5a,
-            },
-            Opcode::VFNMACCVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb40,
-                funct7: 0x5a,
-            },
-            Opcode::VFNMADDVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa40,
-                funct7: 0x52,
-            },
-            Opcode::VFNMADDVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa40,
-                funct7: 0x52,
-            },
-            Opcode::VFNMSACVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xbc0,
-                funct7: 0x5e,
-            },
-            Opcode::VFNMSACVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xbc0,
-                funct7: 0x5e,
-            },
-            Opcode::VFNMSUBVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xac0,
-                funct7: 0x56,
-            },
-            Opcode::VFNMSUBVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xac0,
-                funct7: 0x56,
-            },
-            Opcode::VFRDIVVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x840,
-                funct7: 0x42,
-            },
-            Opcode::VFREC7V => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x5,
-                rs2: 0x0,
-                csr: 0x4c0,
-                funct7: 0x26,
-            },
-            Opcode::VFREDMAXVS => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x1c0,
-                funct7: 0xe,
-            },
-            Opcode::VFREDMINVS => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x140,
-                funct7: 0xa,
-            },
-            Opcode::VFREDOSUMVS => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc0,
-                funct7: 0x6,
-            },
-            Opcode::VFREDSUMVS => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::VFREDUSUMVS => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::VFRSQRT7V => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x4,
-                rs2: 0x0,
-                csr: 0x4c0,
-                funct7: 0x26,
-            },
-            Opcode::VFRSUBVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x9c0,
-                funct7: 0x4e,
-            },
-            Opcode::VFSGNJVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::VFSGNJVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x200,
-                funct7: 0x10,
-            },
-            Opcode::VFSGNJNVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x240,
-                funct7: 0x12,
-            },
-            Opcode::VFSGNJNVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x240,
-                funct7: 0x12,
-            },
-            Opcode::VFSGNJXVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::VFSGNJXVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::VFSLIDE1DOWNVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x3c0,
-                funct7: 0x1e,
-            },
-            Opcode::VFSLIDE1UPVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x380,
-                funct7: 0x1c,
-            },
-            Opcode::VFSQRTV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x4c0,
-                funct7: 0x26,
-            },
-            Opcode::VFSUBVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::VFSUBVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::VFWADDVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc00,
-                funct7: 0x60,
-            },
-            Opcode::VFWADDVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc00,
-                funct7: 0x60,
-            },
-            Opcode::VFWADDWF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xd00,
-                funct7: 0x68,
-            },
-            Opcode::VFWADDWV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xd00,
-                funct7: 0x68,
-            },
-            Opcode::VFWCVTFFV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0xc,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFWCVTFXV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0xb,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFWCVTFXUV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0xa,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFWCVTRTZXFV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0xf,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFWCVTRTZXUFV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0xe,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFWCVTXFV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x9,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFWCVTXUFV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x8,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFWCVTBF16FFV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0xd,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VFWMACCVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xf00,
-                funct7: 0x78,
-            },
-            Opcode::VFWMACCVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xf00,
-                funct7: 0x78,
-            },
-            Opcode::VFWMACCBF16VF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xec0,
-                funct7: 0x76,
-            },
-            Opcode::VFWMACCBF16VV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xec0,
-                funct7: 0x76,
-            },
-            Opcode::VFWMSACVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xf80,
-                funct7: 0x7c,
-            },
-            Opcode::VFWMSACVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xf80,
-                funct7: 0x7c,
-            },
-            Opcode::VFWMULVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe00,
-                funct7: 0x70,
-            },
-            Opcode::VFWMULVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe00,
-                funct7: 0x70,
-            },
-            Opcode::VFWNMACCVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xf40,
-                funct7: 0x7a,
-            },
-            Opcode::VFWNMACCVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xf40,
-                funct7: 0x7a,
-            },
-            Opcode::VFWNMSACVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xfc0,
-                funct7: 0x7e,
-            },
-            Opcode::VFWNMSACVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xfc0,
-                funct7: 0x7e,
-            },
-            Opcode::VFWREDOSUMVS => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xcc0,
-                funct7: 0x66,
-            },
-            Opcode::VFWREDSUMVS => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc40,
-                funct7: 0x62,
-            },
-            Opcode::VFWREDUSUMVS => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc40,
-                funct7: 0x62,
-            },
-            Opcode::VFWSUBVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc80,
-                funct7: 0x64,
-            },
-            Opcode::VFWSUBVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc80,
-                funct7: 0x64,
-            },
-            Opcode::VFWSUBWF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xd80,
-                funct7: 0x6c,
-            },
-            Opcode::VFWSUBWV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xd80,
-                funct7: 0x6c,
-            },
-            Opcode::VGHSHVV => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb20,
-                funct7: 0x59,
-            },
-            Opcode::VGMULVV => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x11,
-                rs2: 0x0,
-                csr: 0xa20,
-                funct7: 0x51,
-            },
-            Opcode::VIDV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x11,
-                rs2: 0x0,
-                csr: 0x500,
-                funct7: 0x28,
-            },
-            Opcode::VIOTAM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x10,
-                rs2: 0x0,
-                csr: 0x500,
-                funct7: 0x28,
-            },
-            Opcode::VL1RV => Inst {
-                opcode: 0x7,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x28,
-                funct7: 0x1,
-            },
-            Opcode::VL1RE16V => Inst {
-                opcode: 0x7,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x28,
-                funct7: 0x1,
-            },
-            Opcode::VL1RE32V => Inst {
-                opcode: 0x7,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x28,
-                funct7: 0x1,
-            },
-            Opcode::VL1RE64V => Inst {
-                opcode: 0x7,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x28,
-                funct7: 0x1,
-            },
-            Opcode::VL1RE8V => Inst {
-                opcode: 0x7,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x28,
-                funct7: 0x1,
-            },
-            Opcode::VL2RV => Inst {
-                opcode: 0x7,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x228,
-                funct7: 0x11,
-            },
-            Opcode::VL2RE16V => Inst {
-                opcode: 0x7,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x228,
-                funct7: 0x11,
-            },
-            Opcode::VL2RE32V => Inst {
-                opcode: 0x7,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x228,
-                funct7: 0x11,
-            },
-            Opcode::VL2RE64V => Inst {
-                opcode: 0x7,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x228,
-                funct7: 0x11,
-            },
-            Opcode::VL2RE8V => Inst {
-                opcode: 0x7,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x228,
-                funct7: 0x11,
-            },
-            Opcode::VL4RV => Inst {
-                opcode: 0x7,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x628,
-                funct7: 0x31,
-            },
-            Opcode::VL4RE16V => Inst {
-                opcode: 0x7,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x628,
-                funct7: 0x31,
-            },
-            Opcode::VL4RE32V => Inst {
-                opcode: 0x7,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x628,
-                funct7: 0x31,
-            },
-            Opcode::VL4RE64V => Inst {
-                opcode: 0x7,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x628,
-                funct7: 0x31,
-            },
-            Opcode::VL4RE8V => Inst {
-                opcode: 0x7,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x628,
-                funct7: 0x31,
-            },
-            Opcode::VL8RV => Inst {
-                opcode: 0x7,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0xe28,
-                funct7: 0x71,
-            },
-            Opcode::VL8RE16V => Inst {
-                opcode: 0x7,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0xe28,
-                funct7: 0x71,
-            },
-            Opcode::VL8RE32V => Inst {
-                opcode: 0x7,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0xe28,
-                funct7: 0x71,
-            },
-            Opcode::VL8RE64V => Inst {
-                opcode: 0x7,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0xe28,
-                funct7: 0x71,
-            },
-            Opcode::VL8RE8V => Inst {
-                opcode: 0x7,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0xe28,
-                funct7: 0x71,
-            },
-            Opcode::VLE16V => Inst {
-                opcode: 0x7,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::VLE16FFV => Inst {
-                opcode: 0x7,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x10,
-                csr: 0x10,
-                funct7: 0x0,
-            },
-            Opcode::VLE1V => Inst {
-                opcode: 0x7,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0xb,
-                csr: 0x2b,
-                funct7: 0x1,
-            },
-            Opcode::VLE32V => Inst {
-                opcode: 0x7,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::VLE32FFV => Inst {
-                opcode: 0x7,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x10,
-                csr: 0x10,
-                funct7: 0x0,
-            },
-            Opcode::VLE64V => Inst {
-                opcode: 0x7,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::VLE64FFV => Inst {
-                opcode: 0x7,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x10,
-                csr: 0x10,
-                funct7: 0x0,
-            },
-            Opcode::VLE8V => Inst {
-                opcode: 0x7,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::VLE8FFV => Inst {
-                opcode: 0x7,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x10,
-                csr: 0x10,
-                funct7: 0x0,
-            },
-            Opcode::VLMV => Inst {
-                opcode: 0x7,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0xb,
-                csr: 0x2b,
-                funct7: 0x1,
-            },
-            Opcode::VLOXEI16V => Inst {
-                opcode: 0x7,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc0,
-                funct7: 0x6,
-            },
-            Opcode::VLOXEI32V => Inst {
-                opcode: 0x7,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc0,
-                funct7: 0x6,
-            },
-            Opcode::VLOXEI64V => Inst {
-                opcode: 0x7,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc0,
-                funct7: 0x6,
-            },
-            Opcode::VLOXEI8V => Inst {
-                opcode: 0x7,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc0,
-                funct7: 0x6,
-            },
-            Opcode::VLSE16V => Inst {
-                opcode: 0x7,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::VLSE32V => Inst {
-                opcode: 0x7,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::VLSE64V => Inst {
-                opcode: 0x7,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::VLSE8V => Inst {
-                opcode: 0x7,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::VLUXEI16V => Inst {
-                opcode: 0x7,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::VLUXEI32V => Inst {
-                opcode: 0x7,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::VLUXEI64V => Inst {
-                opcode: 0x7,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::VLUXEI8V => Inst {
-                opcode: 0x7,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::VMACCVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb40,
-                funct7: 0x5a,
-            },
-            Opcode::VMACCVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb40,
-                funct7: 0x5a,
-            },
-            Opcode::VMADCVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x460,
-                funct7: 0x23,
-            },
-            Opcode::VMADCVIM => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x440,
-                funct7: 0x22,
-            },
-            Opcode::VMADCVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x460,
-                funct7: 0x23,
-            },
-            Opcode::VMADCVVM => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x440,
-                funct7: 0x22,
-            },
-            Opcode::VMADCVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x460,
-                funct7: 0x23,
-            },
-            Opcode::VMADCVXM => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x440,
-                funct7: 0x22,
-            },
-            Opcode::VMADDVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa40,
-                funct7: 0x52,
-            },
-            Opcode::VMADDVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa40,
-                funct7: 0x52,
-            },
-            Opcode::VMANDMM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x660,
-                funct7: 0x33,
-            },
-            Opcode::VMANDNMM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x620,
-                funct7: 0x31,
-            },
-            Opcode::VMANDNOTMM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::VMAXVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x1c0,
-                funct7: 0xe,
-            },
-            Opcode::VMAXVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x1c0,
-                funct7: 0xe,
-            },
-            Opcode::VMAXUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x180,
-                funct7: 0xc,
-            },
-            Opcode::VMAXUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x180,
-                funct7: 0xc,
-            },
-            Opcode::VMERGEVIM => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x5c0,
-                funct7: 0x2e,
-            },
-            Opcode::VMERGEVVM => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x5c0,
-                funct7: 0x2e,
-            },
-            Opcode::VMERGEVXM => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x5c0,
-                funct7: 0x2e,
-            },
-            Opcode::VMFEQVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::VMFEQVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::VMFGEVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x7c0,
-                funct7: 0x3e,
-            },
-            Opcode::VMFGTVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x740,
-                funct7: 0x3a,
-            },
-            Opcode::VMFLEVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x640,
-                funct7: 0x32,
-            },
-            Opcode::VMFLEVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x640,
-                funct7: 0x32,
-            },
-            Opcode::VMFLTVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x6c0,
-                funct7: 0x36,
-            },
-            Opcode::VMFLTVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x6c0,
-                funct7: 0x36,
-            },
-            Opcode::VMFNEVF => Inst {
-                opcode: 0x57,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x700,
-                funct7: 0x38,
-            },
-            Opcode::VMFNEVV => Inst {
-                opcode: 0x57,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x700,
-                funct7: 0x38,
-            },
-            Opcode::VMINVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x140,
-                funct7: 0xa,
-            },
-            Opcode::VMINVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x140,
-                funct7: 0xa,
-            },
-            Opcode::VMINUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x100,
-                funct7: 0x8,
-            },
-            Opcode::VMINUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x100,
-                funct7: 0x8,
-            },
-            Opcode::VMNANDMM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x760,
-                funct7: 0x3b,
-            },
-            Opcode::VMNORMM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x7a0,
-                funct7: 0x3d,
-            },
-            Opcode::VMORMM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x6a0,
-                funct7: 0x35,
-            },
-            Opcode::VMORNMM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x720,
-                funct7: 0x39,
-            },
-            Opcode::VMORNOTMM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x700,
-                funct7: 0x38,
-            },
-            Opcode::VMSBCVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x4e0,
-                funct7: 0x27,
-            },
-            Opcode::VMSBCVVM => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x4c0,
-                funct7: 0x26,
-            },
-            Opcode::VMSBCVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x4e0,
-                funct7: 0x27,
-            },
-            Opcode::VMSBCVXM => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x4c0,
-                funct7: 0x26,
-            },
-            Opcode::VMSBFM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x500,
-                funct7: 0x28,
-            },
-            Opcode::VMSEQVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::VMSEQVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::VMSEQVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x600,
-                funct7: 0x30,
-            },
-            Opcode::VMSGTVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x7c0,
-                funct7: 0x3e,
-            },
-            Opcode::VMSGTVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x7c0,
-                funct7: 0x3e,
-            },
-            Opcode::VMSGTUVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x780,
-                funct7: 0x3c,
-            },
-            Opcode::VMSGTUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x780,
-                funct7: 0x3c,
-            },
-            Opcode::VMSIFM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x3,
-                rs2: 0x0,
-                csr: 0x500,
-                funct7: 0x28,
-            },
-            Opcode::VMSLEVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x740,
-                funct7: 0x3a,
-            },
-            Opcode::VMSLEVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x740,
-                funct7: 0x3a,
-            },
-            Opcode::VMSLEVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x740,
-                funct7: 0x3a,
-            },
-            Opcode::VMSLEUVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x700,
-                funct7: 0x38,
-            },
-            Opcode::VMSLEUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x700,
-                funct7: 0x38,
-            },
-            Opcode::VMSLEUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x700,
-                funct7: 0x38,
-            },
-            Opcode::VMSLTVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x6c0,
-                funct7: 0x36,
-            },
-            Opcode::VMSLTVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x6c0,
-                funct7: 0x36,
-            },
-            Opcode::VMSLTUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x680,
-                funct7: 0x34,
-            },
-            Opcode::VMSLTUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x680,
-                funct7: 0x34,
-            },
-            Opcode::VMSNEVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x640,
-                funct7: 0x32,
-            },
-            Opcode::VMSNEVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x640,
-                funct7: 0x32,
-            },
-            Opcode::VMSNEVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x640,
-                funct7: 0x32,
-            },
-            Opcode::VMSOFM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x2,
-                rs2: 0x0,
-                csr: 0x500,
-                funct7: 0x28,
-            },
-            Opcode::VMULVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x940,
-                funct7: 0x4a,
-            },
-            Opcode::VMULVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x940,
-                funct7: 0x4a,
-            },
-            Opcode::VMULHVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x9c0,
-                funct7: 0x4e,
-            },
-            Opcode::VMULHVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x9c0,
-                funct7: 0x4e,
-            },
-            Opcode::VMULHSUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x980,
-                funct7: 0x4c,
-            },
-            Opcode::VMULHSUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x980,
-                funct7: 0x4c,
-            },
-            Opcode::VMULHUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x900,
-                funct7: 0x48,
-            },
-            Opcode::VMULHUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x900,
-                funct7: 0x48,
-            },
-            Opcode::VMV1RV => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x9e0,
-                funct7: 0x4f,
-            },
-            Opcode::VMV2RV => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x1,
-                rs2: 0x0,
-                csr: 0x9e0,
-                funct7: 0x4f,
-            },
-            Opcode::VMV4RV => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x3,
-                rs2: 0x0,
-                csr: 0x9e0,
-                funct7: 0x4f,
-            },
-            Opcode::VMV8RV => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x7,
-                rs2: 0x0,
-                csr: 0x9e0,
-                funct7: 0x4f,
-            },
-            Opcode::VMVSX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x420,
-                funct7: 0x21,
-            },
-            Opcode::VMVVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x5e0,
-                funct7: 0x2f,
-            },
-            Opcode::VMVVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x5e0,
-                funct7: 0x2f,
-            },
-            Opcode::VMVVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x5e0,
-                funct7: 0x2f,
-            },
-            Opcode::VMVXS => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x420,
-                funct7: 0x21,
-            },
-            Opcode::VMXNORMM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x7e0,
-                funct7: 0x3f,
-            },
-            Opcode::VMXORMM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x6e0,
-                funct7: 0x37,
-            },
-            Opcode::VNCLIPWI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xbc0,
-                funct7: 0x5e,
-            },
-            Opcode::VNCLIPWV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xbc0,
-                funct7: 0x5e,
-            },
-            Opcode::VNCLIPWX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xbc0,
-                funct7: 0x5e,
-            },
-            Opcode::VNCLIPUWI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb80,
-                funct7: 0x5c,
-            },
-            Opcode::VNCLIPUWV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb80,
-                funct7: 0x5c,
-            },
-            Opcode::VNCLIPUWX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb80,
-                funct7: 0x5c,
-            },
-            Opcode::VNMSACVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xbc0,
-                funct7: 0x5e,
-            },
-            Opcode::VNMSACVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xbc0,
-                funct7: 0x5e,
-            },
-            Opcode::VNMSUBVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xac0,
-                funct7: 0x56,
-            },
-            Opcode::VNMSUBVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xac0,
-                funct7: 0x56,
-            },
-            Opcode::VNSRAWI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb40,
-                funct7: 0x5a,
-            },
-            Opcode::VNSRAWV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb40,
-                funct7: 0x5a,
-            },
-            Opcode::VNSRAWX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb40,
-                funct7: 0x5a,
-            },
-            Opcode::VNSRLWI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb00,
-                funct7: 0x58,
-            },
-            Opcode::VNSRLWV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb00,
-                funct7: 0x58,
-            },
-            Opcode::VNSRLWX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb00,
-                funct7: 0x58,
-            },
-            Opcode::VORVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::VORVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::VORVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::VPOPCM => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x10,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::VREDANDVS => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::VREDMAXVS => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x1c0,
-                funct7: 0xe,
-            },
-            Opcode::VREDMAXUVS => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x180,
-                funct7: 0xc,
-            },
-            Opcode::VREDMINVS => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x140,
-                funct7: 0xa,
-            },
-            Opcode::VREDMINUVS => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x100,
-                funct7: 0x8,
-            },
-            Opcode::VREDORVS => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::VREDSUMVS => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::VREDXORVS => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc0,
-                funct7: 0x6,
-            },
-            Opcode::VREMVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x8c0,
-                funct7: 0x46,
-            },
-            Opcode::VREMVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x8c0,
-                funct7: 0x46,
-            },
-            Opcode::VREMUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x880,
-                funct7: 0x44,
-            },
-            Opcode::VREMUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x880,
-                funct7: 0x44,
-            },
-            Opcode::VREV8V => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x9,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VRGATHERVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x300,
-                funct7: 0x18,
-            },
-            Opcode::VRGATHERVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x300,
-                funct7: 0x18,
-            },
-            Opcode::VRGATHERVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x300,
-                funct7: 0x18,
-            },
-            Opcode::VRGATHEREI16VV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x380,
-                funct7: 0x1c,
-            },
-            Opcode::VROLVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x540,
-                funct7: 0x2a,
-            },
-            Opcode::VROLVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x540,
-                funct7: 0x2a,
-            },
-            Opcode::VRORVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x500,
-                funct7: 0x28,
-            },
-            Opcode::VRORVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x500,
-                funct7: 0x28,
-            },
-            Opcode::VRORVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x500,
-                funct7: 0x28,
-            },
-            Opcode::VRSUBVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc0,
-                funct7: 0x6,
-            },
-            Opcode::VRSUBVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc0,
-                funct7: 0x6,
-            },
-            Opcode::VS1RV => Inst {
-                opcode: 0x27,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x28,
-                funct7: 0x1,
-            },
-            Opcode::VS2RV => Inst {
-                opcode: 0x27,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x228,
-                funct7: 0x11,
-            },
-            Opcode::VS4RV => Inst {
-                opcode: 0x27,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0x628,
-                funct7: 0x31,
-            },
-            Opcode::VS8RV => Inst {
-                opcode: 0x27,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x8,
-                csr: 0xe28,
-                funct7: 0x71,
-            },
-            Opcode::VSADDVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x840,
-                funct7: 0x42,
-            },
-            Opcode::VSADDVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x840,
-                funct7: 0x42,
-            },
-            Opcode::VSADDVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x840,
-                funct7: 0x42,
-            },
-            Opcode::VSADDUVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x800,
-                funct7: 0x40,
-            },
-            Opcode::VSADDUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x800,
-                funct7: 0x40,
-            },
-            Opcode::VSADDUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x800,
-                funct7: 0x40,
-            },
-            Opcode::VSBCVVM => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VSBCVXM => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VSE16V => Inst {
-                opcode: 0x27,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::VSE1V => Inst {
-                opcode: 0x27,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0xb,
-                csr: 0x2b,
-                funct7: 0x1,
-            },
-            Opcode::VSE32V => Inst {
-                opcode: 0x27,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::VSE64V => Inst {
-                opcode: 0x27,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::VSE8V => Inst {
-                opcode: 0x27,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::VSETIVLI => Inst {
-                opcode: 0x57,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc00,
-                funct7: 0x60,
-            },
-            Opcode::VSETVL => Inst {
-                opcode: 0x57,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x800,
-                funct7: 0x40,
-            },
-            Opcode::VSETVLI => Inst {
-                opcode: 0x57,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::VSEXTVF2 => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x7,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VSEXTVF4 => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x5,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VSEXTVF8 => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x3,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VSHA2CHVV => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xba0,
-                funct7: 0x5d,
-            },
-            Opcode::VSHA2CLVV => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xbe0,
-                funct7: 0x5f,
-            },
-            Opcode::VSHA2MSVV => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xb60,
-                funct7: 0x5b,
-            },
-            Opcode::VSLIDE1DOWNVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x3c0,
-                funct7: 0x1e,
-            },
-            Opcode::VSLIDE1UPVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x380,
-                funct7: 0x1c,
-            },
-            Opcode::VSLIDEDOWNVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x3c0,
-                funct7: 0x1e,
-            },
-            Opcode::VSLIDEDOWNVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x3c0,
-                funct7: 0x1e,
-            },
-            Opcode::VSLIDEUPVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x380,
-                funct7: 0x1c,
-            },
-            Opcode::VSLIDEUPVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x380,
-                funct7: 0x1c,
-            },
-            Opcode::VSLLVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x940,
-                funct7: 0x4a,
-            },
-            Opcode::VSLLVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x940,
-                funct7: 0x4a,
-            },
-            Opcode::VSLLVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x940,
-                funct7: 0x4a,
-            },
-            Opcode::VSM3CVI => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xae0,
-                funct7: 0x57,
-            },
-            Opcode::VSM3MEVV => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x820,
-                funct7: 0x41,
-            },
-            Opcode::VSM4KVI => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x860,
-                funct7: 0x43,
-            },
-            Opcode::VSM4RVS => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x10,
-                rs2: 0x0,
-                csr: 0xa60,
-                funct7: 0x53,
-            },
-            Opcode::VSM4RVV => Inst {
-                opcode: 0x77,
-                funct3: 0x2,
-                rs1: 0x10,
-                rs2: 0x0,
-                csr: 0xa20,
-                funct7: 0x51,
-            },
-            Opcode::VSMV => Inst {
-                opcode: 0x27,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0xb,
-                csr: 0x2b,
-                funct7: 0x1,
-            },
-            Opcode::VSMULVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x9c0,
-                funct7: 0x4e,
-            },
-            Opcode::VSMULVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x9c0,
-                funct7: 0x4e,
-            },
-            Opcode::VSOXEI16V => Inst {
-                opcode: 0x27,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc0,
-                funct7: 0x6,
-            },
-            Opcode::VSOXEI32V => Inst {
-                opcode: 0x27,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc0,
-                funct7: 0x6,
-            },
-            Opcode::VSOXEI64V => Inst {
-                opcode: 0x27,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc0,
-                funct7: 0x6,
-            },
-            Opcode::VSOXEI8V => Inst {
-                opcode: 0x27,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc0,
-                funct7: 0x6,
-            },
-            Opcode::VSRAVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa40,
-                funct7: 0x52,
-            },
-            Opcode::VSRAVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa40,
-                funct7: 0x52,
-            },
-            Opcode::VSRAVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa40,
-                funct7: 0x52,
-            },
-            Opcode::VSRLVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa00,
-                funct7: 0x50,
-            },
-            Opcode::VSRLVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa00,
-                funct7: 0x50,
-            },
-            Opcode::VSRLVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa00,
-                funct7: 0x50,
-            },
-            Opcode::VSSE16V => Inst {
-                opcode: 0x27,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::VSSE32V => Inst {
-                opcode: 0x27,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::VSSE64V => Inst {
-                opcode: 0x27,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::VSSE8V => Inst {
-                opcode: 0x27,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::VSSRAVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xac0,
-                funct7: 0x56,
-            },
-            Opcode::VSSRAVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xac0,
-                funct7: 0x56,
-            },
-            Opcode::VSSRAVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xac0,
-                funct7: 0x56,
-            },
-            Opcode::VSSRLVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa80,
-                funct7: 0x54,
-            },
-            Opcode::VSSRLVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa80,
-                funct7: 0x54,
-            },
-            Opcode::VSSRLVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xa80,
-                funct7: 0x54,
-            },
-            Opcode::VSSUBVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x8c0,
-                funct7: 0x46,
-            },
-            Opcode::VSSUBVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x8c0,
-                funct7: 0x46,
-            },
-            Opcode::VSSUBUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x880,
-                funct7: 0x44,
-            },
-            Opcode::VSSUBUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x880,
-                funct7: 0x44,
-            },
-            Opcode::VSUBVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::VSUBVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::VSUXEI16V => Inst {
-                opcode: 0x27,
-                funct3: 0x5,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::VSUXEI32V => Inst {
-                opcode: 0x27,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::VSUXEI64V => Inst {
-                opcode: 0x27,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::VSUXEI8V => Inst {
-                opcode: 0x27,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x40,
-                funct7: 0x2,
-            },
-            Opcode::VWADDVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc40,
-                funct7: 0x62,
-            },
-            Opcode::VWADDVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc40,
-                funct7: 0x62,
-            },
-            Opcode::VWADDWV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xd40,
-                funct7: 0x6a,
-            },
-            Opcode::VWADDWX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xd40,
-                funct7: 0x6a,
-            },
-            Opcode::VWADDUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc00,
-                funct7: 0x60,
-            },
-            Opcode::VWADDUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc00,
-                funct7: 0x60,
-            },
-            Opcode::VWADDUWV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xd00,
-                funct7: 0x68,
-            },
-            Opcode::VWADDUWX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xd00,
-                funct7: 0x68,
-            },
-            Opcode::VWMACCVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xf40,
-                funct7: 0x7a,
-            },
-            Opcode::VWMACCVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xf40,
-                funct7: 0x7a,
-            },
-            Opcode::VWMACCSUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xfc0,
-                funct7: 0x7e,
-            },
-            Opcode::VWMACCSUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xfc0,
-                funct7: 0x7e,
-            },
-            Opcode::VWMACCUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xf00,
-                funct7: 0x78,
-            },
-            Opcode::VWMACCUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xf00,
-                funct7: 0x78,
-            },
-            Opcode::VWMACCUSVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xf80,
-                funct7: 0x7c,
-            },
-            Opcode::VWMULVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xec0,
-                funct7: 0x76,
-            },
-            Opcode::VWMULVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xec0,
-                funct7: 0x76,
-            },
-            Opcode::VWMULSUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe80,
-                funct7: 0x74,
-            },
-            Opcode::VWMULSUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe80,
-                funct7: 0x74,
-            },
-            Opcode::VWMULUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe00,
-                funct7: 0x70,
-            },
-            Opcode::VWMULUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xe00,
-                funct7: 0x70,
-            },
-            Opcode::VWREDSUMVS => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc40,
-                funct7: 0x62,
-            },
-            Opcode::VWREDSUMUVS => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc00,
-                funct7: 0x60,
-            },
-            Opcode::VWSLLVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xd40,
-                funct7: 0x6a,
-            },
-            Opcode::VWSLLVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xd40,
-                funct7: 0x6a,
-            },
-            Opcode::VWSLLVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xd40,
-                funct7: 0x6a,
-            },
-            Opcode::VWSUBVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xcc0,
-                funct7: 0x66,
-            },
-            Opcode::VWSUBVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xcc0,
-                funct7: 0x66,
-            },
-            Opcode::VWSUBWV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xdc0,
-                funct7: 0x6e,
-            },
-            Opcode::VWSUBWX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xdc0,
-                funct7: 0x6e,
-            },
-            Opcode::VWSUBUVV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc80,
-                funct7: 0x64,
-            },
-            Opcode::VWSUBUVX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xc80,
-                funct7: 0x64,
-            },
-            Opcode::VWSUBUWV => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xd80,
-                funct7: 0x6c,
-            },
-            Opcode::VWSUBUWX => Inst {
-                opcode: 0x57,
-                funct3: 0x6,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0xd80,
-                funct7: 0x6c,
-            },
-            Opcode::VXORVI => Inst {
-                opcode: 0x57,
-                funct3: 0x3,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2c0,
-                funct7: 0x16,
-            },
-            Opcode::VXORVV => Inst {
-                opcode: 0x57,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2c0,
-                funct7: 0x16,
-            },
-            Opcode::VXORVX => Inst {
-                opcode: 0x57,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x2c0,
-                funct7: 0x16,
-            },
-            Opcode::VZEXTVF2 => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x6,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VZEXTVF4 => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x4,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::VZEXTVF8 => Inst {
-                opcode: 0x57,
-                funct3: 0x2,
-                rs1: 0x2,
-                rs2: 0x0,
-                csr: 0x480,
-                funct7: 0x24,
-            },
-            Opcode::WFI => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x5,
-                csr: 0x105,
-                funct7: 0x8,
-            },
-            Opcode::WRSNTO => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0xd,
-                csr: 0xd,
-                funct7: 0x0,
-            },
-            Opcode::WRSSTO => Inst {
-                opcode: 0x73,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x1d,
-                csr: 0x1d,
-                funct7: 0x0,
-            },
-            Opcode::XNOR => Inst {
-                opcode: 0x33,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x400,
-                funct7: 0x20,
-            },
-            Opcode::XOR => Inst {
-                opcode: 0x33,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::XORI => Inst {
-                opcode: 0x13,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x0,
-                funct7: 0x0,
-            },
-            Opcode::XPERM4 => Inst {
-                opcode: 0x33,
-                funct3: 0x2,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::XPERM8 => Inst {
-                opcode: 0x33,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x280,
-                funct7: 0x14,
-            },
-            Opcode::ZEXTB => Inst {
-                opcode: 0x13,
-                funct3: 0x7,
-                rs1: 0x0,
-                rs2: 0x1f,
-                csr: 0xff,
-                funct7: 0x7,
-            },
-            Opcode::ZEXTH => Inst {
-                opcode: 0x3b,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::ZEXTHRV32 => Inst {
-                opcode: 0x33,
-                funct3: 0x4,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::ZEXTW => Inst {
-                opcode: 0x3b,
-                funct3: 0x0,
-                rs1: 0x0,
-                rs2: 0x0,
-                csr: 0x80,
-                funct7: 0x4,
-            },
-            Opcode::ZIP => Inst {
-                opcode: 0x13,
-                funct3: 0x1,
-                rs1: 0x0,
-                rs2: 0xf,
-                csr: 0x8f,
-                funct7: 0x4,
-            },
+            Opcode::ADD => Inst { value: 0x33 },
+            Opcode::ADDUW => Inst { value: 0x800003b },
+            Opcode::ADDI => Inst { value: 0x13 },
+            Opcode::ADDIW => Inst { value: 0x1b },
+            Opcode::ADDW => Inst { value: 0x3b },
+            Opcode::AES32DSI => Inst { value: 0x2a000033 },
+            Opcode::AES32DSMI => Inst { value: 0x2e000033 },
+            Opcode::AES32ESI => Inst { value: 0x22000033 },
+            Opcode::AES32ESMI => Inst { value: 0x26000033 },
+            Opcode::AES64DS => Inst { value: 0x3a000033 },
+            Opcode::AES64DSM => Inst { value: 0x3e000033 },
+            Opcode::AES64ES => Inst { value: 0x32000033 },
+            Opcode::AES64ESM => Inst { value: 0x36000033 },
+            Opcode::AES64IM => Inst { value: 0x30001013 },
+            Opcode::AES64KS1I => Inst { value: 0x31001013 },
+            Opcode::AES64KS2 => Inst { value: 0x7e000033 },
+            Opcode::AMOADDB => Inst { value: 0x2f },
+            Opcode::AMOADDD => Inst { value: 0x302f },
+            Opcode::AMOADDH => Inst { value: 0x102f },
+            Opcode::AMOADDW => Inst { value: 0x202f },
+            Opcode::AMOANDB => Inst { value: 0x6000002f },
+            Opcode::AMOANDD => Inst { value: 0x6000302f },
+            Opcode::AMOANDH => Inst { value: 0x6000102f },
+            Opcode::AMOANDW => Inst { value: 0x6000202f },
+            Opcode::AMOCASB => Inst { value: 0x2800002f },
+            Opcode::AMOCASD => Inst { value: 0x2800302f },
+            Opcode::AMOCASH => Inst { value: 0x2800102f },
+            Opcode::AMOCASQ => Inst { value: 0x2800402f },
+            Opcode::AMOCASW => Inst { value: 0x2800202f },
+            Opcode::AMOMAXB => Inst { value: 0xa000002f },
+            Opcode::AMOMAXD => Inst { value: 0xa000302f },
+            Opcode::AMOMAXH => Inst { value: 0xa000102f },
+            Opcode::AMOMAXW => Inst { value: 0xa000202f },
+            Opcode::AMOMAXUB => Inst { value: 0xe000002f },
+            Opcode::AMOMAXUD => Inst { value: 0xe000302f },
+            Opcode::AMOMAXUH => Inst { value: 0xe000102f },
+            Opcode::AMOMAXUW => Inst { value: 0xe000202f },
+            Opcode::AMOMINB => Inst { value: 0x8000002f },
+            Opcode::AMOMIND => Inst { value: 0x8000302f },
+            Opcode::AMOMINH => Inst { value: 0x8000102f },
+            Opcode::AMOMINW => Inst { value: 0x8000202f },
+            Opcode::AMOMINUB => Inst { value: 0xc000002f },
+            Opcode::AMOMINUD => Inst { value: 0xc000302f },
+            Opcode::AMOMINUH => Inst { value: 0xc000102f },
+            Opcode::AMOMINUW => Inst { value: 0xc000202f },
+            Opcode::AMOORB => Inst { value: 0x4000002f },
+            Opcode::AMOORD => Inst { value: 0x4000302f },
+            Opcode::AMOORH => Inst { value: 0x4000102f },
+            Opcode::AMOORW => Inst { value: 0x4000202f },
+            Opcode::AMOSWAPB => Inst { value: 0x800002f },
+            Opcode::AMOSWAPD => Inst { value: 0x800302f },
+            Opcode::AMOSWAPH => Inst { value: 0x800102f },
+            Opcode::AMOSWAPW => Inst { value: 0x800202f },
+            Opcode::AMOXORB => Inst { value: 0x2000002f },
+            Opcode::AMOXORD => Inst { value: 0x2000302f },
+            Opcode::AMOXORH => Inst { value: 0x2000102f },
+            Opcode::AMOXORW => Inst { value: 0x2000202f },
+            Opcode::AND => Inst { value: 0x7033 },
+            Opcode::ANDI => Inst { value: 0x7013 },
+            Opcode::ANDN => Inst { value: 0x40007033 },
+            Opcode::AUIPC => Inst { value: 0x17 },
+            Opcode::BCLR => Inst { value: 0x48001033 },
+            Opcode::BCLRI => Inst { value: 0x48001013 },
+            Opcode::BCLRIRV32 => Inst { value: 0x48001013 },
+            Opcode::BEQ => Inst { value: 0x63 },
+            Opcode::BEQZ => Inst { value: 0x63 },
+            Opcode::BEXT => Inst { value: 0x48005033 },
+            Opcode::BEXTI => Inst { value: 0x48005013 },
+            Opcode::BEXTIRV32 => Inst { value: 0x48005013 },
+            Opcode::BGE => Inst { value: 0x5063 },
+            Opcode::BGEU => Inst { value: 0x7063 },
+            Opcode::BGEZ => Inst { value: 0x5063 },
+            Opcode::BGT => Inst { value: 0x4063 },
+            Opcode::BGTU => Inst { value: 0x6063 },
+            Opcode::BGTZ => Inst { value: 0x4063 },
+            Opcode::BINV => Inst { value: 0x68001033 },
+            Opcode::BINVI => Inst { value: 0x68001013 },
+            Opcode::BINVIRV32 => Inst { value: 0x68001013 },
+            Opcode::BLE => Inst { value: 0x5063 },
+            Opcode::BLEU => Inst { value: 0x7063 },
+            Opcode::BLEZ => Inst { value: 0x5063 },
+            Opcode::BLT => Inst { value: 0x4063 },
+            Opcode::BLTU => Inst { value: 0x6063 },
+            Opcode::BLTZ => Inst { value: 0x4063 },
+            Opcode::BNE => Inst { value: 0x1063 },
+            Opcode::BNEZ => Inst { value: 0x1063 },
+            Opcode::BREV8 => Inst { value: 0x68705013 },
+            Opcode::BSET => Inst { value: 0x28001033 },
+            Opcode::BSETI => Inst { value: 0x28001013 },
+            Opcode::BSETIRV32 => Inst { value: 0x28001013 },
+            Opcode::CADD => Inst { value: 0x9002 },
+            Opcode::CADDI => Inst { value: 0x1 },
+            Opcode::CADDI16SP => Inst { value: 0x6101 },
+            Opcode::CADDI4SPN => Inst { value: 0x0 },
+            Opcode::CADDIW => Inst { value: 0x2001 },
+            Opcode::CADDW => Inst { value: 0x9c21 },
+            Opcode::CAND => Inst { value: 0x8c61 },
+            Opcode::CANDI => Inst { value: 0x8801 },
+            Opcode::CBEQZ => Inst { value: 0xc001 },
+            Opcode::CBNEZ => Inst { value: 0xe001 },
+            Opcode::CEBREAK => Inst { value: 0x9002 },
+            Opcode::CFLD => Inst { value: 0x2000 },
+            Opcode::CFLDSP => Inst { value: 0x2002 },
+            Opcode::CFLW => Inst { value: 0x6000 },
+            Opcode::CFLWSP => Inst { value: 0x6002 },
+            Opcode::CFSD => Inst { value: 0xa000 },
+            Opcode::CFSDSP => Inst { value: 0xa002 },
+            Opcode::CFSW => Inst { value: 0xe000 },
+            Opcode::CFSWSP => Inst { value: 0xe002 },
+            Opcode::CJ => Inst { value: 0xa001 },
+            Opcode::CJAL => Inst { value: 0x2001 },
+            Opcode::CJALR => Inst { value: 0x9002 },
+            Opcode::CJR => Inst { value: 0x8002 },
+            Opcode::CLBU => Inst { value: 0x8000 },
+            Opcode::CLD => Inst { value: 0x6000 },
+            Opcode::CLDSP => Inst { value: 0x6002 },
+            Opcode::CLH => Inst { value: 0x8440 },
+            Opcode::CLHU => Inst { value: 0x8400 },
+            Opcode::CLI => Inst { value: 0x4001 },
+            Opcode::CLUI => Inst { value: 0x6001 },
+            Opcode::CLW => Inst { value: 0x4000 },
+            Opcode::CLWSP => Inst { value: 0x4002 },
+            Opcode::CMOP1 => Inst { value: 0x6081 },
+            Opcode::CMOP11 => Inst { value: 0x6581 },
+            Opcode::CMOP13 => Inst { value: 0x6681 },
+            Opcode::CMOP15 => Inst { value: 0x6781 },
+            Opcode::CMOP3 => Inst { value: 0x6181 },
+            Opcode::CMOP5 => Inst { value: 0x6281 },
+            Opcode::CMOP7 => Inst { value: 0x6381 },
+            Opcode::CMOP9 => Inst { value: 0x6481 },
+            Opcode::CMOPN => Inst { value: 0x6081 },
+            Opcode::CMUL => Inst { value: 0x9c41 },
+            Opcode::CMV => Inst { value: 0x8002 },
+            Opcode::CNOP => Inst { value: 0x1 },
+            Opcode::CNOT => Inst { value: 0x9c75 },
+            Opcode::CNTLALL => Inst { value: 0x9016 },
+            Opcode::CNTLP1 => Inst { value: 0x900a },
+            Opcode::CNTLPALL => Inst { value: 0x900e },
+            Opcode::CNTLS1 => Inst { value: 0x9012 },
+            Opcode::COR => Inst { value: 0x8c41 },
+            Opcode::CSB => Inst { value: 0x8800 },
+            Opcode::CSD => Inst { value: 0xe000 },
+            Opcode::CSDSP => Inst { value: 0xe002 },
+            Opcode::CSEXTB => Inst { value: 0x9c65 },
+            Opcode::CSEXTH => Inst { value: 0x9c6d },
+            Opcode::CSEXTW => Inst { value: 0x2001 },
+            Opcode::CSH => Inst { value: 0x8c00 },
+            Opcode::CSLLI => Inst { value: 0x2 },
+            Opcode::CSLLIRV32 => Inst { value: 0x2 },
+            Opcode::CSRAI => Inst { value: 0x8401 },
+            Opcode::CSRAIRV32 => Inst { value: 0x8401 },
+            Opcode::CSRLI => Inst { value: 0x8001 },
+            Opcode::CSRLIRV32 => Inst { value: 0x8001 },
+            Opcode::CSSPOPCHKX5 => Inst { value: 0x6281 },
+            Opcode::CSSPUSHX1 => Inst { value: 0x6081 },
+            Opcode::CSUB => Inst { value: 0x8c01 },
+            Opcode::CSUBW => Inst { value: 0x9c01 },
+            Opcode::CSW => Inst { value: 0xc000 },
+            Opcode::CSWSP => Inst { value: 0xc002 },
+            Opcode::CXOR => Inst { value: 0x8c21 },
+            Opcode::CZEXTB => Inst { value: 0x9c61 },
+            Opcode::CZEXTH => Inst { value: 0x9c69 },
+            Opcode::CZEXTW => Inst { value: 0x9c71 },
+            Opcode::CBOCLEAN => Inst { value: 0x10200f },
+            Opcode::CBOFLUSH => Inst { value: 0x20200f },
+            Opcode::CBOINVAL => Inst { value: 0x200f },
+            Opcode::CBOZERO => Inst { value: 0x40200f },
+            Opcode::CLMUL => Inst { value: 0xa001033 },
+            Opcode::CLMULH => Inst { value: 0xa003033 },
+            Opcode::CLMULR => Inst { value: 0xa002033 },
+            Opcode::CLZ => Inst { value: 0x60001013 },
+            Opcode::CLZW => Inst { value: 0x6000101b },
+            Opcode::CMJALT => Inst { value: 0xa002 },
+            Opcode::CMMVA01S => Inst { value: 0xac62 },
+            Opcode::CMMVSA01 => Inst { value: 0xac22 },
+            Opcode::CMPOP => Inst { value: 0xba02 },
+            Opcode::CMPOPRET => Inst { value: 0xbe02 },
+            Opcode::CMPOPRETZ => Inst { value: 0xbc02 },
+            Opcode::CMPUSH => Inst { value: 0xb802 },
+            Opcode::CPOP => Inst { value: 0x60201013 },
+            Opcode::CPOPW => Inst { value: 0x6020101b },
+            Opcode::CSRC => Inst { value: 0x3073 },
+            Opcode::CSRCI => Inst { value: 0x7073 },
+            Opcode::CSRR => Inst { value: 0x2073 },
+            Opcode::CSRRC => Inst { value: 0x3073 },
+            Opcode::CSRRCI => Inst { value: 0x7073 },
+            Opcode::CSRRS => Inst { value: 0x2073 },
+            Opcode::CSRRSI => Inst { value: 0x6073 },
+            Opcode::CSRRW => Inst { value: 0x1073 },
+            Opcode::CSRRWI => Inst { value: 0x5073 },
+            Opcode::CSRS => Inst { value: 0x2073 },
+            Opcode::CSRSI => Inst { value: 0x6073 },
+            Opcode::CSRW => Inst { value: 0x1073 },
+            Opcode::CSRWI => Inst { value: 0x5073 },
+            Opcode::CTZ => Inst { value: 0x60101013 },
+            Opcode::CTZW => Inst { value: 0x6010101b },
+            Opcode::CZEROEQZ => Inst { value: 0xe005033 },
+            Opcode::CZERONEZ => Inst { value: 0xe007033 },
+            Opcode::DIV => Inst { value: 0x2004033 },
+            Opcode::DIVU => Inst { value: 0x2005033 },
+            Opcode::DIVUW => Inst { value: 0x200503b },
+            Opcode::DIVW => Inst { value: 0x200403b },
+            Opcode::DRET => Inst { value: 0x7b200073 },
+            Opcode::EBREAK => Inst { value: 0x100073 },
+            Opcode::ECALL => Inst { value: 0x73 },
+            Opcode::FABSD => Inst { value: 0x22002053 },
+            Opcode::FABSH => Inst { value: 0x24002053 },
+            Opcode::FABSQ => Inst { value: 0x26002053 },
+            Opcode::FABSS => Inst { value: 0x20002053 },
+            Opcode::FADDD => Inst { value: 0x2000053 },
+            Opcode::FADDH => Inst { value: 0x4000053 },
+            Opcode::FADDQ => Inst { value: 0x6000053 },
+            Opcode::FADDS => Inst { value: 0x53 },
+            Opcode::FCLASSD => Inst { value: 0xe2001053 },
+            Opcode::FCLASSH => Inst { value: 0xe4001053 },
+            Opcode::FCLASSQ => Inst { value: 0xe6001053 },
+            Opcode::FCLASSS => Inst { value: 0xe0001053 },
+            Opcode::FCVTBF16S => Inst { value: 0x44800053 },
+            Opcode::FCVTDH => Inst { value: 0x42200053 },
+            Opcode::FCVTDL => Inst { value: 0xd2200053 },
+            Opcode::FCVTDLU => Inst { value: 0xd2300053 },
+            Opcode::FCVTDQ => Inst { value: 0x42300053 },
+            Opcode::FCVTDS => Inst { value: 0x42000053 },
+            Opcode::FCVTDW => Inst { value: 0xd2000053 },
+            Opcode::FCVTDWU => Inst { value: 0xd2100053 },
+            Opcode::FCVTHD => Inst { value: 0x44100053 },
+            Opcode::FCVTHL => Inst { value: 0xd4200053 },
+            Opcode::FCVTHLU => Inst { value: 0xd4300053 },
+            Opcode::FCVTHQ => Inst { value: 0x44300053 },
+            Opcode::FCVTHS => Inst { value: 0x44000053 },
+            Opcode::FCVTHW => Inst { value: 0xd4000053 },
+            Opcode::FCVTHWU => Inst { value: 0xd4100053 },
+            Opcode::FCVTLD => Inst { value: 0xc2200053 },
+            Opcode::FCVTLH => Inst { value: 0xc4200053 },
+            Opcode::FCVTLQ => Inst { value: 0xc6200053 },
+            Opcode::FCVTLS => Inst { value: 0xc0200053 },
+            Opcode::FCVTLUD => Inst { value: 0xc2300053 },
+            Opcode::FCVTLUH => Inst { value: 0xc4300053 },
+            Opcode::FCVTLUQ => Inst { value: 0xc6300053 },
+            Opcode::FCVTLUS => Inst { value: 0xc0300053 },
+            Opcode::FCVTQD => Inst { value: 0x46100053 },
+            Opcode::FCVTQH => Inst { value: 0x46200053 },
+            Opcode::FCVTQL => Inst { value: 0xd6200053 },
+            Opcode::FCVTQLU => Inst { value: 0xd6300053 },
+            Opcode::FCVTQS => Inst { value: 0x46000053 },
+            Opcode::FCVTQW => Inst { value: 0xd6000053 },
+            Opcode::FCVTQWU => Inst { value: 0xd6100053 },
+            Opcode::FCVTSBF16 => Inst { value: 0x40600053 },
+            Opcode::FCVTSD => Inst { value: 0x40100053 },
+            Opcode::FCVTSH => Inst { value: 0x40200053 },
+            Opcode::FCVTSL => Inst { value: 0xd0200053 },
+            Opcode::FCVTSLU => Inst { value: 0xd0300053 },
+            Opcode::FCVTSQ => Inst { value: 0x40300053 },
+            Opcode::FCVTSW => Inst { value: 0xd0000053 },
+            Opcode::FCVTSWU => Inst { value: 0xd0100053 },
+            Opcode::FCVTWD => Inst { value: 0xc2000053 },
+            Opcode::FCVTWH => Inst { value: 0xc4000053 },
+            Opcode::FCVTWQ => Inst { value: 0xc6000053 },
+            Opcode::FCVTWS => Inst { value: 0xc0000053 },
+            Opcode::FCVTWUD => Inst { value: 0xc2100053 },
+            Opcode::FCVTWUH => Inst { value: 0xc4100053 },
+            Opcode::FCVTWUQ => Inst { value: 0xc6100053 },
+            Opcode::FCVTWUS => Inst { value: 0xc0100053 },
+            Opcode::FCVTMODWD => Inst { value: 0xc2801053 },
+            Opcode::FDIVD => Inst { value: 0x1a000053 },
+            Opcode::FDIVH => Inst { value: 0x1c000053 },
+            Opcode::FDIVQ => Inst { value: 0x1e000053 },
+            Opcode::FDIVS => Inst { value: 0x18000053 },
+            Opcode::FENCE => Inst { value: 0xf },
+            Opcode::FENCEI => Inst { value: 0x100f },
+            Opcode::FENCETSO => Inst { value: 0x8330000f },
+            Opcode::FEQD => Inst { value: 0xa2002053 },
+            Opcode::FEQH => Inst { value: 0xa4002053 },
+            Opcode::FEQQ => Inst { value: 0xa6002053 },
+            Opcode::FEQS => Inst { value: 0xa0002053 },
+            Opcode::FLD => Inst { value: 0x3007 },
+            Opcode::FLED => Inst { value: 0xa2000053 },
+            Opcode::FLEH => Inst { value: 0xa4000053 },
+            Opcode::FLEQ => Inst { value: 0xa6000053 },
+            Opcode::FLES => Inst { value: 0xa0000053 },
+            Opcode::FLEQD => Inst { value: 0xa2004053 },
+            Opcode::FLEQH => Inst { value: 0xa4004053 },
+            Opcode::FLEQQ => Inst { value: 0xa6004053 },
+            Opcode::FLEQS => Inst { value: 0xa0004053 },
+            Opcode::FLH => Inst { value: 0x1007 },
+            Opcode::FLID => Inst { value: 0xf2100053 },
+            Opcode::FLIH => Inst { value: 0xf4100053 },
+            Opcode::FLIQ => Inst { value: 0xf6100053 },
+            Opcode::FLIS => Inst { value: 0xf0100053 },
+            Opcode::FLQ => Inst { value: 0x4007 },
+            Opcode::FLTD => Inst { value: 0xa2001053 },
+            Opcode::FLTH => Inst { value: 0xa4001053 },
+            Opcode::FLTQ => Inst { value: 0xa6001053 },
+            Opcode::FLTS => Inst { value: 0xa0001053 },
+            Opcode::FLTQD => Inst { value: 0xa2005053 },
+            Opcode::FLTQH => Inst { value: 0xa4005053 },
+            Opcode::FLTQQ => Inst { value: 0xa6005053 },
+            Opcode::FLTQS => Inst { value: 0xa0005053 },
+            Opcode::FLW => Inst { value: 0x2007 },
+            Opcode::FMADDD => Inst { value: 0x2000043 },
+            Opcode::FMADDH => Inst { value: 0x4000043 },
+            Opcode::FMADDQ => Inst { value: 0x6000043 },
+            Opcode::FMADDS => Inst { value: 0x43 },
+            Opcode::FMAXD => Inst { value: 0x2a001053 },
+            Opcode::FMAXH => Inst { value: 0x2c001053 },
+            Opcode::FMAXQ => Inst { value: 0x2e001053 },
+            Opcode::FMAXS => Inst { value: 0x28001053 },
+            Opcode::FMAXMD => Inst { value: 0x2a003053 },
+            Opcode::FMAXMH => Inst { value: 0x2c003053 },
+            Opcode::FMAXMQ => Inst { value: 0x2e003053 },
+            Opcode::FMAXMS => Inst { value: 0x28003053 },
+            Opcode::FMIND => Inst { value: 0x2a000053 },
+            Opcode::FMINH => Inst { value: 0x2c000053 },
+            Opcode::FMINQ => Inst { value: 0x2e000053 },
+            Opcode::FMINS => Inst { value: 0x28000053 },
+            Opcode::FMINMD => Inst { value: 0x2a002053 },
+            Opcode::FMINMH => Inst { value: 0x2c002053 },
+            Opcode::FMINMQ => Inst { value: 0x2e002053 },
+            Opcode::FMINMS => Inst { value: 0x28002053 },
+            Opcode::FMSUBD => Inst { value: 0x2000047 },
+            Opcode::FMSUBH => Inst { value: 0x4000047 },
+            Opcode::FMSUBQ => Inst { value: 0x6000047 },
+            Opcode::FMSUBS => Inst { value: 0x47 },
+            Opcode::FMULD => Inst { value: 0x12000053 },
+            Opcode::FMULH => Inst { value: 0x14000053 },
+            Opcode::FMULQ => Inst { value: 0x16000053 },
+            Opcode::FMULS => Inst { value: 0x10000053 },
+            Opcode::FMVD => Inst { value: 0x22000053 },
+            Opcode::FMVDX => Inst { value: 0xf2000053 },
+            Opcode::FMVH => Inst { value: 0x24000053 },
+            Opcode::FMVHX => Inst { value: 0xf4000053 },
+            Opcode::FMVQ => Inst { value: 0x26000053 },
+            Opcode::FMVS => Inst { value: 0x20000053 },
+            Opcode::FMVSX => Inst { value: 0xf0000053 },
+            Opcode::FMVWX => Inst { value: 0xf0000053 },
+            Opcode::FMVXD => Inst { value: 0xe2000053 },
+            Opcode::FMVXH => Inst { value: 0xe4000053 },
+            Opcode::FMVXS => Inst { value: 0xe0000053 },
+            Opcode::FMVXW => Inst { value: 0xe0000053 },
+            Opcode::FMVHXD => Inst { value: 0xe2100053 },
+            Opcode::FMVHXQ => Inst { value: 0xe6100053 },
+            Opcode::FMVPDX => Inst { value: 0xb2000053 },
+            Opcode::FMVPQX => Inst { value: 0xb6000053 },
+            Opcode::FNEGD => Inst { value: 0x22001053 },
+            Opcode::FNEGH => Inst { value: 0x24001053 },
+            Opcode::FNEGQ => Inst { value: 0x26001053 },
+            Opcode::FNEGS => Inst { value: 0x20001053 },
+            Opcode::FNMADDD => Inst { value: 0x200004f },
+            Opcode::FNMADDH => Inst { value: 0x400004f },
+            Opcode::FNMADDQ => Inst { value: 0x600004f },
+            Opcode::FNMADDS => Inst { value: 0x4f },
+            Opcode::FNMSUBD => Inst { value: 0x200004b },
+            Opcode::FNMSUBH => Inst { value: 0x400004b },
+            Opcode::FNMSUBQ => Inst { value: 0x600004b },
+            Opcode::FNMSUBS => Inst { value: 0x4b },
+            Opcode::FRCSR => Inst { value: 0x302073 },
+            Opcode::FRFLAGS => Inst { value: 0x102073 },
+            Opcode::FROUNDD => Inst { value: 0x42400053 },
+            Opcode::FROUNDH => Inst { value: 0x44400053 },
+            Opcode::FROUNDQ => Inst { value: 0x46400053 },
+            Opcode::FROUNDS => Inst { value: 0x40400053 },
+            Opcode::FROUNDNXD => Inst { value: 0x42500053 },
+            Opcode::FROUNDNXH => Inst { value: 0x44500053 },
+            Opcode::FROUNDNXQ => Inst { value: 0x46500053 },
+            Opcode::FROUNDNXS => Inst { value: 0x40500053 },
+            Opcode::FRRM => Inst { value: 0x202073 },
+            Opcode::FSCSR => Inst { value: 0x301073 },
+            Opcode::FSD => Inst { value: 0x3027 },
+            Opcode::FSFLAGS => Inst { value: 0x101073 },
+            Opcode::FSFLAGSI => Inst { value: 0x105073 },
+            Opcode::FSGNJD => Inst { value: 0x22000053 },
+            Opcode::FSGNJH => Inst { value: 0x24000053 },
+            Opcode::FSGNJQ => Inst { value: 0x26000053 },
+            Opcode::FSGNJS => Inst { value: 0x20000053 },
+            Opcode::FSGNJND => Inst { value: 0x22001053 },
+            Opcode::FSGNJNH => Inst { value: 0x24001053 },
+            Opcode::FSGNJNQ => Inst { value: 0x26001053 },
+            Opcode::FSGNJNS => Inst { value: 0x20001053 },
+            Opcode::FSGNJXD => Inst { value: 0x22002053 },
+            Opcode::FSGNJXH => Inst { value: 0x24002053 },
+            Opcode::FSGNJXQ => Inst { value: 0x26002053 },
+            Opcode::FSGNJXS => Inst { value: 0x20002053 },
+            Opcode::FSH => Inst { value: 0x1027 },
+            Opcode::FSQ => Inst { value: 0x4027 },
+            Opcode::FSQRTD => Inst { value: 0x5a000053 },
+            Opcode::FSQRTH => Inst { value: 0x5c000053 },
+            Opcode::FSQRTQ => Inst { value: 0x5e000053 },
+            Opcode::FSQRTS => Inst { value: 0x58000053 },
+            Opcode::FSRM => Inst { value: 0x201073 },
+            Opcode::FSRMI => Inst { value: 0x205073 },
+            Opcode::FSUBD => Inst { value: 0xa000053 },
+            Opcode::FSUBH => Inst { value: 0xc000053 },
+            Opcode::FSUBQ => Inst { value: 0xe000053 },
+            Opcode::FSUBS => Inst { value: 0x8000053 },
+            Opcode::FSW => Inst { value: 0x2027 },
+            Opcode::HFENCEGVMA => Inst { value: 0x62000073 },
+            Opcode::HFENCEVVMA => Inst { value: 0x22000073 },
+            Opcode::HINVALGVMA => Inst { value: 0x66000073 },
+            Opcode::HINVALVVMA => Inst { value: 0x26000073 },
+            Opcode::HLVB => Inst { value: 0x60004073 },
+            Opcode::HLVBU => Inst { value: 0x60104073 },
+            Opcode::HLVD => Inst { value: 0x6c004073 },
+            Opcode::HLVH => Inst { value: 0x64004073 },
+            Opcode::HLVHU => Inst { value: 0x64104073 },
+            Opcode::HLVW => Inst { value: 0x68004073 },
+            Opcode::HLVWU => Inst { value: 0x68104073 },
+            Opcode::HLVXHU => Inst { value: 0x64304073 },
+            Opcode::HLVXWU => Inst { value: 0x68304073 },
+            Opcode::HSVB => Inst { value: 0x62004073 },
+            Opcode::HSVD => Inst { value: 0x6e004073 },
+            Opcode::HSVH => Inst { value: 0x66004073 },
+            Opcode::HSVW => Inst { value: 0x6a004073 },
+            Opcode::J => Inst { value: 0x6f },
+            Opcode::JAL => Inst { value: 0x6f },
+            Opcode::JALPSEUDO => Inst { value: 0xef },
+            Opcode::JALR => Inst { value: 0x67 },
+            Opcode::JALRPSEUDO => Inst { value: 0xe7 },
+            Opcode::JR => Inst { value: 0x67 },
+            Opcode::LB => Inst { value: 0x3 },
+            Opcode::LBU => Inst { value: 0x4003 },
+            Opcode::LD => Inst { value: 0x3003 },
+            Opcode::LH => Inst { value: 0x1003 },
+            Opcode::LHU => Inst { value: 0x5003 },
+            Opcode::LPAD => Inst { value: 0x17 },
+            Opcode::LRD => Inst { value: 0x1000302f },
+            Opcode::LRW => Inst { value: 0x1000202f },
+            Opcode::LUI => Inst { value: 0x37 },
+            Opcode::LW => Inst { value: 0x2003 },
+            Opcode::LWU => Inst { value: 0x6003 },
+            Opcode::MAX => Inst { value: 0xa006033 },
+            Opcode::MAXU => Inst { value: 0xa007033 },
+            Opcode::MIN => Inst { value: 0xa004033 },
+            Opcode::MINU => Inst { value: 0xa005033 },
+            Opcode::MNRET => Inst { value: 0x70200073 },
+            Opcode::MOPR0 => Inst { value: 0x81c04073 },
+            Opcode::MOPR1 => Inst { value: 0x81d04073 },
+            Opcode::MOPR10 => Inst { value: 0x89e04073 },
+            Opcode::MOPR11 => Inst { value: 0x89f04073 },
+            Opcode::MOPR12 => Inst { value: 0x8dc04073 },
+            Opcode::MOPR13 => Inst { value: 0x8dd04073 },
+            Opcode::MOPR14 => Inst { value: 0x8de04073 },
+            Opcode::MOPR15 => Inst { value: 0x8df04073 },
+            Opcode::MOPR16 => Inst { value: 0xc1c04073 },
+            Opcode::MOPR17 => Inst { value: 0xc1d04073 },
+            Opcode::MOPR18 => Inst { value: 0xc1e04073 },
+            Opcode::MOPR19 => Inst { value: 0xc1f04073 },
+            Opcode::MOPR2 => Inst { value: 0x81e04073 },
+            Opcode::MOPR20 => Inst { value: 0xc5c04073 },
+            Opcode::MOPR21 => Inst { value: 0xc5d04073 },
+            Opcode::MOPR22 => Inst { value: 0xc5e04073 },
+            Opcode::MOPR23 => Inst { value: 0xc5f04073 },
+            Opcode::MOPR24 => Inst { value: 0xc9c04073 },
+            Opcode::MOPR25 => Inst { value: 0xc9d04073 },
+            Opcode::MOPR26 => Inst { value: 0xc9e04073 },
+            Opcode::MOPR27 => Inst { value: 0xc9f04073 },
+            Opcode::MOPR28 => Inst { value: 0xcdc04073 },
+            Opcode::MOPR29 => Inst { value: 0xcdd04073 },
+            Opcode::MOPR3 => Inst { value: 0x81f04073 },
+            Opcode::MOPR30 => Inst { value: 0xcde04073 },
+            Opcode::MOPR31 => Inst { value: 0xcdf04073 },
+            Opcode::MOPR4 => Inst { value: 0x85c04073 },
+            Opcode::MOPR5 => Inst { value: 0x85d04073 },
+            Opcode::MOPR6 => Inst { value: 0x85e04073 },
+            Opcode::MOPR7 => Inst { value: 0x85f04073 },
+            Opcode::MOPR8 => Inst { value: 0x89c04073 },
+            Opcode::MOPR9 => Inst { value: 0x89d04073 },
+            Opcode::MOPRN => Inst { value: 0x81c04073 },
+            Opcode::MOPRR0 => Inst { value: 0x82004073 },
+            Opcode::MOPRR1 => Inst { value: 0x86004073 },
+            Opcode::MOPRR2 => Inst { value: 0x8a004073 },
+            Opcode::MOPRR3 => Inst { value: 0x8e004073 },
+            Opcode::MOPRR4 => Inst { value: 0xc2004073 },
+            Opcode::MOPRR5 => Inst { value: 0xc6004073 },
+            Opcode::MOPRR6 => Inst { value: 0xca004073 },
+            Opcode::MOPRR7 => Inst { value: 0xce004073 },
+            Opcode::MOPRRN => Inst { value: 0x82004073 },
+            Opcode::MRET => Inst { value: 0x30200073 },
+            Opcode::MUL => Inst { value: 0x2000033 },
+            Opcode::MULH => Inst { value: 0x2001033 },
+            Opcode::MULHSU => Inst { value: 0x2002033 },
+            Opcode::MULHU => Inst { value: 0x2003033 },
+            Opcode::MULW => Inst { value: 0x200003b },
+            Opcode::MV => Inst { value: 0x13 },
+            Opcode::NEG => Inst { value: 0x40000033 },
+            Opcode::NOP => Inst { value: 0x13 },
+            Opcode::NTLALL => Inst { value: 0x500033 },
+            Opcode::NTLP1 => Inst { value: 0x200033 },
+            Opcode::NTLPALL => Inst { value: 0x300033 },
+            Opcode::NTLS1 => Inst { value: 0x400033 },
+            Opcode::OR => Inst { value: 0x6033 },
+            Opcode::ORCB => Inst { value: 0x28705013 },
+            Opcode::ORI => Inst { value: 0x6013 },
+            Opcode::ORN => Inst { value: 0x40006033 },
+            Opcode::PACK => Inst { value: 0x8004033 },
+            Opcode::PACKH => Inst { value: 0x8007033 },
+            Opcode::PACKW => Inst { value: 0x800403b },
+            Opcode::PAUSE => Inst { value: 0x100000f },
+            Opcode::PREFETCHI => Inst { value: 0x6013 },
+            Opcode::PREFETCHR => Inst { value: 0x106013 },
+            Opcode::PREFETCHW => Inst { value: 0x306013 },
+            Opcode::RDCYCLE => Inst { value: 0xc0002073 },
+            Opcode::RDCYCLEH => Inst { value: 0xc8002073 },
+            Opcode::RDINSTRET => Inst { value: 0xc0202073 },
+            Opcode::RDINSTRETH => Inst { value: 0xc8202073 },
+            Opcode::RDTIME => Inst { value: 0xc0102073 },
+            Opcode::RDTIMEH => Inst { value: 0xc8102073 },
+            Opcode::REM => Inst { value: 0x2006033 },
+            Opcode::REMU => Inst { value: 0x2007033 },
+            Opcode::REMUW => Inst { value: 0x200703b },
+            Opcode::REMW => Inst { value: 0x200603b },
+            Opcode::RET => Inst { value: 0x8067 },
+            Opcode::REV8 => Inst { value: 0x6b805013 },
+            Opcode::REV8RV32 => Inst { value: 0x69805013 },
+            Opcode::ROL => Inst { value: 0x60001033 },
+            Opcode::ROLW => Inst { value: 0x6000103b },
+            Opcode::ROR => Inst { value: 0x60005033 },
+            Opcode::RORI => Inst { value: 0x60005013 },
+            Opcode::RORIRV32 => Inst { value: 0x60005013 },
+            Opcode::RORIW => Inst { value: 0x6000501b },
+            Opcode::RORW => Inst { value: 0x6000503b },
+            Opcode::SB => Inst { value: 0x23 },
+            Opcode::SBREAK => Inst { value: 0x100073 },
+            Opcode::SCD => Inst { value: 0x1800302f },
+            Opcode::SCW => Inst { value: 0x1800202f },
+            Opcode::SCALL => Inst { value: 0x73 },
+            Opcode::SCTRCLR => Inst { value: 0x10400073 },
+            Opcode::SD => Inst { value: 0x3023 },
+            Opcode::SEQZ => Inst { value: 0x103013 },
+            Opcode::SEXTB => Inst { value: 0x60401013 },
+            Opcode::SEXTH => Inst { value: 0x60501013 },
+            Opcode::SEXTW => Inst { value: 0x1b },
+            Opcode::SFENCEINVALIR => Inst { value: 0x18100073 },
+            Opcode::SFENCEVMA => Inst { value: 0x12000073 },
+            Opcode::SFENCEWINVAL => Inst { value: 0x18000073 },
+            Opcode::SGTZ => Inst { value: 0x2033 },
+            Opcode::SH => Inst { value: 0x1023 },
+            Opcode::SH1ADD => Inst { value: 0x20002033 },
+            Opcode::SH1ADDUW => Inst { value: 0x2000203b },
+            Opcode::SH2ADD => Inst { value: 0x20004033 },
+            Opcode::SH2ADDUW => Inst { value: 0x2000403b },
+            Opcode::SH3ADD => Inst { value: 0x20006033 },
+            Opcode::SH3ADDUW => Inst { value: 0x2000603b },
+            Opcode::SHA256SIG0 => Inst { value: 0x10201013 },
+            Opcode::SHA256SIG1 => Inst { value: 0x10301013 },
+            Opcode::SHA256SUM0 => Inst { value: 0x10001013 },
+            Opcode::SHA256SUM1 => Inst { value: 0x10101013 },
+            Opcode::SHA512SIG0 => Inst { value: 0x10601013 },
+            Opcode::SHA512SIG0H => Inst { value: 0x5c000033 },
+            Opcode::SHA512SIG0L => Inst { value: 0x54000033 },
+            Opcode::SHA512SIG1 => Inst { value: 0x10701013 },
+            Opcode::SHA512SIG1H => Inst { value: 0x5e000033 },
+            Opcode::SHA512SIG1L => Inst { value: 0x56000033 },
+            Opcode::SHA512SUM0 => Inst { value: 0x10401013 },
+            Opcode::SHA512SUM0R => Inst { value: 0x50000033 },
+            Opcode::SHA512SUM1 => Inst { value: 0x10501013 },
+            Opcode::SHA512SUM1R => Inst { value: 0x52000033 },
+            Opcode::SINVALVMA => Inst { value: 0x16000073 },
+            Opcode::SLL => Inst { value: 0x1033 },
+            Opcode::SLLI => Inst { value: 0x1013 },
+            Opcode::SLLIRV32 => Inst { value: 0x1013 },
+            Opcode::SLLIUW => Inst { value: 0x800101b },
+            Opcode::SLLIW => Inst { value: 0x101b },
+            Opcode::SLLW => Inst { value: 0x103b },
+            Opcode::SLT => Inst { value: 0x2033 },
+            Opcode::SLTI => Inst { value: 0x2013 },
+            Opcode::SLTIU => Inst { value: 0x3013 },
+            Opcode::SLTU => Inst { value: 0x3033 },
+            Opcode::SLTZ => Inst { value: 0x2033 },
+            Opcode::SM3P0 => Inst { value: 0x10801013 },
+            Opcode::SM3P1 => Inst { value: 0x10901013 },
+            Opcode::SM4ED => Inst { value: 0x30000033 },
+            Opcode::SM4KS => Inst { value: 0x34000033 },
+            Opcode::SNEZ => Inst { value: 0x3033 },
+            Opcode::SRA => Inst { value: 0x40005033 },
+            Opcode::SRAI => Inst { value: 0x40005013 },
+            Opcode::SRAIRV32 => Inst { value: 0x40005013 },
+            Opcode::SRAIW => Inst { value: 0x4000501b },
+            Opcode::SRAW => Inst { value: 0x4000503b },
+            Opcode::SRET => Inst { value: 0x10200073 },
+            Opcode::SRL => Inst { value: 0x5033 },
+            Opcode::SRLI => Inst { value: 0x5013 },
+            Opcode::SRLIRV32 => Inst { value: 0x5013 },
+            Opcode::SRLIW => Inst { value: 0x501b },
+            Opcode::SRLW => Inst { value: 0x503b },
+            Opcode::SSAMOSWAPD => Inst { value: 0x4800302f },
+            Opcode::SSAMOSWAPW => Inst { value: 0x4800202f },
+            Opcode::SSPOPCHKX1 => Inst { value: 0xcdc0c073 },
+            Opcode::SSPOPCHKX5 => Inst { value: 0xcdc2c073 },
+            Opcode::SSPUSHX1 => Inst { value: 0xce104073 },
+            Opcode::SSPUSHX5 => Inst { value: 0xce504073 },
+            Opcode::SSRDP => Inst { value: 0xcdc04073 },
+            Opcode::SUB => Inst { value: 0x40000033 },
+            Opcode::SUBW => Inst { value: 0x4000003b },
+            Opcode::SW => Inst { value: 0x2023 },
+            Opcode::UNZIP => Inst { value: 0x8f05013 },
+            Opcode::VAADDVV => Inst { value: 0x24002057 },
+            Opcode::VAADDVX => Inst { value: 0x24006057 },
+            Opcode::VAADDUVV => Inst { value: 0x20002057 },
+            Opcode::VAADDUVX => Inst { value: 0x20006057 },
+            Opcode::VADCVIM => Inst { value: 0x40003057 },
+            Opcode::VADCVVM => Inst { value: 0x40000057 },
+            Opcode::VADCVXM => Inst { value: 0x40004057 },
+            Opcode::VADDVI => Inst { value: 0x3057 },
+            Opcode::VADDVV => Inst { value: 0x57 },
+            Opcode::VADDVX => Inst { value: 0x4057 },
+            Opcode::VAESDFVS => Inst { value: 0xa600a077 },
+            Opcode::VAESDFVV => Inst { value: 0xa200a077 },
+            Opcode::VAESDMVS => Inst { value: 0xa6002077 },
+            Opcode::VAESDMVV => Inst { value: 0xa2002077 },
+            Opcode::VAESEFVS => Inst { value: 0xa601a077 },
+            Opcode::VAESEFVV => Inst { value: 0xa201a077 },
+            Opcode::VAESEMVS => Inst { value: 0xa6012077 },
+            Opcode::VAESEMVV => Inst { value: 0xa2012077 },
+            Opcode::VAESKF1VI => Inst { value: 0x8a002077 },
+            Opcode::VAESKF2VI => Inst { value: 0xaa002077 },
+            Opcode::VAESZVS => Inst { value: 0xa603a077 },
+            Opcode::VANDVI => Inst { value: 0x24003057 },
+            Opcode::VANDVV => Inst { value: 0x24000057 },
+            Opcode::VANDVX => Inst { value: 0x24004057 },
+            Opcode::VANDNVV => Inst { value: 0x4000057 },
+            Opcode::VANDNVX => Inst { value: 0x4004057 },
+            Opcode::VASUBVV => Inst { value: 0x2c002057 },
+            Opcode::VASUBVX => Inst { value: 0x2c006057 },
+            Opcode::VASUBUVV => Inst { value: 0x28002057 },
+            Opcode::VASUBUVX => Inst { value: 0x28006057 },
+            Opcode::VBREV8V => Inst { value: 0x48042057 },
+            Opcode::VBREVV => Inst { value: 0x48052057 },
+            Opcode::VCLMULVV => Inst { value: 0x30002057 },
+            Opcode::VCLMULVX => Inst { value: 0x30006057 },
+            Opcode::VCLMULHVV => Inst { value: 0x34002057 },
+            Opcode::VCLMULHVX => Inst { value: 0x34006057 },
+            Opcode::VCLZV => Inst { value: 0x48062057 },
+            Opcode::VCOMPRESSVM => Inst { value: 0x5e002057 },
+            Opcode::VCPOPM => Inst { value: 0x40082057 },
+            Opcode::VCPOPV => Inst { value: 0x48072057 },
+            Opcode::VCTZV => Inst { value: 0x4806a057 },
+            Opcode::VDIVVV => Inst { value: 0x84002057 },
+            Opcode::VDIVVX => Inst { value: 0x84006057 },
+            Opcode::VDIVUVV => Inst { value: 0x80002057 },
+            Opcode::VDIVUVX => Inst { value: 0x80006057 },
+            Opcode::VFADDVF => Inst { value: 0x5057 },
+            Opcode::VFADDVV => Inst { value: 0x1057 },
+            Opcode::VFCLASSV => Inst { value: 0x4c081057 },
+            Opcode::VFCVTFXV => Inst { value: 0x48019057 },
+            Opcode::VFCVTFXUV => Inst { value: 0x48011057 },
+            Opcode::VFCVTRTZXFV => Inst { value: 0x48039057 },
+            Opcode::VFCVTRTZXUFV => Inst { value: 0x48031057 },
+            Opcode::VFCVTXFV => Inst { value: 0x48009057 },
+            Opcode::VFCVTXUFV => Inst { value: 0x48001057 },
+            Opcode::VFDIVVF => Inst { value: 0x80005057 },
+            Opcode::VFDIVVV => Inst { value: 0x80001057 },
+            Opcode::VFIRSTM => Inst { value: 0x4008a057 },
+            Opcode::VFMACCVF => Inst { value: 0xb0005057 },
+            Opcode::VFMACCVV => Inst { value: 0xb0001057 },
+            Opcode::VFMADDVF => Inst { value: 0xa0005057 },
+            Opcode::VFMADDVV => Inst { value: 0xa0001057 },
+            Opcode::VFMAXVF => Inst { value: 0x18005057 },
+            Opcode::VFMAXVV => Inst { value: 0x18001057 },
+            Opcode::VFMERGEVFM => Inst { value: 0x5c005057 },
+            Opcode::VFMINVF => Inst { value: 0x10005057 },
+            Opcode::VFMINVV => Inst { value: 0x10001057 },
+            Opcode::VFMSACVF => Inst { value: 0xb8005057 },
+            Opcode::VFMSACVV => Inst { value: 0xb8001057 },
+            Opcode::VFMSUBVF => Inst { value: 0xa8005057 },
+            Opcode::VFMSUBVV => Inst { value: 0xa8001057 },
+            Opcode::VFMULVF => Inst { value: 0x90005057 },
+            Opcode::VFMULVV => Inst { value: 0x90001057 },
+            Opcode::VFMVFS => Inst { value: 0x42001057 },
+            Opcode::VFMVSF => Inst { value: 0x42005057 },
+            Opcode::VFMVVF => Inst { value: 0x5e005057 },
+            Opcode::VFNCVTFFW => Inst { value: 0x480a1057 },
+            Opcode::VFNCVTFXW => Inst { value: 0x48099057 },
+            Opcode::VFNCVTFXUW => Inst { value: 0x48091057 },
+            Opcode::VFNCVTRODFFW => Inst { value: 0x480a9057 },
+            Opcode::VFNCVTRTZXFW => Inst { value: 0x480b9057 },
+            Opcode::VFNCVTRTZXUFW => Inst { value: 0x480b1057 },
+            Opcode::VFNCVTXFW => Inst { value: 0x48089057 },
+            Opcode::VFNCVTXUFW => Inst { value: 0x48081057 },
+            Opcode::VFNCVTBF16FFW => Inst { value: 0x480e9057 },
+            Opcode::VFNMACCVF => Inst { value: 0xb4005057 },
+            Opcode::VFNMACCVV => Inst { value: 0xb4001057 },
+            Opcode::VFNMADDVF => Inst { value: 0xa4005057 },
+            Opcode::VFNMADDVV => Inst { value: 0xa4001057 },
+            Opcode::VFNMSACVF => Inst { value: 0xbc005057 },
+            Opcode::VFNMSACVV => Inst { value: 0xbc001057 },
+            Opcode::VFNMSUBVF => Inst { value: 0xac005057 },
+            Opcode::VFNMSUBVV => Inst { value: 0xac001057 },
+            Opcode::VFRDIVVF => Inst { value: 0x84005057 },
+            Opcode::VFREC7V => Inst { value: 0x4c029057 },
+            Opcode::VFREDMAXVS => Inst { value: 0x1c001057 },
+            Opcode::VFREDMINVS => Inst { value: 0x14001057 },
+            Opcode::VFREDOSUMVS => Inst { value: 0xc001057 },
+            Opcode::VFREDSUMVS => Inst { value: 0x4001057 },
+            Opcode::VFREDUSUMVS => Inst { value: 0x4001057 },
+            Opcode::VFRSQRT7V => Inst { value: 0x4c021057 },
+            Opcode::VFRSUBVF => Inst { value: 0x9c005057 },
+            Opcode::VFSGNJVF => Inst { value: 0x20005057 },
+            Opcode::VFSGNJVV => Inst { value: 0x20001057 },
+            Opcode::VFSGNJNVF => Inst { value: 0x24005057 },
+            Opcode::VFSGNJNVV => Inst { value: 0x24001057 },
+            Opcode::VFSGNJXVF => Inst { value: 0x28005057 },
+            Opcode::VFSGNJXVV => Inst { value: 0x28001057 },
+            Opcode::VFSLIDE1DOWNVF => Inst { value: 0x3c005057 },
+            Opcode::VFSLIDE1UPVF => Inst { value: 0x38005057 },
+            Opcode::VFSQRTV => Inst { value: 0x4c001057 },
+            Opcode::VFSUBVF => Inst { value: 0x8005057 },
+            Opcode::VFSUBVV => Inst { value: 0x8001057 },
+            Opcode::VFWADDVF => Inst { value: 0xc0005057 },
+            Opcode::VFWADDVV => Inst { value: 0xc0001057 },
+            Opcode::VFWADDWF => Inst { value: 0xd0005057 },
+            Opcode::VFWADDWV => Inst { value: 0xd0001057 },
+            Opcode::VFWCVTFFV => Inst { value: 0x48061057 },
+            Opcode::VFWCVTFXV => Inst { value: 0x48059057 },
+            Opcode::VFWCVTFXUV => Inst { value: 0x48051057 },
+            Opcode::VFWCVTRTZXFV => Inst { value: 0x48079057 },
+            Opcode::VFWCVTRTZXUFV => Inst { value: 0x48071057 },
+            Opcode::VFWCVTXFV => Inst { value: 0x48049057 },
+            Opcode::VFWCVTXUFV => Inst { value: 0x48041057 },
+            Opcode::VFWCVTBF16FFV => Inst { value: 0x48069057 },
+            Opcode::VFWMACCVF => Inst { value: 0xf0005057 },
+            Opcode::VFWMACCVV => Inst { value: 0xf0001057 },
+            Opcode::VFWMACCBF16VF => Inst { value: 0xec005057 },
+            Opcode::VFWMACCBF16VV => Inst { value: 0xec001057 },
+            Opcode::VFWMSACVF => Inst { value: 0xf8005057 },
+            Opcode::VFWMSACVV => Inst { value: 0xf8001057 },
+            Opcode::VFWMULVF => Inst { value: 0xe0005057 },
+            Opcode::VFWMULVV => Inst { value: 0xe0001057 },
+            Opcode::VFWNMACCVF => Inst { value: 0xf4005057 },
+            Opcode::VFWNMACCVV => Inst { value: 0xf4001057 },
+            Opcode::VFWNMSACVF => Inst { value: 0xfc005057 },
+            Opcode::VFWNMSACVV => Inst { value: 0xfc001057 },
+            Opcode::VFWREDOSUMVS => Inst { value: 0xcc001057 },
+            Opcode::VFWREDSUMVS => Inst { value: 0xc4001057 },
+            Opcode::VFWREDUSUMVS => Inst { value: 0xc4001057 },
+            Opcode::VFWSUBVF => Inst { value: 0xc8005057 },
+            Opcode::VFWSUBVV => Inst { value: 0xc8001057 },
+            Opcode::VFWSUBWF => Inst { value: 0xd8005057 },
+            Opcode::VFWSUBWV => Inst { value: 0xd8001057 },
+            Opcode::VGHSHVV => Inst { value: 0xb2002077 },
+            Opcode::VGMULVV => Inst { value: 0xa208a077 },
+            Opcode::VIDV => Inst { value: 0x5008a057 },
+            Opcode::VIOTAM => Inst { value: 0x50082057 },
+            Opcode::VL1RV => Inst { value: 0x2800007 },
+            Opcode::VL1RE16V => Inst { value: 0x2805007 },
+            Opcode::VL1RE32V => Inst { value: 0x2806007 },
+            Opcode::VL1RE64V => Inst { value: 0x2807007 },
+            Opcode::VL1RE8V => Inst { value: 0x2800007 },
+            Opcode::VL2RV => Inst { value: 0x22800007 },
+            Opcode::VL2RE16V => Inst { value: 0x22805007 },
+            Opcode::VL2RE32V => Inst { value: 0x22806007 },
+            Opcode::VL2RE64V => Inst { value: 0x22807007 },
+            Opcode::VL2RE8V => Inst { value: 0x22800007 },
+            Opcode::VL4RV => Inst { value: 0x62800007 },
+            Opcode::VL4RE16V => Inst { value: 0x62805007 },
+            Opcode::VL4RE32V => Inst { value: 0x62806007 },
+            Opcode::VL4RE64V => Inst { value: 0x62807007 },
+            Opcode::VL4RE8V => Inst { value: 0x62800007 },
+            Opcode::VL8RV => Inst { value: 0xe2800007 },
+            Opcode::VL8RE16V => Inst { value: 0xe2805007 },
+            Opcode::VL8RE32V => Inst { value: 0xe2806007 },
+            Opcode::VL8RE64V => Inst { value: 0xe2807007 },
+            Opcode::VL8RE8V => Inst { value: 0xe2800007 },
+            Opcode::VLE16V => Inst { value: 0x5007 },
+            Opcode::VLE16FFV => Inst { value: 0x1005007 },
+            Opcode::VLE1V => Inst { value: 0x2b00007 },
+            Opcode::VLE32V => Inst { value: 0x6007 },
+            Opcode::VLE32FFV => Inst { value: 0x1006007 },
+            Opcode::VLE64V => Inst { value: 0x7007 },
+            Opcode::VLE64FFV => Inst { value: 0x1007007 },
+            Opcode::VLE8V => Inst { value: 0x7 },
+            Opcode::VLE8FFV => Inst { value: 0x1000007 },
+            Opcode::VLMV => Inst { value: 0x2b00007 },
+            Opcode::VLOXEI16V => Inst { value: 0xc005007 },
+            Opcode::VLOXEI32V => Inst { value: 0xc006007 },
+            Opcode::VLOXEI64V => Inst { value: 0xc007007 },
+            Opcode::VLOXEI8V => Inst { value: 0xc000007 },
+            Opcode::VLSE16V => Inst { value: 0x8005007 },
+            Opcode::VLSE32V => Inst { value: 0x8006007 },
+            Opcode::VLSE64V => Inst { value: 0x8007007 },
+            Opcode::VLSE8V => Inst { value: 0x8000007 },
+            Opcode::VLUXEI16V => Inst { value: 0x4005007 },
+            Opcode::VLUXEI32V => Inst { value: 0x4006007 },
+            Opcode::VLUXEI64V => Inst { value: 0x4007007 },
+            Opcode::VLUXEI8V => Inst { value: 0x4000007 },
+            Opcode::VMACCVV => Inst { value: 0xb4002057 },
+            Opcode::VMACCVX => Inst { value: 0xb4006057 },
+            Opcode::VMADCVI => Inst { value: 0x46003057 },
+            Opcode::VMADCVIM => Inst { value: 0x44003057 },
+            Opcode::VMADCVV => Inst { value: 0x46000057 },
+            Opcode::VMADCVVM => Inst { value: 0x44000057 },
+            Opcode::VMADCVX => Inst { value: 0x46004057 },
+            Opcode::VMADCVXM => Inst { value: 0x44004057 },
+            Opcode::VMADDVV => Inst { value: 0xa4002057 },
+            Opcode::VMADDVX => Inst { value: 0xa4006057 },
+            Opcode::VMANDMM => Inst { value: 0x66002057 },
+            Opcode::VMANDNMM => Inst { value: 0x62002057 },
+            Opcode::VMANDNOTMM => Inst { value: 0x60002057 },
+            Opcode::VMAXVV => Inst { value: 0x1c000057 },
+            Opcode::VMAXVX => Inst { value: 0x1c004057 },
+            Opcode::VMAXUVV => Inst { value: 0x18000057 },
+            Opcode::VMAXUVX => Inst { value: 0x18004057 },
+            Opcode::VMERGEVIM => Inst { value: 0x5c003057 },
+            Opcode::VMERGEVVM => Inst { value: 0x5c000057 },
+            Opcode::VMERGEVXM => Inst { value: 0x5c004057 },
+            Opcode::VMFEQVF => Inst { value: 0x60005057 },
+            Opcode::VMFEQVV => Inst { value: 0x60001057 },
+            Opcode::VMFGEVF => Inst { value: 0x7c005057 },
+            Opcode::VMFGTVF => Inst { value: 0x74005057 },
+            Opcode::VMFLEVF => Inst { value: 0x64005057 },
+            Opcode::VMFLEVV => Inst { value: 0x64001057 },
+            Opcode::VMFLTVF => Inst { value: 0x6c005057 },
+            Opcode::VMFLTVV => Inst { value: 0x6c001057 },
+            Opcode::VMFNEVF => Inst { value: 0x70005057 },
+            Opcode::VMFNEVV => Inst { value: 0x70001057 },
+            Opcode::VMINVV => Inst { value: 0x14000057 },
+            Opcode::VMINVX => Inst { value: 0x14004057 },
+            Opcode::VMINUVV => Inst { value: 0x10000057 },
+            Opcode::VMINUVX => Inst { value: 0x10004057 },
+            Opcode::VMNANDMM => Inst { value: 0x76002057 },
+            Opcode::VMNORMM => Inst { value: 0x7a002057 },
+            Opcode::VMORMM => Inst { value: 0x6a002057 },
+            Opcode::VMORNMM => Inst { value: 0x72002057 },
+            Opcode::VMORNOTMM => Inst { value: 0x70002057 },
+            Opcode::VMSBCVV => Inst { value: 0x4e000057 },
+            Opcode::VMSBCVVM => Inst { value: 0x4c000057 },
+            Opcode::VMSBCVX => Inst { value: 0x4e004057 },
+            Opcode::VMSBCVXM => Inst { value: 0x4c004057 },
+            Opcode::VMSBFM => Inst { value: 0x5000a057 },
+            Opcode::VMSEQVI => Inst { value: 0x60003057 },
+            Opcode::VMSEQVV => Inst { value: 0x60000057 },
+            Opcode::VMSEQVX => Inst { value: 0x60004057 },
+            Opcode::VMSGTVI => Inst { value: 0x7c003057 },
+            Opcode::VMSGTVX => Inst { value: 0x7c004057 },
+            Opcode::VMSGTUVI => Inst { value: 0x78003057 },
+            Opcode::VMSGTUVX => Inst { value: 0x78004057 },
+            Opcode::VMSIFM => Inst { value: 0x5001a057 },
+            Opcode::VMSLEVI => Inst { value: 0x74003057 },
+            Opcode::VMSLEVV => Inst { value: 0x74000057 },
+            Opcode::VMSLEVX => Inst { value: 0x74004057 },
+            Opcode::VMSLEUVI => Inst { value: 0x70003057 },
+            Opcode::VMSLEUVV => Inst { value: 0x70000057 },
+            Opcode::VMSLEUVX => Inst { value: 0x70004057 },
+            Opcode::VMSLTVV => Inst { value: 0x6c000057 },
+            Opcode::VMSLTVX => Inst { value: 0x6c004057 },
+            Opcode::VMSLTUVV => Inst { value: 0x68000057 },
+            Opcode::VMSLTUVX => Inst { value: 0x68004057 },
+            Opcode::VMSNEVI => Inst { value: 0x64003057 },
+            Opcode::VMSNEVV => Inst { value: 0x64000057 },
+            Opcode::VMSNEVX => Inst { value: 0x64004057 },
+            Opcode::VMSOFM => Inst { value: 0x50012057 },
+            Opcode::VMULVV => Inst { value: 0x94002057 },
+            Opcode::VMULVX => Inst { value: 0x94006057 },
+            Opcode::VMULHVV => Inst { value: 0x9c002057 },
+            Opcode::VMULHVX => Inst { value: 0x9c006057 },
+            Opcode::VMULHSUVV => Inst { value: 0x98002057 },
+            Opcode::VMULHSUVX => Inst { value: 0x98006057 },
+            Opcode::VMULHUVV => Inst { value: 0x90002057 },
+            Opcode::VMULHUVX => Inst { value: 0x90006057 },
+            Opcode::VMV1RV => Inst { value: 0x9e003057 },
+            Opcode::VMV2RV => Inst { value: 0x9e00b057 },
+            Opcode::VMV4RV => Inst { value: 0x9e01b057 },
+            Opcode::VMV8RV => Inst { value: 0x9e03b057 },
+            Opcode::VMVSX => Inst { value: 0x42006057 },
+            Opcode::VMVVI => Inst { value: 0x5e003057 },
+            Opcode::VMVVV => Inst { value: 0x5e000057 },
+            Opcode::VMVVX => Inst { value: 0x5e004057 },
+            Opcode::VMVXS => Inst { value: 0x42002057 },
+            Opcode::VMXNORMM => Inst { value: 0x7e002057 },
+            Opcode::VMXORMM => Inst { value: 0x6e002057 },
+            Opcode::VNCLIPWI => Inst { value: 0xbc003057 },
+            Opcode::VNCLIPWV => Inst { value: 0xbc000057 },
+            Opcode::VNCLIPWX => Inst { value: 0xbc004057 },
+            Opcode::VNCLIPUWI => Inst { value: 0xb8003057 },
+            Opcode::VNCLIPUWV => Inst { value: 0xb8000057 },
+            Opcode::VNCLIPUWX => Inst { value: 0xb8004057 },
+            Opcode::VNMSACVV => Inst { value: 0xbc002057 },
+            Opcode::VNMSACVX => Inst { value: 0xbc006057 },
+            Opcode::VNMSUBVV => Inst { value: 0xac002057 },
+            Opcode::VNMSUBVX => Inst { value: 0xac006057 },
+            Opcode::VNSRAWI => Inst { value: 0xb4003057 },
+            Opcode::VNSRAWV => Inst { value: 0xb4000057 },
+            Opcode::VNSRAWX => Inst { value: 0xb4004057 },
+            Opcode::VNSRLWI => Inst { value: 0xb0003057 },
+            Opcode::VNSRLWV => Inst { value: 0xb0000057 },
+            Opcode::VNSRLWX => Inst { value: 0xb0004057 },
+            Opcode::VORVI => Inst { value: 0x28003057 },
+            Opcode::VORVV => Inst { value: 0x28000057 },
+            Opcode::VORVX => Inst { value: 0x28004057 },
+            Opcode::VPOPCM => Inst { value: 0x40082057 },
+            Opcode::VREDANDVS => Inst { value: 0x4002057 },
+            Opcode::VREDMAXVS => Inst { value: 0x1c002057 },
+            Opcode::VREDMAXUVS => Inst { value: 0x18002057 },
+            Opcode::VREDMINVS => Inst { value: 0x14002057 },
+            Opcode::VREDMINUVS => Inst { value: 0x10002057 },
+            Opcode::VREDORVS => Inst { value: 0x8002057 },
+            Opcode::VREDSUMVS => Inst { value: 0x2057 },
+            Opcode::VREDXORVS => Inst { value: 0xc002057 },
+            Opcode::VREMVV => Inst { value: 0x8c002057 },
+            Opcode::VREMVX => Inst { value: 0x8c006057 },
+            Opcode::VREMUVV => Inst { value: 0x88002057 },
+            Opcode::VREMUVX => Inst { value: 0x88006057 },
+            Opcode::VREV8V => Inst { value: 0x4804a057 },
+            Opcode::VRGATHERVI => Inst { value: 0x30003057 },
+            Opcode::VRGATHERVV => Inst { value: 0x30000057 },
+            Opcode::VRGATHERVX => Inst { value: 0x30004057 },
+            Opcode::VRGATHEREI16VV => Inst { value: 0x38000057 },
+            Opcode::VROLVV => Inst { value: 0x54000057 },
+            Opcode::VROLVX => Inst { value: 0x54004057 },
+            Opcode::VRORVI => Inst { value: 0x50003057 },
+            Opcode::VRORVV => Inst { value: 0x50000057 },
+            Opcode::VRORVX => Inst { value: 0x50004057 },
+            Opcode::VRSUBVI => Inst { value: 0xc003057 },
+            Opcode::VRSUBVX => Inst { value: 0xc004057 },
+            Opcode::VS1RV => Inst { value: 0x2800027 },
+            Opcode::VS2RV => Inst { value: 0x22800027 },
+            Opcode::VS4RV => Inst { value: 0x62800027 },
+            Opcode::VS8RV => Inst { value: 0xe2800027 },
+            Opcode::VSADDVI => Inst { value: 0x84003057 },
+            Opcode::VSADDVV => Inst { value: 0x84000057 },
+            Opcode::VSADDVX => Inst { value: 0x84004057 },
+            Opcode::VSADDUVI => Inst { value: 0x80003057 },
+            Opcode::VSADDUVV => Inst { value: 0x80000057 },
+            Opcode::VSADDUVX => Inst { value: 0x80004057 },
+            Opcode::VSBCVVM => Inst { value: 0x48000057 },
+            Opcode::VSBCVXM => Inst { value: 0x48004057 },
+            Opcode::VSE16V => Inst { value: 0x5027 },
+            Opcode::VSE1V => Inst { value: 0x2b00027 },
+            Opcode::VSE32V => Inst { value: 0x6027 },
+            Opcode::VSE64V => Inst { value: 0x7027 },
+            Opcode::VSE8V => Inst { value: 0x27 },
+            Opcode::VSETIVLI => Inst { value: 0xc0007057 },
+            Opcode::VSETVL => Inst { value: 0x80007057 },
+            Opcode::VSETVLI => Inst { value: 0x7057 },
+            Opcode::VSEXTVF2 => Inst { value: 0x4803a057 },
+            Opcode::VSEXTVF4 => Inst { value: 0x4802a057 },
+            Opcode::VSEXTVF8 => Inst { value: 0x4801a057 },
+            Opcode::VSHA2CHVV => Inst { value: 0xba002077 },
+            Opcode::VSHA2CLVV => Inst { value: 0xbe002077 },
+            Opcode::VSHA2MSVV => Inst { value: 0xb6002077 },
+            Opcode::VSLIDE1DOWNVX => Inst { value: 0x3c006057 },
+            Opcode::VSLIDE1UPVX => Inst { value: 0x38006057 },
+            Opcode::VSLIDEDOWNVI => Inst { value: 0x3c003057 },
+            Opcode::VSLIDEDOWNVX => Inst { value: 0x3c004057 },
+            Opcode::VSLIDEUPVI => Inst { value: 0x38003057 },
+            Opcode::VSLIDEUPVX => Inst { value: 0x38004057 },
+            Opcode::VSLLVI => Inst { value: 0x94003057 },
+            Opcode::VSLLVV => Inst { value: 0x94000057 },
+            Opcode::VSLLVX => Inst { value: 0x94004057 },
+            Opcode::VSM3CVI => Inst { value: 0xae002077 },
+            Opcode::VSM3MEVV => Inst { value: 0x82002077 },
+            Opcode::VSM4KVI => Inst { value: 0x86002077 },
+            Opcode::VSM4RVS => Inst { value: 0xa6082077 },
+            Opcode::VSM4RVV => Inst { value: 0xa2082077 },
+            Opcode::VSMV => Inst { value: 0x2b00027 },
+            Opcode::VSMULVV => Inst { value: 0x9c000057 },
+            Opcode::VSMULVX => Inst { value: 0x9c004057 },
+            Opcode::VSOXEI16V => Inst { value: 0xc005027 },
+            Opcode::VSOXEI32V => Inst { value: 0xc006027 },
+            Opcode::VSOXEI64V => Inst { value: 0xc007027 },
+            Opcode::VSOXEI8V => Inst { value: 0xc000027 },
+            Opcode::VSRAVI => Inst { value: 0xa4003057 },
+            Opcode::VSRAVV => Inst { value: 0xa4000057 },
+            Opcode::VSRAVX => Inst { value: 0xa4004057 },
+            Opcode::VSRLVI => Inst { value: 0xa0003057 },
+            Opcode::VSRLVV => Inst { value: 0xa0000057 },
+            Opcode::VSRLVX => Inst { value: 0xa0004057 },
+            Opcode::VSSE16V => Inst { value: 0x8005027 },
+            Opcode::VSSE32V => Inst { value: 0x8006027 },
+            Opcode::VSSE64V => Inst { value: 0x8007027 },
+            Opcode::VSSE8V => Inst { value: 0x8000027 },
+            Opcode::VSSRAVI => Inst { value: 0xac003057 },
+            Opcode::VSSRAVV => Inst { value: 0xac000057 },
+            Opcode::VSSRAVX => Inst { value: 0xac004057 },
+            Opcode::VSSRLVI => Inst { value: 0xa8003057 },
+            Opcode::VSSRLVV => Inst { value: 0xa8000057 },
+            Opcode::VSSRLVX => Inst { value: 0xa8004057 },
+            Opcode::VSSUBVV => Inst { value: 0x8c000057 },
+            Opcode::VSSUBVX => Inst { value: 0x8c004057 },
+            Opcode::VSSUBUVV => Inst { value: 0x88000057 },
+            Opcode::VSSUBUVX => Inst { value: 0x88004057 },
+            Opcode::VSUBVV => Inst { value: 0x8000057 },
+            Opcode::VSUBVX => Inst { value: 0x8004057 },
+            Opcode::VSUXEI16V => Inst { value: 0x4005027 },
+            Opcode::VSUXEI32V => Inst { value: 0x4006027 },
+            Opcode::VSUXEI64V => Inst { value: 0x4007027 },
+            Opcode::VSUXEI8V => Inst { value: 0x4000027 },
+            Opcode::VWADDVV => Inst { value: 0xc4002057 },
+            Opcode::VWADDVX => Inst { value: 0xc4006057 },
+            Opcode::VWADDWV => Inst { value: 0xd4002057 },
+            Opcode::VWADDWX => Inst { value: 0xd4006057 },
+            Opcode::VWADDUVV => Inst { value: 0xc0002057 },
+            Opcode::VWADDUVX => Inst { value: 0xc0006057 },
+            Opcode::VWADDUWV => Inst { value: 0xd0002057 },
+            Opcode::VWADDUWX => Inst { value: 0xd0006057 },
+            Opcode::VWMACCVV => Inst { value: 0xf4002057 },
+            Opcode::VWMACCVX => Inst { value: 0xf4006057 },
+            Opcode::VWMACCSUVV => Inst { value: 0xfc002057 },
+            Opcode::VWMACCSUVX => Inst { value: 0xfc006057 },
+            Opcode::VWMACCUVV => Inst { value: 0xf0002057 },
+            Opcode::VWMACCUVX => Inst { value: 0xf0006057 },
+            Opcode::VWMACCUSVX => Inst { value: 0xf8006057 },
+            Opcode::VWMULVV => Inst { value: 0xec002057 },
+            Opcode::VWMULVX => Inst { value: 0xec006057 },
+            Opcode::VWMULSUVV => Inst { value: 0xe8002057 },
+            Opcode::VWMULSUVX => Inst { value: 0xe8006057 },
+            Opcode::VWMULUVV => Inst { value: 0xe0002057 },
+            Opcode::VWMULUVX => Inst { value: 0xe0006057 },
+            Opcode::VWREDSUMVS => Inst { value: 0xc4000057 },
+            Opcode::VWREDSUMUVS => Inst { value: 0xc0000057 },
+            Opcode::VWSLLVI => Inst { value: 0xd4003057 },
+            Opcode::VWSLLVV => Inst { value: 0xd4000057 },
+            Opcode::VWSLLVX => Inst { value: 0xd4004057 },
+            Opcode::VWSUBVV => Inst { value: 0xcc002057 },
+            Opcode::VWSUBVX => Inst { value: 0xcc006057 },
+            Opcode::VWSUBWV => Inst { value: 0xdc002057 },
+            Opcode::VWSUBWX => Inst { value: 0xdc006057 },
+            Opcode::VWSUBUVV => Inst { value: 0xc8002057 },
+            Opcode::VWSUBUVX => Inst { value: 0xc8006057 },
+            Opcode::VWSUBUWV => Inst { value: 0xd8002057 },
+            Opcode::VWSUBUWX => Inst { value: 0xd8006057 },
+            Opcode::VXORVI => Inst { value: 0x2c003057 },
+            Opcode::VXORVV => Inst { value: 0x2c000057 },
+            Opcode::VXORVX => Inst { value: 0x2c004057 },
+            Opcode::VZEXTVF2 => Inst { value: 0x48032057 },
+            Opcode::VZEXTVF4 => Inst { value: 0x48022057 },
+            Opcode::VZEXTVF8 => Inst { value: 0x48012057 },
+            Opcode::WFI => Inst { value: 0x10500073 },
+            Opcode::WRSNTO => Inst { value: 0xd00073 },
+            Opcode::WRSSTO => Inst { value: 0x1d00073 },
+            Opcode::XNOR => Inst { value: 0x40004033 },
+            Opcode::XOR => Inst { value: 0x4033 },
+            Opcode::XORI => Inst { value: 0x4013 },
+            Opcode::XPERM4 => Inst { value: 0x28002033 },
+            Opcode::XPERM8 => Inst { value: 0x28004033 },
+            Opcode::ZEXTB => Inst { value: 0xff07013 },
+            Opcode::ZEXTH => Inst { value: 0x800403b },
+            Opcode::ZEXTHRV32 => Inst { value: 0x8004033 },
+            Opcode::ZEXTW => Inst { value: 0x800003b },
+            Opcode::ZIP => Inst { value: 0x8f01013 },
         }
     }
 }
@@ -24501,6 +21012,7 @@ pub enum Encoding {
     FmPredSuccRs1Rd,
     Imm12HiRs1Rs2Imm12lo,
     Imm12Rs1Rd,
+    Imm20,
     Jimm20,
     MopRT30MopRT2726MopRT2120RdRs1,
     MopRrT30MopRrT2726RdRs1Rs2,
@@ -24517,6 +21029,7 @@ pub enum Encoding {
     RdCsrZimm5,
     RdImm20,
     RdJimm20,
+    RdN0,
     RdN0CImm6loCImm6hi,
     RdN0CRs2N0,
     RdN0CUimm8sphiCUimm8splo,
@@ -24612,11 +21125,12 @@ impl Opcode {
             CEBREAK | CMOP1 | CMOP11 | CMOP13 | CMOP15 | CMOP3 | CMOP5 | CMOP7 | CMOP9
             | CNTLALL | CNTLP1 | CNTLPALL | CNTLS1 | CSSPOPCHKX5 | CSSPUSHX1 | DRET | EBREAK
             | ECALL | MNRET | MRET | NOP | NTLALL | NTLP1 | NTLPALL | NTLS1 | PAUSE | RET
-            | SBREAK | SCALL | SCTRCLR | SFENCEINVALIR | SFENCEWINVAL | SRET | WFI | WRSNTO
-            | WRSSTO => Encoding::Empty,
+            | SBREAK | SCALL | SCTRCLR | SFENCEINVALIR | SFENCEWINVAL | SRET | SSPOPCHKX1
+            | SSPOPCHKX5 | SSPUSHX1 | SSPUSHX5 | WFI | WRSNTO | WRSSTO => Encoding::Empty,
             FENCE => Encoding::FmPredSuccRs1Rd,
             FSD | FSH | FSQ | FSW | SB | SD | SH | SW => Encoding::Imm12HiRs1Rs2Imm12lo,
             FENCEI => Encoding::Imm12Rs1Rd,
+            LPAD => Encoding::Imm20,
             J | JALPSEUDO => Encoding::Jimm20,
             MOPRN => Encoding::MopRT30MopRT2726MopRT2120RdRs1,
             MOPRRN => Encoding::MopRrT30MopRrT2726RdRs1Rs2,
@@ -24638,6 +21152,7 @@ impl Opcode {
             CSRRCI | CSRRSI | CSRRWI => Encoding::RdCsrZimm5,
             AUIPC | LUI => Encoding::RdImm20,
             JAL => Encoding::RdJimm20,
+            SSRDP => Encoding::RdN0,
             CLI => Encoding::RdN0CImm6loCImm6hi,
             CMV => Encoding::RdN0CRs2N0,
             CLWSP => Encoding::RdN0CUimm8sphiCUimm8splo,
@@ -24703,7 +21218,7 @@ impl Opcode {
             | AMOMAXW | AMOMAXUB | AMOMAXUD | AMOMAXUH | AMOMAXUW | AMOMINB | AMOMIND | AMOMINH
             | AMOMINW | AMOMINUB | AMOMINUD | AMOMINUH | AMOMINUW | AMOORB | AMOORD | AMOORH
             | AMOORW | AMOSWAPB | AMOSWAPD | AMOSWAPH | AMOSWAPW | AMOXORB | AMOXORD | AMOXORH
-            | AMOXORW | SCD | SCW => Encoding::RdRs1Rs2AqRl,
+            | AMOXORW | SCD | SCW | SSAMOSWAPD | SSAMOSWAPW => Encoding::RdRs1Rs2AqRl,
             AES32DSI | AES32DSMI | AES32ESI | AES32ESMI | SM4ED | SM4KS => Encoding::RdRs1Rs2Bs,
             FABSD | FABSH | FABSQ | FABSS | FMVD | FMVH | FMVQ | FMVS | FNEGD | FNEGH | FNEGQ
             | FNEGS => Encoding::RdRs1Rs2EqRs1,

@@ -9,10 +9,16 @@ import tarfile
 import urllib
 from urllib import request, parse
 
-try:
-    from bs4 import BeautifulSoup
-except ImportError:
-    raise ImportError("Please install BeautifulSoup (apt-get install python3-bs4 or pip install beautifulsoup4 should do it)")
+def require_beautifulsoup():
+    """Loads the optional parser only for XML documentation extraction."""
+    try:
+        from bs4 import BeautifulSoup
+        return BeautifulSoup
+    except ImportError as exc:
+        raise ImportError(
+            "Please install BeautifulSoup (apt-get install python3-bs4 or "
+            "pip install beautifulsoup4 should do it)"
+        ) from exc
 
 parser = argparse.ArgumentParser(description='Docenizes XML version of the official ARM documents')
 parser.add_argument('-i', '--inputfolder', type=str,
@@ -123,6 +129,7 @@ def get_description_paragraphs(document_soup, part):
 instrclasses = set()
 
 def parse(filename, f):
+    BeautifulSoup = require_beautifulsoup()
     doc = BeautifulSoup(f, 'html.parser')
     if doc.instructionsection is None:
         print(filename + ": Failed to find instructionsection")

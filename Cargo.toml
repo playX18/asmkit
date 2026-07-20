@@ -1,10 +1,11 @@
 [package]
 name = "asmkit-rs"
-version = "0.3.1"
+version = "0.4.0"
 edition = "2024"
+rust-version = "1.85"
 license = "MIT OR Apache-2.0"
 readme = "README.md"
-description = "Portable assembler toolkit: decoding and encoding of various architectures"
+description = "Portable assembler toolkit for encoding x86/x64, AArch64, and RISC-V"
 repository = "https://codeberg.org/playXE/asmkit"
 keywords = ["assembler", "asm", "jit", "riscv", "x86"]
 
@@ -23,12 +24,18 @@ bitflags = "2.11.0"
 
 [target.'cfg(target_arch="riscv64")'.dependencies]
 wasmtime-jit-icache-coherence = { version = "26.0.1", optional = true }
+
+[target.'cfg(windows)'.dependencies]
+windows-sys = { version = "0.61", optional = true, features = ["Win32_Foundation", "Win32_Security", "Win32_System_Memory", "Win32_System_SystemInformation"] }
+
 [features]
-default = ["x86", "riscv", "aarch64", "jit"]
+default = ["x86", "riscv", "aarch64"]
 x86 = []
 riscv = []
 aarch64 = []
-jit = ["wasmtime-jit-icache-coherence", "libc", "errno"]
+jit = ["wasmtime-jit-icache-coherence", "libc", "errno", "windows-sys"]
+# Exposes instruction-database metadata used by the exhaustive validation suites.
+validation = []
 
 
 [dev-dependencies]
@@ -39,6 +46,18 @@ capstone = "0.14.0"
 [[bench]]
 name = "x86"
 harness = false
+
+[[example]]
+name = "a64"
+required-features = ["aarch64"]
+
+[[example]]
+name = "factorial"
+required-features = ["x86", "riscv", "aarch64", "jit"]
+
+[[example]]
+name = "reloc"
+required-features = ["x86", "riscv", "aarch64", "jit"]
 
 
 [profile.release]

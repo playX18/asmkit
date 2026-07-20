@@ -19,6 +19,7 @@
 //! Derived from riscv-opcodes (BSD-3-Clause); see meta/riscv.py.
 
 use crate::AsmError;
+use crate::core::arch_traits::Arch;
 use crate::core::inst::Inst;
 use crate::core::operand::Operand;
 use crate::core::rwinfo::{CpuRwFlags, INVALID_PHYS_ID, InstRwInfo, OpRwFlags, OpRwInfo};
@@ -30,6 +31,9 @@ use super::operands::Reg;
 ///
 /// Returns [`AsmError::InvalidInstruction`] if the opcode is not defined.
 pub fn query_rw_info(inst: &Inst) -> Result<InstRwInfo, AsmError> {
+    if !matches!(inst.arch(), Arch::RISCV32 | Arch::RISCV64) {
+        return Err(AsmError::InvalidArch);
+    }
     let Some(info) = INST_INFO_TABLE.get(inst.id as usize) else {
         return Err(AsmError::InvalidInstruction);
     };
@@ -136,17 +140,22 @@ fn class_matches(class: u8, op: &Operand) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::core::arch_traits::Arch;
     use crate::core::buffer::CodeBuffer;
     use crate::core::builder::Builder;
     use crate::core::operand::{OperandCast, imm};
+    use crate::core::target::Environment;
     use crate::riscv::assembler::Assembler;
-    use crate::riscv::emitter::EmitterExplicit;
     use crate::riscv::opcodes::Opcode;
     use crate::riscv::operands::regs::*;
     use std::vec::Vec;
 
     fn inst_of(op: Opcode, ops: &[Operand]) -> Inst {
-        Inst::with_operands(op as u32, ops)
+        Inst::with_arch_operands(Arch::RISCV64, op as u32, ops).unwrap()
+    }
+
+    fn rv64_inst(op: Opcode, ops: &[Operand]) -> Inst {
+        Inst::with_arch_operands(Arch::RISCV64, op as u32, ops).unwrap()
     }
 
     #[test]
@@ -275,6 +284,38 @@ mod tests {
     }
 
     #[test]
+    fn fused_fp_reads_rs3() {
+        let inst = inst_of(
+            Opcode::FMADDS,
+            &[
+                *F0.as_operand(),
+                *F1.as_operand(),
+                *F2.as_operand(),
+                *F3.as_operand(),
+                *imm(0).as_operand(),
+            ],
+        );
+        let rw = query_rw_info(&inst).unwrap();
+        assert_eq!(rw.op_count, 5);
+        assert!(rw.operands[3].is_read_only());
+    }
+
+    #[test]
+    fn vector_scalar_fp_accepts_fp_source() {
+        let inst = inst_of(
+            Opcode::VFADDVF,
+            &[
+                *V1.as_operand(),
+                *V2.as_operand(),
+                *F0.as_operand(),
+                *imm(1).as_operand(),
+            ],
+        );
+        let rw = query_rw_info(&inst).unwrap();
+        assert!(rw.operands[2].is_read_only());
+    }
+
+    #[test]
     fn masked_vector_reads_v0_implicitly() {
         let implicit = Opcode::VADDVV.implicit_reg_effects();
         assert_eq!(implicit.read >> 32, 1, "masked vector ops read v0");
@@ -285,8 +326,46 @@ mod tests {
         assert!(query_rw_info(&Inst::new(Opcode::Invalid as u32)).is_err());
     }
 
+    #[test]
+    fn ssamoswap_w_is_read_modify_write() {
+        let inst = inst_of(
+            Opcode::SSAMOSWAPW,
+            &[
+                *A0.as_operand(),
+                *A1.as_operand(),
+                *A2.as_operand(),
+                *imm(0).as_operand(),
+                *imm(0).as_operand(),
+            ],
+        );
+        let rw = query_rw_info(&inst).unwrap();
+        assert!(rw.operands[0].is_write_only());
+        assert!(rw.operands[1].op_flags.contains(OpRwFlags::MEM_BASE_READ));
+        assert!(rw.operands[2].is_read_only());
+        let mem = &rw.extra_reg;
+        assert!(mem.is_read_write());
+        assert_eq!(mem.rm_size, 4);
+        assert_eq!(mem.read_byte_mask, 0xF);
+        assert_eq!(mem.write_byte_mask, 0xF);
+    }
+
+    #[test]
+    fn sspush_x1_reads_ra_implicitly() {
+        let implicit = Opcode::SSPUSHX1.implicit_reg_effects();
+        assert_eq!(implicit.read & (1 << 1), 1 << 1, "sspush x1 reads ra (x1)");
+        assert_eq!(implicit.write, 0);
+    }
+
+    #[test]
+    fn ssrdp_writes_rd() {
+        let inst = inst_of(Opcode::SSRDP, &[*A0.as_operand()]);
+        let rw = query_rw_info(&inst).unwrap();
+        assert!(rw.operands[0].is_write_only());
+        assert_eq!(rw.extra_reg.op_flags, OpRwFlags::NONE);
+    }
+
     fn build_direct() -> Vec<u8> {
-        let mut buf = CodeBuffer::new();
+        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
         let mut asm = Assembler::new(&mut buf);
         let done = asm.get_label();
 
@@ -296,41 +375,88 @@ mod tests {
         asm.bind_label(done);
         asm.jalr(ZERO, RA, imm(0));
 
-        buf.finish().data().to_vec()
+        buf.finish().unwrap().data().to_vec()
     }
 
     fn build_deferred() -> Vec<u8> {
-        let mut buf = CodeBuffer::new();
-        let mut builder = Builder::new();
+        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
+        let mut builder = Builder::for_arch(Arch::RISCV64);
         let done = buf.get_label();
 
-        builder.push_inst(Inst::with_operands(
-            Opcode::ADD as u32,
-            &[*A0.as_operand(), *A1.as_operand(), *A2.as_operand()],
-        ));
-        builder.push_inst(Inst::with_operands(
-            Opcode::BEQ as u32,
-            &[*A0.as_operand(), *A1.as_operand(), *done.as_operand()],
-        ));
-        builder.push_inst(Inst::with_operands(
-            Opcode::ADDI as u32,
-            &[*A0.as_operand(), *A0.as_operand(), *imm(1).as_operand()],
-        ));
+        builder
+            .push_inst(rv64_inst(
+                Opcode::ADD,
+                &[*A0.as_operand(), *A1.as_operand(), *A2.as_operand()],
+            ))
+            .unwrap();
+        builder
+            .push_inst(rv64_inst(
+                Opcode::BEQ,
+                &[*A0.as_operand(), *A1.as_operand(), *done.as_operand()],
+            ))
+            .unwrap();
+        builder
+            .push_inst(rv64_inst(
+                Opcode::ADDI,
+                &[*A0.as_operand(), *A0.as_operand(), *imm(1).as_operand()],
+            ))
+            .unwrap();
         builder.push_label(done);
-        builder.push_inst(Inst::with_operands(
-            Opcode::JALR as u32,
-            &[*ZERO.as_operand(), *RA.as_operand(), *imm(0).as_operand()],
-        ));
+        builder
+            .push_inst(rv64_inst(
+                Opcode::JALR,
+                &[*ZERO.as_operand(), *RA.as_operand(), *imm(0).as_operand()],
+            ))
+            .unwrap();
 
         {
             let mut asm = Assembler::new(&mut buf);
             builder.emit_into(&mut asm).unwrap();
         }
-        buf.finish().data().to_vec()
+        buf.finish().unwrap().data().to_vec()
     }
 
     #[test]
     fn builder_replay_matches_direct_assembly() {
         assert_eq!(build_direct(), build_deferred());
+    }
+
+    #[test]
+    fn builder_replays_compressed_and_vector_forms() {
+        let mut direct = CodeBuffer::new(Environment::new(Arch::RISCV64));
+        {
+            let mut asm = Assembler::new(&mut direct);
+            asm.c_lw(S0, A5, imm(0));
+            asm.vle8_v(V1, A0, imm(1), imm(3));
+        }
+
+        let mut deferred = CodeBuffer::new(Environment::new(Arch::RISCV64));
+        let mut builder = Builder::for_arch(Arch::RISCV64);
+        builder
+            .push_inst(rv64_inst(
+                Opcode::CLW,
+                &[*S0.as_operand(), *A5.as_operand(), *imm(0).as_operand()],
+            ))
+            .unwrap();
+        builder
+            .push_inst(rv64_inst(
+                Opcode::VLE8V,
+                &[
+                    *V1.as_operand(),
+                    *A0.as_operand(),
+                    *imm(1).as_operand(),
+                    *imm(3).as_operand(),
+                ],
+            ))
+            .unwrap();
+        {
+            let mut asm = Assembler::new(&mut deferred);
+            builder.emit_into(&mut asm).unwrap();
+        }
+
+        assert_eq!(
+            direct.finish().unwrap().data(),
+            deferred.finish().unwrap().data()
+        );
     }
 }

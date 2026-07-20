@@ -5,18 +5,16 @@
 //! model. It is a small, efficient, `no_std` library for encoding machine code without being
 //! tied to a specific platform. Key features include:
 //!
-//! - **Multi-Architecture Support**: X64 (64-bit only), RISC-V, and AArch64, with PPC as
-//!   work-in-progress. Each backend follows the same uniform model: a dense `InstId` enum
-//!   backed by generated instdb tables, and a single emit entry point
-//!   `Assembler::emit_n(impl Into<u32>, &[&Operand])`.
+//! - **Multi-Architecture Support**: x86/x64, RISC-V, and AArch64. Each backend follows the
+//!   same uniform model: a dense `InstId` enum backed by generated instdb tables,
+//!   and a single checked raw emit entry point.
 //! - **Generated emitter traits**: per-mnemonic traits (e.g. `MovEmitter`) with impls for
 //!   the sized register wrappers, so register constants and integer immediates are passed
 //!   directly (`asm.mov(RAX, 42)` — no dereferencing).
 //! - **Read/write effects**: `query_rw_info(&Inst) -> InstRwInfo` per architecture, over the
-//!   arch-neutral [`core::inst::Inst`], as input for future register allocation.
-//! - **Deferred emission**: [`core::builder::Builder`] records instructions and label binds
-//!   and replays them into any [`core::builder::InstSink`] (implemented by every
-//!   architecture's `Assembler`).
+//!   architecture-tagged [`Inst`].
+//! - **Deferred emission**: [`Builder`] records instructions and label binds
+//!   and replays them into any [`InstSink`] (implemented by every architecture's `Assembler`).
 //! - **Minimal Dependencies**:
 //! - - `libc`, `intrusive-collections`, `errno` - For JIT support.
 //! - - `paste`, `bitflags`, `cfgenius`, `num-traits` - Utility crates that simplify repetitive
@@ -27,6 +25,26 @@
 //! - **Portability**: Built to run on any platform, with the architecture-specific parts of
 //!   the library being independent of the platform on which asmkit is built.
 //!
+//! ### From assembly to execution
+//!
+//! The API story mirrors AsmJit's (`CodeHolder` → `JitAllocator`), with
+//! [`CodeBuffer`] playing the `CodeHolder` role:
+//!
+//! 1. Emit into a [`CodeBuffer`] through a backend `Assembler`.
+//! 2. Finalize with [`CodeBuffer::finish`], optionally combining several modules —
+//!    [`Section`]s or plain buffers — into one image with [`Linker`].
+//! 3. Load with [`CodeBufferFinalized::allocate`] (no relocations),
+//!    [`allocate_relocated`](CodeBufferFinalized::allocate_relocated),
+//!    or [`allocate_resolved`](CodeBufferFinalized::allocate_resolved)
+//!    (external symbols resolved by name).
+//! 4. Find entry points with
+//!    [`CodeBufferFinalized::defined_symbol_offset`]
+//!    and call through `rx() + offset`.
+//!
+//! Void mnemonic methods retain the first emission error in the [`CodeBuffer`].
+//! [`CodeBuffer::finish`] returns it, alongside finalization, linking, loading,
+//! and patching errors, as [`AsmError`].
+//!
 //! ### Usage
 //!
 //! To use the library simply import the module for the architecture you want to emit code
@@ -36,19 +54,22 @@
 //! Example:
 //!
 //! ```rust
-//! use asmkit::core::buffer::CodeBuffer;
-//! use asmkit::core::jit_allocator::JitAllocator;
+//! # #[cfg(all(feature = "jit", feature = "x86"))]
+//! # {
+//! use asmkit::{Arch, CodeBuffer, Environment, JitAllocator};
 //! use asmkit::x86::*;
 //!
-//! let mut buf = CodeBuffer::new();
+//! let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+//! {
 //! let mut asm = Assembler::new(&mut buf);
 //!
 //! // Typed sized registers and plain integer immediates.
 //! asm.mov(RAX, 5);
 //! asm.add(RAX, 37);
 //! asm.ret();
+//! }
 //!
-//! let result = buf.finish();
+//! let result = buf.finish().expect("assembly failed");
 //! let mut jit = JitAllocator::new(Default::default());
 //! // you can also use jit.alloc + jit.write manually.
 //! let span = result
@@ -60,6 +81,7 @@
 //! let f: extern "C" fn() -> u64 = unsafe { std::mem::transmute(span.rx()) };
 //! #[cfg(all(unix, target_arch = "x86_64"))] // can run only on x64 and on SystemV platforms.
 //! assert_eq!(f(), 42);
+//! # }
 //! ```
 
 #![cfg_attr(not(test), no_std)]
@@ -68,16 +90,54 @@ extern crate alloc;
 
 #[cfg(feature = "aarch64")]
 pub mod aarch64;
-pub mod core;
-pub mod ppc;
+pub(crate) mod core;
 #[cfg(feature = "riscv")]
 pub mod riscv;
-pub mod util;
+#[cfg(feature = "jit")]
+pub(crate) mod util;
 #[cfg(feature = "x86")]
 pub mod x86;
 
+#[cfg(feature = "jit")]
+pub use core::jit_allocator::{JitAllocator, JitAllocatorOptions, ResetPolicy, Span};
+#[cfg(feature = "aarch64")]
+pub use core::target::AArch64Feature;
+#[cfg(feature = "riscv")]
+pub use core::target::RiscVFeature;
+#[cfg(feature = "x86")]
+pub use core::target::X86Feature;
+pub use core::{
+    arch_traits::Arch,
+    buffer::{
+        Addend, AsmReloc, CodeBuffer, CodeBufferFinalized, CodeOffset, Constant, ConstantData,
+        ExternalName, LabelUse, Reloc, RelocDistance, RelocTarget,
+    },
+    builder::{Builder, InstSink, Node},
+    globals::{CondCode, InstOptions},
+    inst::Inst,
+    linker::{LinkError, Linker},
+    operand::{
+        BaseMem, BaseReg, Imm, ImmType, Label, Operand, OperandCast, OperandSignature, OperandType,
+        RegGroup, RegMask, RegTraits, RegType, Sym, imm,
+    },
+    patch::{PatchBlock, PatchBlockId, PatchCatalog, PatchSite, PatchSiteId},
+    rwinfo::{
+        CpuRwFlags, INVALID_PHYS_ID, InstControlFlow, InstRwFlags, InstRwInfo, InstSameRegHint,
+        OpRwFlags, OpRwInfo,
+    },
+    section::{FinalizedSection, Section},
+    target::Environment,
+};
+#[cfg(feature = "jit")]
+pub use core::{buffer::LoadedRelocatedCode, patch::LoadedPatchableCode};
+
 use ::core::fmt;
 
+/// Error type shared by all backends and the core code-management machinery.
+///
+/// The variant set follows AsmJit's `Error` codes where the same failure mode
+/// exists here; detailed context is carried by nested backend and linker
+/// errors such as [`AsmError::X86`] and [`AsmError::Link`].
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug)]
 pub enum AsmError {
     InvalidPrefix,
@@ -88,10 +148,27 @@ pub enum AsmError {
     InvalidState,
     TooManyHandles,
     InvalidArgument,
+    /// Invalid or incompatible architecture (AsmJit's `kErrorInvalidArch`).
+    InvalidArch,
+    /// No code was generated (AsmJit's `kErrorNoCodeGenerated`), e.g. linking
+    /// with no sections.
+    NoCodeGenerated,
+    /// A relocation or defined symbol references a label that was never bound
+    /// (AsmJit's unbound-label diagnostics).
+    UnboundLabel,
     FailedToOpenAnonymousMemory,
     TooLarge,
+    /// An in-memory image link failed; the nested error identifies the
+    /// section, symbol, or relocation involved.
+    Link(LinkError),
     X86(X86Error),
-    UnsupportedInstruction { reason: &'static str },
+    /// The selected instruction requires a CPU feature disabled by the target.
+    MissingCpuFeature {
+        feature: &'static str,
+    },
+    UnsupportedInstruction {
+        reason: &'static str,
+    },
 }
 
 impl fmt::Display for AsmError {
@@ -105,11 +182,18 @@ impl fmt::Display for AsmError {
             AsmError::TooManyHandles => write!(f, "too many handles"),
             AsmError::InvalidArgument => write!(f, "invalid argument"),
             AsmError::InvalidImmediate => write!(f, "invalid immediate"),
+            AsmError::InvalidArch => write!(f, "invalid or incompatible architecture"),
+            AsmError::NoCodeGenerated => write!(f, "no code generated"),
+            AsmError::UnboundLabel => write!(f, "unbound label"),
             AsmError::FailedToOpenAnonymousMemory => {
                 write!(f, "failed to open anonymous memory")
             }
             AsmError::TooLarge => write!(f, "too large"),
+            AsmError::Link(error) => write!(f, "link error: {error}"),
             AsmError::X86(e) => write!(f, "x86 error: {}", e),
+            AsmError::MissingCpuFeature { feature } => {
+                write!(f, "missing CPU feature: {}", feature)
+            }
             AsmError::UnsupportedInstruction { reason } => {
                 write!(f, "unsupported instruction: {}", reason)
             }
@@ -117,6 +201,15 @@ impl fmt::Display for AsmError {
     }
 }
 
+impl From<X86Error> for AsmError {
+    fn from(err: X86Error) -> Self {
+        AsmError::X86(err)
+    }
+}
+
+impl ::core::error::Error for AsmError {}
+
+/// Detailed x86/x64 encoding error, wrapped by [`AsmError::X86`].
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug)]
 pub enum X86Error {
     InvalidPrefix {
@@ -345,3 +438,5 @@ impl fmt::Display for X86Error {
         }
     }
 }
+
+impl ::core::error::Error for X86Error {}

@@ -16,7 +16,6 @@ All third-party inputs are gitignored. Record exact versions here when updating.
 | ARM A64 ISA XML | `asm-docs-arm/` (download) | `ISA_A64_xml_A_profile-2023-03` (CE pin) | ARM proprietary notice — derive facts only, never redistribute | aarch64 doc comments |
 | riscv-opcodes | `riscv-opcodes/` (git clone), env `RISCV_OPCODES` | `c6edca7d8c3f92694963a0a0baeb511930fb2af4` | BSD-3-Clause | riscv encodings, CSRs, causes |
 | riscv-unified-db | `riscv-unified-db/` (git clone) | `v0.1.0` (`92d67fdaad0cf314701179b879c8b1fb796ade6c`) | BSD-3-Clause-Clear | riscv instruction descriptions (docs) |
-| GDB `ppc-opc.c` | `src/ppc/opc.c` (committed, data only — never compiled) | snapshot | GPL — generated tables derived from it are the intended path | ppc (WIP) |
 
 Fetching AsmJit:
 
@@ -24,6 +23,20 @@ Fetching AsmJit:
 git clone https://github.com/asmjit/asmjit meta/asmjit
 git -C meta/asmjit checkout 0bd5787b54b575ed94bf32ac452153b34385c514
 ```
+
+Fetch the RISC-V inputs the same way and check out the revisions in the table:
+
+```sh
+git clone https://github.com/riscv/riscv-opcodes riscv-opcodes
+git -C riscv-opcodes checkout c6edca7d8c3f92694963a0a0baeb511930fb2af4
+git clone https://github.com/riscv-software-src/riscv-unified-db riscv-unified-db
+git -C riscv-unified-db checkout 92d67fdaad0cf314701179b879c8b1fb796ade6c
+```
+
+`meta/regen.sh` verifies the three git revisions before generation. The optional
+downloaded documentation inputs are not git checkouts: the ARM corpus is identified
+by its CE release name, while the rolling x86 corpus has no reproducible upstream
+checksum. Omit optional docs when checking core table reproducibility.
 
 ## The asmjit-model pipeline (new)
 
@@ -51,23 +64,35 @@ uniform `emit_n(InstId, &[Operand])` sink. Tools maintaining the generated table
    `U: Into<Imm>` immediates, using the operand signatures from `meta/asmjit_db`
    (AsmJit's x86instdb.cpp) to keep only width-valid combinations. Re-extract with
    the regex in git history or from a fresh asmjit checkout.
-4. **`meta/difftest/`** — differential-test harness: materializes the pre-rewrite
+4. **`meta/arm64.py`** — `meta/arm64.txt` + AsmJit's AArch64 ISA JSON →
+   `src/aarch64/emitter.rs`. The generated Rustdoc includes assembly forms and
+   ISA-native operand names without requiring the optional Arm XML docs; set
+   `ASMKIT_ARM64_DOCS` to enrich it with summaries and reference links.
+5. **`meta/difftest/`** — differential-test harness: materializes the pre-rewrite
    baseline (`git archive 35caa377d68c4ba3b4577f691f3673f91d4338aa`) and generates an
    instruction corpus with expected bytes; `tests/x86_differential.rs` replays it through
    the new encoder.
-5. **`meta/riscv.py`** (+ `meta/docenizer_riscv.py`) — riscv-opcodes →
+6. **`meta/riscv.py`** (+ `meta/docenizer_riscv.py`) — riscv-opcodes →
    `src/riscv/{opcodes,emitter,instdb}.rs`, with derived RW effects and unified-db docs
+   plus per-mnemonic typed emitter traits, `Gp`/`Fp`/`Vp` implementations,
+   independently generic `Into<Imm>` operands, supported label forms, and inherent forwarders
    (`RISCV_OPCODES`/`RISCV_UNIFIED_DB` env vars default to the repo-root clones;
    `opcodes.rs` preserves the hand-maintained immediate section above the generation
    marker byte-identical). Extensions whose encodings `src/riscv/assembler.rs` cannot
    emit yet (`rv_zicfilp`, `rv_zicfiss`, `rv32_zilsd`, `rv32_zclsd`) are excluded in the
-   generator — re-enable there once emit support lands.
+   generator (`rv32_zilsd` is the current exclusion). Public operand order and
+   unsupported encoding shapes live declaratively in `meta/riscv.py`; unknown shapes
+   fail generation and the generator does not parse `src/riscv/assembler.rs`.
 
-## Legacy generators (being replaced)
+## Generated capability and surface report
 
-- `arm64.py` — signature list → `src/aarch64/emitter.rs` (writes `./emitter.rs` at repo
-  root; move + add header + rustfmt). Docs: `ASMKIT_ARM64_DOCS=asm-docs-arm python3 arm64.py`
-- `ppc.py` — WIP, consumes `src/ppc/opc.c` as data.
+Pinned-input regeneration currently produces:
+
+| Backend | Database coverage | Target-feature metadata |
+|---|---:|---:|
+| AArch64 | 776 InstIds; selfcheck emits 670, rejects the remaining sampled forms, 0 panics | 32 represented features; 588 gated InstIds; 68 mixed IDs use 246 form overrides |
+| RISC-V | 1,039 opcodes; 1,030 typed emitters; 9 raw-only unsupported signatures | 108 source-extension families; every opcode has an accepted-feature mask |
+
 
 ## Licensing obligations
 

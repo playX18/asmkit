@@ -879,15 +879,40 @@ pub fn info() -> Info {
         page_granularity: 0,
         page_size: 0,
     };
-    static INFO_INIT: AtomicBool = AtomicBool::new(false);
-    if INFO_INIT.load(Ordering::Relaxed) {
-        unsafe { addr_of!(INFO).read() }
-    } else {
-        unsafe {
-            let info = get_vm_info();
-            addr_of_mut!(INFO).write(info);
-            INFO_INIT.store(true, Ordering::Relaxed);
-            info
+    static INFO_STATE: AtomicU32 = AtomicU32::new(0);
+
+    loop {
+        match INFO_STATE.load(Ordering::Acquire) {
+            2 => return unsafe { addr_of!(INFO).read() },
+            0 => {
+                if INFO_STATE
+                    .compare_exchange(0, 1, Ordering::Acquire, Ordering::Relaxed)
+                    .is_ok()
+                {
+                    let info = get_vm_info();
+                    unsafe { addr_of_mut!(INFO).write(info) };
+                    INFO_STATE.store(2, Ordering::Release);
+                    return info;
+                }
+            }
+            _ => core::hint::spin_loop(),
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn info_initialization_is_thread_safe() {
+        let expected = info();
+        let threads: Vec<_> = (0..8).map(|_| std::thread::spawn(info)).collect();
+
+        for thread in threads {
+            let actual = thread.join().unwrap();
+            assert_eq!(actual.page_granularity, expected.page_granularity);
+            assert_eq!(actual.page_size, expected.page_size);
         }
     }
 }
@@ -896,7 +921,11 @@ pub fn info() -> Info {
 ///
 /// Only useful on non-x86 architectures, however, it's a good practice to call it on any platform to make your
 /// code more portable.
-pub fn flush_instruction_cache(p: *const u8, size: usize) {
+///
+/// # Safety
+///
+/// `p..p + size` must be a valid mapped memory range.
+pub unsafe fn flush_instruction_cache(p: *const u8, size: usize) -> Result<(), AsmError> {
     cfgenius::cond! {
         if cfg(any(target_arch="x86", target_arch="x86_64")) {
             let _ = p;
@@ -920,7 +949,9 @@ pub fn flush_instruction_cache(p: *const u8, size: usize) {
             }
 
             unsafe {
-                FlushInstructionCache(GetCurrentProcess(), p, size);
+                if FlushInstructionCache(GetCurrentProcess(), p, size) == 0 {
+                    return Err(AsmError::InvalidState);
+                }
             }
         } else if cfg(target_arch="aarch64")
             {
@@ -966,15 +997,20 @@ pub fn flush_instruction_cache(p: *const u8, size: usize) {
 
             } else if cfg(any(target_arch="riscv64", target_arch = "riscv32")) {
                 unsafe {
-                    let _ = wasmtime_jit_icache_coherence::clear_cache(p.cast(), size);
-                    let _ = wasmtime_jit_icache_coherence::pipeline_flush_mt();
+                    wasmtime_jit_icache_coherence::clear_cache(p.cast(), size)
+                        .map_err(|_| AsmError::InvalidState)?;
                 }
+                wasmtime_jit_icache_coherence::pipeline_flush_mt()
+                    .map_err(|_| AsmError::InvalidState)?;
             } else {
-                // TODO: Should we error here?
-                //compile_error!("icache invalidation not implemented for target platform");
+                return Err(AsmError::UnsupportedInstruction {
+                    reason: "instruction-cache synchronization is unavailable on this target",
+                });
             }
 
     }
+
+    Ok(())
 }
 
 #[cfg(not(windows))]
@@ -1002,27 +1038,52 @@ pub fn protect_jit_memory(access: ProtectJitAccess) {
             libc::pthread_jit_write_protect_np(x);
         }
     }
+    #[cfg(test)]
+    TEST_JIT_ACCESS.with(|current| current.set(access));
     let _ = access;
+}
+
+/// Runs `write` with JIT pages writable and always restores execute access.
+pub(crate) fn with_jit_write_access<T>(write: impl FnOnce() -> T) -> T {
+    struct RestoreExecuteAccess;
+
+    impl Drop for RestoreExecuteAccess {
+        fn drop(&mut self) {
+            protect_jit_memory(ProtectJitAccess::ReadExecute);
+        }
+    }
+
+    protect_jit_memory(ProtectJitAccess::ReadWrite);
+    let _restore = RestoreExecuteAccess;
+    write()
+}
+
+#[cfg(test)]
+std::thread_local! {
+    static TEST_JIT_ACCESS: core::cell::Cell<ProtectJitAccess> =
+        const { core::cell::Cell::new(ProtectJitAccess::ReadExecute) };
+}
+
+#[cfg(test)]
+pub(crate) fn jit_access_for_test() -> ProtectJitAccess {
+    TEST_JIT_ACCESS.with(core::cell::Cell::get)
 }
 
 cfgenius::cond! {
 
     if cfg(windows) {
 
-        use winapi::um::sysinfoapi::SYSTEM_INFO;
-        use winapi::{
-            shared::{minwindef::DWORD, ntdef::HANDLE},
-            um::{
-                handleapi::{CloseHandle, INVALID_HANDLE_VALUE},
-                memoryapi::{
+        use windows_sys::Win32::{
+            Foundation::{CloseHandle, HANDLE, INVALID_HANDLE_VALUE},
+            System::{
+                Memory::{
                     CreateFileMappingW, MapViewOfFile, UnmapViewOfFile, VirtualAlloc, VirtualFree,
                     VirtualProtect, FILE_MAP_EXECUTE, FILE_MAP_READ, FILE_MAP_WRITE,
-                },
-                sysinfoapi::GetSystemInfo,
-                winnt::{
+                    MEMORY_MAPPED_VIEW_ADDRESS,
                     MEM_COMMIT, MEM_RELEASE, MEM_RESERVE, PAGE_EXECUTE_READ, PAGE_EXECUTE_READWRITE,
                     PAGE_READONLY, PAGE_READWRITE,
                 },
+                SystemInformation::{GetSystemInfo, SYSTEM_INFO},
             },
         };
 
@@ -1061,7 +1122,7 @@ cfgenius::cond! {
             }
         }
 
-        fn protect_flags_from_memory_flags(memory_flags: MemoryFlags) -> DWORD {
+        fn protect_flags_from_memory_flags(memory_flags: MemoryFlags) -> u32 {
             let protect_flags;
 
             if memory_flags.contains(MemoryFlags::ACCESS_EXECUTE) {
@@ -1083,7 +1144,7 @@ cfgenius::cond! {
             protect_flags
         }
 
-        fn desired_access_from_memory_flags(memory_flags: MemoryFlags) -> DWORD {
+        fn desired_access_from_memory_flags(memory_flags: MemoryFlags) -> u32 {
             let mut access = if memory_flags.contains(MemoryFlags::ACCESS_WRITE) {
                 FILE_MAP_WRITE
             } else {
@@ -1167,11 +1228,11 @@ cfgenius::cond! {
                 for i in 0..2 {
                     let access_flags = memory_flags.0 & !DUAL_MAPPING_FILTER[i];
                     let desired_access = desired_access_from_memory_flags(access_flags.into());
-                    ptr[i] = MapViewOfFile(handle.value, desired_access, 0, 0, size);
+                    ptr[i] = MapViewOfFile(handle.value, desired_access, 0, 0, size).Value;
 
                     if ptr[i].is_null() {
-                        if i == 0 {
-                            UnmapViewOfFile(ptr[0]);
+                        if i == 1 {
+                            UnmapViewOfFile(MEMORY_MAPPED_VIEW_ADDRESS { Value: ptr[0] });
                         }
 
                         return Err(AsmError::OutOfMemory);
@@ -1189,11 +1250,13 @@ cfgenius::cond! {
             let mut failed = false;
 
             unsafe {
-                if UnmapViewOfFile(dm.rx as _) == 0 {
+                if UnmapViewOfFile(MEMORY_MAPPED_VIEW_ADDRESS { Value: dm.rx as _ }) == 0 {
                     failed = true;
                 }
 
-                if dm.rx != dm.rw && UnmapViewOfFile(dm.rw as _) == 0 {
+                if dm.rx != dm.rw
+                    && UnmapViewOfFile(MEMORY_MAPPED_VIEW_ADDRESS { Value: dm.rw as _ }) == 0
+                {
                     failed = true;
                 }
 

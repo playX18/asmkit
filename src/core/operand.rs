@@ -16,7 +16,7 @@ use core::ops::{BitAnd, BitOr, BitXor, Deref, DerefMut};
 use num_traits::{FromPrimitive, ToPrimitive};
 
 use super::{globals::INVALID_ID, support::bitmask_from_bool, types::TypeId};
-#[macro_export]
+
 macro_rules! define_operand_cast {
     ($t: ty, $base: ty) => {
         impl OperandCast for $t {
@@ -30,6 +30,7 @@ macro_rules! define_operand_cast {
         }
     };
 }
+pub(crate) use define_operand_cast;
 
 /// Operand type used by [Operand]
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
@@ -249,7 +250,7 @@ impl RegGroup {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct OperandSignature {
-    pub bits: u32,
+    pub(crate) bits: u32,
 }
 
 impl BitOr for OperandSignature {
@@ -332,7 +333,7 @@ impl OperandSignature {
     /// Mask for the operand size.
     pub const SIZE_MASK: u32 = 0xFFu32 << Self::SIZE_SHIFT;
 
-    pub const fn new(bits: u32) -> Self {
+    pub(crate) const fn new(bits: u32) -> Self {
         Self { bits }
     }
 
@@ -352,7 +353,7 @@ impl OperandSignature {
         self.bits
     }
 
-    pub fn set_bits(&mut self, bits: u32) {
+    pub(crate) fn set_bits(&mut self, bits: u32) {
         self.bits = bits;
     }
 
@@ -364,11 +365,11 @@ impl OperandSignature {
         (self.bits & K_FIELD_MASK) != value << K_FIELD_MASK.trailing_zeros()
     }
 
-    pub const fn from_bits(bits: u32) -> Self {
+    pub(crate) const fn from_bits(bits: u32) -> Self {
         OperandSignature { bits }
     }
 
-    pub const fn from_value<const K_FIELD_MASK: u32>(value: u32) -> Self {
+    pub(crate) const fn from_value<const K_FIELD_MASK: u32>(value: u32) -> Self {
         OperandSignature {
             bits: value << K_FIELD_MASK.trailing_zeros(),
         }
@@ -416,7 +417,7 @@ impl OperandSignature {
         }
     }
 
-    pub fn set_field<const K_FIELD_MASK: u32>(&mut self, value: u32) {
+    pub(crate) fn set_field<const K_FIELD_MASK: u32>(&mut self, value: u32) {
         self.bits = (self.bits & !K_FIELD_MASK) | (value << K_FIELD_MASK.trailing_zeros());
     }
 
@@ -430,23 +431,43 @@ impl OperandSignature {
     }
 
     pub fn op_type(&self) -> OperandType {
-        OperandType::try_from(self.get_field::<{ Self::OP_TYPE_MASK }>()).unwrap()
+        self.try_op_type().unwrap_or(OperandType::None)
+    }
+
+    pub fn try_op_type(&self) -> Option<OperandType> {
+        OperandType::try_from(self.get_field::<{ Self::OP_TYPE_MASK }>()).ok()
     }
 
     pub fn reg_type(&self) -> RegType {
-        RegType::try_from(self.get_field::<{ Self::REG_TYPE_MASK }>()).unwrap()
+        self.try_reg_type().unwrap_or(RegType::None)
+    }
+
+    pub fn try_reg_type(&self) -> Option<RegType> {
+        RegType::try_from(self.get_field::<{ Self::REG_TYPE_MASK }>()).ok()
     }
 
     pub fn reg_group(&self) -> RegGroup {
-        RegGroup::try_from(self.get_field::<{ Self::REG_GROUP_MASK }>()).unwrap()
+        self.try_reg_group().unwrap_or(RegGroup::Gp)
+    }
+
+    pub fn try_reg_group(&self) -> Option<RegGroup> {
+        RegGroup::try_from(self.get_field::<{ Self::REG_GROUP_MASK }>()).ok()
     }
 
     pub fn mem_base_type(&self) -> RegType {
-        RegType::try_from(self.get_field::<{ Self::MEM_BASE_TYPE_MASK }>()).unwrap()
+        self.try_mem_base_type().unwrap_or(RegType::None)
+    }
+
+    pub fn try_mem_base_type(&self) -> Option<RegType> {
+        RegType::try_from(self.get_field::<{ Self::MEM_BASE_TYPE_MASK }>()).ok()
     }
 
     pub fn mem_index_type(&self) -> RegType {
-        RegType::try_from(self.get_field::<{ Self::MEM_INDEX_TYPE_MASK }>()).unwrap()
+        self.try_mem_index_type().unwrap_or(RegType::None)
+    }
+
+    pub fn try_mem_index_type(&self) -> Option<RegType> {
+        RegType::try_from(self.get_field::<{ Self::MEM_INDEX_TYPE_MASK }>()).ok()
     }
 
     pub fn predicate(&self) -> u32 {
@@ -1000,7 +1021,6 @@ pub trait RegTraits {
         | OperandSignature::from_size(Self::SIZE).bits;
 }
 
-#[macro_export]
 macro_rules! define_abstract_reg {
     ($reg: ty, $base: ty) => {
         impl Default for $reg {
@@ -1031,8 +1051,8 @@ macro_rules! define_abstract_reg {
         define_operand_cast!($reg, $base);
     };
 }
+pub(crate) use define_abstract_reg;
 
-#[macro_export]
 macro_rules! define_final_reg {
     ($reg: ty, $base: ty, $traits: ty) => {
         define_abstract_reg!($reg, $base);
@@ -1051,8 +1071,8 @@ macro_rules! define_final_reg {
         }
     };
 }
+pub(crate) use define_final_reg;
 
-#[macro_export]
 macro_rules! define_reg_traits {
     ($reg_type: ident, $group: path, $size: expr, $type_id: path) => {
         pub struct $reg_type;
@@ -1065,6 +1085,7 @@ macro_rules! define_reg_traits {
         }
     };
 }
+pub(crate) use define_reg_traits;
 
 /// A helper trait to help cast [Operand] to Architecture dependent
 /// operands and vice-versa.
@@ -1301,14 +1322,14 @@ impl BaseMem {
 
     pub fn add_offset(&mut self, offset: i64) {
         if self.is_offset_64bit() {
-            self.set_offset(self.offset() + offset);
+            self.set_offset(self.offset().wrapping_add(offset));
         } else {
-            self.set_offset_lo32(self.offset_lo32() + offset as i32);
+            self.set_offset_lo32(self.offset_lo32().wrapping_add(offset as i32));
         }
     }
 
     pub fn add_offset_lo32(&mut self, offset: i32) {
-        self.set_offset_lo32(self.offset_lo32() + offset);
+        self.set_offset_lo32(self.offset_lo32().wrapping_add(offset));
     }
 
     pub fn reset_offset(&mut self) {
@@ -1705,6 +1726,34 @@ impl fmt::Display for BaseReg {
                 write!(f, "reg{}", self.id())
             }
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn malformed_signatures_do_not_panic() {
+        let invalid_op_type = OperandSignature::from(7);
+        let invalid_reg_type = OperandSignature::from(
+            OperandType::Reg as u32 | (25 << OperandSignature::REG_TYPE_SHIFT),
+        );
+        let invalid_reg_group = OperandSignature::from(
+            OperandType::Reg as u32 | (11 << OperandSignature::REG_GROUP_SHIFT),
+        );
+
+        assert_eq!(invalid_op_type.try_op_type(), None);
+        assert_eq!(invalid_op_type.op_type(), OperandType::None);
+        assert!(invalid_reg_type.try_reg_type().is_none());
+        assert!(invalid_reg_type.reg_type() == RegType::None);
+        assert_eq!(invalid_reg_group.try_reg_group(), None);
+        assert_eq!(invalid_reg_group.reg_group(), RegGroup::Gp);
+
+        let mut operand = Operand::new();
+        operand.set_signature(invalid_op_type);
+        assert_eq!(operand.op_type(), OperandType::None);
+        assert!(!operand.is_reg());
     }
 }
 

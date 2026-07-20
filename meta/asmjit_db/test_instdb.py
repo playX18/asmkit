@@ -5,10 +5,12 @@
 # vendored-C++ machinery (meta/asmjit_db/cxx_src.py).
 
 """The gate tests regenerate the full instruction-database tables from the
-vendored asmjit sources and require a byte-exact match with the
-translator-generated `src/x86/instdb.rs` and `src/aarch64/instdb.rs`
-(read-only). The a64 NZCV tests cover the asmkit-specific RW_FLAGS_TABLE
-computed from `db/isa_aarch64.json` `io` attributes.
+vendored asmjit sources and require a match with the translator-generated
+`src/x86/instdb.rs` and `src/aarch64/instdb.rs` (read-only). The committed
+files have been through the `cargo fmt` step of `meta/regen.sh`, so the raw
+generator output is compared after the equivalent `rustfmt --edition 2024`
+pass. The a64 NZCV tests cover the asmkit-specific RW_FLAGS_TABLE computed
+from `db/isa_aarch64.json` `io` attributes.
 
 Run from the repo root with `python3 -m meta.asmjit_db.test_instdb`, or via
 unittest discovery (`python3 -m unittest discover -s meta/asmjit_db -t .`).
@@ -16,6 +18,8 @@ unittest discovery (`python3 -m unittest discover -s meta/asmjit_db -t .`).
 
 import os
 import re
+import shutil
+import subprocess
 import unittest
 
 try:
@@ -165,11 +169,21 @@ class A64RwFlagsTableTest(unittest.TestCase):
         self.assertEqual(self.seen_write, {"A64_N", "A64_Z", "A64_C", "A64_V", "A64_Q"})
 
 
+def _rustfmt(text):
+    """Applies the formatting step `meta/regen.sh` runs after generation."""
+    rustfmt = shutil.which("rustfmt")
+    if rustfmt is None:
+        raise unittest.SkipTest("rustfmt not available")
+    out = subprocess.run([rustfmt, "--edition", "2024", "--emit", "stdout"],
+                         input=text, capture_output=True, text=True, check=True)
+    return out.stdout
+
+
 class A64GateTest(unittest.TestCase):
     def test_instdb_byte_exact(self):
         text = tablegen_a64.emit_a64(tablegen_a64.A64Db())
         expected = (REPO_ROOT / "src" / "aarch64" / "instdb.rs").read_text(encoding="utf-8")
-        self.assertEqual(text, expected)
+        self.assertEqual(_rustfmt(text), expected)
 
     def test_deterministic(self):
         a = tablegen_a64.emit_a64(tablegen_a64.A64Db())
@@ -189,7 +203,7 @@ class X86GateTest(unittest.TestCase):
     def test_instdb_byte_exact(self):
         text = tablegen_x86.build()
         expected = (REPO_ROOT / "src" / "x86" / "instdb.rs").read_text(encoding="utf-8")
-        self.assertEqual(text, expected)
+        self.assertEqual(_rustfmt(text), expected)
 
     def test_deterministic(self):
         a = tablegen_x86.build()

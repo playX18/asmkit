@@ -10,13 +10,10 @@
 
 */
 //! X86 operands definition.
-use crate::{
-    core::{
-        arch_traits::{Arch, ArchTraits},
-        operand::*,
-        types::TypeId,
-    },
-    define_abstract_reg, define_final_reg, define_operand_cast, define_reg_traits,
+use crate::core::{
+    arch_traits::{Arch, ArchTraits},
+    operand::{define_abstract_reg, define_final_reg, define_operand_cast, define_reg_traits, *},
+    types::TypeId,
 };
 use core::ops::{Add, Deref, Mul};
 
@@ -1007,6 +1004,19 @@ pub enum AddrType {
     Rel = 2,
 }
 
+impl TryFrom<u32> for AddrType {
+    type Error = ();
+
+    fn try_from(value: u32) -> Result<Self, Self::Error> {
+        match value {
+            0 => Ok(Self::Default),
+            1 => Ok(Self::Abs),
+            2 => Ok(Self::Rel),
+            _ => Err(()),
+        }
+    }
+}
+
 #[derive(Clone, Copy, PartialEq, Eq)]
 #[repr(u32)]
 pub enum Broadcast {
@@ -1017,6 +1027,23 @@ pub enum Broadcast {
     B1To16 = 4,
     B1To32 = 5,
     B1To64 = 6,
+}
+
+impl TryFrom<u32> for Broadcast {
+    type Error = ();
+
+    fn try_from(value: u32) -> Result<Self, Self::Error> {
+        match value {
+            0 => Ok(Self::None),
+            1 => Ok(Self::B1To2),
+            2 => Ok(Self::B1To4),
+            3 => Ok(Self::B1To8),
+            4 => Ok(Self::B1To16),
+            5 => Ok(Self::B1To32),
+            6 => Ok(Self::B1To64),
+            _ => Err(()),
+        }
+    }
 }
 type Signature = OperandSignature;
 
@@ -1038,6 +1065,24 @@ impl Mem {
 
     pub const SIGNATURE_MEM_BROADCAST_SHIFT: u32 = 21;
     pub const SIGNATURE_MEM_BROADCAST_MASK: u32 = 0x7 << Self::SIGNATURE_MEM_BROADCAST_SHIFT;
+
+    const INVALID_FIELD: u32 = 3;
+
+    fn shift_signature(shift: u32) -> OperandSignature {
+        if shift <= 3 {
+            Signature::from_value::<{ Self::SIGNATURE_MEM_SHIFT_VALUE_MASK }>(shift)
+        } else {
+            Signature::from_value::<{ Self::SIGNATURE_MEM_ADDR_TYPE_MASK }>(Self::INVALID_FIELD)
+        }
+    }
+
+    fn size_signature(size: u32) -> OperandSignature {
+        if matches!(size, 0 | 1 | 2 | 4 | 6 | 8 | 10 | 16 | 32 | 64) {
+            Signature::from_size(size)
+        } else {
+            Signature::from_size(u8::MAX as u32)
+        }
+    }
 
     pub const fn new() -> Self {
         Self(BaseMem::new())
@@ -1069,17 +1114,22 @@ impl Mem {
     }
 
     pub fn set_size(&mut self, size: u32) {
-        self.0.signature.set_field::<{ Signature::SIZE_MASK }>(size);
+        self.0
+            .signature
+            .set_field::<{ Signature::SIZE_MASK }>(Self::size_signature(size).size());
     }
 
     pub fn addr_type(&self) -> AddrType {
-        unsafe {
-            core::mem::transmute(
-                self.0
-                    .signature
-                    .get_field::<{ Self::SIGNATURE_MEM_ADDR_TYPE_MASK }>(),
-            )
-        }
+        self.try_addr_type().unwrap_or(AddrType::Default)
+    }
+
+    pub fn try_addr_type(&self) -> Option<AddrType> {
+        AddrType::try_from(
+            self.0
+                .signature
+                .get_field::<{ Self::SIGNATURE_MEM_ADDR_TYPE_MASK }>(),
+        )
+        .ok()
     }
 
     pub fn set_addr_type(&mut self, addr_type: AddrType) {
@@ -1129,9 +1179,15 @@ impl Mem {
     }
 
     pub fn set_segment_id(&mut self, r_id: u32) {
-        self.0
-            .signature
-            .set_field::<{ Self::SIGNATURE_MEM_SEGMENT_MASK }>(r_id);
+        if r_id <= SReg::GS {
+            self.0
+                .signature
+                .set_field::<{ Self::SIGNATURE_MEM_SEGMENT_MASK }>(r_id);
+        } else {
+            self.0
+                .signature
+                .set_field::<{ Self::SIGNATURE_MEM_ADDR_TYPE_MASK }>(Self::INVALID_FIELD);
+        }
     }
 
     pub fn reset_segment(&mut self) {
@@ -1151,9 +1207,15 @@ impl Mem {
     }
 
     pub fn set_shift(&mut self, shift: u32) {
-        self.0
-            .signature
-            .set_field::<{ Self::SIGNATURE_MEM_SHIFT_VALUE_MASK }>(shift);
+        if shift <= 3 {
+            self.0
+                .signature
+                .set_field::<{ Self::SIGNATURE_MEM_SHIFT_VALUE_MASK }>(shift);
+        } else {
+            self.0
+                .signature
+                .set_field::<{ Self::SIGNATURE_MEM_ADDR_TYPE_MASK }>(Self::INVALID_FIELD);
+        }
     }
 
     pub fn reset_shift(&mut self) {
@@ -1167,13 +1229,16 @@ impl Mem {
     }
 
     pub fn get_broadcast(&self) -> Broadcast {
-        unsafe {
-            core::mem::transmute(
-                self.0
-                    .signature
-                    .get_field::<{ Self::SIGNATURE_MEM_BROADCAST_MASK }>(),
-            )
-        }
+        self.try_broadcast().unwrap_or(Broadcast::None)
+    }
+
+    pub fn try_broadcast(&self) -> Option<Broadcast> {
+        Broadcast::try_from(
+            self.0
+                .signature
+                .get_field::<{ Self::SIGNATURE_MEM_BROADCAST_MASK }>(),
+        )
+        .ok()
     }
 
     pub fn set_broadcast(&mut self, b: Broadcast) {
@@ -1252,8 +1317,8 @@ impl Mem {
             Signature::from_op_type(OperandType::Mem)
                 | Signature::from_mem_base_type(RegType::SymTag)
                 | Signature::from_mem_index_type(index.typ())
-                | Signature::from_value::<{ Self::SIGNATURE_MEM_SHIFT_VALUE_MASK }>(shift)
-                | Signature::from_size(size)
+                | Self::shift_signature(shift)
+                | Self::size_signature(size)
                 | signature,
             base.id(),
             index.id(),
@@ -1272,8 +1337,8 @@ impl Mem {
             Signature::from_op_type(OperandType::Mem)
                 | Signature::from_mem_base_type(RegType::LabelTag)
                 | Signature::from_mem_index_type(index.typ())
-                | Signature::from_value::<{ Self::SIGNATURE_MEM_SHIFT_VALUE_MASK }>(shift)
-                | Signature::from_size(size)
+                | Self::shift_signature(shift)
+                | Self::size_signature(size)
                 | signature,
             base.id(),
             index.id(),
@@ -1290,7 +1355,7 @@ impl Mem {
         Self(BaseMem::from_base_and_index_disp(
             Signature::from_op_type(OperandType::Mem)
                 | Signature::from_mem_base_type(RegType::LabelTag)
-                | Signature::from_size(size)
+                | Self::size_signature(size)
                 | signature,
             base.id(),
             0,
@@ -1302,7 +1367,7 @@ impl Mem {
         Self(BaseMem::from_base_and_index_disp(
             Signature::from_op_type(OperandType::Mem)
                 | Signature::from_mem_base_type(RegType::SymTag)
-                | Signature::from_size(size)
+                | Self::size_signature(size)
                 | signature,
             base.id(),
             0,
@@ -1319,7 +1384,7 @@ impl Mem {
         Self(BaseMem::from_base_and_index_disp(
             Signature::from_op_type(OperandType::Mem)
                 | Signature::from_mem_base_type(base.typ())
-                | Signature::from_size(size)
+                | Self::size_signature(size)
                 | signature,
             base.id(),
             0,
@@ -1339,8 +1404,8 @@ impl Mem {
             Signature::from_op_type(OperandType::Mem)
                 | Signature::from_mem_base_type(base.typ())
                 | Signature::from_mem_index_type(index.typ())
-                | Signature::from_value::<{ Self::SIGNATURE_MEM_SHIFT_VALUE_MASK }>(shift)
-                | Signature::from_size(size)
+                | Self::shift_signature(shift)
+                | Self::size_signature(size)
                 | signature,
             base.id(),
             index.id(),
@@ -1358,8 +1423,8 @@ impl Mem {
         Self(BaseMem::from_base_and_index_disp(
             Signature::from_op_type(OperandType::Mem)
                 | Signature::from_mem_index_type(index.typ())
-                | Signature::from_value::<{ Self::SIGNATURE_MEM_SHIFT_VALUE_MASK }>(shift)
-                | Signature::from_size(size)
+                | Self::shift_signature(shift)
+                | Self::size_signature(size)
                 | signature,
             (base >> 32) as u32,
             index.id(),
@@ -1369,7 +1434,7 @@ impl Mem {
 
     pub fn from_u64(base: u64, size: u32, signature: OperandSignature) -> Self {
         Self(BaseMem::from_base_and_index_disp(
-            Signature::from_op_type(OperandType::Mem) | Signature::from_size(size) | signature,
+            Signature::from_op_type(OperandType::Mem) | Self::size_signature(size) | signature,
             (base >> 32) as u32,
             0,
             (base & 0xFFFF_FFFF) as _,
@@ -1377,7 +1442,6 @@ impl Mem {
     }
 
     pub fn absolute_address(self) -> u64 {
-        assert!(self.is_abs());
         ((self.base_id() as u64) << 32) | (self.data[1] as u64)
     }
 }
@@ -1394,12 +1458,11 @@ impl Mul<i32> for Gpq {
 
     fn mul(self, rhs: i32) -> Self::Output {
         let shift = match rhs {
-            0 | 1 => 0,
+            1 => 0,
             2 => 1,
             4 => 2,
             8 => 3,
-            16 => 4,
-            _ => todo!(),
+            _ => u32::MAX,
         };
         ptr_index(RAX, self, shift, 0, 0)
     }
@@ -2014,8 +2077,8 @@ impl AbsoluteAddress {
         ))
     }
 
-    pub fn from_mem(mem: Mem) -> Self {
-        assert!(mem.is_abs());
+    pub fn from_mem(mut mem: Mem) -> Self {
+        mem.set_abs();
         Self(mem)
     }
 

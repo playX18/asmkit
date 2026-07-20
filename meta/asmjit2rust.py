@@ -1195,6 +1195,18 @@ def emit_x86(db: X86Db) -> str:
             out.append(f"    /// {doc}\n")
         out.append(f"    {variant},\n")
     out.append("}\n\n")
+    out.append(f"pub const CPU_FEATURE_COUNT: usize = {len(db.cpu_features)};\n")
+    names = ", ".join(f'"{variant}"' for _, variant in db.cpu_features)
+    out.append(f"pub static CPU_FEATURE_NAMES: &[&str] = &[{names}];\n")
+    defaults = [variant for _, variant in db.cpu_features if variant != "None"]
+    default_values = ", ".join(f"CpuFeature::{variant}" for variant in defaults)
+    out.append(
+        f"pub const DEFAULT_X86_FEATURES: &[CpuFeature] = &[{default_values}];\n\n"
+    )
+    out.append("impl CpuFeature {\n")
+    for old, new in (("AVX512F", "AVX512_F"), ("AVX512BW", "AVX512_BW"), ("AVX512CD", "AVX512_CD"), ("AVX512DQ", "AVX512_DQ"), ("AVX512VL", "AVX512_VL")):
+        out.append(f"    pub const {old}: Self = Self::{new};\n")
+    out.append("}\n\n")
 
     # --- InstId ---------------------------------------------------------------
     out.append("/// X86 instruction id.\n")

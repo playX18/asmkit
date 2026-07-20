@@ -9,7 +9,8 @@ The transformation mirrors meta/arm64.py (aarch64):
   forwarding to `self.emit_n(InstId::{Id}, &[op0.as_operand(), ...])`;
 * when a mnemonic is declared with several arities, the first-seen arity keeps
   the plain name and later ones are suffixed (`cbw` / `cbw_0`);
-* doc comments come from the docenizer database (meta/docenizer_amd64.py).
+* Rustdoc combines assembly forms from pinned AsmJit metadata with optional
+  prose from the docenizer database (meta/docenizer_amd64.py).
 
 X86-specific handling:
 
@@ -45,6 +46,7 @@ Usage: python3 meta/x86_emitter_gen.py [--docs-inputfolder DIR] [--check] OUTPUT
 
 import argparse
 import itertools
+import json
 import os
 import re
 import sys
@@ -58,6 +60,7 @@ if REPO_ROOT not in sys.path:
 
 INPUT_PATH = os.path.join(SCRIPT_DIR, "x86_emitter.txt")
 X86GLOBALS_PATH = os.path.join(SCRIPT_DIR, "asmjit", "asmjit", "x86", "x86globals.h")
+X86_ISA_PATH = os.path.join(SCRIPT_DIR, "asmjit", "db", "isa_x86.json")
 
 DOCS_INPUT = os.environ.get("ASMKIT_X86_DOCS", "asm-docs")
 
@@ -270,6 +273,47 @@ class Opcode:
         self.variants = []
 
 
+def clean_asmjit_form(form):
+    """Turns an AsmJit ISA syntax row into a compact Rustdoc assembly form."""
+    form = re.sub(r"^(?:\[[^]]+\]\s*)+", "", form)
+    mnemonic, _, operands = form.partition(" ")
+    operands = re.sub(r"(^|,\s*)~?[A-Za-z]+:", r"\1", operands)
+    operands = re.sub(r"\{[^}]*\}", "", operands)
+    operands = " ".join(operands.replace("~", "").split())
+    operands = re.sub(r"\s*,\s*", ", ", operands)
+    return mnemonic, f"{mnemonic}{' ' + operands if operands else ''}"
+
+
+def load_asmjit_forms(path):
+    """Loads assembly forms and operand access prefixes from pinned AsmJit JSON."""
+    with open(path) as f:
+        metadata = json.load(f)
+
+    forms = {}
+
+    def visit(value):
+        if isinstance(value, dict):
+            for key in ("any", "x86", "x64"):
+                if key not in value:
+                    continue
+                raw = value[key]
+                mnemonic, syntax = clean_asmjit_form(raw)
+                operand_text = raw.partition(" ")[2]
+                roles = []
+                for operand in operand_text.split(","):
+                    match = re.match(r"\s*~?([A-Za-z]+):", operand)
+                    roles.append(match.group(1) if match else "r")
+                forms.setdefault(mnemonic.upper(), []).append((syntax, roles))
+            for child in value.values():
+                visit(child)
+        elif isinstance(value, list):
+            for child in value:
+                visit(child)
+
+    visit(metadata)
+    return forms
+
+
 def load_opcode_docs(inputfolder):
     if not os.path.isdir(inputfolder):
         print(f"Note: docs folder '{inputfolder}' not found, "
@@ -397,45 +441,121 @@ def doc_lookup_name(name):
     return re.sub(r"(_\d+|_)+$", "", name).upper()
 
 
-def doc_lines(name, opcode_docs, indent=""):
+def forms_for_opcode(name, asmjit_forms):
     canonical = doc_lookup_name(name)
+    forms = asmjit_forms.get(canonical, [])
+    if forms or canonical not in {"J", "SET", "CMOV"}:
+        return forms
+
+    # AsmJit stores each condition-code spelling separately. Keep the public
+    # family API readable while still deriving its shapes from those rows.
+    prefix = {"J": "J", "SET": "SET", "CMOV": "CMOV"}[canonical]
+    family = []
+    for mnemonic, entries in asmjit_forms.items():
+        if mnemonic.startswith(prefix):
+            family.extend((re.sub(r"^[a-z0-9]+", canonical.lower() + "cc", syntax), roles)
+                          for syntax, roles in entries)
+    return family
+
+
+def unique_names(names):
+    seen = {}
+    unique = []
+    for name in names:
+        seen[name] = seen.get(name, 0) + 1
+        unique.append(name if seen[name] == 1 else f"{name}{seen[name]}")
+    return unique
+
+
+def operand_names(opcode, operands, asmjit_forms):
+    """Names public emitter arguments from the ISA's access annotations."""
+    if opcode.name == "enter":
+        return ["frame_size", "nesting_level"]
+
+    forms = forms_for_opcode(opcode.name, asmjit_forms)
+    roles = next((roles for _, roles in forms if len(roles) == len(operands)), [])
+    control_flow = opcode.name in {"call", "jmp", "j", "loop", "loope", "loopne"}
+    all_read = len(roles) == len(operands) and all(role.lower() == "r" for role in roles)
+    names = []
+    for index, kind in enumerate(operands):
+        role = roles[index] if index < len(roles) else ""
+        if kind == "Imm":
+            name = "imm"
+        elif kind == "Label" or control_flow:
+            name = "target"
+        elif role.lower() in {"w", "x"}:
+            name = "dst"
+        elif all_read and len(operands) == 2:
+            name = ("lhs", "rhs")[index]
+        elif len(operands) == 1 and kind == "Mem":
+            name = "mem"
+        elif index == 0 and len(operands) > 1:
+            name = "dst"
+        else:
+            name = "src"
+        names.append(name)
+    source_indexes = [index for index, name in enumerate(names) if name == "src"]
+    if len(source_indexes) > 1:
+        for source_number, index in enumerate(source_indexes, 1):
+            names[index] = f"src{source_number}"
+    return unique_names(names)
+
+
+def doc_lines(opcode, opcode_docs, asmjit_forms, indent=""):
+    canonical = doc_lookup_name(opcode.name)
     doc = opcode_docs.get(canonical)
     if doc:
-        tooltip = " ".join(doc["tooltip"].split())
-        lines = [f"{indent}/// Emits `{name.upper()}` (`{canonical}`). {tooltip}"]
-        if doc.get("url"):
-            lines.append(f"{indent}/// Reference: [Intel docs for {canonical}]({doc['url']})")
-        return lines
-    return [f"{indent}/// Emits `{name.upper()}`."]
+        summary = " ".join(doc["tooltip"].split()).replace("`", "'")
+        lines = [f"{indent}/// `{canonical}` — {summary}"]
+    else:
+        lines = [f"{indent}/// Emits `{opcode.name.upper()}`."]
+
+    forms = []
+    for syntax, _ in forms_for_opcode(opcode.name, asmjit_forms):
+        if syntax not in forms:
+            forms.append(syntax)
+        if len(forms) == 3:
+            break
+    if forms:
+        lines.extend([f"{indent}///", f"{indent}/// Assembly forms: "
+                      + ", ".join(f"`{form}`" for form in forms) + "."])
+    else:
+        names = operand_names(opcode, opcode.variants[0].operands, asmjit_forms)
+        syntax = " ".join([opcode.name] + [", ".join(names)]).strip()
+        lines.extend([f"{indent}///", f"{indent}/// Syntax: `{syntax}`."])
+    if doc and doc.get("url"):
+        lines.extend([f"{indent}///", f"{indent}/// [Intel reference]({doc['url']})."])
+    return lines
 
 
-def fn_params(operands, cc=False):
+def fn_params(operands, names, cc=False):
     parts = ["&mut self"]
     if cc:
         parts.append("cc: CondCode")
-    parts.extend(f"op{i}: {operand}" for i, operand in enumerate(operands))
+    parts.extend(f"{name}: {operand}" for name, operand in zip(names, operands))
     return ", ".join(parts)
 
 
-def trait_block(opcode, opcode_docs):
+def trait_block(opcode, opcode_docs, asmjit_forms):
     n = len(opcode.variants[0].operands)
     generics = f"<{', '.join(f'T{i}' for i in range(n))}>" if n else ""
     generic_operands = [f"T{i}" for i in range(n)]
     method = rust_method_name(opcode.name)
 
-    lines = doc_lines(opcode.name, opcode_docs)
+    names = operand_names(opcode, opcode.variants[0].operands, asmjit_forms)
+    lines = doc_lines(opcode, opcode_docs, asmjit_forms)
     lines.append(f"pub trait {trait_name(opcode.name)}Emitter{generics} {{")
     if opcode.conv:
-        lines.append(f"    fn {method}({fn_params(generic_operands, cc=True)});")
+        lines.append(f"    fn {method}({fn_params(generic_operands, names, cc=True)});")
         for suffix in X86_CC_SUFFIXES:
-            lines.append(f"    fn {method}{suffix}({fn_params(generic_operands)});")
+            lines.append(f"    fn {method}{suffix}({fn_params(generic_operands, names)});")
     else:
-        lines.append(f"    fn {method}({fn_params(generic_operands)});")
+        lines.append(f"    fn {method}({fn_params(generic_operands, names)});")
     lines.append("}")
     return "\n".join(lines)
 
 
-def impl_block(opcode, inst_id, operands, comment):
+def impl_block(opcode, inst_id, operands, comment, asmjit_forms):
     """Emits one impl. `operands` holds concrete Rust types; IMM_GENERIC marks
     an immediate position generated as a `U{i}: Into<Imm>` type parameter."""
     trait = trait_name(opcode.name)
@@ -444,12 +564,13 @@ def impl_block(opcode, inst_id, operands, comment):
     generics = f"<{', '.join(type_args)}>" if type_args else ""
     bounds = [f"U{i}: Into<Imm>" for i, op in enumerate(operands) if op == IMM_GENERIC]
     impl_generics = f"<{', '.join(bounds)}>" if bounds else ""
+    names = operand_names(opcode, operands, asmjit_forms)
     params = ["&mut self"]
-    params.extend(f"op{i}: {arg}" for i, arg in enumerate(type_args))
+    params.extend(f"{name}: {arg}" for name, arg in zip(names, type_args))
     ops = "&[{}]".format(", ".join(
-        f"Into::<Imm>::into(op{i}).as_operand()" if op == IMM_GENERIC
-        else f"op{i}.as_operand()"
-        for i, op in enumerate(operands)))
+        f"Into::<Imm>::into({name}).as_operand()" if op == IMM_GENERIC
+        else f"{name}.as_operand()"
+        for name, op in zip(names, operands)))
     comment = f" // {comment}" if comment else ""
     method = rust_method_name(opcode.name)
 
@@ -503,6 +624,9 @@ HEADER = """\
 //!   suffix (`jo`, `jno`, ...) that calls a concrete `InstId::{Id}{Suffix}`.
 //! - Rust keywords are raw-escaped (`r#loop`, `r#in`); names already C++-escaped
 //!   in the input (`and_`, `or_`, `not_`, `xor_`, `int_`) are kept as-is.
+//! - Rustdoc lists compact assembly forms derived from pinned AsmJit metadata.
+//!   When `asm-docs/` is available, its Intel-derived summary and reference link
+//!   are included as well.
 #![allow(non_snake_case, non_camel_case_types)]
 use super::{assembler::*, instdb::*, operands::*};
 use crate::core::globals::CondCode;
@@ -555,7 +679,7 @@ def width_forms(opcode, variant, width_db):
     return width_db.get(variant.inst_id, [])
 
 
-def generate(opcodes, opcode_docs, width_db):
+def generate(opcodes, opcode_docs, asmjit_forms, width_db):
     """Returns (file_text, {opcode name: {"trait": str, "impls": [str]}}, gen
     stats) for spot printing."""
     blocks = {}
@@ -577,19 +701,21 @@ def generate(opcodes, opcode_docs, width_db):
                 gen_stats["replaced_abstract"] += 1
             else:
                 opcode_impls.append(
-                    impl_block(opcode, variant.inst_id, variant.operands, variant.comment))
+                    impl_block(opcode, variant.inst_id, variant.operands, variant.comment,
+                               asmjit_forms))
                 impl_keys.append((trait_name(opcode.name), tuple(variant.operands)))
             for combo in typed:
                 if combo == tuple(variant.operands):
                     continue
                 opcode_impls.append(
-                    impl_block(opcode, variant.inst_id, combo, variant.comment))
+                    impl_block(opcode, variant.inst_id, combo, variant.comment,
+                               asmjit_forms))
                 impl_keys.append((trait_name(opcode.name), combo))
                 gen_stats["typed_impls"] += 1
                 if IMM_GENERIC in combo:
                     gen_stats["generic_imm_impls"] += 1
         block = {
-            "trait": trait_block(opcode, opcode_docs),
+            "trait": trait_block(opcode, opcode_docs, asmjit_forms),
             "impls": opcode_impls,
         }
         blocks[opcode.name] = block
@@ -603,7 +729,7 @@ def generate(opcodes, opcode_docs, width_db):
     return "\n".join(parts) + "\n", blocks, gen_stats, impl_keys
 
 
-def validate(opcodes, inst_id_names, impl_keys):
+def validate(opcodes, inst_id_names, impl_keys, text):
     """Cross-checks the generated references against the parsed InstId enum.
     Returns a list of problem strings (empty when everything checks out)."""
     problems = []
@@ -646,6 +772,11 @@ def validate(opcodes, inst_id_names, impl_keys):
     method_collisions = {m: ns for m, ns in method_owners.items() if len(ns) > 1}
     if method_collisions:
         problems.append(f"inherent method name collisions: {method_collisions}")
+
+    if re.search(r"\bop\d+\s*:", text):
+        problems.append("generated public signatures contain opN placeholders")
+    if "Assembly forms:" not in text:
+        problems.append("generated Rustdoc is missing AsmJit assembly forms")
 
     return problems
 
@@ -707,8 +838,10 @@ def main():
     opcodes, stats = parse_opcodes(INPUT_PATH)
     inst_id_names = parse_inst_id_names(X86GLOBALS_PATH)
     opcode_docs = load_opcode_docs(args.docs_inputfolder)
+    asmjit_forms = load_asmjit_forms(X86_ISA_PATH)
     width_db = load_width_db()
-    text, blocks, gen_stats, impl_keys = generate(opcodes, opcode_docs, width_db)
+    text, blocks, gen_stats, impl_keys = generate(
+        opcodes, opcode_docs, asmjit_forms, width_db)
     gen_stats["blocks"] = blocks
 
     output_dir = os.path.dirname(os.path.abspath(args.output))
@@ -717,7 +850,7 @@ def main():
         out.write(text)
     print(f"Wrote {args.output} ({len(text.splitlines())} lines)")
 
-    problems = validate(opcodes, inst_id_names, impl_keys)
+    problems = validate(opcodes, inst_id_names, impl_keys, text)
     print_report(opcodes, stats, gen_stats, inst_id_names, problems)
     if args.check:
         print_spot_checks(opcodes, blocks)

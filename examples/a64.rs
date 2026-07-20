@@ -1,31 +1,21 @@
-use asmkit::{
-    aarch64::{assembler::*, operands::*},
-    core::buffer::{CodeBuffer, ConstantData},
-};
+use asmkit::{Arch, CodeBuffer, ConstantData, Environment, aarch64::*};
 use capstone::arch::BuildsCapstone;
 
 fn main() {
-    let mut buf = CodeBuffer::new();
-    let mut asm = Assembler::new(&mut buf);
-    let big = asm
-        .buffer
-        .add_constant(ConstantData::Bytes(vec![0x0; 8192 * 4]));
-    let cbig = asm.buffer.get_label_for_constant(big);
-    let c = asm
-        .buffer
-        .add_constant(ConstantData::U64(42.42f64.to_bits().to_le_bytes()));
+    let mut buf = CodeBuffer::new(Environment::new(Arch::AArch64));
+    let big = buf.add_constant(ConstantData::Bytes(vec![0x0; 8192 * 4]));
+    let cbig = buf.get_label_for_constant(big);
+    let c = buf.add_constant(ConstantData::U64(42.42f64.to_bits().to_le_bytes()));
+    let clabel = buf.get_label_for_constant(c);
 
-    let clabel = asm.buffer.get_label_for_constant(c);
-    let end = asm.buffer.get_label();
+    let mut asm = Assembler::new(&mut buf);
+    let end = asm.get_label();
     asm.adrp(x1, cbig);
     asm.load_constant(x2, clabel);
-    asm.buffer.bind_label(end);
-    let off = asm.buffer.label_offset(end);
-    if let Some(err) = asm.last_error() {
-        println!("{err:?}");
-    }
+    asm.bind_label(end);
+    let off = buf.label_offset(end);
 
-    let code = buf.finish();
+    let code = buf.finish().expect("assembly failed");
 
     let cs = capstone::Capstone::new()
         .arm64()

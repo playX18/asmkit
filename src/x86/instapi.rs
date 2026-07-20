@@ -31,6 +31,7 @@
 //!   (see [`apply_same_reg_hint`]).
 
 use crate::AsmError;
+use crate::core::arch_traits::Arch;
 use crate::core::globals::InstOptions;
 use crate::core::inst::Inst;
 use crate::core::operand::{Imm, Operand, OperandType, RegGroup, RegType};
@@ -62,6 +63,9 @@ const MIB_READ: OpRwFlags =
 /// Returns [`AsmError::InvalidInstruction`] if the instruction id is not defined or the
 /// operand combination is not recognized by a special-category handler.
 pub fn query_rw_info(inst: &Inst) -> Result<InstRwInfo, AsmError> {
+    if !matches!(inst.arch(), Arch::X86 | Arch::X64) {
+        return Err(AsmError::InvalidArch);
+    }
     let inst_id = inst.id as usize;
     if inst_id >= INST_INFO_TABLE.len() {
         return Err(AsmError::InvalidInstruction);

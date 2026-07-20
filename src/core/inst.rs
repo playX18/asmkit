@@ -6,6 +6,7 @@
 //! (see `core::builder`) and consumed by `query_rw_info`-style APIs, while the per-mnemonic
 //! emitter methods remain the ergonomic way to construct one.
 
+use super::arch_traits::Arch;
 use super::globals::{InstOptions, MAX_OP_COUNT};
 use super::operand::Operand;
 use crate::AsmError;
@@ -18,28 +19,31 @@ use crate::AsmError;
 /// `{k}` selector where applicable and is [`Operand::new()`] (none) otherwise.
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct Inst {
+    arch: Arch,
     /// Instruction id with modifiers (architecture-namespaced).
-    pub id: u32,
+    pub(crate) id: u32,
     /// Instruction options.
-    pub options: InstOptions,
+    pub(crate) options: InstOptions,
     /// Extra register used by the instruction (REP register or AVX-512 mask selector).
-    pub extra_reg: Operand,
+    pub(crate) extra_reg: Operand,
     /// Number of valid entries in `operands`.
     op_count: u8,
     /// Operands; only the first `op_count` entries are meaningful.
-    pub operands: [Operand; MAX_OP_COUNT],
-}
-
-impl Default for Inst {
-    fn default() -> Self {
-        Self::new(0)
-    }
+    operands: [Operand; MAX_OP_COUNT],
 }
 
 impl Inst {
-    /// Creates a new instruction with the given `id` and no operands.
-    pub const fn new(id: u32) -> Self {
+    /// Creates a host-tagged instruction with the given `id` and no operands.
+    #[cfg(test)]
+    #[allow(dead_code)]
+    pub(crate) const fn new(id: u32) -> Self {
+        Self::new_for(Arch::HOST, id)
+    }
+
+    /// Creates an instruction for a supported assembler architecture.
+    pub(crate) const fn new_for(arch: Arch, id: u32) -> Self {
         Self {
+            arch,
             id,
             options: InstOptions::NONE,
             extra_reg: Operand::new(),
@@ -48,15 +52,60 @@ impl Inst {
         }
     }
 
-    /// Creates a new instruction with the given `id` and operands.
-    ///
-    /// Debug-asserts that `ops` fits into the inline operand array.
-    pub fn with_operands(id: u32, ops: &[Operand]) -> Self {
-        debug_assert!(ops.len() <= MAX_OP_COUNT);
-        let mut inst = Self::new(id);
-        inst.operands[..ops.len().min(MAX_OP_COUNT)].copy_from_slice(ops);
-        inst.op_count = ops.len().min(MAX_OP_COUNT) as u8;
-        inst
+    /// Creates a host-tagged instruction with the given `id` and operands.
+    #[cfg(test)]
+    #[allow(dead_code)]
+    pub(crate) fn with_operands(id: u32, ops: &[Operand]) -> Self {
+        Self::with_arch_operands(Arch::HOST, id, ops)
+            .expect("instruction operands must fit the inline array")
+    }
+
+    /// Creates an architecture-tagged instruction without operands.
+    pub fn for_arch(arch: Arch, id: u32) -> Result<Self, AsmError> {
+        Self::with_arch_operands(arch, id, &[])
+    }
+
+    /// Creates an architecture-tagged instruction without dropping operands.
+    pub fn with_arch_operands(arch: Arch, id: u32, ops: &[Operand]) -> Result<Self, AsmError> {
+        if !matches!(
+            arch,
+            Arch::X86 | Arch::X64 | Arch::AArch64 | Arch::RISCV32 | Arch::RISCV64
+        ) {
+            return Err(AsmError::InvalidArch);
+        }
+        let mut inst = Self::new_for(arch, id);
+        inst.set_operands(ops)?;
+        Ok(inst)
+    }
+
+    /// Architecture this instruction belongs to.
+    pub const fn arch(&self) -> Arch {
+        self.arch
+    }
+
+    /// Instruction id with architecture-specific modifiers.
+    pub const fn id(&self) -> u32 {
+        self.id
+    }
+
+    /// Encoding options retained by deferred replay.
+    pub const fn options(&self) -> InstOptions {
+        self.options
+    }
+
+    /// Optional extra register retained by deferred replay.
+    pub const fn extra_reg(&self) -> Operand {
+        self.extra_reg
+    }
+
+    /// Sets encoding options retained by deferred replay.
+    pub fn set_options(&mut self, options: InstOptions) {
+        self.options = options;
+    }
+
+    /// Sets the optional extra register retained by deferred replay.
+    pub fn set_extra_reg(&mut self, extra_reg: Operand) {
+        self.extra_reg = extra_reg;
     }
 
     /// Returns the number of operands.
@@ -80,11 +129,12 @@ impl Inst {
     }
 
     /// Sets the operand at `index`. `index` must be less than `op_count`.
-    pub fn set_operand(&mut self, index: usize, op: Operand) {
-        debug_assert!(index < self.op_count());
-        if index < self.op_count() {
-            self.operands[index] = op;
-        }
+    pub fn set_operand(&mut self, index: usize, op: Operand) -> Result<(), AsmError> {
+        let Some(slot) = self.operands_mut().get_mut(index) else {
+            return Err(AsmError::InvalidArgument);
+        };
+        *slot = op;
+        Ok(())
     }
 
     /// Appends an operand, or returns [`AsmError::InvalidState`] if the operand array is full.
@@ -105,6 +155,7 @@ impl Inst {
             return Err(AsmError::InvalidState);
         }
         self.operands[..ops.len()].copy_from_slice(ops);
+        self.operands[ops.len()..].fill(Operand::new());
         self.op_count = ops.len() as u8;
         Ok(())
     }
@@ -116,8 +167,8 @@ mod tests {
 
     #[test]
     fn build_and_mutate() {
-        let mut inst = Inst::new(42);
-        assert_eq!(inst.id, 42);
+        let mut inst = Inst::new_for(Arch::X64, 42);
+        assert_eq!(inst.id(), 42);
         assert_eq!(inst.op_count(), 0);
         assert!(inst.operands().is_empty());
 
@@ -133,5 +184,18 @@ mod tests {
         }
         assert_eq!(inst.op_count(), MAX_OP_COUNT);
         assert!(inst.add_operand(Operand::new()).is_err());
+
+        assert_eq!(
+            inst.set_operand(MAX_OP_COUNT, Operand::new()),
+            Err(AsmError::InvalidArgument)
+        );
+        assert_eq!(
+            Inst::with_arch_operands(Arch::Unknown, 42, &[]),
+            Err(AsmError::InvalidArch)
+        );
+
+        inst.set_options(InstOptions::X86_ZMASK);
+        inst.set_extra_reg(Operand::new());
+        assert_eq!(inst.options(), InstOptions::X86_ZMASK);
     }
 }

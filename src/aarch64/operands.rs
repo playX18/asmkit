@@ -1,7 +1,7 @@
 //! AArch64 operands definition.
-use crate::{
-    core::{operand::*, types::TypeId},
-    define_abstract_reg, define_operand_cast,
+use crate::core::{
+    operand::{define_abstract_reg, define_operand_cast, *},
+    types::TypeId,
 };
 
 use core::fmt;

@@ -1,29 +1,32 @@
-#![allow(dead_code, clippy::all)]
+#![allow(dead_code)]
 use super::emit::{self, PendingPrefixes};
 use super::emitter::{CallEmitter, JmpEmitter, MovEmitter};
 use super::operands::*;
 use crate::{
     X86Error,
     core::{
+        arch_traits::Arch,
         buffer::{CodeBuffer, CodeOffset, ConstantData, LabelUse},
         globals::InstOptions,
         operand::*,
         patch::{PatchBlockId, PatchSiteId},
+        target::Environment,
     },
 };
 
 /// X86/X64 Assembler implementation.
 pub struct Assembler<'a> {
-    pub buffer: &'a mut CodeBuffer,
+    pub(crate) buffer: &'a mut CodeBuffer,
     flags: u64,
     extra_reg: Reg,
-    last_error: Option<X86Error>,
 }
 
 const RC_RN: u64 = 0x0000000;
 const RC_RD: u64 = 0x0800000;
 const RC_RU: u64 = 0x1000000;
 const RC_RZ: u64 = 0x1800000;
+const RC_MASK: u64 = RC_RD | RC_RU;
+const RC_ENABLED: u64 = 0x4000000;
 const SEG_MASK: u64 = 0xe0000000;
 const LONG: u64 = 0x100000000;
 
@@ -35,15 +38,42 @@ const OPC_LOCK: u64 = 0x2000000000;
 const OPC_Z: u64 = 0x1000000000;
 
 impl crate::core::builder::InstSink for Assembler<'_> {
-    fn emit_inst(&mut self, inst: &crate::core::inst::Inst) {
+    fn arch(&self) -> Arch {
+        self.environment().arch()
+    }
+
+    fn emit_inst(&mut self, inst: &crate::core::inst::Inst) -> Result<(), crate::AsmError> {
         let ops = inst.operands();
         let mut refs: smallvec::SmallVec<[&Operand; 6]> = smallvec::SmallVec::new();
         refs.extend(ops.iter());
-        self.emit_n(inst.id, &refs);
+
+        let extra_reg = inst.extra_reg();
+        let mask_id = match extra_reg.signature.try_op_type() {
+            Some(OperandType::None) if extra_reg.signature.bits() == 0 => 0,
+            Some(OperandType::Reg) if extra_reg.signature.try_reg_type() == Some(RegType::Mask) => {
+                extra_reg.id()
+            }
+            _ => {
+                return Err(X86Error::InvalidMasking {
+                    mask_reg: extra_reg.id(),
+                    reason: "x86 extra register must be a mask register",
+                }
+                .into());
+            }
+        };
+        self.try_emit_n_with_prefixes(
+            inst.id(),
+            &refs,
+            PendingPrefixes {
+                options: inst.options(),
+                segment_id: 0,
+                mask_id,
+            },
+        )
     }
 
-    fn bind_label(&mut self, label: Label) {
-        Assembler::bind_label(self, label);
+    fn bind_label(&mut self, label: Label) -> Result<(), crate::AsmError> {
+        self.try_bind_label(label)
     }
 }
 
@@ -71,7 +101,7 @@ impl<'a> Assembler<'a> {
         if flags & OPC_Z != 0 {
             prefixes.options |= InstOptions::X86_ZMASK;
         }
-        if flags & 0x4000000 != 0 {
+        if flags & RC_ENABLED != 0 {
             let rc = flags & (RC_RD | RC_RU);
             prefixes.options |= if rc == RC_RD {
                 InstOptions::X86_ER | InstOptions::X86_RD_SAE
@@ -92,60 +122,151 @@ impl<'a> Assembler<'a> {
 
     /// Emits one instruction by id with explicit operands, using the asmjit-style
     /// InstInfo → signature match → emit-handler pipeline (the new primary emit
-    /// path). Pending prefixes set by the prefix setters apply. On failure,
-    /// `last_error` is set and nothing more is emitted.
+    /// path). Pending prefixes set by the prefix setters apply.
     pub fn emit_n(&mut self, id: impl Into<u32>, ops: &[&Operand]) {
-        let prefixes = self.take_pending_prefixes();
-        if let Err(err) = emit::emit_n(self.buffer, id.into(), ops, prefixes) {
-            self.last_error = Some(err);
+        if let Err(error) = self.try_emit_n(id, ops) {
+            self.buffer.record_error(error);
         }
     }
 
+    pub fn try_emit_n(
+        &mut self,
+        id: impl Into<u32>,
+        ops: &[&Operand],
+    ) -> Result<(), crate::AsmError> {
+        if let Some(error) = self.buffer.error().cloned() {
+            return Err(error);
+        }
+        let prefixes = self.take_pending_prefixes();
+        self.try_emit_n_with_prefixes(id, ops, prefixes)
+    }
+
+    fn try_emit_n_with_prefixes(
+        &mut self,
+        id: impl Into<u32>,
+        ops: &[&Operand],
+        prefixes: PendingPrefixes,
+    ) -> Result<(), crate::AsmError> {
+        if let Some(error) = self.buffer.error().cloned() {
+            return Err(error);
+        }
+        let checkpoint = self.buffer.checkpoint();
+        if let Err(error) = emit::emit_n(self.buffer, id.into(), ops, prefixes, self.is_32bit()) {
+            self.buffer.rollback(checkpoint);
+            return Err(error);
+        }
+        Ok(())
+    }
+
     pub fn new(buf: &'a mut CodeBuffer) -> Self {
+        if !matches!(buf.env().arch(), Arch::X86 | Arch::X64) {
+            return Self::poisoned(buf, crate::AsmError::InvalidArch);
+        }
+        Self::unchecked(buf)
+    }
+
+    pub fn try_new(buf: &'a mut CodeBuffer) -> Result<Self, crate::AsmError> {
+        if !matches!(buf.env().arch(), Arch::X86 | Arch::X64) {
+            return Err(crate::AsmError::InvalidArch);
+        }
+        Ok(Self::unchecked(buf))
+    }
+
+    fn unchecked(buf: &'a mut CodeBuffer) -> Self {
         Self {
             buffer: buf,
             extra_reg: Reg::new(),
             flags: 0,
-            last_error: None,
         }
     }
 
-    /// Get the last error that occurred during assembly.
-    pub fn last_error(&self) -> Option<X86Error> {
-        self.last_error.clone()
+    fn poisoned(buf: &'a mut CodeBuffer, error: crate::AsmError) -> Self {
+        buf.record_error(error);
+        Self {
+            buffer: buf,
+            extra_reg: Reg::new(),
+            flags: 0,
+        }
     }
 
-    /// Clear the last error.
-    pub fn clear_error(&mut self) {
-        self.last_error = None;
+    /// Returns the environment (arch/mode) this assembler targets.
+    pub fn environment(&self) -> &Environment {
+        self.buffer.env()
+    }
+
+    /// Tests whether the assembler targets 32-bit X86 mode.
+    pub fn is_32bit(&self) -> bool {
+        self.buffer.env().is_32bit()
+    }
+
+    /// Tests whether the assembler targets 64-bit X64 mode.
+    pub fn is_64bit(&self) -> bool {
+        self.buffer.env().is_64bit()
+    }
+
+    #[cfg(test)]
+    fn last_error(&self) -> Option<X86Error> {
+        match self.buffer.error() {
+            Some(crate::AsmError::X86(error)) => Some(error.clone()),
+            _ => None,
+        }
     }
 
     pub fn sae(&mut self) -> &mut Self {
-        self.flags |= 0x4000000;
-        self
+        self.set_rounding(RC_RN)
     }
 
     pub fn rn_sae(&mut self) -> &mut Self {
-        self.flags |= 0x4000000 | RC_RN;
-        self
+        self.set_rounding(RC_RN)
     }
 
     pub fn rd_sae(&mut self) -> &mut Self {
-        self.flags |= 0x4000000 | RC_RD;
-        self
+        self.set_rounding(RC_RD)
     }
     pub fn ru_sae(&mut self) -> &mut Self {
-        self.flags |= 0x4000000 | RC_RU;
-        self
+        self.set_rounding(RC_RU)
     }
 
     pub fn rz_sae(&mut self) -> &mut Self {
-        self.flags |= 0x4000000 | RC_RZ;
+        self.set_rounding(RC_RZ)
+    }
+
+    fn set_rounding(&mut self, rounding: u64) -> &mut Self {
+        let mask = RC_ENABLED | RC_MASK;
+        let pending = self.flags & mask;
+        let requested = RC_ENABLED | rounding;
+        if pending != 0 && pending != requested {
+            self.buffer
+                .record_error(crate::AsmError::X86(X86Error::InvalidRoundingControl {
+                    rc: requested,
+                    reason: "conflicting pending rounding modes",
+                }));
+            return self;
+        }
+        self.flags = (self.flags & !mask) | requested;
         self
     }
 
     pub fn seg(&mut self, sreg: SReg) -> &mut Self {
-        self.flags |= ((sreg.id() & 0x7) as u64) << 29;
+        let segment_id = sreg.id();
+        if !(SReg::ES..=SReg::GS).contains(&segment_id) {
+            self.buffer
+                .record_error(crate::AsmError::X86(X86Error::InvalidPrefix {
+                    prefix: segment_id as u64,
+                    reason: "invalid segment override",
+                }));
+            return self;
+        }
+        let pending = (self.flags & SEG_MASK) >> 29;
+        if pending != 0 && pending != segment_id as u64 {
+            self.buffer
+                .record_error(crate::AsmError::X86(X86Error::InvalidPrefix {
+                    prefix: segment_id as u64,
+                    reason: "conflicting pending segment overrides",
+                }));
+            return self;
+        }
+        self.flags = (self.flags & !SEG_MASK) | (segment_id as u64) << 29;
         self
     }
 
@@ -158,7 +279,25 @@ impl<'a> Assembler<'a> {
     }
 
     pub fn k(&mut self, k: KReg) -> &mut Self {
-        self.flags |= ((k.id() & 0x7) as u64) << 33;
+        let mask_id = k.id();
+        if !(1..=7).contains(&mask_id) {
+            self.buffer
+                .record_error(crate::AsmError::X86(X86Error::InvalidMasking {
+                    mask_reg: mask_id,
+                    reason: "mask register must be k1..k7",
+                }));
+            return self;
+        }
+        let pending = (self.flags >> 33) & 0x7;
+        if pending != 0 && pending != mask_id as u64 {
+            self.buffer
+                .record_error(crate::AsmError::X86(X86Error::InvalidMasking {
+                    mask_reg: mask_id,
+                    reason: "conflicting pending mask registers",
+                }));
+            return self;
+        }
+        self.flags = (self.flags & !(0x7 << 33)) | (mask_id as u64) << 33;
 
         self
     }
@@ -198,7 +337,13 @@ impl<'a> Assembler<'a> {
     }
 
     pub fn bind_label(&mut self, label: Label) {
-        self.buffer.bind_label(label);
+        if let Err(error) = self.try_bind_label(label) {
+            self.buffer.record_error(error);
+        }
+    }
+
+    pub fn try_bind_label(&mut self, label: Label) -> Result<(), crate::AsmError> {
+        self.buffer.try_bind_label(label)
     }
 
     pub fn add_constant(&mut self, c: impl Into<ConstantData>) -> Label {
@@ -210,7 +355,16 @@ impl<'a> Assembler<'a> {
         self.buffer.label_offset(label)
     }
 
+    pub fn data(&self) -> &[u8] {
+        self.buffer.data()
+    }
+
+    pub fn error(&self) -> Option<&crate::AsmError> {
+        self.buffer.error()
+    }
+
     pub fn patchable_jmp(&mut self, label: Label) -> PatchSiteId {
+        self.long();
         self.jmp(label);
         let offset = self
             .buffer
@@ -221,6 +375,7 @@ impl<'a> Assembler<'a> {
     }
 
     pub fn patchable_call(&mut self, label: Label) -> PatchSiteId {
+        self.long();
         self.call(label);
         let offset = self
             .buffer
@@ -238,22 +393,40 @@ impl<'a> Assembler<'a> {
     {
         let dst_op = *dst.as_operand();
         let src_op = *src.as_operand();
-        if !src_op.is_imm() {
-            unreachable!("patchable_mov currently only supports immediate sources");
-        }
-
-        MovEmitter::mov(self, dst, src);
-
-        if dst_op.is_reg_type_of(RegType::Gp64) {
-            let offset = self.buffer.cur_offset().saturating_sub(8);
-            self.buffer.record_patch_block(offset, 8, 1)
+        let size = if dst_op.is_reg_type_of(RegType::Gp64) {
+            8
         } else if dst_op.is_reg_type_of(RegType::Gp32) {
-            MovEmitter::mov(self, dst, src);
-            let offset = self.buffer.cur_offset().saturating_sub(4);
-            self.buffer.record_patch_block(offset, 4, 1)
+            4
         } else {
-            unreachable!("patchable_mov currently only supports Gp64 and Gp32 destinations");
+            self.buffer
+                .record_error(crate::AsmError::X86(X86Error::InvalidOperand {
+                    operand_index: 0,
+                    reason: "patchable_mov requires a Gp32 or Gp64 destination",
+                }));
+            return PatchBlockId::from_index(usize::MAX);
+        };
+
+        if !src_op.is_imm() {
+            self.buffer
+                .record_error(crate::AsmError::X86(X86Error::InvalidOperand {
+                    operand_index: 1,
+                    reason: "patchable_mov requires an immediate source",
+                }));
+            return PatchBlockId::from_index(usize::MAX);
         }
+
+        let offset = self.buffer.cur_offset();
+        let previous_error = self.buffer.error().cloned();
+        self.long();
+        MovEmitter::mov(self, dst, src);
+        if self.buffer.error().cloned() != previous_error
+            || self.buffer.cur_offset() < offset + size
+        {
+            return PatchBlockId::from_index(usize::MAX);
+        }
+
+        let offset = self.buffer.cur_offset() - size;
+        self.buffer.record_patch_block(offset, size, 1)
     }
 }
 
@@ -330,13 +503,13 @@ mod tests {
 
     /// Assembles via `emit_n`, asserting no error, and finalizes label fixups.
     fn asm(f: impl FnOnce(&mut Assembler)) -> std::vec::Vec<u8> {
-        let mut buf = CodeBuffer::new();
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         {
             let mut a = Assembler::new(&mut buf);
             f(&mut a);
             assert!(a.last_error().is_none(), "{:?}", a.last_error());
         }
-        buf.finish().data().to_vec()
+        buf.finish().unwrap().data().to_vec()
     }
 
     #[test]
@@ -385,7 +558,7 @@ mod tests {
 
     #[test]
     fn emit_n_invalid_sets_last_error() {
-        let mut buf = CodeBuffer::new();
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut a = Assembler::new(&mut buf);
         // add rax, xmm0 — no signature matches; nothing is emitted.
         a.emit_n(InstId::Add as u32, &[RAX.as_operand(), XMM0.as_operand()]);
@@ -395,9 +568,86 @@ mod tests {
         ));
         assert!(a.buffer.data().is_empty());
         // Unknown instruction id.
-        a.clear_error();
+        a.buffer.clear();
         a.emit_n(u32::MAX, &[]);
         assert!(a.last_error().is_some());
+    }
+
+    #[test]
+    fn raw_invalid_symbol_id_is_rejected() {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let mut a = Assembler::new(&mut buf);
+        let mut operand = Operand::new();
+        operand.set_signature(OperandSignature::from(0x001A_0012));
+
+        assert_eq!(
+            a.try_emit_n(727u32, &[&operand]),
+            Err(crate::AsmError::X86(X86Error::InvalidOperand {
+                operand_index: 0,
+                reason: "symbol is not declared in this buffer",
+            }))
+        );
+        assert!(a.buffer.data().is_empty());
+
+        a.emit_n(727u32, &[&operand]);
+        assert_eq!(
+            a.buffer.error(),
+            Some(&crate::AsmError::X86(X86Error::InvalidOperand {
+                operand_index: 0,
+                reason: "symbol is not declared in this buffer",
+            }))
+        );
+        assert!(a.buffer.data().is_empty());
+    }
+
+    #[test]
+    fn emit_n_rejects_more_than_six_operands() {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let mut a = Assembler::new(&mut buf);
+        let ops = [RAX.as_operand(); 7];
+
+        a.emit_n(InstId::Ret as u32, &ops);
+
+        assert!(a.last_error().is_some());
+        assert!(a.buffer.data().is_empty());
+    }
+
+    #[test]
+    fn patchable_mov_emits_once_and_rejects_unsupported_operands() {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        {
+            let mut a = Assembler::new(&mut buf);
+            a.patchable_mov(EAX, imm(42));
+            assert_eq!(a.buffer.data(), &[0xB8, 42, 0, 0, 0]);
+            assert!(a.last_error().is_none());
+
+            a.patchable_mov(RAX, imm(42));
+            assert_eq!(
+                a.buffer.data(),
+                &[0xB8, 42, 0, 0, 0, 0x48, 0xB8, 42, 0, 0, 0, 0, 0, 0, 0]
+            );
+
+            a.patchable_mov(RAX, RBX);
+            assert!(matches!(
+                a.last_error(),
+                Some(X86Error::InvalidOperand {
+                    operand_index: 1,
+                    ..
+                })
+            ));
+            assert_eq!(
+                a.buffer.data(),
+                &[0xB8, 42, 0, 0, 0, 0x48, 0xB8, 42, 0, 0, 0, 0, 0, 0, 0]
+            );
+        }
+
+        assert!(matches!(
+            buf.finish_patched(),
+            Err(crate::AsmError::X86(X86Error::InvalidOperand {
+                operand_index: 1,
+                ..
+            }))
+        ));
     }
 
     #[test]
@@ -438,7 +688,7 @@ mod tests {
 
     #[test]
     fn emit_n_branch_forms() {
-        // Backward jmp to a bound label: rel32 = 0 - 0 - 5 = -5.
+        // Backward jmp to a bound label uses rel8 by default.
         assert_eq!(
             asm(|a| {
                 let label = a.get_label();
@@ -448,9 +698,9 @@ mod tests {
                     &[Label::from_id(label.id()).as_operand()],
                 );
             }),
-            [0xE9, 0xFB, 0xFF, 0xFF, 0xFF]
+            [0xEB, 0xFE]
         );
-        // Forward jmp to an unbound label, bound right after: rel32 = 0.
+        // Forward jmp to an unbound label is relaxed at finalization.
         assert_eq!(
             asm(|a| {
                 let label = a.get_label();
@@ -460,7 +710,7 @@ mod tests {
                 );
                 a.bind_label(label);
             }),
-            [0xE9, 0x00, 0x00, 0x00, 0x00]
+            [0xEB, 0x00]
         );
         // call rel32 to an unbound label, bound right after.
         assert_eq!(
@@ -474,6 +724,23 @@ mod tests {
             }),
             [0xE8, 0x00, 0x00, 0x00, 0x00]
         );
+    }
+
+    #[test]
+    fn patchable_branches_keep_the_near_form() {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let target = buf.get_label();
+        let site = {
+            let mut asm = Assembler::new(&mut buf);
+            asm.patchable_jmp(target)
+        };
+        buf.bind_label(target);
+
+        let code = buf.finish_patched().unwrap();
+        assert_eq!(code.data(), &[0xE9, 0, 0, 0, 0]);
+        let site = code.patch_catalog().site(site).unwrap();
+        assert_eq!(site.offset, 1);
+        assert_eq!(site.current_target, 5);
     }
 
     #[test]
@@ -542,7 +809,7 @@ mod tests {
                 a.bind_label(label);
                 JmpEmitter::jmp(a, label);
             }),
-            [0xE9, 0xFB, 0xFF, 0xFF, 0xFF]
+            [0xEB, 0xFE]
         );
     }
 
@@ -606,6 +873,39 @@ mod tests {
     }
 
     #[test]
+    fn conflicting_prefix_setters_poison_without_emitting() {
+        let cases: &[fn(&mut Assembler<'_>)] = &[
+            |a| {
+                a.fs().gs();
+            },
+            |a| {
+                a.k(K1).k(K2);
+            },
+            |a| {
+                a.rd_sae().ru_sae();
+            },
+            |a| {
+                a.seg(sreg(7));
+            },
+            |a| {
+                a.k(k(8));
+            },
+            |a| {
+                a.k(K0);
+            },
+        ];
+
+        for set_prefixes in cases {
+            let mut buffer = CodeBuffer::new(Environment::new(Arch::X64));
+            let mut assembler = Assembler::new(&mut buffer);
+            set_prefixes(&mut assembler);
+            assembler.emit_n(InstId::Ret as u32, &[]);
+            assert!(assembler.buffer.error().is_some());
+            assert!(assembler.buffer.data().is_empty());
+        }
+    }
+
+    #[test]
     fn emit_n_builder_replay_matches_direct() {
         fn direct() -> std::vec::Vec<u8> {
             asm(|a| {
@@ -622,29 +922,302 @@ mod tests {
             })
         }
 
-        let mut buf = CodeBuffer::new();
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut builder = Builder::new();
         let done = buf.get_label();
-        builder.push_inst(Inst::with_operands(
-            InstId::Mov as u32,
-            &[*RAX.as_operand(), *imm(1).as_operand()],
-        ));
-        builder.push_inst(Inst::with_operands(
-            InstId::Add as u32,
-            &[*RAX.as_operand(), *RBX.as_operand()],
-        ));
-        builder.push_inst(Inst::with_operands(
-            InstId::Jmp as u32,
-            &[*Label::from_id(done.id()).as_operand()],
-        ));
-        builder.push_inst(Inst::with_operands(InstId::Ret as u32, &[]));
+        builder
+            .push_inst(Inst::with_operands(
+                InstId::Mov as u32,
+                &[*RAX.as_operand(), *imm(1).as_operand()],
+            ))
+            .unwrap();
+        builder
+            .push_inst(Inst::with_operands(
+                InstId::Add as u32,
+                &[*RAX.as_operand(), *RBX.as_operand()],
+            ))
+            .unwrap();
+        builder
+            .push_inst(Inst::with_operands(
+                InstId::Jmp as u32,
+                &[*Label::from_id(done.id()).as_operand()],
+            ))
+            .unwrap();
+        builder
+            .push_inst(Inst::with_operands(InstId::Ret as u32, &[]))
+            .unwrap();
         builder.push_label(done);
-        builder.push_inst(Inst::with_operands(InstId::Ret as u32, &[]));
+        builder
+            .push_inst(Inst::with_operands(InstId::Ret as u32, &[]))
+            .unwrap();
         {
             let mut a = Assembler::new(&mut buf);
             builder.emit_into(&mut a).unwrap();
             assert!(a.last_error().is_none(), "{:?}", a.last_error());
         }
-        assert_eq!(buf.finish().data().to_vec(), direct());
+        assert_eq!(buf.finish().unwrap().data().to_vec(), direct());
+    }
+
+    #[test]
+    fn builder_replays_options_and_mask_register() {
+        let direct = asm(|a| {
+            a.k(K1).z();
+            a.emit_n(
+                InstId::Vaddpd as u32,
+                &[ZMM1.as_operand(), ZMM2.as_operand(), ZMM3.as_operand()],
+            );
+        });
+
+        let mut inst = Inst::with_arch_operands(
+            Arch::X64,
+            InstId::Vaddpd as u32,
+            &[*ZMM1.as_operand(), *ZMM2.as_operand(), *ZMM3.as_operand()],
+        )
+        .unwrap();
+        inst.set_options(InstOptions::X86_ZMASK);
+        inst.set_extra_reg(*K1.as_operand());
+        let mut builder = Builder::for_arch(Arch::X64);
+        builder.push_inst(inst).unwrap();
+
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        builder.emit_into(&mut Assembler::new(&mut buf)).unwrap();
+        assert_eq!(buf.finish().unwrap().data(), direct);
+    }
+
+    /// Assembles in 32-bit mode via `emit_n`, asserting no error.
+    fn asm32(f: impl FnOnce(&mut Assembler)) -> std::vec::Vec<u8> {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X86));
+        {
+            let mut a = Assembler::new(&mut buf);
+            f(&mut a);
+            assert!(a.last_error().is_none(), "{:?}", a.last_error());
+        }
+        buf.finish().unwrap().data().to_vec()
+    }
+
+    /// Assembles in 32-bit mode, expecting an error.
+    fn asm32_err(f: impl FnOnce(&mut Assembler)) -> X86Error {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X86));
+        let mut a = Assembler::new(&mut buf);
+        f(&mut a);
+        a.last_error().expect("expected an emit error")
+    }
+
+    /// Assembles in 64-bit mode, expecting an error.
+    fn asm64_err(f: impl FnOnce(&mut Assembler)) -> X86Error {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let mut a = Assembler::new(&mut buf);
+        f(&mut a);
+        a.last_error().expect("expected an emit error")
+    }
+
+    #[test]
+    fn emit_n_32bit_gp_forms() {
+        use crate::x86::emitter::{AddEmitter, MovEmitter};
+
+        // mov eax, ebx — no REX in 32-bit mode.
+        assert_eq!(asm32(|a| MovEmitter::mov(a, EAX, EBX)), [0x89, 0xD8]);
+        // mov ax, bx / mov al, bl.
+        assert_eq!(asm32(|a| MovEmitter::mov(a, AX, BX)), [0x66, 0x89, 0xD8]);
+        assert_eq!(asm32(|a| MovEmitter::mov(a, AL, BL)), [0x88, 0xD8]);
+        // add ecx, 1 (imm8 form); add eax, 0x12345678 (accumulator short form).
+        assert_eq!(
+            asm32(|a| a.emit_n(InstId::Add as u32, &[ECX.as_operand(), imm(1).as_operand()])),
+            [0x83, 0xC1, 0x01]
+        );
+        assert_eq!(
+            asm32(|a| AddEmitter::add(a, EAX, 0x1234_5678i32)),
+            [0x05, 0x78, 0x56, 0x34, 0x12]
+        );
+        // mov eax, 0x12345678 / mov ax, 0x1234 / mov cl, 0x12.
+        assert_eq!(
+            asm32(|a| MovEmitter::mov(a, EAX, 0x1234_5678i32)),
+            [0xB8, 0x78, 0x56, 0x34, 0x12]
+        );
+        assert_eq!(
+            asm32(|a| MovEmitter::mov(a, AX, 0x1234)),
+            [0x66, 0xB8, 0x34, 0x12]
+        );
+        assert_eq!(asm32(|a| MovEmitter::mov(a, CL, 0x12)), [0xB1, 0x12]);
+    }
+
+    #[test]
+    fn emit_n_32bit_inc_dec_short_forms() {
+        use crate::x86::emitter::{DecEmitter, IncEmitter};
+
+        // INC/DEC r16|r32 short forms exist only in 32-bit mode.
+        assert_eq!(asm32(|a| IncEmitter::inc(a, EAX)), [0x40]);
+        assert_eq!(asm32(|a| IncEmitter::inc(a, ECX)), [0x41]);
+        assert_eq!(asm32(|a| IncEmitter::inc(a, AX)), [0x66, 0x40]);
+        assert_eq!(asm32(|a| DecEmitter::dec(a, EDX)), [0x4A]);
+        assert_eq!(asm32(|a| DecEmitter::dec(a, DX)), [0x66, 0x4A]);
+        // 8-bit and memory forms are shared with 64-bit.
+        assert_eq!(asm32(|a| IncEmitter::inc(a, AL)), [0xFE, 0xC0]);
+        assert_eq!(
+            asm32(|a| IncEmitter::inc(a, dword_ptr(ECX, 0))),
+            [0xFF, 0x01]
+        );
+        // In 64-bit mode the same instructions use the FF /0|/1 forms.
+        assert_eq!(
+            asm(|a| a.emit_n(InstId::Inc as u32, &[EAX.as_operand()])),
+            [0xFF, 0xC0]
+        );
+    }
+
+    #[test]
+    fn emit_n_32bit_push_pop() {
+        use crate::x86::emitter::{PopEmitter, PushEmitter};
+
+        assert_eq!(asm32(|a| PushEmitter::push(a, EAX)), [0x50]);
+        assert_eq!(asm32(|a| PushEmitter::push(a, AX)), [0x66, 0x50]);
+        assert_eq!(asm32(|a| PopEmitter::pop(a, ECX)), [0x59]);
+        assert_eq!(
+            asm32(|a| PushEmitter::push(a, 0x1234_5678i32)),
+            [0x68, 0x78, 0x56, 0x34, 0x12]
+        );
+        assert_eq!(
+            asm32(|a| PushEmitter::push(a, dword_ptr(ECX, 0))),
+            [0xFF, 0x31]
+        );
+        assert_eq!(
+            asm32(|a| PushEmitter::push(a, word_ptr(ECX, 0))),
+            [0x66, 0xFF, 0x31]
+        );
+        // push/pop m64 is not encodable in 32-bit mode.
+        asm32_err(|a| PushEmitter::push(a, qword_ptr(ECX, 0)));
+        asm32_err(|a| PopEmitter::pop(a, qword_ptr(ECX, 0)));
+    }
+
+    #[test]
+    fn emit_n_32bit_far_pointer_forms() {
+        // lcall/ljmp imm16, imm32 — 32-bit only.
+        assert_eq!(
+            asm32(|a| a.emit_n(
+                InstId::Lcall as u32,
+                &[imm(0x1234).as_operand(), imm(0x1234_5678).as_operand()]
+            )),
+            [0x9A, 0x78, 0x56, 0x34, 0x12, 0x34, 0x12]
+        );
+        assert_eq!(
+            asm32(|a| a.emit_n(
+                InstId::Ljmp as u32,
+                &[imm(0x10).as_operand(), imm(0x20).as_operand()]
+            )),
+            [0xEA, 0x20, 0x00, 0x00, 0x00, 0x10, 0x00]
+        );
+        // Selector above 0xFFFF is rejected.
+        asm32_err(|a| {
+            a.emit_n(
+                InstId::Lcall as u32,
+                &[imm(0x1_0000).as_operand(), imm(0).as_operand()],
+            )
+        });
+        // The imm,imm form is rejected in 64-bit mode.
+        asm64_err(|a| {
+            a.emit_n(
+                InstId::Lcall as u32,
+                &[imm(0x1234).as_operand(), imm(0x1234_5678).as_operand()],
+            )
+        });
+        // lcall fword [ecx] — m16:32.
+        assert_eq!(
+            asm32(|a| a.emit_n(InstId::Lcall as u32, &[fword_ptr(ECX, 0).as_operand()])),
+            [0xFF, 0x19]
+        );
+    }
+
+    #[test]
+    fn emit_n_32bit_movabs_and_xchg() {
+        use crate::x86::emitter::{MovEmitter, XchgEmitter};
+
+        // mov eax, [abs] uses the moffs A1 form in 32-bit mode.
+        assert_eq!(
+            asm32(|a| MovEmitter::mov(a, EAX, dword_ptr_u64(0x1234_5678))),
+            [0xA1, 0x78, 0x56, 0x34, 0x12]
+        );
+        // mov [abs], eax — moffs A3 form.
+        assert_eq!(
+            asm32(|a| MovEmitter::mov(a, dword_ptr_u64(0x1234_5678), EAX)),
+            [0xA3, 0x78, 0x56, 0x34, 0x12]
+        );
+        // xchg eax, eax is encoded as 90 in 32-bit mode (generic path in 64-bit).
+        assert_eq!(asm32(|a| XchgEmitter::xchg(a, EAX, EAX)), [0x90]);
+        assert_eq!(
+            asm(|a| a.emit_n(InstId::Xchg as u32, &[EAX.as_operand(), EAX.as_operand()])),
+            [0x87, 0xC0]
+        );
+    }
+
+    #[test]
+    fn emit_n_32bit_creg_lock_extension() {
+        // mov eax, cr8 / mov cr8, eax use the LOCK prefix in 32-bit mode (AMD ext).
+        assert_eq!(
+            asm32(|a| a.emit_n(InstId::Mov as u32, &[EAX.as_operand(), CR8.as_operand()])),
+            [0xF0, 0x0F, 0x20, 0xC0]
+        );
+        assert_eq!(
+            asm32(|a| a.emit_n(InstId::Mov as u32, &[CR8.as_operand(), EAX.as_operand()])),
+            [0xF0, 0x0F, 0x22, 0xC0]
+        );
+        // cr0 needs no LOCK.
+        assert_eq!(
+            asm32(|a| a.emit_n(InstId::Mov as u32, &[EAX.as_operand(), CR0.as_operand()])),
+            [0x0F, 0x20, 0xC0]
+        );
+    }
+
+    #[test]
+    fn emit_n_32bit_mode_gating() {
+        // 64-bit registers are not available in 32-bit mode.
+        asm32_err(|a| a.emit_n(InstId::Mov as u32, &[RAX.as_operand(), RBX.as_operand()]));
+        asm32_err(|a| a.emit_n(InstId::Push as u32, &[RAX.as_operand()]));
+        // Register ids above 7 are not available in 32-bit mode.
+        asm32_err(|a| a.emit_n(InstId::Mov as u32, &[EAX.as_operand(), R8D.as_operand()]));
+        asm32_err(|a| {
+            a.emit_n(
+                InstId::Paddw as u32,
+                &[XMM0.as_operand(), XMM8.as_operand()],
+            )
+        });
+        // X64-only instructions are rejected in 32-bit mode.
+        asm32_err(|a| a.emit_n(InstId::Syscall as u32, &[]));
+        asm32_err(|a| a.emit_n(InstId::Movsxd as u32, &[EAX.as_operand(), EBX.as_operand()]));
+        // 64-bit addressing registers are rejected in 32-bit mode.
+        asm32_err(|a| {
+            a.emit_n(
+                InstId::Mov as u32,
+                &[EAX.as_operand(), dword_ptr(RBX, 0).as_operand()],
+            )
+        });
+        // A 64-bit absolute address is not encodable in 32-bit mode.
+        asm32_err(|a| {
+            a.emit_n(
+                InstId::Mov as u32,
+                &[EAX.as_operand(), dword_ptr_u64(0x1_0000_0000).as_operand()],
+            )
+        });
+    }
+
+    #[test]
+    fn emit_n_32bit_string_ops() {
+        // movsd with implicit [edi]/[esi] operands: no 67h in 32-bit mode.
+        assert_eq!(
+            asm32(|a| a.emit_n(
+                InstId::Movs as u32,
+                &[
+                    dword_ptr(EDI, 0).as_operand(),
+                    dword_ptr(ESI, 0).as_operand()
+                ]
+            )),
+            [0xA5]
+        );
+        // jecxz with an explicit cx: 67h in 32-bit mode (immediate raw-disp8 form).
+        assert_eq!(
+            asm32(|a| a.emit_n(
+                InstId::Jecxz as u32,
+                &[CX.as_operand(), imm(-2).as_operand()],
+            )),
+            [0x67, 0xE3, 0xFE]
+        );
     }
 }

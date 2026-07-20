@@ -1,0 +1,33 @@
+[package]
+name = "asmkit-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2024"
+
+[package.metadata]
+cargo-fuzz = true
+
+[workspace]
+members = ["."]
+
+[dependencies]
+libfuzzer-sys = "0.4"
+
+[dependencies.asmkit]
+package = "asmkit-rs"
+path = ".."
+features = ["x86", "aarch64", "riscv"]
+
+[[bin]]
+name = "raw_emission"
+path = "fuzz_targets/raw_emission.rs"
+test = false
+doc = false
+bench = false
+
+[[bin]]
+name = "buffer_lifecycle"
+path = "fuzz_targets/buffer_lifecycle.rs"
+test = false
+doc = false
+bench = false

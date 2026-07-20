@@ -1,11 +1,8 @@
 //! RISC-V Operands definition.
-use crate::{
-    core::{
-        arch_traits::{Arch, ArchTraits},
-        operand::*,
-        types::TypeId,
-    },
-    define_abstract_reg, define_final_reg, define_operand_cast, define_reg_traits,
+use crate::core::{
+    arch_traits::{Arch, ArchTraits},
+    operand::{define_abstract_reg, define_final_reg, define_operand_cast, define_reg_traits, *},
+    types::TypeId,
 };
 
 macro_rules! impl_deref_for_wrapper {

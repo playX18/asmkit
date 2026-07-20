@@ -38,11 +38,6 @@ pub const ARCH_X86: usize = if cfg!(any(target_arch = "x86", target_arch = "x86_
     0
 };
 
-pub const ARCH_ARM: usize = if cfg!(any(target_arch = "aarch64", target_arch = "arm")) {
-    usize::BITS as usize
-} else {
-    0
-};
 pub const ARCH_RISCV: usize = if cfg!(any(target_arch = "riscv64", target_arch = "riscv32")) {
     usize::BITS as usize
 } else {
@@ -65,31 +60,9 @@ pub enum Arch {
     /// 64-bit RISC-V ISA.
     RISCV64 = 4,
 
-    /// 32-bit ARM ISA (little endian).
-    ARM = 5,
-    /// 64-bit ARM ISA in (little endian).
+    // 5 is unused so the even/odd width convention remains intact.
+    /// 64-bit AArch64 ISA.
     AArch64 = 6,
-    /// 32-bit ARM ISA in Thumb mode (little endian).
-    Thumb = 7,
-
-    // 8 is not used at the moment, even numbers are 64-bit architectures.
-    /// 32-bit MIPS ISA in (little endian).
-    MIPS32LE = 9,
-    /// 64-bit MIPS ISA in (little endian).
-    MIPS64LE = 10,
-
-    /// 32-bit ARM ISA (big endian).
-    ARMBE = 11,
-    /// 64-bit ARM ISA in (big endian).
-    AArch64BE = 12,
-    /// 32-bit ARM ISA in Thumb mode (big endian).
-    ThumbBE = 13,
-
-    // 14 is not used at the moment, even numbers are 64-bit architectures.
-    /// 32-bit MIPS ISA in (big endian).
-    MIPS32BE = 15,
-    /// 64-bit MIPS ISA in (big endian).
-    MIPS64BE = 16,
 
     Max,
 }
@@ -104,18 +77,27 @@ impl Arch {
             Arch::RISCV32
         } else if ARCH_RISCV == 64 {
             Arch::RISCV64
-        } else if ARCH_ARM == 32 && cfg!(target_endian = "little") {
-            Arch::ARM
-        } else if ARCH_ARM == 32 && cfg!(target_endian = "big") {
-            Arch::ARMBE
-        } else if ARCH_ARM == 64 && cfg!(target_endian = "little") {
+        } else if cfg!(all(target_arch = "aarch64", target_endian = "little")) {
             Arch::AArch64
-        } else if ARCH_ARM == 64 && cfg!(target_endian = "big") {
-            Arch::AArch64BE
         } else {
             Arch::Unknown
         }
     };
+}
+
+impl Arch {
+    /// Tests whether this is a 32-bit architecture.
+    ///
+    /// Relies on the enum layout convention that 32-bit architectures have odd
+    /// values and 64-bit architectures even values.
+    pub const fn is_32bit(self) -> bool {
+        (self as u32) < Arch::Max as u32 && (self as u32) & 1 != 0
+    }
+
+    /// Tests whether this is a 64-bit architecture.
+    pub const fn is_64bit(self) -> bool {
+        (self as u32) < Arch::Max as u32 && self as u32 != 0 && (self as u32) & 1 == 0
+    }
 }
 
 impl Default for Arch {
@@ -146,16 +128,6 @@ const ARCH_TRAITS: [ArchTraits; Arch::Max as usize] =[
     RISCV64_ARCH_TRAITS,
     NO_ARCH_TRAITS,
     AARCH64_ARCH_TRAITS,
-    NO_ARCH_TRAITS,
-    NO_ARCH_TRAITS,
-    NO_ARCH_TRAITS,
-    NO_ARCH_TRAITS,
-    NO_ARCH_TRAITS,
-    NO_ARCH_TRAITS,
-    NO_ARCH_TRAITS,
-    NO_ARCH_TRAITS,
-    NO_ARCH_TRAITS,
-    NO_ARCH_TRAITS,
 ];
 
 impl ArchTraits {

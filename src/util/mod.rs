@@ -26,13 +26,6 @@ pub fn bit_vector_set_bit(buf: &mut [u32], index: usize, value: bool) {
     }
 }
 
-pub fn bit_vector_flip_bit(buf: &mut [u32], index: usize) {
-    let vec_index = index / 32;
-    let bit_index = index % 32;
-
-    buf[vec_index] ^= 1 << bit_index;
-}
-
 macro_rules! bitvector_op {
     ($name: ident, $op: expr, $opf: expr) => {
         pub fn $name(mut buf: &mut [u32], index: usize, mut count: usize) {
@@ -101,7 +94,7 @@ pub fn bit_vector_index_of(buf: &[u32], start: usize, value: bool) -> usize {
     }
 }
 
-#[cfg(feature = "jit")]
+#[cfg(all(feature = "jit", not(windows)))]
 pub mod os;
 #[cfg(feature = "jit")]
 pub mod virtual_memory;

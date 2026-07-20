@@ -1,6 +1,6 @@
 //! Top-level emit path: InstInfo lookup, signature matching, operand analysis, and
 //! dispatch to the emit handlers (port of AsmJit's `Assembler::_emit` from
-//! `x86assembler.cpp`, 64-bit only).
+//! `x86assembler.cpp`, both 32-bit and 64-bit modes).
 //!
 //! AsmJit's `goto EmitXxx` targets become the [`Handler`] enum: the encoding arms
 //! (a `match` on [`Encoding`]) only fill [`X86EmitState`] and select a handler, the
@@ -12,10 +12,10 @@
 // The encoding discriminants mirror `instdb::Encoding` variant names 1:1.
 #![allow(non_upper_case_globals)]
 
-use crate::X86Error;
 use crate::core::buffer::CodeBuffer;
 use crate::core::globals::InstOptions;
-use crate::core::operand::{Operand, OperandType, RegType};
+use crate::core::operand::{Operand, OperandSignature, OperandType, RegType, Sym};
+use crate::{AsmError, X86Error};
 
 use super::encoder::{
     X86EmitState, emit_address_override, emit_fpu_op, emit_jmp_call, emit_vex_evex_m,
@@ -24,12 +24,11 @@ use super::encoder::{
     is_implicit_mem, is_mmx_or_xmm, opcode_l_by_size, opcode_l_by_vmem, pack_reg_and_vvvvv,
     should_use_movabs, sign_extend_int32,
 };
-use super::encoder_tables::{
-    MEM_INFO_67H_X64, MEM_INFO_TABLE, OPCODE_POP_SREG_TABLE, OPCODE_PUSH_SREG_TABLE,
-};
+use super::encoder_tables::{MEM_INFO_TABLE, OPCODE_POP_SREG_TABLE, OPCODE_PUSH_SREG_TABLE};
 use super::instdb::{
-    ALT_OPCODE_TABLE, CommonInfo, INST_COMMON_INFO_TABLE, INST_INFO_TABLE, INST_SIGNATURE_TABLE,
-    InstFlags, InstId, InstInfo, MAIN_OPCODE_TABLE, Mode, OP_SIGNATURE_TABLE, OpFlags, OpSignature,
+    ADDITIONAL_INFO_TABLE, ALT_OPCODE_TABLE, CPU_FEATURE_COUNT, CPU_FEATURE_NAMES, CommonInfo,
+    CpuFeature, INST_COMMON_INFO_TABLE, INST_INFO_TABLE, INST_SIGNATURE_TABLE, InstFlags, InstId,
+    InstInfo, MAIN_OPCODE_TABLE, Mode, OP_SIGNATURE_TABLE, OpFlags, OpSignature,
 };
 use super::opcode::Opcode;
 use super::operands::{Gp, KReg, Mem, SReg};
@@ -196,15 +195,197 @@ fn op_flags_from_reg_type(typ: RegType) -> u64 {
     }
 }
 
+fn allowed_reg_ids(typ: RegType, is_32bit: bool) -> u32 {
+    match (typ, is_32bit) {
+        (RegType::PC, _) => 0x0000_0001,
+        (RegType::Gp8Hi, _) => 0x0000_000F,
+        (RegType::Gp8Lo, true) => 0x0000_000F,
+        (RegType::Gp8Lo | RegType::Gp16 | RegType::Gp32, false) => 0x0000_FFFF,
+        (RegType::Gp16 | RegType::Gp32, true) => 0x0000_00FF,
+        (RegType::Gp64, false) => 0x0000_FFFF,
+        (RegType::Vec128 | RegType::Vec256 | RegType::Vec512, false) => 0xFFFF_FFFF,
+        (RegType::Vec128 | RegType::Vec256 | RegType::Vec512, true) => 0x0000_00FF,
+        (RegType::Mask | RegType::Extra | RegType::X86St | RegType::X86Tmm, _) => 0x0000_00FF,
+        (RegType::X86SReg, _) => 0x0000_007E,
+        (RegType::X86CReg | RegType::X86DReg, _) => 0x0000_FFFF,
+        (RegType::X86Bnd, _) => 0x0000_000F,
+        _ => 0,
+    }
+}
+
+fn validate_register(op: &Operand, operand_index: usize, is_32bit: bool) -> Result<(), X86Error> {
+    let reg_type = op
+        .signature
+        .try_reg_type()
+        .ok_or(X86Error::InvalidOperand {
+            operand_index,
+            reason: "invalid register type field",
+        })?;
+    let expected = super::operands::Reg::signature_of(reg_type);
+    let mask = OperandSignature::REG_TYPE_MASK
+        | OperandSignature::REG_GROUP_MASK
+        | OperandSignature::SIZE_MASK;
+    if op_flags_from_reg_type(reg_type) == 0 || op.signature.subset(mask) != expected.subset(mask) {
+        return Err(X86Error::InvalidRegister {
+            reg_id: op.id(),
+            reg_type: "x86",
+            reason: "invalid or inconsistent register type",
+        });
+    }
+
+    let id = op.id();
+    let allowed = allowed_reg_ids(reg_type, is_32bit);
+    if id >= 32 || allowed & (1u32 << id) == 0 {
+        return Err(X86Error::InvalidRegister {
+            reg_id: id,
+            reg_type: "x86",
+            reason: "register id is not encodable in the target mode",
+        });
+    }
+    Ok(())
+}
+
+fn validate_memory(op: &Operand, operand_index: usize, is_32bit: bool) -> Result<(), X86Error> {
+    let mem = op.as_::<Mem>();
+    let base_type = op
+        .signature
+        .try_mem_base_type()
+        .ok_or(X86Error::InvalidOperand {
+            operand_index,
+            reason: "invalid memory base type field",
+        })?;
+    let index_type = op
+        .signature
+        .try_mem_index_type()
+        .ok_or(X86Error::InvalidOperand {
+            operand_index,
+            reason: "invalid memory index type field",
+        })?;
+
+    if mem.try_addr_type().is_none() {
+        return Err(X86Error::InvalidMemoryOperand {
+            base: mem.has_base().then(|| mem.base_id()),
+            index: mem.has_index().then(|| mem.index_id()),
+            scale: mem.shift() as u8,
+            offset: mem.offset(),
+            reason: "invalid address type",
+        });
+    }
+    if mem.try_broadcast().is_none() {
+        return Err(X86Error::InvalidBroadcast {
+            reason: "invalid broadcast field",
+        });
+    }
+    if mem.segment_id() > SReg::GS {
+        return Err(X86Error::InvalidMemoryOperand {
+            base: mem.has_base().then(|| mem.base_id()),
+            index: mem.has_index().then(|| mem.index_id()),
+            scale: mem.shift() as u8,
+            offset: mem.offset(),
+            reason: "invalid segment register id",
+        });
+    }
+    if !matches!(mem.size(), 0 | 1 | 2 | 4 | 6 | 8 | 10 | 16 | 32 | 64) {
+        return Err(X86Error::InvalidMemoryOperand {
+            base: mem.has_base().then(|| mem.base_id()),
+            index: mem.has_index().then(|| mem.index_id()),
+            scale: mem.shift() as u8,
+            offset: mem.offset(),
+            reason: "invalid memory operand size",
+        });
+    }
+
+    let gp_limit = if is_32bit { 8 } else { 16 };
+    match base_type {
+        RegType::None | RegType::LabelTag | RegType::SymTag => {}
+        RegType::PC if mem.base_id() == 0 => {}
+        RegType::Gp16 if is_32bit && mem.base_id() < gp_limit => {}
+        RegType::Gp32 if mem.base_id() < gp_limit => {}
+        RegType::Gp64 if !is_32bit && mem.base_id() < gp_limit => {}
+        _ => {
+            return Err(X86Error::InvalidMemoryOperand {
+                base: Some(mem.base_id()),
+                index: mem.has_index().then(|| mem.index_id()),
+                scale: mem.shift() as u8,
+                offset: mem.offset(),
+                reason: "invalid memory base register",
+            });
+        }
+    }
+
+    match index_type {
+        RegType::None => {}
+        RegType::Gp16 if is_32bit && mem.index_id() < gp_limit => {}
+        RegType::Gp32 if mem.index_id() < gp_limit => {}
+        RegType::Gp64 if !is_32bit && mem.index_id() < gp_limit => {}
+        RegType::Vec128 | RegType::Vec256 | RegType::Vec512
+            if mem.index_id() < if is_32bit { 8 } else { 32 } => {}
+        _ => {
+            return Err(X86Error::InvalidMemoryOperand {
+                base: mem.has_base().then(|| mem.base_id()),
+                index: Some(mem.index_id()),
+                scale: mem.shift() as u8,
+                offset: mem.offset(),
+                reason: "invalid memory index register",
+            });
+        }
+    }
+    Ok(())
+}
+
+fn validate_raw_operand(
+    buffer: &CodeBuffer,
+    op: &Operand,
+    operand_index: usize,
+    is_32bit: bool,
+) -> Result<(), X86Error> {
+    let op_type = op.signature.try_op_type().ok_or(X86Error::InvalidOperand {
+        operand_index,
+        reason: "invalid operand type field",
+    })?;
+    match op_type {
+        OperandType::None if op.signature.bits() == 0 => Ok(()),
+        OperandType::Reg => validate_register(op, operand_index, is_32bit),
+        OperandType::Mem => {
+            validate_memory(op, operand_index, is_32bit)?;
+            let mem = op.as_::<Mem>();
+            if mem.has_base_sym() && buffer.symbol_name(Sym::from_id(mem.base_id())).is_none() {
+                return Err(X86Error::InvalidOperand {
+                    operand_index,
+                    reason: "symbol is not declared in this buffer",
+                });
+            }
+            Ok(())
+        }
+        OperandType::Sym if buffer.symbol_name(Sym::from_id(op.id())).is_some() => Ok(()),
+        OperandType::Sym => Err(X86Error::InvalidOperand {
+            operand_index,
+            reason: "symbol is not declared in this buffer",
+        }),
+        OperandType::Imm | OperandType::Label => Ok(()),
+        _ => Err(X86Error::InvalidOperand {
+            operand_index,
+            reason: "operand type is not supported by the x86 encoder",
+        }),
+    }
+}
+
 /// Translates one operand into an [`OpSignature`] (AsmJit's per-operand translation
-/// in `validate`, X64 mode, physical registers only).
-fn translate_op(op: &Operand, common_info: &CommonInfo) -> Result<OpSignature, X86Error> {
+/// in `validate`, physical registers only). In 32-bit mode also rejects operands
+/// that are not encodable there (AsmJit's x86 validation data and the
+/// `kInvalidUseOfGpq` / address-range checks).
+fn translate_op(
+    op: &Operand,
+    common_info: &CommonInfo,
+    is_32bit: bool,
+) -> Result<OpSignature, X86Error> {
     let mut op_flags = 0u64;
     let mut reg_mask = 0u8;
 
     match op.op_type() {
         OperandType::Reg => {
-            let flags = op_flags_from_reg_type(op.as_::<super::operands::Reg>().reg_type());
+            let reg_type = op.as_::<super::operands::Reg>().reg_type();
+            let flags = op_flags_from_reg_type(reg_type);
             if flags == 0 {
                 return Err(invalid("invalid register type"));
             }
@@ -240,6 +421,43 @@ fn translate_op(op: &Operand, common_info: &CommonInfo) -> Result<OpSignature, X
                     };
                 }
                 mem_size <<= m.get_broadcast() as u32;
+            }
+
+            // Addressing register types depend on the mode (AsmJit's
+            // `allowed_mem_base_regs` / `allowed_mem_index_regs`): 16|32-bit
+            // registers in 32-bit mode, 32|64-bit ones in 64-bit mode.
+            for addr_type in [base_type, index_type] {
+                if matches!(addr_type, RegType::Gp16 | RegType::Gp32 | RegType::Gp64) {
+                    let ok = if is_32bit {
+                        addr_type != RegType::Gp64
+                    } else {
+                        addr_type != RegType::Gp16
+                    };
+                    if !ok {
+                        return Err(invalid(
+                            "addressing register size is not usable in the target mode",
+                        ));
+                    }
+                }
+            }
+
+            // A base-less address is a 32|64-bit absolute address; make sure it is
+            // encodable in the target mode (AsmJit's address-range validation).
+            if base_type == RegType::None {
+                let offset = m.offset();
+                if !is_int32(offset) {
+                    if is_32bit {
+                        if !is_uint32(offset) {
+                            return Err(invalid("absolute address does not fit 32 bits"));
+                        }
+                    } else if index_type != RegType::None
+                        && (!is_uint32(offset) || index_type != RegType::Gp32)
+                    {
+                        return Err(invalid(
+                            "absolute address with an index register must be a zero-extended 32-bit address",
+                        ));
+                    }
+                }
             }
 
             if base_type != RegType::None
@@ -396,6 +614,15 @@ fn check_op_sig(op: &OpSignature, reference: &OpSignature, imm_out_of_range: &mu
         return false;
     }
 
+    let op_vm = op.flags & OpFlags::VM_MASK.bits();
+    let reference_vm = reference.flags & OpFlags::VM_MASK.bits();
+    if (op_vm == 0) != (reference_vm == 0) || (op_vm != 0 && op_vm & reference_vm == 0) {
+        return false;
+    }
+    if reference.flags & OpFlags::FLAG_MIB.bits() != 0 && op.flags & OpFlags::FLAG_MIB.bits() == 0 {
+        return false;
+    }
+
     // Fail if register indexes do not match.
     if common_flags & OpFlags::REG_MASK.bits() != 0
         && reference.reg_mask != 0
@@ -408,10 +635,16 @@ fn check_op_sig(op: &OpSignature, reference: &OpSignature, imm_out_of_range: &mu
 }
 
 /// Validates operands against the instruction's signature records (port of the
-/// signature-matching part of AsmJit's x86 `validate`, X64 mode). Returns
+/// signature-matching part of AsmJit's x86 `validate`). Returns
 /// `InvalidInstruction` when no record matches, `InvalidImmediate` when only an
-/// immediate was out of range.
-fn validate_signature(common_info: &CommonInfo, ops: &[Operand; 6]) -> Result<(), X86Error> {
+/// immediate was out of range. Signatures are filtered by the target mode
+/// (AsmJit's `InstSignature::mode`), which rejects X64-only forms in 32-bit
+/// mode and vice versa.
+fn validate_signature(
+    common_info: &CommonInfo,
+    ops: &[Operand; 6],
+    is_32bit: bool,
+) -> Result<(), X86Error> {
     let signature_count = common_info.signature_count as usize;
     if signature_count == 0 {
         return Ok(());
@@ -428,16 +661,22 @@ fn validate_signature(common_info: &CommonInfo, ops: &[Operand; 6]) -> Result<()
 
     let mut translated = [OpSignature::default(); 6];
     for (i, op) in ops[..op_count].iter().enumerate() {
-        translated[i] = translate_op(op, common_info)?;
+        translated[i] = translate_op(op, common_info, is_32bit)?;
     }
 
     let signatures = &INST_SIGNATURE_TABLE[common_info.signature_index as usize
         ..common_info.signature_index as usize + signature_count];
 
+    let mode = if is_32bit {
+        Mode::X86 as u8
+    } else {
+        Mode::X64 as u8
+    };
+
     let mut global_imm_out_of_range = false;
     for inst_signature in signatures {
         // Only match signatures that are compatible with the requested mode.
-        if inst_signature.mode & (Mode::X64 as u8) == 0 {
+        if inst_signature.mode & mode == 0 {
             continue;
         }
 
@@ -1019,7 +1258,7 @@ fn analyze(
             }
             let rm_info =
                 MEM_INFO_TABLE[o0.as_::<super::operands::Reg>().reg_type() as usize] as u32;
-            emit_address_override(buf, rm_info & (MEM_INFO_67H_X64 as u32) != 0);
+            emit_address_override(buf, rm_info & (st.address_override_mask() as u32) != 0);
             Ok(Handler::X86Op)
         }
 
@@ -1682,7 +1921,13 @@ fn analyze(
                     fixup_gpb_op(&mut st.options, &o0, &mut st.rb_reg);
                     return Ok(Handler::X86R);
                 }
-                // 64-bit only: the 32-bit INC r16|r32 short form collides with REX.
+                if st.is_32bit {
+                    // INC r16|r32 is only encodable in 32-bit mode (collides with REX).
+                    st.opcode = alt_opcode(inst_info);
+                    st.opcode.add(st.rb_reg & 0x07);
+                    st.opcode.add_66h_by_size(o0.x86_rm_size());
+                    return Ok(Handler::X86Op);
+                }
                 st.opcode.add_arith_by_size(o0.x86_rm_size());
                 return Ok(Handler::X86R);
             }
@@ -1721,7 +1966,11 @@ fn analyze(
                 if !is_gp_with_id(&o0, Gp::CX) {
                     return Err(no_match());
                 }
-                emit_address_override(buf, o0.x86_rm_size() == 4);
+                emit_address_override(
+                    buf,
+                    (st.is_32bit && o0.x86_rm_size() == 2)
+                        || (!st.is_32bit && o0.x86_rm_size() == 4),
+                );
                 st.rm_rel = o1;
             }
             st.op_reg = 0;
@@ -1755,17 +2004,34 @@ fn analyze(
                 let mem = o0.as_::<Mem>();
                 let mut mem_size = mem.size();
                 if mem_size == 0 {
-                    mem_size = 8; // 64-bit register size.
+                    mem_size = st.register_size(); // Native register size.
                 } else {
                     mem_size = mem_size.wrapping_sub(2);
-                    if mem_size != 2 && mem_size != 4 && mem_size != 8 {
+                    if mem_size != 2 && mem_size != 4 && mem_size != st.register_size() {
                         return Err(invalid("invalid far pointer size"));
                     }
                 }
                 st.opcode.add_prefix_by_size(mem_size);
                 return Ok(Handler::X86M);
             }
-            // The imm,imm (far pointer) form is 32-bit only.
+            if isign3 == ops2!(OT_IMM, OT_IMM) {
+                // The imm,imm (far pointer) form is 32-bit only.
+                if !st.is_32bit {
+                    return Err(no_match());
+                }
+                let imm0 = o0.as_::<crate::core::operand::Imm>().value();
+                let imm1 = o1.as_::<crate::core::operand::Imm>().value();
+                if imm0 as u64 > 0xFFFF {
+                    return Err(invalid_imm(imm0, 2));
+                }
+                if imm1 as u64 > 0xFFFF_FFFF {
+                    return Err(invalid_imm(imm1, 4));
+                }
+                st.opcode = alt_opcode(inst_info);
+                st.imm_value = ((imm1 as u64) | ((imm0 as u64) << 32)) as i64;
+                st.imm_size = 6;
+                return Ok(Handler::X86Op);
+            }
             Err(no_match())
         }
 
@@ -1832,6 +2098,12 @@ fn analyze(
                     // GP <- CReg
                     if is_control_reg(&o1) {
                         st.opcode = Opcode(Opcode::K000F00 | 0x20);
+                        // Use `LOCK MOV` in 32-bit mode if CR8+ register is accessed
+                        // (AMD extension).
+                        if st.op_reg & 0x8 != 0 && st.is_32bit {
+                            buf.put1(0xF0);
+                            st.op_reg &= 0x7;
+                        }
                         return Ok(Handler::X86R);
                     }
 
@@ -1860,6 +2132,12 @@ fn analyze(
                     // CReg <- GP
                     if is_control_reg(&o0) {
                         st.opcode = Opcode(Opcode::K000F00 | 0x22);
+                        // Use `LOCK MOV` in 32-bit mode if CR8+ register is accessed
+                        // (AMD extension).
+                        if st.op_reg & 0x8 != 0 && st.is_32bit {
+                            buf.put1(0xF0);
+                            st.op_reg &= 0x7;
+                        }
                         return Ok(Handler::X86R);
                     }
 
@@ -1891,7 +2169,12 @@ fn analyze(
                 // use MOD.
                 if st.op_reg == Gp::AX
                     && !o1.as_::<Mem>().has_base_or_index()
-                    && should_use_movabs(o0.x86_rm_size(), st.options, &o1.as_::<Mem>())
+                    && should_use_movabs(
+                        st.is_32bit,
+                        o0.x86_rm_size(),
+                        st.options,
+                        &o1.as_::<Mem>(),
+                    )
                 {
                     st.opcode.add(0xA0);
                     st.imm_value = o1.as_::<Mem>().offset();
@@ -1924,7 +2207,12 @@ fn analyze(
                 // use MOD.
                 if st.op_reg == Gp::AX
                     && !o0.as_::<Mem>().has_base_or_index()
-                    && should_use_movabs(o1.x86_rm_size(), st.options, &o0.as_::<Mem>())
+                    && should_use_movabs(
+                        st.is_32bit,
+                        o1.x86_rm_size(),
+                        st.options,
+                        &o0.as_::<Mem>(),
+                    )
                 {
                     st.opcode.add(0xA2);
                     st.imm_value = o0.as_::<Mem>().offset();
@@ -2445,7 +2733,7 @@ fn analyze(
 
                 // Special cases for 'xchg ?ax, reg'.
                 if inst_id == InstId::Xchg as u32 && (st.op_reg == 0 || st.rb_reg == 0) {
-                    if st.op_reg == st.rb_reg && op_size >= 4 {
+                    if !st.is_32bit && st.op_reg == st.rb_reg && op_size >= 4 {
                         if op_size == 8 {
                             // Encode 'xchg rax, rax' as '90' (REX and other prefixes
                             // are optional).
@@ -3736,7 +4024,7 @@ fn x86_pop_body(
         if o0.x86_rm_size() == 0 {
             return Err(ambiguous_size());
         }
-        if o0.x86_rm_size() != 2 && o0.x86_rm_size() != 8 {
+        if o0.x86_rm_size() != 2 && o0.x86_rm_size() != st.register_size() {
             return Err(no_match());
         }
         st.opcode.add_66h_by_size(o0.x86_rm_size());
@@ -4021,76 +4309,423 @@ impl Default for PendingPrefixes {
     }
 }
 
+/// Resolves AsmJit's instruction-wide feature union to the requirements of the
+/// selected operand/prefix form.
+fn validate_cpu_features(
+    buf: &CodeBuffer,
+    inst_id: InstId,
+    common_info: CommonInfo,
+    options: InstOptions,
+    mask_id: u32,
+    ops: &[Operand; 6],
+) -> Result<(), AsmError> {
+    let inst_info = INST_INFO_TABLE[inst_id as usize];
+    let features = ADDITIONAL_INFO_TABLE[inst_info.additional_info_index as usize].features;
+    let mut required = [false; CPU_FEATURE_COUNT];
+    for feature in features {
+        if feature != 0 {
+            required[feature as usize] = true;
+        }
+    }
+
+    let mut has_xmm = false;
+    let mut has_ymm = false;
+    let mut has_zmm = false;
+    let mut has_mask = mask_id != 0;
+    let mut high_vec_used = false;
+    for op in ops {
+        let (reg_type, reg_id) = if op.is_reg() {
+            (op.signature.try_reg_type(), op.id())
+        } else if op.is_mem() {
+            let mem = op.as_::<Mem>();
+            (Some(mem.index_type()), mem.index_id())
+        } else {
+            (None, 0)
+        };
+        match reg_type {
+            Some(RegType::Vec128) => has_xmm = true,
+            Some(RegType::Vec256) => has_ymm = true,
+            Some(RegType::Vec512) => has_zmm = true,
+            Some(RegType::Mask) => has_mask = true,
+            _ => continue,
+        }
+        high_vec_used |= reg_id >= 16;
+    }
+
+    // MMX/SSE overlap.
+    if (required[CpuFeature::MMX as usize] || required[CpuFeature::MMX2 as usize])
+        && (required[CpuFeature::SSE as usize] || required[CpuFeature::SSE2 as usize])
+    {
+        if has_xmm {
+            required[CpuFeature::MMX as usize] = false;
+            required[CpuFeature::MMX2 as usize] = false;
+        } else {
+            required[CpuFeature::SSE as usize] = false;
+            required[CpuFeature::SSE2 as usize] = false;
+            required[CpuFeature::SSE4_1 as usize] = false;
+        }
+        if inst_id == InstId::Pextrw {
+            if ops[0].is_mem() {
+                required[CpuFeature::SSE2 as usize] = false;
+            } else {
+                required[CpuFeature::SSE4_1 as usize] = false;
+            }
+        }
+    }
+
+    // PCLMULQDQ/VPCLMULQDQ overlap.
+    if required[CpuFeature::VPCLMULQDQ as usize] {
+        if has_zmm || options.contains(InstOptions::X86_EVEX) {
+            required[CpuFeature::AVX as usize] = false;
+            required[CpuFeature::PCLMULQDQ as usize] = false;
+        } else if has_ymm {
+            required[CpuFeature::AVX512_F as usize] = false;
+            required[CpuFeature::AVX512_VL as usize] = false;
+        } else {
+            required[CpuFeature::AVX512_F as usize] = false;
+            required[CpuFeature::AVX512_VL as usize] = false;
+            required[CpuFeature::VPCLMULQDQ as usize] = false;
+        }
+    }
+
+    // AVX/AVX2 overlap.
+    if required[CpuFeature::AVX as usize] && required[CpuFeature::AVX2 as usize] {
+        let avx2 = if matches!(inst_id, InstId::Vbroadcastss | InstId::Vbroadcastsd) {
+            !ops[1].is_mem()
+        } else {
+            has_ymm || has_zmm
+        };
+        required[if avx2 {
+            CpuFeature::AVX as usize
+        } else {
+            CpuFeature::AVX2 as usize
+        }] = false;
+    }
+
+    let has_avx = [
+        CpuFeature::AVX,
+        CpuFeature::AVX_IFMA,
+        CpuFeature::AVX_NE_CONVERT,
+        CpuFeature::AVX_VNNI,
+        CpuFeature::AVX2,
+        CpuFeature::F16C,
+        CpuFeature::FMA,
+    ]
+    .iter()
+    .any(|feature| required[*feature as usize]);
+    let has_avx512 = [
+        CpuFeature::AVX512_BF16,
+        CpuFeature::AVX512_BW,
+        CpuFeature::AVX512_DQ,
+        CpuFeature::AVX512_F,
+        CpuFeature::AVX512_IFMA,
+        CpuFeature::AVX512_VNNI,
+    ]
+    .iter()
+    .any(|feature| required[*feature as usize]);
+
+    if has_avx && has_avx512 {
+        let mut use_evex = options.intersects(
+            InstOptions::X86_EVEX
+                | InstOptions::X86_ZMASK
+                | InstOptions::X86_ER
+                | InstOptions::X86_SAE,
+        ) || has_mask
+            || has_zmm
+            || high_vec_used;
+
+        use_evex |= match inst_id {
+            InstId::Vpbroadcastb
+            | InstId::Vpbroadcastd
+            | InstId::Vpbroadcastq
+            | InstId::Vpbroadcastw => ops[1].is_gp(),
+            InstId::Vcvtpd2dq | InstId::Vcvtpd2ps | InstId::Vcvttpd2dq => ops[0].is_vec256(),
+            InstId::Vgatherdpd
+            | InstId::Vgatherdps
+            | InstId::Vgatherqpd
+            | InstId::Vgatherqps
+            | InstId::Vpgatherdd
+            | InstId::Vpgatherdq
+            | InstId::Vpgatherqd
+            | InstId::Vpgatherqq => ops[2].is_none(),
+            InstId::Vpslldq
+            | InstId::Vpslld
+            | InstId::Vpsllq
+            | InstId::Vpsllw
+            | InstId::Vpsrad
+            | InstId::Vpsraq
+            | InstId::Vpsraw
+            | InstId::Vpsrld
+            | InstId::Vpsrldq
+            | InstId::Vpsrlq
+            | InstId::Vpsrlw => ops[1].is_mem(),
+            InstId::Vpermpd => !ops[2].is_imm(),
+            InstId::Vpermq => ops[1].is_mem() || !ops[2].is_imm(),
+            _ => false,
+        };
+        if common_info.has_flag(InstFlags::PREFER_EVEX)
+            && !options.intersects(InstOptions::X86_VEX | InstOptions::X86_VEX3)
+        {
+            use_evex = true;
+        }
+
+        let alternatives: &[CpuFeature] = if use_evex {
+            &[
+                CpuFeature::AVX,
+                CpuFeature::AVX_IFMA,
+                CpuFeature::AVX_NE_CONVERT,
+                CpuFeature::AVX_VNNI,
+                CpuFeature::AVX2,
+                CpuFeature::F16C,
+                CpuFeature::FMA,
+            ]
+        } else {
+            &[
+                CpuFeature::AVX512_BF16,
+                CpuFeature::AVX512_BW,
+                CpuFeature::AVX512_DQ,
+                CpuFeature::AVX512_F,
+                CpuFeature::AVX512_IFMA,
+                CpuFeature::AVX512_VL,
+                CpuFeature::AVX512_VNNI,
+            ]
+        };
+        for feature in alternatives {
+            required[*feature as usize] = false;
+        }
+    }
+
+    if has_zmm {
+        required[CpuFeature::AVX512_VL as usize] = false;
+    }
+
+    for (feature, is_required) in required.into_iter().enumerate() {
+        if is_required && !buf.env().x86_feature_id(feature as u8) {
+            return Err(AsmError::MissingCpuFeature {
+                feature: CPU_FEATURE_NAMES[feature],
+            });
+        }
+    }
+    Ok(())
+}
+
 /// Emits one instruction: looks up the InstInfo, validates the operand signature,
 /// emits pending LOCK/REP prefixes, runs the operand analysis, and dispatches to the
-/// selected emit handler. Port of AsmJit's `Assembler::_emit` (64-bit only).
+/// selected emit handler. Port of AsmJit's `Assembler::_emit`; `is_32bit` selects
+/// the 32-bit X86 mode (AsmJit's `Assembler::is_32bit()`).
 pub fn emit_n(
     buf: &mut CodeBuffer,
     inst_id: u32,
     ops: &[&Operand],
     prefixes: PendingPrefixes,
-) -> Result<(), X86Error> {
+    is_32bit: bool,
+) -> Result<(), AsmError> {
     if inst_id == 0 || inst_id as usize >= INST_INFO_TABLE.len() {
-        return Err(invalid("unknown instruction id"));
+        return Err(invalid("unknown instruction id").into());
+    }
+
+    if ops.len() > 6 {
+        return Err(invalid("instructions support at most six operands").into());
     }
 
     let inst_info = INST_INFO_TABLE[inst_id as usize];
     let common_info = INST_COMMON_INFO_TABLE[inst_info.common_info_index as usize];
 
     let mut ops_array = [Operand::new(); 6];
-    let n = ops.len().min(6);
-    for (i, op) in ops[..n].iter().enumerate() {
+    for (i, op) in ops.iter().enumerate() {
         ops_array[i] = **op;
+        validate_raw_operand(buf, op, i, is_32bit)?;
     }
 
-    // Apply a pending segment override to the first memory operand (AsmJit carries
-    // the segment on the Mem operand; asmkit's prefix setters collect it).
+    let options = prefixes.options;
+    if options.contains(InstOptions::X86_MOD_MR) && options.contains(InstOptions::X86_MOD_RM) {
+        return Err(X86Error::InvalidPrefix {
+            prefix: options.bits() as u64,
+            reason: "ModMR and ModRM selection options conflict",
+        }
+        .into());
+    }
+    if options.contains(InstOptions::X86_VEX) && options.contains(InstOptions::X86_EVEX) {
+        return Err(X86Error::InvalidPrefix {
+            prefix: options.bits() as u64,
+            reason: "VEX and EVEX selection options conflict",
+        }
+        .into());
+    }
+    if options.contains(InstOptions::X86_REP) && options.contains(InstOptions::X86_REPNE) {
+        return Err(X86Error::InvalidPrefix {
+            prefix: 0,
+            reason: "REP and REPNE prefixes conflict",
+        }
+        .into());
+    }
+    if options.contains(InstOptions::X86_LOCK)
+        && options.intersects(InstOptions::X86_REP | InstOptions::X86_REPNE)
+    {
+        return Err(X86Error::InvalidPrefix {
+            prefix: 0,
+            reason: "LOCK and REP prefixes conflict",
+        }
+        .into());
+    }
+    if options.contains(InstOptions::X86_ER) && options.contains(InstOptions::X86_SAE) {
+        return Err(X86Error::InvalidRoundingControl {
+            rc: options.bits() as u64,
+            reason: "embedded rounding and standalone SAE conflict",
+        }
+        .into());
+    }
+    if options.intersects(InstOptions::X86_ER_MASK) && !options.contains(InstOptions::X86_ER) {
+        return Err(X86Error::InvalidRoundingControl {
+            rc: options.bits() as u64,
+            reason: "rounding mode requires embedded rounding",
+        }
+        .into());
+    }
+
+    // Apply a valid pending segment override to the first memory operand.
+    if prefixes.segment_id != 0 && prefixes.segment_id > SReg::GS {
+        return Err(X86Error::InvalidPrefix {
+            prefix: prefixes.segment_id as u64,
+            reason: "invalid segment override",
+        }
+        .into());
+    }
     if prefixes.segment_id != 0 {
+        let mut applied = false;
         for op in ops_array.iter_mut() {
             if op.is_mem() {
                 let mut mem = op.as_::<Mem>();
+                if mem.has_segment() && mem.segment_id() != prefixes.segment_id {
+                    return Err(X86Error::InvalidPrefix {
+                        prefix: prefixes.segment_id as u64,
+                        reason: "segment override conflicts with the memory operand",
+                    }
+                    .into());
+                }
                 mem.set_segment_id(prefixes.segment_id);
                 *op = *mem.as_operand();
+                applied = true;
                 break;
             }
+        }
+        if !applied {
+            return Err(X86Error::InvalidPrefix {
+                prefix: prefixes.segment_id as u64,
+                reason: "segment override requires a memory operand",
+            }
+            .into());
         }
     }
 
     // Validate operands against the instruction's signature records.
-    validate_signature(&common_info, &ops_array)?;
+    validate_signature(&common_info, &ops_array, is_32bit)?;
 
-    let inst_flags = InstFlags::from_bits_retain(common_info.flags);
-    let options = prefixes.options;
+    // SAFETY: `InstId` is a dense `repr(u32)` enum and the bounds check at the
+    // start of this function excluded both `None` and every value at/after `_Count`.
+    let inst_id_enum = unsafe { core::mem::transmute::<u32, InstId>(inst_id) };
+    validate_cpu_features(
+        buf,
+        inst_id_enum,
+        common_info,
+        options,
+        prefixes.mask_id,
+        &ops_array,
+    )?;
 
     // LOCK prefix (XACQUIRE/XRELEASE are not exposed by asmkit's prefix setters).
-    if options.contains(InstOptions::X86_LOCK) {
-        if !common_info.has_flag(InstFlags::LOCK) {
-            return Err(X86Error::InvalidPrefix {
-                prefix: 0xF0,
-                reason: "instruction cannot be used with the LOCK prefix",
-            });
+    if options.contains(InstOptions::X86_LOCK)
+        && (!common_info.has_flag(InstFlags::LOCK) || !ops_array[0].is_mem())
+    {
+        return Err(X86Error::InvalidPrefix {
+            prefix: 0xF0,
+            reason: "LOCK requires a lockable memory-destination form",
         }
-        buf.put1(0xF0);
+        .into());
     }
 
     // REP and REPNE prefixes.
-    if options.intersects(InstOptions::X86_REP | InstOptions::X86_REPNE) {
-        if !common_info.has_flag(InstFlags::REP) && !common_info.has_flag(InstFlags::REP_IGNORED) {
-            return Err(X86Error::InvalidPrefix {
-                prefix: 0xF3,
-                reason: "instruction cannot be used with a REP prefix",
-            });
+    if options.intersects(InstOptions::X86_REP | InstOptions::X86_REPNE)
+        && !common_info.has_flag(InstFlags::REP)
+        && !common_info.has_flag(InstFlags::REP_IGNORED)
+    {
+        return Err(X86Error::InvalidPrefix {
+            prefix: 0xF3,
+            reason: "instruction cannot be used with a REP prefix",
         }
+        .into());
+    }
+
+    if prefixes.mask_id > 7 {
+        return Err(X86Error::InvalidMasking {
+            mask_reg: prefixes.mask_id,
+            reason: "mask register id must be in k0..k7",
+        }
+        .into());
+    }
+    if options.contains(InstOptions::X86_ZMASK) && prefixes.mask_id == 0 {
+        return Err(X86Error::InvalidMasking {
+            mask_reg: 0,
+            reason: "zeroing requires a nonzero mask register",
+        }
+        .into());
+    }
+    if prefixes.mask_id != 0 && !common_info.has_flag(InstFlags::EVEX) {
+        return Err(X86Error::InvalidMasking {
+            mask_reg: prefixes.mask_id,
+            reason: "instruction has no EVEX masking form",
+        }
+        .into());
+    }
+    if options.contains(InstOptions::X86_ZMASK) && !ops_array[0].is_reg() {
+        return Err(X86Error::InvalidMasking {
+            mask_reg: prefixes.mask_id,
+            reason: "zeroing requires a register destination",
+        }
+        .into());
+    }
+    if options.contains(InstOptions::X86_ER)
+        && !common_info.has_avx512_flag(super::instdb::Avx512Flags::ER)
+    {
+        return Err(X86Error::InvalidRoundingControl {
+            rc: options.bits() as u64,
+            reason: "instruction does not support embedded rounding",
+        }
+        .into());
+    }
+    if options.contains(InstOptions::X86_SAE)
+        && !common_info.has_avx512_flag(super::instdb::Avx512Flags::SAE)
+    {
+        return Err(X86Error::InvalidRoundingControl {
+            rc: options.bits() as u64,
+            reason: "instruction does not support suppress-all-exceptions",
+        }
+        .into());
+    }
+    if options.intersects(InstOptions::X86_ER | InstOptions::X86_SAE)
+        && ops_array.iter().any(Operand::is_mem)
+    {
+        return Err(X86Error::InvalidRoundingControl {
+            rc: options.bits() as u64,
+            reason: "rounding control is not encodable with a memory operand",
+        }
+        .into());
+    }
+
+    if options.contains(InstOptions::X86_LOCK) {
+        buf.put1(0xF0);
+    }
+    if options.intersects(InstOptions::X86_REP | InstOptions::X86_REPNE) {
         buf.put1(if options.contains(InstOptions::X86_REPNE) {
             0xF2
         } else {
             0xF3
         });
     }
-    let _ = inst_flags;
 
     // This sequence seems to be the fastest (AsmJit).
     let mut st = X86EmitState {
+        is_32bit,
         opcode: Opcode(MAIN_OPCODE_TABLE[inst_info.main_opcode_index as usize]),
         options,
         inst_id,
@@ -4142,5 +4777,413 @@ pub fn emit_n(
         Handler::VexEvexR => emit_vex_evex_r(buf, &mut st),
         Handler::VexEvexM => emit_vex_evex_m(buf, &mut st),
         Handler::JmpCall => emit_jmp_call(buf, &mut st),
+    }
+    .map_err(Into::into)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::core::arch_traits::Arch;
+    use crate::core::operand::OperandCast;
+    use crate::core::target::Environment;
+    use crate::x86::operands::regs::*;
+    use crate::x86::operands::{Mem, dword_ptr};
+
+    fn emit(
+        inst: InstId,
+        ops: &[&Operand],
+        prefixes: PendingPrefixes,
+    ) -> (Vec<u8>, Option<X86Error>) {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let error = emit_n(&mut buf, inst as u32, ops, prefixes, false)
+            .err()
+            .map(|error| match error {
+                AsmError::X86(error) => error,
+                error => panic!("unexpected error: {error}"),
+            });
+        (buf.data().to_vec(), error)
+    }
+
+    fn assert_default_feature_can_emit_and_can_be_disabled(
+        feature: CpuFeature,
+        inst: InstId,
+        ops: &[&Operand],
+    ) {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        emit_n(
+            &mut buf,
+            inst as u32,
+            ops,
+            PendingPrefixes::default(),
+            false,
+        )
+        .unwrap();
+        assert!(!buf.data().is_empty(), "{feature:?} did not emit {inst:?}");
+
+        let mut env = Environment::new(Arch::X64);
+        env.set_x86_feature(feature, false);
+        let mut buf = CodeBuffer::new(env);
+        assert_eq!(
+            emit_n(
+                &mut buf,
+                inst as u32,
+                ops,
+                PendingPrefixes::default(),
+                false
+            ),
+            Err(AsmError::MissingCpuFeature {
+                feature: CPU_FEATURE_NAMES[feature as usize],
+            }),
+            "{feature:?} did not gate {inst:?}",
+        );
+        assert!(buf.data().is_empty());
+    }
+
+    #[test]
+    fn default_vector_extensions_emit_and_are_feature_gated() {
+        assert_default_feature_can_emit_and_can_be_disabled(
+            CpuFeature::AVX,
+            InstId::Vaddsubpd,
+            &[XMM1.as_operand(), XMM2.as_operand(), XMM3.as_operand()],
+        );
+        assert_default_feature_can_emit_and_can_be_disabled(
+            CpuFeature::AVX2,
+            InstId::Vpaddd,
+            &[YMM1.as_operand(), YMM2.as_operand(), YMM3.as_operand()],
+        );
+        assert_default_feature_can_emit_and_can_be_disabled(
+            CpuFeature::AVX512_BF16,
+            InstId::Vcvtne2ps2bf16,
+            &[ZMM1.as_operand(), ZMM2.as_operand(), ZMM3.as_operand()],
+        );
+        assert_default_feature_can_emit_and_can_be_disabled(
+            CpuFeature::AVX512_BITALG,
+            InstId::Vpopcntb,
+            &[ZMM1.as_operand(), ZMM2.as_operand()],
+        );
+        assert_default_feature_can_emit_and_can_be_disabled(
+            CpuFeature::AVX512_BW,
+            InstId::Vpmovm2b,
+            &[ZMM1.as_operand(), K2.as_operand()],
+        );
+        assert_default_feature_can_emit_and_can_be_disabled(
+            CpuFeature::AVX512_CD,
+            InstId::Vplzcntd,
+            &[ZMM1.as_operand(), ZMM2.as_operand()],
+        );
+        assert_default_feature_can_emit_and_can_be_disabled(
+            CpuFeature::AVX512_DQ,
+            InstId::Vpmullq,
+            &[ZMM1.as_operand(), ZMM2.as_operand(), ZMM3.as_operand()],
+        );
+        assert_default_feature_can_emit_and_can_be_disabled(
+            CpuFeature::AVX512_F,
+            InstId::Kxorw,
+            &[K1.as_operand(), K2.as_operand(), K3.as_operand()],
+        );
+        assert_default_feature_can_emit_and_can_be_disabled(
+            CpuFeature::AVX512_FP16,
+            InstId::Vaddph,
+            &[ZMM1.as_operand(), ZMM2.as_operand(), ZMM3.as_operand()],
+        );
+        assert_default_feature_can_emit_and_can_be_disabled(
+            CpuFeature::AVX512_IFMA,
+            InstId::Vpmadd52luq,
+            &[ZMM1.as_operand(), ZMM2.as_operand(), ZMM3.as_operand()],
+        );
+        assert_default_feature_can_emit_and_can_be_disabled(
+            CpuFeature::AVX512_VBMI,
+            InstId::Vpermb,
+            &[ZMM1.as_operand(), ZMM2.as_operand(), ZMM3.as_operand()],
+        );
+        assert_default_feature_can_emit_and_can_be_disabled(
+            CpuFeature::AVX512_VBMI2,
+            InstId::Vpcompressb,
+            &[ZMM1.as_operand(), ZMM2.as_operand()],
+        );
+        assert_default_feature_can_emit_and_can_be_disabled(
+            CpuFeature::AVX512_VL,
+            InstId::Vpmovm2d,
+            &[YMM1.as_operand(), K2.as_operand()],
+        );
+        assert_default_feature_can_emit_and_can_be_disabled(
+            CpuFeature::AVX512_VNNI,
+            InstId::Vpdpbusd,
+            &[ZMM1.as_operand(), ZMM2.as_operand(), ZMM3.as_operand()],
+        );
+        assert_default_feature_can_emit_and_can_be_disabled(
+            CpuFeature::AVX512_VP2INTERSECT,
+            InstId::Vp2intersectd,
+            &[
+                K0.as_operand(),
+                K1.as_operand(),
+                ZMM3.as_operand(),
+                ZMM4.as_operand(),
+            ],
+        );
+        assert_default_feature_can_emit_and_can_be_disabled(
+            CpuFeature::AVX512_VPOPCNTDQ,
+            InstId::Vpopcntd,
+            &[ZMM1.as_operand(), ZMM2.as_operand()],
+        );
+    }
+
+    #[test]
+    fn singleton_feature_requirement_is_checked_before_emission() {
+        let mut env =
+            crate::core::target::Environment::baseline(crate::core::arch_traits::Arch::X64);
+        let mut buf = CodeBuffer::new(env);
+        let error = emit_n(
+            &mut buf,
+            InstId::Vaddsubpd as u32,
+            &[XMM1.as_operand(), XMM2.as_operand(), XMM3.as_operand()],
+            PendingPrefixes::default(),
+            false,
+        )
+        .unwrap_err();
+        assert_eq!(error, AsmError::MissingCpuFeature { feature: "AVX" });
+        assert!(buf.data().is_empty());
+
+        env.set_x86_feature(super::super::instdb::CpuFeature::AVX, true);
+        let mut buf = CodeBuffer::new(env);
+        emit_n(
+            &mut buf,
+            InstId::Vaddsubpd as u32,
+            &[XMM1.as_operand(), XMM2.as_operand(), XMM3.as_operand()],
+            PendingPrefixes::default(),
+            false,
+        )
+        .unwrap();
+        assert!(!buf.data().is_empty());
+
+        let mut env =
+            crate::core::target::Environment::baseline(crate::core::arch_traits::Arch::X64);
+        let mem = super::super::operands::ptr(RAX, 0, 16);
+        let mut buf = CodeBuffer::new(env);
+        let error = emit_n(
+            &mut buf,
+            InstId::Vbroadcasti128 as u32,
+            &[YMM1.as_operand(), mem.as_operand()],
+            PendingPrefixes::default(),
+            false,
+        )
+        .unwrap_err();
+        assert_eq!(error, AsmError::MissingCpuFeature { feature: "AVX2" });
+        assert!(buf.data().is_empty());
+
+        env.set_x86_feature(super::super::instdb::CpuFeature::AVX2, true);
+        let mut buf = CodeBuffer::new(env);
+        emit_n(
+            &mut buf,
+            InstId::Vbroadcasti128 as u32,
+            &[YMM1.as_operand(), mem.as_operand()],
+            PendingPrefixes::default(),
+            false,
+        )
+        .unwrap();
+        assert!(!buf.data().is_empty());
+
+        env.set_x86_feature(super::super::instdb::CpuFeature::AVX2, false);
+        let mut buf = CodeBuffer::new(env);
+        let error = emit_n(
+            &mut buf,
+            InstId::Kxorw as u32,
+            &[K1.as_operand(), K2.as_operand(), K3.as_operand()],
+            PendingPrefixes::default(),
+            false,
+        )
+        .unwrap_err();
+        assert_eq!(
+            error,
+            AsmError::MissingCpuFeature {
+                feature: "AVX512_F"
+            }
+        );
+        assert!(buf.data().is_empty());
+
+        env.set_x86_feature(super::super::instdb::CpuFeature::AVX512_F, true);
+        let mut buf = CodeBuffer::new(env);
+        emit_n(
+            &mut buf,
+            InstId::Kxorw as u32,
+            &[K1.as_operand(), K2.as_operand(), K3.as_operand()],
+            PendingPrefixes::default(),
+            false,
+        )
+        .unwrap();
+        assert!(!buf.data().is_empty());
+    }
+
+    #[test]
+    fn multi_feature_requirements_follow_the_selected_form() {
+        use super::super::instdb::CpuFeature;
+
+        let mut env =
+            crate::core::target::Environment::baseline(crate::core::arch_traits::Arch::X64);
+        env.set_x86_feature(CpuFeature::FPU, true);
+        let mut buf = CodeBuffer::new(env);
+        let error = emit_n(
+            &mut buf,
+            InstId::Fcmovb as u32,
+            &[ST1.as_operand()],
+            PendingPrefixes::default(),
+            false,
+        )
+        .unwrap_err();
+        assert_eq!(error, AsmError::MissingCpuFeature { feature: "CMOV" });
+        assert!(buf.data().is_empty());
+
+        env.set_x86_feature(CpuFeature::CMOV, true);
+        let mut buf = CodeBuffer::new(env);
+        emit_n(
+            &mut buf,
+            InstId::Fcmovb as u32,
+            &[ST1.as_operand()],
+            PendingPrefixes::default(),
+            false,
+        )
+        .unwrap();
+        assert!(!buf.data().is_empty());
+
+        let mut env =
+            crate::core::target::Environment::baseline(crate::core::arch_traits::Arch::X64);
+        env.set_x86_feature(CpuFeature::AVX, true);
+        let mut buf = CodeBuffer::new(env);
+        emit_n(
+            &mut buf,
+            InstId::Vpaddd as u32,
+            &[XMM1.as_operand(), XMM2.as_operand(), XMM3.as_operand()],
+            PendingPrefixes::default(),
+            false,
+        )
+        .unwrap();
+        assert!(!buf.data().is_empty());
+
+        let mut buf = CodeBuffer::new(env);
+        let error = emit_n(
+            &mut buf,
+            InstId::Vpaddd as u32,
+            &[YMM1.as_operand(), YMM2.as_operand(), YMM3.as_operand()],
+            PendingPrefixes::default(),
+            false,
+        )
+        .unwrap_err();
+        assert_eq!(error, AsmError::MissingCpuFeature { feature: "AVX2" });
+        assert!(buf.data().is_empty());
+    }
+
+    #[test]
+    fn malformed_raw_operands_are_rejected_without_writes() {
+        let mut bad_type = Operand::new();
+        bad_type.signature.bits = 7;
+        let (bytes, error) = emit(InstId::Mov, &[&bad_type], PendingPrefixes::default());
+        assert!(matches!(error, Some(X86Error::InvalidOperand { .. })));
+        assert!(bytes.is_empty());
+
+        let bad_reg = *super::super::operands::gpq(16).as_operand();
+        let (bytes, error) = emit(
+            InstId::Mov,
+            &[RAX.as_operand(), &bad_reg],
+            PendingPrefixes::default(),
+        );
+        assert!(matches!(error, Some(X86Error::InvalidRegister { .. })));
+        assert!(bytes.is_empty());
+
+        let bad_mem = RAX * 16;
+        let (bytes, error) = emit(
+            InstId::Mov,
+            &[RAX.as_operand(), bad_mem.as_operand()],
+            PendingPrefixes::default(),
+        );
+        assert!(matches!(error, Some(X86Error::InvalidMemoryOperand { .. })));
+        assert!(bytes.is_empty());
+    }
+
+    #[test]
+    fn vsib_and_plain_sib_index_kinds_do_not_cross_match() {
+        let vector_index = Mem::from_base_and_index_shift_disp(&RBX, &XMM1, 0, 0, 4, 0.into());
+        let (bytes, error) = emit(
+            InstId::Mov,
+            &[EAX.as_operand(), vector_index.as_operand()],
+            PendingPrefixes::default(),
+        );
+        assert!(error.is_some());
+        assert!(bytes.is_empty());
+
+        let scalar_index = Mem::from_base_and_index_shift_disp(&RDX, &RCX, 0, 0, 8, 0.into());
+        let (bytes, error) = emit(
+            InstId::Vgatherdpd,
+            &[YMM1.as_operand(), scalar_index.as_operand()],
+            PendingPrefixes::default(),
+        );
+        assert!(error.is_some());
+        assert!(bytes.is_empty());
+    }
+
+    #[test]
+    fn invalid_prefix_forms_are_rejected_before_writes() {
+        let lock = PendingPrefixes {
+            options: InstOptions::X86_LOCK,
+            ..PendingPrefixes::default()
+        };
+        let (bytes, error) = emit(InstId::Add, &[RAX.as_operand(), RBX.as_operand()], lock);
+        assert!(matches!(error, Some(X86Error::InvalidPrefix { .. })));
+        assert!(bytes.is_empty());
+
+        let conflicting_rep = PendingPrefixes {
+            options: InstOptions::X86_REP | InstOptions::X86_REPNE,
+            ..PendingPrefixes::default()
+        };
+        let (bytes, error) = emit(InstId::Movs, &[], conflicting_rep);
+        assert!(matches!(error, Some(X86Error::InvalidPrefix { .. })));
+        assert!(bytes.is_empty());
+
+        let segment_without_memory = PendingPrefixes {
+            segment_id: SReg::FS,
+            ..PendingPrefixes::default()
+        };
+        let (bytes, error) = emit(InstId::Ret, &[], segment_without_memory);
+        assert!(matches!(error, Some(X86Error::InvalidPrefix { .. })));
+        assert!(bytes.is_empty());
+
+        let zero_without_mask = PendingPrefixes {
+            options: InstOptions::X86_ZMASK,
+            ..PendingPrefixes::default()
+        };
+        let (bytes, error) = emit(
+            InstId::Vaddpd,
+            &[ZMM1.as_operand(), ZMM1.as_operand(), ZMM2.as_operand()],
+            zero_without_mask,
+        );
+        assert!(matches!(error, Some(X86Error::InvalidMasking { .. })));
+        assert!(bytes.is_empty());
+
+        for options in [
+            InstOptions::X86_MOD_MR | InstOptions::X86_MOD_RM,
+            InstOptions::X86_VEX | InstOptions::X86_EVEX,
+            InstOptions::X86_ER | InstOptions::X86_SAE,
+            InstOptions::X86_RD_SAE,
+        ] {
+            let prefixes = PendingPrefixes {
+                options,
+                ..PendingPrefixes::default()
+            };
+            let (bytes, error) = emit(InstId::Ret, &[], prefixes);
+            assert!(error.is_some());
+            assert!(bytes.is_empty());
+        }
+    }
+
+    #[test]
+    fn valid_lock_form_is_unchanged() {
+        let mem = dword_ptr(RBX, 0);
+        let prefixes = PendingPrefixes {
+            options: InstOptions::X86_LOCK,
+            ..PendingPrefixes::default()
+        };
+        let (bytes, error) = emit(InstId::Add, &[mem.as_operand(), EAX.as_operand()], prefixes);
+        assert_eq!(error, None);
+        assert_eq!(bytes, [0xF0, 0x01, 0x03]);
     }
 }

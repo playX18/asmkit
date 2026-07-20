@@ -1,9 +1,9 @@
-use asmkit::core::buffer::CodeBuffer;
+use asmkit::{Arch, CodeBuffer, Environment};
 use criterion::{Criterion, criterion_group, criterion_main};
 
 fn emit_factorial_benchmark(c: &mut Criterion) {
     c.bench_function("asmkit::x86", |b| {
-        let mut buf = CodeBuffer::new();
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         b.iter_with_large_drop(|| {
             use asmkit::x86::*;
 
@@ -64,9 +64,7 @@ fn emit_factorial_benchmark(c: &mut Criterion) {
                 asm.ret().unwrap();
             }
 
-            let result = asm.assemble(0x1000).unwrap();
-
-            result
+            asm.assemble(0x1000).unwrap()
         })
     });
 }

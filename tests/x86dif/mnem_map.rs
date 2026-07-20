@@ -1,7 +1,7 @@
 // Generated from meta/difftest corpus mnemonics -> src/x86/instdb.rs InstId names.
 // Regenerate: see tests/x86_differential.rs header comment. Do not edit by hand.
 #![allow(dead_code)]
-use asmkit::x86::instdb::InstId;
+use asmkit::x86::InstId;
 
 /// Baseline corpus mnemonic -> new-API instruction id (sorted by mnemonic).
 pub static MNEM_MAP: &[(&str, u32)] = &[

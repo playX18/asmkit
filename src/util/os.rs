@@ -1,7 +1,7 @@
 pub fn get_tick_count() -> u32 {
     cfgenius::cond! {
         if cfg(windows) {
-            extern "C" {
+            unsafe extern "C" {
                 fn GetTickCount() -> u32;
             }
 

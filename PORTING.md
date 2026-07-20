@@ -10,17 +10,18 @@ instruction-database model):
 
 | File | Role |
 |---|---|
-| `instdb.rs` | **Generated.** Dense `InstId` enum plus static tables: encoding/flags, operand signatures, RW/effects, features, name strings. Translated from AsmJit's instdb (x86, aarch64) or from riscv-opcodes (riscv). |
+| `instdb.rs` | **Generated internal data.** Dense `InstId` plus encoding, operand, RW, feature, and name tables. The public architecture module re-exports `InstId` (or RISC-V `Opcode`) without requiring callers to depend on table layout. |
 | `operands.rs` | Register wrappers (sized, e.g. x86 `Gpq`/`Gpd`/`Xmm`, aarch64 `x0`/`w0`), `Mem` constructors (`ptr`, `ptr64`, ...), register constants (`RAX`, ...). |
 | `assembler.rs` | `Assembler<'a>` over a `CodeBuffer`. The single emit entry point is `emit_n(impl Into<u32>, &[&Operand])`. x86 also has prefix setters (`rep()`, `lock()`, `seg()`, `k()`, `z()`, SAE/rounding) that are consumed by the next emit. |
 | `emitter.rs` | **Generated.** Per-mnemonic traits (`MovEmitter<T0, T1>`, ...) implemented for `Assembler` once per valid operand tuple, forwarding to `emit_n`. Impls exist for abstract operand kinds and for the sized register wrappers, so constants work without dereferencing (`a.mov(RAX, 42)`); immediate positions take `U: Into<Imm>` so integer literals work directly. |
-| `instapi.rs` | `pub fn query_rw_info(inst: &Inst) -> Result<InstRwInfo, AsmError>` — the effects query, intended as input for a future register-allocation pass. |
+| `instapi.rs` | `pub fn query_rw_info(inst: &Inst) -> Result<InstRwInfo, AsmError>` — the effects query. |
 | `arch_traits.rs` | The `ArchTraits` constants: sp/fp/link/ip register ids, stack alignment, per-`RegType` operand signatures and `TypeId` mappings. |
-| `emit.rs` / `encoder.rs` | x86 only: port of AsmJit's `_emit` (signature validation + encoding dispatch) and of the `x86assembler.cpp` encoding handlers. Other arches encode directly in `assembler.rs`. |
+| `emit.rs` / `encoder.rs` | Internal x86 and AArch64 validation/encoding implementation. RISC-V encodes directly in `assembler.rs`. |
+| `encoder_tables.rs` | Internal static lookup tables used by the encoder. |
 
 Shared contracts live in `src/core/`:
 
-- `inst.rs` — generic `Inst` (arch tag + `InstId` + operands), the arch-neutral
+- `inst.rs` — generic `Inst` (arch tag + `InstId` + operands), the architecture-tagged
   representation used by `Builder` and `query_rw_info`.
 - `builder.rs` — `Builder` records `Node::Inst` / `Node::Label` and replays them into an
   `InstSink` (`emit_inst` + `bind_label`); every arch's `Assembler` implements `InstSink`,
@@ -65,7 +66,7 @@ A decoder is not part of the model.
 ## Migrating from the old API
 
 - **`i64` opcode constants → `InstId`.** Instructions are identified by the dense
-  per-arch `InstId` enum (`src/<arch>/instdb.rs`). The raw emit path is
+  per-arch `InstId` enum re-exported from `asmkit::<arch>`. The raw emit path is
   `asm.emit_n(InstId::Mov as u32, &[&op0, &op1])`; the generated emitter traits are the
   preferred interface.
 - **`features/*` traits → generated emitter traits.** The old `src/x86/features/`
@@ -76,12 +77,24 @@ A decoder is not part of the model.
   directly: `a.mov(RAX, RBX)` instead of `a.mov(*RAX, *RBX)`. Immediate positions accept
   integer literals: `a.mov(RAX, 42)` (`imm(42)` still works).
 - **x86-dyn / x86-asm cargo features → gone.** Features are now `x86`, `riscv`, `aarch64`,
-  `jit` (all four on by default).
+  and opt-in `jit`; the three assembler backends are enabled by default.
 - **fadec is no longer used** for x86: the encoder is a port of AsmJit's
-  `x86assembler.cpp`, 64-bit only.
+  `x86assembler.cpp` (both 64-bit and 32-bit modes). Select the mode once with
+  `CodeBuffer::new(Environment::new(Arch::X86))` or
+  `CodeBuffer::new(Environment::new(Arch::X64))`; assemblers read that target from the buffer.
 - **Prefix/EVEX state** (was: prefix fields or per-call arguments) is now set on the
   assembler and consumed by the next emit: `asm.lock().add(...)`, `asm.k(K1).z().vmovaps(...)`,
   `asm.rn_sae().vaddps(...)`, etc.
 - For generic tooling, emit into a `Builder` and inspect `Inst` nodes with
   `query_rw_info` before replaying into an assembler — this replaces ad-hoc buffering
   around the old encoder API.
+- **Finalization is fallible.** Scope an `Assembler` so its mutable borrow ends, then call
+  `buffer.finish()?`. Void mnemonic calls record their first failure in the buffer; do not poll
+  `last_error` or recover with `clear_error`.
+- **Assembler buffers are private.** Use assembler label/constant/offset methods while emitting.
+  Create external symbols, bind exported symbols, inspect relocations/data, and finalize through
+  `CodeBuffer` after the assembler borrow ends.
+- **Generated tables are not the stable API.** Architecture `instdb` modules are crate-private.
+  Use the `InstId`, `Opcode`, and `CpuFeature` re-exports. The `doc(hidden)` architecture
+  `coverage` modules expose only the metadata required by validation tooling and are explicitly
+  unstable.

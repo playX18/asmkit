@@ -1,6 +1,7 @@
 /target
 /asm-docs
 /meta/asmjit
+/meta/asmjit_db/out
 /asm-docs-arm
 /riscv-opcodes
 /riscv-unified-db

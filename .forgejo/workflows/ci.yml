@@ -1,0 +1,188 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '17 3 * * 0'
+
+jobs:
+  msrv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Install Rust 1.85
+        run: rustup toolchain install 1.85.0 --profile minimal
+      - name: Check MSRV
+        run: cargo +1.85.0 check --all-features
+
+  checks:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        feature_args:
+          - "--no-default-features"
+          - "--no-default-features --features x86"
+          - "--no-default-features --features aarch64"
+          - "--no-default-features --features riscv"
+          - "--all-features"
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Check feature set
+        run: cargo check ${{ matrix.feature_args }}
+      - name: Format
+        if: matrix.feature_args == '--all-features'
+        run: cargo fmt --check
+      - name: Test
+        if: matrix.feature_args == '--all-features'
+        run: cargo test --all-features
+      - name: Clippy
+        if: matrix.feature_args == '--all-features'
+        run: cargo clippy --all-targets --all-features -- -D warnings
+      - name: Rustdoc
+        if: matrix.feature_args == '--all-features'
+        env:
+          RUSTDOCFLAGS: -D warnings
+        run: cargo doc --no-deps --all-features
+      - name: Generated files are current
+        if: matrix.feature_args == '--all-features'
+        run: bash meta/regen.sh --check
+
+  x86-differential:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: ['0/4', '1/4', '2/4', '3/4']
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Full x86 differential corpus shard
+        env:
+          ASMKIT_X86_CORPUS_FULL: '1'
+          ASMKIT_X86_CORPUS_SHARD: ${{ matrix.shard }}
+        run: cargo test --all-features --test x86_differential corpus_full
+
+  cross-targets:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Install AArch64 target
+        run: rustup target add aarch64-unknown-linux-gnu
+      - name: Check AArch64 target
+        run: cargo check --all-features --target aarch64-unknown-linux-gnu
+      - name: Install RISC-V target
+        run: rustup target add riscv64gc-unknown-linux-gnu
+      - name: Check RISC-V target
+        run: cargo check --all-features --target riscv64gc-unknown-linux-gnu
+      - name: Install Windows target
+        run: rustup target add x86_64-pc-windows-gnu
+      - name: Check Windows target
+        run: cargo check --all-features --target x86_64-pc-windows-gnu
+
+  miri-core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Install nightly Miri
+        run: rustup toolchain install nightly --profile minimal --component miri
+      - name: Run Miri-safe ownership subset
+        run: cargo +nightly miri test --no-default-features --lib builder_tests
+
+  jit-sanitizers:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Install nightly sanitizer support
+        run: rustup toolchain install nightly --profile minimal --component rust-src
+      - name: Check JIT allocation cleanup with LeakSanitizer
+        env:
+          RUSTFLAGS: -Zsanitizer=leak
+        run: cargo +nightly test -Zbuild-std --target x86_64-unknown-linux-gnu --all-features --lib core::jit_allocator::tests
+      - name: Check VM initialization with ThreadSanitizer
+        env:
+          RUSTFLAGS: -Zsanitizer=thread
+        run: cargo +nightly test -Zbuild-std --target x86_64-unknown-linux-gnu --all-features --lib info_initialization_is_thread_safe
+
+  abi-execution:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Run native x86_64 ABI program
+        run: cargo test --all-features --test abi_execution
+      - name: Install AArch64 and RISC-V runners
+        run: sudo apt-get update && sudo apt-get install --yes gcc-aarch64-linux-gnu gcc-riscv64-linux-gnu qemu-user
+      - name: Install cross targets
+        run: rustup target add aarch64-unknown-linux-gnu riscv64gc-unknown-linux-gnu
+      - name: Build and run AArch64 ABI program under QEMU
+        env:
+          CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER: aarch64-linux-gnu-gcc
+        run: |
+          cargo test --all-features --target aarch64-unknown-linux-gnu --test abi_execution --no-run
+          abi_test=$(find target/aarch64-unknown-linux-gnu/debug/deps -maxdepth 1 -type f -name 'abi_execution-*' -perm -111 | head -n 1)
+          test -n "$abi_test"
+          qemu-aarch64 -L /usr/aarch64-linux-gnu "$abi_test"
+      - name: Build and run RV64 ABI program under QEMU
+        env:
+          CARGO_TARGET_RISCV64GC_UNKNOWN_LINUX_GNU_LINKER: riscv64-linux-gnu-gcc
+        run: |
+          cargo test --all-features --target riscv64gc-unknown-linux-gnu --test abi_execution --no-run
+          abi_test=$(find target/riscv64gc-unknown-linux-gnu/debug/deps -maxdepth 1 -type f -name 'abi_execution-*' -perm -111 | head -n 1)
+          test -n "$abi_test"
+          qemu-riscv64 -L /usr/riscv64-linux-gnu "$abi_test"
+
+  independent-oracles:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Install LLVM MC
+        run: sudo apt-get update && sudo apt-get install --yes llvm
+      - name: Compare AArch64 and RISC-V encodings with LLVM MC
+        run: cargo test --all-features --test independent_oracles
+
+  fuzz-smoke:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Install cargo-fuzz
+        run: rustup toolchain install nightly --profile minimal && cargo +nightly install cargo-fuzz --locked
+      - name: Fuzz raw emission smoke
+        working-directory: fuzz
+        run: cargo +nightly fuzz run raw_emission -- -max_total_time=15
+      - name: Fuzz buffer lifecycle smoke
+        working-directory: fuzz
+        run: cargo +nightly fuzz run buffer_lifecycle -- -max_total_time=15
+
+  fuzz-long:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+      - name: Install cargo-fuzz
+        run: rustup toolchain install nightly --profile minimal && cargo +nightly install cargo-fuzz --locked
+      - name: Fuzz raw emission
+        working-directory: fuzz
+        run: cargo +nightly fuzz run raw_emission -- -max_total_time=600
+      - name: Fuzz buffer lifecycle
+        working-directory: fuzz
+        run: cargo +nightly fuzz run buffer_lifecycle -- -max_total_time=600

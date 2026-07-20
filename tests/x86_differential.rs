@@ -1,6 +1,7 @@
+#![cfg(all(feature = "x86", feature = "validation"))]
 //! Differential validation of the rewritten x86 encoder.
 //!
-//! Three layers:
+//! Four layers:
 //!
 //! 1. `corpus_sample` / `corpus_full`: replay the binary corpus produced by the
 //!    pre-rewrite ("baseline") encoder (format: `meta/difftest/FORMAT.md`,
@@ -17,6 +18,13 @@
 //!    decode with iced-x86, and verify mnemonic + operands match what was
 //!    assembled. Capstone is used as a sampled secondary cross-check.
 //!
+//! 4. `x86_32`: 32-bit mode differential — assemble a representative spread
+//!    with asmkit's 32-bit encoder and with iced-x86's 32-bit `CodeAssembler`,
+//!    byte-identical where both pick the same encoding form and
+//!    decode-equivalent for known divergences (prefix order, branch
+//!    shortening, xchg accumulator forms). Includes mode-gating checks:
+//!    X64-only instructions/registers must be rejected by both assemblers.
+//!
 //! The baseline-mnemonic -> InstId table lives in `tests/x86dif/mnem_map.rs`
 //! (generated from the corpus mnemonics joined with `src/x86/instdb.rs` enum
 //! names, plus the alias conventions described in FORMAT.md: `_mask`/`_maskz`/
@@ -30,11 +38,12 @@ mod mnem_map;
 
 use std::collections::BTreeMap;
 
-use asmkit::core::buffer::CodeBuffer;
-use asmkit::core::operand::{Label, Operand, OperandCast, RegType, imm};
+use asmkit::CodeBuffer;
+use asmkit::x86::InstId;
 use asmkit::x86::assembler::Assembler;
-use asmkit::x86::instdb::InstId;
 use asmkit::x86::operands::{AddrType, Broadcast, KReg, Mem, Reg, SReg};
+use asmkit::{Arch, Environment};
+use asmkit::{Label, Operand, OperandCast, RegType, imm};
 
 const SAMPLE_CORPUS: &str = concat!(
     env!("CARGO_MANIFEST_DIR"),
@@ -668,10 +677,10 @@ fn instr_equivalent(e: &iced_x86::Instruction, a: &iced_x86::Instruction) -> boo
             }
             iced_x86::OpKind::NearBranch16
             | iced_x86::OpKind::NearBranch32
-            | iced_x86::OpKind::NearBranch64 => {
-                if e.near_branch_target() != a.near_branch_target() {
-                    return false;
-                }
+            | iced_x86::OpKind::NearBranch64
+                if e.near_branch_target() != a.near_branch_target() =>
+            {
+                return false;
             }
             _ => {}
         }
@@ -741,7 +750,7 @@ fn hex(bytes: &[u8]) -> String {
 
 /// Replays one record, returning the produced block bytes or an error string.
 fn replay(rec: &Record, inst_id: u32, size_override: Option<u32>) -> Result<Vec<u8>, String> {
-    let mut buf = CodeBuffer::new();
+    let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
     let has_label = rec.label_layout != LL_NONE;
     let label = if has_label {
         Some(buf.get_label())
@@ -751,42 +760,48 @@ fn replay(rec: &Record, inst_id: u32, size_override: Option<u32>) -> Result<Vec<
     let ops = build_operands(rec, label, size_override);
     let refs: Vec<&Operand> = ops.iter().collect();
 
-    {
-        let mut asm = Assembler::new(&mut buf);
-        if !has_label {
+    if !has_label {
+        {
+            let mut asm = Assembler::new(&mut buf);
             apply_prefixes(&mut asm, rec);
             asm.emit_n(inst_id, &refs);
-        } else {
-            let bind = rec.bind_off as usize;
-            let ioff = rec.inst_off as usize;
-            if rec.label_layout == LL_FAR_FWD {
+        }
+    } else {
+        let bind = rec.bind_off as usize;
+        let ioff = rec.inst_off as usize;
+        if rec.label_layout == LL_FAR_FWD {
+            {
+                let mut asm = Assembler::new(&mut buf);
                 apply_prefixes(&mut asm, rec);
                 asm.emit_n(inst_id, &refs);
-                if asm.last_error().is_none() {
-                    for &b in &rec.block[ioff + rec.inst_len as usize..bind] {
-                        asm.buffer.put1(b);
-                    }
-                    asm.bind_label(label.unwrap());
+            }
+            if buf.error().is_none() {
+                for &b in &rec.block[ioff + rec.inst_len as usize..bind] {
+                    buf.put1(b);
                 }
-            } else {
-                for &b in &rec.block[..bind] {
-                    asm.buffer.put1(b);
-                }
-                asm.bind_label(label.unwrap());
-                for &b in &rec.block[bind..ioff] {
-                    asm.buffer.put1(b);
-                }
+                buf.bind_label(label.unwrap());
+            }
+        } else {
+            for &b in &rec.block[..bind] {
+                buf.put1(b);
+            }
+            buf.bind_label(label.unwrap());
+            for &b in &rec.block[bind..ioff] {
+                buf.put1(b);
+            }
+            {
+                let mut asm = Assembler::new(&mut buf);
                 apply_prefixes(&mut asm, rec);
                 asm.emit_n(inst_id, &refs);
             }
         }
-        if let Some(err) = asm.last_error() {
-            return Err(format!("emit error: {err:?}"));
-        }
+    }
+    if let Some(err) = buf.error() {
+        return Err(format!("emit error: {err:?}"));
     }
 
     let out = if has_label {
-        buf.finish().data().to_vec()
+        buf.finish().unwrap().data().to_vec()
     } else {
         buf.data().to_vec()
     };
@@ -826,12 +841,17 @@ fn has_resizable_mem(rec: &Record) -> bool {
 /// then every architectural size, then unsized.
 const SIZE_CANDIDATES: [u32; 8] = [1, 2, 4, 8, 16, 32, 64, 0];
 
-fn run_corpus(path: &str) -> ReplayStats {
+fn run_corpus(path: &str, shard: Option<(usize, usize)>) -> ReplayStats {
     let data = std::fs::read(path).unwrap_or_else(|e| panic!("cannot read {path}: {e}"));
     let records = parse_corpus(&data);
     let mut stats = ReplayStats::default();
 
-    for rec in &records {
+    for (record_index, rec) in records.iter().enumerate() {
+        if let Some((shard_index, shard_count)) = shard {
+            if record_index % shard_count != shard_index {
+                continue;
+            }
+        }
         stats.total += 1;
         let inst_id = match resolve_mnemonic(&rec.mnem, &rec.ops) {
             Replay::Id(id) => id,
@@ -1206,7 +1226,7 @@ fn check_expected_failures(stats: &ReplayStats, check_counts: bool) {
         }
     }
     for (mnem, (want, _)) in &expected {
-        if *want != 0 && !stats.failures_by_mnem.contains_key(*mnem) {
+        if check_counts && *want != 0 && !stats.failures_by_mnem.contains_key(*mnem) {
             problems.push(format!(
                 "{mnem}: expected failures but all records passed — update EXPECTED_FAILURES"
             ));
@@ -1221,7 +1241,7 @@ fn check_expected_failures(stats: &ReplayStats, check_counts: bool) {
 
 #[test]
 fn corpus_sample() {
-    let stats = run_corpus(SAMPLE_CORPUS);
+    let stats = run_corpus(SAMPLE_CORPUS, None);
     check_expected_failures(&stats, true);
 }
 
@@ -1231,7 +1251,16 @@ fn corpus_full() {
         eprintln!("corpus_full: skipped (set ASMKIT_X86_CORPUS_FULL=1 to enable)");
         return;
     }
-    let stats = run_corpus(FULL_CORPUS);
+    let shard = std::env::var("ASMKIT_X86_CORPUS_SHARD").ok().map(|value| {
+        let (index, count) = value
+            .split_once('/')
+            .unwrap_or_else(|| panic!("ASMKIT_X86_CORPUS_SHARD must be index/count"));
+        let index: usize = index.parse().expect("invalid corpus shard index");
+        let count: usize = count.parse().expect("invalid corpus shard count");
+        assert!(count > 0 && index < count, "invalid corpus shard {value}");
+        (index, count)
+    });
+    let stats = run_corpus(FULL_CORPUS, shard);
     check_expected_failures(&stats, false);
 }
 
@@ -1240,12 +1269,12 @@ fn corpus_full() {
 // ============================================================================
 
 fn assemble(f: impl FnOnce(&mut Assembler)) -> Vec<u8> {
-    let mut buf = CodeBuffer::new();
+    let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
     {
         let mut asm = Assembler::new(&mut buf);
         f(&mut asm);
-        assert_eq!(asm.last_error(), None, "golden smoke emit error");
     }
+    assert_eq!(buf.error(), None, "golden smoke emit error");
     buf.data().to_vec()
 }
 
@@ -1313,15 +1342,16 @@ fn golden_smoke() {
 
 mod roundtrip {
     use super::hex;
-    use asmkit::core::buffer::CodeBuffer;
-    use asmkit::core::operand::{Label, Operand, OperandCast, RegType, imm};
+    use asmkit::CodeBuffer;
     use asmkit::x86::assembler::Assembler;
-    use asmkit::x86::instdb::{
+    use asmkit::x86::coverage::{
         Avx512Flags, INST_COMMON_INFO_TABLE, INST_INFO_TABLE, INST_NAME_INDEX_TABLE,
         INST_NAME_STRING_TABLE, INST_SIGNATURE_TABLE, Mode, OP_SIGNATURE_TABLE, OpFlags,
         OpSignature,
     };
     use asmkit::x86::operands::{AddrType, KReg, Mem, Reg};
+    use asmkit::{Arch, Environment};
+    use asmkit::{Label, Operand, OperandCast, RegType, imm};
     use capstone::arch::BuildsCapstone;
     use std::collections::{BTreeMap, BTreeSet};
 
@@ -2156,7 +2186,7 @@ mod roundtrip {
                             continue;
                         }
                         stats.cases += 1;
-                        let mut buf = CodeBuffer::new();
+                        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
                         let label = if combo.iter().any(|c| matches!(c, Cand::Rel)) {
                             let l = buf.get_label();
                             buf.bind_label(l);
@@ -2173,10 +2203,10 @@ mod roundtrip {
                             }
                             let refs: Vec<&Operand> = ops.iter().collect();
                             a.emit_n(id, &refs);
-                            if a.last_error().is_some() {
+                            if a.error().is_some() {
                                 None
                             } else {
-                                Some(a.buffer.data().to_vec())
+                                Some(a.data().to_vec())
                             }
                         };
                         let Some(bytes) = bytes else {
@@ -2201,7 +2231,7 @@ mod roundtrip {
                             continue;
                         }
                         // Capstone secondary cross-check (sampled).
-                        if stats.cases.is_multiple_of(37) {
+                        if stats.cases % 37 == 0 {
                             if let Ok(cs) = &capstone {
                                 if let Ok(insns) = cs.disasm_all(&bytes, 0) {
                                     if let Some(one) = insns.first() {
@@ -2270,4 +2300,1212 @@ mod roundtrip {
 #[test]
 fn decode_roundtrip() {
     roundtrip::run();
+}
+
+// ============================================================================
+// Layer 4: 32-bit mode differential against iced-x86's 32-bit CodeAssembler.
+// ============================================================================
+
+mod x86_32 {
+    //! asmkit's 32-bit encoder (`Environment::new(Arch::X86)`) against
+    //! iced-x86's 32-bit `CodeAssembler`. Comparisons are byte-identical
+    //! except for known encoding-choice divergences, which are checked by
+    //! decoding both outputs with iced's 32-bit decoder:
+    //!
+    //! - legacy prefix order on 16-bit 67h forms (asmjit order: 67 66,
+    //!   iced order: 66 67);
+    //! - jmp/jcc to a bound label (iced auto-shortens to rel8, asmkit keeps
+    //!   rel32 unless SHORT_FORM is requested);
+    //! - xchg accumulator short forms (asmjit: 90+r, iced: ModRM).
+
+    use super::instr_equivalent;
+    use asmkit::Arch;
+    use asmkit::CodeBuffer;
+    use asmkit::Environment;
+    use asmkit::x86::InstId;
+    use asmkit::x86::assembler::Assembler;
+    use asmkit::x86::operands::regs::*;
+    use asmkit::x86::operands::{
+        byte_ptr, byte_ptr_index, dword_ptr, dword_ptr_index, dword_ptr_label, dword_ptr_u64,
+        fword_ptr, word_ptr, word_ptr_index, word_ptr_u64,
+    };
+    use asmkit::{Label, OperandCast, imm};
+    use iced_x86::code_asm;
+
+    /// Assembles a block with asmkit's 32-bit encoder.
+    fn asm32(f: impl FnOnce(&mut Assembler)) -> Vec<u8> {
+        let environment = Environment::new(Arch::X86);
+        let mut buf = CodeBuffer::new(environment);
+        {
+            let mut a = Assembler::new(&mut buf);
+            f(&mut a);
+        }
+        assert!(buf.error().is_none(), "{:?}", buf.error());
+        buf.finish().unwrap().data().to_vec()
+    }
+
+    /// Assembles with asmkit's 32-bit encoder, expecting rejection.
+    fn asm32_is_err(f: impl FnOnce(&mut Assembler)) -> bool {
+        let environment = Environment::new(Arch::X86);
+        let mut buf = CodeBuffer::new(environment);
+        {
+            let mut a = Assembler::new(&mut buf);
+            f(&mut a);
+        }
+        buf.error().is_some()
+    }
+
+    /// Assembles a block with iced-x86's 32-bit CodeAssembler.
+    fn iced32(f: impl FnOnce(&mut code_asm::CodeAssembler)) -> Vec<u8> {
+        let mut a = code_asm::CodeAssembler::new(32).unwrap();
+        f(&mut a);
+        a.assemble(0).unwrap()
+    }
+
+    /// Assembles with iced-x86's 32-bit CodeAssembler, expecting rejection
+    /// (either at method call or at final assembly).
+    fn iced32_is_err(
+        f: impl FnOnce(&mut code_asm::CodeAssembler) -> Result<(), iced_x86::IcedError>,
+    ) -> bool {
+        let mut a = code_asm::CodeAssembler::new(32).unwrap();
+        f(&mut a).is_err() || a.assemble(0).is_err()
+    }
+
+    /// Byte-identical comparison of one assembled block.
+    #[track_caller]
+    fn same_bytes(what: &str, ours: Vec<u8>, iced: Vec<u8>) {
+        assert_eq!(ours, iced, "{what}: asmkit vs iced-x86 (32-bit)");
+    }
+
+    /// Decode-level equivalence at 32 bit (for the divergences listed above).
+    #[track_caller]
+    fn same_decode(what: &str, ours: &[u8], iced: &[u8]) {
+        let decode = |bytes: &[u8]| -> Vec<iced_x86::Instruction> {
+            let mut dec = iced_x86::Decoder::new(32, bytes, 0);
+            let mut out = Vec::new();
+            while dec.position() < bytes.len() {
+                let instr = dec.decode();
+                assert!(!instr.is_invalid(), "{what}: undecodable: {bytes:02X?}");
+                out.push(instr);
+            }
+            out
+        };
+        let (e, a) = (decode(iced), decode(ours));
+        assert_eq!(e.len(), a.len(), "{what}: instruction count");
+        assert!(
+            e.iter().zip(a.iter()).all(|(e, a)| instr_equivalent(e, a)),
+            "{what}: {e:?} vs {a:?}"
+        );
+    }
+
+    /// asmkit `emit_n` shorthand.
+    fn emit1(a: &mut Assembler, id: InstId, op0: &asmkit::Operand) {
+        a.emit_n(id as u32, &[op0]);
+    }
+
+    #[test]
+    fn gp_reg_reg_all_sizes() {
+        use code_asm::{ah, al, ax, bh, bl, bx, cl, cx, dx, eax, ebx, ecx, edx};
+        same_bytes(
+            "mov eax, ebx",
+            asm32(|a| a.emit_n(InstId::Mov as u32, &[EAX.as_operand(), EBX.as_operand()])),
+            iced32(|a| a.mov(eax, ebx).unwrap()),
+        );
+        same_bytes(
+            "mov ax, bx",
+            asm32(|a| a.emit_n(InstId::Mov as u32, &[AX.as_operand(), BX.as_operand()])),
+            iced32(|a| a.mov(ax, bx).unwrap()),
+        );
+        same_bytes(
+            "mov al, bl",
+            asm32(|a| a.emit_n(InstId::Mov as u32, &[AL.as_operand(), BL.as_operand()])),
+            iced32(|a| a.mov(al, bl).unwrap()),
+        );
+        same_bytes(
+            "mov ah, bh",
+            asm32(|a| a.emit_n(InstId::Mov as u32, &[AH.as_operand(), BH.as_operand()])),
+            iced32(|a| a.mov(ah, bh).unwrap()),
+        );
+        same_bytes(
+            "add ecx, edx",
+            asm32(|a| a.emit_n(InstId::Add as u32, &[ECX.as_operand(), EDX.as_operand()])),
+            iced32(|a| a.add(ecx, edx).unwrap()),
+        );
+        same_bytes(
+            "xor eax, ebx",
+            asm32(|a| a.emit_n(InstId::Xor as u32, &[EAX.as_operand(), EBX.as_operand()])),
+            iced32(|a| a.xor(eax, ebx).unwrap()),
+        );
+        same_bytes(
+            "sub dx, cx",
+            asm32(|a| a.emit_n(InstId::Sub as u32, &[DX.as_operand(), CX.as_operand()])),
+            iced32(|a| a.sub(dx, cx).unwrap()),
+        );
+        same_bytes(
+            "and cl, al",
+            asm32(|a| a.emit_n(InstId::And as u32, &[CL.as_operand(), AL.as_operand()])),
+            iced32(|a| a.and(cl, al).unwrap()),
+        );
+    }
+
+    #[test]
+    fn gp_imm_forms() {
+        use code_asm::{ax, cl, eax, ecx};
+        same_bytes(
+            "mov eax, imm32",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[EAX.as_operand(), imm(0x1234_5678).as_operand()],
+                )
+            }),
+            iced32(|a| a.mov(eax, 0x1234_5678u32).unwrap()),
+        );
+        same_bytes(
+            "mov ax, imm16",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[AX.as_operand(), imm(0x1234).as_operand()],
+                )
+            }),
+            iced32(|a| a.mov(ax, 0x1234i32).unwrap()),
+        );
+        same_bytes(
+            "mov cl, imm8",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[CL.as_operand(), imm(0x12).as_operand()],
+                )
+            }),
+            iced32(|a| a.mov(cl, 0x12i32).unwrap()),
+        );
+        // Accumulator short forms.
+        same_bytes(
+            "add eax, imm32",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Add as u32,
+                    &[EAX.as_operand(), imm(0x1234_5678).as_operand()],
+                )
+            }),
+            iced32(|a| a.add(eax, 0x1234_5678i32).unwrap()),
+        );
+        same_bytes(
+            "cmp eax, imm32",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Cmp as u32,
+                    &[EAX.as_operand(), imm(0x1234_5678).as_operand()],
+                )
+            }),
+            iced32(|a| a.cmp(eax, 0x1234_5678i32).unwrap()),
+        );
+        same_bytes(
+            "test eax, imm32",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Test as u32,
+                    &[EAX.as_operand(), imm(0x1234_5678).as_operand()],
+                )
+            }),
+            iced32(|a| a.test(eax, 0x1234_5678u32).unwrap()),
+        );
+        // imm8 sign-extended forms.
+        same_bytes(
+            "add ecx, 1",
+            asm32(|a| a.emit_n(InstId::Add as u32, &[ECX.as_operand(), imm(1).as_operand()])),
+            iced32(|a| a.add(ecx, 1i32).unwrap()),
+        );
+        same_bytes(
+            "or edx, -1",
+            asm32(|a| a.emit_n(InstId::Or as u32, &[EDX.as_operand(), imm(-1).as_operand()])),
+            iced32(|a| a.or(code_asm::edx, -1i32).unwrap()),
+        );
+        same_bytes(
+            "test al, 1",
+            asm32(|a| a.emit_n(InstId::Test as u32, &[AL.as_operand(), imm(1).as_operand()])),
+            iced32(|a| a.test(code_asm::al, 1i32).unwrap()),
+        );
+
+        // A fixed seed keeps this independent boundary sweep reproducible.
+        // MOV r32, imm32 has one unambiguous encoding; unlike ADD, it cannot
+        // validly differ only because one assembler picked an imm8 form.
+        let boundaries = [i32::MIN, -129, -128, -1, 0, 1, 127, 128, i32::MAX];
+        let mut state = 0x5EED_C0DEu32;
+        for _ in 0..64 {
+            state = state.wrapping_mul(1_664_525).wrapping_add(1_013_904_223);
+            let value = boundaries[(state as usize) % boundaries.len()];
+            same_bytes(
+                "fixed-seed mov eax, imm32 boundary",
+                asm32(|a| {
+                    a.emit_n(
+                        InstId::Mov as u32,
+                        &[EAX.as_operand(), imm(value).as_operand()],
+                    )
+                }),
+                iced32(|a| a.mov(eax, value as u32).unwrap()),
+            );
+        }
+    }
+
+    #[test]
+    fn gp_unary_shift_forms() {
+        use code_asm::{cl, eax, ebx, ecx, edx};
+        same_bytes(
+            "neg/not/mul/imul/idiv",
+            asm32(|a| {
+                emit1(a, InstId::Neg, ECX.as_operand());
+                emit1(a, InstId::Not, EDX.as_operand());
+                emit1(a, InstId::Mul, EBX.as_operand());
+                emit1(a, InstId::Idiv, ECX.as_operand());
+            }),
+            iced32(|a| {
+                a.neg(ecx).unwrap();
+                a.not(edx).unwrap();
+                a.mul(ebx).unwrap();
+                a.idiv(ecx).unwrap();
+            }),
+        );
+        same_bytes(
+            "imul ecx, edx",
+            asm32(|a| a.emit_n(InstId::Imul as u32, &[ECX.as_operand(), EDX.as_operand()])),
+            iced32(|a| a.imul_2(ecx, edx).unwrap()),
+        );
+        same_bytes(
+            "imul ecx, edx, imm32",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Imul as u32,
+                    &[ECX.as_operand(), EDX.as_operand(), imm(0x1234).as_operand()],
+                )
+            }),
+            iced32(|a| a.imul_3(ecx, edx, 0x1234i32).unwrap()),
+        );
+        same_bytes(
+            "imul ecx, edx, imm8",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Imul as u32,
+                    &[ECX.as_operand(), EDX.as_operand(), imm(4).as_operand()],
+                )
+            }),
+            iced32(|a| a.imul_3(ecx, edx, 4i32).unwrap()),
+        );
+        same_bytes(
+            "shl/shr/sar/rol",
+            asm32(|a| {
+                a.emit_n(InstId::Shl as u32, &[ECX.as_operand(), imm(2).as_operand()]);
+                a.emit_n(InstId::Shl as u32, &[ECX.as_operand(), imm(1).as_operand()]);
+                a.emit_n(InstId::Shr as u32, &[EDX.as_operand(), CL.as_operand()]);
+                a.emit_n(InstId::Sar as u32, &[EAX.as_operand(), CL.as_operand()]);
+                a.emit_n(InstId::Rol as u32, &[EAX.as_operand(), imm(1).as_operand()]);
+            }),
+            iced32(|a| {
+                a.shl(ecx, 2i32).unwrap();
+                a.shl(ecx, 1i32).unwrap();
+                a.shr(edx, cl).unwrap();
+                a.sar(eax, cl).unwrap();
+                a.rol(eax, 1i32).unwrap();
+            }),
+        );
+        same_bytes(
+            "shld forms",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Shld as u32,
+                    &[ECX.as_operand(), EDX.as_operand(), imm(4).as_operand()],
+                );
+                a.emit_n(
+                    InstId::Shld as u32,
+                    &[ECX.as_operand(), EDX.as_operand(), CL.as_operand()],
+                );
+            }),
+            iced32(|a| {
+                a.shld(ecx, edx, 4i32).unwrap();
+                a.shld(ecx, edx, cl).unwrap();
+            }),
+        );
+        same_bytes(
+            "bt/bts",
+            asm32(|a| {
+                a.emit_n(InstId::Bt as u32, &[ECX.as_operand(), EDX.as_operand()]);
+                a.emit_n(InstId::Bts as u32, &[ECX.as_operand(), imm(3).as_operand()]);
+            }),
+            iced32(|a| {
+                a.bt(ecx, edx).unwrap();
+                a.bts(ecx, 3i32).unwrap();
+            }),
+        );
+    }
+
+    #[test]
+    fn gp_misc_forms() {
+        use code_asm::{al, bl, bx, eax, ebx, ecx};
+        same_bytes(
+            "movzx/movsx",
+            asm32(|a| {
+                a.emit_n(InstId::Movzx as u32, &[EAX.as_operand(), BL.as_operand()]);
+                a.emit_n(InstId::Movsx as u32, &[EAX.as_operand(), BL.as_operand()]);
+                a.emit_n(InstId::Movzx as u32, &[EAX.as_operand(), BX.as_operand()]);
+                a.emit_n(
+                    InstId::Movsx as u32,
+                    &[EAX.as_operand(), word_ptr(ECX, 0).as_operand()],
+                );
+            }),
+            iced32(|a| {
+                a.movzx(eax, bl).unwrap();
+                a.movsx(eax, bl).unwrap();
+                a.movzx(eax, bx).unwrap();
+                a.movsx(eax, code_asm::word_ptr(ecx)).unwrap();
+            }),
+        );
+        same_bytes(
+            "setcc/cmovcc",
+            asm32(|a| {
+                emit1(a, InstId::Setz, AL.as_operand());
+                emit1(a, InstId::Setnz, byte_ptr(ECX, 0).as_operand());
+                a.emit_n(InstId::Cmovz as u32, &[EAX.as_operand(), EBX.as_operand()]);
+                a.emit_n(
+                    InstId::Cmovz as u32,
+                    &[EAX.as_operand(), dword_ptr(ECX, 0).as_operand()],
+                );
+            }),
+            iced32(|a| {
+                a.setz(al).unwrap();
+                a.setnz(code_asm::byte_ptr(ecx)).unwrap();
+                a.cmovz(eax, ebx).unwrap();
+                a.cmovz(eax, code_asm::dword_ptr(ecx)).unwrap();
+            }),
+        );
+        same_bytes(
+            "xadd/cmpxchg",
+            asm32(|a| {
+                a.emit_n(InstId::Xadd as u32, &[ECX.as_operand(), EDX.as_operand()]);
+                a.emit_n(
+                    InstId::Cmpxchg as u32,
+                    &[ECX.as_operand(), EDX.as_operand()],
+                );
+                a.emit_n(
+                    InstId::Cmpxchg as u32,
+                    &[byte_ptr(ECX, 0).as_operand(), DL.as_operand()],
+                );
+            }),
+            iced32(|a| {
+                a.xadd(ecx, code_asm::edx).unwrap();
+                a.cmpxchg(ecx, code_asm::edx).unwrap();
+                a.cmpxchg(code_asm::byte_ptr(ecx), code_asm::dl).unwrap();
+            }),
+        );
+        same_bytes(
+            "single-byte/misc",
+            asm32(|a| {
+                emit1(a, InstId::Bswap, ECX.as_operand());
+                a.emit_n(InstId::Xlatb as u32, &[]);
+                a.emit_n(InstId::Cbw as u32, &[]);
+                a.emit_n(InstId::Cwde as u32, &[]);
+                a.emit_n(InstId::Cdq as u32, &[]);
+                a.emit_n(InstId::Nop as u32, &[]);
+                a.emit_n(InstId::Leave as u32, &[]);
+                a.emit_n(InstId::Cpuid as u32, &[]);
+                a.emit_n(InstId::Rdtsc as u32, &[]);
+                a.emit_n(InstId::Int3 as u32, &[]);
+            }),
+            iced32(|a| {
+                a.bswap(ecx).unwrap();
+                a.xlatb().unwrap();
+                a.cbw().unwrap();
+                a.cwde().unwrap();
+                a.cdq().unwrap();
+                a.nop().unwrap();
+                a.leave().unwrap();
+                a.cpuid().unwrap();
+                a.rdtsc().unwrap();
+                a.int3().unwrap();
+            }),
+        );
+        same_bytes(
+            "enter/ret",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Enter as u32,
+                    &[imm(0x100).as_operand(), imm(2).as_operand()],
+                );
+                a.emit_n(InstId::Ret as u32, &[]);
+                a.emit_n(InstId::Ret as u32, &[imm(0x10).as_operand()]);
+            }),
+            iced32(|a| {
+                a.enter(0x100i32, 2i32).unwrap();
+                a.ret().unwrap();
+                a.ret_1(0x10i32).unwrap();
+            }),
+        );
+    }
+
+    #[test]
+    fn modrm_sib_forms() {
+        use code_asm::{dword_ptr as dp, eax, ebp, ebx, ecx, edi, edx, esi, esp};
+        let cases: [(Vec<u8>, Vec<u8>, &str); 8] = [
+            (
+                asm32(|a| {
+                    a.emit_n(
+                        InstId::Mov as u32,
+                        &[EAX.as_operand(), dword_ptr(ECX, 0).as_operand()],
+                    )
+                }),
+                iced32(|a| a.mov(eax, dp(ecx)).unwrap()),
+                "mov eax, [ecx]",
+            ),
+            (
+                asm32(|a| {
+                    a.emit_n(
+                        InstId::Mov as u32,
+                        &[EAX.as_operand(), dword_ptr(EBP, 0).as_operand()],
+                    )
+                }),
+                iced32(|a| a.mov(eax, dp(ebp)).unwrap()),
+                "mov eax, [ebp] (forced disp8)",
+            ),
+            (
+                asm32(|a| {
+                    a.emit_n(
+                        InstId::Mov as u32,
+                        &[EAX.as_operand(), dword_ptr(ESP, 8).as_operand()],
+                    )
+                }),
+                iced32(|a| a.mov(eax, dp(esp + 8)).unwrap()),
+                "mov eax, [esp + 8] (forced SIB)",
+            ),
+            (
+                asm32(|a| {
+                    a.emit_n(
+                        InstId::Mov as u32,
+                        &[EAX.as_operand(), dword_ptr(ECX, 0x1234_5678).as_operand()],
+                    )
+                }),
+                iced32(|a| a.mov(eax, dp(ecx + 0x1234_5678)).unwrap()),
+                "mov eax, [ecx + disp32]",
+            ),
+            (
+                asm32(|a| {
+                    a.emit_n(
+                        InstId::Mov as u32,
+                        &[EAX.as_operand(), dword_ptr(ECX, -8).as_operand()],
+                    )
+                }),
+                iced32(|a| a.mov(eax, dp(ecx - 8)).unwrap()),
+                "mov eax, [ecx - 8]",
+            ),
+            (
+                asm32(|a| {
+                    a.emit_n(
+                        InstId::Mov as u32,
+                        &[
+                            EAX.as_operand(),
+                            dword_ptr_index(ECX, EDX, 2, 0x20).as_operand(),
+                        ],
+                    )
+                }),
+                iced32(|a| a.mov(eax, dp(ecx + edx * 4 + 0x20)).unwrap()),
+                "mov eax, [ecx + edx*4 + 0x20]",
+            ),
+            (
+                asm32(|a| {
+                    a.emit_n(
+                        InstId::Mov as u32,
+                        &[
+                            EAX.as_operand(),
+                            dword_ptr_index(ESI, EDI, 1, 0).as_operand(),
+                        ],
+                    )
+                }),
+                iced32(|a| a.mov(eax, dp(esi + edi * 2)).unwrap()),
+                "mov eax, [esi + edi*2]",
+            ),
+            (
+                asm32(|a| {
+                    a.emit_n(
+                        InstId::Mov as u32,
+                        &[
+                            dword_ptr_index(ECX, EDX, 3, 0x100).as_operand(),
+                            EBX.as_operand(),
+                        ],
+                    )
+                }),
+                iced32(|a| a.mov(dp(ecx + edx * 8 + 0x100), ebx).unwrap()),
+                "mov [ecx + edx*8 + 0x100], ebx",
+            ),
+        ];
+        for (ours, iced, what) in cases {
+            same_bytes(what, ours, iced);
+        }
+    }
+
+    #[test]
+    fn absolute_addressing() {
+        use code_asm::{dword_ptr as dp, eax, ecx};
+        // moffs forms (accumulator only).
+        same_bytes(
+            "mov eax, [abs]",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[EAX.as_operand(), dword_ptr_u64(0x1234_5678).as_operand()],
+                )
+            }),
+            iced32(|a| a.mov(eax, dp(0x1234_5678u64)).unwrap()),
+        );
+        same_bytes(
+            "mov [abs], eax",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[dword_ptr_u64(0x1234_5678).as_operand(), EAX.as_operand()],
+                )
+            }),
+            iced32(|a| a.mov(dp(0x1234_5678u64), eax).unwrap()),
+        );
+        same_bytes(
+            "mov ax, [abs]",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[AX.as_operand(), word_ptr_u64(0x1234_5678).as_operand()],
+                )
+            }),
+            iced32(|a| {
+                a.mov(code_asm::ax, code_asm::word_ptr(0x1234_5678u64))
+                    .unwrap()
+            }),
+        );
+        // Non-accumulator registers use the mod/disp32 absolute form.
+        same_bytes(
+            "mov ecx, [abs]",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[ECX.as_operand(), dword_ptr_u64(0x1234_5678).as_operand()],
+                )
+            }),
+            iced32(|a| a.mov(ecx, dp(0x1234_5678u64)).unwrap()),
+        );
+        same_bytes(
+            "mov [abs], ecx",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[dword_ptr_u64(0x1234_5678).as_operand(), ECX.as_operand()],
+                )
+            }),
+            iced32(|a| a.mov(dp(0x1234_5678u64), ecx).unwrap()),
+        );
+        // lea with a 32-bit absolute address.
+        same_bytes(
+            "lea eax, [abs]",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Lea as u32,
+                    &[EAX.as_operand(), dword_ptr_u64(0x1234_5678).as_operand()],
+                )
+            }),
+            iced32(|a| a.lea(eax, dp(0x1234_5678u64)).unwrap()),
+        );
+        // Segment override with an absolute address.
+        same_bytes(
+            "mov eax, fs:[0x40]",
+            asm32(|a| {
+                a.fs();
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[EAX.as_operand(), dword_ptr_u64(0x40).as_operand()],
+                );
+            }),
+            iced32(|a| a.mov(eax, dp(0x40u64).fs()).unwrap()),
+        );
+        // A 64-bit absolute address is rejected by asmkit (and meaningless to
+        // iced's 32-bit assembler).
+        assert!(asm32_is_err(|a| a.emit_n(
+            InstId::Mov as u32,
+            &[EAX.as_operand(), dword_ptr_u64(0x1_0000_0000).as_operand()]
+        )));
+    }
+
+    #[test]
+    fn mod16_addressing() {
+        use code_asm::{al, ax, bp, bx, di, si, word_ptr as wp};
+        // 8-bit forms carry no 66h prefix, so the prefix-order divergence does
+        // not apply and the bytes are identical.
+        same_bytes(
+            "mov al, [bx]",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[AL.as_operand(), byte_ptr(BX, 0).as_operand()],
+                )
+            }),
+            iced32(|a| a.mov(al, code_asm::byte_ptr(bx)).unwrap()),
+        );
+        same_bytes(
+            "mov al, [bx + si + 0x10]",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[
+                        AL.as_operand(),
+                        byte_ptr_index(BX, SI, 0, 0x10).as_operand(),
+                    ],
+                )
+            }),
+            iced32(|a| a.mov(al, code_asm::byte_ptr(bx + si + 0x10)).unwrap()),
+        );
+        same_bytes(
+            "mov al, [di]",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[AL.as_operand(), byte_ptr(DI, 0).as_operand()],
+                )
+            }),
+            iced32(|a| a.mov(al, code_asm::byte_ptr(di)).unwrap()),
+        );
+        // 16-bit forms: asmkit emits AsmJit's prefix order (67 66), iced emits
+        // (66 67) — compare decode-equivalence.
+        same_decode(
+            "mov ax, [bx + si]",
+            &asm32(|a| {
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[AX.as_operand(), word_ptr_index(BX, SI, 0, 0).as_operand()],
+                )
+            }),
+            &iced32(|a| a.mov(ax, wp(bx + si)).unwrap()),
+        );
+        same_decode(
+            "mov ax, [bx + disp16]",
+            &asm32(|a| {
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[AX.as_operand(), word_ptr(BX, 0x1234).as_operand()],
+                )
+            }),
+            &iced32(|a| a.mov(ax, wp(bx + 0x1234)).unwrap()),
+        );
+        same_decode(
+            "mov ax, [bp] (forced disp8)",
+            &asm32(|a| {
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[AX.as_operand(), word_ptr(BP, 0).as_operand()],
+                )
+            }),
+            &iced32(|a| a.mov(ax, wp(bp)).unwrap()),
+        );
+        same_decode(
+            "mov ax, [si + 8]",
+            &asm32(|a| {
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[AX.as_operand(), word_ptr(SI, 8).as_operand()],
+                )
+            }),
+            &iced32(|a| a.mov(ax, wp(si + 8)).unwrap()),
+        );
+        // Invalid 16-bit address combinations are rejected.
+        assert!(asm32_is_err(|a| a.emit_n(
+            InstId::Mov as u32,
+            &[AX.as_operand(), word_ptr(AX, 0).as_operand()]
+        )));
+        assert!(asm32_is_err(|a| a.emit_n(
+            InstId::Mov as u32,
+            &[AX.as_operand(), word_ptr_index(BX, SI, 1, 0).as_operand()]
+        )));
+    }
+
+    #[test]
+    fn inc_dec_short_forms() {
+        use code_asm::{ax, dx, eax, ebp, ebx, ecx, edi, edx, esi, esp};
+        same_bytes(
+            "inc r32 (all)",
+            asm32(|a| {
+                for r in [EAX, ECX, EDX, EBX, ESP, EBP, ESI, EDI] {
+                    emit1(a, InstId::Inc, r.as_operand());
+                }
+            }),
+            iced32(|a| {
+                for r in [eax, ecx, edx, ebx, esp, ebp, esi, edi] {
+                    a.inc(r).unwrap();
+                }
+            }),
+        );
+        same_bytes(
+            "dec r32 (all)",
+            asm32(|a| {
+                for r in [EAX, ECX, EDX, EBX, ESP, EBP, ESI, EDI] {
+                    emit1(a, InstId::Dec, r.as_operand());
+                }
+            }),
+            iced32(|a| {
+                for r in [eax, ecx, edx, ebx, esp, ebp, esi, edi] {
+                    a.dec(r).unwrap();
+                }
+            }),
+        );
+        same_bytes(
+            "inc ax / dec dx",
+            asm32(|a| {
+                emit1(a, InstId::Inc, AX.as_operand());
+                emit1(a, InstId::Dec, DX.as_operand());
+            }),
+            iced32(|a| {
+                a.inc(ax).unwrap();
+                a.dec(dx).unwrap();
+            }),
+        );
+    }
+
+    #[test]
+    fn push_pop_forms() {
+        use code_asm::{ax, eax, ecx, edx};
+        same_bytes(
+            "push/pop r32+r16",
+            asm32(|a| {
+                emit1(a, InstId::Push, EAX.as_operand());
+                emit1(a, InstId::Push, AX.as_operand());
+                emit1(a, InstId::Pop, ECX.as_operand());
+                emit1(a, InstId::Pop, CX.as_operand());
+            }),
+            iced32(|a| {
+                a.push(eax).unwrap();
+                a.push(ax).unwrap();
+                a.pop(ecx).unwrap();
+                a.pop(code_asm::cx).unwrap();
+            }),
+        );
+        same_bytes(
+            "push imm",
+            asm32(|a| {
+                a.emit_n(InstId::Push as u32, &[imm(0x12).as_operand()]);
+                a.emit_n(InstId::Push as u32, &[imm(0x1234_5678).as_operand()]);
+            }),
+            iced32(|a| {
+                a.push(0x12i32).unwrap();
+                a.push(0x1234_5678u32).unwrap();
+            }),
+        );
+        same_bytes(
+            "push/pop m32+m16",
+            asm32(|a| {
+                emit1(a, InstId::Push, dword_ptr(ECX, 0).as_operand());
+                emit1(a, InstId::Push, word_ptr(ECX, 0).as_operand());
+                emit1(a, InstId::Pop, dword_ptr(EDX, 0).as_operand());
+            }),
+            iced32(|a| {
+                a.push(code_asm::dword_ptr(ecx)).unwrap();
+                a.push(code_asm::word_ptr(ecx)).unwrap();
+                a.pop(code_asm::dword_ptr(edx)).unwrap();
+            }),
+        );
+        // push/pop m64 is rejected in 32-bit mode.
+        assert!(asm32_is_err(|a| emit1(
+            a,
+            InstId::Push,
+            asmkit::x86::operands::qword_ptr(ECX, 0).as_operand()
+        )));
+        assert!(asm32_is_err(|a| emit1(
+            a,
+            InstId::Pop,
+            asmkit::x86::operands::qword_ptr(ECX, 0).as_operand()
+        )));
+    }
+
+    #[test]
+    fn far_pointer_forms() {
+        use code_asm::{ecx, fword_ptr as fp};
+        same_bytes(
+            "lcall imm16, imm32",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Lcall as u32,
+                    &[imm(0x1234).as_operand(), imm(0x1234_5678).as_operand()],
+                )
+            }),
+            iced32(|a| a.call_far(0x1234, 0x1234_5678).unwrap()),
+        );
+        same_bytes(
+            "ljmp imm16, imm32",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Ljmp as u32,
+                    &[imm(0x10).as_operand(), imm(0x20).as_operand()],
+                )
+            }),
+            iced32(|a| a.jmp_far(0x10, 0x20).unwrap()),
+        );
+        same_bytes(
+            "lcall fword [ecx]",
+            asm32(|a| emit1(a, InstId::Lcall, fword_ptr(ECX, 0).as_operand())),
+            iced32(|a| a.call(fp(ecx)).unwrap()),
+        );
+        same_bytes(
+            "ljmp fword [ecx]",
+            asm32(|a| emit1(a, InstId::Ljmp, fword_ptr(ECX, 0).as_operand())),
+            iced32(|a| a.jmp(fp(ecx)).unwrap()),
+        );
+        // Selector above 0xFFFF is rejected.
+        assert!(asm32_is_err(|a| a.emit_n(
+            InstId::Lcall as u32,
+            &[imm(0x1_0000).as_operand(), imm(0).as_operand()]
+        )));
+    }
+
+    #[test]
+    fn branch_label_forms() {
+        // call has no rel8 form: byte-identical forward and backward.
+        same_bytes(
+            "call forward",
+            asm32(|a| {
+                let l = a.get_label();
+                a.emit_n(InstId::Call as u32, &[Label::from_id(l.id()).as_operand()]);
+                a.bind_label(l);
+                a.emit_n(InstId::Nop as u32, &[]);
+            }),
+            iced32(|a| {
+                let l = a.create_label();
+                a.call(l).unwrap();
+                let mut l = l;
+                a.set_label(&mut l).unwrap();
+                a.nop().unwrap();
+            }),
+        );
+        same_bytes(
+            "call backward",
+            asm32(|a| {
+                let l = a.get_label();
+                a.bind_label(l);
+                a.emit_n(InstId::Call as u32, &[Label::from_id(l.id()).as_operand()]);
+            }),
+            iced32(|a| {
+                let mut l = a.create_label();
+                a.set_label(&mut l).unwrap();
+                a.call(l).unwrap();
+            }),
+        );
+        // iced auto-shortens jmp/jcc to a bound label (rel8); asmkit keeps
+        // rel32 — decode-equivalence on the branch target.
+        same_decode(
+            "jmp backward",
+            &asm32(|a| {
+                let l = a.get_label();
+                a.bind_label(l);
+                a.emit_n(InstId::Jmp as u32, &[Label::from_id(l.id()).as_operand()]);
+            }),
+            &iced32(|a| {
+                let mut l = a.create_label();
+                a.set_label(&mut l).unwrap();
+                a.jmp(l).unwrap();
+            }),
+        );
+        same_decode(
+            "jz backward",
+            &asm32(|a| {
+                let l = a.get_label();
+                a.bind_label(l);
+                a.emit_n(InstId::Jz as u32, &[Label::from_id(l.id()).as_operand()]);
+            }),
+            &iced32(|a| {
+                let mut l = a.create_label();
+                a.set_label(&mut l).unwrap();
+                a.jz(l).unwrap();
+            }),
+        );
+        // Label-based memory operands become absolute addresses (RelToAbs).
+        // iced's CodeAsm cannot express absolute label addressing in 32-bit
+        // mode, so compare against the expected bytes here; the unbound-label
+        // Abs4 reloc path is covered by encoder unit tests.
+        assert_eq!(
+            asm32(|a| {
+                let l = a.get_label();
+                a.bind_label(l);
+                a.emit_n(
+                    InstId::Mov as u32,
+                    &[EAX.as_operand(), dword_ptr_label(l, 8).as_operand()],
+                );
+            }),
+            [0x8B, 0x05, 0x08, 0x00, 0x00, 0x00]
+        );
+    }
+
+    #[test]
+    fn string_ops() {
+        // Implicit-operand forms spelled out, [edi]/[esi] bases (no 67h).
+        same_bytes(
+            "movs/stos/lods/scas/cmps",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Movs as u32,
+                    &[byte_ptr(EDI, 0).as_operand(), byte_ptr(ESI, 0).as_operand()],
+                );
+                a.emit_n(
+                    InstId::Movs as u32,
+                    &[word_ptr(EDI, 0).as_operand(), word_ptr(ESI, 0).as_operand()],
+                );
+                a.emit_n(
+                    InstId::Movs as u32,
+                    &[
+                        dword_ptr(EDI, 0).as_operand(),
+                        dword_ptr(ESI, 0).as_operand(),
+                    ],
+                );
+                a.emit_n(
+                    InstId::Stos as u32,
+                    &[byte_ptr(EDI, 0).as_operand(), AL.as_operand()],
+                );
+                a.emit_n(
+                    InstId::Stos as u32,
+                    &[dword_ptr(EDI, 0).as_operand(), EAX.as_operand()],
+                );
+                a.emit_n(
+                    InstId::Lods as u32,
+                    &[AL.as_operand(), byte_ptr(ESI, 0).as_operand()],
+                );
+                a.emit_n(
+                    InstId::Lods as u32,
+                    &[EAX.as_operand(), dword_ptr(ESI, 0).as_operand()],
+                );
+                a.emit_n(
+                    InstId::Scas as u32,
+                    &[AL.as_operand(), byte_ptr(EDI, 0).as_operand()],
+                );
+                a.emit_n(
+                    InstId::Scas as u32,
+                    &[EAX.as_operand(), dword_ptr(EDI, 0).as_operand()],
+                );
+                a.emit_n(
+                    InstId::Cmps as u32,
+                    &[byte_ptr(EDI, 0).as_operand(), byte_ptr(ESI, 0).as_operand()],
+                );
+                a.emit_n(
+                    InstId::Cmps as u32,
+                    &[
+                        dword_ptr(EDI, 0).as_operand(),
+                        dword_ptr(ESI, 0).as_operand(),
+                    ],
+                );
+            }),
+            iced32(|a| {
+                a.movsb().unwrap();
+                a.movsw().unwrap();
+                a.movsd().unwrap();
+                a.stosb().unwrap();
+                a.stosd().unwrap();
+                a.lodsb().unwrap();
+                a.lodsd().unwrap();
+                a.scasb().unwrap();
+                a.scasd().unwrap();
+                a.cmpsb().unwrap();
+                a.cmpsd().unwrap();
+            }),
+        );
+        same_bytes(
+            "rep movsd",
+            asm32(|a| {
+                a.rep();
+                a.emit_n(
+                    InstId::Movs as u32,
+                    &[
+                        dword_ptr(EDI, 0).as_operand(),
+                        dword_ptr(ESI, 0).as_operand(),
+                    ],
+                );
+            }),
+            iced32(|a| a.rep().movsd().unwrap()),
+        );
+        // Explicit jecxz cx: 67h in 32-bit mode (raw-disp8 immediate form).
+        same_bytes(
+            "jecxz cx, -2",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Jecxz as u32,
+                    &[CX.as_operand(), imm(-2).as_operand()],
+                )
+            }),
+            vec![0x67, 0xE3, 0xFE],
+        );
+    }
+
+    #[test]
+    fn creg_dreg_forms() {
+        use code_asm::{cr0, cr8, dr0, eax};
+        same_bytes(
+            "mov eax, cr0 / mov cr0, eax",
+            asm32(|a| {
+                a.emit_n(InstId::Mov as u32, &[EAX.as_operand(), CR0.as_operand()]);
+                a.emit_n(InstId::Mov as u32, &[CR0.as_operand(), EAX.as_operand()]);
+            }),
+            iced32(|a| {
+                a.mov(eax, cr0).unwrap();
+                a.mov(cr0, eax).unwrap();
+            }),
+        );
+        // CR8+ uses the LOCK prefix in 32-bit mode (AMD extension).
+        same_bytes(
+            "mov eax, cr8 / mov cr8, eax",
+            asm32(|a| {
+                a.emit_n(InstId::Mov as u32, &[EAX.as_operand(), CR8.as_operand()]);
+                a.emit_n(InstId::Mov as u32, &[CR8.as_operand(), EAX.as_operand()]);
+            }),
+            iced32(|a| {
+                a.mov(eax, cr8).unwrap();
+                a.mov(cr8, eax).unwrap();
+            }),
+        );
+        same_bytes(
+            "mov eax, dr0 / mov dr0, eax",
+            asm32(|a| {
+                a.emit_n(InstId::Mov as u32, &[EAX.as_operand(), DR0.as_operand()]);
+                a.emit_n(InstId::Mov as u32, &[DR0.as_operand(), EAX.as_operand()]);
+            }),
+            iced32(|a| {
+                a.mov(eax, dr0).unwrap();
+                a.mov(dr0, eax).unwrap();
+            }),
+        );
+    }
+
+    #[test]
+    fn fpu_forms() {
+        use code_asm::{dword_ptr as dp, ecx, st0};
+        same_bytes(
+            "fadd st0, st0 / fadd m32 / fld m32 / fstp m32",
+            asm32(|a| {
+                a.emit_n(InstId::Fadd as u32, &[ST0.as_operand(), ST0.as_operand()]);
+                a.emit_n(InstId::Fadd as u32, &[dword_ptr(ECX, 0).as_operand()]);
+                a.emit_n(InstId::Fld as u32, &[dword_ptr(ECX, 0).as_operand()]);
+                a.emit_n(InstId::Fstp as u32, &[dword_ptr(ECX, 0).as_operand()]);
+            }),
+            iced32(|a| {
+                a.fadd_2(st0, st0).unwrap();
+                a.fadd(dp(ecx)).unwrap();
+                a.fld(dp(ecx)).unwrap();
+                a.fstp(dp(ecx)).unwrap();
+            }),
+        );
+    }
+
+    #[test]
+    fn sse_avx_forms() {
+        use code_asm::{ecx, xmm0, xmm1, xmm2, xmm3, ymm1, ymm2, ymm3};
+        same_bytes(
+            "paddw xmm0, xmm1",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Paddw as u32,
+                    &[XMM0.as_operand(), XMM1.as_operand()],
+                )
+            }),
+            iced32(|a| a.paddw(xmm0, xmm1).unwrap()),
+        );
+        same_bytes(
+            "vaddps xmm/ymm",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Vaddps as u32,
+                    &[XMM1.as_operand(), XMM2.as_operand(), XMM3.as_operand()],
+                );
+                a.emit_n(
+                    InstId::Vaddps as u32,
+                    &[YMM1.as_operand(), YMM2.as_operand(), YMM3.as_operand()],
+                );
+            }),
+            iced32(|a| {
+                a.vaddps(xmm1, xmm2, xmm3).unwrap();
+                a.vaddps(ymm1, ymm2, ymm3).unwrap();
+            }),
+        );
+        same_bytes(
+            "vmovdqu xmm0, [ecx]",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Vmovdqu as u32,
+                    &[
+                        XMM0.as_operand(),
+                        asmkit::x86::operands::oword_ptr(ECX, 0).as_operand(),
+                    ],
+                )
+            }),
+            iced32(|a| a.vmovdqu(xmm0, code_asm::xmmword_ptr(ecx)).unwrap()),
+        );
+        // EVEX is encodable in 32-bit mode (registers below 8 need no R'/X' bits).
+        same_bytes(
+            "vaddpd zmm1, zmm2, zmm3",
+            asm32(|a| {
+                a.emit_n(
+                    InstId::Vaddpd as u32,
+                    &[ZMM1.as_operand(), ZMM2.as_operand(), ZMM3.as_operand()],
+                )
+            }),
+            iced32(|a| {
+                a.vaddpd(code_asm::zmm1, code_asm::zmm2, code_asm::zmm3)
+                    .unwrap()
+            }),
+        );
+    }
+
+    #[test]
+    fn xchg_accumulator_decode() {
+        // asmkit uses the 90+r short form (AsmJit), iced the ModRM form.
+        same_decode(
+            "xchg eax, ecx",
+            &asm32(|a| a.emit_n(InstId::Xchg as u32, &[EAX.as_operand(), ECX.as_operand()])),
+            &iced32(|a| a.xchg(code_asm::eax, code_asm::ecx).unwrap()),
+        );
+        same_decode(
+            "xchg eax, eax (nop)",
+            &asm32(|a| a.emit_n(InstId::Xchg as u32, &[EAX.as_operand(), EAX.as_operand()])),
+            &iced32(|a| a.xchg(code_asm::eax, code_asm::eax).unwrap()),
+        );
+    }
+
+    #[test]
+    fn mode_gating() {
+        // X64-only instructions are rejected by both 32-bit assemblers.
+        // (iced's CodeAsm assembles `syscall` in 32-bit mode without
+        // complaint, so only the asmkit side is checked here.)
+        assert!(asm32_is_err(|a| a.emit_n(InstId::Syscall as u32, &[])));
+        assert!(asm32_is_err(|a| a.emit_n(
+            InstId::Movsxd as u32,
+            &[EAX.as_operand(), EBX.as_operand()]
+        )));
+        assert!(iced32_is_err(|a| a.movsxd(code_asm::eax, code_asm::ebx)));
+        // 64-bit registers are rejected by both.
+        assert!(asm32_is_err(|a| a.emit_n(
+            InstId::Mov as u32,
+            &[RAX.as_operand(), RBX.as_operand()]
+        )));
+        assert!(iced32_is_err(|a| a.mov(code_asm::rax, code_asm::rbx)));
+        assert!(asm32_is_err(|a| emit1(a, InstId::Push, RAX.as_operand())));
+        // Register ids above 7 are rejected (asmkit side).
+        assert!(asm32_is_err(|a| a.emit_n(
+            InstId::Mov as u32,
+            &[EAX.as_operand(), R8D.as_operand()]
+        )));
+        assert!(asm32_is_err(|a| a.emit_n(
+            InstId::Paddw as u32,
+            &[XMM0.as_operand(), XMM8.as_operand()]
+        )));
+        // 64-bit addressing registers are rejected in 32-bit mode.
+        assert!(asm32_is_err(|a| a.emit_n(
+            InstId::Mov as u32,
+            &[EAX.as_operand(), dword_ptr(RBX, 0).as_operand()]
+        )));
+        // 16-bit addressing is rejected in 64-bit mode.
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let mut a64 = Assembler::new(&mut buf);
+        a64.emit_n(
+            InstId::Mov as u32,
+            &[RAX.as_operand(), word_ptr(BX, 0).as_operand()],
+        );
+        assert!(buf.error().is_some());
+    }
 }

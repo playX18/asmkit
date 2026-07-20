@@ -13,7 +13,9 @@ use crate::core::globals::InstOptions;
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Default)]
 pub struct Opcode(pub u32);
 
-#[allow(non_upper_case_globals)]
+// This is the complete AsmJit packed-opcode vocabulary. Some names are used only by
+// generated database rows or parity tests in a given build configuration.
+#[allow(dead_code, non_upper_case_globals)]
 impl Opcode {
     // MM & VEX & EVEX & XOP
     // ---------------------
@@ -192,6 +194,7 @@ impl Opcode {
     pub const KXOP_MA: u32 = Self::PP_00 | Self::MM_XOP0A;
 }
 
+#[allow(dead_code)]
 impl Opcode {
     pub const fn get(self) -> u32 {
         self.0

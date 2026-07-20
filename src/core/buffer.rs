@@ -3,6 +3,7 @@ use alloc::{borrow::Cow, collections::BinaryHeap, vec::Vec};
 use smallvec::SmallVec;
 
 use crate::AsmError;
+use crate::core::arch_traits::Arch;
 use crate::core::patch::{
     PatchBlock, PatchBlockId, PatchCatalog, PatchSite, PatchSiteId, fill_with_nops,
     minimum_patch_alignment,
@@ -25,12 +26,12 @@ use super::{
 /// any heap allocation. As such, it will be several kilobytes large. This is
 /// likely fine as long as it is stack-allocated for function emission then
 /// thrown away; but beware if many buffer objects are retained persistently.
-#[derive(Default)]
 pub struct CodeBuffer {
     env: Environment,
     data: SmallVec<[u8; 1024]>,
     relocs: SmallVec<[AsmReloc; 16]>,
     symbols: SmallVec<[SymData; 16]>,
+    defined_symbols: SmallVec<[(Cow<'static, str>, Label); 4]>,
     label_offsets: SmallVec<[CodeOffset; 16]>,
     pending_fixup_records: SmallVec<[AsmFixup; 16]>,
     pending_fixup_deadline: u32,
@@ -41,6 +42,47 @@ pub struct CodeBuffer {
     fixup_records: BinaryHeap<AsmFixup>,
     patch_blocks: SmallVec<[PendingPatchBlock; 4]>,
     patch_sites: SmallVec<[PendingPatchSite; 8]>,
+    #[cfg(feature = "x86")]
+    x86_branch_relaxations: SmallVec<[X86BranchRelaxation; 8]>,
+    #[cfg(feature = "x86")]
+    alignment_constraints: SmallVec<[(CodeOffset, CodeOffset); 4]>,
+    error: Option<AsmError>,
+}
+
+/// Private rollback point for one raw instruction emission.
+///
+/// Raw backend emission may append bytes and metadata, and x86 may rewrite
+/// bytes appended by the same attempt. It must not mutate metadata or bytes
+/// that predate this checkpoint; island emission is a finalization operation.
+#[derive(Clone, Copy)]
+#[cfg(any(feature = "x86", feature = "aarch64", feature = "riscv"))]
+pub(crate) struct EmissionCheckpoint {
+    data_len: usize,
+    relocs_len: usize,
+    symbols_len: usize,
+    defined_symbols_len: usize,
+    label_offsets_len: usize,
+    pending_fixup_records_len: usize,
+    pending_fixup_deadline: u32,
+    pending_constants_len: usize,
+    pending_constants_size: CodeOffset,
+    used_constants_len: usize,
+    constants_len: usize,
+    patch_blocks_len: usize,
+    patch_sites_len: usize,
+    #[cfg(feature = "x86")]
+    x86_branch_relaxations_len: usize,
+    #[cfg(feature = "x86")]
+    alignment_constraints_len: usize,
+}
+
+#[cfg(feature = "x86")]
+#[derive(Clone, Copy)]
+struct X86BranchRelaxation {
+    opcode_offset: CodeOffset,
+    label: Label,
+    short_opcode: u8,
+    near_size: u8,
 }
 
 #[derive(Clone, Copy)]
@@ -64,7 +106,7 @@ struct PendingPatchSite {
     addend: i64,
 }
 
-#[derive(Clone, PartialEq, Eq, Hash)]
+#[derive(Clone, PartialEq, Eq, Hash, Debug)]
 pub enum ExternalName {
     Symbol(Cow<'static, str>),
     UserName(u32),
@@ -75,7 +117,7 @@ pub enum RelocTarget {
     Label(Label),
 }
 
-#[derive(Copy, Clone, PartialEq, Eq)]
+#[derive(Copy, Clone, PartialEq, Eq, Debug)]
 pub enum RelocDistance {
     Near,
     Far,
@@ -83,8 +125,8 @@ pub enum RelocDistance {
 
 #[derive(Clone, PartialEq, Eq)]
 pub(crate) struct SymData {
-    name: ExternalName,
-    distance: RelocDistance,
+    pub(crate) name: ExternalName,
+    pub(crate) distance: RelocDistance,
 }
 
 /// A relocation resulting from emitting assembly.
@@ -99,7 +141,7 @@ pub struct AsmReloc {
 /// Fixups always refer to labels and patch the code based on label offsets.
 /// Hence, they are like relocations, but internal to one buffer.
 #[derive(Clone, Copy, PartialEq, PartialOrd, Ord, Eq)]
-pub struct AsmFixup {
+pub(crate) struct AsmFixup {
     pub label: Label,
     pub offset: CodeOffset,
     pub kind: LabelUse,
@@ -132,6 +174,8 @@ pub struct CodeBufferFinalized {
     pub(crate) data: SmallVec<[u8; 1024]>,
     pub(crate) relocs: SmallVec<[AsmReloc; 16]>,
     pub(crate) symbols: SmallVec<[SymData; 16]>,
+    pub(crate) label_offsets: SmallVec<[CodeOffset; 16]>,
+    pub(crate) defined_symbols: SmallVec<[(Cow<'static, str>, CodeOffset); 4]>,
     pub(crate) alignment: u32,
     pub(crate) patch_catalog: PatchCatalog,
 }
@@ -190,11 +234,9 @@ pub fn reloc_uses_got(kind: Reloc) -> bool {
     )
 }
 
-pub fn got_slot_index(got_targets: &[RelocTarget], target: &RelocTarget) -> usize {
-    got_targets
-        .iter()
-        .position(|item| item == target)
-        .expect("missing GOT target for relocation")
+#[cfg(feature = "jit")]
+pub(crate) fn got_slot_index(got_targets: &[RelocTarget], target: &RelocTarget) -> Option<usize> {
+    got_targets.iter().position(|item| item == target)
 }
 
 impl CodeBufferFinalized {
@@ -206,16 +248,26 @@ impl CodeBufferFinalized {
         &self.data[..]
     }
 
-    pub fn data_mut(&mut self) -> &mut [u8] {
-        &mut self.data[..]
+    pub fn symbol_name(&self, sym: Sym) -> Option<&ExternalName> {
+        self.symbols
+            .get(sym.id() as usize)
+            .map(|symbol| &symbol.name)
     }
 
-    pub fn symbol_name(&self, sym: Sym) -> &ExternalName {
-        &self.symbols[sym.id() as usize].name
+    pub fn symbol_distance(&self, sym: Sym) -> Option<RelocDistance> {
+        self.symbols
+            .get(sym.id() as usize)
+            .map(|symbol| symbol.distance)
     }
 
-    pub fn symbol_distance(&self, sym: Sym) -> RelocDistance {
-        self.symbols[sym.id() as usize].distance
+    /// Offset of a symbol exported with [`CodeBuffer::bind_symbol`], if present.
+    ///
+    /// After loading, the runtime address of the symbol is `rx + offset`.
+    pub fn defined_symbol_offset(&self, name: &str) -> Option<CodeOffset> {
+        self.defined_symbols
+            .iter()
+            .find(|(defined, _)| defined.as_ref() == name)
+            .map(|(_, offset)| *offset)
     }
 
     pub fn relocs(&self) -> &[AsmReloc] {
@@ -248,6 +300,9 @@ impl CodeBufferFinalized {
     ///
     /// GOT entries are created automatically for relocations that require them and populated
     /// with values returned by `get_address`.
+    ///
+    /// Relocations targeting a [`Label`](RelocTarget::Label) are resolved internally against
+    /// the label offsets recorded at finalize time; the callbacks only see external symbols.
     #[cfg(feature = "jit")]
     pub fn allocate_relocated(
         &self,
@@ -263,36 +318,73 @@ impl CodeBufferFinalized {
             }
         }
 
-        let got_size = got_targets.len() * core::mem::size_of::<usize>();
-        let total_size = self.data().len() + got_size;
+        let got_size = got_targets
+            .len()
+            .checked_mul(core::mem::size_of::<usize>())
+            .ok_or(AsmError::TooLarge)?;
+        let total_size = self
+            .data()
+            .len()
+            .checked_add(got_size)
+            .ok_or(AsmError::TooLarge)?;
         let mut span = jit_allocator.alloc(total_size)?;
 
+        let mut relocation_result = Ok(());
         unsafe {
             jit_allocator.write(&mut span, |span| {
-                span.rw()
-                    .copy_from_nonoverlapping(self.data().as_ptr(), self.data().len());
+                relocation_result = (|| {
+                    span.rw()
+                        .copy_from_nonoverlapping(self.data().as_ptr(), self.data().len());
 
-                let got_rw = span.rw().wrapping_add(self.data().len()) as *mut usize;
-                for (index, target) in got_targets.iter().enumerate() {
-                    let addr = get_address(target);
-                    got_rw.wrapping_add(index).write_unaligned(addr.addr());
-                }
+                    let rx = span.rx();
+                    let resolve = |target: &RelocTarget,
+                                   fallback: &dyn Fn(&RelocTarget) -> *const u8|
+                     -> Result<*const u8, AsmError> {
+                        if let RelocTarget::Label(label) = target {
+                            let offset = self
+                                .label_offsets
+                                .get(label.id() as usize)
+                                .copied()
+                                .ok_or(AsmError::InvalidArgument)?;
+                            if offset == u32::MAX || offset as usize > self.data().len() {
+                                return Err(AsmError::UnboundLabel);
+                            }
+                            return Ok(rx.add(offset as usize));
+                        }
+                        let address = fallback(target);
+                        if address.is_null() {
+                            return Err(AsmError::InvalidArgument);
+                        }
+                        Ok(address)
+                    };
 
-                let got_rx = span.rx().wrapping_add(self.data().len());
-                perform_relocations(
-                    span.rw(),
-                    span.rx(),
-                    &self.relocs,
-                    &get_address,
-                    |target| {
-                        got_rx.wrapping_add(
-                            got_slot_index(&got_targets, target) * core::mem::size_of::<usize>(),
-                        )
-                    },
-                    &get_plt_entry,
-                );
+                    let got_rw = span.rw().add(self.data().len()) as *mut usize;
+                    for (index, target) in got_targets.iter().enumerate() {
+                        let addr = resolve(target, &get_address)?;
+                        got_rw.add(index).write_unaligned(addr.addr());
+                    }
+
+                    let got_rx = rx.add(self.data().len());
+                    perform_relocations(
+                        span.rw(),
+                        rx,
+                        self.data().len(),
+                        &self.relocs,
+                        |target| resolve(target, &get_address),
+                        |target| {
+                            let index = got_slot_index(&got_targets, target)
+                                .ok_or(AsmError::InvalidState)?;
+                            let offset = index
+                                .checked_mul(core::mem::size_of::<usize>())
+                                .ok_or(AsmError::TooLarge)?;
+                            Ok(got_rx.add(offset))
+                        },
+                        |target| resolve(target, &get_plt_entry),
+                    )
+                })();
             })?;
         }
+        relocation_result?;
 
         Ok(LoadedRelocatedCode {
             span,
@@ -300,18 +392,67 @@ impl CodeBufferFinalized {
             got_targets,
         })
     }
+
+    /// Allocate executable memory and apply relocations, resolving external
+    /// symbols by name through `resolve`.
+    ///
+    /// This is the ergonomic counterpart of [`Self::allocate_relocated`]: every
+    /// undefined external symbol (declared with [`CodeBuffer::extern_sym`] or
+    /// surviving a [`Linker`](crate::core::linker::Linker) link) is passed to
+    /// `resolve`, which must return its address. Symbols defined inside the
+    /// image (label targets and linked-in definitions) are resolved internally.
+    ///
+    /// `ExternalName::UserName` symbols cannot be resolved by name and yield a
+    /// null address, which most relocation kinds will reject.
+    #[cfg(feature = "jit")]
+    pub fn allocate_resolved(
+        &self,
+        jit_allocator: &mut JitAllocator,
+        resolve: impl Fn(&str) -> *const u8,
+    ) -> Result<LoadedRelocatedCode, AsmError> {
+        let by_name = |target: &RelocTarget| match target {
+            RelocTarget::Sym(sym) => match self.symbol_name(*sym) {
+                Some(ExternalName::Symbol(name)) => resolve(name),
+                Some(ExternalName::UserName(_)) | None => core::ptr::null(),
+            },
+            // Label targets are resolved internally by `allocate_relocated`.
+            RelocTarget::Label(_) => core::ptr::null(),
+        };
+
+        self.allocate_relocated(jit_allocator, by_name, by_name)
+    }
 }
 
 impl CodeBuffer {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
-    pub fn with_env(env: Environment) -> Self {
+    /// Creates a buffer for `env`.
+    pub fn new(env: Environment) -> Self {
         Self {
             env,
-            ..Default::default()
+            data: SmallVec::new(),
+            relocs: SmallVec::new(),
+            symbols: SmallVec::new(),
+            defined_symbols: SmallVec::new(),
+            label_offsets: SmallVec::new(),
+            pending_fixup_records: SmallVec::new(),
+            pending_fixup_deadline: 0,
+            pending_constants: SmallVec::new(),
+            pending_constants_size: 0,
+            used_constants: SmallVec::new(),
+            constants: SmallVec::new(),
+            fixup_records: BinaryHeap::new(),
+            patch_blocks: SmallVec::new(),
+            patch_sites: SmallVec::new(),
+            #[cfg(feature = "x86")]
+            x86_branch_relaxations: SmallVec::new(),
+            #[cfg(feature = "x86")]
+            alignment_constraints: SmallVec::new(),
+            error: None,
         }
+    }
+
+    /// Creates a buffer for the host target.
+    pub fn host() -> Self {
+        Self::new(Environment::host())
     }
 
     pub fn clear(&mut self) {
@@ -322,53 +463,134 @@ impl CodeBuffer {
         self.constants.clear();
         self.fixup_records.clear();
         self.symbols.clear();
+        self.defined_symbols.clear();
         self.used_constants.clear();
         self.pending_fixup_deadline = 0;
         self.pending_constants_size = 0;
         self.pending_constants.clear();
         self.patch_blocks.clear();
         self.patch_sites.clear();
+        #[cfg(feature = "x86")]
+        self.x86_branch_relaxations.clear();
+        #[cfg(feature = "x86")]
+        self.alignment_constraints.clear();
+        self.error = None;
+    }
+
+    /// Returns the first error recorded by a void assembler operation.
+    pub fn error(&self) -> Option<&AsmError> {
+        self.error.as_ref()
+    }
+
+    pub(crate) fn record_error(&mut self, error: AsmError) {
+        if self.error.is_none() {
+            self.error = Some(error);
+        }
+    }
+
+    #[cfg(any(feature = "x86", feature = "aarch64", feature = "riscv"))]
+    pub(crate) fn checkpoint(&self) -> EmissionCheckpoint {
+        EmissionCheckpoint {
+            data_len: self.data.len(),
+            relocs_len: self.relocs.len(),
+            symbols_len: self.symbols.len(),
+            defined_symbols_len: self.defined_symbols.len(),
+            label_offsets_len: self.label_offsets.len(),
+            pending_fixup_records_len: self.pending_fixup_records.len(),
+            pending_fixup_deadline: self.pending_fixup_deadline,
+            pending_constants_len: self.pending_constants.len(),
+            pending_constants_size: self.pending_constants_size,
+            used_constants_len: self.used_constants.len(),
+            constants_len: self.constants.len(),
+            patch_blocks_len: self.patch_blocks.len(),
+            patch_sites_len: self.patch_sites.len(),
+            #[cfg(feature = "x86")]
+            x86_branch_relaxations_len: self.x86_branch_relaxations.len(),
+            #[cfg(feature = "x86")]
+            alignment_constraints_len: self.alignment_constraints.len(),
+        }
+    }
+
+    #[cfg(any(feature = "x86", feature = "aarch64", feature = "riscv"))]
+    pub(crate) fn rollback(&mut self, checkpoint: EmissionCheckpoint) {
+        self.data.truncate(checkpoint.data_len);
+        self.relocs.truncate(checkpoint.relocs_len);
+        self.symbols.truncate(checkpoint.symbols_len);
+        self.defined_symbols
+            .truncate(checkpoint.defined_symbols_len);
+        self.label_offsets.truncate(checkpoint.label_offsets_len);
+        self.pending_fixup_records
+            .truncate(checkpoint.pending_fixup_records_len);
+        self.pending_fixup_deadline = checkpoint.pending_fixup_deadline;
+        self.pending_constants
+            .truncate(checkpoint.pending_constants_len);
+        self.pending_constants_size = checkpoint.pending_constants_size;
+        self.used_constants.truncate(checkpoint.used_constants_len);
+        self.constants.truncate(checkpoint.constants_len);
+        self.patch_blocks.truncate(checkpoint.patch_blocks_len);
+        self.patch_sites.truncate(checkpoint.patch_sites_len);
+        #[cfg(feature = "x86")]
+        self.x86_branch_relaxations
+            .truncate(checkpoint.x86_branch_relaxations_len);
+        #[cfg(feature = "x86")]
+        self.alignment_constraints
+            .truncate(checkpoint.alignment_constraints_len);
     }
     pub fn env(&self) -> &Environment {
         &self.env
-    }
-
-    pub fn env_mut(&mut self) -> &mut Environment {
-        &mut self.env
     }
 
     pub fn data(&self) -> &[u8] {
         &self.data
     }
 
-    pub fn data_mut(&mut self) -> &mut [u8] {
-        &mut self.data
-    }
-
     /// Returns the byte at `offset`.
     ///
     /// Used by encoder patch-up paths (e.g. X86 LEA/abs32 fixups).
-    pub fn byte_at(&self, offset: CodeOffset) -> u8 {
+    #[cfg(feature = "x86")]
+    pub(crate) fn byte_at(&self, offset: CodeOffset) -> u8 {
         self.data[offset as usize]
     }
 
     /// Overwrites the byte at `offset`.
-    pub fn set_byte_at(&mut self, offset: CodeOffset, value: u8) {
+    #[cfg(feature = "x86")]
+    pub(crate) fn set_byte_at(&mut self, offset: CodeOffset, value: u8) {
         self.data[offset as usize] = value;
     }
 
     /// Inserts a byte at `offset`, shifting all subsequent bytes.
     ///
     /// This is a rare encoder patch-up operation; prefer appending.
-    pub fn insert_at(&mut self, offset: CodeOffset, value: u8) {
+    #[cfg(feature = "x86")]
+    pub(crate) fn insert_at(&mut self, offset: CodeOffset, value: u8) {
         self.data.insert(offset as usize, value);
     }
 
     /// Removes the byte at `offset`, shifting all subsequent bytes.
     ///
     /// This is a rare encoder patch-up operation; prefer appending.
-    pub fn remove_at(&mut self, offset: CodeOffset) {
+    #[cfg(feature = "x86")]
+    pub(crate) fn remove_at(&mut self, offset: CodeOffset) {
         self.data.remove(offset as usize);
+    }
+
+    #[cfg(feature = "x86")]
+    pub(crate) fn record_x86_branch_relaxation(
+        &mut self,
+        opcode_offset: CodeOffset,
+        label: Label,
+        short_opcode: u8,
+        near_size: u8,
+    ) {
+        debug_assert!(matches!(near_size, 5 | 6));
+        debug_assert!((opcode_offset as usize) + near_size as usize <= self.data.len());
+        debug_assert!(self.label_offsets.get(label.id() as usize).is_some());
+        self.x86_branch_relaxations.push(X86BranchRelaxation {
+            opcode_offset,
+            label,
+            short_opcode,
+            near_size,
+        });
     }
 
     pub fn relocs(&self) -> &[AsmReloc] {
@@ -376,38 +598,65 @@ impl CodeBuffer {
     }
 
     pub fn put1(&mut self, value: u8) {
+        if self.error.is_some() {
+            return;
+        }
         self.data.push(value);
     }
 
     pub fn put2(&mut self, value: u16) {
+        if self.error.is_some() {
+            return;
+        }
         self.data.extend_from_slice(&value.to_ne_bytes());
     }
 
     pub fn put4(&mut self, value: u32) {
+        if self.error.is_some() {
+            return;
+        }
         self.data.extend_from_slice(&value.to_ne_bytes());
     }
 
     pub fn put8(&mut self, value: u64) {
+        if self.error.is_some() {
+            return;
+        }
         self.data.extend_from_slice(&value.to_ne_bytes());
     }
 
     pub fn write_u8(&mut self, value: u8) {
+        if self.error.is_some() {
+            return;
+        }
         self.data.push(value);
     }
 
     pub fn write_u16(&mut self, value: u16) {
+        if self.error.is_some() {
+            return;
+        }
         self.data.extend_from_slice(&value.to_ne_bytes());
     }
 
     pub fn write_u32(&mut self, value: u32) {
+        if self.error.is_some() {
+            return;
+        }
         self.data.extend_from_slice(&value.to_ne_bytes());
     }
 
     pub fn write_u64(&mut self, value: u64) {
+        if self.error.is_some() {
+            return;
+        }
         self.data.extend_from_slice(&value.to_ne_bytes());
     }
 
     pub fn add_symbol(&mut self, name: impl Into<ExternalName>, distance: RelocDistance) -> Sym {
+        if self.error.is_some() {
+            return Sym::new();
+        }
         let ix = self.symbols.len();
         self.symbols.push(SymData {
             distance,
@@ -417,22 +666,67 @@ impl CodeBuffer {
         Sym::from_id(ix as u32)
     }
 
-    pub fn symbol_distance(&self, sym: Sym) -> RelocDistance {
-        self.symbols[sym.id() as usize].distance
+    /// Declares an external symbol by name, deduplicating: repeated calls with
+    /// the same name return the same `Sym` (the distance of the first
+    /// declaration wins).
+    ///
+    /// The returned symbol can be passed to the architecture assemblers (e.g.
+    /// `ptr64_sym` on x86) which then record the appropriate relocation based
+    /// on the symbol's distance.
+    pub fn extern_sym(
+        &mut self,
+        name: impl Into<Cow<'static, str>>,
+        distance: RelocDistance,
+    ) -> Sym {
+        if self.error.is_some() {
+            return Sym::new();
+        }
+        let name = ExternalName::Symbol(name.into());
+        if let Some(ix) = self.symbols.iter().position(|sym| sym.name == name) {
+            return Sym::from_id(ix as u32);
+        }
+
+        self.add_symbol(name, distance)
     }
 
-    pub fn symbol_name(&self, sym: Sym) -> &ExternalName {
-        &self.symbols[sym.id() as usize].name
+    /// Exports `label` under `name`, making it a defined symbol that other
+    /// modules can resolve at link time (see [`crate::core::linker::Linker`]).
+    pub fn bind_symbol(&mut self, name: impl Into<Cow<'static, str>>, label: Label) {
+        if self.error.is_some() {
+            return;
+        }
+        if self.label_offsets.get(label.id() as usize).is_none() {
+            self.record_error(AsmError::InvalidArgument);
+            return;
+        }
+        self.defined_symbols.push((name.into(), label));
+    }
+
+    pub fn symbol_distance(&self, sym: Sym) -> Option<RelocDistance> {
+        self.symbols
+            .get(sym.id() as usize)
+            .map(|symbol| symbol.distance)
+    }
+
+    pub fn symbol_name(&self, sym: Sym) -> Option<&ExternalName> {
+        self.symbols
+            .get(sym.id() as usize)
+            .map(|symbol| &symbol.name)
     }
 
     pub fn get_label(&mut self) -> Label {
+        if self.error.is_some() {
+            return Label::new();
+        }
         let l = self.label_offsets.len();
         self.label_offsets.push(u32::MAX);
         Label::from_id(l as _)
     }
 
-    pub fn is_bound(&mut self, label: Label) -> bool {
-        self.label_offsets[label.id() as usize] != u32::MAX
+    pub fn is_bound(&self, label: Label) -> bool {
+        self.label_offsets
+            .get(label.id() as usize)
+            .is_some_and(|offset| *offset != u32::MAX)
     }
 
     /// Number of labels created so far; label ids below this count are valid.
@@ -441,14 +735,19 @@ impl CodeBuffer {
     }
 
     pub fn get_label_for_constant(&mut self, constant: Constant) -> Label {
-        let (
-            _,
-            AsmConstant {
-                upcoming_label,
-                align: _,
-                size,
-            },
-        ) = self.constants[constant.0 as usize];
+        if self.error.is_some() {
+            return Label::new();
+        }
+        let Some((_, metadata)) = self.constants.get(constant.0 as usize) else {
+            self.record_error(AsmError::InvalidArgument);
+            return Label::new();
+        };
+        let metadata = *metadata;
+        let AsmConstant {
+            upcoming_label,
+            size,
+            ..
+        } = metadata;
         if let Some(label) = upcoming_label {
             return label;
         }
@@ -461,6 +760,9 @@ impl CodeBuffer {
     }
 
     pub fn add_constant(&mut self, constant: impl Into<ConstantData>) -> Constant {
+        if self.error.is_some() {
+            return Constant(u32::MAX);
+        }
         let c = self.constants.len() as u32;
         let data = constant.into();
         let x = AsmConstant {
@@ -473,6 +775,21 @@ impl CodeBuffer {
     }
 
     pub fn use_label_at_offset(&mut self, offset: CodeOffset, label: Label, kind: LabelUse) {
+        if self.error.is_some() {
+            return;
+        }
+        if let Err(error) = kind.validate_for_arch(self.env.arch()) {
+            self.record_error(error);
+            return;
+        }
+        if (offset as usize).checked_add(kind.patch_size()).is_none() {
+            self.record_error(AsmError::TooLarge);
+            return;
+        }
+        if self.label_offsets.get(label.id() as usize).is_none() {
+            self.record_error(AsmError::InvalidArgument);
+            return;
+        }
         let fixup = AsmFixup {
             kind,
             label,
@@ -484,28 +801,63 @@ impl CodeBuffer {
     }
 
     /// Align up to the given alignment.
-    pub fn align_to(&mut self, align_to: CodeOffset) {
-        assert!(
-            align_to.is_power_of_two(),
-            "{align_to} is not a power of two"
-        );
+    pub fn try_align_to(&mut self, align_to: CodeOffset) -> Result<(), AsmError> {
+        if let Some(error) = self.error.clone() {
+            return Err(error);
+        }
+        if !align_to.is_power_of_two() {
+            return Err(AsmError::InvalidArgument);
+        }
         while self.cur_offset() & (align_to - 1) != 0 {
             self.write_u8(0);
         }
+        #[cfg(feature = "x86")]
+        if align_to > 1 {
+            self.alignment_constraints
+                .push((self.cur_offset(), align_to));
+        }
+        Ok(())
+    }
 
-        // Post-invariant: as for `put1()`.
+    pub fn align_to(&mut self, align_to: CodeOffset) {
+        if let Err(error) = self.try_align_to(align_to) {
+            self.record_error(error);
+        }
     }
 
     pub fn cur_offset(&self) -> CodeOffset {
         self.data.len() as _
     }
 
+    pub fn try_bind_label(&mut self, label: Label) -> Result<(), AsmError> {
+        if let Some(error) = self.error.clone() {
+            return Err(error);
+        }
+        let current_offset = self.cur_offset();
+        let Some(offset) = self.label_offsets.get_mut(label.id() as usize) else {
+            return Err(AsmError::InvalidArgument);
+        };
+        if *offset != u32::MAX {
+            return Err(AsmError::InvalidState);
+        }
+        *offset = current_offset;
+        Ok(())
+    }
+
     pub fn bind_label(&mut self, label: Label) {
-        self.label_offsets[label.id() as usize] = self.cur_offset();
+        if self.error.is_some() {
+            return;
+        }
+        if let Err(error) = self.try_bind_label(label) {
+            self.record_error(error);
+        }
     }
 
     pub fn label_offset(&self, label: Label) -> u32 {
-        self.label_offsets[label.id() as usize]
+        self.label_offsets
+            .get(label.id() as usize)
+            .copied()
+            .unwrap_or(u32::MAX)
     }
 
     pub fn add_reloc(&mut self, kind: Reloc, target: RelocTarget, addend: i64) {
@@ -520,6 +872,21 @@ impl CodeBuffer {
         target: RelocTarget,
         addend: i64,
     ) {
+        if self.error.is_some() {
+            return;
+        }
+        if !kind.supports_arch(self.env.arch()) {
+            self.record_error(AsmError::InvalidArch);
+            return;
+        }
+        let valid_target = match target {
+            RelocTarget::Sym(sym) => self.symbols.get(sym.id() as usize).is_some(),
+            RelocTarget::Label(label) => self.label_offsets.get(label.id() as usize).is_some(),
+        };
+        if !valid_target {
+            self.record_error(AsmError::InvalidArgument);
+            return;
+        }
         self.relocs.push(AsmReloc {
             addend,
             kind,
@@ -533,13 +900,24 @@ impl CodeBuffer {
         size: CodeOffset,
         align: CodeOffset,
     ) -> Result<PatchBlockId, AsmError> {
+        if let Some(error) = self.error.clone() {
+            return Err(error);
+        }
         let min_align = minimum_patch_alignment(self.env.arch());
         let align = align.max(min_align);
         if size == 0 || !align.is_power_of_two() {
             return Err(AsmError::InvalidArgument);
         }
+        let nop_size = match self.env.arch() {
+            Arch::X86 | Arch::X64 => 1,
+            Arch::AArch64 | Arch::RISCV32 | Arch::RISCV64 => 4,
+            _ => return Err(AsmError::InvalidArch),
+        };
+        if size as usize % nop_size != 0 {
+            return Err(AsmError::InvalidArgument);
+        }
 
-        self.align_to(align);
+        self.try_align_to(align)?;
         let arch = self.env.arch();
         let offset = self.cur_offset();
         let block = self.get_appended_space(size as usize);
@@ -560,25 +938,40 @@ impl CodeBuffer {
         size: CodeOffset,
         align: CodeOffset,
     ) -> PatchBlockId {
-        if size == 0 || align == 0 || !align.is_power_of_two() {
-            unreachable!("invalid patch block with size {size} and align {align}");
+        match self.try_record_patch_block(offset, size, align) {
+            Ok(id) => id,
+            Err(error) => {
+                self.record_error(error);
+                PatchBlockId::from_index(usize::MAX)
+            }
         }
+    }
 
-        let end = offset as usize + size as usize;
+    pub fn try_record_patch_block(
+        &mut self,
+        offset: CodeOffset,
+        size: CodeOffset,
+        align: CodeOffset,
+    ) -> Result<PatchBlockId, AsmError> {
+        if let Some(error) = self.error.clone() {
+            return Err(error);
+        }
+        if size == 0 || align == 0 || !align.is_power_of_two() || offset & (align - 1) != 0 {
+            return Err(AsmError::InvalidArgument);
+        }
+        let end = (offset as usize)
+            .checked_add(size as usize)
+            .ok_or(AsmError::TooLarge)?;
         if end > self.data.len() {
-            unreachable!(
-                "patch block at offset {offset} with size {size} exceeds code buffer size {}",
-                self.data.len()
-            );
+            return Err(AsmError::InvalidArgument);
         }
-
         let id = PatchBlockId::from_index(self.patch_blocks.len());
         self.patch_blocks.push(PendingPatchBlock {
             offset,
             size,
             align,
         });
-        id
+        Ok(id)
     }
 
     pub fn record_patch_site(
@@ -587,7 +980,25 @@ impl CodeBuffer {
         kind: LabelUse,
         target_offset: CodeOffset,
     ) -> PatchSiteId {
-        self.validate_patch_site_offset(offset, kind);
+        match self.try_record_patch_site(offset, kind, target_offset) {
+            Ok(id) => id,
+            Err(error) => {
+                self.record_error(error);
+                PatchSiteId::from_index(usize::MAX)
+            }
+        }
+    }
+
+    pub fn try_record_patch_site(
+        &mut self,
+        offset: CodeOffset,
+        kind: LabelUse,
+        target_offset: CodeOffset,
+    ) -> Result<PatchSiteId, AsmError> {
+        if let Some(error) = self.error.clone() {
+            return Err(error);
+        }
+        self.validate_patch_site_offset(offset, kind)?;
         let id = PatchSiteId::from_index(self.patch_sites.len());
         self.patch_sites.push(PendingPatchSite {
             offset,
@@ -595,7 +1006,7 @@ impl CodeBuffer {
             target: PendingPatchTarget::Offset(target_offset),
             addend: 0,
         });
-        id
+        Ok(id)
     }
 
     pub fn record_label_patch_site(
@@ -604,7 +1015,28 @@ impl CodeBuffer {
         label: Label,
         kind: LabelUse,
     ) -> PatchSiteId {
-        self.validate_patch_site_offset(offset, kind);
+        match self.try_record_label_patch_site(offset, label, kind) {
+            Ok(id) => id,
+            Err(error) => {
+                self.record_error(error);
+                PatchSiteId::from_index(usize::MAX)
+            }
+        }
+    }
+
+    pub fn try_record_label_patch_site(
+        &mut self,
+        offset: CodeOffset,
+        label: Label,
+        kind: LabelUse,
+    ) -> Result<PatchSiteId, AsmError> {
+        if let Some(error) = self.error.clone() {
+            return Err(error);
+        }
+        if self.label_offsets.get(label.id() as usize).is_none() {
+            return Err(AsmError::InvalidArgument);
+        }
+        self.validate_patch_site_offset(offset, kind)?;
         let id = PatchSiteId::from_index(self.patch_sites.len());
         self.patch_sites.push(PendingPatchSite {
             offset,
@@ -612,39 +1044,46 @@ impl CodeBuffer {
             target: PendingPatchTarget::Label(label),
             addend: 0,
         });
-        id
+        Ok(id)
     }
 
-    fn validate_patch_site_offset(&self, offset: CodeOffset, kind: LabelUse) {
-        let end = offset as usize + kind.patch_size();
+    fn validate_patch_site_offset(
+        &self,
+        offset: CodeOffset,
+        kind: LabelUse,
+    ) -> Result<(), AsmError> {
+        kind.validate_for_arch(self.env.arch())?;
+        let end = (offset as usize)
+            .checked_add(kind.patch_size())
+            .ok_or(AsmError::TooLarge)?;
         if end > self.data.len() {
-            unreachable!(
-                "patch site at offset {offset} with size {} exceeds code buffer size {}",
-                kind.patch_size(),
-                self.data.len()
-            );
+            return Err(AsmError::InvalidArgument);
         }
+        Ok(())
     }
 
-    fn handle_fixup(&mut self, fixup: AsmFixup) {
+    fn handle_fixup(&mut self, fixup: AsmFixup) -> Result<(), AsmError> {
         let AsmFixup {
             kind,
             label,
             offset,
         } = fixup;
         let start = offset;
-        let end = offset as usize + kind.patch_size();
+        let end = (offset as usize)
+            .checked_add(kind.patch_size())
+            .ok_or(AsmError::TooLarge)?;
+        if end > self.data.len() {
+            return Err(AsmError::InvalidArgument);
+        }
 
-        let label_offset = self.label_offsets[label.id() as usize];
+        let label_offset = self.label_offset(label);
         if label_offset != u32::MAX {
-            let veneer_required = if label_offset >= offset {
-                false
-            } else {
-                (offset - label_offset) > kind.max_neg_range()
-            };
-
-            if veneer_required {
-                self.emit_veneer(label, offset, kind);
+            if !kind.can_reach(offset, label_offset) {
+                if label_offset < offset {
+                    self.emit_veneer(label, offset, kind)?;
+                } else {
+                    return Err(AsmError::TooLarge);
+                }
             } else {
                 let slice = &mut self.data[start as usize..end];
 
@@ -654,8 +1093,9 @@ impl CodeBuffer {
             // If the offset of this label is not known at this time then
             // that means that a veneer is required because after this
             // island the target can't be in range of the original target.
-            self.emit_veneer(label, offset, kind);
+            self.emit_veneer(label, offset, kind)?;
         }
+        Ok(())
     }
 
     /// Emits a "veneer" the `kind` code at `offset` to jump to `label`.
@@ -664,34 +1104,64 @@ impl CodeBuffer {
     /// larger-jump-kind than `kind` allows. The code at `offset` is then
     /// patched to jump to our new code, and then the new code is enqueued for
     /// a fixup to get processed at some later time.
-    pub fn emit_veneer(&mut self, label: Label, offset: CodeOffset, kind: LabelUse) {
-        // If this `kind` doesn't support a veneer then that's a bug in the
-        // backend because we need to implement support for such a veneer.
-        assert!(
-            kind.supports_veneer(),
-            "jump beyond the range of {kind:?} but a veneer isn't supported",
-        );
-
-        self.align_to(kind.align() as _);
-        let veneer_offset = self.cur_offset();
+    pub fn emit_veneer(
+        &mut self,
+        label: Label,
+        offset: CodeOffset,
+        kind: LabelUse,
+    ) -> Result<(), AsmError> {
+        if let Some(error) = self.error.clone() {
+            return Err(error);
+        }
+        kind.validate_for_arch(self.env.arch())?;
+        if !kind.supports_veneer() {
+            return Err(AsmError::UnsupportedInstruction {
+                reason: "branch range requires an unsupported veneer",
+            });
+        }
+        if self.label_offsets.get(label.id() as usize).is_none() {
+            return Err(AsmError::InvalidArgument);
+        }
         let start = offset as usize;
-        let end = (offset + kind.patch_size() as u32) as usize;
-        let slice = &mut self.data[start..end];
+        let end = start
+            .checked_add(kind.patch_size())
+            .ok_or(AsmError::TooLarge)?;
+        if end > self.data.len() {
+            return Err(AsmError::InvalidArgument);
+        }
+        #[cfg(not(feature = "riscv"))]
+        {
+            let _ = (label, offset, kind);
+            Err(AsmError::UnsupportedInstruction {
+                reason: "RISC-V veneer support is disabled",
+            })
+        }
 
-        kind.patch(slice, offset, veneer_offset);
-        let veneer_slice = self.get_appended_space(kind.veneer_size());
-        let (veneer_fixup_off, veneer_label_use) =
-            kind.generate_veneer(veneer_slice, veneer_offset);
+        #[cfg(feature = "riscv")]
+        {
+            self.try_align_to(kind.align() as _)?;
+            let veneer_offset = self.cur_offset();
+            let slice = &mut self.data[start..end];
 
-        // Register a new use of `label` with our new veneer fixup and
-        // offset. This'll recalculate deadlines accordingly and
-        // enqueue this fixup to get processed at some later
-        // time.
-        self.use_label_at_offset(veneer_fixup_off, label, veneer_label_use);
+            kind.patch(slice, offset, veneer_offset);
+            let veneer_slice = self.get_appended_space(kind.veneer_size());
+            let (veneer_fixup_off, veneer_label_use) =
+                kind.generate_veneer(veneer_slice, veneer_offset);
+
+            // Register a new use of `label` with our new veneer fixup and
+            // offset. This'll recalculate deadlines accordingly and
+            // enqueue this fixup to get processed at some later
+            // time.
+            self.use_label_at_offset(veneer_fixup_off, label, veneer_label_use);
+            if let Some(error) = self.error.clone() {
+                return Err(error);
+            }
+            Ok(())
+        }
     }
 
     /// Reserve appended space and return a mutable slice referring to it.
-    pub fn get_appended_space(&mut self, len: usize) -> &mut [u8] {
+    pub(crate) fn get_appended_space(&mut self, len: usize) -> &mut [u8] {
         let off = self.data.len();
         let new_len = self.data.len() + len;
         self.data.resize(new_len, 0);
@@ -737,7 +1207,10 @@ impl CodeBuffer {
     }
 
     /// Emit all pending constants and required pending veneers.
-    pub fn emit_island(&mut self, distance: CodeOffset) {
+    pub fn emit_island(&mut self, distance: CodeOffset) -> Result<(), AsmError> {
+        if let Some(error) = self.error.clone() {
+            return Err(error);
+        }
         let forced_threshold = self.worst_case_end_of_island(distance);
 
         for constant in core::mem::take(&mut self.pending_constants) {
@@ -747,8 +1220,8 @@ impl CodeBuffer {
                 .upcoming_label
                 .take()
                 .unwrap();
-            self.align_to(align as _);
-            self.bind_label(label);
+            self.try_align_to(align as _)?;
+            self.try_bind_label(label)?;
             self.used_constants.push((constant, self.cur_offset()));
             self.get_appended_space(size);
         }
@@ -757,7 +1230,7 @@ impl CodeBuffer {
         // ready.
         for fixup in core::mem::take(&mut self.pending_fixup_records) {
             if self.should_apply_fixup(&fixup, forced_threshold) {
-                self.handle_fixup(fixup);
+                self.handle_fixup(fixup)?;
             } else {
                 self.fixup_records.push(fixup);
             }
@@ -775,11 +1248,12 @@ impl CodeBuffer {
                 break;
             }
             let fixup = self.fixup_records.pop().unwrap();
-            self.handle_fixup(fixup);
+            self.handle_fixup(fixup)?;
         }
+        Ok(())
     }
 
-    fn finish_emission_maybe_forcing_veneers(&mut self) {
+    fn finish_emission_maybe_forcing_veneers(&mut self) -> Result<(), AsmError> {
         while !self.pending_constants.is_empty()
             || !self.pending_fixup_records.is_empty()
             || !self.fixup_records.is_empty()
@@ -787,8 +1261,252 @@ impl CodeBuffer {
             // `emit_island()` will emit any pending veneers and constants, and
             // as a side-effect, will also take care of any fixups with resolved
             // labels eagerly.
-            self.emit_island(u32::MAX);
+            self.emit_island(u32::MAX)?;
         }
+        Ok(())
+    }
+
+    #[cfg(feature = "x86")]
+    fn relax_x86_branches(&mut self) -> Result<(), AsmError> {
+        loop {
+            let mut selected = None;
+
+            for (index, &candidate) in self.x86_branch_relaxations.iter().enumerate() {
+                let start = candidate.opcode_offset as usize;
+                let near_size = candidate.near_size as usize;
+                let end = start.checked_add(near_size).ok_or(AsmError::TooLarge)?;
+                if end > self.data.len() {
+                    return Err(AsmError::InvalidState);
+                }
+                let valid_encoding = match candidate.near_size {
+                    5 => self.data[start] == 0xE9 && candidate.short_opcode == 0xEB,
+                    6 => {
+                        self.data[start] == 0x0F
+                            && self.data[start + 1] == candidate.short_opcode.wrapping_add(0x10)
+                    }
+                    _ => false,
+                };
+                if !valid_encoding {
+                    return Err(AsmError::InvalidState);
+                }
+
+                let target = self.label_offset(candidate.label);
+                if target == u32::MAX {
+                    return Err(AsmError::UnboundLabel);
+                }
+                let old_end = candidate
+                    .opcode_offset
+                    .checked_add(candidate.near_size as u32)
+                    .ok_or(AsmError::TooLarge)?;
+                if target > candidate.opcode_offset && target < old_end {
+                    return Err(AsmError::InvalidState);
+                }
+
+                let removed = candidate.near_size as u32 - 2;
+                let target_after = if target >= old_end {
+                    target - removed
+                } else {
+                    target
+                };
+                let short_end = candidate
+                    .opcode_offset
+                    .checked_add(2)
+                    .ok_or(AsmError::TooLarge)?;
+                let displacement = i64::from(target_after) - i64::from(short_end);
+                let Ok(displacement) = i8::try_from(displacement) else {
+                    continue;
+                };
+
+                let cut_start = short_end;
+                let cut_end = old_end;
+                let preserves_alignment =
+                    self.alignment_constraints.iter().all(|&(offset, align)| {
+                        offset < cut_end || (offset - removed) & (align - 1) == 0
+                    }) && self.patch_blocks.iter().all(|block| {
+                        block.offset < cut_end || (block.offset - removed) & (block.align - 1) == 0
+                    });
+                if !preserves_alignment {
+                    continue;
+                }
+
+                selected = Some((index, candidate, displacement, cut_start, cut_end));
+                break;
+            }
+
+            let Some((index, candidate, displacement, cut_start, cut_end)) = selected else {
+                return Ok(());
+            };
+            let removed = cut_end - cut_start;
+            let fixup_offset = cut_end - LabelUse::X86JmpRel32.patch_size() as u32;
+            let is_candidate_fixup = |fixup: &AsmFixup| {
+                fixup.offset == fixup_offset
+                    && fixup.label == candidate.label
+                    && fixup.kind == LabelUse::X86JmpRel32
+            };
+
+            let overlaps_cut = |offset: CodeOffset, size: usize| -> Result<bool, AsmError> {
+                let end = offset
+                    .checked_add(u32::try_from(size).map_err(|_| AsmError::TooLarge)?)
+                    .ok_or(AsmError::TooLarge)?;
+                Ok(offset < cut_end && end > cut_start)
+            };
+            for reloc in &self.relocs {
+                if overlaps_cut(reloc.offset, relocation_patch_size(reloc.kind)?)? {
+                    return Err(AsmError::InvalidState);
+                }
+            }
+            for fixup in self
+                .pending_fixup_records
+                .iter()
+                .chain(self.fixup_records.iter())
+            {
+                if !is_candidate_fixup(fixup)
+                    && overlaps_cut(fixup.offset, fixup.kind.patch_size())?
+                {
+                    return Err(AsmError::InvalidState);
+                }
+            }
+            for block in &self.patch_blocks {
+                if overlaps_cut(block.offset, block.size as usize)? {
+                    return Err(AsmError::InvalidState);
+                }
+            }
+            for site in &self.patch_sites {
+                if overlaps_cut(site.offset, site.kind.patch_size())?
+                    || matches!(site.target, PendingPatchTarget::Offset(offset) if (cut_start..cut_end).contains(&offset))
+                {
+                    return Err(AsmError::InvalidState);
+                }
+            }
+            if self
+                .label_offsets
+                .iter()
+                .any(|&offset| offset != u32::MAX && (cut_start..cut_end).contains(&offset))
+                || self
+                    .used_constants
+                    .iter()
+                    .any(|&(_, offset)| (cut_start..cut_end).contains(&offset))
+                || self
+                    .alignment_constraints
+                    .iter()
+                    .any(|&(offset, _)| (cut_start..cut_end).contains(&offset))
+            {
+                return Err(AsmError::InvalidState);
+            }
+            for (other_index, other) in self.x86_branch_relaxations.iter().enumerate() {
+                if other_index != index
+                    && overlaps_cut(other.opcode_offset, other.near_size as usize)?
+                {
+                    return Err(AsmError::InvalidState);
+                }
+            }
+
+            let start = candidate.opcode_offset as usize;
+            self.data[start] = candidate.short_opcode;
+            self.data[start + 1] = displacement as u8;
+            self.data.drain(cut_start as usize..cut_end as usize);
+            self.x86_branch_relaxations.remove(index);
+
+            self.pending_fixup_records
+                .retain(|fixup| !is_candidate_fixup(fixup));
+            let mut fixups = core::mem::take(&mut self.fixup_records).into_vec();
+            fixups.retain(|fixup| !is_candidate_fixup(fixup));
+
+            let rebase = |offset: &mut CodeOffset| -> Result<(), AsmError> {
+                if *offset >= cut_end {
+                    *offset -= removed;
+                } else if *offset >= cut_start {
+                    return Err(AsmError::InvalidState);
+                }
+                Ok(())
+            };
+
+            for reloc in &mut self.relocs {
+                rebase(&mut reloc.offset)?;
+            }
+            for offset in &mut self.label_offsets {
+                if *offset != u32::MAX {
+                    rebase(offset)?;
+                }
+            }
+            for fixup in &mut self.pending_fixup_records {
+                rebase(&mut fixup.offset)?;
+            }
+            for fixup in &mut fixups {
+                rebase(&mut fixup.offset)?;
+            }
+            self.fixup_records = BinaryHeap::from(fixups);
+            self.pending_fixup_deadline = self
+                .pending_fixup_records
+                .iter()
+                .map(AsmFixup::deadline)
+                .min()
+                .unwrap_or(u32::MAX);
+            for (_, offset) in &mut self.used_constants {
+                rebase(offset)?;
+            }
+            for block in &mut self.patch_blocks {
+                rebase(&mut block.offset)?;
+            }
+            for site in &mut self.patch_sites {
+                rebase(&mut site.offset)?;
+                if let PendingPatchTarget::Offset(offset) = &mut site.target {
+                    rebase(offset)?;
+                }
+            }
+            for relaxation in &mut self.x86_branch_relaxations {
+                rebase(&mut relaxation.opcode_offset)?;
+            }
+            for (offset, _) in &mut self.alignment_constraints {
+                rebase(offset)?;
+            }
+        }
+    }
+
+    /// Reject finalization failures that can be determined before island
+    /// emission mutates the buffer.
+    fn preflight_finalization(&self) -> Result<(), AsmError> {
+        for fixup in self
+            .pending_fixup_records
+            .iter()
+            .chain(self.fixup_records.iter())
+        {
+            let end = (fixup.offset as usize)
+                .checked_add(fixup.kind.patch_size())
+                .ok_or(AsmError::TooLarge)?;
+            if end > self.data.len() {
+                return Err(AsmError::InvalidArgument);
+            }
+            let label_offset = self.label_offset(fixup.label);
+            if label_offset == u32::MAX {
+                return Err(AsmError::UnboundLabel);
+            }
+            if fixup.kind.can_reach(fixup.offset, label_offset) {
+                continue;
+            }
+            if matches!(
+                fixup.kind,
+                LabelUse::A64Branch14 | LabelUse::A64Branch19 | LabelUse::A64Branch26
+            ) && !fixup.kind.supports_veneer()
+            {
+                return Err(AsmError::UnsupportedInstruction {
+                    reason: "AArch64 branch veneers are not implemented",
+                });
+            }
+            if label_offset >= fixup.offset {
+                return Err(AsmError::TooLarge);
+            }
+            if !fixup.kind.supports_veneer() {
+                return Err(AsmError::UnsupportedInstruction {
+                    reason: "branch range requires an unsupported veneer",
+                });
+            }
+            #[cfg(not(feature = "riscv"))]
+            return Err(AsmError::UnsupportedInstruction {
+                reason: "RISC-V veneer support is disabled",
+            });
+        }
+        Ok(())
     }
 
     fn finish_constants(&mut self) -> u32 {
@@ -841,32 +1559,92 @@ impl CodeBuffer {
         Ok(PatchCatalog::with_parts(self.env.arch(), blocks, sites))
     }
 
+    fn resolved_defined_symbols(&self) -> SmallVec<[(Cow<'static, str>, CodeOffset); 4]> {
+        // Unbound labels keep the sentinel offset; the linker reports them as
+        // an error.
+        self.defined_symbols
+            .iter()
+            .map(|(name, label)| (name.clone(), self.label_offset(*label)))
+            .collect()
+    }
+
     pub fn finish_patched(mut self) -> Result<CodeBufferFinalized, AsmError> {
-        self.finish_emission_maybe_forcing_veneers();
+        if let Some(error) = self.error.take() {
+            return Err(error);
+        }
+        if self.has_unbound_labels() {
+            return Err(AsmError::UnboundLabel);
+        }
+        self.preflight_finalization()?;
+        #[cfg(feature = "x86")]
+        self.relax_x86_branches()?;
+        #[cfg(feature = "x86")]
+        self.preflight_finalization()?;
+        self.finish_emission_maybe_forcing_veneers()?;
         let patch_catalog = self.resolve_patch_catalog(true)?;
         let alignment = self.finish_constants();
+        let defined_symbols = self.resolved_defined_symbols();
         Ok(CodeBufferFinalized {
             data: self.data,
             relocs: self.relocs,
             symbols: self.symbols,
+            label_offsets: self.label_offsets,
+            defined_symbols,
             alignment,
             patch_catalog,
         })
     }
 
-    pub fn finish(&mut self) -> CodeBufferFinalized {
-        self.finish_emission_maybe_forcing_veneers();
-        let patch_catalog = self
-            .resolve_patch_catalog(false)
-            .expect("patch metadata must be validated at registration time");
+    pub fn finish(&mut self) -> Result<CodeBufferFinalized, AsmError> {
+        if let Some(error) = self.error.clone() {
+            return Err(error);
+        }
+        if self.has_unbound_labels() {
+            return Err(AsmError::UnboundLabel);
+        }
+        self.preflight_finalization()?;
+        #[cfg(feature = "x86")]
+        self.relax_x86_branches()?;
+        #[cfg(feature = "x86")]
+        self.preflight_finalization()?;
+        self.finish_emission_maybe_forcing_veneers()?;
+        let patch_catalog = self.resolve_patch_catalog(false)?;
         let alignment = self.finish_constants();
-        CodeBufferFinalized {
+        Ok(CodeBufferFinalized {
             data: self.data.clone(),
             relocs: self.relocs.clone(),
             symbols: self.symbols.clone(),
+            label_offsets: self.label_offsets.clone(),
+            defined_symbols: self.resolved_defined_symbols(),
             alignment,
             patch_catalog,
-        }
+        })
+    }
+
+    fn has_unbound_labels(&self) -> bool {
+        let is_unbound = |label: Label| {
+            self.label_offsets
+                .get(label.id() as usize)
+                .is_none_or(|offset| *offset == u32::MAX)
+        };
+        self.pending_fixup_records
+            .iter()
+            .any(|fixup| is_unbound(fixup.label))
+            || self
+                .fixup_records
+                .iter()
+                .any(|fixup| is_unbound(fixup.label))
+            || self
+                .relocs
+                .iter()
+                .any(|reloc| matches!(reloc.target, RelocTarget::Label(label) if is_unbound(label)))
+            || self
+                .defined_symbols
+                .iter()
+                .any(|(_, label)| is_unbound(*label))
+            || self.patch_sites.iter().any(
+                |site| matches!(site.target, PendingPatchTarget::Label(label) if is_unbound(label)),
+            )
     }
 }
 
@@ -935,7 +1713,7 @@ pub type CodeOffset = u32;
 pub type Addend = i64;
 
 /// Relocation kinds for every ISA
-#[derive(Copy, Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Copy, Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Reloc {
     /// absolute 4-byte
     Abs4,
@@ -1037,6 +1815,44 @@ pub enum Reloc {
     RiscvGotHi20,
 }
 
+impl Reloc {
+    const fn supports_arch(self, arch: Arch) -> bool {
+        match self {
+            Self::Abs4 | Self::Abs8 => true,
+            Self::X86PCRel4
+            | Self::X86CallPCRel4
+            | Self::X86CallPLTRel4
+            | Self::X86GOTPCRel4
+            | Self::X86SecRel
+            | Self::ElfX86_64TlsGd
+            | Self::MachOX86_64Tlv => {
+                cfg!(feature = "x86") && matches!(arch, Arch::X86 | Arch::X64)
+            }
+            Self::Arm32Call => false,
+            Self::Arm64Call
+            | Self::MachOAarch64TlsAdrPage21
+            | Self::MachOAarch64TlsAdrPageOff12
+            | Self::Aarch64TlsDescAdrPage21
+            | Self::Aarch64TlsDescLd64Lo12
+            | Self::Aarch64TlsDescAddLo12
+            | Self::Aarch64TlsDescCall
+            | Self::Aarch64AdrGotPage21
+            | Self::Aarch64Ld64GotLo12Nc
+            | Self::Aarch64AdrPrelPgHi21
+            | Self::Aarch64AddAbsLo12Nc => {
+                cfg!(feature = "aarch64") && matches!(arch, Arch::AArch64)
+            }
+            Self::RiscvAbs8
+            | Self::RiscvCallPlt
+            | Self::RiscvTlsGdHi20
+            | Self::RiscvPCRelLo12I
+            | Self::RiscvGotHi20 => {
+                cfg!(feature = "riscv") && matches!(arch, Arch::RISCV32 | Arch::RISCV64)
+            }
+        }
+    }
+}
+
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
 pub enum LabelUse {
     X86JmpRel32,
@@ -1099,6 +1915,41 @@ pub enum LabelUse {
 }
 
 impl LabelUse {
+    fn validate_for_arch(self, arch: Arch) -> Result<(), AsmError> {
+        if self == Self::A64Ldr12 {
+            return Err(AsmError::UnsupportedInstruction {
+                reason: "AArch64 LDR12 label patching is not implemented",
+            });
+        }
+        if !self.supports_arch(arch) {
+            return Err(AsmError::InvalidArch);
+        }
+        Ok(())
+    }
+
+    const fn supports_arch(self, arch: Arch) -> bool {
+        match self {
+            Self::X86JmpRel32 => cfg!(feature = "x86") && matches!(arch, Arch::X86 | Arch::X64),
+            Self::RVJal20
+            | Self::RVPCRel32
+            | Self::RVB12
+            | Self::RVPCRelHi20
+            | Self::RVPCRelLo12I
+            | Self::RVCJump
+            | Self::RVCB9 => {
+                cfg!(feature = "riscv") && matches!(arch, Arch::RISCV32 | Arch::RISCV64)
+            }
+            Self::A64Branch14
+            | Self::A64Branch19
+            | Self::A64Branch26
+            | Self::A64Ldr19
+            | Self::A64Adr21
+            | Self::A64Adrp21
+            | Self::A64Ldr12
+            | Self::A64AddAbsLo12 => cfg!(feature = "aarch64") && matches!(arch, Arch::AArch64),
+        }
+    }
+
     pub fn can_reach(&self, use_offset: CodeOffset, label_offset: CodeOffset) -> bool {
         let delta = (label_offset as i64) - (use_offset as i64);
 
@@ -1185,88 +2036,54 @@ impl LabelUse {
         matches!(self, Self::RVB12 | Self::RVJal20 | Self::RVCJump)
     }
 
-    pub const fn veneer_size(&self) -> usize {
-        match self {
-            Self::RVB12 | Self::RVJal20 | Self::RVCJump => 8,
-            _ => unreachable!(),
-        }
+    #[cfg(feature = "riscv")]
+    pub(crate) fn veneer_size(&self) -> usize {
+        debug_assert!(self.supports_veneer());
+        8
     }
 
-    pub fn generate_veneer(
+    #[cfg(feature = "riscv")]
+    pub(crate) fn generate_veneer(
         &self,
         buffer: &mut [u8],
         veneer_offset: CodeOffset,
     ) -> (CodeOffset, Self) {
-        if matches!(
-            self,
-            Self::RVB12
-                | Self::RVCJump
-                | Self::RVJal20
-                | Self::RVPCRelHi20
-                | Self::RVPCRelLo12I
-                | Self::RVPCRel32
-        ) {
-            #[cfg(not(feature = "riscv"))]
-            {
-                let _ = (buffer, veneer_offset);
-                panic!("RISC-V veneers aren't supported without the `riscv` feature");
-            }
-            #[cfg(feature = "riscv")]
-            {
-                let base = riscv::X31;
+        debug_assert!(self.supports_veneer());
+        let base = riscv::X31;
 
-                {
-                    let x = riscv::Inst::new(riscv::Opcode::AUIPC)
-                        .encode()
-                        .set_rd(base.id())
-                        .value
-                        .to_le_bytes();
-                    buffer[0] = x[0];
-                    buffer[1] = x[1];
-                    buffer[2] = x[2];
-                    buffer[3] = x[3];
-                }
-
-                {
-                    let x = riscv::Inst::new(riscv::Opcode::JALR)
-                        .encode()
-                        .set_rd(riscv::ZERO.id())
-                        .set_rs1(base.id())
-                        .value
-                        .to_le_bytes();
-                    buffer[4] = x[0];
-                    buffer[5] = x[1];
-                    buffer[6] = x[2];
-                    buffer[7] = x[3];
-                }
-
-                (veneer_offset, LabelUse::RVPCRel32)
-            }
-        } else {
-            #[cfg(not(feature = "aarch64"))]
-            {
-                panic!("AArch64 veneers aren't supported without the `aarch64` feature");
-            }
-
-            #[cfg(feature = "aarch64")]
-            match self {
-                LabelUse::A64Branch14 | LabelUse::A64Branch19 => {
-                    // veneer is a Branch26 (unconditional branch). Just encode directly here -- don't
-                    // bother with constructing an Inst.
-                    let insn_word = 0b000101 << 26;
-                    buffer[0..4].clone_from_slice(&u32::to_le_bytes(insn_word));
-                    (veneer_offset, LabelUse::A64Branch26)
-                }
-
-                LabelUse::A64Branch26 => {
-                    todo!()
-                }
-
-                _ => todo!(),
-            }
+        {
+            let x = riscv::opcodes::Inst::new(riscv::Opcode::AUIPC)
+                .encode()
+                .set_rd(base.id())
+                .value
+                .to_le_bytes();
+            buffer[0] = x[0];
+            buffer[1] = x[1];
+            buffer[2] = x[2];
+            buffer[3] = x[3];
         }
+
+        {
+            let x = riscv::opcodes::Inst::new(riscv::Opcode::JALR)
+                .encode()
+                .set_rd(riscv::ZERO.id())
+                .set_rs1(base.id())
+                .value
+                .to_le_bytes();
+            buffer[4] = x[0];
+            buffer[5] = x[1];
+            buffer[6] = x[2];
+            buffer[7] = x[3];
+        }
+
+        (veneer_offset, LabelUse::RVPCRel32)
     }
-    pub fn patch(&self, buffer: &mut [u8], use_offset: CodeOffset, label_offset: CodeOffset) {
+    pub(crate) fn patch(
+        &self,
+        buffer: &mut [u8],
+        use_offset: CodeOffset,
+        label_offset: CodeOffset,
+    ) {
         let addend = match self {
             Self::X86JmpRel32 => i64::from(u32::from_le_bytes([
                 buffer[0], buffer[1], buffer[2], buffer[3],
@@ -1277,7 +2094,7 @@ impl LabelUse {
         self.patch_with_addend(buffer, use_offset, label_offset, addend);
     }
 
-    pub fn patch_with_addend(
+    pub(crate) fn patch_with_addend(
         &self,
         buffer: &mut [u8],
         use_offset: CodeOffset,
@@ -1312,8 +2129,10 @@ impl LabelUse {
                     let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
                     let insn2 = u32::from_le_bytes([buffer[4], buffer[5], buffer[6], buffer[7]]);
 
-                    let auipc = riscv::Inst::new(riscv::Opcode::AUIPC).encode().set_imm20(0);
-                    let jalr = riscv::Inst::new(riscv::Opcode::JALR)
+                    let auipc = riscv::opcodes::Inst::new(riscv::Opcode::AUIPC)
+                        .encode()
+                        .set_imm20(0);
+                    let jalr = riscv::opcodes::Inst::new(riscv::Opcode::JALR)
                         .encode()
                         .set_rd(0)
                         .set_rs1(0)
@@ -1381,7 +2200,7 @@ impl LabelUse {
 
                 #[cfg(feature = "riscv")]
                 {
-                    let insn = riscv::Inst::new(riscv::Opcode::CJ)
+                    let insn = riscv::opcodes::Inst::new(riscv::Opcode::CJ)
                         .encode()
                         .set_c_imm12(pc_rel as _);
                     buffer[0..2].clone_from_slice(&(insn.value as u16).to_le_bytes());
@@ -1397,7 +2216,7 @@ impl LabelUse {
 
                 #[cfg(feature = "riscv")]
                 {
-                    let insn = riscv::Inst::new(riscv::Opcode::BEQZ)
+                    let insn = riscv::opcodes::Inst::new(riscv::Opcode::BEQZ)
                         .encode()
                         .set_c_bimm9lohi(pc_rel as _);
                     buffer[0..2].clone_from_slice(&(insn.value as u16).to_le_bytes());
@@ -1495,7 +2314,7 @@ pub(crate) fn generate_imm(value: u64) -> (u32, u32) {
         if is_imm12(value as _) {
             return (
                 0,
-                riscv::InstructionValue::new(0)
+                riscv::opcodes::InstructionValue::new(0)
                     .set_imm12(value as i64 as i32)
                     .value,
             );
@@ -1527,32 +2346,71 @@ pub(crate) fn generate_imm(value: u64) -> (u32, u32) {
             (imm20, imm12)
         };
         (
-            riscv::InstructionValue::new(0).set_imm20(imm20 as _).value,
-            riscv::InstructionValue::new(0).set_imm12(imm12 as _).value,
+            riscv::opcodes::InstructionValue::new(0)
+                .set_imm20(imm20 as _)
+                .value,
+            riscv::opcodes::InstructionValue::new(0)
+                .set_imm12(imm12 as _)
+                .value,
         )
     }
 }
 
-/// A generic implementation of relocation resolving.
+pub(crate) fn relocation_patch_size(kind: Reloc) -> Result<usize, AsmError> {
+    match kind {
+        Reloc::Abs4
+        | Reloc::X86PCRel4
+        | Reloc::X86CallPCRel4
+        | Reloc::X86CallPLTRel4
+        | Reloc::X86GOTPCRel4
+        | Reloc::RiscvGotHi20
+        | Reloc::RiscvPCRelLo12I
+        | Reloc::Aarch64AdrPrelPgHi21
+        | Reloc::Aarch64AddAbsLo12Nc
+        | Reloc::Aarch64AdrGotPage21
+        | Reloc::Aarch64Ld64GotLo12Nc => Ok(4),
+        Reloc::Abs8 | Reloc::RiscvAbs8 | Reloc::RiscvCallPlt => Ok(8),
+        _ => Err(AsmError::InvalidArgument),
+    }
+}
+
+fn checked_address(base: usize, addend: i64) -> Result<usize, AsmError> {
+    if addend >= 0 {
+        base.checked_add(usize::try_from(addend).map_err(|_| AsmError::TooLarge)?)
+    } else {
+        base.checked_sub(usize::try_from(addend.unsigned_abs()).map_err(|_| AsmError::TooLarge)?)
+    }
+    .ok_or(AsmError::TooLarge)
+}
+
+fn checked_pcrel(target: usize, instruction: usize) -> Result<i64, AsmError> {
+    i64::try_from(target as i128 - instruction as i128).map_err(|_| AsmError::TooLarge)
+}
+
+/// Applies relocations to one writable code span.
 ///
-/// # NOTE
-///
-/// Very simple and incomplete. At the moment only Abs4, Abs8, X86 and RISC-V GOT relocations are supported.
+/// Unsupported relocation kinds, invalid resolver results, out-of-range patch
+/// spans, address overflow, and displacement overflow are returned as errors.
 ///
 /// # Safety
 ///
-/// Code and code_rx must be valid pointers to the beginning of the code section. They are used to compute the addresses of the instructions to patch.
-///
-/// get_address, get_got_entry and get_plt_entry must return valid pointers to the target addresses for the given relocation targets.
+/// `code` and `code_rx` must refer to writable and executable views of the same
+/// `code_size`-byte allocation. Resolver pointers are treated as addresses and
+/// are never dereferenced.
 pub unsafe fn perform_relocations(
     code: *mut u8,
     code_rx: *const u8,
+    code_size: usize,
     relocs: &[AsmReloc],
-    get_address: impl Fn(&RelocTarget) -> *const u8,
-    get_got_entry: impl Fn(&RelocTarget) -> *const u8,
-    get_plt_entry: impl Fn(&RelocTarget) -> *const u8,
-) {
+    get_address: impl Fn(&RelocTarget) -> Result<*const u8, AsmError>,
+    get_got_entry: impl Fn(&RelocTarget) -> Result<*const u8, AsmError>,
+    get_plt_entry: impl Fn(&RelocTarget) -> Result<*const u8, AsmError>,
+) -> Result<(), AsmError> {
     use core::ptr::write_unaligned;
+
+    if code.is_null() || code_rx.is_null() {
+        return Err(AsmError::InvalidArgument);
+    }
 
     for &AsmReloc {
         addend,
@@ -1561,29 +2419,48 @@ pub unsafe fn perform_relocations(
         ref target,
     } in relocs
     {
-        let at = unsafe { code.offset(isize::try_from(offset).unwrap()) };
-        let atrx = unsafe { code_rx.offset(isize::try_from(offset).unwrap()) };
+        let patch_size = relocation_patch_size(kind)?;
+        let patch_start = offset as usize;
+        let patch_end = patch_start
+            .checked_add(patch_size)
+            .ok_or(AsmError::TooLarge)?;
+        if patch_end > code_size {
+            return Err(AsmError::InvalidArgument);
+        }
+        let at = unsafe { code.add(patch_start) };
+        let atrx = code_rx
+            .addr()
+            .checked_add(patch_start)
+            .ok_or(AsmError::TooLarge)?;
+        let resolve = |resolver: &dyn Fn(&RelocTarget) -> Result<*const u8, AsmError>| {
+            let base = resolver(target)?;
+            if base.is_null() {
+                return Err(AsmError::InvalidArgument);
+            }
+            checked_address(base.addr(), addend)
+        };
+
         match kind {
             Reloc::Abs4 => {
-                let base = get_address(target);
-                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
+                let what = resolve(&get_address)?;
+                let what = u32::try_from(what).map_err(|_| AsmError::TooLarge)?;
                 unsafe {
-                    write_unaligned(at as *mut u32, u32::try_from(what as usize).unwrap());
+                    write_unaligned(at as *mut u32, what);
                 }
             }
 
-            Reloc::Abs8 => {
-                let base = get_address(target);
-                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
+            Reloc::Abs8 | Reloc::RiscvAbs8 => {
+                let what = resolve(&get_address)?;
+                let what = u64::try_from(what).map_err(|_| AsmError::TooLarge)?;
                 unsafe {
-                    write_unaligned(at as *mut u64, u64::try_from(what as usize).unwrap());
+                    write_unaligned(at as *mut u64, what);
                 }
             }
 
             Reloc::X86PCRel4 | Reloc::X86CallPCRel4 => {
-                let base = get_address(target);
-                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
-                let pcrel = i32::try_from((what as isize) - (atrx as isize)).unwrap();
+                let what = resolve(&get_address)?;
+                let pcrel =
+                    i32::try_from(checked_pcrel(what, atrx)?).map_err(|_| AsmError::TooLarge)?;
 
                 unsafe {
                     write_unaligned(at as *mut i32, pcrel);
@@ -1591,9 +2468,9 @@ pub unsafe fn perform_relocations(
             }
 
             Reloc::X86GOTPCRel4 => {
-                let base = get_got_entry(target);
-                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
-                let pcrel = i32::try_from((what as isize) - (atrx as isize)).unwrap();
+                let what = resolve(&get_got_entry)?;
+                let pcrel =
+                    i32::try_from(checked_pcrel(what, atrx)?).map_err(|_| AsmError::TooLarge)?;
 
                 unsafe {
                     write_unaligned(at as *mut i32, pcrel);
@@ -1601,16 +2478,16 @@ pub unsafe fn perform_relocations(
             }
 
             Reloc::X86CallPLTRel4 => {
-                let base = get_plt_entry(target);
-                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
-                let pcrel = i32::try_from((what as isize) - (atrx as isize)).unwrap();
+                let what = resolve(&get_plt_entry)?;
+                let pcrel =
+                    i32::try_from(checked_pcrel(what, atrx)?).map_err(|_| AsmError::TooLarge)?;
                 unsafe { write_unaligned(at as *mut i32, pcrel) };
             }
 
             Reloc::RiscvGotHi20 => {
-                let base = get_got_entry(target);
-                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
-                let pc_rel = i32::try_from((what as isize) - (atrx as isize)).unwrap();
+                let what = resolve(&get_got_entry)?;
+                let pc_rel =
+                    i32::try_from(checked_pcrel(what, atrx)?).map_err(|_| AsmError::TooLarge)?;
                 unsafe {
                     let buffer = core::slice::from_raw_parts_mut(at, 4);
                     let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
@@ -1621,14 +2498,14 @@ pub unsafe fn perform_relocations(
             }
 
             Reloc::RiscvPCRelLo12I => {
-                let base = get_got_entry(target);
-                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
-                let pc_rel = i32::try_from((what as isize) - (atrx as isize)).unwrap();
+                let what = resolve(&get_got_entry)?;
+                let pc_rel = checked_pcrel(what, atrx)?;
+                let pc_rel = i32::try_from(pc_rel).map_err(|_| AsmError::TooLarge)?;
 
                 unsafe {
                     let buffer = core::slice::from_raw_parts_mut(at, 4);
                     let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
-                    let lo12 = (pc_rel + 4) as u32 & 0xfff;
+                    let lo12 = ((pc_rel as i64 + 4) as u32) & 0xfff;
                     let insn = (insn & 0xFFFFF) | (lo12 << 20);
                     buffer.copy_from_slice(&insn.to_le_bytes());
                 }
@@ -1637,7 +2514,7 @@ pub unsafe fn perform_relocations(
             Reloc::RiscvCallPlt => {
                 #[cfg(not(feature = "riscv"))]
                 {
-                    panic!("RISC-V calls aren't supported without the `riscv` feature");
+                    return Err(AsmError::InvalidArgument);
                 }
                 #[cfg(feature = "riscv")]
                 {
@@ -1646,9 +2523,9 @@ pub unsafe fn perform_relocations(
                     // 1. R_RISCV_PCREL_HI20 on the `auipc`
                     // 2. R_RISCV_PCREL_LO12_I on the `jalr`
 
-                    let base = get_address(target);
-                    let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
-                    let pcrel = i32::try_from((what as isize) - (atrx as isize)).unwrap();
+                    let what = resolve(&get_address)?;
+                    let pcrel = i32::try_from(checked_pcrel(what, atrx)?)
+                        .map_err(|_| AsmError::TooLarge)?;
 
                     // See https://github.com/riscv-non-isa/riscv-elf-psabi-doc/blob/master/riscv-elf.adoc#pc-relative-symbol-addresses
                     // for a better explanation of the following code.
@@ -1668,84 +2545,691 @@ pub unsafe fn perform_relocations(
 
                     unsafe {
                         let auipc_addr = at as *mut u32;
-                        let auipc = riscv::Inst::new(riscv::Opcode::AUIPC)
+                        let auipc = riscv::opcodes::Inst::new(riscv::Opcode::AUIPC)
                             .encode()
                             .set_imm20(hi20 as _)
                             .value;
-                        auipc_addr.write(auipc_addr.read() | auipc);
+                        write_unaligned(auipc_addr, auipc_addr.read_unaligned() | auipc);
 
-                        let jalr_addr = at.offset(4) as *mut u32;
-                        let jalr = riscv::Inst::new(riscv::Opcode::JALR)
+                        let jalr_addr = at.add(4) as *mut u32;
+                        let jalr = riscv::opcodes::Inst::new(riscv::Opcode::JALR)
                             .encode()
                             .set_imm12(lo12 as _)
                             .value;
-                        jalr_addr.write(jalr_addr.read() | jalr);
+                        write_unaligned(jalr_addr, jalr_addr.read_unaligned() | jalr);
                     }
                 }
             }
 
             Reloc::Aarch64AdrPrelPgHi21 => {
-                let base = get_address(target);
-                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
-                let get_page = |x| x & (!0xfff);
-                // NOTE: This should technically be i33 given that this relocation type allows
-                // a range from -4GB to +4GB, not -2GB to +2GB. But this doesn't really matter
-                // as the target is unlikely to be more than 2GB from the adrp instruction. We
-                // need to be careful to not cast to an unsigned int until after doing >> 12 to
-                // compute the upper 21bits of the pcrel address however as otherwise the top
-                // bit of the 33bit pcrel address would be forced 0 through zero extension
-                // instead of being sign extended as it should be.
-                let pcrel =
-                    i32::try_from(get_page(what as isize) - get_page(atrx as isize)).unwrap();
+                let what = resolve(&get_address)?;
+                let pages = ((what & !0xfff) as i128 - (atrx & !0xfff) as i128) >> 12;
+                if !(-(1i128 << 20)..(1i128 << 20)).contains(&pages) {
+                    return Err(AsmError::TooLarge);
+                }
                 let iptr = at as *mut u32;
-                let hi21 = (pcrel >> 12).cast_unsigned();
-                let lo = (hi21 & 0x3) << 29;
-                let hi = (hi21 & 0x1ffffc) << 3;
+                let imm21 = pages as u32 & 0x1f_ffff;
+                let lo = (imm21 & 0x3) << 29;
+                let hi = ((imm21 >> 2) & 0x7ffff) << 5;
                 unsafe {
-                    let insn = iptr.read();
-                    iptr.write(insn | lo | hi);
+                    let insn = iptr.read_unaligned();
+                    write_unaligned(iptr, insn | lo | hi);
                 }
             }
 
             Reloc::Aarch64AddAbsLo12Nc => {
-                let base = get_address(target);
-                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
+                let what = resolve(&get_address)?;
                 let iptr = at as *mut u32;
-                let imm12 = (what.addr() as u32 & 0xfff) << 10;
+                let imm12 = (what as u32 & 0xfff) << 10;
                 unsafe {
-                    let insn = iptr.read();
-                    iptr.write(insn | imm12);
+                    let insn = iptr.read_unaligned();
+                    write_unaligned(iptr, insn | imm12);
                 }
             }
 
             Reloc::Aarch64AdrGotPage21 => {
-                let base = get_got_entry(target);
-                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
-                let get_page = |x| x & (!0xfff);
-                let pcrel =
-                    i32::try_from(get_page(what as isize) - get_page(atrx as isize)).unwrap();
+                let what = resolve(&get_got_entry)?;
+                let pages = ((what & !0xfff) as i128 - (atrx & !0xfff) as i128) >> 12;
+                if !(-(1i128 << 20)..(1i128 << 20)).contains(&pages) {
+                    return Err(AsmError::TooLarge);
+                }
                 let iptr = at as *mut u32;
-                let hi21 = (pcrel >> 12).cast_unsigned();
-                let lo = (hi21 & 0x3) << 29;
-                let hi = (hi21 & 0x1ffffc) << 3;
+                let imm21 = pages as u32 & 0x1f_ffff;
+                let lo = (imm21 & 0x3) << 29;
+                let hi = ((imm21 >> 2) & 0x7ffff) << 5;
                 unsafe {
-                    let insn = iptr.read();
-                    iptr.write(insn | lo | hi);
+                    let insn = iptr.read_unaligned();
+                    write_unaligned(iptr, insn | lo | hi);
                 }
             }
 
             Reloc::Aarch64Ld64GotLo12Nc => {
-                let base = get_got_entry(target);
-                let what = unsafe { base.offset(isize::try_from(addend).unwrap()) };
+                let what = resolve(&get_got_entry)?;
+                if what & 7 != 0 {
+                    return Err(AsmError::InvalidArgument);
+                }
                 let iptr = at as *mut u32;
-                let imm12 = ((what.addr() as u32 & 0xfff) >> 3) << 10;
+                let imm12 = ((what as u32 & 0xfff) >> 3) << 10;
                 unsafe {
-                    let insn = iptr.read();
-                    iptr.write(insn | imm12);
+                    let insn = iptr.read_unaligned();
+                    write_unaligned(iptr, insn | imm12);
                 }
             }
 
-            _ => todo!(),
+            _ => return Err(AsmError::InvalidArgument),
         }
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn resolved(address: usize) -> impl Fn(&RelocTarget) -> Result<*const u8, AsmError> {
+        move |_| Ok(address as *const u8)
+    }
+
+    fn unresolved(_: &RelocTarget) -> Result<*const u8, AsmError> {
+        Ok(core::ptr::null())
+    }
+
+    #[test]
+    fn relocation_rejects_patch_outside_code() {
+        let mut code = [0u8; 4];
+        let relocs = [AsmReloc {
+            offset: 1,
+            kind: Reloc::Abs4,
+            addend: 0,
+            target: RelocTarget::Label(Label::from_id(0)),
+        }];
+
+        let result = unsafe {
+            perform_relocations(
+                code.as_mut_ptr(),
+                code.as_ptr(),
+                code.len(),
+                &relocs,
+                resolved(1),
+                resolved(1),
+                resolved(1),
+            )
+        };
+
+        assert_eq!(result, Err(AsmError::InvalidArgument));
+        assert_eq!(code, [0; 4]);
+    }
+
+    #[test]
+    fn relocation_rejects_null_and_overflowing_targets() {
+        let mut code = [0u8; 8];
+        let reloc = AsmReloc {
+            offset: 0,
+            kind: Reloc::Abs8,
+            addend: 0,
+            target: RelocTarget::Label(Label::from_id(0)),
+        };
+
+        let null_result = unsafe {
+            perform_relocations(
+                code.as_mut_ptr(),
+                code.as_ptr(),
+                code.len(),
+                core::slice::from_ref(&reloc),
+                unresolved,
+                unresolved,
+                unresolved,
+            )
+        };
+        assert_eq!(null_result, Err(AsmError::InvalidArgument));
+
+        let overflowing = AsmReloc {
+            addend: -2,
+            ..reloc
+        };
+        let overflow_result = unsafe {
+            perform_relocations(
+                code.as_mut_ptr(),
+                code.as_ptr(),
+                code.len(),
+                core::slice::from_ref(&overflowing),
+                resolved(1),
+                resolved(1),
+                resolved(1),
+            )
+        };
+        assert_eq!(overflow_result, Err(AsmError::TooLarge));
+    }
+
+    #[test]
+    fn poisoned_buffer_rejects_raw_mutation_and_patch_metadata() {
+        let mut buffer = CodeBuffer::new(Environment::new(Arch::X64));
+        buffer.write_u32(0);
+        let bytes = buffer.data().to_vec();
+        buffer.record_error(AsmError::InvalidOperand);
+
+        buffer.write_u8(1);
+        buffer.put8(2);
+        assert!(
+            !buffer
+                .add_symbol(ExternalName::UserName(1), RelocDistance::Far)
+                .is_valid()
+        );
+        assert_eq!(buffer.add_constant(3u64), Constant(u32::MAX));
+        assert!(!buffer.get_label().is_valid());
+        buffer.add_reloc(Reloc::Abs4, RelocTarget::Label(Label::from_id(0)), 0);
+        let patch = buffer.try_record_patch_site(0, LabelUse::X86JmpRel32, 0);
+
+        assert_eq!(patch, Err(AsmError::InvalidOperand));
+        assert_eq!(buffer.data(), bytes);
+        assert!(buffer.relocs().is_empty());
+        assert!(buffer.patch_sites.is_empty());
+        assert!(matches!(buffer.finish(), Err(AsmError::InvalidOperand)));
+    }
+
+    #[test]
+    fn target_rejects_foreign_relocations_and_patch_kinds() {
+        let mut buffer = CodeBuffer::new(Environment::new(Arch::AArch64));
+        let label = buffer.get_label();
+        buffer.add_reloc(Reloc::X86PCRel4, RelocTarget::Label(label), 0);
+        assert_eq!(buffer.error(), Some(&AsmError::InvalidArch));
+        assert!(buffer.relocs().is_empty());
+
+        let mut buffer = CodeBuffer::new(Environment::new(Arch::AArch64));
+        buffer.write_u32(0);
+        assert_eq!(
+            buffer.try_record_patch_site(0, LabelUse::X86JmpRel32, 0),
+            Err(AsmError::InvalidArch)
+        );
+        assert!(buffer.patch_sites.is_empty());
+
+        let mut buffer = CodeBuffer::new(Environment::new(Arch::AArch64));
+        let label = buffer.get_label();
+        buffer.use_label_at_offset(0, label, LabelUse::RVJal20);
+        assert_eq!(buffer.error(), Some(&AsmError::InvalidArch));
+        assert!(buffer.pending_fixup_records.is_empty());
+
+        let mut buffer = CodeBuffer::new(Environment::new(Arch::AArch64));
+        let label = buffer.get_label();
+        assert_eq!(
+            buffer.emit_veneer(label, 0, LabelUse::RVJal20),
+            Err(AsmError::InvalidArch)
+        );
+        assert!(buffer.data().is_empty());
+
+        let mut buffer = CodeBuffer::new(Environment::new(Arch::AArch64));
+        buffer.write_u32(0);
+        assert_eq!(
+            buffer.try_record_patch_site(0, LabelUse::A64Ldr12, 0),
+            Err(AsmError::UnsupportedInstruction {
+                reason: "AArch64 LDR12 label patching is not implemented",
+            })
+        );
+    }
+
+    #[cfg(not(feature = "x86"))]
+    #[test]
+    fn disabled_x86_label_use_is_rejected_without_a_fixup() {
+        let mut buffer = CodeBuffer::new(Environment::new(Arch::X64));
+        let label = buffer.get_label();
+        buffer.write_u32(0);
+        let bytes = buffer.data().to_vec();
+
+        buffer.use_label_at_offset(0, label, LabelUse::X86JmpRel32);
+
+        assert_eq!(buffer.error(), Some(&AsmError::InvalidArch));
+        assert_eq!(buffer.data(), bytes);
+        assert!(buffer.pending_fixup_records.is_empty());
+        assert_eq!(buffer.finish().err(), Some(AsmError::InvalidArch));
+
+        let mut buffer = CodeBuffer::new(Environment::new(Arch::X64));
+        let label = buffer.get_label();
+        buffer.add_reloc(Reloc::X86PCRel4, RelocTarget::Label(label), 0);
+        assert_eq!(buffer.error(), Some(&AsmError::InvalidArch));
+        assert!(buffer.relocs().is_empty());
+    }
+
+    #[cfg(not(feature = "riscv"))]
+    #[test]
+    fn disabled_riscv_label_use_is_rejected_without_a_fixup() {
+        let mut buffer = CodeBuffer::new(Environment::new(Arch::RISCV64));
+        let label = buffer.get_label();
+        buffer.write_u32(0);
+        let bytes = buffer.data().to_vec();
+
+        buffer.use_label_at_offset(0, label, LabelUse::RVPCRel32);
+
+        assert_eq!(buffer.error(), Some(&AsmError::InvalidArch));
+        assert_eq!(buffer.data(), bytes);
+        assert!(buffer.pending_fixup_records.is_empty());
+        assert_eq!(buffer.finish().err(), Some(AsmError::InvalidArch));
+
+        let mut buffer = CodeBuffer::new(Environment::new(Arch::RISCV64));
+        let label = buffer.get_label();
+        buffer.add_reloc(Reloc::RiscvCallPlt, RelocTarget::Label(label), 0);
+        assert_eq!(buffer.error(), Some(&AsmError::InvalidArch));
+        assert!(buffer.relocs().is_empty());
+    }
+
+    #[cfg(not(feature = "aarch64"))]
+    #[test]
+    fn disabled_aarch64_label_use_is_rejected_without_a_fixup() {
+        let mut buffer = CodeBuffer::new(Environment::new(Arch::AArch64));
+        let label = buffer.get_label();
+        buffer.write_u32(0);
+        let bytes = buffer.data().to_vec();
+
+        buffer.use_label_at_offset(0, label, LabelUse::A64Branch26);
+
+        assert_eq!(buffer.error(), Some(&AsmError::InvalidArch));
+        assert_eq!(buffer.data(), bytes);
+        assert!(buffer.pending_fixup_records.is_empty());
+        assert_eq!(buffer.finish().err(), Some(AsmError::InvalidArch));
+
+        let mut buffer = CodeBuffer::new(Environment::new(Arch::AArch64));
+        let label = buffer.get_label();
+        buffer.add_reloc(Reloc::Arm64Call, RelocTarget::Label(label), 0);
+        assert_eq!(buffer.error(), Some(&AsmError::InvalidArch));
+        assert!(buffer.relocs().is_empty());
+    }
+
+    #[test]
+    fn poisoned_buffer_does_not_consume_pending_island_state() {
+        let mut buffer = CodeBuffer::new(Environment::new(Arch::AArch64));
+        buffer.add_constant(7u64);
+        let pending_constants = buffer.pending_constants.len();
+        buffer.record_error(AsmError::InvalidOperand);
+
+        assert_eq!(buffer.emit_island(0), Err(AsmError::InvalidOperand));
+        assert_eq!(buffer.pending_constants.len(), pending_constants);
+        assert!(buffer.data().is_empty());
+    }
+
+    #[cfg(feature = "jit")]
+    #[test]
+    fn allocate_resolved_rejects_user_name_symbols() {
+        let mut buffer = CodeBuffer::new(Environment::new(Arch::X64));
+        let symbol = buffer.add_symbol(ExternalName::UserName(7), RelocDistance::Far);
+        buffer.add_reloc(Reloc::Abs8, RelocTarget::Sym(symbol), 0);
+        buffer.write_u64(0);
+        let code = buffer.finish().unwrap();
+        let mut allocator = JitAllocator::new(Default::default());
+
+        let result = code.allocate_resolved(&mut allocator, |_| core::ptr::null());
+
+        assert_eq!(result.err(), Some(AsmError::InvalidArgument));
+    }
+
+    #[test]
+    fn extern_sym_deduplicates_by_name() {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let first = buf.extern_sym("puts", RelocDistance::Far);
+        let other = buf.extern_sym("printf", RelocDistance::Near);
+        let again = buf.extern_sym("puts", RelocDistance::Near);
+
+        assert_eq!(first, again);
+        assert_ne!(first, other);
+        // The first declaration's distance wins.
+        assert_eq!(buf.symbol_distance(first), Some(RelocDistance::Far));
+        assert_eq!(buf.symbol_distance(other), Some(RelocDistance::Near));
+    }
+
+    #[test]
+    fn unknown_symbols_are_fallible() {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let missing = Sym::from_id(u32::MAX);
+
+        assert_eq!(buf.symbol_name(missing), None);
+        assert_eq!(buf.symbol_distance(missing), None);
+
+        let finalized = buf.finish().unwrap();
+        assert_eq!(finalized.symbol_name(missing), None);
+        assert_eq!(finalized.symbol_distance(missing), None);
+    }
+
+    #[test]
+    fn defined_symbols_are_resolved_at_finish() {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        buf.write_u8(0x90);
+        let entry = buf.get_label();
+        buf.bind_label(entry);
+        buf.bind_symbol("entry", entry);
+        buf.write_u8(0xC3);
+
+        let result = buf.finish().unwrap();
+        assert_eq!(result.defined_symbol_offset("entry"), Some(1));
+        assert_eq!(result.defined_symbol_offset("missing"), None);
+    }
+
+    #[test]
+    fn invalid_label_binding_is_reported_without_mutating_labels() {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let invalid = Label::from_id(0);
+
+        assert_eq!(buf.try_bind_label(invalid), Err(AsmError::InvalidArgument));
+        assert_eq!(buf.label_count(), 0);
+
+        buf.bind_label(invalid);
+        assert_eq!(buf.error(), Some(&AsmError::InvalidArgument));
+        assert!(matches!(buf.finish(), Err(AsmError::InvalidArgument)));
+    }
+
+    #[cfg(feature = "x86")]
+    #[test]
+    fn invalid_patch_registration_does_not_create_metadata() {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+
+        assert_eq!(
+            buf.try_record_patch_site(0, LabelUse::X86JmpRel32, 0),
+            Err(AsmError::InvalidArgument)
+        );
+        assert!(buf.patch_sites.is_empty());
+
+        buf.record_patch_site(0, LabelUse::X86JmpRel32, 0);
+        assert_eq!(buf.error(), Some(&AsmError::InvalidArgument));
+        assert!(buf.patch_sites.is_empty());
+    }
+
+    #[cfg(feature = "x86")]
+    #[test]
+    fn finish_rejects_an_unbound_fixup() {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let label = buf.get_label();
+        buf.write_u32(0);
+        buf.use_label_at_offset(0, label, LabelUse::X86JmpRel32);
+
+        assert!(matches!(buf.finish(), Err(AsmError::UnboundLabel)));
+    }
+
+    #[cfg(feature = "x86")]
+    #[test]
+    fn unsupported_veneer_leaves_buffer_unchanged() {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let label = buf.get_label();
+        buf.write_u32(0);
+        let original = buf.data().to_vec();
+
+        assert_eq!(
+            buf.emit_veneer(label, 0, LabelUse::X86JmpRel32),
+            Err(AsmError::UnsupportedInstruction {
+                reason: "branch range requires an unsupported veneer",
+            })
+        );
+        assert_eq!(buf.data(), original);
+    }
+
+    #[test]
+    fn branch_ranges_include_the_last_encodable_offset() {
+        for (kind, range) in [
+            (LabelUse::A64Branch14, 1 << 15),
+            (LabelUse::A64Branch19, 1 << 20),
+            (LabelUse::A64Branch26, 1 << 27),
+        ] {
+            assert!(kind.can_reach(0, range - 4));
+            assert!(!kind.can_reach(0, range));
+            assert!(kind.can_reach(range, 0));
+            assert!(!kind.can_reach(range + 4, 0));
+        }
+
+        assert!(LabelUse::RVB12.can_reach(0, (1 << 12) - 2));
+        assert!(!LabelUse::RVB12.can_reach(0, 1 << 12));
+        assert!(LabelUse::RVB12.can_reach(1 << 12, 0));
+        assert!(!LabelUse::RVB12.can_reach((1 << 12) + 2, 0));
+    }
+
+    #[test]
+    fn supported_veneer_ranges_cover_both_exact_boundaries() {
+        for (kind, positive, negative, step) in [
+            (LabelUse::RVJal20, (1 << 20) - 2, 1 << 20, 2),
+            (LabelUse::RVB12, (1 << 12) - 2, 1 << 12, 2),
+            (LabelUse::RVCJump, (1 << 11) - 2, 1 << 11, 2),
+        ] {
+            assert!(kind.supports_veneer());
+            assert!(kind.can_reach(0, positive));
+            assert!(!kind.can_reach(0, positive + step));
+            assert!(kind.can_reach(negative, 0));
+            assert!(!kind.can_reach(negative + step, 0));
+        }
+    }
+
+    #[cfg(feature = "riscv")]
+    #[test]
+    fn riscv_veneer_is_finalized_as_a_fixup() {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
+        let label = buf.get_label();
+        buf.bind_label(label);
+        buf.write_u32(0);
+
+        buf.emit_veneer(label, 0, LabelUse::RVB12).unwrap();
+        let code = buf.finish().unwrap();
+        assert_eq!(code.data().len(), 12);
+        // The source branch reaches the veneer inserted directly after it.
+        assert_eq!(&code.data()[0..4], &[0x00, 0x02, 0x00, 0x00]);
+    }
+
+    #[cfg(feature = "riscv")]
+    #[test]
+    fn riscv_supported_veneers_are_inserted_by_islands() {
+        for kind in [LabelUse::RVJal20, LabelUse::RVB12, LabelUse::RVCJump] {
+            let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
+            let label = buf.get_label();
+            let patch_size = kind.patch_size();
+            buf.get_appended_space(patch_size);
+            buf.use_label_at_offset(0, label, kind);
+
+            buf.emit_island(u32::MAX).unwrap();
+            buf.bind_label(label);
+            let code = buf.finish().unwrap();
+
+            assert_eq!(code.data().len(), 12);
+            assert!(kind.can_reach(0, 4));
+        }
+    }
+
+    #[cfg(feature = "riscv")]
+    #[test]
+    fn riscv_large_images_hit_exact_branch_boundaries() {
+        for (kind, positive, step) in [
+            (LabelUse::RVJal20, (1 << 20) - 2, 2),
+            (LabelUse::RVB12, (1 << 12) - 2, 2),
+            (LabelUse::RVCJump, (1 << 11) - 2, 2),
+        ] {
+            let mut exact = CodeBuffer::new(Environment::new(Arch::RISCV64));
+            let label = exact.get_label();
+            exact.get_appended_space(kind.patch_size());
+            exact.use_label_at_offset(0, label, kind);
+            exact.get_appended_space(positive as usize - kind.patch_size());
+            exact.bind_label(label);
+            assert!(exact.finish().is_ok());
+
+            let mut outside = CodeBuffer::new(Environment::new(Arch::RISCV64));
+            let label = outside.get_label();
+            outside.get_appended_space(kind.patch_size());
+            outside.use_label_at_offset(0, label, kind);
+            outside.get_appended_space((positive + step) as usize - kind.patch_size());
+            outside.bind_label(label);
+            assert_eq!(outside.finish().err(), Some(AsmError::TooLarge));
+        }
+    }
+
+    #[cfg(feature = "aarch64")]
+    #[test]
+    fn out_of_range_aarch64_branch_reports_unsupported_veneer() {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::AArch64));
+        let label = buf.get_label();
+        buf.write_u32(0);
+        buf.use_label_at_offset(0, label, LabelUse::A64Branch14);
+        buf.get_appended_space((1 << 15) - 4);
+        buf.bind_label(label);
+
+        assert_eq!(
+            buf.finish().err(),
+            Some(AsmError::UnsupportedInstruction {
+                reason: "AArch64 branch veneers are not implemented",
+            })
+        );
+    }
+
+    #[cfg(feature = "x86")]
+    #[test]
+    fn x86_branch_relaxation_honors_rel8_boundaries() {
+        use crate::x86::{Assembler, JEmitter, JmpEmitter};
+
+        let forward = |padding: usize, conditional: bool| {
+            let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+            let target = buf.get_label();
+            {
+                let mut asm = Assembler::new(&mut buf);
+                if conditional {
+                    asm.jz(target);
+                } else {
+                    asm.jmp(target);
+                }
+            }
+            for _ in 0..padding {
+                buf.write_u8(0x90);
+            }
+            buf.bind_label(target);
+            buf.finish().unwrap().data().to_vec()
+        };
+        for conditional in [false, true] {
+            let short = forward(127, conditional);
+            assert_eq!(short[0], if conditional { 0x74 } else { 0xEB });
+            assert_eq!(short[1], 127);
+
+            let near = forward(128, conditional);
+            if conditional {
+                assert_eq!(&near[..2], &[0x0F, 0x84]);
+            } else {
+                assert_eq!(near[0], 0xE9);
+            }
+        }
+
+        let backward = |padding: usize, conditional: bool| {
+            let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+            let target = buf.get_label();
+            buf.bind_label(target);
+            for _ in 0..padding {
+                buf.write_u8(0x90);
+            }
+            {
+                let mut asm = Assembler::new(&mut buf);
+                if conditional {
+                    asm.jz(target);
+                } else {
+                    asm.jmp(target);
+                }
+            }
+            buf.finish().unwrap().data().to_vec()
+        };
+        for conditional in [false, true] {
+            let short = backward(126, conditional);
+            assert_eq!(
+                &short[126..],
+                &[if conditional { 0x74 } else { 0xEB }, 0x80]
+            );
+
+            let near = backward(127, conditional);
+            assert_eq!(near[127], if conditional { 0x0F } else { 0xE9 });
+        }
+    }
+
+    #[cfg(feature = "x86")]
+    #[test]
+    fn x86_branch_relaxation_reaches_a_bounded_fixed_point() {
+        use crate::x86::{Assembler, JmpEmitter};
+
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let target = buf.get_label();
+        {
+            let mut asm = Assembler::new(&mut buf);
+            asm.jmp(target);
+        }
+        for _ in 0..120 {
+            buf.write_u8(0x90);
+        }
+        {
+            let mut asm = Assembler::new(&mut buf);
+            asm.jmp(target);
+        }
+        for _ in 0..3 {
+            buf.write_u8(0x90);
+        }
+        buf.bind_label(target);
+
+        let code = buf.finish().unwrap();
+        assert_eq!(&code.data()[..2], &[0xEB, 125]);
+        assert_eq!(&code.data()[122..124], &[0xEB, 3]);
+        assert_eq!(code.label_offsets[target.id() as usize], 127);
+    }
+
+    #[cfg(feature = "x86")]
+    #[test]
+    fn x86_branch_relaxation_rebases_metadata_and_is_deterministic() {
+        use crate::x86::{Assembler, JmpEmitter};
+
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let target = buf.get_label();
+        {
+            let mut asm = Assembler::new(&mut buf);
+            asm.jmp(target);
+        }
+        buf.write_u8(0x90);
+        buf.bind_label(target);
+        buf.bind_symbol("target", target);
+
+        buf.add_reloc(Reloc::Abs4, RelocTarget::Label(target), 0);
+        buf.write_u32(0);
+        let block = buf.reserve_patch_block(4, 1).unwrap();
+        let block_offset = buf.patch_blocks[block.index()].offset;
+        let site = buf
+            .try_record_patch_site(
+                block_offset,
+                LabelUse::X86JmpRel32,
+                buf.label_offset(target),
+            )
+            .unwrap();
+
+        let later = buf.get_label();
+        {
+            let mut asm = Assembler::new(&mut buf);
+            asm.long().jmp(later);
+        }
+        buf.write_u8(0x90);
+        buf.bind_label(later);
+
+        let first = buf.finish().unwrap();
+        assert_eq!(&first.data()[..3], &[0xEB, 1, 0x90]);
+        assert_eq!(first.defined_symbol_offset("target"), Some(3));
+        assert_eq!(first.relocs()[0].offset, 3);
+        assert_eq!(first.patch_catalog().block(block).unwrap().offset, 7);
+        let patch_site = first.patch_catalog().site(site).unwrap();
+        assert_eq!(patch_site.offset, 7);
+        assert_eq!(patch_site.current_target, 3);
+        assert_eq!(&first.data()[11..], &[0xE9, 1, 0, 0, 0, 0x90]);
+
+        let second = buf.finish().unwrap();
+        assert_eq!(second.data(), first.data());
+        assert_eq!(second.relocs(), first.relocs());
+        assert_eq!(second.patch_catalog(), first.patch_catalog());
+    }
+
+    #[cfg(feature = "x86")]
+    #[test]
+    fn x86_branch_relaxation_preserves_recorded_alignment() {
+        use crate::x86::{Assembler, JmpEmitter};
+
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let target = buf.get_label();
+        {
+            let mut asm = Assembler::new(&mut buf);
+            asm.jmp(target);
+        }
+        buf.try_align_to(16).unwrap();
+        buf.bind_label(target);
+
+        let code = buf.finish().unwrap();
+        assert_eq!(code.data()[0], 0xE9);
+        assert_eq!(code.label_offsets[target.id() as usize], 16);
     }
 }

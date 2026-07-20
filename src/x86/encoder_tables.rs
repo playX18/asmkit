@@ -30,7 +30,6 @@ pub const X86_BYTE_EVEX: u8 = 0x62;
 
 /// AsmJit specific (used to encode the VVVVV field in XOP/VEX/EVEX).
 pub const VEX_VVVVV_SHIFT: u32 = 7;
-pub const VEX_VVVVV_MASK: u32 = 0x1F << VEX_VVVVV_SHIFT;
 
 /// Mandatory prefixes used to encode legacy [66, F3, F2] or [9B] byte.
 pub static OPCODE_PP_TABLE: [u8; 8] = [0x00, 0x66, 0xF3, 0xF2, 0x00, 0x00, 0x00, 0x9B];
@@ -85,7 +84,7 @@ pub static SEGMENT_PREFIX_TABLE: [u8; 8] = [
 /// PUSH of a segment register, indexed by segment register id.
 #[rustfmt::skip]
 pub static OPCODE_PUSH_SREG_TABLE: [u32; 8] = [
-    Opcode::K000000 | 0x00, // None.
+    Opcode::K000000, // None.
     Opcode::K000000 | 0x06, // Push ES.
     Opcode::K000000 | 0x0E, // Push CS.
     Opcode::K000000 | 0x16, // Push SS.
@@ -98,9 +97,9 @@ pub static OPCODE_PUSH_SREG_TABLE: [u32; 8] = [
 /// POP of a segment register, indexed by segment register id.
 #[rustfmt::skip]
 pub static OPCODE_POP_SREG_TABLE: [u32; 8] = [
-    Opcode::K000000 | 0x00, // None.
+    Opcode::K000000, // None.
     Opcode::K000000 | 0x07, // Pop ES.
-    Opcode::K000000 | 0x00, // Pop CS.
+    Opcode::K000000, // Pop CS.
     Opcode::K000000 | 0x17, // Pop SS.
     Opcode::K000000 | 0x1F, // Pop DS.
     Opcode::K000F00 | 0xA1, // Pop FS.
@@ -123,9 +122,6 @@ pub const MEM_INFO_BASE_RIP: u8 = 0x20;
 pub const MEM_INFO_67H_X86: u8 = 0x40;
 /// Address-size override in 64-bit mode.
 pub const MEM_INFO_67H_X64: u8 = 0x80;
-/// Contains all address-size override bits.
-pub const MEM_INFO_67H_MASK: u8 = 0xC0;
-
 /// Computes [`MEM_INFO_TABLE`] entries (port of AsmJit's `X86MemInfo_T`).
 ///
 /// `x` packs BASE register type in bits [4:0] and INDEX register type in bits [9:5].
@@ -337,6 +333,7 @@ pub static MOD16_BASE_INDEX_TABLE: [u8; 64] = {
 ///
 /// `NOP_TABLE[n - 1]` is the optimal n-byte NOP slide, n in 1..=9.
 #[rustfmt::skip]
+#[cfg(test)]
 pub static NOP_TABLE: [[u8; 9]; 9] = [
     [0x90, 0, 0, 0, 0, 0, 0, 0, 0],
     [0x66, 0x90, 0, 0, 0, 0, 0, 0, 0],

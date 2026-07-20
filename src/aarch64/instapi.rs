@@ -13,6 +13,7 @@
 //! Derived from AsmJit (Zlib license) — this file is an altered version; see LICENSE notices.
 
 use crate::AsmError;
+use crate::core::arch_traits::Arch;
 use crate::core::inst::Inst;
 use crate::core::rwinfo::{CpuRwFlags, INVALID_PHYS_ID, InstRwInfo, OpRwFlags, OpRwInfo};
 
@@ -58,6 +59,9 @@ const ELEMENT_TYPE_SIZE: [u32; 8] = [0, 1, 2, 4, 8, 4, 4, 0];
 ///
 /// Returns [`AsmError::InvalidInstruction`] if the instruction id is not defined.
 pub fn query_rw_info(inst: &Inst) -> Result<InstRwInfo, AsmError> {
+    if inst.arch() != Arch::AArch64 {
+        return Err(AsmError::InvalidArch);
+    }
     let real_id = InstId::extract_real_id(inst.id) as usize;
     if real_id >= INST_INFO_TABLE.len() {
         return Err(AsmError::InvalidInstruction);
@@ -175,7 +179,7 @@ mod tests {
     use crate::core::rwinfo::CpuRwFlags;
 
     fn inst_of(id: InstId, ops: &[crate::core::operand::Operand]) -> Inst {
-        Inst::with_operands(id as u32, ops)
+        Inst::with_arch_operands(Arch::AArch64, id as u32, ops).unwrap()
     }
 
     fn nzcv() -> CpuRwFlags {
@@ -263,10 +267,12 @@ mod tests {
 
     #[test]
     fn b_cond_label() {
-        let inst = Inst::with_operands(
+        let inst = Inst::with_arch_operands(
+            Arch::AArch64,
             InstId::B.with_cc(crate::core::globals::CondCode::EQ),
             &[*crate::core::operand::imm(0).as_operand()],
-        );
+        )
+        .unwrap();
         let rw = query_rw_info(&inst).unwrap();
         assert_eq!(rw.op_count, 1);
         assert!(
@@ -322,7 +328,7 @@ mod tests {
 
     #[test]
     fn cfinv_carry() {
-        let inst = Inst::with_operands(InstId::Cfinv as u32, &[]);
+        let inst = Inst::with_arch_operands(Arch::AArch64, InstId::Cfinv as u32, &[]).unwrap();
         let rw = query_rw_info(&inst).unwrap();
         assert_eq!(rw.read_flags, CpuRwFlags::A64_C);
         assert_eq!(rw.write_flags, CpuRwFlags::A64_C);
