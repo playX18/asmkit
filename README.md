@@ -1,10 +1,9 @@
 # asmkit
 
 `#![no_std]` assembler library, built around an [AsmJit](https://github.com/asmjit/asmjit)-style
-instruction-database model.
+instruction-database model. We use AsmJit DB for x86 and aarch64 directly, plus APIs are direct ports of AsmJit ones. All credit goes to AsmJit authors. 
 
-The minimum supported Rust version (MSRV) is Rust 1.85 (edition 2024). Raising it requires an
-explicit release note.
+The minimum supported Rust version (MSRV) is Rust 1.85 (edition 2024). 
 
 # Features
 
