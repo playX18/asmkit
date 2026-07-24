@@ -41,10 +41,6 @@ import subprocess
 import sys
 from pathlib import Path
 
-# ---------------------------------------------------------------------------
-# Shared machinery: paths and source loading
-# ---------------------------------------------------------------------------
-
 REPO_ROOT = Path(__file__).resolve().parent.parent
 ASMJIT_ROOT = Path(os.environ.get("ASMJIT_SRC", REPO_ROOT / "meta" / "asmjit")).resolve()
 
@@ -64,10 +60,6 @@ def read_asmjit(rel: str) -> str:
         fail(f"missing AsmJit source: {path}")
     return path.read_text(encoding="utf-8")
 
-
-# ---------------------------------------------------------------------------
-# Shared machinery: marker blocks and row parsing
-# ---------------------------------------------------------------------------
 
 
 def extract_block(text: str, key: str) -> str:
@@ -186,10 +178,6 @@ def parse_int(tok: str) -> int:
     return int(tok)
 
 
-# ---------------------------------------------------------------------------
-# Shared machinery: C++ string literals
-# ---------------------------------------------------------------------------
-
 _C_ESCAPES = {"n": 10, "t": 9, "r": 13, "0": 0, "\\": 92, '"': 34, "'": 39}
 
 
@@ -238,10 +226,6 @@ def rust_byte_string(data: bytes) -> str:
             parts.append(f"\\x{b:02X}")
     return 'b"' + "".join(parts) + '"'
 
-
-# ---------------------------------------------------------------------------
-# Shared machinery: C++ constant-expression evaluation
-# ---------------------------------------------------------------------------
 
 _TOKEN_RE = re.compile(
     r"0x[0-9A-Fa-f]+u?|0b[01]+u?|\d+u?|[A-Za-z_][A-Za-z_0-9]*|<<|>>|[|&+()~]"
@@ -302,10 +286,6 @@ def enum_body(text: str, decl_pattern: str) -> str:
     return text[start : i - 1]
 
 
-# ---------------------------------------------------------------------------
-# Shared machinery: table declarations inside marker blocks
-# ---------------------------------------------------------------------------
-
 
 def split_tables(block: str) -> dict[str, str]:
     """Splits a block into {variable_name: body} at `const ... name[...] = {` ... `};`."""
@@ -343,10 +323,6 @@ def check_ordinals(comments: list[str], table: str, *, sparse: bool = False) -> 
         f"{table}: broken ordinal sequence (got {len(present)} ordinals for {len(ordinals)} rows)",
     )
 
-
-# ---------------------------------------------------------------------------
-# Shared machinery: name mapping
-# ---------------------------------------------------------------------------
 
 
 def split_camel(part: str) -> list[str]:
@@ -389,10 +365,6 @@ def strip_k(name: str) -> str:
     return out
 
 
-# ---------------------------------------------------------------------------
-# Shared machinery: macro substitution in table rows
-# ---------------------------------------------------------------------------
-
 
 def substitute_macros(text: str, macro: str, func) -> str:
     """Replaces every `macro(arg)` (args contain no nested parens) with func(arg)."""
@@ -416,10 +388,6 @@ def map_flag_expr(expr: str, func, zero: str = "0") -> str:
             mapped.append(m)
     return " | ".join(mapped) if mapped else zero
 
-
-# ---------------------------------------------------------------------------
-# Shared machinery: token-based normalized diff
-# ---------------------------------------------------------------------------
 
 _RUST_TOKEN_RE = re.compile(
     r"/\*.*?\*/|//[^\n]*|b?\"(?:[^\"\\]|\\.)*\"|\w+|[^\w\s]", re.S
@@ -476,10 +444,6 @@ def git_show_head(rel: str) -> str:
     return r.stdout
 
 
-# ---------------------------------------------------------------------------
-# Shared machinery: license header
-# ---------------------------------------------------------------------------
-
 ZLIB_HEADER = """/* Copyright (c) 2008-2024 The AsmJit Authors
 
    This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
@@ -504,10 +468,6 @@ A64_MID = 'impl TryFrom<u8> for Encoding {\n    type Error = ();\n\n    fn try_f
 
 A64_TABLE_NEW = 'macro_rules! table_new {\n        ($ty:ident, { $({ $($e:expr),* $(,)? }),* $(,)? }) => {\n                [$( $ty::new($($e as u64 as _),*) ),*]\n        };\n}\n\nconst kW: u32 = W;\nconst kX: u32 = X;\nconst kWX: u32 = WX;\nconst kZR: u32 = ZR;\nconst kSP: u32 = SP;\n\nconst kHF_N: u32 = HFConv::N as u32;\nconst kHF_A: u32 = HFConv::A as u32;\nconst kHF_B: u32 = HFConv::B as u32;\nconst kHF_C: u32 = HFConv::C as u32;\n\nconst kET_B: u8 = InstElementType::B as u8;\nconst kET_H: u8 = InstElementType::H as u8;\nconst kET_S: u8 = InstElementType::S as u8;\nconst kET_2H: u8 = InstElementType::_2H as u8;\nconst kET_4B: u8 = InstElementType::_4B as u8;\n\nconst kOp_GpW: u32 = OpSignature::GpW as u32;\nconst kOp_H: u32 = OpSignature::H as u32;\nconst kOp_S: u32 = OpSignature::S as u32;\nconst kOp_D: u32 = OpSignature::D as u32;\nconst kOp_Q: u32 = OpSignature::Q as u32;\nconst kOp_V4H: u32 = OpSignature::V4H as u32;\nconst kOp_V8H: u32 = OpSignature::V8H as u32;\nconst kOp_V4S: u32 = OpSignature::V4S as u32;\nconst kOp_V2D: u32 = OpSignature::V2D as u32;\nconst kOp_V16B: u32 = OpSignature::V16B as u32;\n\nconst kVO_V_B: u32 = VOType::VB as u32;\nconst kVO_V_BH: u32 = VOType::VBH as u32;\nconst kVO_V_BH_4S: u32 = VOType::VBH4S as u32;\nconst kVO_V_BHS: u32 = VOType::VBHS as u32;\nconst kVO_V_BHS_D2: u32 = VOType::VBHSD2 as u32;\nconst kVO_V_HS: u32 = VOType::VHS as u32;\nconst kVO_V_S: u32 = VOType::VS as u32;\nconst kVO_V_B8H4S2: u32 = VOType::VB8H4S2 as u32;\nconst kVO_V_B8D1: u32 = VOType::VB8D1 as u32;\nconst kVO_V_H4S2: u32 = VOType::VH4S2 as u32;\nconst kVO_V_B16: u32 = VOType::VB16 as u32;\nconst kVO_V_B16H8S4: u32 = VOType::VB16H8S4 as u32;\nconst kVO_V_B16D2: u32 = VOType::VB16D2 as u32;\nconst kVO_V_H8S4: u32 = VOType::VH8S4 as u32;\nconst kVO_V_D2: u32 = VOType::VD2 as u32;\nconst kVO_SV_BHS: u32 = VOType::SVBHS as u32;\nconst kVO_SV_B8H4S2: u32 = VOType::SVB8H4S2 as u32;\nconst kVO_SV_HS: u32 = VOType::SVHS as u32;\nconst kVO_V_Any: u32 = VOType::VAny as u32;\nconst kVO_SV_Any: u32 = VOType::SVAny as u32;\n\n'
 
-
-# ---------------------------------------------------------------------------
-# AArch64 driver
-# ---------------------------------------------------------------------------
 
 A64_INST_ID_COUNT = 776
 A64_ENCODING_COUNT = 95  # AsmJit variants; the Rust enum appends `Count`.
@@ -587,7 +547,6 @@ def gen_aarch64(check_only: bool = False) -> str:
     instdb_p_h = read_asmjit("arm/a64instdb_p.h")
     instdb_cpp = read_asmjit("arm/a64instdb.cpp")
 
-    # --- InstId enum (arm/a64globals.h ${InstId}) ---------------------------
     inst_ids, aliases = parse_inst_id_block(
         extract_block(globals_h, "InstId"), strip_prefix="kId"
     )
@@ -597,7 +556,6 @@ def gen_aarch64(check_only: bool = False) -> str:
         f"a64: expected {A64_INST_ID_COUNT} InstId values, got {len(inst_ids)}",
     )
 
-    # --- EncodingId enum (arm/a64instdb_p.h ${EncodingId}) ------------------
     enc_block = extract_block(instdb_p_h, "EncodingId")
     enc_variants: list[str] = []
     for raw in enc_block.splitlines():
@@ -616,7 +574,6 @@ def gen_aarch64(check_only: bool = False) -> str:
     check(enc_variants[0] == "None", "first encoding must be None")
     enc_set = set(enc_variants)
 
-    # --- EncodingData forward declarations (arm/a64instdb_p.h) --------------
     fwd_block = extract_block(instdb_p_h, "EncodingDataForward")
     fwd_decls: list[tuple[str, str, int]] = []  # (cpp_type, cpp_name, size)
     for raw in fwd_block.splitlines():
@@ -628,7 +585,6 @@ def gen_aarch64(check_only: bool = False) -> str:
         f"a64: expected {A64_ENCODING_TABLE_COUNT} forward declarations, got {len(fwd_decls)}",
     )
 
-    # --- InstInfo rows (arm/a64instdb.cpp ${InstInfo}) ----------------------
     inst_block = extract_block(instdb_cpp, "InstInfo")
     inst_rows: list[dict] = []
     for code, comment in split_line_rows(strip_generated_banner(inst_block)):
@@ -674,7 +630,6 @@ def gen_aarch64(check_only: bool = False) -> str:
             f"a64: INST row #{i} bad opcode_data_index {row['opcode_data_index']!r}",
         )
 
-    # --- EncodingData tables (arm/a64instdb.cpp ${EncodingData}) ------------
     enc_data_block = extract_block(instdb_cpp, "EncodingData")
     cpp_tables = split_tables(strip_generated_banner(enc_data_block))
     check(
@@ -698,7 +653,6 @@ def gen_aarch64(check_only: bool = False) -> str:
         )
         parsed_tables[cpp_name] = rows
 
-    # --- Name data (arm/a64instdb.cpp ${NameData}) --------------------------
     name_block = extract_block(instdb_cpp, "NameData")
     string_m = re.search(
         r"const char InstDB::_inst_name_string_table\[\] =\s*(.*?);", name_block, re.S
@@ -714,7 +668,6 @@ def gen_aarch64(check_only: bool = False) -> str:
         f"a64: expected {A64_INST_ID_COUNT} name index rows, got {len(name_index_rows)}",
     )
 
-    # --- Rows JSON ----------------------------------------------------------
     json_rows = [
         {
             "id": r["id"],
@@ -738,7 +691,6 @@ def gen_aarch64(check_only: bool = False) -> str:
             {"arch": "aarch64", "source": "arm/a64instdb.cpp ${InstInfo}", "rows": json_rows},
         )
 
-    # --- Rust emission ------------------------------------------------------
     def map_data_arg(arg: str) -> str:
         arg = re.sub(r"\bOffsetType::kAArch64_ADR\b", "OffsetType::Adr as u8", arg)
         arg = re.sub(r"\bOffsetType::kAArch64_ADRP\b", "OffsetType::Adrp as u8", arg)
@@ -850,10 +802,6 @@ def gen_aarch64(check_only: bool = False) -> str:
     return result
 
 
-# ---------------------------------------------------------------------------
-# X86 driver
-# ---------------------------------------------------------------------------
-
 X86_INST_ID_COUNT = 1648
 X86_ALIAS_COUNT = 44
 X86_ENCODING_COUNT = 162  # Includes kEncodingNone and kEncodingCount.
@@ -936,7 +884,6 @@ class X86Db:
         cpuinfo_h = read_asmjit("core/cpuinfo.h")
         self.inst_cpp = read_asmjit("x86/x86instdb.cpp")
 
-        # --- InstId + aliases ------------------------------------------------
         self.inst_ids, self.aliases = parse_inst_id_block(
             extract_block(globals_h, "InstId"), strip_prefix="kId"
         )
@@ -949,7 +896,6 @@ class X86Db:
             f"x86: expected {X86_ALIAS_COUNT} aliases, got {len(self.aliases)}",
         )
 
-        # --- Enums from x86instdb.h ------------------------------------------
         self.mode_entries = parse_cpp_enum_entries(enum_body(instdb_h, r"enum class Mode : uint8_t"))
         check([e[0] for e in self.mode_entries] == ["kNone", "kX86", "kX64", "kAny"],
               "x86: unexpected Mode enum")
@@ -966,7 +912,6 @@ class X86Db:
         self.avx512_flags_names = {e[0][1:] for e in self.avx512_flags_entries if e[0] not in ("kNone", "k_")}
         self.op_flags_names = {e[0][1:] for e in self.op_flags_entries if e[0] != "kNone"}
 
-        # --- Enums from x86instdb_p.h -----------------------------------------
         self.encoding_entries = parse_cpp_enum_entries(
             enum_body(instdb_p_h, r"enum EncodingId : uint32_t")
         )
@@ -990,10 +935,8 @@ class X86Db:
             enum_body(self.rw_info_rm_body, r"enum Flags : uint8_t")
         )
 
-        # --- Opcode constants --------------------------------------------------
         self.opcode_consts = parse_enum_consts(enum_body(opcode_p_h, r"enum Bits : uint32_t"))
 
-        # --- CpuFeatures::X86 ---------------------------------------------------
         x86_features_body = enum_body(cpuinfo_h, r"struct X86 : public Data")
         feature_entries = parse_cpp_enum_entries(
             enum_body(x86_features_body, r"enum Id : uint8_t")
@@ -1007,8 +950,6 @@ class X86Db:
             self.cpu_features.append((name[1:], variant))
             self.cpu_feature_docs[name[1:]] = doc
         self.cpu_feature_map = dict(self.cpu_features)
-
-    # --- Opcode macro evaluation ---------------------------------------------
 
     def opcode_const(self, name: str) -> int:
         check(name in self.opcode_consts, f"x86: unknown Opcode constant {name!r}")
@@ -1060,8 +1001,6 @@ class X86Db:
                 | self.opcode_const("kModO_" + modo)
             )
         fail(f"x86: cannot evaluate opcode expression {code!r}")
-
-    # --- Flag-expression mapping ----------------------------------------------
 
     def map_inst_flags(self, expr: str) -> str:
         def one(part: str) -> str:
@@ -1183,7 +1122,6 @@ def emit_x86(db: X86Db) -> str:
         "use crate::core::rwinfo::{CpuRwFlags, InstControlFlow, InstRwFlags, InstSameRegHint, OpRwFlags};\n\n"
     )
 
-    # --- CpuFeature -----------------------------------------------------------
     out.append("/// X86 CPU feature identifiers (port of AsmJit's `CpuFeatures::X86`).\n")
     out.append("#[derive(Debug, Clone, Copy, PartialEq, Eq)]\n")
     out.append("#[allow(non_camel_case_types)]\n")
@@ -1208,7 +1146,6 @@ def emit_x86(db: X86Db) -> str:
         out.append(f"    pub const {old}: Self = Self::{new};\n")
     out.append("}\n\n")
 
-    # --- InstId ---------------------------------------------------------------
     out.append("/// X86 instruction id.\n")
     out.append("#[derive(Debug, Clone, Copy, PartialEq, Eq)]\n")
     out.append("#[repr(u32)]\n")
@@ -1224,7 +1161,6 @@ def emit_x86(db: X86Db) -> str:
         out.append(f"    pub const {screaming(name)}: InstId = InstId::{target};\n")
     out.append("}\n\n")
 
-    # --- Mode ------------------------------------------------------------------
     out.append("/// Describes which operation mode is supported by an instruction.\n")
     out.append("#[derive(Debug, Clone, Copy, PartialEq, Eq)]\n")
     out.append("#[repr(u8)]\n")
@@ -1235,7 +1171,6 @@ def emit_x86(db: X86Db) -> str:
         out.append(f"    {strip_k(name)} = {emit_bitflags_value(value)},\n")
     out.append("}\n\n")
 
-    # --- OpFlags -----------------------------------------------------------------
     out.append("// Operand signature flags used by [`OpSignature`].\n")
     out.append("bitflags! {\n")
     out.append("    #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Default)]\n")
@@ -1247,10 +1182,8 @@ def emit_x86(db: X86Db) -> str:
         out.append(f"        const {screaming(strip_k(name))} = {emit_bitflags_value(value)};\n")
     out.append("    }\n}\n\n")
 
-    # --- Structs (ports of the POD types in x86instdb{,_p}.h) --------------------
     out.append(X86_STRUCTS)
 
-    # --- InstFlags / Avx512Flags --------------------------------------------------
     out.append("// Instruction flags.\n")
     out.append("bitflags! {\n")
     out.append("    #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Default)]\n")
@@ -1275,7 +1208,6 @@ def emit_x86(db: X86Db) -> str:
         out.append(f"        const {screaming(strip_k(name))} = {emit_bitflags_value(value)};\n")
     out.append("    }\n}\n\n")
 
-    # --- Encoding enum ---------------------------------------------------------------
     out.append("/// Instruction encoding (X86|X86_64).\n")
     out.append("#[derive(Debug, Clone, Copy, PartialEq, Eq)]\n")
     out.append("#[allow(non_camel_case_types)]\n")
@@ -1291,7 +1223,6 @@ def emit_x86(db: X86Db) -> str:
             out.append(f"    {rust_name},\n")
     out.append("}\n\n")
 
-    # --- Remaining enums + tables -------------------------------------------------------
     out.append(emit_x86_rw_structs(db))
     out.append(emit_x86_tables(db))
     result = "".join(out)
@@ -1621,7 +1552,6 @@ def emit_u8_table(name: str, values: list[int], doc: str) -> str:
 def emit_x86_tables(db: X86Db) -> str:
     out: list[str] = []
 
-    # --- INST_INFO_TABLE ------------------------------------------------------
     inst_rows = x86_parse_inst_rows(db)
     out.append("/// Instruction information table, indexed by [`InstId`].\n")
     out.append("pub static INST_INFO_TABLE: &[InstInfo] = &[\n")
@@ -1633,7 +1563,6 @@ def emit_x86_tables(db: X86Db) -> str:
         )
     out.append("];\n\n")
 
-    # --- Opcode tables ----------------------------------------------------------
     for block_key, table, rust_name, expected in (
         ("MainOpcodeTable", "main_opcode_table", "MAIN_OPCODE_TABLE", X86_MAIN_OPCODE_COUNT),
         ("AltOpcodeTable", "alt_opcode_table", "ALT_OPCODE_TABLE", X86_ALT_OPCODE_COUNT),
@@ -1645,7 +1574,6 @@ def emit_x86_tables(db: X86Db) -> str:
             out.append(f"    0x{value:08X},{suffix}\n")
         out.append("];\n\n")
 
-    # --- INST_COMMON_INFO_TABLE -----------------------------------------------------
     common_block = extract_block(db.inst_cpp, "InstCommonTable")
     common_tables = split_tables(strip_generated_banner(common_block))
     check("_inst_common_info_table" in common_tables, "x86: _inst_common_info_table missing")
@@ -1675,7 +1603,6 @@ def emit_x86_tables(db: X86Db) -> str:
         )
     out.append("];\n\n")
 
-    # --- ADDITIONAL_INFO_TABLE / RW_FLAGS_INFO_TABLE / INST_FLAGS_TABLE --------------
     add_block = extract_block(db.inst_cpp, "AdditionalInfoTable")
     add_tables = split_tables(strip_generated_banner(add_block))
 
@@ -1731,7 +1658,6 @@ def emit_x86_tables(db: X86Db) -> str:
         out.append(f"    InstRwFlags::{inst_flags_map[m.group(1)]}, // {comment}\n")
     out.append("];\n\n")
 
-    # --- Name data -------------------------------------------------------------------
     name_block = extract_block(db.inst_cpp, "NameData")
     spans_m = re.search(
         r"const InstNameIndex InstDB::_inst_name_index = \{\{(.*?)\},\s*uint16_t\((\d+)\)\};",
@@ -1816,7 +1742,6 @@ def emit_x86_tables(db: X86Db) -> str:
     out.append("];\n\n")
     out.append(f"pub const ALIAS_TABLE_SIZE: u32 = {X86_ALIAS_COUNT};\n\n")
 
-    # --- Signature tables ---------------------------------------------------------------
     sig_block = extract_block(db.inst_cpp, "InstSignatureTable")
     sig_tables = split_tables(strip_generated_banner(sig_block))
 
@@ -1859,7 +1784,6 @@ def emit_x86_tables(db: X86Db) -> str:
         out.append(f"    OpSignature::new({db.map_op_flags(args[0])}, {args[1]}),\n")
     out.append("];\n\n")
 
-    # --- RW info tables --------------------------------------------------------------------
     rw_block = extract_block(db.inst_cpp, "InstRWInfoTable")
     rw_tables = split_tables(strip_generated_banner(rw_block))
 
@@ -1951,10 +1875,6 @@ def emit_x86_tables(db: X86Db) -> str:
     return "".join(out)
 
 
-# ---------------------------------------------------------------------------
-# X86 driver entry point
-# ---------------------------------------------------------------------------
-
 
 def gen_x86() -> str:
     db = X86Db()
@@ -1986,10 +1906,6 @@ def gen_x86() -> str:
     write_file(REPO_ROOT / "src" / "x86" / "instdb.rs", result)
     return result
 
-
-# ---------------------------------------------------------------------------
-# CLI
-# ---------------------------------------------------------------------------
 
 
 def write_file(path: Path, content: str) -> None:

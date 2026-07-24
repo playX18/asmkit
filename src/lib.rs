@@ -125,7 +125,10 @@ pub use core::{
         BaseMem, BaseReg, Imm, ImmType, Label, Operand, OperandCast, OperandSignature, OperandType,
         RegGroup, RegMask, RegTraits, RegType, Sym, imm,
     },
-    patch::{PatchBlock, PatchBlockId, PatchCatalog, PatchSite, PatchSiteId},
+    patch::{
+        PatchBlock, PatchBlockId, PatchCatalog, PatchSite, PatchSiteId, PatchableBlock,
+        PatchableSite,
+    },
     rwinfo::{
         CpuRwFlags, INVALID_PHYS_ID, InstControlFlow, InstRwFlags, InstRwInfo, InstSameRegHint,
         OpRwFlags, OpRwInfo,
@@ -134,7 +137,7 @@ pub use core::{
     target::Environment,
 };
 #[cfg(feature = "jit")]
-pub use core::{buffer::LoadedRelocatedCode, patch::LoadedPatchableCode};
+pub use core::buffer::LoadedRelocatedCode;
 
 use ::core::fmt;
 

@@ -9,10 +9,11 @@ use crate::{
         buffer::{CodeBuffer, CodeOffset, ConstantData, LabelUse},
         globals::InstOptions,
         operand::*,
-        patch::{PatchBlockId, PatchSiteId},
+        patch::{PatchableBlock, PatchableSite},
         target::Environment,
     },
 };
+use super::instdb::InstId;
 
 /// X86/X64 Assembler implementation.
 pub struct Assembler<'a> {
@@ -363,34 +364,83 @@ impl<'a> Assembler<'a> {
         self.buffer.error()
     }
 
-    pub fn patchable_jmp(&mut self, label: Label) -> PatchSiteId {
+    /// Reserve a nop-filled island for later custom rewriting.
+    pub fn reserve_patch_block(
+        &mut self,
+        size: CodeOffset,
+        align: CodeOffset,
+    ) -> Result<PatchableBlock, crate::AsmError> {
+        self.buffer.reserve_patch_block(size, align)
+    }
+
+    pub fn patchable_jmp(&mut self, label: Label) -> PatchableSite {
         self.long();
         self.jmp(label);
         let offset = self
             .buffer
             .cur_offset()
             .saturating_sub(LabelUse::X86JmpRel32.patch_size() as u32);
-        self.buffer
-            .record_label_patch_site(offset, label, LabelUse::X86JmpRel32)
+        let _ = self
+            .buffer
+            .record_label_patch_site(offset, label, LabelUse::X86JmpRel32);
+        // SAFETY: long jmp/call emits a rel32 displacement at `offset`.
+        unsafe { PatchableSite::new(offset, LabelUse::X86JmpRel32, 0) }
     }
 
-    pub fn patchable_call(&mut self, label: Label) -> PatchSiteId {
+    pub fn patchable_call(&mut self, label: Label) -> PatchableSite {
         self.long();
         self.call(label);
         let offset = self
             .buffer
             .cur_offset()
             .saturating_sub(LabelUse::X86JmpRel32.patch_size() as u32);
-        self.buffer
-            .record_label_patch_site(offset, label, LabelUse::X86JmpRel32)
+        let _ = self
+            .buffer
+            .record_label_patch_site(offset, label, LabelUse::X86JmpRel32);
+        // SAFETY: long jmp/call emits a rel32 displacement at `offset`.
+        unsafe { PatchableSite::new(offset, LabelUse::X86JmpRel32, 0) }
     }
 
-    pub fn patchable_mov<A, B>(&mut self, dst: A, src: B) -> PatchBlockId
+    /// Patchable conditional jump (forced rel32).
+    pub fn patchable_jcc(&mut self, cc: CondCode, label: Label) -> PatchableSite {
+        const JCC: [InstId; 16] = [
+            InstId::Jo,
+            InstId::Jno,
+            InstId::Jb,
+            InstId::Jnb,
+            InstId::Jz,
+            InstId::Jnz,
+            InstId::Jbe,
+            InstId::Jnbe,
+            InstId::Js,
+            InstId::Jns,
+            InstId::Jp,
+            InstId::Jnp,
+            InstId::Jl,
+            InstId::Jnl,
+            InstId::Jle,
+            InstId::Jnle,
+        ];
+        self.long();
+        self.emit_n(JCC[cc.code() as usize] as u32, &[label.as_operand()]);
+        let offset = self
+            .buffer
+            .cur_offset()
+            .saturating_sub(LabelUse::X86JmpRel32.patch_size() as u32);
+        let _ = self
+            .buffer
+            .record_label_patch_site(offset, label, LabelUse::X86JmpRel32);
+        // SAFETY: long jcc emits a rel32 displacement at `offset`.
+        unsafe { PatchableSite::new(offset, LabelUse::X86JmpRel32, 0) }
+    }
+
+    pub fn patchable_mov<A, B>(&mut self, dst: A, src: B) -> PatchableBlock
     where
         A: OperandCast + Copy,
         B: OperandCast + Copy,
         Self: MovEmitter<A, B>,
     {
+        let arch = self.buffer.env().arch();
         let dst_op = *dst.as_operand();
         let src_op = *src.as_operand();
         let size = if dst_op.is_reg_type_of(RegType::Gp64) {
@@ -403,7 +453,8 @@ impl<'a> Assembler<'a> {
                     operand_index: 0,
                     reason: "patchable_mov requires a Gp32 or Gp64 destination",
                 }));
-            return PatchBlockId::from_index(usize::MAX);
+            // SAFETY: poisoned handle; apply will fail bounds checks.
+            return unsafe { PatchableBlock::new(u32::MAX, 1, arch) };
         };
 
         if !src_op.is_imm() {
@@ -412,7 +463,7 @@ impl<'a> Assembler<'a> {
                     operand_index: 1,
                     reason: "patchable_mov requires an immediate source",
                 }));
-            return PatchBlockId::from_index(usize::MAX);
+            return unsafe { PatchableBlock::new(u32::MAX, size, arch) };
         }
 
         let offset = self.buffer.cur_offset();
@@ -422,11 +473,13 @@ impl<'a> Assembler<'a> {
         if self.buffer.error().cloned() != previous_error
             || self.buffer.cur_offset() < offset + size
         {
-            return PatchBlockId::from_index(usize::MAX);
+            return unsafe { PatchableBlock::new(u32::MAX, size, arch) };
         }
 
         let offset = self.buffer.cur_offset() - size;
-        self.buffer.record_patch_block(offset, size, 1)
+        let _ = self.buffer.record_patch_block(offset, size, 1);
+        // SAFETY: long mov-imm places a `size`-byte immediate at `offset`.
+        unsafe { PatchableBlock::new(offset, size, arch) }
     }
 }
 
@@ -738,9 +791,42 @@ mod tests {
 
         let code = buf.finish_patched().unwrap();
         assert_eq!(code.data(), &[0xE9, 0, 0, 0, 0]);
-        let site = code.patch_catalog().site(site).unwrap();
-        assert_eq!(site.offset, 1);
-        assert_eq!(site.current_target, 5);
+        assert_eq!(site.offset(), 1);
+        let catalog_site = code
+            .patch_catalog()
+            .sites()
+            .iter()
+            .find(|s| s.offset == site.offset())
+            .unwrap();
+        assert_eq!(catalog_site.current_target, 5);
+    }
+
+    #[test]
+    fn patchable_jcc_and_mov_can_be_rewritten_offline() {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let (jcc, imm_block, alt) = {
+            let mut asm = Assembler::new(&mut buf);
+            let target = asm.get_label();
+            let alt = asm.get_label();
+            let imm_block = asm.patchable_mov(EAX, imm(1i32));
+            let jcc = asm.patchable_jcc(CondCode::Z, target);
+            asm.bind_label(target);
+            asm.emit_n(InstId::Ret as u32, &[]);
+            let alt_off = {
+                asm.bind_label(alt);
+                asm.emit_n(InstId::Ret as u32, &[]);
+                asm.label_offset(alt)
+            };
+            (jcc, imm_block, alt_off)
+        };
+
+        let code = buf.finish_patched().unwrap();
+        let mut bytes = code.data().to_vec();
+        unsafe {
+            imm_block.repatch_u32(&mut bytes, 0x99).unwrap();
+            jcc.retarget(&mut bytes, alt).unwrap();
+        }
+        assert_eq!(&bytes[imm_block.offset() as usize..][..4], &0x99u32.to_le_bytes());
     }
 
     #[test]

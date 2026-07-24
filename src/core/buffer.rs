@@ -6,8 +6,8 @@ use smallvec::SmallVec;
 use crate::AsmError;
 use crate::core::arch_traits::Arch;
 use crate::core::patch::{
-    PatchBlock, PatchBlockId, PatchCatalog, PatchSite, PatchSiteId, fill_with_nops,
-    minimum_patch_alignment,
+    PatchBlock, PatchBlockId, PatchCatalog, PatchSite, PatchSiteId, PatchableBlock,
+    fill_with_nops, minimum_patch_alignment,
 };
 #[cfg(feature = "riscv")]
 use crate::riscv;
@@ -989,11 +989,15 @@ impl CodeBuffer {
         })
     }
 
+    /// Reserve a nop-filled island for later custom rewriting (JSC `padBeforePatch`).
+    ///
+    /// Returns a [`PatchableBlock`] handle; the block is also recorded in the patch catalog
+    /// for `finish_patched` / linker rebasing.
     pub fn reserve_patch_block(
         &mut self,
         size: CodeOffset,
         align: CodeOffset,
-    ) -> Result<PatchBlockId, AsmError> {
+    ) -> Result<PatchableBlock, AsmError> {
         if let Some(error) = self.error.clone() {
             return Err(error);
         }
@@ -1017,13 +1021,13 @@ impl CodeBuffer {
         let block = self.get_appended_space(size as usize);
         fill_with_nops(arch, block)?;
 
-        let id = PatchBlockId::from_index(self.patch_blocks.len());
         self.patch_blocks.push(PendingPatchBlock {
             offset,
             size,
             align,
         });
-        Ok(id)
+        // SAFETY: we just reserved and recorded this nop island.
+        Ok(unsafe { PatchableBlock::new(offset, size, arch) })
     }
 
     pub fn record_patch_block(
@@ -1947,7 +1951,7 @@ impl Reloc {
     }
 }
 
-#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
+#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Hash)]
 pub enum LabelUse {
     X86JmpRel32,
     /// 20-bit branch offset (unconditional branches). PC-rel, offset is
@@ -3322,7 +3326,7 @@ mod tests {
         buf.add_reloc(Reloc::Abs4, RelocTarget::Label(target), 0);
         buf.write_u32(0);
         let block = buf.reserve_patch_block(4, 1).unwrap();
-        let block_offset = buf.patch_blocks[block.index()].offset;
+        let block_offset = block.offset();
         let site = buf
             .try_record_patch_site(
                 block_offset,
@@ -3343,7 +3347,7 @@ mod tests {
         assert_eq!(&first.data()[..3], &[0xEB, 1, 0x90]);
         assert_eq!(first.defined_symbol_str("target"), Some(3));
         assert_eq!(first.relocs()[0].offset, 3);
-        assert_eq!(first.patch_catalog().block(block).unwrap().offset, 7);
+        assert_eq!(first.patch_catalog().block(PatchBlockId::from_index(0)).unwrap().offset, 7);
         let patch_site = first.patch_catalog().site(site).unwrap();
         assert_eq!(patch_site.offset, 7);
         assert_eq!(patch_site.current_target, 3);

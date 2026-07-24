@@ -76,9 +76,6 @@ bitflags! {
         const TAKEN = 0x00000040;
         const NOT_TAKEN = 0x00000080;
 
-        // X86 & X64 Options
-        // -----------------
-
         /// Use ModMR instead of ModRM if applicable.
         const X86_MOD_MR = 0x00000100;
         /// Use ModRM instead of ModMR if applicable.

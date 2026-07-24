@@ -132,7 +132,6 @@ class X86Db:
         cpuinfo_h = read_asmjit("core/cpuinfo.h")
         self.inst_cpp = read_asmjit("x86/x86instdb.cpp")
 
-        # --- InstId + aliases ---
         self.inst_ids, self.aliases = parse_inst_id_block(
             extract_block(globals_h, "InstId"), "kId")
         check(len(self.inst_ids) == X86_INST_ID_COUNT,
@@ -140,7 +139,6 @@ class X86Db:
         check(len(self.aliases) == X86_ALIAS_COUNT,
               f"x86: expected {X86_ALIAS_COUNT} aliases, got {len(self.aliases)}")
 
-        # --- Enums from x86instdb.h ---
         self.mode_entries = parse_cpp_enum_entries(enum_body(instdb_h, r"enum class Mode : uint8_t"))
         check([e[0] for e in self.mode_entries] == ["kNone", "kX86", "kX64", "kAny"],
               "x86: unexpected Mode enum")
@@ -154,7 +152,6 @@ class X86Db:
         self.avx512_flags_names = {e[0][1:] for e in self.avx512_flags_entries if e[0] not in ("kNone", "k_")}
         self.op_flags_names = {e[0][1:] for e in self.op_flags_entries if e[0] != "kNone"}
 
-        # --- Enums from x86instdb_p.h ---
         self.encoding_entries = parse_cpp_enum_entries(
             enum_body(instdb_p_h, r"enum EncodingId : uint32_t"))
         check(len(self.encoding_entries) == X86_ENCODING_COUNT,
@@ -172,10 +169,8 @@ class X86Db:
         self.rw_info_rm_flags_entries = parse_cpp_enum_entries(
             enum_body(self.rw_info_rm_body, r"enum Flags : uint8_t"))
 
-        # --- Opcode constants ---
         self.opcode_consts = parse_enum_consts(enum_body(opcode_p_h, r"enum Bits : uint32_t"))
 
-        # --- CpuFeatures::X86 ---
         x86_features_body = enum_body(cpuinfo_h, r"struct X86 : public Data")
         feature_entries = parse_cpp_enum_entries(
             enum_body(x86_features_body, r"enum Id : uint8_t"))
@@ -189,7 +184,6 @@ class X86Db:
             self.cpu_feature_docs[name[1:]] = doc
         self.cpu_feature_map = dict(self.cpu_features)
 
-        # --- Name data, computed from the InstId list and db alias formats ---
         alias_map = read_db_json("isa_x86.json")["aliases"]
         self.inst_name_data = tablegen.InstructionNameData()
         self.alias_name_data = tablegen.InstructionNameData()
@@ -264,8 +258,6 @@ class X86Db:
             check(value == self.alias_link[i],
                   f"x86: computed alias link row #{i} differs from the pinned C++ table")
 
-    # --- Opcode macro evaluation ---------------------------------------------
-
     def opcode_const(self, name):
         check(name in self.opcode_consts, f"x86: unknown Opcode constant {name!r}")
         return self.opcode_consts[name]
@@ -316,8 +308,6 @@ class X86Db:
                 | self.opcode_const("kModO_" + modo)
             )
         fail(f"x86: cannot evaluate opcode expression {code!r}")
-
-    # --- Flag-expression mapping ----------------------------------------------
 
     def map_inst_flags(self, expr):
         def one(part):
@@ -495,7 +485,6 @@ def emit_x86_rw_structs(db):
 def emit_x86_tables(db):
     out = []
 
-    # --- INST_INFO_TABLE ---
     inst_rows = x86_parse_inst_rows(db)
     out.append("/// Instruction information table, indexed by [`InstId`].\n")
     out.append("pub static INST_INFO_TABLE: &[InstInfo] = &[\n")
@@ -506,7 +495,6 @@ def emit_x86_tables(db):
             f"{row['main_opcode_index']}, {row['alt_opcode_index']}), // #{i}\n")
     out.append("];\n\n")
 
-    # --- Opcode tables ---
     for block_key, table, rust_name, expected in (
         ("MainOpcodeTable", "main_opcode_table", "MAIN_OPCODE_TABLE", X86_MAIN_OPCODE_COUNT),
         ("AltOpcodeTable", "alt_opcode_table", "ALT_OPCODE_TABLE", X86_ALT_OPCODE_COUNT),
@@ -518,7 +506,6 @@ def emit_x86_tables(db):
             out.append(f"    0x{value:08X},{suffix}\n")
         out.append("];\n\n")
 
-    # --- INST_COMMON_INFO_TABLE ---
     common_block = extract_block(db.inst_cpp, "InstCommonTable")
     common_tables = split_tables(strip_generated_banner(common_block))
     check("_inst_common_info_table" in common_tables, "x86: _inst_common_info_table missing")
@@ -545,7 +532,6 @@ def emit_x86_tables(db):
             f"{sig_index}, {sig_count}, {cf}, {srh}), // {comment}\n")
     out.append("];\n\n")
 
-    # --- ADDITIONAL_INFO_TABLE / RW_FLAGS_INFO_TABLE / INST_FLAGS_TABLE ---
     add_block = extract_block(db.inst_cpp, "AdditionalInfoTable")
     add_tables = split_tables(strip_generated_banner(add_block))
 
@@ -593,7 +579,6 @@ def emit_x86_tables(db):
         out.append(f"    InstRwFlags::{inst_flags_map[m.group(1)]}, // {comment}\n")
     out.append("];\n\n")
 
-    # --- Name data (computed via InstructionNameData) ---
     out.append("/// Maps the first letter of an instruction name to a span of [`InstId`] values.\n")
     out.append("pub static INST_NAME_INDEX: &[(u16, u16)] = &[\n")
     for i in range(26):
@@ -637,7 +622,6 @@ def emit_x86_tables(db):
     out.append("];\n\n")
     out.append(f"pub const ALIAS_TABLE_SIZE: u32 = {X86_ALIAS_COUNT};\n\n")
 
-    # --- Signature tables ---
     sig_block = extract_block(db.inst_cpp, "InstSignatureTable")
     sig_tables = split_tables(strip_generated_banner(sig_block))
 
@@ -675,7 +659,6 @@ def emit_x86_tables(db):
         out.append(f"    OpSignature::new({db.map_op_flags(args[0])}, {args[1]}),\n")
     out.append("];\n\n")
 
-    # --- RW info tables ---
     rw_block = extract_block(db.inst_cpp, "InstRWInfoTable")
     rw_tables = split_tables(strip_generated_banner(rw_block))
 
@@ -764,7 +747,6 @@ def emit_x86(db):
     out.append("use bitflags::bitflags;\n\n")
     out.append("use crate::core::rwinfo::{CpuRwFlags, InstControlFlow, InstRwFlags, InstSameRegHint, OpRwFlags};\n\n")
 
-    # --- CpuFeature ---
     out.append("/// X86 CPU feature identifiers (port of AsmJit's `CpuFeatures::X86`).\n")
     out.append("#[derive(Debug, Clone, Copy, PartialEq, Eq)]\n")
     out.append("#[allow(non_camel_case_types)]\n")
@@ -789,7 +771,6 @@ def emit_x86(db):
         out.append(f"    pub const {old}: Self = Self::{new};\n")
     out.append("}\n\n")
 
-    # --- InstId ---
     out.append("/// X86 instruction id.\n")
     out.append("#[derive(Debug, Clone, Copy, PartialEq, Eq)]\n")
     out.append("#[repr(u32)]\n")
@@ -805,7 +786,6 @@ def emit_x86(db):
         out.append(f"    pub const {screaming(name)}: InstId = InstId::{target};\n")
     out.append("}\n\n")
 
-    # --- Mode ---
     out.append("/// Describes which operation mode is supported by an instruction.\n")
     out.append("#[derive(Debug, Clone, Copy, PartialEq, Eq)]\n")
     out.append("#[repr(u8)]\n")
@@ -816,7 +796,6 @@ def emit_x86(db):
         out.append(f"    {strip_k(name)} = {emit_bitflags_value(value)},\n")
     out.append("}\n\n")
 
-    # --- OpFlags ---
     out.append("// Operand signature flags used by [`OpSignature`].\n")
     out.append("bitflags! {\n")
     out.append("    #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Default)]\n")
@@ -828,10 +807,8 @@ def emit_x86(db):
         out.append(f"        const {screaming(strip_k(name))} = {emit_bitflags_value(value)};\n")
     out.append("    }\n}\n\n")
 
-    # --- Structs (ports of the POD types in x86instdb{,_p}.h) ---
     out.append(read_template("x86_structs.txt"))
 
-    # --- InstFlags / Avx512Flags ---
     out.append("// Instruction flags.\n")
     out.append("bitflags! {\n")
     out.append("    #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Default)]\n")
@@ -856,7 +833,6 @@ def emit_x86(db):
         out.append(f"        const {screaming(strip_k(name))} = {emit_bitflags_value(value)};\n")
     out.append("    }\n}\n\n")
 
-    # --- Encoding enum ---
     out.append("/// Instruction encoding (X86|X86_64).\n")
     out.append("#[derive(Debug, Clone, Copy, PartialEq, Eq)]\n")
     out.append("#[allow(non_camel_case_types)]\n")
@@ -872,7 +848,6 @@ def emit_x86(db):
             out.append(f"    {rust_name},\n")
     out.append("}\n\n")
 
-    # --- Remaining enums + tables ---
     out.append(emit_x86_rw_structs(db))
     out.append(emit_x86_tables(db))
     result = "".join(out)
@@ -893,10 +868,6 @@ def emit_x86(db):
             fail(f"x86: unexpanded token {m.group(0)!r} left in output (pattern {pattern!r})")
     return result
 
-
-# ---------------------------------------------------------------------------
-# Driver
-# ---------------------------------------------------------------------------
 
 def build():
     return emit_x86(X86Db())

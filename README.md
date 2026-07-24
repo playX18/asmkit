@@ -79,7 +79,51 @@ asm.lock().add(ptr64(RCX, 0), EAX); // lock add [rcx], eax
 ```
 
 More complete examples live in `examples/`: `factorial.rs` (x86/RISC-V/AArch64 + JIT +
-disassembly), `reloc.rs` (relocations), `a64.rs` (AArch64).
+disassembly), `reloc.rs` (relocations), `a64.rs` (AArch64), `patch.rs` (JSC-style patching).
+
+# Patching code (JSC-style)
+
+Assemblers can emit **patchable** jumps, calls, and immediates that you rewrite later without
+re-emitting the whole buffer. Handles are self-describing (`PatchableSite` /
+`PatchableBlock`); apply them with `unsafe` methods on a normal JIT `Span` or `&mut [u8]`.
+There is no special “patchable load” type — use ordinary `allocate` after `finish_patched`.
+
+```rust,ignore
+use asmkit::{Arch, CodeBuffer, Environment, JitAllocator};
+use asmkit::x86::*;
+
+let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+let (jump, imm, slow_off, fast_off) = {
+    let mut asm = Assembler::new(&mut buf);
+    let slow = asm.get_label();
+    let fast = asm.get_label();
+    let jump = asm.patchable_jmp(slow);       // PatchableSite
+    let imm = asm.patchable_mov(RAX, imm(0)); // PatchableBlock over the imm bytes
+    asm.bind_label(slow);
+    asm.ret();
+    let slow_off = asm.label_offset(slow);
+    asm.bind_label(fast);
+    asm.mov(RAX, 1);
+    asm.ret();
+    let fast_off = asm.label_offset(fast);
+    (jump, imm, slow_off, fast_off)
+};
+
+let code = buf.finish_patched()?;
+let mut jit = JitAllocator::new(Default::default());
+let mut span = code.allocate(&mut jit)?;
+
+unsafe {
+    jump.retarget_span(&mut jit, &mut span, fast_off)?;
+    imm.repatch_u64_span(&mut jit, &mut span, 0xdead)?;
+}
+
+// Custom regions: buf.reserve_patch_block(size, align)? → PatchableBlock::rewrite(_span)
+```
+
+`finish_patched` keeps a `PatchCatalog` for reachability checks and linker rebasing; after a
+multi-module link, convert rebased entries with `PatchSite::to_patchable` /
+`PatchBlock::to_patchable`. See `src/core/patch.rs` for the JSC mapping and safety contracts.
 
 # Cargo features
 

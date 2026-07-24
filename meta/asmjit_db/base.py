@@ -16,26 +16,16 @@ import re
 
 from . import exp as exp  # Parity with base.js, which re-exports exp.
 
-
 def _fail(msg):
     raise ValueError(f"[BASE] {msg}")
-
 
 def dict_of(src=None):
     # JS `dict()` creates a null-prototype object; a plain dict is the
     # Python equivalent for this codebase's purposes.
     return dict(src) if src else {}
 
-
-# asmdb.base.Symbols
-# ==================
-
 class Symbols:
     COMMUTATIVE = "~"
-
-
-# asmdb.base.Parsing
-# ==================
 
 class Parsing:
     """Functions related to operand-string parsing."""
@@ -62,7 +52,6 @@ class Parsing:
 
     @staticmethod
     def is_commutative(s):
-        # Get whether the string `s` specifies commutativity.
         return len(s) > 0 and s[0] == Symbols.COMMUTATIVE
 
     @staticmethod
@@ -144,10 +133,6 @@ class Parsing:
             else:
                 i += 1
 
-
-# asmdb.base.MapUtils
-# ===================
-
 class MapUtils:
     @staticmethod
     def clone_except(map_, except_):
@@ -159,10 +144,6 @@ class MapUtils:
     def map_from_array(array):
         return {k: True for k in array}
 
-
-# asmdb.base.Operand
-# ==================
-
 class OperandFlags(enum.IntFlag):
     Optional = 0x00000001
     Implicit = 0x00000002
@@ -170,7 +151,6 @@ class OperandFlags(enum.IntFlag):
     ZExt = 0x00000008
     ReadAccess = 0x00000010
     WriteAccess = 0x00000020
-
 
 class Operand:
     def __init__(self):
@@ -262,12 +242,7 @@ class Operand:
     def is_partial_op(self):
         return False
 
-
-# asmdb.base.Instruction
-# ======================
-
 _UNSET = object()
-
 
 class Instruction:
     """Interface and properties that each architecture dependent instruction
@@ -381,10 +356,6 @@ class Instruction:
     def __str__(self):
         return f"{self.name} {', '.join(str(op) for op in self.operands)}"
 
-
-# asmdb.base.InstructionGroup
-# ===========================
-
 class InstructionGroup(list):
     """A list of instructions with some additional functionality."""
 
@@ -398,13 +369,8 @@ class InstructionGroup(list):
     def check_attribute(self, key, value):
         return sum(1 for instruction in self if getattr(instruction, key, None) == value)
 
-
 # Stand-in for the JS frozen empty group; identity-checked internally.
 _EMPTY_GROUP = InstructionGroup()
-
-
-# asmdb.base.ISA
-# ==============
 
 class ISA:
     def __init__(self):

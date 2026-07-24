@@ -228,10 +228,6 @@ OPERAND_ORDER_BY_ENCODING = {
     "Zimm6HiVmVs2Zimm6loVd": ["vd", "vs2", "zimm6lohi", "vm"],
 }
 
-# ---------------------------------------------------------------------------
-# Curated semantic overrides (documented in the module docstring).
-# ---------------------------------------------------------------------------
-
 # Reserved fields that standard software must encode as zero. These mnemonics
 # have no assembly operands even though riscv-opcodes exposes the bit fields.
 FIXED_ZERO_FIELDS = {
@@ -309,7 +305,6 @@ C_MEM = {
     "c_fsd": ("STORE", 8), "c_fsdsp": ("STORE", 8),
 }
 
-
 def process_enc_line(line, ext):
     """
     This function processes each line of the encoding files (rv*). As part of
@@ -349,7 +344,6 @@ def process_enc_line(line, ext):
     # replace dots with underscores as dot doesn't work with C/Sverilog, etc
     name = name.replace(".", "_")
 
-    # remove leading whitespaces
     remaining = remaining.lstrip()
 
     # check each field for it's length and overlapping bits
@@ -359,7 +353,6 @@ def process_enc_line(line, ext):
         msb = int(s2)
         lsb = int(s1)
 
-        # check msb < lsb
         if msb < lsb:
             logging.error(
                 f'{line.split(" ")[0]:<10} has position {msb} less than position {lsb} in it\'s encoding'
@@ -445,7 +438,6 @@ def process_enc_line(line, ext):
 
     return (name, single_dict)
 
-
 def same_base_isa(ext_name, ext_name_list):
     type1 = ext_name.split("_")[0]
     for ext_name1 in ext_name_list:
@@ -459,7 +451,6 @@ def same_base_isa(ext_name, ext_name_list):
             return True
     return False
 
-
 def overlaps(x, y):
     x = x.rjust(len(y), "-")
     y = y.rjust(len(x), "-")
@@ -470,18 +461,14 @@ def overlaps(x, y):
 
     return True
 
-
 def overlap_allowed(a, x, y):
     return x in a and y in a[x] or y in a and x in a[y]
-
 
 def extension_overlap_allowed(x, y):
     return overlap_allowed(overlapping_extensions, x, y)
 
-
 def instruction_overlap_allowed(x, y):
     return overlap_allowed(overlapping_instructions, x, y)
-
 
 def create_inst_dict(file_filter, include_pseudo=False):
     """
@@ -596,7 +583,6 @@ def create_inst_dict(file_filter, include_pseudo=False):
                             raise SystemExit(1)
 
                 if name not in instr_dict:
-                    # update the final dict with the instruction
                     instr_dict[name] = single_dict
 
     # second pass if for pseudo instructions
@@ -656,7 +642,6 @@ def create_inst_dict(file_filter, include_pseudo=False):
                 # add the pseudo_op to the dictionary only if the original
                 # instruction is not already in the dictionary.
                 if orig_inst.replace(".", "_") not in instr_dict or include_pseudo:
-                    # update the final dict with the instruction
                     if name not in instr_dict:
                         instr_dict[name] = single_dict
                         logging.debug(f"        including pseudo_ops:{name}")
@@ -752,10 +737,8 @@ def create_inst_dict(file_filter, include_pseudo=False):
                     raise SystemExit(1)
                 instr_dict[name]["extension"].extend(single_dict["extension"])
             else:
-                # update the final dict with the instruction
                 instr_dict[name] = single_dict
     return instr_dict
-
 
 def to_camel_case(text):
     s = text.replace("-", " ").replace("_", " ")
@@ -763,7 +746,6 @@ def to_camel_case(text):
     if len(text) == 0:
         return text
     return s[0] + "".join(i.capitalize() for i in s[1:])
-
 
 def immediates(used_fields=None):
     """Immediate helpers keyed by merged field name. When `used_fields` is given,
@@ -787,26 +769,21 @@ def immediates(used_fields=None):
             immediate_map[name] = (encoder, typ)
     return immediate_map
 
-
 def sanitize_field(arg):
     return arg.replace("=", "_eq_").replace(" ", "_")
-
 
 def encoding_name(fields):
     """Name of the Encoding variant for a variable-field list (mirrors the enum)."""
     name = to_camel_case("_".join(sanitize_field(f).title() for f in fields))
     return name if name else "Empty"
 
-
 def enum_name(instr_name):
     return instr_name.upper().replace("_", "")
-
 
 def doc_key(instr_name):
     """Dotted mnemonic used for OPCODE_STR and unified-db doc lookup."""
     s = instr_name.lower().replace("c_", "c.").replace("cm_", "cm.")
     return s.replace("_", ".")
-
 
 def emitter_arity(fields):
     """Number of operands of the generated emitter method (hi/lo pairs merged)."""
@@ -823,11 +800,6 @@ def emitter_arity(fields):
         count += 1
     return count
 
-
-# ---------------------------------------------------------------------------
-# Effects derivation (instdb.rs).
-# ---------------------------------------------------------------------------
-
 # OpRwFlags values used in the generated RW patterns (kept in sync with
 # crate::core::rwinfo::OpRwFlags; asserted by instdb unit tests).
 R, W, X = "R", "W", "X"
@@ -839,10 +811,8 @@ RW_FIELDS = {"rd_rs1", "rd_rs1_n0", "rd_rs1_p"}
 READ_VEC_FIELDS = {"vs1", "vs2", "vs3"}
 READ_GP_PREFIXES = ("rs1", "rs2", "rs3", "c_rs1", "c_rs2", "c_sreg")
 
-
 def base_field(field):
     return field.split("_eq_")[0]
-
 
 def field_access(field):
     """Read/write access of an operand field: R, W, X (RW), or None (no effects)."""
@@ -854,7 +824,6 @@ def field_access(field):
     if base in READ_VEC_FIELDS or base.startswith(READ_GP_PREFIXES):
         return R
     return None
-
 
 def operand_spec(name, fields, operand_orders):
     """Ordered operand spec for an instruction: field names (or 'imm') in the order
@@ -876,10 +845,8 @@ def operand_spec(name, fields, operand_orders):
     assert len(spec) == arity, f"{name}: {spec} has arity {len(spec)}, expected {arity}"
     return spec
 
-
 def variant_of(fields):
     return encoding_name(fields)
-
 
 def vector_mem(name):
     """Memory access of vector load/store instructions: (kind, width); width 0
@@ -893,7 +860,6 @@ def vector_mem(name):
     if m:
         return ("LOAD" if m.group(1) == "vl" else "STORE", max(1, int(m.group(2)) // 8))
     return None
-
 
 def scalar_mem(name, match):
     """Memory access derived from the static match bits: major opcode selects the
@@ -917,7 +883,6 @@ def scalar_mem(name, match):
         return ("RMW", width)
     return None
 
-
 def mem_access(name, match):
     if name in C_MEM:
         return C_MEM[name]
@@ -929,10 +894,8 @@ def mem_access(name, match):
         return None
     return scalar_mem(name, match)
 
-
 def is_fp_mnemonic(name):
     return name.startswith("f") and not name.startswith("fence")
-
 
 def cpu_flags(name, fields, mem):
     """Implicit CSR flag effects as (read_flags, write_flags) bit names."""
@@ -953,14 +916,12 @@ def cpu_flags(name, fields, mem):
             write_flags.add("VXSAT")
     return read_flags, write_flags
 
-
 def implicit_regs(name, fields):
     read_mask, write_mask = IMPLICIT_REG_NAMES.get(name, (0, 0))
     # Masked vector instructions (vm=0) read v0 as the mask register.
     if "vm" in fields:
         read_mask |= V0_BIT
     return read_mask, write_mask
-
 
 def operand_classes(name, spec, mem, spec_access):
     """Operand class per position for debug asserts: GP, FP, VEC, or IMM."""
@@ -1002,7 +963,6 @@ def operand_classes(name, spec, mem, spec_access):
             cls = "FP"
         classes.append(cls)
     return classes
-
 
 def derive_effects(instr_dict, operand_orders):
     """Derives per-instruction effects. Returns {name: effect-dict} plus stats."""
@@ -1057,12 +1017,6 @@ def derive_effects(instr_dict, operand_orders):
         }
     return effects, stats
 
-
-# ---------------------------------------------------------------------------
-# Doc comments (riscv-unified-db, see meta/docenizer_riscv.py).
-# ---------------------------------------------------------------------------
-
-
 def doc_comment(instr_name, spec, docs, params=None, access=None):
     """`///` lines for an instruction's description, forms, and arguments."""
     key = doc_key(instr_name)
@@ -1095,7 +1049,6 @@ def doc_comment(instr_name, spec, docs, params=None, access=None):
             lines.append(f"- `{param}` — {argument_doc(field, effect, param)}")
     return lines, bool(doc and (doc.get("long_name") or doc.get("description") or doc.get("assembly")))
 
-
 def parameter_name(field):
     """Readable public parameter name for an emit_n operand field."""
     field = base_field(field)
@@ -1115,7 +1068,6 @@ def parameter_name(field):
         return "imm"
     return field.removeprefix("c_")
 
-
 def parameter_names(fields):
     """Unique Rust identifiers while keeping the useful field name first."""
     names, used = [], set()
@@ -1130,7 +1082,6 @@ def parameter_names(fields):
         used.add(name)
     return names
 
-
 def emitter_parameter_spec(fields, effect):
     """Runtime-order field names, including separate AMO aq/rl operands."""
     spec = list(effect["spec"])
@@ -1143,7 +1094,6 @@ def emitter_parameter_spec(fields, effect):
                 spec[i] = "rl"
                 break
     return spec
-
 
 def argument_doc(field, effect, param):
     """Short argument documentation derived from the runtime field/effect."""
@@ -1170,21 +1120,14 @@ def argument_doc(field, effect, param):
         return "Immediate encoding value."
     return "Instruction operand."
 
-
 def rust_doc(lines, indent=""):
     return "".join(f"{indent}/// {line}\n" if line else f"{indent}///\n" for line in lines)
-
-
-# ---------------------------------------------------------------------------
-# Rust emission.
-# ---------------------------------------------------------------------------
 
 ATTRIBUTION = """\
 /* Automatically generated by parse_opcodes (meta/riscv.py). Do not edit by hand.
  * Derived from riscv-opcodes (BSD-3-Clause) and riscv-unified-db
  * (BSD-3-Clause-Clear); see meta/README.md for the input pins. */
 """
-
 
 def make_encoders(instr_dict, docs, effects):
     """Emits typed per-mnemonic traits and Assembler forwarders."""
@@ -1310,7 +1253,6 @@ use crate::core::operand::*;
     logging.info(f"emitter docs: {doc_hits}/{len(instr_dict)} instructions documented")
     return out
 
-
 def make_opcodes(instr_dict, docs, effects):
     """Emits the generated tail of src/riscv/opcodes.rs (everything below the
     hand-maintained immediate section, which is preserved byte-identical)."""
@@ -1366,11 +1308,6 @@ def make_opcodes(instr_dict, docs, effects):
     out += match_table("OPCODE_MASK_COMPRESSED", "u16", compressed=True)
     out += match_table("OPCODE_MATCH_COMPRESSED", "u16", compressed=True)
 
-    # Per-opcode XLEN availability bitmask (bit 0 = RV32, bit 1 = RV64), used by
-    # Assembler::emit_n to reject instructions with no encoding on the target
-    # XLEN. Unlike the OPCODE32/64 tables above, this is unambiguous: those use
-    # 0xffff_ffff as the not-available sentinel, which collides with the real
-    # full mask of fixed-bit instructions like ecall.
     out += f"pub static OPCODE_XLEN: [u8; {len(instr_dict)}] = [\n"
     for i in instr_dict:
         xlen = (1 if i in rv32ext else 0) | (2 if i in rv64ext else 0)
@@ -1525,7 +1462,6 @@ impl InstructionValue {
 """
     insn_value += "}\n"
     return out + insn_value
-
 
 def make_instdb(instr_dict, effects, stats):
     """Emits src/riscv/instdb.rs: deduplicated, pattern-indexed static tables."""
@@ -1786,7 +1722,6 @@ pub static INST_INFO_TABLE: [InstInfo; {len(instr_dict)}] = [
 """
     return out
 
-
 def write_opcodes(instr_dict, docs, effects):
     """Writes src/riscv/opcodes.rs, preserving the hand-maintained immediate
     section above the generation marker byte-identical.
@@ -1799,7 +1734,6 @@ def write_opcodes(instr_dict, docs, effects):
     with open(path, "w") as fp:
         fp.write(head + make_opcodes(instr_dict, docs, effects))
     logging.info(f"wrote {path}")
-
 
 def main():
     extensions = [a for a in sys.argv[1:] if not a.startswith("-")]
@@ -1870,7 +1804,6 @@ def main():
     logging.info(f"wrote {instdb_path}")
 
     logging.info(f"effects derivation stats: {dict(stats)}")
-
 
 if __name__ == "__main__":
     main()

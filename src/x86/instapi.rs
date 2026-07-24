@@ -931,7 +931,6 @@ fn query_rw_info_internal(
                         out.operands[1].rm_size = size1 as u8;
                     }
 
-                    // Handle 'pmovmskb|vpmovmskb'.
                     if operands[0].is_gp() {
                         rw_zero_extend_gp(&mut out.operands[0], &operands[0], NATIVE_GP_SIZE);
                     }

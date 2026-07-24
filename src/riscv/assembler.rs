@@ -4,12 +4,12 @@ use crate::core::arch_traits::Arch;
 use crate::core::buffer::{CodeBuffer, CodeOffset, ConstantData, LabelUse, Reloc, RelocTarget};
 use crate::core::operand::*;
 use crate::core::operand::{Imm, Sym};
-use crate::core::patch::PatchSiteId;
+use crate::core::patch::{PatchableBlock, PatchableSite};
 use crate::core::target::Environment;
 use crate::riscv::instdb::{ANY, OPCODE_FEATURE_CONTEXT, OPCODE_FEATURE_MASKS, SIGNATURE_TABLE};
 use crate::riscv::opcodes::Inst;
 use crate::riscv::opcodes::{ALL_OPCODES, Encoding, OPCODE_XLEN, SHORT_OPCODE};
-use crate::riscv::{Gp, RA};
+use crate::riscv::{Gp, RA, ZERO};
 pub struct Assembler<'a> {
     pub(crate) buffer: &'a mut CodeBuffer,
     /// Scratch error set by the generated emitter during one checked attempt.
@@ -126,38 +126,92 @@ impl<'a> Assembler<'a> {
         self.buffer.error()
     }
 
-    pub fn patchable_j(&mut self, label: Label) -> PatchSiteId {
+    /// Reserve a nop-filled island for later custom rewriting.
+    pub fn reserve_patch_block(
+        &mut self,
+        size: CodeOffset,
+        align: CodeOffset,
+    ) -> Result<PatchableBlock, AsmError> {
+        self.buffer.reserve_patch_block(size, align)
+    }
+
+    pub fn patchable_j(&mut self, label: Label) -> PatchableSite {
         if self.buffer.error().is_some() {
-            return PatchSiteId::from_index(usize::MAX);
+            return unsafe { PatchableSite::new(u32::MAX, LabelUse::RVJal20, 0) };
         }
         let checkpoint = self.buffer.checkpoint();
         let offset = self.buffer.cur_offset();
         self.j(label);
-        let site = self
+        let _ = self
             .buffer
             .record_label_patch_site(offset, label, LabelUse::RVJal20);
         if self.buffer.error().is_some() {
             self.buffer.rollback(checkpoint);
-            return PatchSiteId::from_index(usize::MAX);
+            return unsafe { PatchableSite::new(u32::MAX, LabelUse::RVJal20, 0) };
         }
-        site
+        // SAFETY: `j` emits a JAL-style instruction at `offset`.
+        unsafe { PatchableSite::new(offset, LabelUse::RVJal20, 0) }
     }
 
-    pub fn patchable_call(&mut self, label: Label) -> PatchSiteId {
+    pub fn patchable_call(&mut self, label: Label) -> PatchableSite {
         if self.buffer.error().is_some() {
-            return PatchSiteId::from_index(usize::MAX);
+            return unsafe { PatchableSite::new(u32::MAX, LabelUse::RVJal20, 0) };
         }
         let checkpoint = self.buffer.checkpoint();
         let offset = self.buffer.cur_offset();
         self.jal(RA, label);
-        let site = self
+        let _ = self
             .buffer
             .record_label_patch_site(offset, label, LabelUse::RVJal20);
         if self.buffer.error().is_some() {
             self.buffer.rollback(checkpoint);
-            return PatchSiteId::from_index(usize::MAX);
+            return unsafe { PatchableSite::new(u32::MAX, LabelUse::RVJal20, 0) };
         }
-        site
+        // SAFETY: `jal` emits a JAL instruction at `offset`.
+        unsafe { PatchableSite::new(offset, LabelUse::RVJal20, 0) }
+    }
+
+    /// Materialize `imm` into `rd` with a fixed-size sequence and a patchable literal.
+    ///
+    /// Layout (RV64): `auipc; ld; jal; .dword` — the returned block covers the 8-byte literal.
+    /// Layout (RV32): `auipc; lw; jal; .word` — the returned block covers the 4-byte literal.
+    ///
+    /// Rewrite with [`PatchableBlock::repatch_u64`] / [`PatchableBlock::repatch_u32`].
+    pub fn patchable_li(&mut self, rd: Gp, imm: impl Into<i64>) -> PatchableBlock {
+        let arch = self.buffer.env().arch();
+        let value = imm.into();
+        if self.buffer.error().is_some() {
+            return unsafe { PatchableBlock::new(u32::MAX, 4, arch) };
+        }
+        let checkpoint = self.buffer.checkpoint();
+
+        if self.is_32bit() {
+            self.auipc(rd, crate::core::operand::imm(0));
+            self.lw(rd, rd, crate::core::operand::imm(8));
+            self.jal(ZERO, crate::core::operand::imm(8));
+            let lit = self.buffer.cur_offset();
+            self.buffer.write_u32(value as u32);
+            let _ = self.buffer.record_patch_block(lit, 4, 4);
+            if self.buffer.error().is_some() {
+                self.buffer.rollback(checkpoint);
+                return unsafe { PatchableBlock::new(u32::MAX, 4, arch) };
+            }
+            // SAFETY: literal word recorded as a patch block at `lit`.
+            unsafe { PatchableBlock::new(lit, 4, arch) }
+        } else {
+            self.auipc(rd, crate::core::operand::imm(0));
+            self.ld(rd, rd, crate::core::operand::imm(8));
+            self.jal(ZERO, crate::core::operand::imm(12));
+            let lit = self.buffer.cur_offset();
+            self.buffer.write_u64(value as u64);
+            let _ = self.buffer.record_patch_block(lit, 8, 4);
+            if self.buffer.error().is_some() {
+                self.buffer.rollback(checkpoint);
+                return unsafe { PatchableBlock::new(u32::MAX, 8, arch) };
+            }
+            // SAFETY: literal dword recorded as a patch block at `lit`.
+            unsafe { PatchableBlock::new(lit, 8, arch) }
+        }
     }
 
     pub fn la(&mut self, rd: Gp, target: impl OperandCast) {
@@ -197,7 +251,6 @@ impl<'a> Assembler<'a> {
                 self.buffer
                     .add_reloc(Reloc::RiscvGotHi20, RelocTarget::Sym(sym), 0);
 
-                // Get the current PC.
                 self.auipc(rd, imm(0));
                 // The `ld`/`lw` here, points to the `auipc` label instead of directly to the symbol.
                 self.buffer
@@ -2579,5 +2632,52 @@ mod tests {
                 [0x0000_0517u32.to_le_bytes(), 0xFFDFF5EFu32.to_le_bytes()].concat()
             );
         }
+    }
+
+    #[test]
+    fn patchable_li_literal_can_be_rewritten() {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
+        let block = {
+            let mut asm = Assembler::new(&mut buf);
+            asm.patchable_li(A0, 0x1122_3344_5566_7788u64 as i64)
+        };
+        let code = buf.finish_patched().unwrap();
+        assert_eq!(block.size(), 8);
+        assert_eq!(
+            &code.data()[block.offset() as usize..][..8],
+            &0x1122_3344_5566_7788u64.to_le_bytes()
+        );
+
+        let mut bytes = code.data().to_vec();
+        unsafe {
+            block.repatch_u64(&mut bytes, 0xAABB_CCDD_EEFF_0011).unwrap();
+        }
+        assert_eq!(
+            &bytes[block.offset() as usize..][..8],
+            &0xAABB_CCDD_EEFF_0011u64.to_le_bytes()
+        );
+    }
+
+    #[test]
+    fn patchable_j_can_be_retargeted_offline() {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
+        let (site, alt) = {
+            let mut asm = Assembler::new(&mut buf);
+            let target = asm.get_label();
+            let alt = asm.get_label();
+            let site = asm.patchable_j(target);
+            asm.bind_label(target);
+            asm.addi(A0, A0, imm(1));
+            asm.bind_label(alt);
+            asm.addi(A0, A0, imm(2));
+            (site, asm.label_offset(alt))
+        };
+        let code = buf.finish_patched().unwrap();
+        let mut bytes = code.data().to_vec();
+        unsafe {
+            site.retarget(&mut bytes, alt).unwrap();
+        }
+        // Catalog still describes the original target; the handle rewrote the bytes.
+        assert_ne!(bytes, code.data());
     }
 }

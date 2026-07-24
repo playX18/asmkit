@@ -1666,9 +1666,6 @@ pub fn u64_ptr_index_abs(base: u64, index: impl Deref<Target = Gp>, shift: u32, 
     )
 }
 
-// ============================================================================
-// Display Implementations for X86 Operand Types
-// ============================================================================
 use core::fmt;
 
 impl fmt::Display for Reg {

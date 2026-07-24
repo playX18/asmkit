@@ -44,10 +44,6 @@ def _to_hex(val, pad=None):
     return "0x" + _to_hex_raw(val, pad)
 
 
-# ============================================================================
-# [InstructionNameData]
-# ============================================================================
-
 _RE_SMALL_NAME = re.compile(r"^[a-z0-4]{0,6}$")
 
 
@@ -216,10 +212,6 @@ class InstructionNameData:
         return len(self.primary_table) * 4 + len(self.string_table)
 
 
-# ============================================================================
-# [Task]
-# ============================================================================
-
 class Task:
     """A base runnable task that can access the TableGen through `self.ctx`."""
 
@@ -235,10 +227,6 @@ class Task:
     def run(self):
         raise NotImplementedError("Task.run(): Must be reimplemented")
 
-
-# ============================================================================
-# [TableGen]
-# ============================================================================
 
 class TableGen:
     """Main context used to run `Task`s with minimal dependency management.
@@ -262,10 +250,6 @@ class TableGen:
 
         self.outputs = {}
         self.table_sizes = {}
-
-    # --------------------------------------------------------------------------
-    # [Task Management]
-    # --------------------------------------------------------------------------
 
     def add_task(self, task):
         if not task.name:
@@ -308,10 +292,6 @@ class TableGen:
                 raise RuntimeError(
                     f"TableGen.run_tasks(): Tasks '{'|'.join(arr_pending)}' stuck (cyclic dependency?)")
 
-    # --------------------------------------------------------------------------
-    # [Instruction Management]
-    # --------------------------------------------------------------------------
-
     def add_instruction(self, inst):
         name = inst["name"]
         if name in self.inst_map:
@@ -331,27 +311,15 @@ class TableGen:
 
         return self
 
-    # --------------------------------------------------------------------------
-    # [Outputs]
-    # --------------------------------------------------------------------------
-
     def add_output(self, key, content, size=0):
         self.outputs[key] = content
         self.table_sizes[key] = size
         return self
 
-    # --------------------------------------------------------------------------
-    # [Run]
-    # --------------------------------------------------------------------------
-
     def run(self):
         self.on_before_run()
         self.run_tasks()
         self.on_after_run()
-
-    # --------------------------------------------------------------------------
-    # [Hooks]
-    # --------------------------------------------------------------------------
 
     def on_before_run(self):
         pass
@@ -359,10 +327,6 @@ class TableGen:
     def on_after_run(self):
         pass
 
-
-# ============================================================================
-# [IdEnum]
-# ============================================================================
 
 class IdEnum(Task):
     def __init__(self, name="IdEnum", deps=None):
@@ -402,10 +366,6 @@ class IdEnum(Task):
 
         return self.emit("InstId", s)
 
-
-# ============================================================================
-# [NameTable]
-# ============================================================================
 
 class Output:
     def __init__(self):

@@ -19,7 +19,7 @@ use crate::core::arch_traits::Arch;
 use crate::core::buffer::{Constant, LabelUse, Reloc, RelocDistance, RelocTarget};
 use crate::core::globals::CondCode;
 use crate::core::operand::*;
-use crate::core::{buffer::CodeBuffer, patch::PatchSiteId};
+use crate::core::buffer::CodeBuffer;
 
 macro_rules! B {
     ($e: expr) => {
@@ -4485,7 +4485,6 @@ impl<'a> Assembler<'a> {
                             st.opcode.add_imm(s, 12);
                             st.opcode.0 |= 1 << 11;
                             st.opcode.add_reg(op0.id(), 0);
-                            // Emit mem base index
                             st.opcode.add_reg(m.base_id(), 5);
                             st.opcode.add_reg(m.index_id(), 16);
                             emit_op!();

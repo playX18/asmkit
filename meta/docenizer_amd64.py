@@ -1,7 +1,5 @@
 
-
 #! /usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 ## This file comes from compiler-explorer project. It was slightly modified to allow us attach documentation to 
 ## Rust functions.
@@ -111,7 +109,6 @@ ASMDOC_DIR = "asm-docs"
 ARCHIVE_URL = "https://www.felixcloutier.com/x86/x86.tbz2"
 ARCHIVE_NAME = "x86.tbz2"
 
-
 class Instruction(object):
     def __init__(self, name, names, tooltip, body):
         self.name = name
@@ -122,10 +119,8 @@ class Instruction(object):
     def __str__(self):
         return f"{self.name} = {self.tooltip}\n{self.body}"
 
-
 def get_url_for_instruction(instr):
     return f"https://www.felixcloutier.com/x86/{urllib.parse.quote(instr.name)}.html"
-
 
 def require_beautifulsoup():
     try:
@@ -133,7 +128,6 @@ def require_beautifulsoup():
         return BeautifulSoup
     except ImportError as exc:
         raise ImportError("Please install BeautifulSoup (apt-get install python3-bs4 or pip install beautifulsoup4 should do it)") from exc
-
 
 def download_asm_doc_archive(downloadfolder):
     if not os.path.exists(downloadfolder):
@@ -146,7 +140,6 @@ def download_asm_doc_archive(downloadfolder):
     print("Downloading archive...")
     urllib.request.urlretrieve(ARCHIVE_URL, archive_name)
 
-
 def extract_asm_doc_archive(downloadfolder, inputfolder):
     print("Extracting file...")
     if os.path.isdir(os.path.join(inputfolder, "html")):
@@ -157,19 +150,16 @@ def extract_asm_doc_archive(downloadfolder, inputfolder):
     tar = tarfile.open(os.path.join(downloadfolder, ARCHIVE_NAME))
     tar.extractall(path=inputfolder)
 
-
 def strip_non_instr(i):
     # removes junk from encodings where the opcode is in the middle
     # of prefix stuff. e.g.
     # 66 0f 38 30 /r PMOVZXBW xmm1, xmm2/m64
     return STRIP_PREFIX.sub('', i)
 
-
 def instr_name(i):
     match = INSTRUCTION_RE.match(strip_non_instr(i))
     if match:
         return match.group(1)
-
 
 def get_description_paragraphs(document_soup):
     description_header_node = document_soup.find(id="description")
@@ -183,7 +173,6 @@ def get_description_paragraphs(document_soup):
             # Move two siblings forward. Next sibling is the line feed.
         description_paragraph_node = description_paragraph_node.next_sibling.next_sibling
     return description_paragraphs
-
 
 def parse(filename, f):
     BeautifulSoup = require_beautifulsoup()
@@ -246,7 +235,6 @@ def parse(filename, f):
         description_paragraphs[0].text.strip(),
         ''.join(map(lambda x: str(x), description_paragraphs)).strip())
 
-
 def read_table(start_table):
     # Tables on felixcloutier may be split in half, e.g. on https://www.felixcloutier.com/x86/sal:sar:shl:shr
     # This traverses the immediate siblings of the input table
@@ -272,7 +260,6 @@ def read_table(start_table):
             for row in table.find_all('tr'):
                 obj = {}
                 for column, name in zip(row.find_all('td'), headers):
-                    # Remove '\n's in names that contain it.
                     obj[name.replace('\n', '')] = column.get_text()
                 if obj:
                     result.append(obj)
@@ -290,7 +277,6 @@ def read_table(start_table):
             result.append(obj)
 
     return result
-
 
 def parse_html(directory):
     print("Parsing instructions...")
@@ -312,7 +298,6 @@ def parse_html(directory):
                         print(f"Error parsing {name}:\n{e}")
     return instructions
 
-
 def collect_instruction_docs(inputfolder):
     """Return uppercase instruction-name -> metadata (tooltip/url/html)."""
     instructions = parse_html(inputfolder)
@@ -327,7 +312,6 @@ def collect_instruction_docs(inputfolder):
             docs[name.upper()] = payload
     return docs
 
-
 def self_test(instructions, directory):
     # For each generated instruction, check that there is a path to a file in
     # the documentation.
@@ -339,7 +323,6 @@ def self_test(instructions, directory):
             ok = False
     return ok
 
-
 def patch_instruction(instruction):
     if instruction.name == "ADDSS":
         print("\nPatching ADDSS")
@@ -349,7 +332,6 @@ def patch_instruction(instruction):
         old_tooltip = instruction.tooltip
         instruction.body = old_body.replace("stores the double-precision", "stores the single-precision")
         instruction.tooltip = old_tooltip.replace("stores the double-precision", "stores the single-precision")
-
 
 def main():
     args = parser.parse_args()
@@ -401,7 +383,6 @@ export function getAsmOpcode(opcode: string | undefined): AssemblyInstructionInf
     }
 }
 """)
-
 
 if __name__ == '__main__':
     main()

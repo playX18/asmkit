@@ -307,9 +307,6 @@ class StringUtils:
         return compare
 
 
-# Generator - Indexed Array
-# =========================
-
 def _freeze(value):
     # Canonical structural form used as the IndexedArray dedup key. Unlike
     # the JS `JSON.stringify(item)` key this is insensitive to dict key

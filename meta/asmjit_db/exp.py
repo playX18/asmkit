@@ -22,9 +22,6 @@ decisions (see this package's README.md for the full divergence list):
 import re
 from typing import NamedTuple
 
-# Supported Operators
-# -------------------
-
 UNARY_OPERATORS = {
     "-": {"prec": 3, "rtl": 1, "emit": "-@1"},
     "~": {"prec": 3, "rtl": 1, "emit": "~@1"},
@@ -61,9 +58,6 @@ def _right_associate(info, b_prec):
     return info["prec"] > b_prec or (info["prec"] == b_prec and info["rtl"])
 
 
-# Expression Error
-# ----------------
-
 class ExpressionError(Exception):
     """Carries `message` and `position` (-1 when not tied to a source offset)."""
 
@@ -76,9 +70,6 @@ class ExpressionError(Exception):
 def _throw_tokenizer_error(token):
     raise ExpressionError(f"Unexpected token '{token.data}'", token.position)
 
-
-# 32-bit arithmetic emulation
-# ---------------------------
 
 def _to_int32(x):
     # JS ToInt32: truncate toward zero, then wrap into signed 32 bits.
@@ -97,9 +88,6 @@ def _trunc_mod(a, b):
     r = abs(a) % abs(b)
     return -r if a < 0 else r
 
-
-# Expression Tree
-# ---------------
 
 def _must_enclose(node):
     if node.is_unary():
@@ -411,9 +399,6 @@ def Or(left, right):
     return Binary("||", left, right)
 
 
-# Expression Tokenizer
-# --------------------
-
 CHAR_NONE = 0   # '_' - Invalid or <end>.
 CHAR_SPACE = 1  # 'S' - Space.
 CHAR_ALPHA = 2  # 'A' - Alpha [A-Za-z_].
@@ -544,9 +529,6 @@ def tokenize(source):
 
     return tokens
 
-
-# Expression Parser
-# -----------------
 
 class Parser:
     def __init__(self, tokens):
@@ -748,9 +730,6 @@ def parse(source):
     tokens = tokenize(source)
     return Parser(tokens).parse()
 
-
-# Expression Visitors
-# -------------------
 
 class Visitor:
     def visit(self, node):

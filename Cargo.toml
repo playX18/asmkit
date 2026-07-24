@@ -1,6 +1,6 @@
 [package]
 name = "asmkit-rs"
-version = "0.4.0"
+version = "0.5.0"
 edition = "2024"
 rust-version = "1.85"
 license = "MIT OR Apache-2.0"
@@ -61,8 +61,8 @@ name = "factorial"
 required-features = ["x86", "riscv", "aarch64", "jit"]
 
 [[example]]
-name = "reloc"
-required-features = ["x86", "riscv", "aarch64", "jit"]
+name = "patch"
+required-features = ["x86", "jit"]
 
 
 [profile.release]

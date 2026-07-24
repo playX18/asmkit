@@ -17,8 +17,6 @@ pub struct Opcode(pub u32);
 // generated database rows or parity tests in a given build configuration.
 #[allow(dead_code, non_upper_case_globals)]
 impl Opcode {
-    // MM & VEX & EVEX & XOP
-    // ---------------------
 
     // Two meanings: part of a legacy opcode (prefix bytes) or the `MMMMM` field of
     // VEX|EVEX|XOP instructions. [2:0] = 0F/0F38/0F3A + XOP/AVX/AVX512 MMM bits; [3] = XOP;
@@ -45,16 +43,10 @@ impl Opcode {
     /// Force 4-byte EVEX prefix.
     pub const MM_FORCE_EVEX: u32 = 0x10 << Self::MM_SHIFT;
 
-    // FPU_2B — second opcode byte used by FPU
-    // ---------------------------------------
-
     // Collides with 3 bits of MM and 5 bits of CDSHL/CDTT; fine as FPU and AVX-512 flags
     // are never used at the same time.
     pub const FPU_2B_SHIFT: u32 = 10;
     pub const FPU_2B_MASK: u32 = 0xFF << Self::FPU_2B_SHIFT;
-
-    // CDSHL & CDTT — compressed displacement
-    // --------------------------------------
 
     pub const CDSHL_SHIFT: u32 = 13;
     pub const CDSHL_MASK: u32 = 0x7 << Self::CDSHL_SHIFT;
@@ -95,21 +87,11 @@ impl Opcode {
     pub const CDTT_OVM: u32 = Self::CDTT_BY_LL;
     pub const CDTT_128: u32 = Self::CDTT_NONE;
 
-    // `O` field in ModR/M (??:xxx:???)
-    // --------------------------------
-
     pub const MOD_O_SHIFT: u32 = 18;
     pub const MOD_O_MASK: u32 = 0x7 << Self::MOD_O_SHIFT;
 
-    // `RM` field in ModR/M (??:???:xxx)
-    // ---------------------------------
-
-    // Only used by a few instructions where both ModR/M fields are part of the opcode.
     pub const MOD_RM_SHIFT: u32 = 13;
     pub const MOD_RM_MASK: u32 = 0x7 << Self::MOD_RM_SHIFT;
-
-    // `PP` field
-    // ----------
 
     // Two meanings: "PP" field in AVX/XOP/AVX-512 instructions, or a mandatory prefix in
     // legacy encodings. AsmJit extends storage by 1 bit used to emit the 9B FPU prefix.
@@ -125,9 +107,6 @@ impl Opcode {
     /// AsmJit specific to emit FPU's '9B' byte.
     pub const PP_9B: u32 = 0x07 << Self::PP_SHIFT;
 
-    // REX|VEX|EVEX B|X|R|W bits
-    // -------------------------
-
     // REX.[B|X|R] are never stored within the opcode itself; they are added dynamically by
     // the encoder. These must be binary compatible with `InstOptions` bits 24–27.
     pub const REX_SHIFT: u32 = 24;
@@ -141,20 +120,11 @@ impl Opcode {
     pub const W: u32 = 0x08 << Self::REX_SHIFT;
     pub const W_SHIFT: u32 = Self::REX_SHIFT + 3;
 
-    // EVEX.W field
-    // ------------
-
     pub const EVEX_W_SHIFT: u32 = 28;
     pub const EVEX_W_MASK: u32 = 1 << Self::EVEX_W_SHIFT;
 
-    // `L` or `LL` field in AVX/XOP/AVX-512
-    // ------------------------------------
-
     pub const LL_SHIFT: u32 = 29;
     pub const LL_MASK: u32 = 0x3 << Self::LL_SHIFT;
-
-    // Opcode combinations
-    // -------------------
 
     pub const K0: u32 = 0;
     pub const K000000: u32 = Self::PP_00 | Self::MM_00;

@@ -1571,9 +1571,6 @@ macro_rules! impl_from_int_for_imm {
 // (e.g. `a.mov(RAX, 42)`). Matches the widths accepted by `imm()`.
 impl_from_int_for_imm!(i8, i16, i32, i64, u8, u16, u32);
 
-// ============================================================================
-// Display Implementations
-// ============================================================================
 use core::fmt;
 
 impl fmt::Display for OperandType {

@@ -56,10 +56,6 @@ def read_template(name):
     return (TEMPLATE_DIR / name).read_text(encoding="utf-8")
 
 
-# ---------------------------------------------------------------------------
-# Marker blocks and row parsing
-# ---------------------------------------------------------------------------
-
 def extract_block(text, key):
     """Returns the text between `// ${key:Begin}` and `// ${key:End}`."""
     begin = re.search(r"//\s*\$\{" + re.escape(key) + r":Begin\}", text)
@@ -175,10 +171,6 @@ def parse_int(tok):
     return int(tok)
 
 
-# ---------------------------------------------------------------------------
-# C++ string literals
-# ---------------------------------------------------------------------------
-
 _C_ESCAPES = {"n": 10, "t": 9, "r": 13, "0": 0, "\\": 92, '"': 34, "'": 39}
 
 
@@ -228,10 +220,6 @@ def rust_byte_string(data):
             parts.append(f"\\x{b:02X}")
     return 'b"' + "".join(parts) + '"'
 
-
-# ---------------------------------------------------------------------------
-# C++ constant-expression evaluation and enum parsing
-# ---------------------------------------------------------------------------
 
 _TOKEN_RE = re.compile(r"0x[0-9A-Fa-f]+u?|0b[01]+u?|\d+u?|[A-Za-z_][A-Za-z_0-9]*|<<|>>|[|&+()~]")
 
@@ -319,10 +307,6 @@ def parse_cpp_enum_entries(body):
     return entries
 
 
-# ---------------------------------------------------------------------------
-# Table declarations inside marker blocks
-# ---------------------------------------------------------------------------
-
 def split_tables(block):
     """Splits a block into {variable_name: body} at `const ... name[...] = {` ... `};`."""
     decl = re.compile(r"^const\s+[\w:\s]*?(\w+)\s*\[[^\]]*\]\s*=\s*\{\s*$", re.M)
@@ -360,10 +344,6 @@ def check_ordinals(comments, table, sparse=False):
     )
 
 
-# ---------------------------------------------------------------------------
-# Name mapping
-# ---------------------------------------------------------------------------
-
 def split_camel(part):
     """Splits before an uppercase letter that (a) follows a lowercase letter or
     digit, or (b) follows an uppercase letter and is followed by a lowercase
@@ -400,10 +380,6 @@ def strip_k(name):
     return out
 
 
-# ---------------------------------------------------------------------------
-# Flag-expression mapping
-# ---------------------------------------------------------------------------
-
 def map_flag_expr(expr, func, zero="0"):
     """Maps a `F(A) | F(B) | ...`-style expression part-wise, dropping zero terms."""
     parts = [p.strip() for p in split_top_level(expr, sep="|")]
@@ -426,10 +402,6 @@ def emit_bitflags_value(expr):
     out = re.sub(r"((?:0x[0-9A-Fa-f]+|0b[01]+|\d+))u\b", r"\1", out)
     return out
 
-
-# ---------------------------------------------------------------------------
-# InstId marker block (globals headers)
-# ---------------------------------------------------------------------------
 
 def parse_inst_id_block(text, strip_prefix):
     """Parses a `${InstId:Begin}` block.
@@ -468,10 +440,6 @@ def parse_inst_id_block(text, strip_prefix):
     check(variants and variants[0][0] == "None", "first InstId variant must be None")
     return variants, aliases
 
-
-# ---------------------------------------------------------------------------
-# Token-based normalized diff (for --check modes)
-# ---------------------------------------------------------------------------
 
 _RUST_TOKEN_RE = re.compile(
     r"/\*.*?\*/|//[^\n]*|b?\"(?:[^\"\\]|\\.)*\"|\w+|[^\w\s]", re.S

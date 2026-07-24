@@ -110,14 +110,12 @@ class A64Db:
         instdb_p_h = read_asmjit("arm/a64instdb_p.h")
         instdb_cpp = read_asmjit("arm/a64instdb.cpp")
 
-        # --- InstId enum (arm/a64globals.h ${InstId}) ---
         self.inst_ids, aliases = parse_inst_id_block(
             extract_block(globals_h, "InstId"), "kId")
         check(not aliases, "a64 InstId block must not contain aliases")
         check(len(self.inst_ids) == A64_INST_ID_COUNT,
               f"a64: expected {A64_INST_ID_COUNT} InstId values, got {len(self.inst_ids)}")
 
-        # --- EncodingId enum (arm/a64instdb_p.h ${EncodingId}) ---
         enc_block = extract_block(instdb_p_h, "EncodingId")
         self.enc_variants = []
         for raw in enc_block.splitlines():
@@ -134,7 +132,6 @@ class A64Db:
         check(self.enc_variants[0] == "None", "first encoding must be None")
         self.enc_set = set(self.enc_variants)
 
-        # --- EncodingData forward declarations (arm/a64instdb_p.h) ---
         fwd_block = extract_block(instdb_p_h, "EncodingDataForward")
         self.fwd_decls = []  # (cpp_type, cpp_name, size)
         for raw in fwd_block.splitlines():
@@ -144,7 +141,6 @@ class A64Db:
         check(len(self.fwd_decls) == A64_ENCODING_TABLE_COUNT,
               f"a64: expected {A64_ENCODING_TABLE_COUNT} forward declarations, got {len(self.fwd_decls)}")
 
-        # --- InstInfo rows (arm/a64instdb.cpp ${InstInfo}) ---
         inst_block = extract_block(instdb_cpp, "InstInfo")
         self.inst_rows = []
         for code, comment in split_line_rows(strip_generated_banner(inst_block)):
@@ -175,7 +171,6 @@ class A64Db:
             check(re.fullmatch(r"\d+", row["opcode_data_index"]) is not None,
                   f"a64: INST row #{i} bad opcode_data_index {row['opcode_data_index']!r}")
 
-        # --- EncodingData tables (arm/a64instdb.cpp ${EncodingData}) ---
         enc_data_block = extract_block(instdb_cpp, "EncodingData")
         cpp_tables = split_tables(strip_generated_banner(enc_data_block))
         check(len(cpp_tables) == A64_ENCODING_TABLE_COUNT,
@@ -193,7 +188,6 @@ class A64Db:
                   f"a64: table {cpp_name} has {len(rows)} rows, declared {size}")
             self.enc_tables[cpp_name] = rows
 
-        # --- Name data, computed from the InstId list ------------------------
         self.name_data = tablegen.InstructionNameData()
         for enum_name, _ in self.inst_ids:
             name = "" if enum_name == "None" else enum_name.lower()
@@ -319,10 +313,6 @@ def emit_a64(db):
     return result
 
 
-# ---------------------------------------------------------------------------
-# NZCV (PSTATE) flag effects (asmkit extension, from db `io` attributes)
-# ---------------------------------------------------------------------------
-
 # CpuRwFlags bit values (src/core/rwinfo.rs): A64_V=OF, A64_C=CF, A64_Z=ZF,
 # A64_N=SF reuse the common bits; A64_Q is the saturation flag.
 A64_FLAG_BITS = {
@@ -418,10 +408,6 @@ def emit_a64_rw_flags(db, io_flags):
     check(re.search(r"\bF\(", result) is None, "a64 rw_flags: unexpanded F() flag macro left in output")
     return result, seen_read, seen_write
 
-
-# ---------------------------------------------------------------------------
-# Driver
-# ---------------------------------------------------------------------------
 
 def build():
     db = A64Db()

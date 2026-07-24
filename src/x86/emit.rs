@@ -169,9 +169,6 @@ fn is_vec128_with_id(op: &Operand, id: u32) -> bool {
     op.is_vec128() && op.id() == id
 }
 
-// Instruction signature validation (port of AsmJit's x86 `validate` in x86instapi.cpp)
-// -----------------------------------------------------------------------------------
-
 /// `op_flag_from_reg_type_table` — OpFlags bits for a register type.
 fn op_flags_from_reg_type(typ: RegType) -> u64 {
     match typ {
@@ -734,9 +731,6 @@ fn validate_signature(
     }
 }
 
-// Encoding arms (port of the `_emit` encoding switch)
-// ---------------------------------------------------
-
 /// Shared tail of the `CaseX86M_NoSize` label.
 fn case_x86m_no_size(
     st: &mut X86EmitState,
@@ -1231,8 +1225,6 @@ fn analyze(
     let long_form = st.options.contains(InstOptions::LONG_FORM);
 
     match inst_info.encoding {
-        // Base Instructions
-        // -----------------
         X86Op => Ok(Handler::X86Op),
 
         X86Op_Mod11RM => {
@@ -2801,8 +2793,6 @@ fn analyze(
             Err(no_match())
         }
 
-        // FPU Instructions
-        // ----------------
         FpuOp => Ok(Handler::FpuOp),
 
         FpuArith => {
@@ -2935,8 +2925,6 @@ fn analyze(
             Err(no_match())
         }
 
-        // Ext Instructions (Legacy Extensions)
-        // ------------------------------------
         ExtPextrw => {
             if isign3 == ops3!(OT_REG, OT_REG, OT_IMM) {
                 st.opcode.add_66h_if(o1.is_vec128());
@@ -3224,8 +3212,6 @@ fn analyze(
             Err(no_match())
         }
 
-        // Extrq & Insertq (SSE4A)
-        // -----------------------
         ExtExtrq => {
             st.op_reg = o0.id();
             st.rb_reg = o1.id();
@@ -3265,8 +3251,6 @@ fn analyze(
             Err(no_match())
         }
 
-        // 3DNOW Instructions
-        // ------------------
         Ext3dNow => {
             // Every 3dNow instruction starts with 0x0F0F and the actual opcode is
             // stored as 8-bit immediate.
@@ -3285,8 +3269,6 @@ fn analyze(
             Err(no_match())
         }
 
-        // VEX/EVEX Instructions
-        // ---------------------
         VexOp => Ok(Handler::VexOp),
 
         VexOpMod => {
@@ -3940,8 +3922,6 @@ fn analyze(
             Err(no_match())
         }
 
-        // FMA4 Instructions
-        // -----------------
         Fma4_Lx => {
             // It's fine to just check the first operand, second is just for sanity.
             st.opcode =
@@ -3951,8 +3931,6 @@ fn analyze(
 
         Fma4 => fma4(st, ops, isign3),
 
-        // AMX Instructions
-        // ----------------
         AmxCfg => {
             if isign3 == ops1!(OT_MEM) {
                 st.rm_rel = o0;
@@ -4285,9 +4263,6 @@ fn fma4(st: &mut X86EmitState, ops: &[Operand; 6], isign3: u32) -> Result<Handle
     }
     Err(no_match())
 }
-
-// Top-level emit (port of `Assembler::_emit`'s entry and dispatch)
-// -----------------------------------------------------------------
 
 /// Decoded prefix state collected by the assembler's prefix setters.
 #[derive(Clone, Copy, Debug)]

@@ -690,10 +690,6 @@ def generate(opcodes, opcode_docs, asmjit_forms, width_db):
         opcode_impls = []
         for variant in opcode.variants:
             typed = typed_operand_tuples(variant, width_forms(opcode, variant, width_db))
-            # An abstract (.., Imm, ..) impl would overlap with its sized
-            # (.., U: Into<Imm>, ..) counterpart; in that case the generic
-            # impl replaces the abstract one (Imm: Into<Imm> keeps old calls
-            # working).
             generalized = tuple(IMM_GENERIC if op == "Imm" else op
                                 for op in variant.operands)
             replace = generalized in typed and generalized != tuple(variant.operands)

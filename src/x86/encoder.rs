@@ -159,9 +159,6 @@ macro_rules! enc_ops {
 #[allow(unused_imports)]
 pub(crate) use enc_ops;
 
-// Buffer-writer functions (AsmJit's X86BufferWriter over asmkit's CodeBuffer)
-// ---------------------------------------------------------------------------
-
 /// Emits the mandatory prefix byte (66/F3/F2 or 9B) selected by the opcode's PP field.
 pub fn emit_pp(buf: &mut CodeBuffer, opcode: Opcode) {
     let pp_index = (opcode.get() >> Opcode::PP_SHIFT) & (Opcode::PP_FPU_MASK >> Opcode::PP_SHIFT);
@@ -271,9 +268,6 @@ pub fn emit_immediate(buf: &mut CodeBuffer, imm_value: u64, imm_size: u8) {
     }
     buf.put1(imm as u8);
 }
-
-// Encoder state and emit handlers (port of AsmJit's emit-handler layer)
-// ---------------------------------------------------------------------
 
 // Shifts used to construct VEX/EVEX prefixes (AsmJit's `kVSHR_*`).
 const VSHR_W: u32 = Opcode::W_SHIFT - 23;
@@ -714,7 +708,6 @@ pub fn emit_mod_sib(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X
                 }
             }
 
-            // Emit 32-bit absolute address.
             buf.put1(encode_mod(0, st.op_reg, 4) as u8);
             buf.put1(encode_sib(0, 4, 5) as u8);
             buf.put4(rel_offset as u32);
@@ -999,7 +992,6 @@ pub fn emit_vex_evex_r(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<()
         | (st.extra_reg.id() << 16); // [........|.LL..aaa|Vvvvv..R|RBBmmmmm].
     let op_reg = st.op_reg & 0x7;
 
-    // Handle AVX512 options by a single branch.
     if st.options.bits() & AVX512_OPTIONS != 0 {
         const BCST_MASK: u32 = 0x1 << 20;
         const LL_MASK_10: u32 = 0x2 << 21;
@@ -1154,7 +1146,6 @@ pub fn emit_vex_evex_m(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<()
     x |= (!st.common_info.flags & InstFlags::VEX.bits())
         << (31 - InstFlags::VEX.bits().trailing_zeros());
 
-    // Handle AVX512 options by a single branch.
     if st.options.bits() & AVX512_OPTIONS != 0 {
         // {er} and {sae} are both invalid if a memory operand is used.
         if st
@@ -1309,8 +1300,6 @@ pub fn emit_jmp_call(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), 
     let ip = buf.cur_offset() as u64;
     let opcode8 = ALT_OPCODE_TABLE[st.inst_info.alt_opcode_index as usize];
 
-    // Jcc instructions with 32-bit displacement use the 0x0F prefix, other
-    // instructions don't. No other prefixes are used by X86.
     debug_assert!(opcode8 & Opcode::MM_MASK == 0);
     debug_assert!(
         st.opcode.get() & Opcode::MM_MASK == 0
@@ -1578,10 +1567,6 @@ mod tests {
         expected.extend_from_slice(&super::super::encoder_tables::NOP_TABLE[5][..6]);
         assert_eq!(buf.data(), &expected[..]);
     }
-
-    // Emit-handler tests. Goldens cross-checked against AsmJit's own test suite
-    // (meta/asmjit/asmjit-testing/tests/asmjit_test_assembler_x64.cpp).
-    // --------------------------------------------------------------------------
 
     use crate::core::buffer::ExternalName;
     use crate::core::operand::{OperandCast, Sym};
@@ -2262,10 +2247,6 @@ mod tests {
         assert_eq!(relocs[0].kind, Reloc::X86PCRel4);
         assert_eq!(relocs[0].addend, -4);
     }
-
-    // 32-bit mode emit-handler tests. Goldens cross-checked against iced-x86's
-    // 32-bit CodeAssembler (tests/x86_differential.rs).
-    // --------------------------------------------------------------------------
 
     use crate::x86::operands::{
         dword_ptr_index, dword_ptr_label, dword_ptr_label_index, dword_ptr_rip, dword_ptr_sym,

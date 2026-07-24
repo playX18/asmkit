@@ -3,9 +3,10 @@ use crate::aarch64::operands::*;
 use crate::aarch64::{Gp, Reg, instdb::*};
 use crate::core::arch_traits::Arch;
 use crate::core::buffer::CodeBuffer;
-use crate::core::buffer::{Constant, LabelUse, Reloc, RelocDistance, RelocTarget};
+use crate::core::buffer::{CodeOffset, Constant, LabelUse, Reloc, RelocDistance, RelocTarget};
 use crate::core::globals::CondCode;
 use crate::core::operand::*;
+use crate::core::patch::{PatchableBlock, PatchableSite};
 use crate::core::target::Environment;
 
 pub struct Assembler<'a> {
@@ -298,6 +299,114 @@ impl<'a> Assembler<'a> {
     pub fn error(&self) -> Option<&AsmError> {
         self.buffer.error()
     }
+
+    /// Reserve a nop-filled island for later custom rewriting.
+    pub fn reserve_patch_block(
+        &mut self,
+        size: CodeOffset,
+        align: CodeOffset,
+    ) -> Result<PatchableBlock, AsmError> {
+        self.buffer.reserve_patch_block(size, align)
+    }
+
+    pub fn patchable_b(&mut self, label: Label) -> PatchableSite {
+        if self.buffer.error().is_some() {
+            return unsafe { PatchableSite::new(u32::MAX, LabelUse::A64Branch26, 0) };
+        }
+        let checkpoint = self.buffer.checkpoint();
+        let offset = self.buffer.cur_offset();
+        self.b(label);
+        let _ = self
+            .buffer
+            .record_label_patch_site(offset, label, LabelUse::A64Branch26);
+        if self.buffer.error().is_some() {
+            self.buffer.rollback(checkpoint);
+            return unsafe { PatchableSite::new(u32::MAX, LabelUse::A64Branch26, 0) };
+        }
+        // SAFETY: `b` emits a 26-bit branch at `offset`.
+        unsafe { PatchableSite::new(offset, LabelUse::A64Branch26, 0) }
+    }
+
+    pub fn patchable_bl(&mut self, label: Label) -> PatchableSite {
+        if self.buffer.error().is_some() {
+            return unsafe { PatchableSite::new(u32::MAX, LabelUse::A64Branch26, 0) };
+        }
+        let checkpoint = self.buffer.checkpoint();
+        let offset = self.buffer.cur_offset();
+        self.bl(label);
+        let _ = self
+            .buffer
+            .record_label_patch_site(offset, label, LabelUse::A64Branch26);
+        if self.buffer.error().is_some() {
+            self.buffer.rollback(checkpoint);
+            return unsafe { PatchableSite::new(u32::MAX, LabelUse::A64Branch26, 0) };
+        }
+        // SAFETY: `bl` emits a 26-bit branch-and-link at `offset`.
+        unsafe { PatchableSite::new(offset, LabelUse::A64Branch26, 0) }
+    }
+
+    /// Patchable immediate materialization via a fixed `movz`/`movk` sequence.
+    ///
+    /// 64-bit destinations use 16 bytes (4 insns); 32-bit destinations use 8 bytes (2 insns).
+    /// Rewrite with [`encode_patchable_mov_imm`] + [`PatchableBlock::rewrite`], or
+    /// [`PatchableBlock::repatch_u64`] is not used here (the block covers whole instructions).
+    pub fn patchable_mov(&mut self, rd: Gp, imm: impl Into<u64>) -> PatchableBlock {
+        let arch = Arch::AArch64;
+        let value = imm.into();
+        if self.buffer.error().is_some() {
+            return unsafe { PatchableBlock::new(u32::MAX, 4, arch) };
+        }
+        let checkpoint = self.buffer.checkpoint();
+        let is_64 = rd.is_gp64();
+        let encoded = encode_patchable_mov_imm(rd.id(), is_64, value);
+        let offset = self.buffer.cur_offset();
+        for chunk in encoded.chunks_exact(4) {
+            let word = u32::from_le_bytes([chunk[0], chunk[1], chunk[2], chunk[3]]);
+            self.buffer.write_u32(word);
+        }
+        let size = encoded.len() as CodeOffset;
+        let _ = self.buffer.record_patch_block(offset, size, 4);
+        if self.buffer.error().is_some() {
+            self.buffer.rollback(checkpoint);
+            return unsafe { PatchableBlock::new(u32::MAX, size.max(4), arch) };
+        }
+        // SAFETY: fixed movz/movk sequence recorded as a patch block.
+        unsafe { PatchableBlock::new(offset, size, arch) }
+    }
+}
+
+/// Encode a fixed-width patchable mov-immediate sequence for AArch64.
+///
+/// Always emits 2 instructions (8 bytes) for W registers and 4 (16 bytes) for X registers so
+/// rewrites never change layout.
+pub fn encode_patchable_mov_imm(rd: u32, is_64bit: bool, value: u64) -> smallvec::SmallVec<[u8; 16]> {
+    let rd = rd & 0x1f;
+    let mut out = smallvec::SmallVec::new();
+    if is_64bit {
+        const MOVZ: u32 = 0b11010010100000000000000000000000;
+        const MOVK: u32 = 0b11110010100000000000000000000000;
+        let words = [
+            MOVZ | (0 << 21) | (((value as u32) & 0xFFFF) << 5) | rd,
+            MOVK | (1 << 21) | ((((value >> 16) as u32) & 0xFFFF) << 5) | rd,
+            MOVK | (2 << 21) | ((((value >> 32) as u32) & 0xFFFF) << 5) | rd,
+            MOVK | (3 << 21) | ((((value >> 48) as u32) & 0xFFFF) << 5) | rd,
+        ];
+        for w in words {
+            out.extend_from_slice(&w.to_le_bytes());
+        }
+    } else {
+        const MOVZ: u32 = 0b01010010100000000000000000000000;
+        const MOVK: u32 = 0b01110010100000000000000000000000;
+        let value = value as u32;
+        let words = [
+            MOVZ | (0 << 21) | ((value & 0xFFFF) << 5) | rd,
+            MOVK | (1 << 21) | (((value >> 16) & 0xFFFF) << 5) | rd,
+        ];
+        for w in words {
+            out.extend_from_slice(&w.to_le_bytes());
+        }
+    }
+    out
 }
 
 impl InstId {
@@ -554,5 +663,33 @@ mod tests {
 
         assert_eq!(asm.buffer.error(), Some(&AsmError::InvalidArgument));
         assert!(asm.buffer.data().is_empty());
+    }
+
+    #[test]
+    fn patchable_b_and_mov_handles_work_offline() {
+        let mut buffer = CodeBuffer::new(Environment::new(Arch::AArch64));
+        let (site, mov, alt) = {
+            let mut asm = Assembler::new(&mut buffer);
+            let target = asm.get_label();
+            let alt = asm.get_label();
+            let mov = asm.patchable_mov(regs::x(0), 0x1111_2222_3333_4444u64);
+            let site = asm.patchable_b(target);
+            asm.bind_label(target);
+            asm.ret(regs::x(30));
+            asm.bind_label(alt);
+            asm.ret(regs::x(30));
+            let alt_off = asm.buffer.label_offset(alt);
+            (site, mov, alt_off)
+        };
+
+        let code = buffer.finish_patched().unwrap();
+        assert_eq!(mov.size(), 16);
+        let mut bytes = code.data().to_vec();
+        let rewritten = encode_patchable_mov_imm(0, true, 0xAAAA_BBBB_CCCC_DDDD);
+        unsafe {
+            mov.rewrite(&mut bytes, &rewritten).unwrap();
+            site.retarget(&mut bytes, alt).unwrap();
+        }
+        assert_eq!(&bytes[mov.offset() as usize..][..16], rewritten.as_slice());
     }
 }

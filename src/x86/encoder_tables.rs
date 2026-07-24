@@ -11,9 +11,6 @@ use crate::core::operand::RegType;
 
 use super::opcode::Opcode;
 
-// X86 bytes used to encode important prefixes.
-// --------------------------------------------
-
 /// 1-byte REX prefix mask.
 pub const X86_BYTE_REX: u8 = 0x40;
 /// 1-byte REX.W component.
@@ -106,9 +103,6 @@ pub static OPCODE_POP_SREG_TABLE: [u32; 8] = [
     Opcode::K000F00 | 0xA9, // Pop GS.
     0,
 ];
-
-// Memory operand info bits (X86MemInfo)
-// -------------------------------------
 
 /// Has BASE reg, REX.B can be 1, compatible with REX.B byte.
 pub const MEM_INFO_BASE_GP: u8 = 0x01;
