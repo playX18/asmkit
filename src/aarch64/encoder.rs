@@ -87,8 +87,8 @@ impl Assembler<'_> {
             }
             Handler::OpRel => self.emit_rel(st),
             Handler::Multi => {
-                for i in 0..st.multiple_op_count {
-                    self.buffer.write_u32(st.multiple_op_data[i]);
+                for word in st.multiple_op_data.iter().take(st.multiple_op_count) {
+                    self.buffer.write_u32(*word);
                 }
                 true
             }
@@ -161,7 +161,9 @@ impl Assembler<'_> {
                             } else if st.offset_format.imm_bit_count() == 14 {
                                 LabelUse::A64Branch14
                             } else {
-                                panic!("Invalid offset format for label use")
+                                unreachable!(
+                                    "SignedOffset label uses only have 26/19/14-bit branch formats"
+                                )
                             }
                         }
                     },

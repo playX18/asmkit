@@ -311,6 +311,8 @@ impl<'a> Assembler<'a> {
 
     pub fn patchable_b(&mut self, label: Label) -> PatchableSite {
         if self.buffer.error().is_some() {
+            // SAFETY: poisoned handle for an error path; `u32::MAX` is not a
+            // valid offset into any real image, so applying it fails bounds checks.
             return unsafe { PatchableSite::new(u32::MAX, LabelUse::A64Branch26, 0) };
         }
         let checkpoint = self.buffer.checkpoint();
@@ -321,6 +323,8 @@ impl<'a> Assembler<'a> {
             .record_label_patch_site(offset, label, LabelUse::A64Branch26);
         if self.buffer.error().is_some() {
             self.buffer.rollback(checkpoint);
+            // SAFETY: poisoned handle for an error path; `u32::MAX` is not a
+            // valid offset into any real image, so applying it fails bounds checks.
             return unsafe { PatchableSite::new(u32::MAX, LabelUse::A64Branch26, 0) };
         }
         // SAFETY: `b` emits a 26-bit branch at `offset`.
@@ -329,6 +333,8 @@ impl<'a> Assembler<'a> {
 
     pub fn patchable_bl(&mut self, label: Label) -> PatchableSite {
         if self.buffer.error().is_some() {
+            // SAFETY: poisoned handle for an error path; `u32::MAX` is not a
+            // valid offset into any real image, so applying it fails bounds checks.
             return unsafe { PatchableSite::new(u32::MAX, LabelUse::A64Branch26, 0) };
         }
         let checkpoint = self.buffer.checkpoint();
@@ -339,6 +345,8 @@ impl<'a> Assembler<'a> {
             .record_label_patch_site(offset, label, LabelUse::A64Branch26);
         if self.buffer.error().is_some() {
             self.buffer.rollback(checkpoint);
+            // SAFETY: poisoned handle for an error path; `u32::MAX` is not a
+            // valid offset into any real image, so applying it fails bounds checks.
             return unsafe { PatchableSite::new(u32::MAX, LabelUse::A64Branch26, 0) };
         }
         // SAFETY: `bl` emits a 26-bit branch-and-link at `offset`.
@@ -354,6 +362,8 @@ impl<'a> Assembler<'a> {
         let arch = Arch::AArch64;
         let value = imm.into();
         if self.buffer.error().is_some() {
+            // SAFETY: poisoned handle for an error path; the sentinel offset is
+            // rejected by the bounds checks when applied.
             return unsafe { PatchableBlock::new(u32::MAX, 4, arch) };
         }
         let checkpoint = self.buffer.checkpoint();
@@ -368,6 +378,8 @@ impl<'a> Assembler<'a> {
         let _ = self.buffer.record_patch_block(offset, size, 4);
         if self.buffer.error().is_some() {
             self.buffer.rollback(checkpoint);
+            // SAFETY: poisoned handle for the rollback path; the sentinel offset
+            // is rejected by the bounds checks when applied.
             return unsafe { PatchableBlock::new(u32::MAX, size.max(4), arch) };
         }
         // SAFETY: fixed movz/movk sequence recorded as a patch block.
@@ -379,14 +391,18 @@ impl<'a> Assembler<'a> {
 ///
 /// Always emits 2 instructions (8 bytes) for W registers and 4 (16 bytes) for X registers so
 /// rewrites never change layout.
-pub fn encode_patchable_mov_imm(rd: u32, is_64bit: bool, value: u64) -> smallvec::SmallVec<[u8; 16]> {
+pub fn encode_patchable_mov_imm(
+    rd: u32,
+    is_64bit: bool,
+    value: u64,
+) -> smallvec::SmallVec<[u8; 16]> {
     let rd = rd & 0x1f;
     let mut out = smallvec::SmallVec::new();
     if is_64bit {
         const MOVZ: u32 = 0b11010010100000000000000000000000;
         const MOVK: u32 = 0b11110010100000000000000000000000;
         let words = [
-            MOVZ | (0 << 21) | (((value as u32) & 0xFFFF) << 5) | rd,
+            MOVZ | (((value as u32) & 0xFFFF) << 5) | rd,
             MOVK | (1 << 21) | ((((value >> 16) as u32) & 0xFFFF) << 5) | rd,
             MOVK | (2 << 21) | ((((value >> 32) as u32) & 0xFFFF) << 5) | rd,
             MOVK | (3 << 21) | ((((value >> 48) as u32) & 0xFFFF) << 5) | rd,
@@ -399,7 +415,7 @@ pub fn encode_patchable_mov_imm(rd: u32, is_64bit: bool, value: u64) -> smallvec
         const MOVK: u32 = 0b01110010100000000000000000000000;
         let value = value as u32;
         let words = [
-            MOVZ | (0 << 21) | ((value & 0xFFFF) << 5) | rd,
+            MOVZ | ((value & 0xFFFF) << 5) | rd,
             MOVK | (1 << 21) | (((value >> 16) & 0xFFFF) << 5) | rd,
         ];
         for w in words {
@@ -418,6 +434,9 @@ impl InstId {
     }
 
     pub const fn extract_cc(inst: u32) -> CondCode {
+        // SAFETY: `CondCode` is `#[repr(u8)]` with contiguous discriminants
+        // 0..=15, and the 4-bit ARM condition field masked here is always in
+        // that range.
         unsafe {
             core::mem::transmute(((inst & Self::ARM_COND) >> Self::ARM_COND.trailing_zeros()) as u8)
         }

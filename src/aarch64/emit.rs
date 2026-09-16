@@ -16,10 +16,10 @@ use crate::aarch64::encoder_tables::*;
 use crate::aarch64::operands::*;
 use crate::aarch64::{Assembler, Gp, Reg, ShiftOp, instdb::*};
 use crate::core::arch_traits::Arch;
+use crate::core::buffer::CodeBuffer;
 use crate::core::buffer::{Constant, LabelUse, Reloc, RelocDistance, RelocTarget};
 use crate::core::globals::CondCode;
 use crate::core::operand::*;
-use crate::core::buffer::CodeBuffer;
 
 macro_rules! B {
     ($e: expr) => {
@@ -223,7 +223,10 @@ impl<'a> Assembler<'a> {
             };
         }
 
-        let mut encoding = Encoding::try_from(inst_info.encoding).expect("Invalid encoding index");
+        let mut encoding = match Encoding::try_from(inst_info.encoding) {
+            Ok(encoding) => encoding,
+            Err(()) => unreachable!("instdb encoding index is always a valid Encoding"),
+        };
 
         macro_rules! simd_insn {
             () => {
@@ -751,7 +754,12 @@ impl<'a> Assembler<'a> {
                     st.opcode.reset(op_data.opcode());
                     st.opcode.add_reg(op0.id(), 0);
                     st.offset_format.reset_to_imm_type(
-                        OffsetType::try_from(op_data.offset_type).expect("Invalid offset type"),
+                        match OffsetType::try_from(op_data.offset_type) {
+                            Ok(offset_type) => offset_type,
+                            Err(()) => {
+                                unreachable!("instdb offset type is always a valid OffsetType")
+                            }
+                        },
                         4,
                         5,
                         21,
@@ -1066,7 +1074,7 @@ impl<'a> Assembler<'a> {
                             st.opcode.reset((op_data.shifted_op as u32) << 21);
                             st.opcode.add_imm(x, 31);
                             st.opcode.add_imm(shift_type, 22);
-                            st.opcode.add_reg(op1.id(), 5);
+                            st.opcode.add_reg(op1.id(), 16);
                             st.opcode.add_imm(shift_value, 10);
                             st.opcode.add_reg(op0.id(), 5);
                             st.opcode.add_reg(63, 0);
@@ -1488,7 +1496,7 @@ impl<'a> Assembler<'a> {
                         return;
                     }
 
-                    st.opcode.reset(op_data.register_op);
+                    st.opcode.reset(op_data.register_op());
                     st.opcode.add_imm(x, 31);
                     st.opcode.add_reg(op2.id(), 16);
                     st.opcode.add_reg(op1.id(), 5);
@@ -1515,7 +1523,7 @@ impl<'a> Assembler<'a> {
                         return;
                     }
 
-                    st.opcode.reset(op_data.immediate_op);
+                    st.opcode.reset(op_data.immediate_op());
                     st.opcode.add_imm(x, 31);
                     st.opcode.add_imm(x, 22);
                     st.opcode.add_reg(op1.id(), 5);
@@ -1648,7 +1656,9 @@ impl<'a> Assembler<'a> {
                         return;
                     }
 
-                    if !check_gp_id3(op0, op1, op2, 31) {
+                    // `Rm` (op2) may be `XZR`/`WZR` (id 63, e.g. a `CSEL`
+                    // zeroing idiom); it encodes as 31 like `SP`.
+                    if !check_gp_id2(op0, op1, 31) || !check_gp_id(op2, 63) {
                         self.last_error = Some(AsmError::InvalidOperand);
                         return;
                     }
@@ -2135,6 +2145,10 @@ impl<'a> Assembler<'a> {
 
                     if m.has_base_reg() {
                         if m.has_index() {
+                            if m.is_pre_or_post() {
+                                self.last_error = Some(AsmError::InvalidOperand);
+                                return;
+                            }
                             let opt = SHIFT_OP_TO_LD_ST_OP_MAP[m.shift_op() as usize];
                             if opt == 0xFF {
                                 self.last_error = Some(AsmError::InvalidOperand);
@@ -2163,7 +2177,12 @@ impl<'a> Assembler<'a> {
                         let offset32 = offset as i32;
                         let imm12 = (offset32 as u32) >> imm_shift;
 
-                        if imm12 < (1 << 12) && ((imm12 << imm_shift) as i32) == offset32 {
+                        // Unsigned-offset form has no writeback: never use
+                        // it for pre/post-indexed operands.
+                        if m.is_fixed_offset()
+                            && imm12 < (1 << 12)
+                            && ((imm12 << imm_shift) as i32) == offset32
+                        {
                             st.opcode.reset((op_data.u_offset_op as u32) << 22);
                             st.opcode.xor_imm(x, op_data.x_offset as u32);
                             st.opcode.add_imm(imm12, 10);
@@ -2173,12 +2192,32 @@ impl<'a> Assembler<'a> {
                         }
 
                         if offset32 >= -256 && offset32 < 256 {
-                            st.opcode.reset((op_data.u_offset_op as u32) << 22);
-                            st.opcode.xor_imm(x, op_data.x_offset as u32);
-                            st.opcode.add_imm((offset32 as u32) & 0x1FF, 12);
-                            st.opcode.add_reg(op0.id(), 0);
-                            st.opcode.add_reg(m.base_id(), 5);
-                            emit_op!();
+                            // Pre/post-indexed forms share the base opcode
+                            // with bit 24 clear and carry the mode in bits
+                            // [11:10] (`11` pre, `01` post); the plain
+                            // path below keeps its historical encoding.
+                            let indexed = match m.offset_mode() {
+                                OffsetMode::PreIndex => Some(0b11),
+                                OffsetMode::PostIndex => Some(0b01),
+                                _ => None,
+                            };
+                            if let Some(mode) = indexed {
+                                st.opcode
+                                    .reset(((op_data.u_offset_op as u32) << 22) & !(1 << 24));
+                                st.opcode.xor_imm(x, op_data.x_offset as u32);
+                                st.opcode.add_imm((offset32 as u32) & 0x1FF, 12);
+                                st.opcode.add_imm(mode, 10);
+                                st.opcode.add_reg(op0.id(), 0);
+                                st.opcode.add_reg(m.base_id(), 5);
+                                emit_op!();
+                            } else {
+                                st.opcode.reset((op_data.u_offset_op as u32) << 22);
+                                st.opcode.xor_imm(x, op_data.x_offset as u32);
+                                st.opcode.add_imm((offset32 as u32) & 0x1FF, 12);
+                                st.opcode.add_reg(op0.id(), 0);
+                                st.opcode.add_reg(m.base_id(), 5);
+                                emit_op!();
+                            }
                         }
 
                         self.last_error = Some(AsmError::InvalidOperand);
@@ -2936,7 +2975,9 @@ impl<'a> Assembler<'a> {
                         return;
                     }
 
-                    emit_rd0_rn5_rm16!();
+                    st.opcode.add_reg(op0.id(), 5);
+                    st.opcode.add_reg(op1.id(), 16);
+                    emit_op!();
                 } else if isign4 == enc_ops!(Reg, Imm) {
                     if op1.as_::<Imm>().value() != 0 {
                         self.last_error = Some(AsmError::InvalidOperand);
@@ -3397,7 +3438,7 @@ impl<'a> Assembler<'a> {
                         let fp_value = if op1.as_::<Imm>().is_double() {
                             op1.as_::<Imm>().value_f64()
                         } else if op1.as_::<Imm>().is_int32() {
-                            op1.as_::<Imm>().value_as::<i32>() as f64
+                            op1.as_::<Imm>().value() as i32 as f64
                         } else {
                             self.last_error = Some(AsmError::InvalidOperand);
                             return;
