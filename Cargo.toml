@@ -46,7 +46,7 @@ jit = [
 	"cfgenius",
 	"intrusive-collections",
 ]
-# Exposes instruction-database metadata used by the exhaustive validation suites.
+
 validation = []
 
 [dev-dependencies]
