@@ -1,11 +1,9 @@
 //! Top-level emit path: InstInfo lookup, signature matching, operand analysis, and
-//! dispatch to the emit handlers (port of AsmJit's `Assembler::_emit` from
-//! `x86assembler.cpp`, both 32-bit and 64-bit modes).
+//! dispatch to the emit handlers, covering both 32-bit and 64-bit modes.
 //!
-//! AsmJit's `goto EmitXxx` targets become the [`Handler`] enum: the encoding arms
-//! (a `match` on [`Encoding`]) only fill [`X86EmitState`] and select a handler, the
-//! actual byte emission is done by the handlers in [`super::encoder`]. AsmJit's
-//! `break` (no form matched) becomes `Err(InvalidInstruction)`.
+//! The encoding arms (a `match` on [`Encoding`]) only fill [`X86EmitState`] and select
+//! a [`Handler`]; the actual byte emission is done by the handlers in [`super::encoder`].
+//! No form matching returns `Err(InvalidInstruction)`.
 //!
 //! Derived from AsmJit (Zlib license) — this file is an altered version; see LICENSE notices.
 
@@ -631,12 +629,10 @@ fn check_op_sig(op: &OpSignature, reference: &OpSignature, imm_out_of_range: &mu
     true
 }
 
-/// Validates operands against the instruction's signature records (port of the
-/// signature-matching part of AsmJit's x86 `validate`). Returns
+/// Validates operands against the instruction's signature records. Returns
 /// `InvalidInstruction` when no record matches, `InvalidImmediate` when only an
-/// immediate was out of range. Signatures are filtered by the target mode
-/// (AsmJit's `InstSignature::mode`), which rejects X64-only forms in 32-bit
-/// mode and vice versa.
+/// immediate was out of range. Signatures are filtered by the target mode,
+/// which rejects X64-only forms in 32-bit mode and vice versa.
 fn validate_signature(
     common_info: &CommonInfo,
     ops: &[Operand; 6],
@@ -1208,9 +1204,8 @@ enc_consts!(
     AmxRmv,
 );
 
-/// Operand analysis: fills `st` and selects the emit handler. Port of the encoding
-/// switch in AsmJit's `Assembler::_emit`; `break` maps to `Err(no_match())`,
-/// fallthrough arms call the shared `case_*` tails above.
+/// Operand analysis: fills `st` and selects the emit handler. No match maps to
+/// `Err(no_match())`; fallthrough arms call the shared `case_*` tails above.
 #[allow(clippy::too_many_arguments)]
 fn analyze(
     buf: &mut CodeBuffer,
@@ -4486,8 +4481,7 @@ fn validate_cpu_features(
 
 /// Emits one instruction: looks up the InstInfo, validates the operand signature,
 /// emits pending LOCK/REP prefixes, runs the operand analysis, and dispatches to the
-/// selected emit handler. Port of AsmJit's `Assembler::_emit`; `is_32bit` selects
-/// the 32-bit X86 mode (AsmJit's `Assembler::is_32bit()`).
+/// selected emit handler. `is_32bit` selects the 32-bit X86 mode.
 pub fn emit_n(
     buf: &mut CodeBuffer,
     inst_id: u32,

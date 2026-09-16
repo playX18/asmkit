@@ -1,100 +1,106 @@
-# Porting
+# Backend structure
 
-This document describes how an asmkit architecture backend is structured, how to add or
-regenerate one, and how to migrate code written against the old (pre-rewrite) API.
+Each architecture under `src/{x86,aarch64,riscv}/` follows the same shape:
 
-## Backend layout
+- `instdb.rs`: generated, dense `InstId` enum + static tables (encodings, operand
+  signatures, RW effects, features)
+- `operands.rs`: architecture-specific operand types (registers, memory, immediates)
+- `assembler.rs`: hand-written, the `Assembler`, with `emit_n(InstId, &[&Operand])` as the
+  single emit entry point
+- `emitter.rs`: generated, per-mnemonic typed traits (`asm.mov(RAX, 42)`) forwarding to
+  `emit_n`
+- `instapi.rs`: hand-written, implements `query_rw_info` and friends over `src/core/inst.rs`'s
+  generic `Inst`, using the tables in `instdb.rs`
+- `arch_traits.rs`: glue implementing the shared `src/core` traits for this architecture
 
-Every backend under `src/<arch>/` follows the same uniform model (the AsmJit
-instruction-database model):
+x86 additionally has:
 
-| File | Role |
-|---|---|
-| `instdb.rs` | **Generated internal data.** Dense `InstId` plus encoding, operand, RW, feature, and name tables. The public architecture module re-exports `InstId` (or RISC-V `Opcode`) without requiring callers to depend on table layout. |
-| `operands.rs` | Register wrappers (sized, e.g. x86 `Gpq`/`Gpd`/`Xmm`, aarch64 `x0`/`w0`), `Mem` constructors (`ptr`, `ptr64`, ...), register constants (`RAX`, ...). |
-| `assembler.rs` | `Assembler<'a>` over a `CodeBuffer`. The single emit entry point is `emit_n(impl Into<u32>, &[&Operand])`. x86 also has prefix setters (`rep()`, `lock()`, `seg()`, `k()`, `z()`, SAE/rounding) that are consumed by the next emit. |
-| `emitter.rs` | **Generated.** Per-mnemonic traits (`MovEmitter<T0, T1>`, ...) implemented for `Assembler` once per valid operand tuple, forwarding to `emit_n`. Impls exist for abstract operand kinds and for the sized register wrappers, so constants work without dereferencing (`a.mov(RAX, 42)`); immediate positions take `U: Into<Imm>` so integer literals work directly. |
-| `instapi.rs` | `pub fn query_rw_info(inst: &Inst) -> Result<InstRwInfo, AsmError>` — the effects query. |
-| `arch_traits.rs` | The `ArchTraits` constants: sp/fp/link/ip register ids, stack alignment, per-`RegType` operand signatures and `TypeId` mappings. |
-| `emit.rs` / `encoder.rs` | Internal x86 and AArch64 validation/encoding implementation. RISC-V encodes directly in `assembler.rs`. |
-| `encoder_tables.rs` | Internal static lookup tables used by the encoder. |
+- `emit.rs`: validates operand signatures before encoding
+- `encoder.rs` / `encoder_tables.rs`: does the actual bit packing
+- `opcode.rs`: opcode/prefix constants
 
-Shared contracts live in `src/core/`:
+AArch64 additionally has `rwflags.rs` (per-instruction PSTATE read/write, asmkit-only,
+generated). RISC-V additionally has `opcodes.rs` (opcode constants, partly hand-maintained
+above a generation marker, see `meta/riscv.py`).
 
-- `inst.rs` — generic `Inst` (arch tag + `InstId` + operands), the architecture-tagged
-  representation used by `Builder` and `query_rw_info`.
-- `builder.rs` — `Builder` records `Node::Inst` / `Node::Label` and replays them into an
-  `InstSink` (`emit_inst` + `bind_label`); every arch's `Assembler` implements `InstSink`,
-  so replay produces byte-identical output to direct assembly.
-- `rwinfo.rs` — `InstRwInfo`, the arch-neutral read/write effects structure.
-- `operand.rs` — the generic `Operand`/`Reg`/`Mem`/`Imm`/`Label` representation all
-  backends build on.
+`src/core/` holds everything shared across backends: the generic `Inst`/`Operand` model
+(`inst.rs`, `operand.rs`), `CodeBuffer`/`Section`/`Linker` for buffer management and
+multi-module linking, `Builder` for recording/replaying instructions, `patch.rs` for
+JSC-style patching, and `jit_allocator.rs` for executable memory.
 
-## Regenerating or adding an arch
+# Code generation (`meta/`)
 
-The codegen pipeline is documented in detail in [meta/README.md](meta/README.md). In short:
+Everything above marked "generated" is produced from external instruction databases
+(AsmJit for x86/AArch64, riscv-opcodes/riscv-unified-db for RISC-V) by Python scripts in
+`meta/`, driven by `meta/regen.sh`. See [meta/README.md](meta/README.md) for the pinned
+inputs, the generator pipeline, and licensing obligations for the generated files.
 
-```sh
-bash meta/regen.sh           # regenerate all generated sources
-bash meta/regen.sh --check   # CI mode: fail if regeneration would change anything
-```
+# Adding a new backend
 
-Pipeline stages, in order:
+This walks through wiring up a new architecture (`newarch` below) end to end. RISC-V is
+the best reference for a backend that isn't driven by AsmJit's database: its `instdb.rs`
+and `opcodes.rs` are generated from a different external source, and its `emitter.rs`/
+`assembler.rs` are structured the same as x86/AArch64.
 
-1. `meta/asmjit2rust.py` — translates AsmJit's generated C++ instdb
-   (`asmjit/{x86,arm}/*instdb*.{cpp,h}`) into `src/{x86,aarch64}/instdb.rs` and dumps the
-   hand-maintained `INST(...)` rows to `meta/{x86,a64}_rows.json`.
-2. `meta/asmjit_db/` — Python rewrite of AsmJit's tablegen; regenerates the same instdbs
-   from db JSON + rows and validates them against stage 1 (`--check`). Also emits the
-   asmkit-only aarch64 NZCV table (`src/aarch64/rwflags.rs`).
-3. `meta/x86_emitter_gen.py` — `meta/x86_emitter.txt` (declarations extracted from AsmJit's
-   `x86emitter.h`) → `src/x86/emitter.rs`. The aarch64 emitter is generated by
-   `meta/arm64.py`.
-4. `meta/riscv.py` — riscv-opcodes → `src/riscv/{opcodes,emitter,instdb}.rs`, with derived
-   RW effects and docs from riscv-unified-db.
+## 1. Feature flag and module wiring
 
-The generator can be written in any language; Python 3 (>= 3.12) is used by default.
-External inputs (AsmJit clone, riscv-opcodes, riscv-unified-db, doc dumps) are pinned and
-gitignored — see the table in [meta/README.md](meta/README.md). Generated files carry a
-"do not edit" header; change the generator and regenerate instead.
+- Add a feature to `Cargo.toml`: `newarch = []`, and add it to `default` if the backend
+  should ship by default.
+- Add `pub mod newarch;` (feature-gated) to `src/lib.rs`, alongside the existing
+  `x86`/`aarch64`/`riscv` modules.
+- Create `src/newarch/mod.rs` re-exporting `assembler`, `emitter`, `instapi::query_rw_info`,
+  `instdb`'s CPU feature types, `operands`, and any opcode/regs modules; mirror
+  `src/riscv/mod.rs`.
 
-To add a new architecture you need: an opcode/instruction database, a generator emitting
-`instdb.rs` (+ optionally `emitter.rs`), an `operands.rs`/`arch_traits.rs`, an `Assembler`
-implementing `emit_n` and `InstSink`, and an `instapi.rs` implementing `query_rw_info`.
-A decoder is not part of the model.
+## 2. `Arch` enum and `arch_traits.rs`
 
-## Migrating from the old API
+- Add a variant to `Arch` in `src/core/arch_traits.rs` (pick an unused discriminant; the
+  even/odd-width convention documented next to the enum is cosmetic, not load-bearing,
+  keep it if convenient).
+- Add `NEWARCH_ARCH_TRAITS: ArchTraits` (feature-gated, with a `NO_ARCH_TRAITS` fallback
+  when the feature is off, copy the `X86`/`RISCV` `#[cfg]` pairs) and wire it into
+  whatever dispatches on `Arch` (`ArchTraits::for_arch` or equivalent).
+- Implement `src/newarch/arch_traits.rs`: the `ArchTraits` table (stack/frame/link/IP
+  register ids, stack alignment, and the `RegType`/`TypeId`/signature tables for every
+  register class the architecture has).
 
-- **`i64` opcode constants → `InstId`.** Instructions are identified by the dense
-  per-arch `InstId` enum re-exported from `asmkit::<arch>`. The raw emit path is
-  `asm.emit_n(InstId::Mov as u32, &[&op0, &op1])`; the generated emitter traits are the
-  preferred interface.
-- **`features/*` traits → generated emitter traits.** The old `src/x86/features/`
-  hand-written trait modules are gone; per-mnemonic `{Name}Emitter<T0..Tn>` traits in
-  `src/<arch>/emitter.rs` replace them (import `asmkit::x86::*` as before — the traits are
-  re-exported from `mod.rs`).
-- **`*RAX` deref → typed sized registers.** Sized register impls mean constants are passed
-  directly: `a.mov(RAX, RBX)` instead of `a.mov(*RAX, *RBX)`. Immediate positions accept
-  integer literals: `a.mov(RAX, 42)` (`imm(42)` still works).
-- **x86-dyn / x86-asm cargo features → gone.** Features are now `x86`, `riscv`, `aarch64`,
-  and opt-in `jit`; the three assembler backends are enabled by default.
-- **fadec is no longer used** for x86: the encoder is a port of AsmJit's
-  `x86assembler.cpp` (both 64-bit and 32-bit modes). Select the mode once with
-  `CodeBuffer::new(Environment::new(Arch::X86))` or
-  `CodeBuffer::new(Environment::new(Arch::X64))`; assemblers read that target from the buffer.
-- **Prefix/EVEX state** (was: prefix fields or per-call arguments) is now set on the
-  assembler and consumed by the next emit: `asm.lock().add(...)`, `asm.k(K1).z().vmovaps(...)`,
-  `asm.rn_sae().vaddps(...)`, etc.
-- For generic tooling, emit into a `Builder` and inspect `Inst` nodes with
-  `query_rw_info` before replaying into an assembler — this replaces ad-hoc buffering
-  around the old encoder API.
-- **Finalization is fallible.** Scope an `Assembler` so its mutable borrow ends, then call
-  `buffer.finish()?`. Void mnemonic calls record their first failure in the buffer; do not poll
-  `last_error` or recover with `clear_error`.
-- **Assembler buffers are private.** Use assembler label/constant/offset methods while emitting.
-  Create external symbols, bind exported symbols, inspect relocations/data, and finalize through
-  `CodeBuffer` after the assembler borrow ends.
-- **Generated tables are not the stable API.** Architecture `instdb` modules are crate-private.
-  Use the `InstId`, `Opcode`, and `CpuFeature` re-exports. The `doc(hidden)` architecture
-  `coverage` modules expose only the metadata required by validation tooling and are explicitly
-  unstable.
+## 3. Operands
+
+Write `src/newarch/operands.rs`: register types and constants (implementing
+`src/core/operand.rs`'s `RegTraits`/`OperandCast`), memory operand types, and any
+architecture-specific immediate wrappers. This is hand-written; it's the public API
+surface users interact with directly (`asm.mov(RAX, 42)`).
+
+## 4. Instruction database (`instdb.rs`)
+
+This is normally generated, not hand-written, because instruction sets are large and
+error-prone to transcribe by hand. Decide where the source data comes from, for example
+follow the RISC-V pattern (`meta/riscv.py`): pull from whatever authoritative
+machine-readable source exists for the ISA (riscv-opcodes/riscv-unified-db in that case),
+and generate the same shape of tables: an `InstId` enum, per-instruction operand
+signatures, and encoding data, so the rest of `src/core` (which is architecture-agnostic
+over these tables) doesn't need to special-case the backend.
+
+Whichever source you use, the generator should also be able to emit `emitter.rs` (the typed
+per-mnemonic traits) from the same signature data, and, if the architecture has flag/CPU-state
+read/write effects worth modeling, an `RwInfo`-shaped table for `instapi.rs` to consume.
+
+Add the new generator invocation and its output files to `GENERATED_FILES` and the step list
+in `meta/regen.sh`, and document any new pinned external input (repo, commit, license) in
+`meta/README.md`'s input table.
+
+## 5. `assembler.rs` and encoding
+
+Write the actual bit-packing/encoding logic and the `Assembler` type implementing
+`src/core/builder.rs`'s `InstSink` trait (`arch()`, `emit_inst()`, `bind_label()`) plus
+whatever direct `emit_n(InstId, &[&Operand])` entry point the generated `emitter.rs` calls
+into. For a fixed-width instruction set this can be a single file; x86's variable-length
+encoding needed the extra `emit.rs` (operand-signature validation) / `encoder.rs` /
+`encoder_tables.rs` split, don't replicate that split unless the architecture actually
+needs it.
+
+## 6. `instapi.rs`
+
+Hand-written code implementing `query_rw_info` (and any other per-instruction query
+functions) over the generic `Inst` type from `src/core/inst.rs`, reading whatever RW/flags
+tables `instdb.rs` (or a sibling generated file, like AArch64's `rwflags.rs`) provides.

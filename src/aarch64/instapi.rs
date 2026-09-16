@@ -1,9 +1,9 @@
 //! AArch64 instruction API: read/write information queries.
 //!
-//! Port of AsmJit's `a64instapi.cpp` (`InstInternal::query_rw_info`). Per-operand access
-//! patterns come from a small pattern table indexed by [`InstInfo::rw_info_index`]; memory
-//! operands get base/index access flags (incl. pre/post-index write-back) and vector element
-//! accesses (`vN.T[i]`) narrow the byte masks to the addressed element.
+//! Per-operand access patterns come from a small pattern table indexed by
+//! [`InstInfo::rw_info_index`]; memory operands get base/index access flags (incl. pre/post-index
+//! write-back) and vector element accesses (`vN.T[i]`) narrow the byte masks to the addressed
+//! element.
 //!
 //! NZCV (PSTATE) flag effects are not part of AsmJit's query; asmkit generates them from the
 //! instruction database `io` attributes (see `meta/asmjit_db/`) into

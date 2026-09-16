@@ -1,35 +1,11 @@
 #!/usr/bin/env python3
-"""asmjit2rust.py — translate AsmJit's generated instruction-database tables to Rust.
+"""asmjit2rust.py: translate AsmJit's generated instruction-database tables to Rust.
 
-Reads the vendored, pinned AsmJit tree at ``meta/asmjit`` (override with the
-``ASMJIT_SRC`` environment variable) and regenerates:
+Reads the vendored AsmJit tree at meta/asmjit (override with ASMJIT_SRC) and
+writes src/aarch64/instdb.rs + meta/a64_rows.json, and/or src/x86/instdb.rs +
+meta/x86_rows.json.
 
-  * ``src/aarch64/instdb.rs`` and ``meta/a64_rows.json``
-      (``python3 meta/asmjit2rust.py aarch64``)
-  * ``src/x86/instdb.rs`` and ``meta/x86_rows.json``
-      (``python3 meta/asmjit2rust.py x86``)
-  * ``all`` runs both.
-
-The output is deterministic: same AsmJit input -> same bytes.
-
-File layout:
-
-  1. Shared machinery: source loading, ``${Key:Begin}``/``${Key:End}`` block
-     extraction, C++ row parsing, constant-expression evaluation, C string
-     literal decoding, Rust emission helpers, token-based normalized diff.
-  2. AArch64 structural template (``A64_HEAD``/``A64_MID``/``A64_TABLE_NEW``):
-     the hand-adapted port of the EncodingData POD structs and helper enums,
-     spliced verbatim between the generated tables.
-  3. AArch64 driver (``gen_aarch64``).
-  4. X86 driver (``gen_x86``).
-  5. CLI.
-
-Self-checks fail loudly (``fail()``): unexpected row counts, broken ``// #N``
-ordinals, unexpanded macro tokens, unparseable rows, unknown constants.
-
-``aarch64 --check`` regenerates in memory and token-diffs the result against
-``git show HEAD:src/aarch64/instdb.rs`` (whitespace/formatting-insensitive),
-which must come back clean.
+Usage: python3 meta/asmjit2rust.py {aarch64,x86,all} [--check]
 """
 
 from __future__ import annotations
@@ -457,7 +433,7 @@ ZLIB_HEADER = """/* Copyright (c) 2008-2024 The AsmJit Authors
 
 """
 #
-# AArch64 structural template (hand-adapted port of a64instdb{,_p}.h).
+# AArch64 structural template for a64instdb{,_p}.h.
 # Extracted from src/aarch64/instdb.rs; see gen_aarch64() for how the
 # generated sections are spliced between these constants.
 #
@@ -1122,7 +1098,7 @@ def emit_x86(db: X86Db) -> str:
         "use crate::core::rwinfo::{CpuRwFlags, InstControlFlow, InstRwFlags, InstSameRegHint, OpRwFlags};\n\n"
     )
 
-    out.append("/// X86 CPU feature identifiers (port of AsmJit's `CpuFeatures::X86`).\n")
+    out.append("/// X86 CPU feature identifiers.\n")
     out.append("#[derive(Debug, Clone, Copy, PartialEq, Eq)]\n")
     out.append("#[allow(non_camel_case_types)]\n")
     out.append("#[repr(u8)]\n")
@@ -1246,7 +1222,7 @@ def emit_x86(db: X86Db) -> str:
 
 # Fixed Rust ports of the POD structs from x86instdb.h (kept in AsmJit order).
 X86_STRUCTS = """/// Operand signature: all possible operand combinations, memory size
-/// information, and a fixed register id (port of AsmJit's `InstDB::OpSignature`).
+/// information, and a fixed register id.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct OpSignature {
     pub flags: u64,
@@ -1260,7 +1236,7 @@ impl OpSignature {
 }
 
 /// Instruction signature: a sequence of operand combinations and other
-/// metadata defining a single instruction (port of AsmJit's `InstDB::InstSignature`).
+/// metadata defining a single instruction.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct InstSignature {
     pub op_count: u8,
@@ -1291,8 +1267,7 @@ impl InstSignature {
 """
 
 # Fixed Rust ports of CommonInfo/InstInfo/AdditionalInfo and the RW-info PODs.
-X86_STRUCTS_2 = """/// Aggregated information shared across one or more instructions
-/// (port of AsmJit's `InstDB::CommonInfo`).
+X86_STRUCTS_2 = """/// Aggregated information shared across one or more instructions.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct CommonInfo {
     pub flags: u32,
@@ -1331,7 +1306,7 @@ impl CommonInfo {
     }
 }
 
-/// Instruction information (port of AsmJit's `InstDB::InstInfo`).
+/// Instruction information.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct InstInfo {
     pub reserved: u32,
@@ -1365,7 +1340,7 @@ impl InstInfo {
 }
 
 /// Additional information table entry: CPU extensions required to execute an
-/// instruction plus RW flags (port of AsmJit's `InstDB::AdditionalInfo`).
+/// instruction plus RW flags.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct AdditionalInfo {
     pub inst_flags_index: u8,
@@ -1383,7 +1358,7 @@ impl AdditionalInfo {
     }
 }
 
-/// Read/write information of an instruction (port of AsmJit's `InstDB::RWInfo`).
+/// Read/write information of an instruction.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct RwInfo {
     pub category: RwInfoCategory,
@@ -1401,7 +1376,7 @@ impl RwInfo {
     }
 }
 
-/// Read/write information of a single operand (port of AsmJit's `InstDB::RWInfoOp`).
+/// Read/write information of a single operand.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct RwInfoOp {
     pub r_byte_mask: u64,
@@ -1430,7 +1405,7 @@ impl RwInfoOp {
 }
 
 /// R/M information, used to replace a register operand by a memory operand
-/// reliably (port of AsmJit's `InstDB::RWInfoRm`).
+/// reliably.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct RwInfoRm {
     pub category: RwInfoRmCategory,
@@ -1458,7 +1433,7 @@ impl RwInfoRm {
     }
 }
 
-/// CPU/FPU flags read/written information (port of AsmJit's `InstDB::RWFlagsInfoTable`).
+/// CPU/FPU flags read/written information.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct RwFlagsInfo {
     pub read_flags: u32,
@@ -1486,7 +1461,7 @@ def emit_x86_rw_structs(db: X86Db) -> str:
         check(name.startswith("kCategory"), f"x86: unexpected RWInfo::Category name {name!r}")
         variants.append((name[len("kCategory"):], doc))
     check(len(variants) == 17, f"x86: expected 17 RWInfo categories, got {len(variants)}")
-    out.append("/// Category of [`RwInfo`] (port of AsmJit's `InstDB::RWInfo::Category`).\n")
+    out.append("/// Category of [`RwInfo`].\n")
     out.append("#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]\n")
     out.append("#[allow(non_camel_case_types)]\n")
     out.append("#[repr(u8)]\n")
@@ -1508,7 +1483,7 @@ def emit_x86_rw_structs(db: X86Db) -> str:
         check(name.startswith("kCategory"), f"x86: unexpected RWInfoRm::Category name {name!r}")
         rm_variants.append((name[len("kCategory"):], doc))
     check(len(rm_variants) == 6, f"x86: expected 6 RWInfoRm categories, got {len(rm_variants)}")
-    out.append("/// Category of [`RwInfoRm`] (port of AsmJit's `InstDB::RWInfoRm::Category`).\n")
+    out.append("/// Category of [`RwInfoRm`].\n")
     out.append("#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]\n")
     out.append("#[repr(u8)]\n")
     out.append("pub enum RwInfoRmCategory {\n")
@@ -1522,7 +1497,7 @@ def emit_x86_rw_structs(db: X86Db) -> str:
     out.append("}\n\n")
 
     # RwInfoRmFlags (from InstDB::RWInfoRm::Flags).
-    out.append("// Flags of [`RwInfoRm`] (port of AsmJit's `InstDB::RWInfoRm::Flags`).\n")
+    out.append("// Flags of [`RwInfoRm`].\n")
     out.append("bitflags! {\n")
     out.append("    #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Default)]\n")
     out.append("    pub struct RwInfoRmFlags: u8 {\n")

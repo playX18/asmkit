@@ -1,4 +1,4 @@
-//! X86 encoder lookup tables (port of the constant tables in AsmJit's `x86assembler.cpp`).
+//! X86 encoder lookup tables.
 //!
 //! Tables indexed by register type are REGENERATED from the template logic using asmkit's
 //! [`RegType`] numbering — AsmJit's `RegType` discriminants differ (asmkit inserted
@@ -116,7 +116,7 @@ pub const MEM_INFO_BASE_RIP: u8 = 0x20;
 pub const MEM_INFO_67H_X86: u8 = 0x40;
 /// Address-size override in 64-bit mode.
 pub const MEM_INFO_67H_X64: u8 = 0x80;
-/// Computes [`MEM_INFO_TABLE`] entries (port of AsmJit's `X86MemInfo_T`).
+/// Computes [`MEM_INFO_TABLE`] entries.
 ///
 /// `x` packs BASE register type in bits [4:0] and INDEX register type in bits [9:5].
 const fn mem_info(x: u32) -> u8 {
@@ -238,7 +238,7 @@ pub static LL_BY_REG_TYPE_TABLE: [u32; 16] = {
 };
 
 /// Compressed-displacement scale (shift left) based on the 'TTWLL' field and the
-/// instruction's tuple-type (TT) field (port of AsmJit's `X86CDisp8SHL_T`).
+/// instruction's tuple-type (TT) field.
 pub static CDISP8_SHL_TABLE: [u32; 32] = {
     let mut table = [0u32; 32];
     let mut x = 0usize;

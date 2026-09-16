@@ -1,11 +1,10 @@
 //! Top-level emit path: InstInfo lookup, signature validation, operand
-//! analysis, and dispatch to the emit handlers (port of AsmJit's
-//! `Assembler::_emit` from `a64assembler.cpp`).
+//! analysis, and dispatch to the emit handlers.
 //!
-//! AsmJit's `goto EmitOp` / `goto EmitOp_DispImm` / `goto EmitOp_Rel` targets
-//! become the [`Handler`] enum: the encoding arms (a `match` on [`Encoding`])
-//! validate operands and compose the opcode in [`A64EmitState`], while the
-//! actual word emission is done by the handlers in [`super::encoder`].
+//! The [`Handler`] enum dispatches per encoding: the encoding arms (a `match`
+//! on [`Encoding`]) validate operands and compose the opcode in
+//! [`A64EmitState`], while the actual word emission is done by the handlers
+//! in [`super::encoder`].
 //!
 //! Derived from AsmJit (Zlib license) — this file is an altered version; see LICENSE notices.
 
@@ -76,9 +75,9 @@ pub(crate) enum Handler {
 }
 
 impl<'a> Assembler<'a> {
-    /// Port of AsmJit's `Assembler::_emit`: validates the instruction's
-    /// operand signature, composes the opcode, and dispatches to the emit
-    /// handlers. Errors are recorded in `last_error`.
+    /// Validates the instruction's operand signature, composes the opcode,
+    /// and dispatches to the emit handlers. Errors are recorded in
+    /// `last_error`.
     pub(crate) fn _emit(&mut self, id: u32, ops: &[&Operand]) {
         if id & !(InstId::REAL_ID | InstId::ARM_COND) != 0 {
             self.last_error = Some(AsmError::InvalidInstruction);

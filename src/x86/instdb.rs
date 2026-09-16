@@ -18,7 +18,7 @@ use bitflags::bitflags;
 
 use crate::core::rwinfo::{CpuRwFlags, InstControlFlow, InstRwFlags, InstSameRegHint, OpRwFlags};
 
-/// X86 CPU feature identifiers (port of AsmJit's `CpuFeatures::X86`).
+/// X86 CPU feature identifiers.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[allow(non_camel_case_types)]
 #[repr(u8)]
@@ -4133,7 +4133,7 @@ bitflags! {
 }
 
 /// Operand signature: all possible operand combinations, memory size
-/// information, and a fixed register id (port of AsmJit's `InstDB::OpSignature`).
+/// information, and a fixed register id.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct OpSignature {
     pub flags: u64,
@@ -4147,7 +4147,7 @@ impl OpSignature {
 }
 
 /// Instruction signature: a sequence of operand combinations and other
-/// metadata defining a single instruction (port of AsmJit's `InstDB::InstSignature`).
+/// metadata defining a single instruction.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct InstSignature {
     pub op_count: u8,
@@ -4586,8 +4586,7 @@ pub enum Encoding {
     Count,
 }
 
-/// Aggregated information shared across one or more instructions
-/// (port of AsmJit's `InstDB::CommonInfo`).
+/// Aggregated information shared across one or more instructions.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct CommonInfo {
     pub flags: u32,
@@ -4626,7 +4625,7 @@ impl CommonInfo {
     }
 }
 
-/// Instruction information (port of AsmJit's `InstDB::InstInfo`).
+/// Instruction information.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct InstInfo {
     pub reserved: u32,
@@ -4660,7 +4659,7 @@ impl InstInfo {
 }
 
 /// Additional information table entry: CPU extensions required to execute an
-/// instruction plus RW flags (port of AsmJit's `InstDB::AdditionalInfo`).
+/// instruction plus RW flags.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct AdditionalInfo {
     pub inst_flags_index: u8,
@@ -4678,7 +4677,7 @@ impl AdditionalInfo {
     }
 }
 
-/// Read/write information of an instruction (port of AsmJit's `InstDB::RWInfo`).
+/// Read/write information of an instruction.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct RwInfo {
     pub category: RwInfoCategory,
@@ -4696,7 +4695,7 @@ impl RwInfo {
     }
 }
 
-/// Read/write information of a single operand (port of AsmJit's `InstDB::RWInfoOp`).
+/// Read/write information of a single operand.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct RwInfoOp {
     pub r_byte_mask: u64,
@@ -4725,7 +4724,7 @@ impl RwInfoOp {
 }
 
 /// R/M information, used to replace a register operand by a memory operand
-/// reliably (port of AsmJit's `InstDB::RWInfoRm`).
+/// reliably.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct RwInfoRm {
     pub category: RwInfoRmCategory,
@@ -4753,7 +4752,7 @@ impl RwInfoRm {
     }
 }
 
-/// CPU/FPU flags read/written information (port of AsmJit's `InstDB::RWFlagsInfoTable`).
+/// CPU/FPU flags read/written information.
 #[derive(Debug, Clone, Copy, Default)]
 pub struct RwFlagsInfo {
     pub read_flags: u32,
@@ -4769,7 +4768,7 @@ impl RwFlagsInfo {
     }
 }
 
-/// Category of [`RwInfo`] (port of AsmJit's `InstDB::RWInfo::Category`).
+/// Category of [`RwInfo`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 #[allow(non_camel_case_types)]
 #[repr(u8)]
@@ -4794,7 +4793,7 @@ pub enum RwInfoCategory {
     Vmov8_1,
 }
 
-/// Category of [`RwInfoRm`] (port of AsmJit's `InstDB::RWInfoRm::Category`).
+/// Category of [`RwInfoRm`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 #[repr(u8)]
 pub enum RwInfoRmCategory {
@@ -4807,7 +4806,7 @@ pub enum RwInfoRmCategory {
     Eighth,
 }
 
-// Flags of [`RwInfoRm`] (port of AsmJit's `InstDB::RWInfoRm::Flags`).
+// Flags of [`RwInfoRm`].
 bitflags! {
     #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Default)]
     pub struct RwInfoRmFlags: u8 {

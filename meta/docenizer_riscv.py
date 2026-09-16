@@ -1,24 +1,10 @@
 #!/usr/bin/env python3
-"""Extracts per-instruction documentation from the riscv-unified-db clone.
+"""Extracts per-instruction documentation from the riscv-unified-db clone for meta/riscv.py.
 
-Reads the flat instruction YAML files at `<unified-db>/arch/inst/<Ext>/<name>.yaml`
-and returns `{instruction_name: {long_name, description, assembly}}` for use by
-`meta/riscv.py`, which renders them as `///` doc comments on the generated
-`Opcode` enum and emitter methods.
+Reads instruction YAML files under RISCV_UNIFIED_DB (default: repo-root
+`riscv-unified-db/`) with a line-based parser; PyYAML is intentionally not used.
 
-Input: riscv-unified-db @ v0.1.0 (see meta/README.md for the pin), BSD-3-Clause-Clear.
-Located via the `RISCV_UNIFIED_DB` env var, defaulting to the repo-root
-`riscv-unified-db/` clone.
-
-Dependency note: PyYAML is intentionally NOT required — it is not available in the
-build environment, and the instruction YAML files are flat and regular: the fields
-we need (`name`, `long_name`, `description`, `assembly`) are top-level keys whose
-values are either inline scalars or `|` block scalars indented by two spaces. A
-line-based extractor is sufficient and keeps the generator dependency-free.
-
-Run standalone to print extraction stats:
-
-    python3 docenizer_riscv.py
+Usage: python3 docenizer_riscv.py
 """
 
 import glob

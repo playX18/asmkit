@@ -1,20 +1,11 @@
 # This file is part of asmkit.
-#
-# Port of asmjit's `tools/generator-commons.js` (asmjit pinned at
-# 0bd5787b54b575ed94bf32ac452153b34385c514, SPDX-License-Identifier: Zlib).
-
-"""Generator commons: object/array/string utilities and `IndexedArray`.
-
-Only the pieces the Python pipeline needs are ported. Method names are
-snake_case; see README.md for behavior divergences from the JS original.
-"""
 
 import functools
 import re
 
 
 class ObjectUtils:
-    """Port of the JS `ObjectUtils` class."""
+    """Dict helpers."""
 
     @staticmethod
     def clone(map_):
@@ -24,8 +15,7 @@ class ObjectUtils:
     @staticmethod
     def merge(a, b):
         # Recursively merges dict values of `b` into `a`; anything else is
-        # assigned. JS recurses on any pair of `typeof "object"` values; in
-        # practice only plain objects occur, so the port recurses on dicts.
+        # assigned.
         if a is b:
             return a
 
@@ -91,9 +81,6 @@ class ObjectUtils:
 
     @staticmethod
     def find_key(map_, keys):
-        # JS uses `for..in` over `keys`, which iterates array indices; all JS
-        # callers pass plain objects, so the port iterates the keys/values
-        # given, which matches every real call site.
         for key in keys:
             if key in map_:
                 return key
@@ -108,7 +95,7 @@ class ObjectUtils:
 
 
 class ArrayUtils:
-    """Port of the JS `ArrayUtils` class."""
+    """Array/list helpers."""
 
     @staticmethod
     def min(arr, fn=None):
@@ -171,7 +158,7 @@ def _nop(x):
 
 
 class StringUtils:
-    """Port of the JS `StringUtils` class (subset)."""
+    """String helpers."""
 
     @staticmethod
     def as_string(x):
@@ -227,7 +214,6 @@ class StringUtils:
 
     @staticmethod
     def format(array, indent, show_index, map_fn=None):
-        # Exact port of the JS table-body formatter:
         #   show_index == -1: flow-wrapped at 80 columns.
         #   show_index > 0:   one row per line with `// #i` ordinals, plus
         #                     `[ref=Nx]` when the array provides ref counts.
@@ -328,11 +314,9 @@ def _key_of(item):
 
 
 class IndexedArray:
-    """Port of the JS `IndexedArray` dedup workhorse.
-
-    `add_indexed(item)` returns `(index, is_new)`; a duplicate bumps the
-    item's ref count. Iteration yields `(index, item, ref_count)` triples
-    in first-seen insertion order, exactly matching the JS dedup ORDER.
+    """Dedup workhorse: `add_indexed(item)` returns `(index, is_new)`, a
+    duplicate bumps the item's ref count. Iteration yields
+    `(index, item, ref_count)` triples in first-seen insertion order.
     """
 
     def __init__(self, iterable=None):

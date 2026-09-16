@@ -1,15 +1,5 @@
 # This file is part of asmkit.
-#
-# Port of asmjit's `db/base.js` (asmjit pinned at
-# 0bd5787b54b575ed94bf32ac452153b34385c514, SPDX-License-Identifier: Zlib).
 
-"""Instruction model (Operand / Instruction / InstructionGroup) and the ISA
-database container.
-
-Faithful port of asmjit's `db/base.js`. Method names are snake_case; data
-fields keep their JS names (`opcodeString`, `aliasOf`, ...) because they
-mirror the database schema. See README.md for behavior divergences.
-"""
 
 import enum
 import re

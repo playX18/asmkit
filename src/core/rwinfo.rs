@@ -1,10 +1,9 @@
 //! Read/write information describing how an instruction accesses its operands and CPU flags.
 //!
-//! This is the asmkit port of AsmJit's effects model (`OpRWFlags`, `CpuRWFlags`, `OpRWInfo`,
-//! `InstRWInfo`, `InstControlFlow`, `InstSameRegHint` — see `core/inst.h` in AsmJit). The data
-//! model is shaped so that generated per-architecture tables (produced by `meta/`) are plain
-//! `static` arrays and a future register-allocation pass can consume them uniformly across
-//! architectures.
+//! The effects model (`OpRWFlags`, `CpuRWFlags`, `OpRWInfo`, `InstRWInfo`, `InstControlFlow`,
+//! `InstSameRegHint`) is shaped so that generated per-architecture tables (produced by `meta/`)
+//! are plain `static` arrays and a future register-allocation pass can consume them uniformly
+//! across architectures.
 
 use bitflags::bitflags;
 

@@ -1,17 +1,5 @@
 # This file is part of asmkit.
 
-"""Vendored-C++ source parsing and Rust emission helpers.
-
-Shared machinery for the arch tablegen drivers (`tablegen_x86.py` /
-`tablegen_a64.py`): loading files from the pinned asmjit tree, extracting
-`// ${Key:Begin}` / `// ${Key:End}` blocks, parsing C++ table rows, enum
-bodies, constant expressions and string literals, plus Rust-side emission
-helpers (byte strings, name mapping, token-based normalized diff for
-`--check` modes).
-
-Stdlib only; deterministic output.
-"""
-
 import re
 from pathlib import Path
 

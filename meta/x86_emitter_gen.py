@@ -2,44 +2,6 @@
 """Generates the x86 emitter traits (src/x86/emitter.rs) from meta/x86_emitter.txt.
 
 The input is a curated copy of AsmJit's x86emitter.h ASMJIT_INST_* declarations.
-The transformation mirrors meta/arm64.py (aarch64):
-
-* one `pub trait {Camel}Emitter<T0..Tn>` per (mnemonic, arity) pair;
-* one `impl {Camel}Emitter<...> for Assembler<'_>` per concrete operand tuple,
-  forwarding to `self.emit_n(InstId::{Id}, &[op0.as_operand(), ...])`;
-* when a mnemonic is declared with several arities, the first-seen arity keeps
-  the plain name and later ones are suffixed (`cbw` / `cbw_0`);
-* Rustdoc combines assembly forms from pinned AsmJit metadata with optional
-  prose from the docenizer database (meta/docenizer_amd64.py).
-
-X86-specific handling:
-
-* AsmJit fixed-register alias operands (Gp_AX, DS_ZSI, XMM0, ...) collapse to
-  their base operand kind (Gp, Mem, Vec); tuples that become duplicates after
-  collapsing are dropped (first one wins);
-* the conditional families j/set/cmov (ASMJIT_INST_1c/2c) generate one method
-  taking a CondCode (dispatched through a condition -> InstId table) plus one
-  named method per x86 condition suffix (jo, jno, ...), each calling a concrete
-  InstId::{Id}{Suffix};
-* the condition tables are reindexed to asmkit's ARM-ordered CondCode
-  (AsmJit's own _*_from_cond tables are x86-ordered);
-* Rust keywords are raw-escaped (r#loop, r#in); names already C++-escaped in
-  the input (and_, or_, not_, xor_, int_) are kept as-is.
-
-Sized-register impls:
-
-* besides the abstract-kind impls (MovEmitter<Gp, Gp>), the generator emits
-  impls for the concrete sized register wrappers (Gpq/Gpd/Gpw/GpbLo/GpbHi,
-  Xmm/Ymm/Zmm, ...) so call sites can pass the register constants directly
-  (`a.mov(RAX, RBX)`, no deref);
-* the width data comes from the same instdb the rest of the pipeline uses:
-  meta/asmjit_db parses AsmJit's x86instdb.cpp (InstId -> CommonInfo ->
-  InstSignature -> OpSignature flag sets); only signature-valid width
-  combinations are generated (mov r,r -> same-width pairs, movzx -> mixed);
-* immediate positions are generated as `U: Into<Imm>` so integer literals work
-  (`a.mov(RAX, 42)`); when a variant's sized expansion is exactly its abstract
-  tuple with Imm generalized, the generic impl replaces the abstract one
-  (they would overlap), otherwise the abstract impl is kept.
 
 Usage: python3 meta/x86_emitter_gen.py [--docs-inputfolder DIR] [--check] OUTPUT
 """

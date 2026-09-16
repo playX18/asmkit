@@ -11,24 +11,16 @@
 
 //! X86 instruction API: read/write information queries.
 //!
-//! [AsmKit] This file is a derived work: it was translated from AsmJit's
-//! `asmjit/x86/x86instapi.cpp` (`x86::InstInternal::query_rw_info`) by hand.
-//!
 //! Per-operand access patterns come from the generated RW tables in
 //! [`super::instdb`]; special instruction categories (mov, imul, string ops,
-//! vector narrowing/widening, ...) are handled by code, mirroring the C++
-//! structure. asmkit-specific adaptations:
+//! vector narrowing/widening, ...) are handled by code.
 //!
-//! - AsmJit's `rw_reg_group_byte_mask_table` is indexed by its own `RegGroup`
-//!   numbering; here it is ported symbolically as [`reg_group_byte_mask`].
-//! - AsmJit takes the target architecture (X86 vs X64) to derive
-//!   `native_gp_size`; asmkit's [`Inst`] carries no mode, so the query assumes
-//!   X64 (`NATIVE_GP_SIZE == 8`): 32-bit GP writes zero-extend to 64 bits.
-//! - AsmJit applies same-register hints (`InstSameRegHint::kRO/kWO`) in the
-//!   register-allocation pass on tied registers; asmkit folds the rule into
-//!   the query itself — when all operands are the same physical register of
-//!   the same type, `kRO` makes every operand read-only and `kWO` write-only
-//!   (see [`apply_same_reg_hint`]).
+//! [`Inst`] carries no architecture mode, so the query assumes X64
+//! (`NATIVE_GP_SIZE == 8`): 32-bit GP writes zero-extend to 64 bits.
+//! Same-register hints (`InstSameRegHint::kRO/kWO`) are folded into the query
+//! itself — when all operands are the same physical register of the same
+//! type, `kRO` makes every operand read-only and `kWO` write-only (see
+//! [`apply_same_reg_hint`]).
 
 use crate::AsmError;
 use crate::core::arch_traits::Arch;
@@ -47,7 +39,7 @@ use super::instdb::{
 };
 use super::operands::{Gp, Mem};
 
-/// GP register size of the X64 architecture (AsmJit derives this from `Arch`).
+/// GP register size of the X64 architecture.
 const NATIVE_GP_SIZE: u32 = 8;
 
 const R: OpRwFlags = OpRwFlags::READ;
@@ -80,8 +72,7 @@ pub fn query_rw_info(inst: &Inst) -> Result<InstRwInfo, AsmError> {
     Ok(out)
 }
 
-/// Generates a trailing bit-mask that has `n` least significant bits set
-/// (port of AsmJit's `Support::lsb_mask<uint64_t>`).
+/// Generates a trailing bit-mask that has `n` least significant bits set.
 const fn lsb_mask_u64(n: u32) -> u64 {
     if n >= 64 {
         u64::MAX
@@ -90,16 +81,14 @@ const fn lsb_mask_u64(n: u32) -> u64 {
     }
 }
 
-/// Fills all trailing bits up to and including the most significant bit of `value`
-/// (port of AsmJit's `Support::fill_trailing_bits`).
+/// Fills all trailing bits up to and including the most significant bit of `value`.
 const fn fill_trailing_bits(value: u64) -> u64 {
     let leading = (value | 1).leading_zeros();
     ((u64::MAX >> 1) >> leading) | value
 }
 
 /// Maximum byte mask touched by a write to a register of the given group, used to clamp
-/// zero-extension masks (symbolic port of AsmJit's `rw_reg_group_byte_mask_table`, which is
-/// indexed by AsmJit's own `RegGroup` numbering).
+/// zero-extension masks.
 const fn reg_group_byte_mask(group: RegGroup) -> u64 {
     match group {
         RegGroup::Gp => 0xFF,
@@ -118,8 +107,7 @@ const fn reg_group_byte_mask(group: RegGroup) -> u64 {
 }
 
 /// Resets `op` to `op_flags`, `register_size`, and `phys_id`, computing full byte masks
-/// from the flags (port of AsmJit's `OpRWInfo::reset`; unlike [`OpRwInfo::reset`] this
-/// handles a zero `register_size` exactly like AsmJit's `lsb_mask` — an empty mask).
+/// from the flags. Unlike [`OpRwInfo::reset`], a zero `register_size` yields an empty mask.
 fn reset_op(op: &mut OpRwInfo, op_flags: OpRwFlags, register_size: u32, phys_id: u8) {
     op.op_flags = op_flags;
     op.phys_id = phys_id;
@@ -144,7 +132,7 @@ fn reset_op(op: &mut OpRwInfo, op_flags: OpRwFlags, register_size: u32, phys_id:
     op.extend_byte_mask = 0;
 }
 
-/// Port of AsmJit's `rw_zero_extend_gp`: 32-bit GP writes zero-extend on X64.
+/// 32-bit GP writes zero-extend on X64.
 fn rw_zero_extend_gp(op: &mut OpRwInfo, reg: &Operand, native_gp_size: u32) {
     if reg.x86_rm_size() + 4 == native_gp_size {
         op.op_flags |= OpRwFlags::ZEXT;
@@ -152,8 +140,7 @@ fn rw_zero_extend_gp(op: &mut OpRwInfo, reg: &Operand, native_gp_size: u32) {
     }
 }
 
-/// Port of AsmJit's `rw_zero_extend_avx_vec`: writing a 128/256-bit vector zero-extends
-/// the rest of the architectural 512-bit register.
+/// Writing a 128/256-bit vector zero-extends the rest of the architectural 512-bit register.
 fn rw_zero_extend_avx_vec(op: &mut OpRwInfo) {
     let msk = !fill_trailing_bits(op.write_byte_mask);
     if msk != 0 {
@@ -162,8 +149,7 @@ fn rw_zero_extend_avx_vec(op: &mut OpRwInfo) {
     }
 }
 
-/// Port of AsmJit's `rw_zero_extend_non_vec`: zero extension clamped by the register
-/// group's byte mask.
+/// Zero extension clamped by the register group's byte mask.
 fn rw_zero_extend_non_vec(op: &mut OpRwInfo, reg: &Operand) {
     let msk =
         !fill_trailing_bits(op.write_byte_mask) & reg_group_byte_mask(reg.signature.reg_group());
@@ -173,9 +159,8 @@ fn rw_zero_extend_non_vec(op: &mut OpRwInfo, reg: &Operand) {
     }
 }
 
-/// Port of AsmJit's `rw_handle_avx512`: an AVX-512 `{k}` extra register is always read;
-/// unless zeroing (`{z}` option or implicit-z instructions) the destination is also read
-/// (merge semantics).
+/// An AVX-512 `{k}` extra register is always read; unless zeroing (`{z}` option or
+/// implicit-z instructions) the destination is also read (merge semantics).
 fn rw_handle_avx512(inst: &Inst, common_info: &CommonInfo, out: &mut InstRwInfo) {
     if inst.extra_reg.is_reg() && inst.extra_reg.is_reg_type_of(RegType::Mask) && out.op_count > 0 {
         out.extra_reg.op_flags |= OpRwFlags::READ;
@@ -189,7 +174,7 @@ fn rw_handle_avx512(inst: &Inst, common_info: &CommonInfo, out: &mut InstRwInfo)
     }
 }
 
-/// Port of AsmJit's `has_same_reg_type` (only called when all operands are registers).
+/// Only called when all operands are registers.
 fn has_same_reg_type(operands: &[Operand]) -> bool {
     debug_assert!(!operands.is_empty());
     let reg_type = operands[0].signature.reg_type();
@@ -198,12 +183,10 @@ fn has_same_reg_type(operands: &[Operand]) -> bool {
         .all(|op| op.signature.reg_type() == reg_type)
 }
 
-/// Applies the same-register hint from [`CommonInfo`] to the query result.
-///
-/// In AsmJit this transformation lives in `x86rapass.cpp` (a single tied register becomes
-/// read-only or write-only when all operands share it); asmkit exposes it at query level:
-/// `kRO` clears write access on every operand, `kWO` clears read access (`xor x, x` writes
-/// `x` without reading it, including the zero extension).
+/// Applies the same-register hint from [`CommonInfo`] to the query result: when all
+/// operands share a tied register, `kRO` clears write access on every operand, `kWO`
+/// clears read access (`xor x, x` writes `x` without reading it, including the zero
+/// extension).
 fn apply_same_reg_hint(inst: &Inst, common_info: &CommonInfo, out: &mut InstRwInfo) {
     let hint = common_info.same_reg_hint;
     if hint == InstSameRegHint::None || out.op_count < 2 {

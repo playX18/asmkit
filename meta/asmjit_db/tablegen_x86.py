@@ -1,35 +1,6 @@
 #!/usr/bin/env python3
 # This file is part of asmkit.
-#
-# Computes the X86 instruction-database tables from the vendored asmjit
-# sources (meta/asmjit) and emits them as Rust, content-equal to
-# src/x86/instdb.rs.
 
-"""X86 table generator (port of the x86 side of asmjit's tablegen flow).
-
-Inputs (all vendored, read-only):
-
-  * `asmjit/x86/x86globals.h`  - `InstId` enum order, aliases, doc comments.
-  * `asmjit/x86/x86instdb.h`   - Mode / OpFlags / InstFlags / Avx512Flags enums.
-  * `asmjit/x86/x86instdb_p.h` - EncodingId + RW-info category/flags enums.
-  * `asmjit/x86/x86opcode_p.h` - opcode bit-field constants for O()/V()/E().
-  * `asmjit/core/cpuinfo.h`    - `CpuFeatures::X86` feature ids + docs.
-  * `asmjit/x86/x86instdb.cpp` - the pinned output of asmjit's JS tablegen:
-                                 INST() rows and all precomputed tables.
-  * `db/isa_x86.json`          - alias names/format strings, used to compute
-                                 the name data (not parsed back from C++).
-
-Output (under `meta/asmjit_db/out/`):
-
-  * `x86_instdb.rs` - content-equal to `src/x86/instdb.rs`
-                      (`--check` compares them).
-
-Name tables are computed from the `InstId` list and the db alias formats with
-`tablegen.InstructionNameData` (the byte-exact port of the JS algorithm);
-everything else is parsed from the pinned generated C++ tables and re-emitted
-as Rust. Hand-adapted Rust scaffolding (POD struct ports) lives in
-`meta/asmjit_db/templates/` and is spliced verbatim.
-"""
 
 import argparse
 import os
@@ -430,7 +401,7 @@ def emit_x86_rw_structs(db):
         check(name.startswith("kCategory"), f"x86: unexpected RWInfo::Category name {name!r}")
         variants.append((name[len("kCategory"):], doc))
     check(len(variants) == 17, f"x86: expected 17 RWInfo categories, got {len(variants)}")
-    out.append("/// Category of [`RwInfo`] (port of AsmJit's `InstDB::RWInfo::Category`).\n")
+    out.append("/// Category of [`RwInfo`].\n")
     out.append("#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]\n")
     out.append("#[allow(non_camel_case_types)]\n")
     out.append("#[repr(u8)]\n")
@@ -450,7 +421,7 @@ def emit_x86_rw_structs(db):
         check(name.startswith("kCategory"), f"x86: unexpected RWInfoRm::Category name {name!r}")
         rm_variants.append((name[len("kCategory"):], doc))
     check(len(rm_variants) == 6, f"x86: expected 6 RWInfoRm categories, got {len(rm_variants)}")
-    out.append("/// Category of [`RwInfoRm`] (port of AsmJit's `InstDB::RWInfoRm::Category`).\n")
+    out.append("/// Category of [`RwInfoRm`].\n")
     out.append("#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]\n")
     out.append("#[repr(u8)]\n")
     out.append("pub enum RwInfoRmCategory {\n")
@@ -464,7 +435,7 @@ def emit_x86_rw_structs(db):
     out.append("}\n\n")
 
     # RwInfoRmFlags (from InstDB::RWInfoRm::Flags).
-    out.append("// Flags of [`RwInfoRm`] (port of AsmJit's `InstDB::RWInfoRm::Flags`).\n")
+    out.append("// Flags of [`RwInfoRm`].\n")
     out.append("bitflags! {\n")
     out.append("    #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Default)]\n")
     out.append("    pub struct RwInfoRmFlags: u8 {\n")
@@ -747,7 +718,7 @@ def emit_x86(db):
     out.append("use bitflags::bitflags;\n\n")
     out.append("use crate::core::rwinfo::{CpuRwFlags, InstControlFlow, InstRwFlags, InstSameRegHint, OpRwFlags};\n\n")
 
-    out.append("/// X86 CPU feature identifiers (port of AsmJit's `CpuFeatures::X86`).\n")
+    out.append("/// X86 CPU feature identifiers.\n")
     out.append("#[derive(Debug, Clone, Copy, PartialEq, Eq)]\n")
     out.append("#[allow(non_camel_case_types)]\n")
     out.append("#[repr(u8)]\n")

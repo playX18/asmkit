@@ -1,23 +1,5 @@
 # This file is part of asmkit.
-#
-# Port of asmjit's `db/exp.js` (asmjit pinned at
-# 0bd5787b54b575ed94bf32ac452153b34385c514, SPDX-License-Identifier: Zlib).
 
-"""Expression tokenizer, parser, AST, and numeric evaluator.
-
-Faithful port of asmjit's `db/exp.js` with the following documented
-decisions (see this package's README.md for the full divergence list):
-
-- TERNARY: the JS ternary branch is dead code that references an undefined
-  `info` variable (a ReferenceError if ever reached), and no asmjit JSON
-  data uses `? :`. This port raises `ExpressionError` on `?` instead of
-  replicating the bug.
-- Bit access `x[i]` wraps the index in an `ImmNode`; JS stores the raw
-  number, which breaks `evaluate()` and visitors on the resulting node.
-- `evaluate()` emulates JS 32-bit semantics: arithmetic results are masked
-  to signed int32, `/` and `%` truncate toward zero like JS `|0`, and shift
-  counts are masked to 5 bits like JS `<<`/`>>`.
-"""
 
 import re
 from typing import NamedTuple

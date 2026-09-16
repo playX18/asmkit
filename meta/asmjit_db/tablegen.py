@@ -1,35 +1,10 @@
 # This file is part of asmkit.
-#
-# Port of asmjit's `tools/tablegen.js` (asmjit pinned at
-# 0bd5787b54b575ed94bf32ac452153b34385c514, SPDX-License-Identifier: Zlib).
 
-"""Core table-generation framework: `Task`/`TableGen`, `InstructionNameData`
-(the 5-bit/packed instruction-name compression), `IdEnum`/`NameTable` tasks,
-and `generate_name_data()`.
-
-The JS `Injector` (which patches `// ${Key:Begin/End}` regions inside asmjit's
-own C++ sources) is not ported: this pipeline emits whole files, so generated
-sections are collected into `TableGen.outputs` (`dict[str, str]`) instead.
-
-Faithfulness notes (see README.md for the full divergence list):
-
-- The small-encoding regex is the JS `/^[a-z0-4]{0,6}$/` — the empty name of
-  `kIdNone` IS small-encoded (first table entry `0x80000000`).
-- `index()`'s `min_prefix_size` keeps JS floating-point semantics
-  (`name.length / 2 + 1`, e.g. 5.5 for length 9) in the
-  `longest_prefix >= min_prefix_size` comparison.
-- The candidate sort is a pure stable sort by descending name length; the JS
-  tiebreak compares two objects (always 0), which is dead code.
-- Dead JS artifacts are not ported: the `size === -1` checks (`size` is never
-  -1), `getIndex()` (reads a never-assigned `map`), the `aliasMem`/`aliasMap`
-  typo, and a `console.log` debug leftover for "jz".
-"""
 
 import re
 
 from .gen_common import StringUtils
 
-# Hex formatting helpers (port of generator-cxx.js `Utils.toHexRaw/toHex`).
 
 def _to_hex_raw(val, pad=None):
     if val < 0:

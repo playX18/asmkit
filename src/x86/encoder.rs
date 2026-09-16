@@ -1,10 +1,7 @@
-//! X86 encoder helpers, buffer-writer functions, and emit handlers (port of the
-//! helper layer and the `EmitX86Op`..`EmitRel` emit handlers of AsmJit's
-//! `x86assembler.cpp`: helpers, `X86BufferWriter`, `FIXUP_GPB`, `ENC_OPSn`, and the
-//! emit-handler layer reached by the encoding arms).
+//! X86 encoder helpers, buffer-writer functions, and emit handlers.
 //!
 //! The emit handlers cover both 64-bit and 32-bit modes; the mode is carried by
-//! [`X86EmitState::is_32bit`] (AsmJit's `Assembler::is_32bit()` queries).
+//! [`X86EmitState::is_32bit`].
 //!
 //! Derived from AsmJit (Zlib license) — this file is an altered version; see LICENSE notices.
 
@@ -197,8 +194,7 @@ pub fn emit_address_override(buf: &mut CodeBuffer, condition: bool) {
     }
 }
 
-/// Emits optimized multi-byte NOPs to align the current offset to `alignment`
-/// (port of AsmJit's `Assembler::align` code path with optimized align).
+/// Emits optimized multi-byte NOPs to align the current offset to `alignment`.
 #[cfg(test)]
 pub fn emit_code_align(buf: &mut CodeBuffer, alignment: u32) {
     debug_assert!(alignment.is_power_of_two());

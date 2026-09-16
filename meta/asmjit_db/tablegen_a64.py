@@ -1,36 +1,6 @@
 #!/usr/bin/env python3
 # This file is part of asmkit.
-#
-# Computes the AArch64 instruction-database tables from the vendored asmjit
-# sources (meta/asmjit) and emits them as Rust, content-equal to
-# src/aarch64/instdb.rs.
 
-"""AArch64 table generator (port of the a64 side of asmjit's tablegen flow).
-
-Inputs (all vendored, read-only):
-
-  * `asmjit/arm/a64globals.h`   - `InstId` enum order + doc comments.
-  * `asmjit/arm/a64instdb_p.h`  - `EncodingId` enum + encoding-data fwd decls.
-  * `asmjit/arm/a64instdb.cpp`  - `INST()` rows + encoding-data tables
-                                  (the pinned output of asmjit's JS tablegen).
-  * `db/isa_aarch64.json`       - per-form `io` attributes (NZCV effects),
-                                  used for the asmkit-specific RW_FLAGS_TABLE.
-
-Outputs (under `meta/asmjit_db/out/`):
-
-  * `aarch64_instdb.rs`   - content-equal to `src/aarch64/instdb.rs`
-                            (`--check` compares them).
-  * `aarch64_rw_flags.rs` - NZCV (PSTATE) flag effects per `InstId`, computed
-                            from the db `io` fields; an asmkit extension that
-                            has no counterpart in asmjit's generated tables.
-
-Name tables are computed from the `InstId` list with
-`tablegen.InstructionNameData` (the byte-exact port of the JS algorithm), not
-parsed back from the generated C++.
-
-Hand-adapted Rust scaffolding (the pieces that are not instruction tables)
-lives in `meta/asmjit_db/templates/` and is spliced verbatim.
-"""
 
 import argparse
 import os
