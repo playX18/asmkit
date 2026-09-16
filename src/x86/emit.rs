@@ -5,7 +5,7 @@
 //! a [`Handler`]; the actual byte emission is done by the handlers in [`super::encoder`].
 //! No form matching returns `Err(InvalidInstruction)`.
 //!
-//! Derived from AsmJit (Zlib license) — this file is an altered version; see LICENSE notices.
+//! Derived from AsmJit (Zlib license): this file is an altered version; see LICENSE notices.
 
 // The encoding discriminants mirror `instdb::Encoding` variant names 1:1.
 #![allow(non_upper_case_globals)]
@@ -50,7 +50,7 @@ enum Handler {
 }
 
 // AsmJit's operand-type codes used by ENC_OPSn (asmkit's `OperandType` numbering
-// differs — `RegList` was inserted at 3 — so operands are mapped explicitly).
+// differs: `RegList` was inserted at 3: so operands are mapped explicitly).
 const OT_NONE: u32 = 0;
 const OT_REG: u32 = 1;
 const OT_MEM: u32 = 2;
@@ -167,7 +167,7 @@ fn is_vec128_with_id(op: &Operand, id: u32) -> bool {
     op.is_vec128() && op.id() == id
 }
 
-/// `op_flag_from_reg_type_table` — OpFlags bits for a register type.
+/// `op_flag_from_reg_type_table`: OpFlags bits for a register type.
 fn op_flags_from_reg_type(typ: RegType) -> u64 {
     match typ {
         RegType::Gp8Lo => OpFlags::REG_GPB_LO.bits(),

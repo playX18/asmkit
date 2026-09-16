@@ -2,10 +2,10 @@
 //!
 //! The instruction database stores opcodes as packed `u32` values; the shifts and masks here
 //! let REX, VEX, and EVEX prefixes be constructed with a few arithmetic ops. Do not reorder
-//! or renumber any field — the encoder depends on the exact layout, and `InstOptions` bits
+//! or renumber any field: the encoder depends on the exact layout, and `InstOptions` bits
 //! 24–27 are binary-compatible with the REX field.
 //!
-//! Derived from AsmJit (Zlib license) — this file is an altered version; see LICENSE notices.
+//! Derived from AsmJit (Zlib license): this file is an altered version; see LICENSE notices.
 
 use crate::core::globals::InstOptions;
 

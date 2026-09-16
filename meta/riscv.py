@@ -994,7 +994,7 @@ def doc_comment(instr_name, spec, docs, params=None, access=None):
         lines.append(f"Rust: `{instr_name.lower()}({', '.join(params)})`")
         lines.extend(["", "# Arguments"])
         for param, field, effect in zip(params, spec, access):
-            lines.append(f"- `{param}` — {argument_doc(field, effect, param)}")
+            lines.append(f"- `{param}`: {argument_doc(field, effect, param)}")
     return lines, bool(doc and (doc.get("long_name") or doc.get("description") or doc.get("assembly")))
 
 def parameter_name(field):

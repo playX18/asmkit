@@ -4,7 +4,7 @@
 //! `EmitOp_DispImm` / `EmitOp_Rel` handler blocks reached from the encoding
 //! arms in [`super::emit`].
 //!
-//! Derived from AsmJit (Zlib license) — this file is an altered version; see LICENSE notices.
+//! Derived from AsmJit (Zlib license): this file is an altered version; see LICENSE notices.
 
 #![allow(clippy::eq_op, clippy::erasing_op, dead_code, unused)]
 use crate::AsmError;

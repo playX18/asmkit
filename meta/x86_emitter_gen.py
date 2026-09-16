@@ -468,7 +468,7 @@ def doc_lines(opcode, opcode_docs, asmjit_forms, indent=""):
     doc = opcode_docs.get(canonical)
     if doc:
         summary = " ".join(doc["tooltip"].split()).replace("`", "'")
-        lines = [f"{indent}/// `{canonical}` — {summary}"]
+        lines = [f"{indent}/// `{canonical}`: {summary}"]
     else:
         lines = [f"{indent}/// Emits `{opcode.name.upper()}`."]
 

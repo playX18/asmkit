@@ -45,8 +45,8 @@ the code-generation pipeline.
 
 ## Cargo features
 
-- `x86`, `riscv`, `aarch64` — per-architecture backends (enabled by default)
-- `jit` — JIT allocator, for allocating and executing generated code
+- `x86`, `riscv`, `aarch64`: per-architecture backends (enabled by default)
+- `jit`: JIT allocator, for allocating and executing generated code
 
 ## License
 

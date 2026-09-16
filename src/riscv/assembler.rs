@@ -181,8 +181,8 @@ impl<'a> Assembler<'a> {
 
     /// Materialize `imm` into `rd` with a fixed-size sequence and a patchable literal.
     ///
-    /// Layout (RV64): `auipc; ld; jal; .dword` — the returned block covers the 8-byte literal.
-    /// Layout (RV32): `auipc; lw; jal; .word` — the returned block covers the 4-byte literal.
+    /// Layout (RV64): `auipc; ld; jal; .dword`: the returned block covers the 8-byte literal.
+    /// Layout (RV32): `auipc; lw; jal; .word`: the returned block covers the 4-byte literal.
     ///
     /// Rewrite with [`PatchableBlock::repatch_u64`] / [`PatchableBlock::repatch_u32`].
     pub fn patchable_li(&mut self, rd: Gp, imm: impl Into<i64>) -> PatchableBlock {

@@ -2,7 +2,7 @@
 //! `shift_op_to_ld_st_opt_map`, `size_op_table` and `size_op_map` from
 //! `a64assembler.cpp`).
 //!
-//! Derived from AsmJit (Zlib license) — this file is an altered version; see LICENSE notices.
+//! Derived from AsmJit (Zlib license): this file is an altered version; see LICENSE notices.
 
 #![allow(dead_code, unused)]
 use crate::aarch64::encoder::{SizeOp, SizeOpMap, SizeOpTable};

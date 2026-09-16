@@ -10,7 +10,7 @@
 //!   and a single checked raw emit entry point.
 //! - **Generated emitter traits**: per-mnemonic traits (e.g. `MovEmitter`) with impls for
 //!   the sized register wrappers, so register constants and integer immediates are passed
-//!   directly (`asm.mov(RAX, 42)` — no dereferencing).
+//!   directly (`asm.mov(RAX, 42)`: no dereferencing).
 //! - **Read/write effects**: `query_rw_info(&Inst) -> InstRwInfo` per architecture, over the
 //!   architecture-tagged [`Inst`].
 //! - **Deferred emission**: [`Builder`] records instructions and label binds
@@ -32,7 +32,7 @@
 //!
 //! 1. Emit into a [`CodeBuffer`] through a backend `Assembler`.
 //! 2. Finalize with [`CodeBuffer::finish`], optionally combining several modules —
-//!    [`Section`]s or plain buffers — into one image with [`Linker`].
+//!    [`Section`]s or plain buffers: into one image with [`Linker`].
 //! 3. Load with [`CodeBufferFinalized::allocate`] (no relocations),
 //!    [`allocate_relocated`](CodeBufferFinalized::allocate_relocated),
 //!    or [`allocate_resolved`](CodeBufferFinalized::allocate_resolved)

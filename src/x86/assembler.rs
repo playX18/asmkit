@@ -571,7 +571,7 @@ mod tests {
 
     #[test]
     fn emit_n_integer_forms() {
-        // mov rax, 1 — sign-extended C7 /0 form (AsmJit default, no long_form).
+        // mov rax, 1: sign-extended C7 /0 form (AsmJit default, no long_form).
         assert_eq!(
             asm(|a| a.emit_n(InstId::Mov as u32, &[RAX.as_operand(), imm(1).as_operand()])),
             [0x48, 0xC7, 0xC0, 0x01, 0x00, 0x00, 0x00]
@@ -603,7 +603,7 @@ mod tests {
         // ret / syscall.
         assert_eq!(asm(|a| a.emit_n(InstId::Ret as u32, &[])), [0xC3]);
         assert_eq!(asm(|a| a.emit_n(InstId::Syscall as u32, &[])), [0x0F, 0x05]);
-        // mov rax, 0x123456789 — 64-bit immediate uses the B8 (movabs) form.
+        // mov rax, 0x123456789: 64-bit immediate uses the B8 (movabs) form.
         assert_eq!(
             asm(|a| a.emit_n(
                 InstId::Mov as u32,
@@ -617,7 +617,7 @@ mod tests {
     fn emit_n_invalid_sets_last_error() {
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut a = Assembler::new(&mut buf);
-        // add rax, xmm0 — no signature matches; nothing is emitted.
+        // add rax, xmm0: no signature matches; nothing is emitted.
         a.emit_n(InstId::Add as u32, &[RAX.as_operand(), XMM0.as_operand()]);
         assert!(matches!(
             a.last_error(),
@@ -717,7 +717,7 @@ mod tests {
             )),
             [0x48, 0x8B, 0x05, 0x34, 0x12, 0x00, 0x00]
         );
-        // mov [rip + label], eax — label bound right after the instruction.
+        // mov [rip + label], eax: label bound right after the instruction.
         assert_eq!(
             asm(|a| {
                 let label = a.get_label();
@@ -838,7 +838,7 @@ mod tests {
 
     #[test]
     fn emit_n_vex_evex_forms() {
-        // vaddps ymm1, ymm2, ymm3 — AsmJit golden "C5EC58CB".
+        // vaddps ymm1, ymm2, ymm3: AsmJit golden "C5EC58CB".
         assert_eq!(
             asm(|a| a.emit_n(
                 InstId::Vaddps as u32,
@@ -1108,7 +1108,7 @@ mod tests {
     fn emit_n_32bit_gp_forms() {
         use crate::x86::emitter::{AddEmitter, MovEmitter};
 
-        // mov eax, ebx — no REX in 32-bit mode.
+        // mov eax, ebx: no REX in 32-bit mode.
         assert_eq!(asm32(|a| MovEmitter::mov(a, EAX, EBX)), [0x89, 0xD8]);
         // mov ax, bx / mov al, bl.
         assert_eq!(asm32(|a| MovEmitter::mov(a, AX, BX)), [0x66, 0x89, 0xD8]);
@@ -1183,7 +1183,7 @@ mod tests {
 
     #[test]
     fn emit_n_32bit_far_pointer_forms() {
-        // lcall/ljmp imm16, imm32 — 32-bit only.
+        // lcall/ljmp imm16, imm32: 32-bit only.
         assert_eq!(
             asm32(|a| a.emit_n(
                 InstId::Lcall as u32,
@@ -1212,7 +1212,7 @@ mod tests {
                 &[imm(0x1234).as_operand(), imm(0x1234_5678).as_operand()],
             )
         });
-        // lcall fword [ecx] — m16:32.
+        // lcall fword [ecx]: m16:32.
         assert_eq!(
             asm32(|a| a.emit_n(InstId::Lcall as u32, &[fword_ptr(ECX, 0).as_operand()])),
             [0xFF, 0x19]
@@ -1228,7 +1228,7 @@ mod tests {
             asm32(|a| MovEmitter::mov(a, EAX, dword_ptr_u64(0x1234_5678))),
             [0xA1, 0x78, 0x56, 0x34, 0x12]
         );
-        // mov [abs], eax — moffs A3 form.
+        // mov [abs], eax: moffs A3 form.
         assert_eq!(
             asm32(|a| MovEmitter::mov(a, dword_ptr_u64(0x1234_5678), EAX)),
             [0xA3, 0x78, 0x56, 0x34, 0x12]

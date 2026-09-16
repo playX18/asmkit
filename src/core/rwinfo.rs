@@ -161,7 +161,7 @@ bitflags! {
 
 /// Read/write information related to a single operand, used by [`InstRwInfo`].
 ///
-/// `phys_id` is always [`INVALID_PHYS_ID`] unless a physical register is required — unlike
+/// `phys_id` is always [`INVALID_PHYS_ID`] unless a physical register is required: unlike
 /// AsmJit (where value-initialization leaves it 0), asmkit keeps one "no phys id" sentinel.
 #[derive(Clone, Copy, PartialEq, Eq, Debug)]
 pub struct OpRwInfo {

@@ -1,4 +1,4 @@
-//! Post-emit code patching (JSC MacroAssembler–style).
+//! Post-emit code patching.
 //!
 //! # Workflow
 //!
@@ -10,23 +10,6 @@
 //! 3. Apply patches with **`unsafe`** methods on a JIT [`Span`] or `&mut [u8]`.
 //!    Patching does **not** go through [`CodeBufferFinalized`].
 //!
-//! # JSC correspondence
-//!
-//! | JSC | asmkit |
-//! |---|---|
-//! | `PatchableJump` / near call | [`PatchableSite`] + [`PatchableSite::retarget`] |
-//! | `DataLabel32` / `DataLabelPtr` | [`PatchableBlock`] + [`PatchableBlock::repatch_u32`] / [`repatch_u64`](PatchableBlock::repatch_u64) |
-//! | `padBeforePatch` + custom stub | [`reserve_patch_block`](crate::CodeBuffer::reserve_patch_block) → [`PatchableBlock::rewrite`] |
-//! | `repatchJump` on a code pointer | `unsafe` apply on [`Span`] / `&mut [u8]` |
-//!
-//! # Site vs block vs custom region
-//!
-//! - **Site** — a fixed-width displacement field (`LabelUse`) for jumps/calls; retarget by
-//!   code offset within the same image.
-//! - **Block** — a reserved byte range (immediate field or whole insn sequence); rewrite or
-//!   repatch integer payloads; shorter rewrites are nop-padded.
-//! - **Custom** — [`reserve_patch_block`](crate::CodeBuffer::reserve_patch_block) plants a
-//!   nop island you fill later with [`PatchableBlock::rewrite`].
 //!
 //! # Safety
 //!

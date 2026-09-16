@@ -8,8 +8,8 @@ use super::target::Environment;
 /// A named section: its own code buffer plus an alignment requirement.
 ///
 /// Sections are emitted independently (each gets its own [`CodeBuffer`], so
-/// labels and fixups stay section-local) and are laid out — concatenated with
-/// alignment — at link time by [`Linker`](crate::core::linker::Linker). A
+/// labels and fixups stay section-local) and are laid out: concatenated with
+/// alignment: at link time by [`Linker`](crate::core::linker::Linker). A
 /// section name is diagnostic only: the in-memory linker creates one flat
 /// image and does not model per-section read/write/execute permissions.
 pub struct Section {

@@ -3,7 +3,7 @@
 //! The emit handlers cover both 64-bit and 32-bit modes; the mode is carried by
 //! [`X86EmitState::is_32bit`].
 //!
-//! Derived from AsmJit (Zlib license) — this file is an altered version; see LICENSE notices.
+//! Derived from AsmJit (Zlib license): this file is an altered version; see LICENSE notices.
 
 use crate::X86Error;
 use crate::core::buffer::{CodeBuffer, LabelUse, Reloc, RelocDistance, RelocTarget};
@@ -22,7 +22,7 @@ use super::opcode::Opcode;
 use super::operands::{AddrType, Gp, Mem, SReg};
 
 /// Tests whether `op` is a memory operand with base register `base` and no offset
-/// (AsmJit's `is_implicit_mem` — used by string ops' implicit `[zAX]` forms).
+/// (AsmJit's `is_implicit_mem`: used by string ops' implicit `[zAX]` forms).
 pub fn is_implicit_mem(op: &Operand, base: u32) -> bool {
     op.is_mem() && op.id() == base && !op.as_::<super::operands::Mem>().has_offset()
 }
@@ -121,7 +121,7 @@ pub fn fixup_gpb(options: &mut InstOptions, reg: &Gp, reg_id: &mut u32) {
     }
 }
 
-/// `ENC_OPSn` — packs operand types into a 3-bit-per-operand signature (isign3/isign4).
+/// `ENC_OPSn`: packs operand types into a 3-bit-per-operand signature (isign3/isign4).
 #[allow(unused_macros)]
 macro_rules! enc_ops {
     ($op0:expr) => {
@@ -208,7 +208,7 @@ pub fn emit_code_align(buf: &mut CodeBuffer, alignment: u32) {
     }
 }
 
-/// Emits a 1- or 4-byte immediate (VEX path — sizes other than 1/4 assert in debug).
+/// Emits a 1- or 4-byte immediate (VEX path: sizes other than 1/4 assert in debug).
 pub fn emit_imm_byte_or_dword(buf: &mut CodeBuffer, imm_value: u64, imm_size: u8) {
     if imm_size == 0 {
         return;
@@ -300,7 +300,7 @@ pub struct X86EmitState {
     /// ModRM.reg: register id or /r opcode extension. The VEX/EVEX handlers expect
     /// it pre-packed with the vvvvv id ([`pack_reg_and_vvvvv`]) and mask it to 3 bits.
     pub op_reg: u32,
-    /// {k} mask register (or rep-cx). Must be an id-0 operand when unused — NOT
+    /// {k} mask register (or rep-cx). Must be an id-0 operand when unused: NOT
     /// `Operand::default()`, whose id is `INVALID_ID` and would corrupt the EVEX
     /// `aaa` field (AsmJit's "none" extra reg has id 0).
     pub extra_reg: Operand,
@@ -400,17 +400,17 @@ fn invalid_address(mem: &Mem, reason: &'static str) -> X86Error {
     }
 }
 
-/// `EmitX86OpMovAbs` — movabs preamble: the address becomes an immediate of native
+/// `EmitX86OpMovAbs`: movabs preamble: the address becomes an immediate of native
 /// register size (4 bytes in 32-bit mode, 8 in 64-bit); falls through to
 /// [`emit_x86_op`].
 pub fn emit_x86_op_mov_abs(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X86Error> {
-    // AsmJit: `imm_size = FastUInt8(register_size())` — native register size.
+    // AsmJit: `imm_size = FastUInt8(register_size())`: native register size.
     st.imm_size = st.register_size() as u8;
     emit_segment_override(buf, st.rm_rel.as_::<Mem>().segment_id());
     emit_x86_op(buf, st)
 }
 
-/// `EmitX86Op` — bare opcode (+ REX + immediate), no ModRM.
+/// `EmitX86Op`: bare opcode (+ REX + immediate), no ModRM.
 pub fn emit_x86_op(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X86Error> {
     emit_pp(buf, st.opcode);
     let rex = st.opcode.extract_rex(st.options);
@@ -420,7 +420,7 @@ pub fn emit_x86_op(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X8
     Ok(())
 }
 
-/// `EmitX86OpReg` — opcode with the low 3 bits of a register id added to it (no ModRM).
+/// `EmitX86OpReg`: opcode with the low 3 bits of a register id added to it (no ModRM).
 pub fn emit_x86_op_reg(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X86Error> {
     emit_pp(buf, st.opcode);
     let rex = st.opcode.extract_rex(st.options) | (st.op_reg >> 3); // Rex.B (0x01).
@@ -432,7 +432,7 @@ pub fn emit_x86_op_reg(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<()
     Ok(())
 }
 
-/// `EmitX86OpImplicitMem` — opcode with an implicit memory operand (string ops).
+/// `EmitX86OpImplicitMem`: opcode with an implicit memory operand (string ops).
 pub fn emit_x86_op_implicit_mem(
     buf: &mut CodeBuffer,
     st: &mut X86EmitState,
@@ -458,7 +458,7 @@ pub fn emit_x86_op_implicit_mem(
     Ok(())
 }
 
-/// `EmitX86R` — opcode /r with a register r/m (`MOD(3, reg, rm)`).
+/// `EmitX86R`: opcode /r with a register r/m (`MOD(3, reg, rm)`).
 pub fn emit_x86_r(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X86Error> {
     emit_pp(buf, st.opcode);
 
@@ -475,7 +475,7 @@ pub fn emit_x86_r(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X86
     Ok(())
 }
 
-/// `EmitX86RFromM` — opcode /r where the r/m register comes from a memory operand's
+/// `EmitX86RFromM`: opcode /r where the r/m register comes from a memory operand's
 /// base register (must be a plain base with no offset and no index).
 pub fn emit_x86_r_from_m(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X86Error> {
     let mem = st.rm_rel.as_::<Mem>();
@@ -491,7 +491,7 @@ pub fn emit_x86_r_from_m(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<
 
     let rex = st.opcode.extract_rex(st.options)
         | ((st.op_reg & 0x08) >> 1) // REX.R (0x04).
-        | (st.rb_reg >> 3); // REX.B (0x01) — unmasked, as in AsmJit.
+        | (st.rb_reg >> 3); // REX.B (0x01): unmasked, as in AsmJit.
     emit_rex(buf, rex)?;
     st.op_reg &= 0x07;
     st.rb_reg &= 0x07;
@@ -505,7 +505,7 @@ pub fn emit_x86_r_from_m(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<
     Ok(())
 }
 
-/// `EmitX86M` — opcode /r with a memory r/m; tails into [`emit_mod_sib`].
+/// `EmitX86M`: opcode /r with a memory r/m; tails into [`emit_mod_sib`].
 pub fn emit_x86_m(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X86Error> {
     debug_assert!(st.rm_rel.is_mem());
     debug_assert!(st.opcode.get() & Opcode::CDSHL_MASK == 0);
@@ -534,7 +534,7 @@ pub fn emit_x86_m(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X86
     emit_mod_sib(buf, st)
 }
 
-/// `EmitModSib` — ModRM + SIB + displacement for the memory operand in `st.rm_rel`.
+/// `EmitModSib`: ModRM + SIB + displacement for the memory operand in `st.rm_rel`.
 pub fn emit_mod_sib(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X86Error> {
     debug_assert!(st.rm_rel.is_mem());
     let mem = st.rm_rel.as_::<Mem>();
@@ -816,7 +816,7 @@ pub fn emit_mod_sib(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X
             // ==========|> [DISP16].
             //
             // NOTE: `op_reg | 0x06` mirrors AsmJit verbatim (the reg field is not
-            // shifted into bits 3-5 there — suspect but kept 1:1).
+            // shifted into bits 3-5 there: suspect but kept 1:1).
             buf.put1((st.op_reg | 0x06) as u8);
             buf.put2(rel_offset as u16);
         }
@@ -826,7 +826,7 @@ pub fn emit_mod_sib(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X
     Ok(())
 }
 
-/// `EmitModSib_LabelRip_X86` — 32-bit [LABEL|RIP + DISP32] tail: there is no
+/// `EmitModSib_LabelRip_X86`: 32-bit [LABEL|RIP + DISP32] tail: there is no
 /// rip-relative addressing in 32-bit mode, so AsmJit turns the displacement into an
 /// absolute address via a `kRelToAbs` relocation. asmkit models that with
 /// [`Reloc::Abs4`]: a bound label is resolved in place (base-address-free, matching
@@ -879,7 +879,7 @@ fn emit_mod_sib_label_rip_x86(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Re
     Ok(())
 }
 
-/// `EmitModVSib` — SIB (and VSIB) forms with an index register.
+/// `EmitModVSib`: SIB (and VSIB) forms with an index register.
 pub fn emit_mod_v_sib(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X86Error> {
     debug_assert!(st.rm_rel.is_mem());
     let mem = st.rm_rel.as_::<Mem>();
@@ -938,7 +938,7 @@ pub fn emit_mod_v_sib(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(),
     Ok(())
 }
 
-/// `EmitFpuOp` — FPU opcode (two opcode bytes, plus optional 9B prefix via PP).
+/// `EmitFpuOp`: FPU opcode (two opcode bytes, plus optional 9B prefix via PP).
 pub fn emit_fpu_op(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X86Error> {
     emit_pp(buf, st.opcode);
 
@@ -948,7 +948,7 @@ pub fn emit_fpu_op(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X8
     Ok(())
 }
 
-/// `EmitVexOp` — VEX opcode with no ModRM (only `vzeroall`/`vzeroupper`).
+/// `EmitVexOp`: VEX opcode with no ModRM (only `vzeroall`/`vzeroupper`).
 pub fn emit_vex_op(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X86Error> {
     // These don't use immediate.
     debug_assert!(st.imm_size == 0);
@@ -977,7 +977,7 @@ pub fn emit_vex_op(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X8
     Ok(())
 }
 
-/// `EmitVexEvexR` — VEX|EVEX prefix + opcode /r with a register r/m.
+/// `EmitVexEvexR`: VEX|EVEX prefix + opcode /r with a register r/m.
 pub fn emit_vex_evex_r(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X86Error> {
     let opcode = st.opcode.get();
 
@@ -1106,7 +1106,7 @@ pub fn emit_vex_evex_r(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<()
     Ok(())
 }
 
-/// `EmitVexEvexM` — VEX|EVEX prefix + opcode /r with a memory r/m; tails into
+/// `EmitVexEvexM`: VEX|EVEX prefix + opcode /r with a memory r/m; tails into
 /// [`emit_mod_sib`], or [`emit_mod_v_sib`] for VSIB instructions.
 pub fn emit_vex_evex_m(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X86Error> {
     debug_assert!(st.rm_rel.is_mem());
@@ -1275,14 +1275,14 @@ pub fn emit_vex_evex_m(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<()
     ))
 }
 
-/// `EmitJmpCall` — jmp/jcc/call with a Label, Imm, or Sym target.
+/// `EmitJmpCall`: jmp/jcc/call with a Label, Imm, or Sym target.
 ///
 /// asmkit deviations from AsmJit, forced by the lack of a base address:
 ///
 /// - Unbound labels first use the long (rel32) form and eligible jmp/jcc sites are
 ///   relaxed during finalization. Requesting `SHORT_FORM` for an unbound label, or
 ///   targeting an unbound label from a rel8-only instruction (jecxz/loop), is an
-///   `InvalidDisplacement` error — same as the old asmkit encoder.
+///   `InvalidDisplacement` error: same as the old asmkit encoder.
 /// - Bound labels use the short form when possible unless `LONG_FORM` was requested.
 /// - A plain immediate target is emitted as a raw displacement (old-encoder
 ///   semantics); use a Sym operand for targets resolved at load time.
@@ -1326,7 +1326,7 @@ pub fn emit_jmp_call(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), 
             return emit_jmp_call_rel(buf, st, rel32, opcode8);
         }
 
-        // Non-bound label — emit rel32 now and let finalization shrink eligible
+        // Non-bound label: emit rel32 now and let finalization shrink eligible
         // jmp/jcc instructions after all label offsets are known.
         if st.opcode.get() == 0 || st.options.contains(InstOptions::SHORT_FORM) {
             return Err(X86Error::InvalidDisplacement {
@@ -1393,7 +1393,7 @@ pub fn emit_jmp_call(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), 
     }
 
     if st.rm_rel.is_sym() {
-        // asmkit extension: jump/call to a symbol — long form + relocation.
+        // asmkit extension: jump/call to a symbol: long form + relocation.
         if st.opcode.get() == 0 {
             return Err(X86Error::InvalidDisplacement {
                 value: 0,
@@ -1435,7 +1435,7 @@ pub fn emit_jmp_call(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), 
     ))
 }
 
-/// `EmitJmpCallRel` — jmp/jcc/call with the relative displacement known at assembly
+/// `EmitJmpCallRel`: jmp/jcc/call with the relative displacement known at assembly
 /// time. The short (rel8) form is selected whenever it fits unless `LONG_FORM`
 /// was requested.
 pub fn emit_jmp_call_rel(
@@ -1477,7 +1477,7 @@ pub fn emit_jmp_call_rel(
     Ok(())
 }
 
-/// `EmitRel` — records a label fixup for an unbound label and emits a placeholder
+/// `EmitRel`: records a label fixup for an unbound label and emits a placeholder
 /// displacement plus the trailing immediate.
 ///
 /// asmkit's [`LabelUse::X86JmpRel32`] patch reads the placeholder as the addend, so
@@ -1617,7 +1617,7 @@ mod tests {
 
     #[test]
     fn emit_x86_r_forms() {
-        // add(rcx, rdx) — AsmJit golden "4801D1".
+        // add(rcx, rdx): AsmJit golden "4801D1".
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for(Opcode(Opcode::W | 0x01), Operand::default());
         st.op_reg = 2; // rdx
@@ -1625,7 +1625,7 @@ mod tests {
         run(&mut buf, &mut st, emit_x86_r);
         assert_eq!(buf.data(), &[0x48, 0x01, 0xD1]);
 
-        // adc(rcx, 1) — AsmJit golden "4883D101" (/2 opcode extension + imm8).
+        // adc(rcx, 1): AsmJit golden "4883D101" (/2 opcode extension + imm8).
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for(Opcode(Opcode::W | 0x83), Operand::default());
         st.op_reg = 2;
@@ -1635,7 +1635,7 @@ mod tests {
         run(&mut buf, &mut st, emit_x86_r);
         assert_eq!(buf.data(), &[0x48, 0x83, 0xD1, 0x01]);
 
-        // add(r8, r9) — REX.R + REX.B: "4D03C1".
+        // add(r8, r9): REX.R + REX.B: "4D03C1".
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for(Opcode(Opcode::W | 0x03), Operand::default());
         st.op_reg = 8;
@@ -1646,7 +1646,7 @@ mod tests {
 
     #[test]
     fn emit_x86_op_reg_movabs() {
-        // movabs(rcx, 1) — AsmJit golden "48B90100000000000000".
+        // movabs(rcx, 1): AsmJit golden "48B90100000000000000".
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for(Opcode(Opcode::W | 0xB8), Operand::default());
         st.op_reg = 1;
@@ -1678,19 +1678,19 @@ mod tests {
         run(&mut buf, &mut st, emit_x86_m);
         assert_eq!(buf.data(), &[0x48, 0x8B, 0x03]);
 
-        // mov rax, [rbp] — BP requires disp8(0).
+        // mov rax, [rbp]: BP requires disp8(0).
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for(Opcode(Opcode::W | 0x8B), mem_op(qword_ptr(RBP, 0)));
         run(&mut buf, &mut st, emit_x86_m);
         assert_eq!(buf.data(), &[0x48, 0x8B, 0x45, 0x00]);
 
-        // mov rax, [rbx + 64] — disp8.
+        // mov rax, [rbx + 64]: disp8.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for(Opcode(Opcode::W | 0x8B), mem_op(qword_ptr(RBX, 64)));
         run(&mut buf, &mut st, emit_x86_m);
         assert_eq!(buf.data(), &[0x48, 0x8B, 0x43, 0x40]);
 
-        // mov rax, [rbx + 0x12345678] — disp32.
+        // mov rax, [rbx + 0x12345678]: disp32.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for(
             Opcode(Opcode::W | 0x8B),
@@ -1699,13 +1699,13 @@ mod tests {
         run(&mut buf, &mut st, emit_x86_m);
         assert_eq!(buf.data(), &[0x48, 0x8B, 0x83, 0x78, 0x56, 0x34, 0x12]);
 
-        // mov rax, [rsp + 16] — SP forces SIB.
+        // mov rax, [rsp + 16]: SP forces SIB.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for(Opcode(Opcode::W | 0x8B), mem_op(qword_ptr(RSP, 16)));
         run(&mut buf, &mut st, emit_x86_m);
         assert_eq!(buf.data(), &[0x48, 0x8B, 0x44, 0x24, 0x10]);
 
-        // add(rcx, qword_ptr(rdx, rbx, 0, 128)) — AsmJit golden "48038C1A80000000".
+        // add(rcx, qword_ptr(rdx, rbx, 0, 128)): AsmJit golden "48038C1A80000000".
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for(
             Opcode(Opcode::W | 0x03),
@@ -1765,14 +1765,14 @@ mod tests {
 
     #[test]
     fn emit_x86_m_abs32() {
-        // lea rax, [0xFFFFFFFF] — LEA drops REX.W instead of adding 0x67.
+        // lea rax, [0xFFFFFFFF]: LEA drops REX.W instead of adding 0x67.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for(Opcode(Opcode::W | 0x8D), mem_op(qword_ptr_u64(0xFFFF_FFFF)));
         st.inst_id = InstId::Lea as u32;
         run(&mut buf, &mut st, emit_x86_m);
         assert_eq!(buf.data(), &[0x8D, 0x04, 0x25, 0xFF, 0xFF, 0xFF, 0xFF]);
 
-        // mov eax, [0x80000000] — inserts the address-size override.
+        // mov eax, [0x80000000]: inserts the address-size override.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for(Opcode(0x8B), mem_op(dword_ptr_u64(0x8000_0000)));
         st.inst_id = InstId::Mov as u32;
@@ -1782,7 +1782,7 @@ mod tests {
             &[0x67, 0x8B, 0x04, 0x25, 0x00, 0x00, 0x00, 0x80]
         );
 
-        // mov rax, fs:[0x40] — FS override prefers absolute, disp fits int32.
+        // mov rax, fs:[0x40]: FS override prefers absolute, disp fits int32.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut mem = qword_ptr_u64(0x40);
         mem.set_segment(FS);
@@ -1885,7 +1885,7 @@ mod tests {
     fn emit_vex_evex_r_forms() {
         let (base, _info, _common) = db(InstId::Vaddps);
 
-        // vaddps(xmm1, xmm2, xmm3) — AsmJit golden "C5E858CB".
+        // vaddps(xmm1, xmm2, xmm3): AsmJit golden "C5E858CB".
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for(base, Operand::default());
         st.op_reg = pack_reg_and_vvvvv(1, 2);
@@ -1893,7 +1893,7 @@ mod tests {
         run(&mut buf, &mut st, emit_vex_evex_r);
         assert_eq!(buf.data(), &[0xC5, 0xE8, 0x58, 0xCB]);
 
-        // vaddps(ymm1, ymm2, ymm3) — AsmJit golden "C5EC58CB".
+        // vaddps(ymm1, ymm2, ymm3): AsmJit golden "C5EC58CB".
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut opcode = base;
         opcode.add(opcode_l_by_size(32));
@@ -1903,7 +1903,7 @@ mod tests {
         run(&mut buf, &mut st, emit_vex_evex_r);
         assert_eq!(buf.data(), &[0xC5, 0xEC, 0x58, 0xCB]);
 
-        // vaddps(zmm1, zmm2, zmm3) — AsmJit golden "62F16C4858CB".
+        // vaddps(zmm1, zmm2, zmm3): AsmJit golden "62F16C4858CB".
         // LL=2 (512-bit) forces EVEX via kEvexBits; no X86_EVEX option needed.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut opcode = base;
@@ -1920,7 +1920,7 @@ mod tests {
         let (base, _info, common) = db(InstId::Vaddpd);
         let zmm_opcode = |o: &mut Opcode| o.add(opcode_l_by_size(64));
 
-        // k(k5).z().vaddpd(zmm1, zmm1, zmm2) — AsmJit golden "62F1F5CD58CA".
+        // k(k5).z().vaddpd(zmm1, zmm1, zmm2): AsmJit golden "62F1F5CD58CA".
         // The {k}{z} bits force EVEX via kEvexBits; no X86_EVEX option needed.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut opcode = base;
@@ -1934,7 +1934,7 @@ mod tests {
         run(&mut buf, &mut st, emit_vex_evex_r);
         assert_eq!(buf.data(), &[0x62, 0xF1, 0xF5, 0xCD, 0x58, 0xCA]);
 
-        // {x-sae} rounding forms — AsmJit goldens (vaddpd zmm1, zmm1, zmm2).
+        // {x-sae} rounding forms: AsmJit goldens (vaddpd zmm1, zmm1, zmm2).
         let cases: [(InstOptions, u8); 4] = [
             (InstOptions::X86_ER, 0x18),                           // rn_sae
             (InstOptions::X86_ER | InstOptions::X86_RD_SAE, 0x38), // rd_sae
@@ -1973,7 +1973,7 @@ mod tests {
     fn emit_vex_evex_m_forms() {
         let (base, _info, common) = db(InstId::Vaddps);
 
-        // vaddps(zmm1, zmm2, ptr(rbx, rbp, 0, 128)) — AsmJit golden "62F16C48584C2B02".
+        // vaddps(zmm1, zmm2, ptr(rbx, rbp, 0, 128)): AsmJit golden "62F16C48584C2B02".
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut opcode = base;
         opcode.add(opcode_l_by_size(64));
@@ -1991,7 +1991,7 @@ mod tests {
     fn emit_vex_evex_m_broadcast() {
         let (base, _info, common) = db(InstId::Vcmppd);
 
-        // vcmppd(k2, zmm12, qword_ptr(rcx)._1to8(), 123) — AsmJit golden "62F19D58C2117B".
+        // vcmppd(k2, zmm12, qword_ptr(rcx)._1to8(), 123): AsmJit golden "62F19D58C2117B".
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut opcode = base;
         opcode.add(opcode_l_by_size(64));
@@ -2003,7 +2003,7 @@ mod tests {
         run(&mut buf, &mut st, emit_vex_evex_m);
         assert_eq!(buf.data(), &[0x62, 0xF1, 0x9D, 0x58, 0xC2, 0x11, 0x7B]);
 
-        // Broadcast compressed disp8: disp 1016 / 8 = 127 fits — "62F19D58C2527F7B".
+        // Broadcast compressed disp8: disp 1016 / 8 = 127 fits: "62F19D58C2527F7B".
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut opcode = base;
         opcode.add(opcode_l_by_size(64));
@@ -2018,7 +2018,7 @@ mod tests {
             &[0x62, 0xF1, 0x9D, 0x58, 0xC2, 0x52, 0x7F, 0x7B]
         );
 
-        // disp 1024 / 8 = 128 doesn't fit: disp32 — "62F19D58C292000400007B".
+        // disp 1024 / 8 = 128 doesn't fit: disp32: "62F19D58C292000400007B".
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut opcode = base;
         opcode.add(opcode_l_by_size(64));
@@ -2035,7 +2035,7 @@ mod tests {
             ]
         );
 
-        // vcmpps(k2, zmm17, dword_ptr(rcx)._1to16(), 123) — "62F17450C2117B".
+        // vcmpps(k2, zmm17, dword_ptr(rcx)._1to16(), 123): "62F17450C2117B".
         // Exercises the V' bit from vvvvv bit 4 (zmm17).
         let (base_ps, _info_ps, common_ps) = db(InstId::Vcmpps);
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
@@ -2054,7 +2054,7 @@ mod tests {
     fn emit_vex_evex_m_vsib() {
         let (_base, info, common) = db(InstId::Vgatherdpd);
 
-        // k(k1).vgatherdpd(ymm1, ptr(rdx, xmm3, 0, 128)) — golden "62F2FD29924C1A10".
+        // k(k1).vgatherdpd(ymm1, ptr(rdx, xmm3, 0, 128)): golden "62F2FD29924C1A10".
         // The VexRmvRm_VM arm uses the alt (EVEX) opcode, which carries FORCE_EVEX.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut opcode = Opcode(ALT_OPCODE_TABLE[info.alt_opcode_index as usize]);
@@ -2169,7 +2169,7 @@ mod tests {
     fn emit_jmp_call_sym_reloc() {
         let (_j, call_info, _c) = db(InstId::Call);
 
-        // call sym — long form + X86CallPCRel4 reloc with addend -4.
+        // call sym: long form + X86CallPCRel4 reloc with addend -4.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let sym = buf.add_symbol(
             ExternalName::Symbol("target_fn".into()),
@@ -2186,7 +2186,7 @@ mod tests {
         assert_eq!(relocs[0].kind, Reloc::X86CallPCRel4);
         assert_eq!(relocs[0].addend, -4);
 
-        // jmp far-sym — X86GOTPCRel4.
+        // jmp far-sym: X86GOTPCRel4.
         let (_j, jmp_info, _c) = db(InstId::Jmp);
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let sym = buf.add_symbol(
@@ -2258,13 +2258,13 @@ mod tests {
 
     #[test]
     fn emit_x86_m_32bit_base_disp() {
-        // mov eax, [ebx] — no REX in 32-bit mode.
+        // mov eax, [ebx]: no REX in 32-bit mode.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for_x86(Opcode(0x8B), mem_op(dword_ptr(EBX, 0)));
         run(&mut buf, &mut st, emit_x86_m);
         assert_eq!(buf.data(), &[0x8B, 0x03]);
 
-        // mov eax, [esp + 8] — SP forces SIB.
+        // mov eax, [esp + 8]: SP forces SIB.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for_x86(Opcode(0x8B), mem_op(dword_ptr(ESP, 8)));
         run(&mut buf, &mut st, emit_x86_m);
@@ -2276,7 +2276,7 @@ mod tests {
         run(&mut buf, &mut st, emit_x86_m);
         assert_eq!(buf.data(), &[0x8B, 0x44, 0x91, 0x20]);
 
-        // mov eax, [edx*4 + 0x100] — index-only SIB with disp32.
+        // mov eax, [edx*4 + 0x100]: index-only SIB with disp32.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for_x86(Opcode(0x8B), mem_op(dword_ptr_u64_index(0x100, EDX, 2)));
         run(&mut buf, &mut st, emit_x86_m);
@@ -2285,7 +2285,7 @@ mod tests {
 
     #[test]
     fn emit_x86_m_32bit_abs() {
-        // mov eax, [0x12345678] — absolute disp32, mod=00 rm=101, no SIB.
+        // mov eax, [0x12345678]: absolute disp32, mod=00 rm=101, no SIB.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for_x86(Opcode(0x8B), mem_op(dword_ptr_u64(0x1234_5678)));
         st.inst_id = InstId::Mov as u32;
@@ -2318,7 +2318,7 @@ mod tests {
 
     #[test]
     fn emit_x86_m_32bit_label_abs() {
-        // Bound label: mov eax, [label + 8] — absolute address resolved in place.
+        // Bound label: mov eax, [label + 8]: absolute address resolved in place.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let label = buf.get_label();
         buf.bind_label(label);
@@ -2345,7 +2345,7 @@ mod tests {
 
     #[test]
     fn emit_x86_m_32bit_rip_abs() {
-        // mov eax, [rip + 0x10] — Abs4 reloc against an anonymous label bound at
+        // mov eax, [rip + 0x10]: Abs4 reloc against an anonymous label bound at
         // the end of the instruction (AsmJit's kRelToAbs against the section).
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for_x86(Opcode(0x8B), mem_op(dword_ptr_rip(0x10)));
@@ -2366,7 +2366,7 @@ mod tests {
 
     #[test]
     fn emit_x86_m_32bit_mod16() {
-        // mov ax, [bx + si] — 16-bit addressing via the 67h override.
+        // mov ax, [bx + si]: 16-bit addressing via the 67h override.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for_x86(
             Opcode(Opcode::PP_66 | 0x8B),
@@ -2375,19 +2375,19 @@ mod tests {
         run(&mut buf, &mut st, emit_x86_m);
         assert_eq!(buf.data(), &[0x67, 0x66, 0x8B, 0x00]);
 
-        // mov ax, [si + 8] — disp8.
+        // mov ax, [si + 8]: disp8.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for_x86(Opcode(Opcode::PP_66 | 0x8B), mem_op(word_ptr(SI, 8)));
         run(&mut buf, &mut st, emit_x86_m);
         assert_eq!(buf.data(), &[0x67, 0x66, 0x8B, 0x44, 0x08]);
 
-        // mov ax, [bx + 0x1234] — disp16.
+        // mov ax, [bx + 0x1234]: disp16.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for_x86(Opcode(Opcode::PP_66 | 0x8B), mem_op(word_ptr(BX, 0x1234)));
         run(&mut buf, &mut st, emit_x86_m);
         assert_eq!(buf.data(), &[0x67, 0x66, 0x8B, 0x87, 0x34, 0x12]);
 
-        // mov ax, [bp] — BP requires disp8(0) in 16-bit addressing as well.
+        // mov ax, [bp]: BP requires disp8(0) in 16-bit addressing as well.
         let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
         let mut st = st_for_x86(Opcode(Opcode::PP_66 | 0x8B), mem_op(word_ptr(BP, 0)));
         run(&mut buf, &mut st, emit_x86_m);

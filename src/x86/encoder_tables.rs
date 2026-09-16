@@ -1,11 +1,11 @@
 //! X86 encoder lookup tables.
 //!
 //! Tables indexed by register type are REGENERATED from the template logic using asmkit's
-//! [`RegType`] numbering — AsmJit's `RegType` discriminants differ (asmkit inserted
+//! [`RegType`] numbering: AsmJit's `RegType` discriminants differ (asmkit inserted
 //! `SymTag`/`PC` ahead of the GP/Vec range), so transliterating raw table bytes would be
 //! wrong.
 //!
-//! Derived from AsmJit (Zlib license) — this file is an altered version; see LICENSE notices.
+//! Derived from AsmJit (Zlib license): this file is an altered version; see LICENSE notices.
 
 use crate::core::operand::RegType;
 

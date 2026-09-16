@@ -58,9 +58,9 @@ use crate::core::operand::*;
 /// Rust: `add(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait AddEmitter<T0, T1, T2> {
     fn add(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -75,9 +75,9 @@ pub trait AddEmitter<T0, T1, T2> {
 /// Rust: `add_uw(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait AddUwEmitter<T0, T1, T2> {
     fn add_uw(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -91,9 +91,9 @@ pub trait AddUwEmitter<T0, T1, T2> {
 /// Rust: `addi(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait AddiEmitter<T0, T1, T2> {
     fn addi(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -107,9 +107,9 @@ pub trait AddiEmitter<T0, T1, T2> {
 /// Rust: `addiw(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait AddiwEmitter<T0, T1, T2> {
     fn addiw(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -124,9 +124,9 @@ pub trait AddiwEmitter<T0, T1, T2> {
 /// Rust: `addw(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait AddwEmitter<T0, T1, T2> {
     fn addw(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -138,10 +138,10 @@ pub trait AddwEmitter<T0, T1, T2> {
 /// Rust: `aes32dsi(rd, rs1, rs2, bs)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `bs` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `bs`: Immediate encoding value.
 pub trait Aes32DsiEmitter<T0, T1, T2, T3> {
     fn aes32dsi(&mut self, rd: T0, rs1: T1, rs2: T2, bs: T3);
 }
@@ -153,10 +153,10 @@ pub trait Aes32DsiEmitter<T0, T1, T2, T3> {
 /// Rust: `aes32dsmi(rd, rs1, rs2, bs)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `bs` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `bs`: Immediate encoding value.
 pub trait Aes32DsmiEmitter<T0, T1, T2, T3> {
     fn aes32dsmi(&mut self, rd: T0, rs1: T1, rs2: T2, bs: T3);
 }
@@ -168,10 +168,10 @@ pub trait Aes32DsmiEmitter<T0, T1, T2, T3> {
 /// Rust: `aes32esi(rd, rs1, rs2, bs)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `bs` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `bs`: Immediate encoding value.
 pub trait Aes32EsiEmitter<T0, T1, T2, T3> {
     fn aes32esi(&mut self, rd: T0, rs1: T1, rs2: T2, bs: T3);
 }
@@ -183,10 +183,10 @@ pub trait Aes32EsiEmitter<T0, T1, T2, T3> {
 /// Rust: `aes32esmi(rd, rs1, rs2, bs)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `bs` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `bs`: Immediate encoding value.
 pub trait Aes32EsmiEmitter<T0, T1, T2, T3> {
     fn aes32esmi(&mut self, rd: T0, rs1: T1, rs2: T2, bs: T3);
 }
@@ -198,9 +198,9 @@ pub trait Aes32EsmiEmitter<T0, T1, T2, T3> {
 /// Rust: `aes64ds(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Aes64DsEmitter<T0, T1, T2> {
     fn aes64ds(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -212,9 +212,9 @@ pub trait Aes64DsEmitter<T0, T1, T2> {
 /// Rust: `aes64dsm(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Aes64DsmEmitter<T0, T1, T2> {
     fn aes64dsm(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -226,9 +226,9 @@ pub trait Aes64DsmEmitter<T0, T1, T2> {
 /// Rust: `aes64es(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Aes64EsEmitter<T0, T1, T2> {
     fn aes64es(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -240,9 +240,9 @@ pub trait Aes64EsEmitter<T0, T1, T2> {
 /// Rust: `aes64esm(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Aes64EsmEmitter<T0, T1, T2> {
     fn aes64esm(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -254,8 +254,8 @@ pub trait Aes64EsmEmitter<T0, T1, T2> {
 /// Rust: `aes64im(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait Aes64ImEmitter<T0, T1> {
     fn aes64im(&mut self, rd: T0, rs1: T1);
 }
@@ -267,9 +267,9 @@ pub trait Aes64ImEmitter<T0, T1> {
 /// Rust: `aes64ks1i(rd, rs1, rnum)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rnum` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rnum`: Immediate encoding value.
 pub trait Aes64Ks1IEmitter<T0, T1, T2> {
     fn aes64ks1i(&mut self, rd: T0, rs1: T1, rnum: T2);
 }
@@ -281,9 +281,9 @@ pub trait Aes64Ks1IEmitter<T0, T1, T2> {
 /// Rust: `aes64ks2(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Aes64Ks2Emitter<T0, T1, T2> {
     fn aes64ks2(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -295,11 +295,11 @@ pub trait Aes64Ks2Emitter<T0, T1, T2> {
 /// Rust: `amoadd_b(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoaddBEmitter<T0, T1, T2, T3, T4> {
     fn amoadd_b(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -318,11 +318,11 @@ pub trait AmoaddBEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoadd_d(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoaddDEmitter<T0, T1, T2, T3, T4> {
     fn amoadd_d(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -334,11 +334,11 @@ pub trait AmoaddDEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoadd_h(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoaddHEmitter<T0, T1, T2, T3, T4> {
     fn amoadd_h(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -357,11 +357,11 @@ pub trait AmoaddHEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoadd_w(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoaddWEmitter<T0, T1, T2, T3, T4> {
     fn amoadd_w(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -373,11 +373,11 @@ pub trait AmoaddWEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoand_b(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoandBEmitter<T0, T1, T2, T3, T4> {
     fn amoand_b(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -396,11 +396,11 @@ pub trait AmoandBEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoand_d(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoandDEmitter<T0, T1, T2, T3, T4> {
     fn amoand_d(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -412,11 +412,11 @@ pub trait AmoandDEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoand_h(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoandHEmitter<T0, T1, T2, T3, T4> {
     fn amoand_h(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -435,11 +435,11 @@ pub trait AmoandHEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoand_w(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoandWEmitter<T0, T1, T2, T3, T4> {
     fn amoand_w(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -451,11 +451,11 @@ pub trait AmoandWEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amocas_b(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmocasBEmitter<T0, T1, T2, T3, T4> {
     fn amocas_b(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -467,11 +467,11 @@ pub trait AmocasBEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amocas_d(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmocasDEmitter<T0, T1, T2, T3, T4> {
     fn amocas_d(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -483,11 +483,11 @@ pub trait AmocasDEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amocas_h(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmocasHEmitter<T0, T1, T2, T3, T4> {
     fn amocas_h(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -499,11 +499,11 @@ pub trait AmocasHEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amocas_q(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmocasQEmitter<T0, T1, T2, T3, T4> {
     fn amocas_q(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -515,11 +515,11 @@ pub trait AmocasQEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amocas_w(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmocasWEmitter<T0, T1, T2, T3, T4> {
     fn amocas_w(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -531,11 +531,11 @@ pub trait AmocasWEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amomax_b(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmomaxBEmitter<T0, T1, T2, T3, T4> {
     fn amomax_b(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -554,11 +554,11 @@ pub trait AmomaxBEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amomax_d(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmomaxDEmitter<T0, T1, T2, T3, T4> {
     fn amomax_d(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -570,11 +570,11 @@ pub trait AmomaxDEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amomax_h(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmomaxHEmitter<T0, T1, T2, T3, T4> {
     fn amomax_h(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -593,11 +593,11 @@ pub trait AmomaxHEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amomax_w(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmomaxWEmitter<T0, T1, T2, T3, T4> {
     fn amomax_w(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -609,11 +609,11 @@ pub trait AmomaxWEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amomaxu_b(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmomaxuBEmitter<T0, T1, T2, T3, T4> {
     fn amomaxu_b(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -632,11 +632,11 @@ pub trait AmomaxuBEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amomaxu_d(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmomaxuDEmitter<T0, T1, T2, T3, T4> {
     fn amomaxu_d(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -648,11 +648,11 @@ pub trait AmomaxuDEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amomaxu_h(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmomaxuHEmitter<T0, T1, T2, T3, T4> {
     fn amomaxu_h(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -671,11 +671,11 @@ pub trait AmomaxuHEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amomaxu_w(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmomaxuWEmitter<T0, T1, T2, T3, T4> {
     fn amomaxu_w(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -687,11 +687,11 @@ pub trait AmomaxuWEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amomin_b(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmominBEmitter<T0, T1, T2, T3, T4> {
     fn amomin_b(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -710,11 +710,11 @@ pub trait AmominBEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amomin_d(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmominDEmitter<T0, T1, T2, T3, T4> {
     fn amomin_d(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -726,11 +726,11 @@ pub trait AmominDEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amomin_h(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmominHEmitter<T0, T1, T2, T3, T4> {
     fn amomin_h(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -749,11 +749,11 @@ pub trait AmominHEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amomin_w(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmominWEmitter<T0, T1, T2, T3, T4> {
     fn amomin_w(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -765,11 +765,11 @@ pub trait AmominWEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amominu_b(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmominuBEmitter<T0, T1, T2, T3, T4> {
     fn amominu_b(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -788,11 +788,11 @@ pub trait AmominuBEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amominu_d(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmominuDEmitter<T0, T1, T2, T3, T4> {
     fn amominu_d(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -804,11 +804,11 @@ pub trait AmominuDEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amominu_h(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmominuHEmitter<T0, T1, T2, T3, T4> {
     fn amominu_h(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -827,11 +827,11 @@ pub trait AmominuHEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amominu_w(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmominuWEmitter<T0, T1, T2, T3, T4> {
     fn amominu_w(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -843,11 +843,11 @@ pub trait AmominuWEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoor_b(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoorBEmitter<T0, T1, T2, T3, T4> {
     fn amoor_b(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -866,11 +866,11 @@ pub trait AmoorBEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoor_d(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoorDEmitter<T0, T1, T2, T3, T4> {
     fn amoor_d(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -882,11 +882,11 @@ pub trait AmoorDEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoor_h(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoorHEmitter<T0, T1, T2, T3, T4> {
     fn amoor_h(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -905,11 +905,11 @@ pub trait AmoorHEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoor_w(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoorWEmitter<T0, T1, T2, T3, T4> {
     fn amoor_w(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -921,11 +921,11 @@ pub trait AmoorWEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoswap_b(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoswapBEmitter<T0, T1, T2, T3, T4> {
     fn amoswap_b(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -943,11 +943,11 @@ pub trait AmoswapBEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoswap_d(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoswapDEmitter<T0, T1, T2, T3, T4> {
     fn amoswap_d(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -959,11 +959,11 @@ pub trait AmoswapDEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoswap_h(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoswapHEmitter<T0, T1, T2, T3, T4> {
     fn amoswap_h(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -981,11 +981,11 @@ pub trait AmoswapHEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoswap_w(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoswapWEmitter<T0, T1, T2, T3, T4> {
     fn amoswap_w(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -997,11 +997,11 @@ pub trait AmoswapWEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoxor_b(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoxorBEmitter<T0, T1, T2, T3, T4> {
     fn amoxor_b(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -1020,11 +1020,11 @@ pub trait AmoxorBEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoxor_d(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoxorDEmitter<T0, T1, T2, T3, T4> {
     fn amoxor_d(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -1036,11 +1036,11 @@ pub trait AmoxorDEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoxor_h(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoxorHEmitter<T0, T1, T2, T3, T4> {
     fn amoxor_h(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -1059,11 +1059,11 @@ pub trait AmoxorHEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `amoxor_w(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait AmoxorWEmitter<T0, T1, T2, T3, T4> {
     fn amoxor_w(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -1077,9 +1077,9 @@ pub trait AmoxorWEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `and(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait AndEmitter<T0, T1, T2> {
     fn and(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -1093,9 +1093,9 @@ pub trait AndEmitter<T0, T1, T2> {
 /// Rust: `andi(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait AndiEmitter<T0, T1, T2> {
     fn andi(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -1110,9 +1110,9 @@ pub trait AndiEmitter<T0, T1, T2> {
 /// Rust: `andn(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait AndnEmitter<T0, T1, T2> {
     fn andn(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -1126,8 +1126,8 @@ pub trait AndnEmitter<T0, T1, T2> {
 /// Rust: `auipc(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `imm`: Immediate encoding value.
 pub trait AuipcEmitter<T0, T1> {
     fn auipc(&mut self, rd: T0, imm: T1);
 }
@@ -1142,9 +1142,9 @@ pub trait AuipcEmitter<T0, T1> {
 /// Rust: `bclr(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait BclrEmitter<T0, T1, T2> {
     fn bclr(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -1160,9 +1160,9 @@ pub trait BclrEmitter<T0, T1, T2> {
 /// Rust: `bclri(rd, rs1, shamtd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtd` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtd`: Immediate encoding value.
 pub trait BclriEmitter<T0, T1, T2> {
     fn bclri(&mut self, rd: T0, rs1: T1, shamtd: T2);
 }
@@ -1178,9 +1178,9 @@ pub trait BclriEmitter<T0, T1, T2> {
 /// Rust: `bclri_rv32(rd, rs1, shamtw)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtw` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtw`: Immediate encoding value.
 pub trait BclriRv32Emitter<T0, T1, T2> {
     fn bclri_rv32(&mut self, rd: T0, rs1: T1, shamtw: T2);
 }
@@ -1197,9 +1197,9 @@ pub trait BclriRv32Emitter<T0, T1, T2> {
 /// Rust: `beq(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait BeqEmitter<T0, T1, T2> {
     fn beq(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -1211,8 +1211,8 @@ pub trait BeqEmitter<T0, T1, T2> {
 /// Rust: `beqz(rs1, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait BeqzEmitter<T0, T1> {
     fn beqz(&mut self, rs1: T0, imm: T1);
 }
@@ -1227,9 +1227,9 @@ pub trait BeqzEmitter<T0, T1> {
 /// Rust: `bext(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait BextEmitter<T0, T1, T2> {
     fn bext(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -1245,9 +1245,9 @@ pub trait BextEmitter<T0, T1, T2> {
 /// Rust: `bexti(rd, rs1, shamtd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtd` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtd`: Immediate encoding value.
 pub trait BextiEmitter<T0, T1, T2> {
     fn bexti(&mut self, rd: T0, rs1: T1, shamtd: T2);
 }
@@ -1263,9 +1263,9 @@ pub trait BextiEmitter<T0, T1, T2> {
 /// Rust: `bexti_rv32(rd, rs1, shamtw)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtw` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtw`: Immediate encoding value.
 pub trait BextiRv32Emitter<T0, T1, T2> {
     fn bexti_rv32(&mut self, rd: T0, rs1: T1, shamtw: T2);
 }
@@ -1282,9 +1282,9 @@ pub trait BextiRv32Emitter<T0, T1, T2> {
 /// Rust: `bge(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait BgeEmitter<T0, T1, T2> {
     fn bge(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -1301,9 +1301,9 @@ pub trait BgeEmitter<T0, T1, T2> {
 /// Rust: `bgeu(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait BgeuEmitter<T0, T1, T2> {
     fn bgeu(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -1315,8 +1315,8 @@ pub trait BgeuEmitter<T0, T1, T2> {
 /// Rust: `bgez(rs1, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait BgezEmitter<T0, T1> {
     fn bgez(&mut self, rs1: T0, imm: T1);
 }
@@ -1328,9 +1328,9 @@ pub trait BgezEmitter<T0, T1> {
 /// Rust: `bgt(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait BgtEmitter<T0, T1, T2> {
     fn bgt(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -1342,9 +1342,9 @@ pub trait BgtEmitter<T0, T1, T2> {
 /// Rust: `bgtu(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait BgtuEmitter<T0, T1, T2> {
     fn bgtu(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -1356,8 +1356,8 @@ pub trait BgtuEmitter<T0, T1, T2> {
 /// Rust: `bgtz(rs2, imm)`
 ///
 /// # Arguments
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait BgtzEmitter<T0, T1> {
     fn bgtz(&mut self, rs2: T0, imm: T1);
 }
@@ -1372,9 +1372,9 @@ pub trait BgtzEmitter<T0, T1> {
 /// Rust: `binv(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait BinvEmitter<T0, T1, T2> {
     fn binv(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -1390,9 +1390,9 @@ pub trait BinvEmitter<T0, T1, T2> {
 /// Rust: `binvi(rd, rs1, shamtd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtd` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtd`: Immediate encoding value.
 pub trait BinviEmitter<T0, T1, T2> {
     fn binvi(&mut self, rd: T0, rs1: T1, shamtd: T2);
 }
@@ -1408,9 +1408,9 @@ pub trait BinviEmitter<T0, T1, T2> {
 /// Rust: `binvi_rv32(rd, rs1, shamtw)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtw` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtw`: Immediate encoding value.
 pub trait BinviRv32Emitter<T0, T1, T2> {
     fn binvi_rv32(&mut self, rd: T0, rs1: T1, shamtw: T2);
 }
@@ -1422,9 +1422,9 @@ pub trait BinviRv32Emitter<T0, T1, T2> {
 /// Rust: `ble(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait BleEmitter<T0, T1, T2> {
     fn ble(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -1436,9 +1436,9 @@ pub trait BleEmitter<T0, T1, T2> {
 /// Rust: `bleu(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait BleuEmitter<T0, T1, T2> {
     fn bleu(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -1450,8 +1450,8 @@ pub trait BleuEmitter<T0, T1, T2> {
 /// Rust: `blez(rs2, imm)`
 ///
 /// # Arguments
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait BlezEmitter<T0, T1> {
     fn blez(&mut self, rs2: T0, imm: T1);
 }
@@ -1468,9 +1468,9 @@ pub trait BlezEmitter<T0, T1> {
 /// Rust: `blt(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait BltEmitter<T0, T1, T2> {
     fn blt(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -1487,9 +1487,9 @@ pub trait BltEmitter<T0, T1, T2> {
 /// Rust: `bltu(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait BltuEmitter<T0, T1, T2> {
     fn bltu(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -1501,8 +1501,8 @@ pub trait BltuEmitter<T0, T1, T2> {
 /// Rust: `bltz(rs1, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait BltzEmitter<T0, T1> {
     fn bltz(&mut self, rs1: T0, imm: T1);
 }
@@ -1519,9 +1519,9 @@ pub trait BltzEmitter<T0, T1> {
 /// Rust: `bne(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait BneEmitter<T0, T1, T2> {
     fn bne(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -1533,8 +1533,8 @@ pub trait BneEmitter<T0, T1, T2> {
 /// Rust: `bnez(rs1, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait BnezEmitter<T0, T1> {
     fn bnez(&mut self, rs1: T0, imm: T1);
 }
@@ -1548,8 +1548,8 @@ pub trait BnezEmitter<T0, T1> {
 /// Rust: `brev8(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait Brev8Emitter<T0, T1> {
     fn brev8(&mut self, rd: T0, rs1: T1);
 }
@@ -1564,9 +1564,9 @@ pub trait Brev8Emitter<T0, T1> {
 /// Rust: `bset(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait BsetEmitter<T0, T1, T2> {
     fn bset(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -1582,9 +1582,9 @@ pub trait BsetEmitter<T0, T1, T2> {
 /// Rust: `bseti(rd, rs1, shamtd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtd` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtd`: Immediate encoding value.
 pub trait BsetiEmitter<T0, T1, T2> {
     fn bseti(&mut self, rd: T0, rs1: T1, shamtd: T2);
 }
@@ -1600,9 +1600,9 @@ pub trait BsetiEmitter<T0, T1, T2> {
 /// Rust: `bseti_rv32(rd, rs1, shamtw)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtw` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtw`: Immediate encoding value.
 pub trait BsetiRv32Emitter<T0, T1, T2> {
     fn bseti_rv32(&mut self, rd: T0, rs1: T1, shamtw: T2);
 }
@@ -1617,8 +1617,8 @@ pub trait BsetiRv32Emitter<T0, T1, T2> {
 /// Rust: `c_add(rd, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
-/// - `rs2` — Instruction operand.
+/// - `rd`: Destination/source register.
+/// - `rs2`: Instruction operand.
 pub trait CAddEmitter<T0, T1> {
     fn c_add(&mut self, rd: T0, rs2: T1);
 }
@@ -1635,8 +1635,8 @@ pub trait CAddEmitter<T0, T1> {
 /// Rust: `c_addi(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination/source register.
+/// - `imm`: Immediate encoding value.
 pub trait CAddiEmitter<T0, T1> {
     fn c_addi(&mut self, rd: T0, imm: T1);
 }
@@ -1653,7 +1653,7 @@ pub trait CAddiEmitter<T0, T1> {
 /// Rust: `c_addi16sp(imm)`
 ///
 /// # Arguments
-/// - `imm` — Immediate encoding value.
+/// - `imm`: Immediate encoding value.
 pub trait CAddi16spEmitter<T0> {
     fn c_addi16sp(&mut self, imm: T0);
 }
@@ -1670,8 +1670,8 @@ pub trait CAddi16spEmitter<T0> {
 /// Rust: `c_addi4spn(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `imm`: Immediate encoding value.
 pub trait CAddi4spnEmitter<T0, T1> {
     fn c_addi4spn(&mut self, rd: T0, imm: T1);
 }
@@ -1688,8 +1688,8 @@ pub trait CAddi4spnEmitter<T0, T1> {
 /// Rust: `c_addiw(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination/source register.
+/// - `imm`: Immediate encoding value.
 pub trait CAddiwEmitter<T0, T1> {
     fn c_addiw(&mut self, rd: T0, imm: T1);
 }
@@ -1705,8 +1705,8 @@ pub trait CAddiwEmitter<T0, T1> {
 /// Rust: `c_addw(rd, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination/source register.
+/// - `rs2`: Source register.
 pub trait CAddwEmitter<T0, T1> {
     fn c_addw(&mut self, rd: T0, rs2: T1);
 }
@@ -1722,8 +1722,8 @@ pub trait CAddwEmitter<T0, T1> {
 /// Rust: `c_and(rd, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination/source register.
+/// - `rs2`: Source register.
 pub trait CAndEmitter<T0, T1> {
     fn c_and(&mut self, rd: T0, rs2: T1);
 }
@@ -1739,8 +1739,8 @@ pub trait CAndEmitter<T0, T1> {
 /// Rust: `c_andi(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination/source register.
+/// - `imm`: Immediate encoding value.
 pub trait CAndiEmitter<T0, T1> {
     fn c_andi(&mut self, rd: T0, imm: T1);
 }
@@ -1755,8 +1755,8 @@ pub trait CAndiEmitter<T0, T1> {
 /// Rust: `c_beqz(rs1, bimm9lohi)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `bimm9lohi` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `bimm9lohi`: Immediate encoding value.
 pub trait CBeqzEmitter<T0, T1> {
     fn c_beqz(&mut self, rs1: T0, bimm9lohi: T1);
 }
@@ -1771,8 +1771,8 @@ pub trait CBeqzEmitter<T0, T1> {
 /// Rust: `c_bnez(rs1, bimm9lohi)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `bimm9lohi` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `bimm9lohi`: Immediate encoding value.
 pub trait CBnezEmitter<T0, T1> {
     fn c_bnez(&mut self, rs1: T0, bimm9lohi: T1);
 }
@@ -1813,9 +1813,9 @@ pub trait CEbreakEmitter {
 /// Rust: `c_fld(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `imm`: Immediate encoding value.
 pub trait CFldEmitter<T0, T1, T2> {
     fn c_fld(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -1832,8 +1832,8 @@ pub trait CFldEmitter<T0, T1, T2> {
 /// Rust: `c_fldsp(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `imm`: Immediate encoding value.
 pub trait CFldspEmitter<T0, T1> {
     fn c_fldsp(&mut self, rd: T0, imm: T1);
 }
@@ -1850,9 +1850,9 @@ pub trait CFldspEmitter<T0, T1> {
 /// Rust: `c_flw(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `imm`: Immediate encoding value.
 pub trait CFlwEmitter<T0, T1, T2> {
     fn c_flw(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -1869,8 +1869,8 @@ pub trait CFlwEmitter<T0, T1, T2> {
 /// Rust: `c_flwsp(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `imm`: Immediate encoding value.
 pub trait CFlwspEmitter<T0, T1> {
     fn c_flwsp(&mut self, rd: T0, imm: T1);
 }
@@ -1887,9 +1887,9 @@ pub trait CFlwspEmitter<T0, T1> {
 /// Rust: `c_fsd(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait CFsdEmitter<T0, T1, T2> {
     fn c_fsd(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -1906,8 +1906,8 @@ pub trait CFsdEmitter<T0, T1, T2> {
 /// Rust: `c_fsdsp(rs2, imm)`
 ///
 /// # Arguments
-/// - `rs2` — Instruction operand.
-/// - `imm` — Immediate encoding value.
+/// - `rs2`: Instruction operand.
+/// - `imm`: Immediate encoding value.
 pub trait CFsdspEmitter<T0, T1> {
     fn c_fsdsp(&mut self, rs2: T0, imm: T1);
 }
@@ -1924,9 +1924,9 @@ pub trait CFsdspEmitter<T0, T1> {
 /// Rust: `c_fsw(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait CFswEmitter<T0, T1, T2> {
     fn c_fsw(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -1943,8 +1943,8 @@ pub trait CFswEmitter<T0, T1, T2> {
 /// Rust: `c_fswsp(rs2, imm)`
 ///
 /// # Arguments
-/// - `rs2` — Instruction operand.
-/// - `imm` — Immediate encoding value.
+/// - `rs2`: Instruction operand.
+/// - `imm`: Immediate encoding value.
 pub trait CFswspEmitter<T0, T1> {
     fn c_fswsp(&mut self, rs2: T0, imm: T1);
 }
@@ -1959,7 +1959,7 @@ pub trait CFswspEmitter<T0, T1> {
 /// Rust: `c_j(imm)`
 ///
 /// # Arguments
-/// - `imm` — Immediate encoding value.
+/// - `imm`: Immediate encoding value.
 pub trait CJEmitter<T0> {
     fn c_j(&mut self, imm: T0);
 }
@@ -1974,7 +1974,7 @@ pub trait CJEmitter<T0> {
 /// Rust: `c_jal(imm)`
 ///
 /// # Arguments
-/// - `imm` — Immediate encoding value.
+/// - `imm`: Immediate encoding value.
 pub trait CJalEmitter<T0> {
     fn c_jal(&mut self, imm: T0);
 }
@@ -1989,7 +1989,7 @@ pub trait CJalEmitter<T0> {
 /// Rust: `c_jalr(rs1)`
 ///
 /// # Arguments
-/// - `rs1` — Instruction operand.
+/// - `rs1`: Instruction operand.
 pub trait CJalrEmitter<T0> {
     fn c_jalr(&mut self, rs1: T0);
 }
@@ -2004,7 +2004,7 @@ pub trait CJalrEmitter<T0> {
 /// Rust: `c_jr(rs1)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
+/// - `rs1`: Source register.
 pub trait CJrEmitter<T0> {
     fn c_jr(&mut self, rs1: T0);
 }
@@ -2020,9 +2020,9 @@ pub trait CJrEmitter<T0> {
 /// Rust: `c_lbu(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait CLbuEmitter<T0, T1, T2> {
     fn c_lbu(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -2039,9 +2039,9 @@ pub trait CLbuEmitter<T0, T1, T2> {
 /// Rust: `c_ld(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `imm`: Immediate encoding value.
 pub trait CLdEmitter<T0, T1, T2> {
     fn c_ld(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -2060,8 +2060,8 @@ pub trait CLdEmitter<T0, T1, T2> {
 /// Rust: `c_ldsp(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `imm`: Immediate encoding value.
 pub trait CLdspEmitter<T0, T1> {
     fn c_ldsp(&mut self, rd: T0, imm: T1);
 }
@@ -2077,9 +2077,9 @@ pub trait CLdspEmitter<T0, T1> {
 /// Rust: `c_lh(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait CLhEmitter<T0, T1, T2> {
     fn c_lh(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -2095,9 +2095,9 @@ pub trait CLhEmitter<T0, T1, T2> {
 /// Rust: `c_lhu(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait CLhuEmitter<T0, T1, T2> {
     fn c_lhu(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -2113,8 +2113,8 @@ pub trait CLhuEmitter<T0, T1, T2> {
 /// Rust: `c_li(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `imm`: Immediate encoding value.
 pub trait CLiEmitter<T0, T1> {
     fn c_li(&mut self, rd: T0, imm: T1);
 }
@@ -2131,8 +2131,8 @@ pub trait CLiEmitter<T0, T1> {
 /// Rust: `c_lui(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `imm`: Immediate encoding value.
 pub trait CLuiEmitter<T0, T1> {
     fn c_lui(&mut self, rd: T0, imm: T1);
 }
@@ -2149,9 +2149,9 @@ pub trait CLuiEmitter<T0, T1> {
 /// Rust: `c_lw(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `imm`: Immediate encoding value.
 pub trait CLwEmitter<T0, T1, T2> {
     fn c_lw(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -2169,8 +2169,8 @@ pub trait CLwEmitter<T0, T1, T2> {
 /// Rust: `c_lwsp(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `imm`: Immediate encoding value.
 pub trait CLwspEmitter<T0, T1> {
     fn c_lwsp(&mut self, rd: T0, imm: T1);
 }
@@ -2270,7 +2270,7 @@ pub trait CMop9Emitter {
 /// Rust: `c_mop_n(mop_t)`
 ///
 /// # Arguments
-/// - `mop_t` — Instruction operand.
+/// - `mop_t`: Instruction operand.
 pub trait CMopNEmitter<T0> {
     fn c_mop_n(&mut self, mop_t: T0);
 }
@@ -2284,8 +2284,8 @@ pub trait CMopNEmitter<T0> {
 /// Rust: `c_mul(rd, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination/source register.
+/// - `rs2`: Source register.
 pub trait CMulEmitter<T0, T1> {
     fn c_mul(&mut self, rd: T0, rs2: T1);
 }
@@ -2300,8 +2300,8 @@ pub trait CMulEmitter<T0, T1> {
 /// Rust: `c_mv(rd, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs2` — Instruction operand.
+/// - `rd`: Destination register.
+/// - `rs2`: Instruction operand.
 pub trait CMvEmitter<T0, T1> {
     fn c_mv(&mut self, rd: T0, rs2: T1);
 }
@@ -2315,7 +2315,7 @@ pub trait CMvEmitter<T0, T1> {
 /// Rust: `c_nop(imm)`
 ///
 /// # Arguments
-/// - `imm` — Immediate encoding value.
+/// - `imm`: Immediate encoding value.
 pub trait CNopEmitter<T0> {
     fn c_nop(&mut self, imm: T0);
 }
@@ -2330,7 +2330,7 @@ pub trait CNopEmitter<T0> {
 /// Rust: `c_not(rd)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
+/// - `rd`: Destination/source register.
 pub trait CNotEmitter<T0> {
     fn c_not(&mut self, rd: T0);
 }
@@ -2390,8 +2390,8 @@ pub trait CNtlS1Emitter {
 /// Rust: `c_or(rd, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination/source register.
+/// - `rs2`: Source register.
 pub trait COrEmitter<T0, T1> {
     fn c_or(&mut self, rd: T0, rs2: T1);
 }
@@ -2407,9 +2407,9 @@ pub trait COrEmitter<T0, T1> {
 /// Rust: `c_sb(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait CSbEmitter<T0, T1, T2> {
     fn c_sb(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -2426,9 +2426,9 @@ pub trait CSbEmitter<T0, T1, T2> {
 /// Rust: `c_sd(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait CSdEmitter<T0, T1, T2> {
     fn c_sd(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -2445,8 +2445,8 @@ pub trait CSdEmitter<T0, T1, T2> {
 /// Rust: `c_sdsp(rs2, imm)`
 ///
 /// # Arguments
-/// - `rs2` — Instruction operand.
-/// - `imm` — Immediate encoding value.
+/// - `rs2`: Instruction operand.
+/// - `imm`: Immediate encoding value.
 pub trait CSdspEmitter<T0, T1> {
     fn c_sdsp(&mut self, rs2: T0, imm: T1);
 }
@@ -2462,7 +2462,7 @@ pub trait CSdspEmitter<T0, T1> {
 /// Rust: `c_sext_b(rd)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
+/// - `rd`: Destination/source register.
 pub trait CSextBEmitter<T0> {
     fn c_sext_b(&mut self, rd: T0);
 }
@@ -2478,7 +2478,7 @@ pub trait CSextBEmitter<T0> {
 /// Rust: `c_sext_h(rd)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
+/// - `rd`: Destination/source register.
 pub trait CSextHEmitter<T0> {
     fn c_sext_h(&mut self, rd: T0);
 }
@@ -2494,9 +2494,9 @@ pub trait CSextHEmitter<T0> {
 /// Rust: `c_sh(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait CShEmitter<T0, T1, T2> {
     fn c_sh(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -2511,8 +2511,8 @@ pub trait CShEmitter<T0, T1, T2> {
 /// Rust: `c_slli(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination/source register.
+/// - `imm`: Immediate encoding value.
 pub trait CSlliEmitter<T0, T1> {
     fn c_slli(&mut self, rd: T0, imm: T1);
 }
@@ -2527,8 +2527,8 @@ pub trait CSlliEmitter<T0, T1> {
 /// Rust: `c_slli_rv32(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination/source register.
+/// - `imm`: Immediate encoding value.
 pub trait CSlliRv32Emitter<T0, T1> {
     fn c_slli_rv32(&mut self, rd: T0, imm: T1);
 }
@@ -2544,8 +2544,8 @@ pub trait CSlliRv32Emitter<T0, T1> {
 /// Rust: `c_srai(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination/source register.
+/// - `imm`: Immediate encoding value.
 pub trait CSraiEmitter<T0, T1> {
     fn c_srai(&mut self, rd: T0, imm: T1);
 }
@@ -2561,8 +2561,8 @@ pub trait CSraiEmitter<T0, T1> {
 /// Rust: `c_srai_rv32(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination/source register.
+/// - `imm`: Immediate encoding value.
 pub trait CSraiRv32Emitter<T0, T1> {
     fn c_srai_rv32(&mut self, rd: T0, imm: T1);
 }
@@ -2578,8 +2578,8 @@ pub trait CSraiRv32Emitter<T0, T1> {
 /// Rust: `c_srli(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination/source register.
+/// - `imm`: Immediate encoding value.
 pub trait CSrliEmitter<T0, T1> {
     fn c_srli(&mut self, rd: T0, imm: T1);
 }
@@ -2595,8 +2595,8 @@ pub trait CSrliEmitter<T0, T1> {
 /// Rust: `c_srli_rv32(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination/source register.
+/// - `imm`: Immediate encoding value.
 pub trait CSrliRv32Emitter<T0, T1> {
     fn c_srli_rv32(&mut self, rd: T0, imm: T1);
 }
@@ -2634,8 +2634,8 @@ pub trait CSspushX1Emitter {
 /// Rust: `c_sub(rd, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination/source register.
+/// - `rs2`: Source register.
 pub trait CSubEmitter<T0, T1> {
     fn c_sub(&mut self, rd: T0, rs2: T1);
 }
@@ -2651,8 +2651,8 @@ pub trait CSubEmitter<T0, T1> {
 /// Rust: `c_subw(rd, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination/source register.
+/// - `rs2`: Source register.
 pub trait CSubwEmitter<T0, T1> {
     fn c_subw(&mut self, rd: T0, rs2: T1);
 }
@@ -2669,9 +2669,9 @@ pub trait CSubwEmitter<T0, T1> {
 /// Rust: `c_sw(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait CSwEmitter<T0, T1, T2> {
     fn c_sw(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -2688,8 +2688,8 @@ pub trait CSwEmitter<T0, T1, T2> {
 /// Rust: `c_swsp(rs2, imm)`
 ///
 /// # Arguments
-/// - `rs2` — Instruction operand.
-/// - `imm` — Immediate encoding value.
+/// - `rs2`: Instruction operand.
+/// - `imm`: Immediate encoding value.
 pub trait CSwspEmitter<T0, T1> {
     fn c_swsp(&mut self, rs2: T0, imm: T1);
 }
@@ -2705,8 +2705,8 @@ pub trait CSwspEmitter<T0, T1> {
 /// Rust: `c_xor(rd, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination/source register.
+/// - `rs2`: Source register.
 pub trait CXorEmitter<T0, T1> {
     fn c_xor(&mut self, rd: T0, rs2: T1);
 }
@@ -2722,7 +2722,7 @@ pub trait CXorEmitter<T0, T1> {
 /// Rust: `c_zext_b(rd)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
+/// - `rd`: Destination/source register.
 pub trait CZextBEmitter<T0> {
     fn c_zext_b(&mut self, rd: T0);
 }
@@ -2738,7 +2738,7 @@ pub trait CZextBEmitter<T0> {
 /// Rust: `c_zext_h(rd)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
+/// - `rd`: Destination/source register.
 pub trait CZextHEmitter<T0> {
     fn c_zext_h(&mut self, rd: T0);
 }
@@ -2753,7 +2753,7 @@ pub trait CZextHEmitter<T0> {
 /// Rust: `c_zext_w(rd)`
 ///
 /// # Arguments
-/// - `rd` — Destination/source register.
+/// - `rd`: Destination/source register.
 pub trait CZextWEmitter<T0> {
     fn c_zext_w(&mut self, rd: T0);
 }
@@ -2795,7 +2795,7 @@ pub trait CZextWEmitter<T0> {
 /// Rust: `cbo_clean(rs1)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
+/// - `rs1`: Source register.
 pub trait CboCleanEmitter<T0> {
     fn cbo_clean(&mut self, rs1: T0);
 }
@@ -2831,7 +2831,7 @@ pub trait CboCleanEmitter<T0> {
 /// Rust: `cbo_flush(rs1)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
+/// - `rs1`: Source register.
 pub trait CboFlushEmitter<T0> {
     fn cbo_flush(&mut self, rs1: T0);
 }
@@ -2906,7 +2906,7 @@ pub trait CboFlushEmitter<T0> {
 /// Rust: `cbo_inval(rs1)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
+/// - `rs1`: Source register.
 pub trait CboInvalEmitter<T0> {
     fn cbo_inval(&mut self, rs1: T0);
 }
@@ -2944,7 +2944,7 @@ pub trait CboInvalEmitter<T0> {
 /// Rust: `cbo_zero(rs1)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
+/// - `rs1`: Source register.
 pub trait CboZeroEmitter<T0> {
     fn cbo_zero(&mut self, rs1: T0);
 }
@@ -2958,9 +2958,9 @@ pub trait CboZeroEmitter<T0> {
 /// Rust: `clmul(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait ClmulEmitter<T0, T1, T2> {
     fn clmul(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -2974,9 +2974,9 @@ pub trait ClmulEmitter<T0, T1, T2> {
 /// Rust: `clmulh(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait ClmulhEmitter<T0, T1, T2> {
     fn clmulh(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -2990,9 +2990,9 @@ pub trait ClmulhEmitter<T0, T1, T2> {
 /// Rust: `clmulr(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait ClmulrEmitter<T0, T1, T2> {
     fn clmulr(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -3009,8 +3009,8 @@ pub trait ClmulrEmitter<T0, T1, T2> {
 /// Rust: `clz(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait ClzEmitter<T0, T1> {
     fn clz(&mut self, rd: T0, rs1: T1);
 }
@@ -3026,8 +3026,8 @@ pub trait ClzEmitter<T0, T1> {
 /// Rust: `clzw(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait ClzwEmitter<T0, T1> {
     fn clzw(&mut self, rd: T0, rs1: T1);
 }
@@ -3039,7 +3039,7 @@ pub trait ClzwEmitter<T0, T1> {
 /// Rust: `cm_jalt(index)`
 ///
 /// # Arguments
-/// - `index` — Instruction operand.
+/// - `index`: Instruction operand.
 pub trait CmJaltEmitter<T0> {
     fn cm_jalt(&mut self, index: T0);
 }
@@ -3065,8 +3065,8 @@ pub trait CmJaltEmitter<T0> {
 /// Rust: `cpop(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait CpopEmitter<T0, T1> {
     fn cpop(&mut self, rd: T0, rs1: T1);
 }
@@ -3092,8 +3092,8 @@ pub trait CpopEmitter<T0, T1> {
 /// Rust: `cpopw(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait CpopwEmitter<T0, T1> {
     fn cpopw(&mut self, rd: T0, rs1: T1);
 }
@@ -3105,8 +3105,8 @@ pub trait CpopwEmitter<T0, T1> {
 /// Rust: `csrc(rs1, csr)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `csr` — Control and status register number.
+/// - `rs1`: Source register.
+/// - `csr`: Control and status register number.
 pub trait CsrcEmitter<T0, T1> {
     fn csrc(&mut self, rs1: T0, csr: T1);
 }
@@ -3118,8 +3118,8 @@ pub trait CsrcEmitter<T0, T1> {
 /// Rust: `csrci(csr, zimm5)`
 ///
 /// # Arguments
-/// - `csr` — Control and status register number.
-/// - `zimm5` — Immediate encoding value.
+/// - `csr`: Control and status register number.
+/// - `zimm5`: Immediate encoding value.
 pub trait CsrciEmitter<T0, T1> {
     fn csrci(&mut self, csr: T0, zimm5: T1);
 }
@@ -3131,8 +3131,8 @@ pub trait CsrciEmitter<T0, T1> {
 /// Rust: `csrr(rd, csr)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `csr` — Control and status register number.
+/// - `rd`: Destination register.
+/// - `csr`: Control and status register number.
 pub trait CsrrEmitter<T0, T1> {
     fn csrr(&mut self, rd: T0, csr: T1);
 }
@@ -3144,9 +3144,9 @@ pub trait CsrrEmitter<T0, T1> {
 /// Rust: `csrrc(rd, rs1, csr)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `csr` — Control and status register number.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `csr`: Control and status register number.
 pub trait CsrrcEmitter<T0, T1, T2> {
     fn csrrc(&mut self, rd: T0, rs1: T1, csr: T2);
 }
@@ -3158,9 +3158,9 @@ pub trait CsrrcEmitter<T0, T1, T2> {
 /// Rust: `csrrci(rd, csr, zimm5)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `csr` — Control and status register number.
-/// - `zimm5` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `csr`: Control and status register number.
+/// - `zimm5`: Immediate encoding value.
 pub trait CsrrciEmitter<T0, T1, T2> {
     fn csrrci(&mut self, rd: T0, csr: T1, zimm5: T2);
 }
@@ -3181,9 +3181,9 @@ pub trait CsrrciEmitter<T0, T1, T2> {
 /// Rust: `csrrs(rd, rs1, csr)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `csr` — Control and status register number.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `csr`: Control and status register number.
 pub trait CsrrsEmitter<T0, T1, T2> {
     fn csrrs(&mut self, rd: T0, rs1: T1, csr: T2);
 }
@@ -3195,9 +3195,9 @@ pub trait CsrrsEmitter<T0, T1, T2> {
 /// Rust: `csrrsi(rd, csr, zimm5)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `csr` — Control and status register number.
-/// - `zimm5` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `csr`: Control and status register number.
+/// - `zimm5`: Immediate encoding value.
 pub trait CsrrsiEmitter<T0, T1, T2> {
     fn csrrsi(&mut self, rd: T0, csr: T1, zimm5: T2);
 }
@@ -3217,9 +3217,9 @@ pub trait CsrrsiEmitter<T0, T1, T2> {
 /// Rust: `csrrw(rd, rs1, csr)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `csr` — Control and status register number.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `csr`: Control and status register number.
 pub trait CsrrwEmitter<T0, T1, T2> {
     fn csrrw(&mut self, rd: T0, rs1: T1, csr: T2);
 }
@@ -3239,9 +3239,9 @@ pub trait CsrrwEmitter<T0, T1, T2> {
 /// Rust: `csrrwi(rd, csr, zimm5)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `csr` — Control and status register number.
-/// - `zimm5` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `csr`: Control and status register number.
+/// - `zimm5`: Immediate encoding value.
 pub trait CsrrwiEmitter<T0, T1, T2> {
     fn csrrwi(&mut self, rd: T0, csr: T1, zimm5: T2);
 }
@@ -3253,8 +3253,8 @@ pub trait CsrrwiEmitter<T0, T1, T2> {
 /// Rust: `csrs(rs1, csr)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `csr` — Control and status register number.
+/// - `rs1`: Source register.
+/// - `csr`: Control and status register number.
 pub trait CsrsEmitter<T0, T1> {
     fn csrs(&mut self, rs1: T0, csr: T1);
 }
@@ -3266,8 +3266,8 @@ pub trait CsrsEmitter<T0, T1> {
 /// Rust: `csrsi(csr, zimm5)`
 ///
 /// # Arguments
-/// - `csr` — Control and status register number.
-/// - `zimm5` — Immediate encoding value.
+/// - `csr`: Control and status register number.
+/// - `zimm5`: Immediate encoding value.
 pub trait CsrsiEmitter<T0, T1> {
     fn csrsi(&mut self, csr: T0, zimm5: T1);
 }
@@ -3279,8 +3279,8 @@ pub trait CsrsiEmitter<T0, T1> {
 /// Rust: `csrw(rs1, csr)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `csr` — Control and status register number.
+/// - `rs1`: Source register.
+/// - `csr`: Control and status register number.
 pub trait CsrwEmitter<T0, T1> {
     fn csrw(&mut self, rs1: T0, csr: T1);
 }
@@ -3292,8 +3292,8 @@ pub trait CsrwEmitter<T0, T1> {
 /// Rust: `csrwi(csr, zimm5)`
 ///
 /// # Arguments
-/// - `csr` — Control and status register number.
-/// - `zimm5` — Immediate encoding value.
+/// - `csr`: Control and status register number.
+/// - `zimm5`: Immediate encoding value.
 pub trait CsrwiEmitter<T0, T1> {
     fn csrwi(&mut self, csr: T0, zimm5: T1);
 }
@@ -3311,8 +3311,8 @@ pub trait CsrwiEmitter<T0, T1> {
 /// Rust: `ctz(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait CtzEmitter<T0, T1> {
     fn ctz(&mut self, rd: T0, rs1: T1);
 }
@@ -3330,8 +3330,8 @@ pub trait CtzEmitter<T0, T1> {
 /// Rust: `ctzw(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait CtzwEmitter<T0, T1> {
     fn ctzw(&mut self, rd: T0, rs1: T1);
 }
@@ -3343,9 +3343,9 @@ pub trait CtzwEmitter<T0, T1> {
 /// Rust: `czero_eqz(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait CzeroEqzEmitter<T0, T1, T2> {
     fn czero_eqz(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -3357,9 +3357,9 @@ pub trait CzeroEqzEmitter<T0, T1, T2> {
 /// Rust: `czero_nez(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait CzeroNezEmitter<T0, T1, T2> {
     fn czero_nez(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -3378,9 +3378,9 @@ pub trait CzeroNezEmitter<T0, T1, T2> {
 /// Rust: `div(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait DivEmitter<T0, T1, T2> {
     fn div(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -3398,9 +3398,9 @@ pub trait DivEmitter<T0, T1, T2> {
 /// Rust: `divu(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait DivuEmitter<T0, T1, T2> {
     fn divu(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -3418,9 +3418,9 @@ pub trait DivuEmitter<T0, T1, T2> {
 /// Rust: `divuw(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait DivuwEmitter<T0, T1, T2> {
     fn divuw(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -3442,9 +3442,9 @@ pub trait DivuwEmitter<T0, T1, T2> {
 /// Rust: `divw(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait DivwEmitter<T0, T1, T2> {
     fn divw(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -3518,9 +3518,9 @@ pub trait EcallEmitter {
 /// Rust: `fabs_d(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FabsDEmitter<T0, T1, T2> {
     fn fabs_d(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -3532,9 +3532,9 @@ pub trait FabsDEmitter<T0, T1, T2> {
 /// Rust: `fabs_h(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FabsHEmitter<T0, T1, T2> {
     fn fabs_h(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -3546,9 +3546,9 @@ pub trait FabsHEmitter<T0, T1, T2> {
 /// Rust: `fabs_q(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FabsQEmitter<T0, T1, T2> {
     fn fabs_q(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -3560,9 +3560,9 @@ pub trait FabsQEmitter<T0, T1, T2> {
 /// Rust: `fabs_s(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FabsSEmitter<T0, T1, T2> {
     fn fabs_s(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -3574,10 +3574,10 @@ pub trait FabsSEmitter<T0, T1, T2> {
 /// Rust: `fadd_d(rd, rs1, rs2, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FaddDEmitter<T0, T1, T2, T3> {
     fn fadd_d(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3);
 }
@@ -3589,10 +3589,10 @@ pub trait FaddDEmitter<T0, T1, T2, T3> {
 /// Rust: `fadd_h(rd, rs1, rs2, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FaddHEmitter<T0, T1, T2, T3> {
     fn fadd_h(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3);
 }
@@ -3604,10 +3604,10 @@ pub trait FaddHEmitter<T0, T1, T2, T3> {
 /// Rust: `fadd_q(rd, rs1, rs2, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FaddQEmitter<T0, T1, T2, T3> {
     fn fadd_q(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3);
 }
@@ -3622,10 +3622,10 @@ pub trait FaddQEmitter<T0, T1, T2, T3> {
 /// Rust: `fadd_s(rd, rs1, rs2, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FaddSEmitter<T0, T1, T2, T3> {
     fn fadd_s(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3);
 }
@@ -3637,8 +3637,8 @@ pub trait FaddSEmitter<T0, T1, T2, T3> {
 /// Rust: `fclass_d(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FclassDEmitter<T0, T1> {
     fn fclass_d(&mut self, rd: T0, rs1: T1);
 }
@@ -3650,8 +3650,8 @@ pub trait FclassDEmitter<T0, T1> {
 /// Rust: `fclass_h(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FclassHEmitter<T0, T1> {
     fn fclass_h(&mut self, rd: T0, rs1: T1);
 }
@@ -3663,8 +3663,8 @@ pub trait FclassHEmitter<T0, T1> {
 /// Rust: `fclass_q(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FclassQEmitter<T0, T1> {
     fn fclass_q(&mut self, rd: T0, rs1: T1);
 }
@@ -3702,8 +3702,8 @@ pub trait FclassQEmitter<T0, T1> {
 /// Rust: `fclass_s(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FclassSEmitter<T0, T1> {
     fn fclass_s(&mut self, rd: T0, rs1: T1);
 }
@@ -3715,9 +3715,9 @@ pub trait FclassSEmitter<T0, T1> {
 /// Rust: `fcvt_bf16_s(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtBf16SEmitter<T0, T1, T2> {
     fn fcvt_bf16_s(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3729,9 +3729,9 @@ pub trait FcvtBf16SEmitter<T0, T1, T2> {
 /// Rust: `fcvt_d_h(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtDHEmitter<T0, T1, T2> {
     fn fcvt_d_h(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3743,9 +3743,9 @@ pub trait FcvtDHEmitter<T0, T1, T2> {
 /// Rust: `fcvt_d_l(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtDLEmitter<T0, T1, T2> {
     fn fcvt_d_l(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3757,9 +3757,9 @@ pub trait FcvtDLEmitter<T0, T1, T2> {
 /// Rust: `fcvt_d_lu(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtDLuEmitter<T0, T1, T2> {
     fn fcvt_d_lu(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3771,9 +3771,9 @@ pub trait FcvtDLuEmitter<T0, T1, T2> {
 /// Rust: `fcvt_d_q(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtDQEmitter<T0, T1, T2> {
     fn fcvt_d_q(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3785,9 +3785,9 @@ pub trait FcvtDQEmitter<T0, T1, T2> {
 /// Rust: `fcvt_d_s(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtDSEmitter<T0, T1, T2> {
     fn fcvt_d_s(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3799,9 +3799,9 @@ pub trait FcvtDSEmitter<T0, T1, T2> {
 /// Rust: `fcvt_d_w(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtDWEmitter<T0, T1, T2> {
     fn fcvt_d_w(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3813,9 +3813,9 @@ pub trait FcvtDWEmitter<T0, T1, T2> {
 /// Rust: `fcvt_d_wu(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtDWuEmitter<T0, T1, T2> {
     fn fcvt_d_wu(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3827,9 +3827,9 @@ pub trait FcvtDWuEmitter<T0, T1, T2> {
 /// Rust: `fcvt_h_d(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtHDEmitter<T0, T1, T2> {
     fn fcvt_h_d(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3841,9 +3841,9 @@ pub trait FcvtHDEmitter<T0, T1, T2> {
 /// Rust: `fcvt_h_l(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtHLEmitter<T0, T1, T2> {
     fn fcvt_h_l(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3855,9 +3855,9 @@ pub trait FcvtHLEmitter<T0, T1, T2> {
 /// Rust: `fcvt_h_lu(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtHLuEmitter<T0, T1, T2> {
     fn fcvt_h_lu(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3869,9 +3869,9 @@ pub trait FcvtHLuEmitter<T0, T1, T2> {
 /// Rust: `fcvt_h_q(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtHQEmitter<T0, T1, T2> {
     fn fcvt_h_q(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3891,9 +3891,9 @@ pub trait FcvtHQEmitter<T0, T1, T2> {
 /// Rust: `fcvt_h_s(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtHSEmitter<T0, T1, T2> {
     fn fcvt_h_s(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3905,9 +3905,9 @@ pub trait FcvtHSEmitter<T0, T1, T2> {
 /// Rust: `fcvt_h_w(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtHWEmitter<T0, T1, T2> {
     fn fcvt_h_w(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3919,9 +3919,9 @@ pub trait FcvtHWEmitter<T0, T1, T2> {
 /// Rust: `fcvt_h_wu(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtHWuEmitter<T0, T1, T2> {
     fn fcvt_h_wu(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3933,9 +3933,9 @@ pub trait FcvtHWuEmitter<T0, T1, T2> {
 /// Rust: `fcvt_l_d(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtLDEmitter<T0, T1, T2> {
     fn fcvt_l_d(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3947,9 +3947,9 @@ pub trait FcvtLDEmitter<T0, T1, T2> {
 /// Rust: `fcvt_l_h(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtLHEmitter<T0, T1, T2> {
     fn fcvt_l_h(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3961,9 +3961,9 @@ pub trait FcvtLHEmitter<T0, T1, T2> {
 /// Rust: `fcvt_l_q(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtLQEmitter<T0, T1, T2> {
     fn fcvt_l_q(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3975,9 +3975,9 @@ pub trait FcvtLQEmitter<T0, T1, T2> {
 /// Rust: `fcvt_l_s(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtLSEmitter<T0, T1, T2> {
     fn fcvt_l_s(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -3989,9 +3989,9 @@ pub trait FcvtLSEmitter<T0, T1, T2> {
 /// Rust: `fcvt_lu_d(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtLuDEmitter<T0, T1, T2> {
     fn fcvt_lu_d(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4003,9 +4003,9 @@ pub trait FcvtLuDEmitter<T0, T1, T2> {
 /// Rust: `fcvt_lu_h(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtLuHEmitter<T0, T1, T2> {
     fn fcvt_lu_h(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4017,9 +4017,9 @@ pub trait FcvtLuHEmitter<T0, T1, T2> {
 /// Rust: `fcvt_lu_q(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtLuQEmitter<T0, T1, T2> {
     fn fcvt_lu_q(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4031,9 +4031,9 @@ pub trait FcvtLuQEmitter<T0, T1, T2> {
 /// Rust: `fcvt_lu_s(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtLuSEmitter<T0, T1, T2> {
     fn fcvt_lu_s(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4045,9 +4045,9 @@ pub trait FcvtLuSEmitter<T0, T1, T2> {
 /// Rust: `fcvt_q_d(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtQDEmitter<T0, T1, T2> {
     fn fcvt_q_d(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4059,9 +4059,9 @@ pub trait FcvtQDEmitter<T0, T1, T2> {
 /// Rust: `fcvt_q_h(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtQHEmitter<T0, T1, T2> {
     fn fcvt_q_h(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4073,9 +4073,9 @@ pub trait FcvtQHEmitter<T0, T1, T2> {
 /// Rust: `fcvt_q_l(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtQLEmitter<T0, T1, T2> {
     fn fcvt_q_l(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4087,9 +4087,9 @@ pub trait FcvtQLEmitter<T0, T1, T2> {
 /// Rust: `fcvt_q_lu(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtQLuEmitter<T0, T1, T2> {
     fn fcvt_q_lu(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4101,9 +4101,9 @@ pub trait FcvtQLuEmitter<T0, T1, T2> {
 /// Rust: `fcvt_q_s(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtQSEmitter<T0, T1, T2> {
     fn fcvt_q_s(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4115,9 +4115,9 @@ pub trait FcvtQSEmitter<T0, T1, T2> {
 /// Rust: `fcvt_q_w(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtQWEmitter<T0, T1, T2> {
     fn fcvt_q_w(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4129,9 +4129,9 @@ pub trait FcvtQWEmitter<T0, T1, T2> {
 /// Rust: `fcvt_q_wu(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtQWuEmitter<T0, T1, T2> {
     fn fcvt_q_wu(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4143,9 +4143,9 @@ pub trait FcvtQWuEmitter<T0, T1, T2> {
 /// Rust: `fcvt_s_bf16(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtSBf16Emitter<T0, T1, T2> {
     fn fcvt_s_bf16(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4157,9 +4157,9 @@ pub trait FcvtSBf16Emitter<T0, T1, T2> {
 /// Rust: `fcvt_s_d(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtSDEmitter<T0, T1, T2> {
     fn fcvt_s_d(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4176,9 +4176,9 @@ pub trait FcvtSDEmitter<T0, T1, T2> {
 /// Rust: `fcvt_s_h(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtSHEmitter<T0, T1, T2> {
     fn fcvt_s_h(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4190,9 +4190,9 @@ pub trait FcvtSHEmitter<T0, T1, T2> {
 /// Rust: `fcvt_s_l(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtSLEmitter<T0, T1, T2> {
     fn fcvt_s_l(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4204,9 +4204,9 @@ pub trait FcvtSLEmitter<T0, T1, T2> {
 /// Rust: `fcvt_s_lu(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtSLuEmitter<T0, T1, T2> {
     fn fcvt_s_lu(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4218,9 +4218,9 @@ pub trait FcvtSLuEmitter<T0, T1, T2> {
 /// Rust: `fcvt_s_q(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtSQEmitter<T0, T1, T2> {
     fn fcvt_s_q(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4243,9 +4243,9 @@ pub trait FcvtSQEmitter<T0, T1, T2> {
 /// Rust: `fcvt_s_w(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtSWEmitter<T0, T1, T2> {
     fn fcvt_s_w(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4257,9 +4257,9 @@ pub trait FcvtSWEmitter<T0, T1, T2> {
 /// Rust: `fcvt_s_wu(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtSWuEmitter<T0, T1, T2> {
     fn fcvt_s_wu(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4271,9 +4271,9 @@ pub trait FcvtSWuEmitter<T0, T1, T2> {
 /// Rust: `fcvt_w_d(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtWDEmitter<T0, T1, T2> {
     fn fcvt_w_d(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4285,9 +4285,9 @@ pub trait FcvtWDEmitter<T0, T1, T2> {
 /// Rust: `fcvt_w_h(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtWHEmitter<T0, T1, T2> {
     fn fcvt_w_h(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4299,9 +4299,9 @@ pub trait FcvtWHEmitter<T0, T1, T2> {
 /// Rust: `fcvt_w_q(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtWQEmitter<T0, T1, T2> {
     fn fcvt_w_q(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4343,9 +4343,9 @@ pub trait FcvtWQEmitter<T0, T1, T2> {
 /// Rust: `fcvt_w_s(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtWSEmitter<T0, T1, T2> {
     fn fcvt_w_s(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4357,9 +4357,9 @@ pub trait FcvtWSEmitter<T0, T1, T2> {
 /// Rust: `fcvt_wu_d(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtWuDEmitter<T0, T1, T2> {
     fn fcvt_wu_d(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4371,9 +4371,9 @@ pub trait FcvtWuDEmitter<T0, T1, T2> {
 /// Rust: `fcvt_wu_h(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtWuHEmitter<T0, T1, T2> {
     fn fcvt_wu_h(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4385,9 +4385,9 @@ pub trait FcvtWuHEmitter<T0, T1, T2> {
 /// Rust: `fcvt_wu_q(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtWuQEmitter<T0, T1, T2> {
     fn fcvt_wu_q(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4399,9 +4399,9 @@ pub trait FcvtWuQEmitter<T0, T1, T2> {
 /// Rust: `fcvt_wu_s(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FcvtWuSEmitter<T0, T1, T2> {
     fn fcvt_wu_s(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -4413,8 +4413,8 @@ pub trait FcvtWuSEmitter<T0, T1, T2> {
 /// Rust: `fcvtmod_w_d(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FcvtmodWDEmitter<T0, T1> {
     fn fcvtmod_w_d(&mut self, rd: T0, rs1: T1);
 }
@@ -4426,10 +4426,10 @@ pub trait FcvtmodWDEmitter<T0, T1> {
 /// Rust: `fdiv_d(rd, rs1, rs2, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FdivDEmitter<T0, T1, T2, T3> {
     fn fdiv_d(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3);
 }
@@ -4441,10 +4441,10 @@ pub trait FdivDEmitter<T0, T1, T2, T3> {
 /// Rust: `fdiv_h(rd, rs1, rs2, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FdivHEmitter<T0, T1, T2, T3> {
     fn fdiv_h(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3);
 }
@@ -4456,10 +4456,10 @@ pub trait FdivHEmitter<T0, T1, T2, T3> {
 /// Rust: `fdiv_q(rd, rs1, rs2, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FdivQEmitter<T0, T1, T2, T3> {
     fn fdiv_q(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3);
 }
@@ -4471,10 +4471,10 @@ pub trait FdivQEmitter<T0, T1, T2, T3> {
 /// Rust: `fdiv_s(rd, rs1, rs2, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FdivSEmitter<T0, T1, T2, T3> {
     fn fdiv_s(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3);
 }
@@ -4601,11 +4601,11 @@ pub trait FdivSEmitter<T0, T1, T2, T3> {
 /// Rust: `fence(fm, pred, succ, rs1, rd)`
 ///
 /// # Arguments
-/// - `fm` — Immediate encoding value.
-/// - `pred` — Immediate encoding value.
-/// - `succ` — Immediate encoding value.
-/// - `rs1` — Source register.
-/// - `rd` — Destination/source register.
+/// - `fm`: Immediate encoding value.
+/// - `pred`: Immediate encoding value.
+/// - `succ`: Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `rd`: Destination/source register.
 pub trait FenceEmitter<T0, T1, T2, T3, T4> {
     fn fence(&mut self, fm: T0, pred: T1, succ: T2, rs1: T3, rd: T4);
 }
@@ -4667,9 +4667,9 @@ pub trait FenceTsoEmitter {
 /// Rust: `feq_d(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FeqDEmitter<T0, T1, T2> {
     fn feq_d(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -4681,9 +4681,9 @@ pub trait FeqDEmitter<T0, T1, T2> {
 /// Rust: `feq_h(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FeqHEmitter<T0, T1, T2> {
     fn feq_h(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -4695,9 +4695,9 @@ pub trait FeqHEmitter<T0, T1, T2> {
 /// Rust: `feq_q(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FeqQEmitter<T0, T1, T2> {
     fn feq_q(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -4715,9 +4715,9 @@ pub trait FeqQEmitter<T0, T1, T2> {
 /// Rust: `feq_s(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FeqSEmitter<T0, T1, T2> {
     fn feq_s(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -4729,9 +4729,9 @@ pub trait FeqSEmitter<T0, T1, T2> {
 /// Rust: `fld(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `imm`: Immediate encoding value.
 pub trait FldEmitter<T0, T1, T2> {
     fn fld(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -4743,9 +4743,9 @@ pub trait FldEmitter<T0, T1, T2> {
 /// Rust: `fle_d(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FleDEmitter<T0, T1, T2> {
     fn fle_d(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -4757,9 +4757,9 @@ pub trait FleDEmitter<T0, T1, T2> {
 /// Rust: `fle_h(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FleHEmitter<T0, T1, T2> {
     fn fle_h(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -4771,9 +4771,9 @@ pub trait FleHEmitter<T0, T1, T2> {
 /// Rust: `fle_q(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FleQEmitter<T0, T1, T2> {
     fn fle_q(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -4792,9 +4792,9 @@ pub trait FleQEmitter<T0, T1, T2> {
 /// Rust: `fle_s(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FleSEmitter<T0, T1, T2> {
     fn fle_s(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -4806,9 +4806,9 @@ pub trait FleSEmitter<T0, T1, T2> {
 /// Rust: `fleq_d(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FleqDEmitter<T0, T1, T2> {
     fn fleq_d(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -4820,9 +4820,9 @@ pub trait FleqDEmitter<T0, T1, T2> {
 /// Rust: `fleq_h(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FleqHEmitter<T0, T1, T2> {
     fn fleq_h(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -4834,9 +4834,9 @@ pub trait FleqHEmitter<T0, T1, T2> {
 /// Rust: `fleq_q(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FleqQEmitter<T0, T1, T2> {
     fn fleq_q(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -4848,9 +4848,9 @@ pub trait FleqQEmitter<T0, T1, T2> {
 /// Rust: `fleq_s(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FleqSEmitter<T0, T1, T2> {
     fn fleq_s(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -4868,9 +4868,9 @@ pub trait FleqSEmitter<T0, T1, T2> {
 /// Rust: `flh(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `imm`: Immediate encoding value.
 pub trait FlhEmitter<T0, T1, T2> {
     fn flh(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -4882,8 +4882,8 @@ pub trait FlhEmitter<T0, T1, T2> {
 /// Rust: `fli_d(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FliDEmitter<T0, T1> {
     fn fli_d(&mut self, rd: T0, rs1: T1);
 }
@@ -4895,8 +4895,8 @@ pub trait FliDEmitter<T0, T1> {
 /// Rust: `fli_h(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FliHEmitter<T0, T1> {
     fn fli_h(&mut self, rd: T0, rs1: T1);
 }
@@ -4908,8 +4908,8 @@ pub trait FliHEmitter<T0, T1> {
 /// Rust: `fli_q(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FliQEmitter<T0, T1> {
     fn fli_q(&mut self, rd: T0, rs1: T1);
 }
@@ -4921,8 +4921,8 @@ pub trait FliQEmitter<T0, T1> {
 /// Rust: `fli_s(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FliSEmitter<T0, T1> {
     fn fli_s(&mut self, rd: T0, rs1: T1);
 }
@@ -4934,9 +4934,9 @@ pub trait FliSEmitter<T0, T1> {
 /// Rust: `flq(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `imm`: Immediate encoding value.
 pub trait FlqEmitter<T0, T1, T2> {
     fn flq(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -4948,9 +4948,9 @@ pub trait FlqEmitter<T0, T1, T2> {
 /// Rust: `flt_d(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FltDEmitter<T0, T1, T2> {
     fn flt_d(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -4962,9 +4962,9 @@ pub trait FltDEmitter<T0, T1, T2> {
 /// Rust: `flt_h(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FltHEmitter<T0, T1, T2> {
     fn flt_h(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -4976,9 +4976,9 @@ pub trait FltHEmitter<T0, T1, T2> {
 /// Rust: `flt_q(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FltQEmitter<T0, T1, T2> {
     fn flt_q(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -4995,9 +4995,9 @@ pub trait FltQEmitter<T0, T1, T2> {
 /// Rust: `flt_s(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FltSEmitter<T0, T1, T2> {
     fn flt_s(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5009,9 +5009,9 @@ pub trait FltSEmitter<T0, T1, T2> {
 /// Rust: `fltq_d(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FltqDEmitter<T0, T1, T2> {
     fn fltq_d(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5023,9 +5023,9 @@ pub trait FltqDEmitter<T0, T1, T2> {
 /// Rust: `fltq_h(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FltqHEmitter<T0, T1, T2> {
     fn fltq_h(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5037,9 +5037,9 @@ pub trait FltqHEmitter<T0, T1, T2> {
 /// Rust: `fltq_q(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FltqQEmitter<T0, T1, T2> {
     fn fltq_q(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5051,9 +5051,9 @@ pub trait FltqQEmitter<T0, T1, T2> {
 /// Rust: `fltq_s(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FltqSEmitter<T0, T1, T2> {
     fn fltq_s(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5069,9 +5069,9 @@ pub trait FltqSEmitter<T0, T1, T2> {
 /// Rust: `flw(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `imm`: Immediate encoding value.
 pub trait FlwEmitter<T0, T1, T2> {
     fn flw(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -5083,11 +5083,11 @@ pub trait FlwEmitter<T0, T1, T2> {
 /// Rust: `fmadd_d(rd, rs1, rs2, rs3, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rs3` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rs3`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FmaddDEmitter<T0, T1, T2, T3, T4> {
     fn fmadd_d(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4);
 }
@@ -5099,11 +5099,11 @@ pub trait FmaddDEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `fmadd_h(rd, rs1, rs2, rs3, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rs3` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rs3`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FmaddHEmitter<T0, T1, T2, T3, T4> {
     fn fmadd_h(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4);
 }
@@ -5115,11 +5115,11 @@ pub trait FmaddHEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `fmadd_q(rd, rs1, rs2, rs3, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rs3` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rs3`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FmaddQEmitter<T0, T1, T2, T3, T4> {
     fn fmadd_q(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4);
 }
@@ -5131,11 +5131,11 @@ pub trait FmaddQEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `fmadd_s(rd, rs1, rs2, rs3, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rs3` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rs3`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FmaddSEmitter<T0, T1, T2, T3, T4> {
     fn fmadd_s(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4);
 }
@@ -5147,9 +5147,9 @@ pub trait FmaddSEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `fmax_d(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FmaxDEmitter<T0, T1, T2> {
     fn fmax_d(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5161,9 +5161,9 @@ pub trait FmaxDEmitter<T0, T1, T2> {
 /// Rust: `fmax_h(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FmaxHEmitter<T0, T1, T2> {
     fn fmax_h(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5175,9 +5175,9 @@ pub trait FmaxHEmitter<T0, T1, T2> {
 /// Rust: `fmax_q(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FmaxQEmitter<T0, T1, T2> {
     fn fmax_q(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5189,9 +5189,9 @@ pub trait FmaxQEmitter<T0, T1, T2> {
 /// Rust: `fmax_s(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FmaxSEmitter<T0, T1, T2> {
     fn fmax_s(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5203,9 +5203,9 @@ pub trait FmaxSEmitter<T0, T1, T2> {
 /// Rust: `fmaxm_d(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FmaxmDEmitter<T0, T1, T2> {
     fn fmaxm_d(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5217,9 +5217,9 @@ pub trait FmaxmDEmitter<T0, T1, T2> {
 /// Rust: `fmaxm_h(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FmaxmHEmitter<T0, T1, T2> {
     fn fmaxm_h(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5231,9 +5231,9 @@ pub trait FmaxmHEmitter<T0, T1, T2> {
 /// Rust: `fmaxm_q(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FmaxmQEmitter<T0, T1, T2> {
     fn fmaxm_q(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5245,9 +5245,9 @@ pub trait FmaxmQEmitter<T0, T1, T2> {
 /// Rust: `fmaxm_s(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FmaxmSEmitter<T0, T1, T2> {
     fn fmaxm_s(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5259,9 +5259,9 @@ pub trait FmaxmSEmitter<T0, T1, T2> {
 /// Rust: `fmin_d(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FminDEmitter<T0, T1, T2> {
     fn fmin_d(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5273,9 +5273,9 @@ pub trait FminDEmitter<T0, T1, T2> {
 /// Rust: `fmin_h(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FminHEmitter<T0, T1, T2> {
     fn fmin_h(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5287,9 +5287,9 @@ pub trait FminHEmitter<T0, T1, T2> {
 /// Rust: `fmin_q(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FminQEmitter<T0, T1, T2> {
     fn fmin_q(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5301,9 +5301,9 @@ pub trait FminQEmitter<T0, T1, T2> {
 /// Rust: `fmin_s(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FminSEmitter<T0, T1, T2> {
     fn fmin_s(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5315,9 +5315,9 @@ pub trait FminSEmitter<T0, T1, T2> {
 /// Rust: `fminm_d(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FminmDEmitter<T0, T1, T2> {
     fn fminm_d(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5329,9 +5329,9 @@ pub trait FminmDEmitter<T0, T1, T2> {
 /// Rust: `fminm_h(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FminmHEmitter<T0, T1, T2> {
     fn fminm_h(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5343,9 +5343,9 @@ pub trait FminmHEmitter<T0, T1, T2> {
 /// Rust: `fminm_q(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FminmQEmitter<T0, T1, T2> {
     fn fminm_q(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5357,9 +5357,9 @@ pub trait FminmQEmitter<T0, T1, T2> {
 /// Rust: `fminm_s(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FminmSEmitter<T0, T1, T2> {
     fn fminm_s(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5371,11 +5371,11 @@ pub trait FminmSEmitter<T0, T1, T2> {
 /// Rust: `fmsub_d(rd, rs1, rs2, rs3, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rs3` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rs3`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FmsubDEmitter<T0, T1, T2, T3, T4> {
     fn fmsub_d(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4);
 }
@@ -5387,11 +5387,11 @@ pub trait FmsubDEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `fmsub_h(rd, rs1, rs2, rs3, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rs3` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rs3`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FmsubHEmitter<T0, T1, T2, T3, T4> {
     fn fmsub_h(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4);
 }
@@ -5403,11 +5403,11 @@ pub trait FmsubHEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `fmsub_q(rd, rs1, rs2, rs3, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rs3` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rs3`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FmsubQEmitter<T0, T1, T2, T3, T4> {
     fn fmsub_q(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4);
 }
@@ -5419,11 +5419,11 @@ pub trait FmsubQEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `fmsub_s(rd, rs1, rs2, rs3, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rs3` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rs3`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FmsubSEmitter<T0, T1, T2, T3, T4> {
     fn fmsub_s(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4);
 }
@@ -5435,10 +5435,10 @@ pub trait FmsubSEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `fmul_d(rd, rs1, rs2, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FmulDEmitter<T0, T1, T2, T3> {
     fn fmul_d(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3);
 }
@@ -5450,10 +5450,10 @@ pub trait FmulDEmitter<T0, T1, T2, T3> {
 /// Rust: `fmul_h(rd, rs1, rs2, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FmulHEmitter<T0, T1, T2, T3> {
     fn fmul_h(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3);
 }
@@ -5465,10 +5465,10 @@ pub trait FmulHEmitter<T0, T1, T2, T3> {
 /// Rust: `fmul_q(rd, rs1, rs2, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FmulQEmitter<T0, T1, T2, T3> {
     fn fmul_q(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3);
 }
@@ -5480,10 +5480,10 @@ pub trait FmulQEmitter<T0, T1, T2, T3> {
 /// Rust: `fmul_s(rd, rs1, rs2, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FmulSEmitter<T0, T1, T2, T3> {
     fn fmul_s(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3);
 }
@@ -5495,9 +5495,9 @@ pub trait FmulSEmitter<T0, T1, T2, T3> {
 /// Rust: `fmv_d(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FmvDEmitter<T0, T1, T2> {
     fn fmv_d(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5509,8 +5509,8 @@ pub trait FmvDEmitter<T0, T1, T2> {
 /// Rust: `fmv_d_x(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FmvDXEmitter<T0, T1> {
     fn fmv_d_x(&mut self, rd: T0, rs1: T1);
 }
@@ -5522,9 +5522,9 @@ pub trait FmvDXEmitter<T0, T1> {
 /// Rust: `fmv_h(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FmvHEmitter<T0, T1, T2> {
     fn fmv_h(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5541,8 +5541,8 @@ pub trait FmvHEmitter<T0, T1, T2> {
 /// Rust: `fmv_h_x(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FmvHXEmitter<T0, T1> {
     fn fmv_h_x(&mut self, rd: T0, rs1: T1);
 }
@@ -5554,9 +5554,9 @@ pub trait FmvHXEmitter<T0, T1> {
 /// Rust: `fmv_q(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FmvQEmitter<T0, T1, T2> {
     fn fmv_q(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5568,9 +5568,9 @@ pub trait FmvQEmitter<T0, T1, T2> {
 /// Rust: `fmv_s(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FmvSEmitter<T0, T1, T2> {
     fn fmv_s(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5582,8 +5582,8 @@ pub trait FmvSEmitter<T0, T1, T2> {
 /// Rust: `fmv_s_x(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FmvSXEmitter<T0, T1> {
     fn fmv_s_x(&mut self, rd: T0, rs1: T1);
 }
@@ -5600,8 +5600,8 @@ pub trait FmvSXEmitter<T0, T1> {
 /// Rust: `fmv_w_x(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FmvWXEmitter<T0, T1> {
     fn fmv_w_x(&mut self, rd: T0, rs1: T1);
 }
@@ -5613,8 +5613,8 @@ pub trait FmvWXEmitter<T0, T1> {
 /// Rust: `fmv_x_d(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FmvXDEmitter<T0, T1> {
     fn fmv_x_d(&mut self, rd: T0, rs1: T1);
 }
@@ -5635,8 +5635,8 @@ pub trait FmvXDEmitter<T0, T1> {
 /// Rust: `fmv_x_h(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FmvXHEmitter<T0, T1> {
     fn fmv_x_h(&mut self, rd: T0, rs1: T1);
 }
@@ -5648,8 +5648,8 @@ pub trait FmvXHEmitter<T0, T1> {
 /// Rust: `fmv_x_s(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FmvXSEmitter<T0, T1> {
     fn fmv_x_s(&mut self, rd: T0, rs1: T1);
 }
@@ -5668,8 +5668,8 @@ pub trait FmvXSEmitter<T0, T1> {
 /// Rust: `fmv_x_w(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FmvXWEmitter<T0, T1> {
     fn fmv_x_w(&mut self, rd: T0, rs1: T1);
 }
@@ -5681,8 +5681,8 @@ pub trait FmvXWEmitter<T0, T1> {
 /// Rust: `fmvh_x_d(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FmvhXDEmitter<T0, T1> {
     fn fmvh_x_d(&mut self, rd: T0, rs1: T1);
 }
@@ -5694,8 +5694,8 @@ pub trait FmvhXDEmitter<T0, T1> {
 /// Rust: `fmvh_x_q(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FmvhXQEmitter<T0, T1> {
     fn fmvh_x_q(&mut self, rd: T0, rs1: T1);
 }
@@ -5707,9 +5707,9 @@ pub trait FmvhXQEmitter<T0, T1> {
 /// Rust: `fmvp_d_x(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FmvpDXEmitter<T0, T1, T2> {
     fn fmvp_d_x(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5721,9 +5721,9 @@ pub trait FmvpDXEmitter<T0, T1, T2> {
 /// Rust: `fmvp_q_x(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FmvpQXEmitter<T0, T1, T2> {
     fn fmvp_q_x(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5735,9 +5735,9 @@ pub trait FmvpQXEmitter<T0, T1, T2> {
 /// Rust: `fneg_d(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FnegDEmitter<T0, T1, T2> {
     fn fneg_d(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5749,9 +5749,9 @@ pub trait FnegDEmitter<T0, T1, T2> {
 /// Rust: `fneg_h(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FnegHEmitter<T0, T1, T2> {
     fn fneg_h(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5763,9 +5763,9 @@ pub trait FnegHEmitter<T0, T1, T2> {
 /// Rust: `fneg_q(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FnegQEmitter<T0, T1, T2> {
     fn fneg_q(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5777,9 +5777,9 @@ pub trait FnegQEmitter<T0, T1, T2> {
 /// Rust: `fneg_s(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FnegSEmitter<T0, T1, T2> {
     fn fneg_s(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -5791,11 +5791,11 @@ pub trait FnegSEmitter<T0, T1, T2> {
 /// Rust: `fnmadd_d(rd, rs1, rs2, rs3, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rs3` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rs3`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FnmaddDEmitter<T0, T1, T2, T3, T4> {
     fn fnmadd_d(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4);
 }
@@ -5807,11 +5807,11 @@ pub trait FnmaddDEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `fnmadd_h(rd, rs1, rs2, rs3, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rs3` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rs3`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FnmaddHEmitter<T0, T1, T2, T3, T4> {
     fn fnmadd_h(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4);
 }
@@ -5823,11 +5823,11 @@ pub trait FnmaddHEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `fnmadd_q(rd, rs1, rs2, rs3, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rs3` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rs3`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FnmaddQEmitter<T0, T1, T2, T3, T4> {
     fn fnmadd_q(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4);
 }
@@ -5839,11 +5839,11 @@ pub trait FnmaddQEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `fnmadd_s(rd, rs1, rs2, rs3, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rs3` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rs3`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FnmaddSEmitter<T0, T1, T2, T3, T4> {
     fn fnmadd_s(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4);
 }
@@ -5855,11 +5855,11 @@ pub trait FnmaddSEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `fnmsub_d(rd, rs1, rs2, rs3, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rs3` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rs3`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FnmsubDEmitter<T0, T1, T2, T3, T4> {
     fn fnmsub_d(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4);
 }
@@ -5871,11 +5871,11 @@ pub trait FnmsubDEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `fnmsub_h(rd, rs1, rs2, rs3, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rs3` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rs3`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FnmsubHEmitter<T0, T1, T2, T3, T4> {
     fn fnmsub_h(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4);
 }
@@ -5887,11 +5887,11 @@ pub trait FnmsubHEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `fnmsub_q(rd, rs1, rs2, rs3, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rs3` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rs3`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FnmsubQEmitter<T0, T1, T2, T3, T4> {
     fn fnmsub_q(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4);
 }
@@ -5903,11 +5903,11 @@ pub trait FnmsubQEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `fnmsub_s(rd, rs1, rs2, rs3, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rs3` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rs3`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FnmsubSEmitter<T0, T1, T2, T3, T4> {
     fn fnmsub_s(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4);
 }
@@ -5919,7 +5919,7 @@ pub trait FnmsubSEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `frcsr(rd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
+/// - `rd`: Destination register.
 pub trait FrcsrEmitter<T0> {
     fn frcsr(&mut self, rd: T0);
 }
@@ -5931,7 +5931,7 @@ pub trait FrcsrEmitter<T0> {
 /// Rust: `frflags(rd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
+/// - `rd`: Destination register.
 pub trait FrflagsEmitter<T0> {
     fn frflags(&mut self, rd: T0);
 }
@@ -5943,9 +5943,9 @@ pub trait FrflagsEmitter<T0> {
 /// Rust: `fround_d(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FroundDEmitter<T0, T1, T2> {
     fn fround_d(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -5957,9 +5957,9 @@ pub trait FroundDEmitter<T0, T1, T2> {
 /// Rust: `fround_h(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FroundHEmitter<T0, T1, T2> {
     fn fround_h(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -5971,9 +5971,9 @@ pub trait FroundHEmitter<T0, T1, T2> {
 /// Rust: `fround_q(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FroundQEmitter<T0, T1, T2> {
     fn fround_q(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -5985,9 +5985,9 @@ pub trait FroundQEmitter<T0, T1, T2> {
 /// Rust: `fround_s(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FroundSEmitter<T0, T1, T2> {
     fn fround_s(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -5999,9 +5999,9 @@ pub trait FroundSEmitter<T0, T1, T2> {
 /// Rust: `froundnx_d(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FroundnxDEmitter<T0, T1, T2> {
     fn froundnx_d(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -6013,9 +6013,9 @@ pub trait FroundnxDEmitter<T0, T1, T2> {
 /// Rust: `froundnx_h(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FroundnxHEmitter<T0, T1, T2> {
     fn froundnx_h(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -6027,9 +6027,9 @@ pub trait FroundnxHEmitter<T0, T1, T2> {
 /// Rust: `froundnx_q(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FroundnxQEmitter<T0, T1, T2> {
     fn froundnx_q(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -6041,9 +6041,9 @@ pub trait FroundnxQEmitter<T0, T1, T2> {
 /// Rust: `froundnx_s(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FroundnxSEmitter<T0, T1, T2> {
     fn froundnx_s(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -6055,7 +6055,7 @@ pub trait FroundnxSEmitter<T0, T1, T2> {
 /// Rust: `frrm(rd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
+/// - `rd`: Destination register.
 pub trait FrrmEmitter<T0> {
     fn frrm(&mut self, rd: T0);
 }
@@ -6067,8 +6067,8 @@ pub trait FrrmEmitter<T0> {
 /// Rust: `fscsr(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FscsrEmitter<T0, T1> {
     fn fscsr(&mut self, rd: T0, rs1: T1);
 }
@@ -6080,9 +6080,9 @@ pub trait FscsrEmitter<T0, T1> {
 /// Rust: `fsd(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait FsdEmitter<T0, T1, T2> {
     fn fsd(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -6094,8 +6094,8 @@ pub trait FsdEmitter<T0, T1, T2> {
 /// Rust: `fsflags(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FsflagsEmitter<T0, T1> {
     fn fsflags(&mut self, rd: T0, rs1: T1);
 }
@@ -6107,8 +6107,8 @@ pub trait FsflagsEmitter<T0, T1> {
 /// Rust: `fsflagsi(rd, zimm5)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `zimm5` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `zimm5`: Immediate encoding value.
 pub trait FsflagsiEmitter<T0, T1> {
     fn fsflagsi(&mut self, rd: T0, zimm5: T1);
 }
@@ -6120,9 +6120,9 @@ pub trait FsflagsiEmitter<T0, T1> {
 /// Rust: `fsgnj_d(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FsgnjDEmitter<T0, T1, T2> {
     fn fsgnj_d(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -6134,9 +6134,9 @@ pub trait FsgnjDEmitter<T0, T1, T2> {
 /// Rust: `fsgnj_h(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FsgnjHEmitter<T0, T1, T2> {
     fn fsgnj_h(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -6148,9 +6148,9 @@ pub trait FsgnjHEmitter<T0, T1, T2> {
 /// Rust: `fsgnj_q(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FsgnjQEmitter<T0, T1, T2> {
     fn fsgnj_q(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -6166,9 +6166,9 @@ pub trait FsgnjQEmitter<T0, T1, T2> {
 /// Rust: `fsgnj_s(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FsgnjSEmitter<T0, T1, T2> {
     fn fsgnj_s(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -6180,9 +6180,9 @@ pub trait FsgnjSEmitter<T0, T1, T2> {
 /// Rust: `fsgnjn_d(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FsgnjnDEmitter<T0, T1, T2> {
     fn fsgnjn_d(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -6194,9 +6194,9 @@ pub trait FsgnjnDEmitter<T0, T1, T2> {
 /// Rust: `fsgnjn_h(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FsgnjnHEmitter<T0, T1, T2> {
     fn fsgnjn_h(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -6208,9 +6208,9 @@ pub trait FsgnjnHEmitter<T0, T1, T2> {
 /// Rust: `fsgnjn_q(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FsgnjnQEmitter<T0, T1, T2> {
     fn fsgnjn_q(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -6226,9 +6226,9 @@ pub trait FsgnjnQEmitter<T0, T1, T2> {
 /// Rust: `fsgnjn_s(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FsgnjnSEmitter<T0, T1, T2> {
     fn fsgnjn_s(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -6240,9 +6240,9 @@ pub trait FsgnjnSEmitter<T0, T1, T2> {
 /// Rust: `fsgnjx_d(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FsgnjxDEmitter<T0, T1, T2> {
     fn fsgnjx_d(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -6254,9 +6254,9 @@ pub trait FsgnjxDEmitter<T0, T1, T2> {
 /// Rust: `fsgnjx_h(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FsgnjxHEmitter<T0, T1, T2> {
     fn fsgnjx_h(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -6268,9 +6268,9 @@ pub trait FsgnjxHEmitter<T0, T1, T2> {
 /// Rust: `fsgnjx_q(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FsgnjxQEmitter<T0, T1, T2> {
     fn fsgnjx_q(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -6286,9 +6286,9 @@ pub trait FsgnjxQEmitter<T0, T1, T2> {
 /// Rust: `fsgnjx_s(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait FsgnjxSEmitter<T0, T1, T2> {
     fn fsgnjx_s(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -6309,9 +6309,9 @@ pub trait FsgnjxSEmitter<T0, T1, T2> {
 /// Rust: `fsh(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait FshEmitter<T0, T1, T2> {
     fn fsh(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -6323,9 +6323,9 @@ pub trait FshEmitter<T0, T1, T2> {
 /// Rust: `fsq(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait FsqEmitter<T0, T1, T2> {
     fn fsq(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -6337,9 +6337,9 @@ pub trait FsqEmitter<T0, T1, T2> {
 /// Rust: `fsqrt_d(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FsqrtDEmitter<T0, T1, T2> {
     fn fsqrt_d(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -6351,9 +6351,9 @@ pub trait FsqrtDEmitter<T0, T1, T2> {
 /// Rust: `fsqrt_h(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FsqrtHEmitter<T0, T1, T2> {
     fn fsqrt_h(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -6365,9 +6365,9 @@ pub trait FsqrtHEmitter<T0, T1, T2> {
 /// Rust: `fsqrt_q(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FsqrtQEmitter<T0, T1, T2> {
     fn fsqrt_q(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -6379,9 +6379,9 @@ pub trait FsqrtQEmitter<T0, T1, T2> {
 /// Rust: `fsqrt_s(rd, rs1, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FsqrtSEmitter<T0, T1, T2> {
     fn fsqrt_s(&mut self, rd: T0, rs1: T1, rm: T2);
 }
@@ -6393,8 +6393,8 @@ pub trait FsqrtSEmitter<T0, T1, T2> {
 /// Rust: `fsrm(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait FsrmEmitter<T0, T1> {
     fn fsrm(&mut self, rd: T0, rs1: T1);
 }
@@ -6406,8 +6406,8 @@ pub trait FsrmEmitter<T0, T1> {
 /// Rust: `fsrmi(rd, zimm5)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `zimm5` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `zimm5`: Immediate encoding value.
 pub trait FsrmiEmitter<T0, T1> {
     fn fsrmi(&mut self, rd: T0, zimm5: T1);
 }
@@ -6419,10 +6419,10 @@ pub trait FsrmiEmitter<T0, T1> {
 /// Rust: `fsub_d(rd, rs1, rs2, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FsubDEmitter<T0, T1, T2, T3> {
     fn fsub_d(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3);
 }
@@ -6434,10 +6434,10 @@ pub trait FsubDEmitter<T0, T1, T2, T3> {
 /// Rust: `fsub_h(rd, rs1, rs2, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FsubHEmitter<T0, T1, T2, T3> {
     fn fsub_h(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3);
 }
@@ -6449,10 +6449,10 @@ pub trait FsubHEmitter<T0, T1, T2, T3> {
 /// Rust: `fsub_q(rd, rs1, rs2, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FsubQEmitter<T0, T1, T2, T3> {
     fn fsub_q(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3);
 }
@@ -6467,10 +6467,10 @@ pub trait FsubQEmitter<T0, T1, T2, T3> {
 /// Rust: `fsub_s(rd, rs1, rs2, rm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `rm` — Rounding mode.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `rm`: Rounding mode.
 pub trait FsubSEmitter<T0, T1, T2, T3> {
     fn fsub_s(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3);
 }
@@ -6486,9 +6486,9 @@ pub trait FsubSEmitter<T0, T1, T2, T3> {
 /// Rust: `fsw(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait FswEmitter<T0, T1, T2> {
     fn fsw(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -6500,8 +6500,8 @@ pub trait FswEmitter<T0, T1, T2> {
 /// Rust: `hfence_gvma(rs1, rs2)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait HfenceGvmaEmitter<T0, T1> {
     fn hfence_gvma(&mut self, rs1: T0, rs2: T1);
 }
@@ -6513,8 +6513,8 @@ pub trait HfenceGvmaEmitter<T0, T1> {
 /// Rust: `hfence_vvma(rs1, rs2)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait HfenceVvmaEmitter<T0, T1> {
     fn hfence_vvma(&mut self, rs1: T0, rs2: T1);
 }
@@ -6529,8 +6529,8 @@ pub trait HfenceVvmaEmitter<T0, T1> {
 /// Rust: `hinval_gvma(rs1, rs2)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait HinvalGvmaEmitter<T0, T1> {
     fn hinval_gvma(&mut self, rs1: T0, rs2: T1);
 }
@@ -6545,8 +6545,8 @@ pub trait HinvalGvmaEmitter<T0, T1> {
 /// Rust: `hinval_vvma(rs1, rs2)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait HinvalVvmaEmitter<T0, T1> {
     fn hinval_vvma(&mut self, rs1: T0, rs2: T1);
 }
@@ -6558,8 +6558,8 @@ pub trait HinvalVvmaEmitter<T0, T1> {
 /// Rust: `hlv_b(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait HlvBEmitter<T0, T1> {
     fn hlv_b(&mut self, rd: T0, rs1: T1);
 }
@@ -6571,8 +6571,8 @@ pub trait HlvBEmitter<T0, T1> {
 /// Rust: `hlv_bu(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait HlvBuEmitter<T0, T1> {
     fn hlv_bu(&mut self, rd: T0, rs1: T1);
 }
@@ -6584,8 +6584,8 @@ pub trait HlvBuEmitter<T0, T1> {
 /// Rust: `hlv_d(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait HlvDEmitter<T0, T1> {
     fn hlv_d(&mut self, rd: T0, rs1: T1);
 }
@@ -6597,8 +6597,8 @@ pub trait HlvDEmitter<T0, T1> {
 /// Rust: `hlv_h(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait HlvHEmitter<T0, T1> {
     fn hlv_h(&mut self, rd: T0, rs1: T1);
 }
@@ -6610,8 +6610,8 @@ pub trait HlvHEmitter<T0, T1> {
 /// Rust: `hlv_hu(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait HlvHuEmitter<T0, T1> {
     fn hlv_hu(&mut self, rd: T0, rs1: T1);
 }
@@ -6623,8 +6623,8 @@ pub trait HlvHuEmitter<T0, T1> {
 /// Rust: `hlv_w(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait HlvWEmitter<T0, T1> {
     fn hlv_w(&mut self, rd: T0, rs1: T1);
 }
@@ -6636,8 +6636,8 @@ pub trait HlvWEmitter<T0, T1> {
 /// Rust: `hlv_wu(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait HlvWuEmitter<T0, T1> {
     fn hlv_wu(&mut self, rd: T0, rs1: T1);
 }
@@ -6649,8 +6649,8 @@ pub trait HlvWuEmitter<T0, T1> {
 /// Rust: `hlvx_hu(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait HlvxHuEmitter<T0, T1> {
     fn hlvx_hu(&mut self, rd: T0, rs1: T1);
 }
@@ -6662,8 +6662,8 @@ pub trait HlvxHuEmitter<T0, T1> {
 /// Rust: `hlvx_wu(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait HlvxWuEmitter<T0, T1> {
     fn hlvx_wu(&mut self, rd: T0, rs1: T1);
 }
@@ -6675,8 +6675,8 @@ pub trait HlvxWuEmitter<T0, T1> {
 /// Rust: `hsv_b(rs1, rs2)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait HsvBEmitter<T0, T1> {
     fn hsv_b(&mut self, rs1: T0, rs2: T1);
 }
@@ -6688,8 +6688,8 @@ pub trait HsvBEmitter<T0, T1> {
 /// Rust: `hsv_d(rs1, rs2)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait HsvDEmitter<T0, T1> {
     fn hsv_d(&mut self, rs1: T0, rs2: T1);
 }
@@ -6701,8 +6701,8 @@ pub trait HsvDEmitter<T0, T1> {
 /// Rust: `hsv_h(rs1, rs2)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait HsvHEmitter<T0, T1> {
     fn hsv_h(&mut self, rs1: T0, rs2: T1);
 }
@@ -6714,8 +6714,8 @@ pub trait HsvHEmitter<T0, T1> {
 /// Rust: `hsv_w(rs1, rs2)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait HsvWEmitter<T0, T1> {
     fn hsv_w(&mut self, rs1: T0, rs2: T1);
 }
@@ -6727,7 +6727,7 @@ pub trait HsvWEmitter<T0, T1> {
 /// Rust: `j(imm)`
 ///
 /// # Arguments
-/// - `imm` — Immediate encoding value.
+/// - `imm`: Immediate encoding value.
 pub trait JEmitter<T0> {
     fn j(&mut self, imm: T0);
 }
@@ -6742,8 +6742,8 @@ pub trait JEmitter<T0> {
 /// Rust: `jal(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `imm`: Immediate encoding value.
 pub trait JalEmitter<T0, T1> {
     fn jal(&mut self, rd: T0, imm: T1);
 }
@@ -6755,7 +6755,7 @@ pub trait JalEmitter<T0, T1> {
 /// Rust: `jal_pseudo(imm)`
 ///
 /// # Arguments
-/// - `imm` — Immediate encoding value.
+/// - `imm`: Immediate encoding value.
 pub trait JalPseudoEmitter<T0> {
     fn jal_pseudo(&mut self, imm: T0);
 }
@@ -6772,9 +6772,9 @@ pub trait JalPseudoEmitter<T0> {
 /// Rust: `jalr(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait JalrEmitter<T0, T1, T2> {
     fn jalr(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -6786,7 +6786,7 @@ pub trait JalrEmitter<T0, T1, T2> {
 /// Rust: `jalr_pseudo(rs1)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
+/// - `rs1`: Source register.
 pub trait JalrPseudoEmitter<T0> {
     fn jalr_pseudo(&mut self, rs1: T0);
 }
@@ -6798,7 +6798,7 @@ pub trait JalrPseudoEmitter<T0> {
 /// Rust: `jr(rs1)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
+/// - `rs1`: Source register.
 pub trait JrEmitter<T0> {
     fn jr(&mut self, rs1: T0);
 }
@@ -6814,9 +6814,9 @@ pub trait JrEmitter<T0> {
 /// Rust: `lb(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `imm`: Immediate encoding value.
 pub trait LbEmitter<T0, T1, T2> {
     fn lb(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -6832,9 +6832,9 @@ pub trait LbEmitter<T0, T1, T2> {
 /// Rust: `lbu(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `imm`: Immediate encoding value.
 pub trait LbuEmitter<T0, T1, T2> {
     fn lbu(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -6849,9 +6849,9 @@ pub trait LbuEmitter<T0, T1, T2> {
 /// Rust: `ld(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `imm`: Immediate encoding value.
 pub trait LdEmitter<T0, T1, T2> {
     fn ld(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -6867,9 +6867,9 @@ pub trait LdEmitter<T0, T1, T2> {
 /// Rust: `lh(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `imm`: Immediate encoding value.
 pub trait LhEmitter<T0, T1, T2> {
     fn lh(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -6885,9 +6885,9 @@ pub trait LhEmitter<T0, T1, T2> {
 /// Rust: `lhu(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `imm`: Immediate encoding value.
 pub trait LhuEmitter<T0, T1, T2> {
     fn lhu(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -6899,7 +6899,7 @@ pub trait LhuEmitter<T0, T1, T2> {
 /// Rust: `lpad(imm)`
 ///
 /// # Arguments
-/// - `imm` — Immediate encoding value.
+/// - `imm`: Immediate encoding value.
 pub trait LpadEmitter<T0> {
     fn lpad(&mut self, imm: T0);
 }
@@ -6949,10 +6949,10 @@ pub trait LpadEmitter<T0> {
 /// Rust: `lr_d(rd, rs1, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait LrDEmitter<T0, T1, T2, T3> {
     fn lr_d(&mut self, rd: T0, rs1: T1, aq: T2, rl: T3);
 }
@@ -7007,10 +7007,10 @@ pub trait LrDEmitter<T0, T1, T2, T3> {
 /// Rust: `lr_w(rd, rs1, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait LrWEmitter<T0, T1, T2, T3> {
     fn lr_w(&mut self, rd: T0, rs1: T1, aq: T2, rl: T3);
 }
@@ -7024,8 +7024,8 @@ pub trait LrWEmitter<T0, T1, T2, T3> {
 /// Rust: `lui(rd, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `imm`: Immediate encoding value.
 pub trait LuiEmitter<T0, T1> {
     fn lui(&mut self, rd: T0, imm: T1);
 }
@@ -7041,9 +7041,9 @@ pub trait LuiEmitter<T0, T1> {
 /// Rust: `lw(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `imm`: Immediate encoding value.
 pub trait LwEmitter<T0, T1, T2> {
     fn lw(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -7059,9 +7059,9 @@ pub trait LwEmitter<T0, T1, T2> {
 /// Rust: `lwu(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `imm`: Immediate encoding value.
 pub trait LwuEmitter<T0, T1, T2> {
     fn lwu(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -7083,9 +7083,9 @@ pub trait LwuEmitter<T0, T1, T2> {
 /// Rust: `max(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait MaxEmitter<T0, T1, T2> {
     fn max(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7099,9 +7099,9 @@ pub trait MaxEmitter<T0, T1, T2> {
 /// Rust: `maxu(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait MaxuEmitter<T0, T1, T2> {
     fn maxu(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7115,9 +7115,9 @@ pub trait MaxuEmitter<T0, T1, T2> {
 /// Rust: `min(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait MinEmitter<T0, T1, T2> {
     fn min(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7131,9 +7131,9 @@ pub trait MinEmitter<T0, T1, T2> {
 /// Rust: `minu(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait MinuEmitter<T0, T1, T2> {
     fn minu(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7156,8 +7156,8 @@ pub trait MnretEmitter {
 /// Rust: `mop_r_0(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR0Emitter<T0, T1> {
     fn mop_r_0(&mut self, rd: T0, rs1: T1);
 }
@@ -7169,8 +7169,8 @@ pub trait MopR0Emitter<T0, T1> {
 /// Rust: `mop_r_1(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR1Emitter<T0, T1> {
     fn mop_r_1(&mut self, rd: T0, rs1: T1);
 }
@@ -7182,8 +7182,8 @@ pub trait MopR1Emitter<T0, T1> {
 /// Rust: `mop_r_10(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR10Emitter<T0, T1> {
     fn mop_r_10(&mut self, rd: T0, rs1: T1);
 }
@@ -7195,8 +7195,8 @@ pub trait MopR10Emitter<T0, T1> {
 /// Rust: `mop_r_11(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR11Emitter<T0, T1> {
     fn mop_r_11(&mut self, rd: T0, rs1: T1);
 }
@@ -7208,8 +7208,8 @@ pub trait MopR11Emitter<T0, T1> {
 /// Rust: `mop_r_12(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR12Emitter<T0, T1> {
     fn mop_r_12(&mut self, rd: T0, rs1: T1);
 }
@@ -7221,8 +7221,8 @@ pub trait MopR12Emitter<T0, T1> {
 /// Rust: `mop_r_13(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR13Emitter<T0, T1> {
     fn mop_r_13(&mut self, rd: T0, rs1: T1);
 }
@@ -7234,8 +7234,8 @@ pub trait MopR13Emitter<T0, T1> {
 /// Rust: `mop_r_14(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR14Emitter<T0, T1> {
     fn mop_r_14(&mut self, rd: T0, rs1: T1);
 }
@@ -7247,8 +7247,8 @@ pub trait MopR14Emitter<T0, T1> {
 /// Rust: `mop_r_15(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR15Emitter<T0, T1> {
     fn mop_r_15(&mut self, rd: T0, rs1: T1);
 }
@@ -7260,8 +7260,8 @@ pub trait MopR15Emitter<T0, T1> {
 /// Rust: `mop_r_16(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR16Emitter<T0, T1> {
     fn mop_r_16(&mut self, rd: T0, rs1: T1);
 }
@@ -7273,8 +7273,8 @@ pub trait MopR16Emitter<T0, T1> {
 /// Rust: `mop_r_17(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR17Emitter<T0, T1> {
     fn mop_r_17(&mut self, rd: T0, rs1: T1);
 }
@@ -7286,8 +7286,8 @@ pub trait MopR17Emitter<T0, T1> {
 /// Rust: `mop_r_18(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR18Emitter<T0, T1> {
     fn mop_r_18(&mut self, rd: T0, rs1: T1);
 }
@@ -7299,8 +7299,8 @@ pub trait MopR18Emitter<T0, T1> {
 /// Rust: `mop_r_19(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR19Emitter<T0, T1> {
     fn mop_r_19(&mut self, rd: T0, rs1: T1);
 }
@@ -7312,8 +7312,8 @@ pub trait MopR19Emitter<T0, T1> {
 /// Rust: `mop_r_2(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR2Emitter<T0, T1> {
     fn mop_r_2(&mut self, rd: T0, rs1: T1);
 }
@@ -7325,8 +7325,8 @@ pub trait MopR2Emitter<T0, T1> {
 /// Rust: `mop_r_20(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR20Emitter<T0, T1> {
     fn mop_r_20(&mut self, rd: T0, rs1: T1);
 }
@@ -7338,8 +7338,8 @@ pub trait MopR20Emitter<T0, T1> {
 /// Rust: `mop_r_21(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR21Emitter<T0, T1> {
     fn mop_r_21(&mut self, rd: T0, rs1: T1);
 }
@@ -7351,8 +7351,8 @@ pub trait MopR21Emitter<T0, T1> {
 /// Rust: `mop_r_22(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR22Emitter<T0, T1> {
     fn mop_r_22(&mut self, rd: T0, rs1: T1);
 }
@@ -7364,8 +7364,8 @@ pub trait MopR22Emitter<T0, T1> {
 /// Rust: `mop_r_23(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR23Emitter<T0, T1> {
     fn mop_r_23(&mut self, rd: T0, rs1: T1);
 }
@@ -7377,8 +7377,8 @@ pub trait MopR23Emitter<T0, T1> {
 /// Rust: `mop_r_24(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR24Emitter<T0, T1> {
     fn mop_r_24(&mut self, rd: T0, rs1: T1);
 }
@@ -7390,8 +7390,8 @@ pub trait MopR24Emitter<T0, T1> {
 /// Rust: `mop_r_25(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR25Emitter<T0, T1> {
     fn mop_r_25(&mut self, rd: T0, rs1: T1);
 }
@@ -7403,8 +7403,8 @@ pub trait MopR25Emitter<T0, T1> {
 /// Rust: `mop_r_26(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR26Emitter<T0, T1> {
     fn mop_r_26(&mut self, rd: T0, rs1: T1);
 }
@@ -7416,8 +7416,8 @@ pub trait MopR26Emitter<T0, T1> {
 /// Rust: `mop_r_27(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR27Emitter<T0, T1> {
     fn mop_r_27(&mut self, rd: T0, rs1: T1);
 }
@@ -7429,8 +7429,8 @@ pub trait MopR27Emitter<T0, T1> {
 /// Rust: `mop_r_28(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR28Emitter<T0, T1> {
     fn mop_r_28(&mut self, rd: T0, rs1: T1);
 }
@@ -7442,8 +7442,8 @@ pub trait MopR28Emitter<T0, T1> {
 /// Rust: `mop_r_29(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR29Emitter<T0, T1> {
     fn mop_r_29(&mut self, rd: T0, rs1: T1);
 }
@@ -7455,8 +7455,8 @@ pub trait MopR29Emitter<T0, T1> {
 /// Rust: `mop_r_3(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR3Emitter<T0, T1> {
     fn mop_r_3(&mut self, rd: T0, rs1: T1);
 }
@@ -7468,8 +7468,8 @@ pub trait MopR3Emitter<T0, T1> {
 /// Rust: `mop_r_30(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR30Emitter<T0, T1> {
     fn mop_r_30(&mut self, rd: T0, rs1: T1);
 }
@@ -7481,8 +7481,8 @@ pub trait MopR30Emitter<T0, T1> {
 /// Rust: `mop_r_31(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR31Emitter<T0, T1> {
     fn mop_r_31(&mut self, rd: T0, rs1: T1);
 }
@@ -7494,8 +7494,8 @@ pub trait MopR31Emitter<T0, T1> {
 /// Rust: `mop_r_4(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR4Emitter<T0, T1> {
     fn mop_r_4(&mut self, rd: T0, rs1: T1);
 }
@@ -7507,8 +7507,8 @@ pub trait MopR4Emitter<T0, T1> {
 /// Rust: `mop_r_5(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR5Emitter<T0, T1> {
     fn mop_r_5(&mut self, rd: T0, rs1: T1);
 }
@@ -7520,8 +7520,8 @@ pub trait MopR5Emitter<T0, T1> {
 /// Rust: `mop_r_6(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR6Emitter<T0, T1> {
     fn mop_r_6(&mut self, rd: T0, rs1: T1);
 }
@@ -7533,8 +7533,8 @@ pub trait MopR6Emitter<T0, T1> {
 /// Rust: `mop_r_7(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR7Emitter<T0, T1> {
     fn mop_r_7(&mut self, rd: T0, rs1: T1);
 }
@@ -7546,8 +7546,8 @@ pub trait MopR7Emitter<T0, T1> {
 /// Rust: `mop_r_8(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR8Emitter<T0, T1> {
     fn mop_r_8(&mut self, rd: T0, rs1: T1);
 }
@@ -7559,8 +7559,8 @@ pub trait MopR8Emitter<T0, T1> {
 /// Rust: `mop_r_9(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MopR9Emitter<T0, T1> {
     fn mop_r_9(&mut self, rd: T0, rs1: T1);
 }
@@ -7572,9 +7572,9 @@ pub trait MopR9Emitter<T0, T1> {
 /// Rust: `mop_rr_0(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait MopRr0Emitter<T0, T1, T2> {
     fn mop_rr_0(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7586,9 +7586,9 @@ pub trait MopRr0Emitter<T0, T1, T2> {
 /// Rust: `mop_rr_1(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait MopRr1Emitter<T0, T1, T2> {
     fn mop_rr_1(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7600,9 +7600,9 @@ pub trait MopRr1Emitter<T0, T1, T2> {
 /// Rust: `mop_rr_2(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait MopRr2Emitter<T0, T1, T2> {
     fn mop_rr_2(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7614,9 +7614,9 @@ pub trait MopRr2Emitter<T0, T1, T2> {
 /// Rust: `mop_rr_3(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait MopRr3Emitter<T0, T1, T2> {
     fn mop_rr_3(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7628,9 +7628,9 @@ pub trait MopRr3Emitter<T0, T1, T2> {
 /// Rust: `mop_rr_4(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait MopRr4Emitter<T0, T1, T2> {
     fn mop_rr_4(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7642,9 +7642,9 @@ pub trait MopRr4Emitter<T0, T1, T2> {
 /// Rust: `mop_rr_5(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait MopRr5Emitter<T0, T1, T2> {
     fn mop_rr_5(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7656,9 +7656,9 @@ pub trait MopRr5Emitter<T0, T1, T2> {
 /// Rust: `mop_rr_6(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait MopRr6Emitter<T0, T1, T2> {
     fn mop_rr_6(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7670,9 +7670,9 @@ pub trait MopRr6Emitter<T0, T1, T2> {
 /// Rust: `mop_rr_7(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait MopRr7Emitter<T0, T1, T2> {
     fn mop_rr_7(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7709,9 +7709,9 @@ pub trait MretEmitter {
 /// Rust: `mul(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait MulEmitter<T0, T1, T2> {
     fn mul(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7735,9 +7735,9 @@ pub trait MulEmitter<T0, T1, T2> {
 /// Rust: `mulh(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait MulhEmitter<T0, T1, T2> {
     fn mulh(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7761,9 +7761,9 @@ pub trait MulhEmitter<T0, T1, T2> {
 /// Rust: `mulhsu(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait MulhsuEmitter<T0, T1, T2> {
     fn mulhsu(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7787,9 +7787,9 @@ pub trait MulhsuEmitter<T0, T1, T2> {
 /// Rust: `mulhu(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait MulhuEmitter<T0, T1, T2> {
     fn mulhu(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7812,9 +7812,9 @@ pub trait MulhuEmitter<T0, T1, T2> {
 /// Rust: `mulw(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait MulwEmitter<T0, T1, T2> {
     fn mulw(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7826,8 +7826,8 @@ pub trait MulwEmitter<T0, T1, T2> {
 /// Rust: `mv(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait MvEmitter<T0, T1> {
     fn mv(&mut self, rd: T0, rs1: T1);
 }
@@ -7839,8 +7839,8 @@ pub trait MvEmitter<T0, T1> {
 /// Rust: `neg(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait NegEmitter<T0, T1> {
     fn neg(&mut self, rd: T0, rs1: T1);
 }
@@ -7909,9 +7909,9 @@ pub trait NtlS1Emitter {
 /// Rust: `or(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait OrEmitter<T0, T1, T2> {
     fn or(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7927,8 +7927,8 @@ pub trait OrEmitter<T0, T1, T2> {
 /// Rust: `orc_b(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait OrcBEmitter<T0, T1> {
     fn orc_b(&mut self, rd: T0, rs1: T1);
 }
@@ -7942,9 +7942,9 @@ pub trait OrcBEmitter<T0, T1> {
 /// Rust: `ori(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait OriEmitter<T0, T1, T2> {
     fn ori(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -7958,9 +7958,9 @@ pub trait OriEmitter<T0, T1, T2> {
 /// Rust: `orn(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait OrnEmitter<T0, T1, T2> {
     fn orn(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7972,9 +7972,9 @@ pub trait OrnEmitter<T0, T1, T2> {
 /// Rust: `pack(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait PackEmitter<T0, T1, T2> {
     fn pack(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -7986,9 +7986,9 @@ pub trait PackEmitter<T0, T1, T2> {
 /// Rust: `packh(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait PackhEmitter<T0, T1, T2> {
     fn packh(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -8000,9 +8000,9 @@ pub trait PackhEmitter<T0, T1, T2> {
 /// Rust: `packw(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait PackwEmitter<T0, T1, T2> {
     fn packw(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -8025,8 +8025,8 @@ pub trait PauseEmitter {
 /// Rust: `prefetch_i(rs1, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait PrefetchIEmitter<T0, T1> {
     fn prefetch_i(&mut self, rs1: T0, imm: T1);
 }
@@ -8038,8 +8038,8 @@ pub trait PrefetchIEmitter<T0, T1> {
 /// Rust: `prefetch_r(rs1, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait PrefetchREmitter<T0, T1> {
     fn prefetch_r(&mut self, rs1: T0, imm: T1);
 }
@@ -8051,8 +8051,8 @@ pub trait PrefetchREmitter<T0, T1> {
 /// Rust: `prefetch_w(rs1, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait PrefetchWEmitter<T0, T1> {
     fn prefetch_w(&mut self, rs1: T0, imm: T1);
 }
@@ -8064,7 +8064,7 @@ pub trait PrefetchWEmitter<T0, T1> {
 /// Rust: `rdcycle(rd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
+/// - `rd`: Destination register.
 pub trait RdcycleEmitter<T0> {
     fn rdcycle(&mut self, rd: T0);
 }
@@ -8076,7 +8076,7 @@ pub trait RdcycleEmitter<T0> {
 /// Rust: `rdcycleh(rd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
+/// - `rd`: Destination register.
 pub trait RdcyclehEmitter<T0> {
     fn rdcycleh(&mut self, rd: T0);
 }
@@ -8088,7 +8088,7 @@ pub trait RdcyclehEmitter<T0> {
 /// Rust: `rdinstret(rd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
+/// - `rd`: Destination register.
 pub trait RdinstretEmitter<T0> {
     fn rdinstret(&mut self, rd: T0);
 }
@@ -8100,7 +8100,7 @@ pub trait RdinstretEmitter<T0> {
 /// Rust: `rdinstreth(rd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
+/// - `rd`: Destination register.
 pub trait RdinstrethEmitter<T0> {
     fn rdinstreth(&mut self, rd: T0);
 }
@@ -8112,7 +8112,7 @@ pub trait RdinstrethEmitter<T0> {
 /// Rust: `rdtime(rd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
+/// - `rd`: Destination register.
 pub trait RdtimeEmitter<T0> {
     fn rdtime(&mut self, rd: T0);
 }
@@ -8124,7 +8124,7 @@ pub trait RdtimeEmitter<T0> {
 /// Rust: `rdtimeh(rd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
+/// - `rd`: Destination register.
 pub trait RdtimehEmitter<T0> {
     fn rdtimeh(&mut self, rd: T0);
 }
@@ -8142,9 +8142,9 @@ pub trait RdtimehEmitter<T0> {
 /// Rust: `rem(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait RemEmitter<T0, T1, T2> {
     fn rem(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -8158,9 +8158,9 @@ pub trait RemEmitter<T0, T1, T2> {
 /// Rust: `remu(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait RemuEmitter<T0, T1, T2> {
     fn remu(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -8177,9 +8177,9 @@ pub trait RemuEmitter<T0, T1, T2> {
 /// Rust: `remuw(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait RemuwEmitter<T0, T1, T2> {
     fn remuw(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -8198,9 +8198,9 @@ pub trait RemuwEmitter<T0, T1, T2> {
 /// Rust: `remw(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait RemwEmitter<T0, T1, T2> {
     fn remw(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -8233,8 +8233,8 @@ pub trait RetEmitter {
 /// Rust: `rev8(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait Rev8Emitter<T0, T1> {
     fn rev8(&mut self, rd: T0, rs1: T1);
 }
@@ -8256,8 +8256,8 @@ pub trait Rev8Emitter<T0, T1> {
 /// Rust: `rev8_rv32(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait Rev8Rv32Emitter<T0, T1> {
     fn rev8_rv32(&mut self, rd: T0, rs1: T1);
 }
@@ -8271,9 +8271,9 @@ pub trait Rev8Rv32Emitter<T0, T1> {
 /// Rust: `rol(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait RolEmitter<T0, T1, T2> {
     fn rol(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -8288,9 +8288,9 @@ pub trait RolEmitter<T0, T1, T2> {
 /// Rust: `rolw(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait RolwEmitter<T0, T1, T2> {
     fn rolw(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -8304,9 +8304,9 @@ pub trait RolwEmitter<T0, T1, T2> {
 /// Rust: `ror(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait RorEmitter<T0, T1, T2> {
     fn ror(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -8321,9 +8321,9 @@ pub trait RorEmitter<T0, T1, T2> {
 /// Rust: `rori(rd, rs1, shamtd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtd` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtd`: Immediate encoding value.
 pub trait RoriEmitter<T0, T1, T2> {
     fn rori(&mut self, rd: T0, rs1: T1, shamtd: T2);
 }
@@ -8338,9 +8338,9 @@ pub trait RoriEmitter<T0, T1, T2> {
 /// Rust: `rori_rv32(rd, rs1, shamtw)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtw` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtw`: Immediate encoding value.
 pub trait RoriRv32Emitter<T0, T1, T2> {
     fn rori_rv32(&mut self, rd: T0, rs1: T1, shamtw: T2);
 }
@@ -8356,9 +8356,9 @@ pub trait RoriRv32Emitter<T0, T1, T2> {
 /// Rust: `roriw(rd, rs1, shamtw)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtw` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtw`: Immediate encoding value.
 pub trait RoriwEmitter<T0, T1, T2> {
     fn roriw(&mut self, rd: T0, rs1: T1, shamtw: T2);
 }
@@ -8374,9 +8374,9 @@ pub trait RoriwEmitter<T0, T1, T2> {
 /// Rust: `rorw(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait RorwEmitter<T0, T1, T2> {
     fn rorw(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -8391,9 +8391,9 @@ pub trait RorwEmitter<T0, T1, T2> {
 /// Rust: `sb(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait SbEmitter<T0, T1, T2> {
     fn sb(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -8510,11 +8510,11 @@ pub trait SbreakEmitter {
 /// Rust: `sc_d(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait ScDEmitter<T0, T1, T2, T3, T4> {
     fn sc_d(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -8626,11 +8626,11 @@ pub trait ScDEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `sc_w(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait ScWEmitter<T0, T1, T2, T3, T4> {
     fn sc_w(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -8667,9 +8667,9 @@ pub trait SctrclrEmitter {
 /// Rust: `sd(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait SdEmitter<T0, T1, T2> {
     fn sd(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -8681,8 +8681,8 @@ pub trait SdEmitter<T0, T1, T2> {
 /// Rust: `seqz(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait SeqzEmitter<T0, T1> {
     fn seqz(&mut self, rd: T0, rs1: T1);
 }
@@ -8697,8 +8697,8 @@ pub trait SeqzEmitter<T0, T1> {
 /// Rust: `sext_b(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait SextBEmitter<T0, T1> {
     fn sext_b(&mut self, rd: T0, rs1: T1);
 }
@@ -8713,8 +8713,8 @@ pub trait SextBEmitter<T0, T1> {
 /// Rust: `sext_h(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait SextHEmitter<T0, T1> {
     fn sext_h(&mut self, rd: T0, rs1: T1);
 }
@@ -8726,8 +8726,8 @@ pub trait SextHEmitter<T0, T1> {
 /// Rust: `sext_w(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait SextWEmitter<T0, T1> {
     fn sext_w(&mut self, rd: T0, rs1: T1);
 }
@@ -8956,8 +8956,8 @@ pub trait SfenceInvalIrEmitter {
 /// Rust: `sfence_vma(rs1, rs2)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait SfenceVmaEmitter<T0, T1> {
     fn sfence_vma(&mut self, rs1: T0, rs2: T1);
 }
@@ -8984,8 +8984,8 @@ pub trait SfenceWInvalEmitter {
 /// Rust: `sgtz(rd, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs2`: Source register.
 pub trait SgtzEmitter<T0, T1> {
     fn sgtz(&mut self, rd: T0, rs2: T1);
 }
@@ -9000,9 +9000,9 @@ pub trait SgtzEmitter<T0, T1> {
 /// Rust: `sh(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait ShEmitter<T0, T1, T2> {
     fn sh(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -9016,9 +9016,9 @@ pub trait ShEmitter<T0, T1, T2> {
 /// Rust: `sh1add(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Sh1AddEmitter<T0, T1, T2> {
     fn sh1add(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9034,9 +9034,9 @@ pub trait Sh1AddEmitter<T0, T1, T2> {
 /// Rust: `sh1add_uw(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Sh1AddUwEmitter<T0, T1, T2> {
     fn sh1add_uw(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9050,9 +9050,9 @@ pub trait Sh1AddUwEmitter<T0, T1, T2> {
 /// Rust: `sh2add(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Sh2AddEmitter<T0, T1, T2> {
     fn sh2add(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9068,9 +9068,9 @@ pub trait Sh2AddEmitter<T0, T1, T2> {
 /// Rust: `sh2add_uw(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Sh2AddUwEmitter<T0, T1, T2> {
     fn sh2add_uw(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9084,9 +9084,9 @@ pub trait Sh2AddUwEmitter<T0, T1, T2> {
 /// Rust: `sh3add(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Sh3AddEmitter<T0, T1, T2> {
     fn sh3add(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9102,9 +9102,9 @@ pub trait Sh3AddEmitter<T0, T1, T2> {
 /// Rust: `sh3add_uw(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Sh3AddUwEmitter<T0, T1, T2> {
     fn sh3add_uw(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9116,8 +9116,8 @@ pub trait Sh3AddUwEmitter<T0, T1, T2> {
 /// Rust: `sha256sig0(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait Sha256Sig0Emitter<T0, T1> {
     fn sha256sig0(&mut self, rd: T0, rs1: T1);
 }
@@ -9129,8 +9129,8 @@ pub trait Sha256Sig0Emitter<T0, T1> {
 /// Rust: `sha256sig1(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait Sha256Sig1Emitter<T0, T1> {
     fn sha256sig1(&mut self, rd: T0, rs1: T1);
 }
@@ -9142,8 +9142,8 @@ pub trait Sha256Sig1Emitter<T0, T1> {
 /// Rust: `sha256sum0(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait Sha256Sum0Emitter<T0, T1> {
     fn sha256sum0(&mut self, rd: T0, rs1: T1);
 }
@@ -9155,8 +9155,8 @@ pub trait Sha256Sum0Emitter<T0, T1> {
 /// Rust: `sha256sum1(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait Sha256Sum1Emitter<T0, T1> {
     fn sha256sum1(&mut self, rd: T0, rs1: T1);
 }
@@ -9168,8 +9168,8 @@ pub trait Sha256Sum1Emitter<T0, T1> {
 /// Rust: `sha512sig0(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait Sha512Sig0Emitter<T0, T1> {
     fn sha512sig0(&mut self, rd: T0, rs1: T1);
 }
@@ -9181,9 +9181,9 @@ pub trait Sha512Sig0Emitter<T0, T1> {
 /// Rust: `sha512sig0h(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Sha512Sig0HEmitter<T0, T1, T2> {
     fn sha512sig0h(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9195,9 +9195,9 @@ pub trait Sha512Sig0HEmitter<T0, T1, T2> {
 /// Rust: `sha512sig0l(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Sha512Sig0LEmitter<T0, T1, T2> {
     fn sha512sig0l(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9209,8 +9209,8 @@ pub trait Sha512Sig0LEmitter<T0, T1, T2> {
 /// Rust: `sha512sig1(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait Sha512Sig1Emitter<T0, T1> {
     fn sha512sig1(&mut self, rd: T0, rs1: T1);
 }
@@ -9222,9 +9222,9 @@ pub trait Sha512Sig1Emitter<T0, T1> {
 /// Rust: `sha512sig1h(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Sha512Sig1HEmitter<T0, T1, T2> {
     fn sha512sig1h(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9236,9 +9236,9 @@ pub trait Sha512Sig1HEmitter<T0, T1, T2> {
 /// Rust: `sha512sig1l(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Sha512Sig1LEmitter<T0, T1, T2> {
     fn sha512sig1l(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9250,8 +9250,8 @@ pub trait Sha512Sig1LEmitter<T0, T1, T2> {
 /// Rust: `sha512sum0(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait Sha512Sum0Emitter<T0, T1> {
     fn sha512sum0(&mut self, rd: T0, rs1: T1);
 }
@@ -9263,9 +9263,9 @@ pub trait Sha512Sum0Emitter<T0, T1> {
 /// Rust: `sha512sum0r(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Sha512Sum0REmitter<T0, T1, T2> {
     fn sha512sum0r(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9277,8 +9277,8 @@ pub trait Sha512Sum0REmitter<T0, T1, T2> {
 /// Rust: `sha512sum1(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait Sha512Sum1Emitter<T0, T1> {
     fn sha512sum1(&mut self, rd: T0, rs1: T1);
 }
@@ -9290,9 +9290,9 @@ pub trait Sha512Sum1Emitter<T0, T1> {
 /// Rust: `sha512sum1r(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Sha512Sum1REmitter<T0, T1, T2> {
     fn sha512sum1r(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9304,8 +9304,8 @@ pub trait Sha512Sum1REmitter<T0, T1, T2> {
 /// Rust: `sinval_vma(rs1, rs2)`
 ///
 /// # Arguments
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait SinvalVmaEmitter<T0, T1> {
     fn sinval_vma(&mut self, rs1: T0, rs2: T1);
 }
@@ -9319,9 +9319,9 @@ pub trait SinvalVmaEmitter<T0, T1> {
 /// Rust: `sll(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait SllEmitter<T0, T1, T2> {
     fn sll(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9335,9 +9335,9 @@ pub trait SllEmitter<T0, T1, T2> {
 /// Rust: `slli(rd, rs1, shamtd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtd` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtd`: Immediate encoding value.
 pub trait SlliEmitter<T0, T1, T2> {
     fn slli(&mut self, rd: T0, rs1: T1, shamtd: T2);
 }
@@ -9351,9 +9351,9 @@ pub trait SlliEmitter<T0, T1, T2> {
 /// Rust: `slli_rv32(rd, rs1, shamtw)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtw` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtw`: Immediate encoding value.
 pub trait SlliRv32Emitter<T0, T1, T2> {
     fn slli_rv32(&mut self, rd: T0, rs1: T1, shamtw: T2);
 }
@@ -9371,9 +9371,9 @@ pub trait SlliRv32Emitter<T0, T1, T2> {
 /// Rust: `slli_uw(rd, rs1, shamtd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtd` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtd`: Immediate encoding value.
 pub trait SlliUwEmitter<T0, T1, T2> {
     fn slli_uw(&mut self, rd: T0, rs1: T1, shamtd: T2);
 }
@@ -9387,9 +9387,9 @@ pub trait SlliUwEmitter<T0, T1, T2> {
 /// Rust: `slliw(rd, rs1, shamtw)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtw` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtw`: Immediate encoding value.
 pub trait SlliwEmitter<T0, T1, T2> {
     fn slliw(&mut self, rd: T0, rs1: T1, shamtw: T2);
 }
@@ -9403,9 +9403,9 @@ pub trait SlliwEmitter<T0, T1, T2> {
 /// Rust: `sllw(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait SllwEmitter<T0, T1, T2> {
     fn sllw(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9420,9 +9420,9 @@ pub trait SllwEmitter<T0, T1, T2> {
 /// Rust: `slt(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait SltEmitter<T0, T1, T2> {
     fn slt(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9437,9 +9437,9 @@ pub trait SltEmitter<T0, T1, T2> {
 /// Rust: `slti(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait SltiEmitter<T0, T1, T2> {
     fn slti(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -9458,9 +9458,9 @@ pub trait SltiEmitter<T0, T1, T2> {
 /// Rust: `sltiu(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait SltiuEmitter<T0, T1, T2> {
     fn sltiu(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -9475,9 +9475,9 @@ pub trait SltiuEmitter<T0, T1, T2> {
 /// Rust: `sltu(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait SltuEmitter<T0, T1, T2> {
     fn sltu(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9489,8 +9489,8 @@ pub trait SltuEmitter<T0, T1, T2> {
 /// Rust: `sltz(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait SltzEmitter<T0, T1> {
     fn sltz(&mut self, rd: T0, rs1: T1);
 }
@@ -9502,8 +9502,8 @@ pub trait SltzEmitter<T0, T1> {
 /// Rust: `sm3p0(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait Sm3P0Emitter<T0, T1> {
     fn sm3p0(&mut self, rd: T0, rs1: T1);
 }
@@ -9515,8 +9515,8 @@ pub trait Sm3P0Emitter<T0, T1> {
 /// Rust: `sm3p1(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait Sm3P1Emitter<T0, T1> {
     fn sm3p1(&mut self, rd: T0, rs1: T1);
 }
@@ -9528,10 +9528,10 @@ pub trait Sm3P1Emitter<T0, T1> {
 /// Rust: `sm4ed(rd, rs1, rs2, bs)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `bs` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `bs`: Immediate encoding value.
 pub trait Sm4EdEmitter<T0, T1, T2, T3> {
     fn sm4ed(&mut self, rd: T0, rs1: T1, rs2: T2, bs: T3);
 }
@@ -9543,10 +9543,10 @@ pub trait Sm4EdEmitter<T0, T1, T2, T3> {
 /// Rust: `sm4ks(rd, rs1, rs2, bs)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
-/// - `bs` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
+/// - `bs`: Immediate encoding value.
 pub trait Sm4KsEmitter<T0, T1, T2, T3> {
     fn sm4ks(&mut self, rd: T0, rs1: T1, rs2: T2, bs: T3);
 }
@@ -9558,8 +9558,8 @@ pub trait Sm4KsEmitter<T0, T1, T2, T3> {
 /// Rust: `snez(rd, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs2`: Source register.
 pub trait SnezEmitter<T0, T1> {
     fn snez(&mut self, rd: T0, rs2: T1);
 }
@@ -9573,9 +9573,9 @@ pub trait SnezEmitter<T0, T1> {
 /// Rust: `sra(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait SraEmitter<T0, T1, T2> {
     fn sra(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9590,9 +9590,9 @@ pub trait SraEmitter<T0, T1, T2> {
 /// Rust: `srai(rd, rs1, shamtd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtd` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtd`: Immediate encoding value.
 pub trait SraiEmitter<T0, T1, T2> {
     fn srai(&mut self, rd: T0, rs1: T1, shamtd: T2);
 }
@@ -9607,9 +9607,9 @@ pub trait SraiEmitter<T0, T1, T2> {
 /// Rust: `srai_rv32(rd, rs1, shamtw)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtw` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtw`: Immediate encoding value.
 pub trait SraiRv32Emitter<T0, T1, T2> {
     fn srai_rv32(&mut self, rd: T0, rs1: T1, shamtw: T2);
 }
@@ -9624,9 +9624,9 @@ pub trait SraiRv32Emitter<T0, T1, T2> {
 /// Rust: `sraiw(rd, rs1, shamtw)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtw` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtw`: Immediate encoding value.
 pub trait SraiwEmitter<T0, T1, T2> {
     fn sraiw(&mut self, rd: T0, rs1: T1, shamtw: T2);
 }
@@ -9640,9 +9640,9 @@ pub trait SraiwEmitter<T0, T1, T2> {
 /// Rust: `sraw(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait SrawEmitter<T0, T1, T2> {
     fn sraw(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9706,9 +9706,9 @@ pub trait SretEmitter {
 /// Rust: `srl(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait SrlEmitter<T0, T1, T2> {
     fn srl(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9722,9 +9722,9 @@ pub trait SrlEmitter<T0, T1, T2> {
 /// Rust: `srli(rd, rs1, shamtd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtd` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtd`: Immediate encoding value.
 pub trait SrliEmitter<T0, T1, T2> {
     fn srli(&mut self, rd: T0, rs1: T1, shamtd: T2);
 }
@@ -9738,9 +9738,9 @@ pub trait SrliEmitter<T0, T1, T2> {
 /// Rust: `srli_rv32(rd, rs1, shamtw)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtw` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtw`: Immediate encoding value.
 pub trait SrliRv32Emitter<T0, T1, T2> {
     fn srli_rv32(&mut self, rd: T0, rs1: T1, shamtw: T2);
 }
@@ -9754,9 +9754,9 @@ pub trait SrliRv32Emitter<T0, T1, T2> {
 /// Rust: `srliw(rd, rs1, shamtw)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `shamtw` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `shamtw`: Immediate encoding value.
 pub trait SrliwEmitter<T0, T1, T2> {
     fn srliw(&mut self, rd: T0, rs1: T1, shamtw: T2);
 }
@@ -9770,9 +9770,9 @@ pub trait SrliwEmitter<T0, T1, T2> {
 /// Rust: `srlw(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait SrlwEmitter<T0, T1, T2> {
     fn srlw(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9784,11 +9784,11 @@ pub trait SrlwEmitter<T0, T1, T2> {
 /// Rust: `ssamoswap_d(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait SsamoswapDEmitter<T0, T1, T2, T3, T4> {
     fn ssamoswap_d(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -9800,11 +9800,11 @@ pub trait SsamoswapDEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `ssamoswap_w(rd, rs1, rs2, aq, rl)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `aq` — Acquire-order bit.
-/// - `rl` — Release-order bit; retained for the existing emitter API.
+/// - `rd`: Destination register.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `aq`: Acquire-order bit.
+/// - `rl`: Release-order bit; retained for the existing emitter API.
 pub trait SsamoswapWEmitter<T0, T1, T2, T3, T4> {
     fn ssamoswap_w(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4);
 }
@@ -9860,7 +9860,7 @@ pub trait SspushX5Emitter {
 /// Rust: `ssrdp(rd)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
+/// - `rd`: Destination register.
 pub trait SsrdpEmitter<T0> {
     fn ssrdp(&mut self, rd: T0);
 }
@@ -9874,9 +9874,9 @@ pub trait SsrdpEmitter<T0> {
 /// Rust: `sub(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait SubEmitter<T0, T1, T2> {
     fn sub(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9890,9 +9890,9 @@ pub trait SubEmitter<T0, T1, T2> {
 /// Rust: `subw(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait SubwEmitter<T0, T1, T2> {
     fn subw(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -9907,9 +9907,9 @@ pub trait SubwEmitter<T0, T1, T2> {
 /// Rust: `sw(rs1, rs2, imm)`
 ///
 /// # Arguments
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait SwEmitter<T0, T1, T2> {
     fn sw(&mut self, rs1: T0, rs2: T1, imm: T2);
 }
@@ -9925,8 +9925,8 @@ pub trait SwEmitter<T0, T1, T2> {
 /// Rust: `unzip(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait UnzipEmitter<T0, T1> {
     fn unzip(&mut self, rd: T0, rs1: T1);
 }
@@ -9938,10 +9938,10 @@ pub trait UnzipEmitter<T0, T1> {
 /// Rust: `vaadd_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VaaddVvEmitter<T0, T1, T2, T3> {
     fn vaadd_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -9953,10 +9953,10 @@ pub trait VaaddVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vaadd_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VaaddVxEmitter<T0, T1, T2, T3> {
     fn vaadd_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -9968,10 +9968,10 @@ pub trait VaaddVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vaaddu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VaadduVvEmitter<T0, T1, T2, T3> {
     fn vaaddu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -9983,10 +9983,10 @@ pub trait VaadduVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vaaddu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VaadduVxEmitter<T0, T1, T2, T3> {
     fn vaaddu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -9998,9 +9998,9 @@ pub trait VaadduVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vadc_vim(vd, vs2, simm5)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
 pub trait VadcVimEmitter<T0, T1, T2> {
     fn vadc_vim(&mut self, vd: T0, vs2: T1, simm5: T2);
 }
@@ -10012,9 +10012,9 @@ pub trait VadcVimEmitter<T0, T1, T2> {
 /// Rust: `vadc_vvm(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VadcVvmEmitter<T0, T1, T2> {
     fn vadc_vvm(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -10026,9 +10026,9 @@ pub trait VadcVvmEmitter<T0, T1, T2> {
 /// Rust: `vadc_vxm(vd, rs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vs2`: Vector register operand.
 pub trait VadcVxmEmitter<T0, T1, T2> {
     fn vadc_vxm(&mut self, vd: T0, rs1: T1, vs2: T2);
 }
@@ -10040,10 +10040,10 @@ pub trait VadcVxmEmitter<T0, T1, T2> {
 /// Rust: `vadd_vi(vd, vs2, simm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VaddViEmitter<T0, T1, T2, T3> {
     fn vadd_vi(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3);
 }
@@ -10055,10 +10055,10 @@ pub trait VaddViEmitter<T0, T1, T2, T3> {
 /// Rust: `vadd_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VaddVvEmitter<T0, T1, T2, T3> {
     fn vadd_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10070,10 +10070,10 @@ pub trait VaddVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vadd_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VaddVxEmitter<T0, T1, T2, T3> {
     fn vadd_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10085,8 +10085,8 @@ pub trait VaddVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vaesdf_vs(vd, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VaesdfVsEmitter<T0, T1> {
     fn vaesdf_vs(&mut self, vd: T0, vs2: T1);
 }
@@ -10098,8 +10098,8 @@ pub trait VaesdfVsEmitter<T0, T1> {
 /// Rust: `vaesdf_vv(vd, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VaesdfVvEmitter<T0, T1> {
     fn vaesdf_vv(&mut self, vd: T0, vs2: T1);
 }
@@ -10111,8 +10111,8 @@ pub trait VaesdfVvEmitter<T0, T1> {
 /// Rust: `vaesdm_vs(vd, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VaesdmVsEmitter<T0, T1> {
     fn vaesdm_vs(&mut self, vd: T0, vs2: T1);
 }
@@ -10124,8 +10124,8 @@ pub trait VaesdmVsEmitter<T0, T1> {
 /// Rust: `vaesdm_vv(vd, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VaesdmVvEmitter<T0, T1> {
     fn vaesdm_vv(&mut self, vd: T0, vs2: T1);
 }
@@ -10137,8 +10137,8 @@ pub trait VaesdmVvEmitter<T0, T1> {
 /// Rust: `vaesef_vs(vd, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VaesefVsEmitter<T0, T1> {
     fn vaesef_vs(&mut self, vd: T0, vs2: T1);
 }
@@ -10150,8 +10150,8 @@ pub trait VaesefVsEmitter<T0, T1> {
 /// Rust: `vaesef_vv(vd, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VaesefVvEmitter<T0, T1> {
     fn vaesef_vv(&mut self, vd: T0, vs2: T1);
 }
@@ -10163,8 +10163,8 @@ pub trait VaesefVvEmitter<T0, T1> {
 /// Rust: `vaesem_vs(vd, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VaesemVsEmitter<T0, T1> {
     fn vaesem_vs(&mut self, vd: T0, vs2: T1);
 }
@@ -10176,8 +10176,8 @@ pub trait VaesemVsEmitter<T0, T1> {
 /// Rust: `vaesem_vv(vd, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VaesemVvEmitter<T0, T1> {
     fn vaesem_vv(&mut self, vd: T0, vs2: T1);
 }
@@ -10189,9 +10189,9 @@ pub trait VaesemVvEmitter<T0, T1> {
 /// Rust: `vaeskf1_vi(vd, vs2, zimm5)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm5` — Immediate encoding value.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm5`: Immediate encoding value.
 pub trait Vaeskf1ViEmitter<T0, T1, T2> {
     fn vaeskf1_vi(&mut self, vd: T0, vs2: T1, zimm5: T2);
 }
@@ -10203,9 +10203,9 @@ pub trait Vaeskf1ViEmitter<T0, T1, T2> {
 /// Rust: `vaeskf2_vi(vd, vs2, zimm5)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm5` — Immediate encoding value.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm5`: Immediate encoding value.
 pub trait Vaeskf2ViEmitter<T0, T1, T2> {
     fn vaeskf2_vi(&mut self, vd: T0, vs2: T1, zimm5: T2);
 }
@@ -10217,8 +10217,8 @@ pub trait Vaeskf2ViEmitter<T0, T1, T2> {
 /// Rust: `vaesz_vs(vd, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VaeszVsEmitter<T0, T1> {
     fn vaesz_vs(&mut self, vd: T0, vs2: T1);
 }
@@ -10230,10 +10230,10 @@ pub trait VaeszVsEmitter<T0, T1> {
 /// Rust: `vand_vi(vd, vs2, simm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VandViEmitter<T0, T1, T2, T3> {
     fn vand_vi(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3);
 }
@@ -10245,10 +10245,10 @@ pub trait VandViEmitter<T0, T1, T2, T3> {
 /// Rust: `vand_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VandVvEmitter<T0, T1, T2, T3> {
     fn vand_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10260,10 +10260,10 @@ pub trait VandVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vand_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VandVxEmitter<T0, T1, T2, T3> {
     fn vand_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10275,10 +10275,10 @@ pub trait VandVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vandn_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VandnVvEmitter<T0, T1, T2, T3> {
     fn vandn_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10290,10 +10290,10 @@ pub trait VandnVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vandn_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VandnVxEmitter<T0, T1, T2, T3> {
     fn vandn_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10305,10 +10305,10 @@ pub trait VandnVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vasub_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VasubVvEmitter<T0, T1, T2, T3> {
     fn vasub_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10320,10 +10320,10 @@ pub trait VasubVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vasub_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VasubVxEmitter<T0, T1, T2, T3> {
     fn vasub_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10335,10 +10335,10 @@ pub trait VasubVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vasubu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VasubuVvEmitter<T0, T1, T2, T3> {
     fn vasubu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10350,10 +10350,10 @@ pub trait VasubuVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vasubu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VasubuVxEmitter<T0, T1, T2, T3> {
     fn vasubu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10365,9 +10365,9 @@ pub trait VasubuVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vbrev8_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait Vbrev8VEmitter<T0, T1, T2> {
     fn vbrev8_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -10379,9 +10379,9 @@ pub trait Vbrev8VEmitter<T0, T1, T2> {
 /// Rust: `vbrev_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VbrevVEmitter<T0, T1, T2> {
     fn vbrev_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -10393,10 +10393,10 @@ pub trait VbrevVEmitter<T0, T1, T2> {
 /// Rust: `vclmul_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VclmulVvEmitter<T0, T1, T2, T3> {
     fn vclmul_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10408,10 +10408,10 @@ pub trait VclmulVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vclmul_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VclmulVxEmitter<T0, T1, T2, T3> {
     fn vclmul_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10423,10 +10423,10 @@ pub trait VclmulVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vclmulh_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VclmulhVvEmitter<T0, T1, T2, T3> {
     fn vclmulh_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10438,10 +10438,10 @@ pub trait VclmulhVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vclmulh_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VclmulhVxEmitter<T0, T1, T2, T3> {
     fn vclmulh_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10453,9 +10453,9 @@ pub trait VclmulhVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vclz_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VclzVEmitter<T0, T1, T2> {
     fn vclz_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -10467,9 +10467,9 @@ pub trait VclzVEmitter<T0, T1, T2> {
 /// Rust: `vcompress_vm(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VcompressVmEmitter<T0, T1, T2> {
     fn vcompress_vm(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -10481,9 +10481,9 @@ pub trait VcompressVmEmitter<T0, T1, T2> {
 /// Rust: `vcpop_m(rd, vs2, vm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `rd`: Destination register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VcpopMEmitter<T0, T1, T2> {
     fn vcpop_m(&mut self, rd: T0, vs2: T1, vm: T2);
 }
@@ -10495,9 +10495,9 @@ pub trait VcpopMEmitter<T0, T1, T2> {
 /// Rust: `vcpop_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VcpopVEmitter<T0, T1, T2> {
     fn vcpop_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -10509,9 +10509,9 @@ pub trait VcpopVEmitter<T0, T1, T2> {
 /// Rust: `vctz_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VctzVEmitter<T0, T1, T2> {
     fn vctz_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -10523,10 +10523,10 @@ pub trait VctzVEmitter<T0, T1, T2> {
 /// Rust: `vdiv_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VdivVvEmitter<T0, T1, T2, T3> {
     fn vdiv_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10538,10 +10538,10 @@ pub trait VdivVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vdiv_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VdivVxEmitter<T0, T1, T2, T3> {
     fn vdiv_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10553,10 +10553,10 @@ pub trait VdivVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vdivu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VdivuVvEmitter<T0, T1, T2, T3> {
     fn vdivu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10568,10 +10568,10 @@ pub trait VdivuVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vdivu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VdivuVxEmitter<T0, T1, T2, T3> {
     fn vdivu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10583,10 +10583,10 @@ pub trait VdivuVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vfadd_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfaddVfEmitter<T0, T1, T2, T3> {
     fn vfadd_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10598,10 +10598,10 @@ pub trait VfaddVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfadd_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfaddVvEmitter<T0, T1, T2, T3> {
     fn vfadd_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10613,9 +10613,9 @@ pub trait VfaddVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfclass_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfclassVEmitter<T0, T1, T2> {
     fn vfclass_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -10627,9 +10627,9 @@ pub trait VfclassVEmitter<T0, T1, T2> {
 /// Rust: `vfcvt_f_x_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfcvtFXVEmitter<T0, T1, T2> {
     fn vfcvt_f_x_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -10641,9 +10641,9 @@ pub trait VfcvtFXVEmitter<T0, T1, T2> {
 /// Rust: `vfcvt_f_xu_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfcvtFXuVEmitter<T0, T1, T2> {
     fn vfcvt_f_xu_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -10655,9 +10655,9 @@ pub trait VfcvtFXuVEmitter<T0, T1, T2> {
 /// Rust: `vfcvt_rtz_x_f_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfcvtRtzXFVEmitter<T0, T1, T2> {
     fn vfcvt_rtz_x_f_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -10669,9 +10669,9 @@ pub trait VfcvtRtzXFVEmitter<T0, T1, T2> {
 /// Rust: `vfcvt_rtz_xu_f_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfcvtRtzXuFVEmitter<T0, T1, T2> {
     fn vfcvt_rtz_xu_f_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -10683,9 +10683,9 @@ pub trait VfcvtRtzXuFVEmitter<T0, T1, T2> {
 /// Rust: `vfcvt_x_f_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfcvtXFVEmitter<T0, T1, T2> {
     fn vfcvt_x_f_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -10697,9 +10697,9 @@ pub trait VfcvtXFVEmitter<T0, T1, T2> {
 /// Rust: `vfcvt_xu_f_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfcvtXuFVEmitter<T0, T1, T2> {
     fn vfcvt_xu_f_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -10711,10 +10711,10 @@ pub trait VfcvtXuFVEmitter<T0, T1, T2> {
 /// Rust: `vfdiv_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfdivVfEmitter<T0, T1, T2, T3> {
     fn vfdiv_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10726,10 +10726,10 @@ pub trait VfdivVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfdiv_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfdivVvEmitter<T0, T1, T2, T3> {
     fn vfdiv_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10741,9 +10741,9 @@ pub trait VfdivVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfirst_m(rd, vs2, vm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `rd`: Destination register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfirstMEmitter<T0, T1, T2> {
     fn vfirst_m(&mut self, rd: T0, vs2: T1, vm: T2);
 }
@@ -10755,10 +10755,10 @@ pub trait VfirstMEmitter<T0, T1, T2> {
 /// Rust: `vfmacc_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfmaccVfEmitter<T0, T1, T2, T3> {
     fn vfmacc_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10770,10 +10770,10 @@ pub trait VfmaccVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfmacc_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfmaccVvEmitter<T0, T1, T2, T3> {
     fn vfmacc_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10785,10 +10785,10 @@ pub trait VfmaccVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfmadd_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfmaddVfEmitter<T0, T1, T2, T3> {
     fn vfmadd_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10800,10 +10800,10 @@ pub trait VfmaddVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfmadd_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfmaddVvEmitter<T0, T1, T2, T3> {
     fn vfmadd_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10815,10 +10815,10 @@ pub trait VfmaddVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfmax_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfmaxVfEmitter<T0, T1, T2, T3> {
     fn vfmax_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10830,10 +10830,10 @@ pub trait VfmaxVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfmax_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfmaxVvEmitter<T0, T1, T2, T3> {
     fn vfmax_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10845,9 +10845,9 @@ pub trait VfmaxVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfmerge_vfm(vd, rs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vs2`: Vector register operand.
 pub trait VfmergeVfmEmitter<T0, T1, T2> {
     fn vfmerge_vfm(&mut self, vd: T0, rs1: T1, vs2: T2);
 }
@@ -10859,10 +10859,10 @@ pub trait VfmergeVfmEmitter<T0, T1, T2> {
 /// Rust: `vfmin_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfminVfEmitter<T0, T1, T2, T3> {
     fn vfmin_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10874,10 +10874,10 @@ pub trait VfminVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfmin_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfminVvEmitter<T0, T1, T2, T3> {
     fn vfmin_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10889,10 +10889,10 @@ pub trait VfminVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfmsac_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfmsacVfEmitter<T0, T1, T2, T3> {
     fn vfmsac_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10904,10 +10904,10 @@ pub trait VfmsacVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfmsac_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfmsacVvEmitter<T0, T1, T2, T3> {
     fn vfmsac_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10919,10 +10919,10 @@ pub trait VfmsacVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfmsub_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfmsubVfEmitter<T0, T1, T2, T3> {
     fn vfmsub_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10934,10 +10934,10 @@ pub trait VfmsubVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfmsub_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfmsubVvEmitter<T0, T1, T2, T3> {
     fn vfmsub_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10949,10 +10949,10 @@ pub trait VfmsubVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfmul_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfmulVfEmitter<T0, T1, T2, T3> {
     fn vfmul_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -10964,10 +10964,10 @@ pub trait VfmulVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfmul_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfmulVvEmitter<T0, T1, T2, T3> {
     fn vfmul_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -10979,8 +10979,8 @@ pub trait VfmulVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfmv_f_s(rd, vs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `vs2` — Vector register operand.
+/// - `rd`: Destination register.
+/// - `vs2`: Vector register operand.
 pub trait VfmvFSEmitter<T0, T1> {
     fn vfmv_f_s(&mut self, rd: T0, vs2: T1);
 }
@@ -10992,8 +10992,8 @@ pub trait VfmvFSEmitter<T0, T1> {
 /// Rust: `vfmv_s_f(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Source register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Source register.
 pub trait VfmvSFEmitter<T0, T1> {
     fn vfmv_s_f(&mut self, vd: T0, rs1: T1);
 }
@@ -11005,8 +11005,8 @@ pub trait VfmvSFEmitter<T0, T1> {
 /// Rust: `vfmv_v_f(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Source register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Source register.
 pub trait VfmvVFEmitter<T0, T1> {
     fn vfmv_v_f(&mut self, vd: T0, rs1: T1);
 }
@@ -11018,9 +11018,9 @@ pub trait VfmvVFEmitter<T0, T1> {
 /// Rust: `vfncvt_f_f_w(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfncvtFFWEmitter<T0, T1, T2> {
     fn vfncvt_f_f_w(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11032,9 +11032,9 @@ pub trait VfncvtFFWEmitter<T0, T1, T2> {
 /// Rust: `vfncvt_f_x_w(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfncvtFXWEmitter<T0, T1, T2> {
     fn vfncvt_f_x_w(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11046,9 +11046,9 @@ pub trait VfncvtFXWEmitter<T0, T1, T2> {
 /// Rust: `vfncvt_f_xu_w(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfncvtFXuWEmitter<T0, T1, T2> {
     fn vfncvt_f_xu_w(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11060,9 +11060,9 @@ pub trait VfncvtFXuWEmitter<T0, T1, T2> {
 /// Rust: `vfncvt_rod_f_f_w(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfncvtRodFFWEmitter<T0, T1, T2> {
     fn vfncvt_rod_f_f_w(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11074,9 +11074,9 @@ pub trait VfncvtRodFFWEmitter<T0, T1, T2> {
 /// Rust: `vfncvt_rtz_x_f_w(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfncvtRtzXFWEmitter<T0, T1, T2> {
     fn vfncvt_rtz_x_f_w(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11088,9 +11088,9 @@ pub trait VfncvtRtzXFWEmitter<T0, T1, T2> {
 /// Rust: `vfncvt_rtz_xu_f_w(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfncvtRtzXuFWEmitter<T0, T1, T2> {
     fn vfncvt_rtz_xu_f_w(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11102,9 +11102,9 @@ pub trait VfncvtRtzXuFWEmitter<T0, T1, T2> {
 /// Rust: `vfncvt_x_f_w(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfncvtXFWEmitter<T0, T1, T2> {
     fn vfncvt_x_f_w(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11116,9 +11116,9 @@ pub trait VfncvtXFWEmitter<T0, T1, T2> {
 /// Rust: `vfncvt_xu_f_w(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfncvtXuFWEmitter<T0, T1, T2> {
     fn vfncvt_xu_f_w(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11130,9 +11130,9 @@ pub trait VfncvtXuFWEmitter<T0, T1, T2> {
 /// Rust: `vfncvtbf16_f_f_w(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait Vfncvtbf16FFWEmitter<T0, T1, T2> {
     fn vfncvtbf16_f_f_w(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11144,10 +11144,10 @@ pub trait Vfncvtbf16FFWEmitter<T0, T1, T2> {
 /// Rust: `vfnmacc_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfnmaccVfEmitter<T0, T1, T2, T3> {
     fn vfnmacc_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11159,10 +11159,10 @@ pub trait VfnmaccVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfnmacc_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfnmaccVvEmitter<T0, T1, T2, T3> {
     fn vfnmacc_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11174,10 +11174,10 @@ pub trait VfnmaccVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfnmadd_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfnmaddVfEmitter<T0, T1, T2, T3> {
     fn vfnmadd_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11189,10 +11189,10 @@ pub trait VfnmaddVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfnmadd_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfnmaddVvEmitter<T0, T1, T2, T3> {
     fn vfnmadd_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11204,10 +11204,10 @@ pub trait VfnmaddVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfnmsac_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfnmsacVfEmitter<T0, T1, T2, T3> {
     fn vfnmsac_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11219,10 +11219,10 @@ pub trait VfnmsacVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfnmsac_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfnmsacVvEmitter<T0, T1, T2, T3> {
     fn vfnmsac_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11234,10 +11234,10 @@ pub trait VfnmsacVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfnmsub_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfnmsubVfEmitter<T0, T1, T2, T3> {
     fn vfnmsub_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11249,10 +11249,10 @@ pub trait VfnmsubVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfnmsub_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfnmsubVvEmitter<T0, T1, T2, T3> {
     fn vfnmsub_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11264,10 +11264,10 @@ pub trait VfnmsubVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfrdiv_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfrdivVfEmitter<T0, T1, T2, T3> {
     fn vfrdiv_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11279,9 +11279,9 @@ pub trait VfrdivVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfrec7_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait Vfrec7VEmitter<T0, T1, T2> {
     fn vfrec7_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11293,10 +11293,10 @@ pub trait Vfrec7VEmitter<T0, T1, T2> {
 /// Rust: `vfredmax_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfredmaxVsEmitter<T0, T1, T2, T3> {
     fn vfredmax_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11308,10 +11308,10 @@ pub trait VfredmaxVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vfredmin_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfredminVsEmitter<T0, T1, T2, T3> {
     fn vfredmin_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11323,10 +11323,10 @@ pub trait VfredminVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vfredosum_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfredosumVsEmitter<T0, T1, T2, T3> {
     fn vfredosum_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11338,10 +11338,10 @@ pub trait VfredosumVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vfredsum_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfredsumVsEmitter<T0, T1, T2, T3> {
     fn vfredsum_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11353,10 +11353,10 @@ pub trait VfredsumVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vfredusum_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfredusumVsEmitter<T0, T1, T2, T3> {
     fn vfredusum_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11368,9 +11368,9 @@ pub trait VfredusumVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vfrsqrt7_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait Vfrsqrt7VEmitter<T0, T1, T2> {
     fn vfrsqrt7_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11382,10 +11382,10 @@ pub trait Vfrsqrt7VEmitter<T0, T1, T2> {
 /// Rust: `vfrsub_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfrsubVfEmitter<T0, T1, T2, T3> {
     fn vfrsub_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11397,10 +11397,10 @@ pub trait VfrsubVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfsgnj_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfsgnjVfEmitter<T0, T1, T2, T3> {
     fn vfsgnj_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11412,10 +11412,10 @@ pub trait VfsgnjVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfsgnj_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfsgnjVvEmitter<T0, T1, T2, T3> {
     fn vfsgnj_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11427,10 +11427,10 @@ pub trait VfsgnjVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfsgnjn_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfsgnjnVfEmitter<T0, T1, T2, T3> {
     fn vfsgnjn_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11442,10 +11442,10 @@ pub trait VfsgnjnVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfsgnjn_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfsgnjnVvEmitter<T0, T1, T2, T3> {
     fn vfsgnjn_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11457,10 +11457,10 @@ pub trait VfsgnjnVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfsgnjx_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfsgnjxVfEmitter<T0, T1, T2, T3> {
     fn vfsgnjx_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11472,10 +11472,10 @@ pub trait VfsgnjxVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfsgnjx_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfsgnjxVvEmitter<T0, T1, T2, T3> {
     fn vfsgnjx_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11487,10 +11487,10 @@ pub trait VfsgnjxVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfslide1down_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait Vfslide1DownVfEmitter<T0, T1, T2, T3> {
     fn vfslide1down_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11502,10 +11502,10 @@ pub trait Vfslide1DownVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfslide1up_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait Vfslide1UpVfEmitter<T0, T1, T2, T3> {
     fn vfslide1up_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11517,9 +11517,9 @@ pub trait Vfslide1UpVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfsqrt_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfsqrtVEmitter<T0, T1, T2> {
     fn vfsqrt_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11531,10 +11531,10 @@ pub trait VfsqrtVEmitter<T0, T1, T2> {
 /// Rust: `vfsub_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfsubVfEmitter<T0, T1, T2, T3> {
     fn vfsub_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11546,10 +11546,10 @@ pub trait VfsubVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfsub_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfsubVvEmitter<T0, T1, T2, T3> {
     fn vfsub_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11561,10 +11561,10 @@ pub trait VfsubVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwadd_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfwaddVfEmitter<T0, T1, T2, T3> {
     fn vfwadd_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11576,10 +11576,10 @@ pub trait VfwaddVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwadd_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwaddVvEmitter<T0, T1, T2, T3> {
     fn vfwadd_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11591,10 +11591,10 @@ pub trait VfwaddVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwadd_wf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfwaddWfEmitter<T0, T1, T2, T3> {
     fn vfwadd_wf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11606,10 +11606,10 @@ pub trait VfwaddWfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwadd_wv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwaddWvEmitter<T0, T1, T2, T3> {
     fn vfwadd_wv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11621,9 +11621,9 @@ pub trait VfwaddWvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwcvt_f_f_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwcvtFFVEmitter<T0, T1, T2> {
     fn vfwcvt_f_f_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11635,9 +11635,9 @@ pub trait VfwcvtFFVEmitter<T0, T1, T2> {
 /// Rust: `vfwcvt_f_x_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwcvtFXVEmitter<T0, T1, T2> {
     fn vfwcvt_f_x_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11649,9 +11649,9 @@ pub trait VfwcvtFXVEmitter<T0, T1, T2> {
 /// Rust: `vfwcvt_f_xu_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwcvtFXuVEmitter<T0, T1, T2> {
     fn vfwcvt_f_xu_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11663,9 +11663,9 @@ pub trait VfwcvtFXuVEmitter<T0, T1, T2> {
 /// Rust: `vfwcvt_rtz_x_f_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwcvtRtzXFVEmitter<T0, T1, T2> {
     fn vfwcvt_rtz_x_f_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11677,9 +11677,9 @@ pub trait VfwcvtRtzXFVEmitter<T0, T1, T2> {
 /// Rust: `vfwcvt_rtz_xu_f_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwcvtRtzXuFVEmitter<T0, T1, T2> {
     fn vfwcvt_rtz_xu_f_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11691,9 +11691,9 @@ pub trait VfwcvtRtzXuFVEmitter<T0, T1, T2> {
 /// Rust: `vfwcvt_x_f_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwcvtXFVEmitter<T0, T1, T2> {
     fn vfwcvt_x_f_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11705,9 +11705,9 @@ pub trait VfwcvtXFVEmitter<T0, T1, T2> {
 /// Rust: `vfwcvt_xu_f_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwcvtXuFVEmitter<T0, T1, T2> {
     fn vfwcvt_xu_f_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11719,9 +11719,9 @@ pub trait VfwcvtXuFVEmitter<T0, T1, T2> {
 /// Rust: `vfwcvtbf16_f_f_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait Vfwcvtbf16FFVEmitter<T0, T1, T2> {
     fn vfwcvtbf16_f_f_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -11733,10 +11733,10 @@ pub trait Vfwcvtbf16FFVEmitter<T0, T1, T2> {
 /// Rust: `vfwmacc_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfwmaccVfEmitter<T0, T1, T2, T3> {
     fn vfwmacc_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11748,10 +11748,10 @@ pub trait VfwmaccVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwmacc_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwmaccVvEmitter<T0, T1, T2, T3> {
     fn vfwmacc_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11763,10 +11763,10 @@ pub trait VfwmaccVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwmaccbf16_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait Vfwmaccbf16VfEmitter<T0, T1, T2, T3> {
     fn vfwmaccbf16_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11778,10 +11778,10 @@ pub trait Vfwmaccbf16VfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwmaccbf16_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait Vfwmaccbf16VvEmitter<T0, T1, T2, T3> {
     fn vfwmaccbf16_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11793,10 +11793,10 @@ pub trait Vfwmaccbf16VvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwmsac_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfwmsacVfEmitter<T0, T1, T2, T3> {
     fn vfwmsac_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11808,10 +11808,10 @@ pub trait VfwmsacVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwmsac_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwmsacVvEmitter<T0, T1, T2, T3> {
     fn vfwmsac_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11823,10 +11823,10 @@ pub trait VfwmsacVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwmul_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfwmulVfEmitter<T0, T1, T2, T3> {
     fn vfwmul_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11838,10 +11838,10 @@ pub trait VfwmulVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwmul_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwmulVvEmitter<T0, T1, T2, T3> {
     fn vfwmul_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11853,10 +11853,10 @@ pub trait VfwmulVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwnmacc_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfwnmaccVfEmitter<T0, T1, T2, T3> {
     fn vfwnmacc_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11868,10 +11868,10 @@ pub trait VfwnmaccVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwnmacc_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwnmaccVvEmitter<T0, T1, T2, T3> {
     fn vfwnmacc_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11883,10 +11883,10 @@ pub trait VfwnmaccVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwnmsac_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfwnmsacVfEmitter<T0, T1, T2, T3> {
     fn vfwnmsac_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11898,10 +11898,10 @@ pub trait VfwnmsacVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwnmsac_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwnmsacVvEmitter<T0, T1, T2, T3> {
     fn vfwnmsac_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11913,10 +11913,10 @@ pub trait VfwnmsacVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwredosum_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwredosumVsEmitter<T0, T1, T2, T3> {
     fn vfwredosum_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11928,10 +11928,10 @@ pub trait VfwredosumVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwredsum_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwredsumVsEmitter<T0, T1, T2, T3> {
     fn vfwredsum_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11943,10 +11943,10 @@ pub trait VfwredsumVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwredusum_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwredusumVsEmitter<T0, T1, T2, T3> {
     fn vfwredusum_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11958,10 +11958,10 @@ pub trait VfwredusumVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwsub_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfwsubVfEmitter<T0, T1, T2, T3> {
     fn vfwsub_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -11973,10 +11973,10 @@ pub trait VfwsubVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwsub_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwsubVvEmitter<T0, T1, T2, T3> {
     fn vfwsub_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -11988,10 +11988,10 @@ pub trait VfwsubVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwsub_wf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VfwsubWfEmitter<T0, T1, T2, T3> {
     fn vfwsub_wf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -12003,10 +12003,10 @@ pub trait VfwsubWfEmitter<T0, T1, T2, T3> {
 /// Rust: `vfwsub_wv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VfwsubWvEmitter<T0, T1, T2, T3> {
     fn vfwsub_wv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -12018,9 +12018,9 @@ pub trait VfwsubWvEmitter<T0, T1, T2, T3> {
 /// Rust: `vghsh_vv(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VghshVvEmitter<T0, T1, T2> {
     fn vghsh_vv(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -12032,8 +12032,8 @@ pub trait VghshVvEmitter<T0, T1, T2> {
 /// Rust: `vgmul_vv(vd, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VgmulVvEmitter<T0, T1> {
     fn vgmul_vv(&mut self, vd: T0, vs2: T1);
 }
@@ -12045,8 +12045,8 @@ pub trait VgmulVvEmitter<T0, T1> {
 /// Rust: `vid_v(vd, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VidVEmitter<T0, T1> {
     fn vid_v(&mut self, vd: T0, vm: T1);
 }
@@ -12058,9 +12058,9 @@ pub trait VidVEmitter<T0, T1> {
 /// Rust: `viota_m(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait ViotaMEmitter<T0, T1, T2> {
     fn viota_m(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -12072,8 +12072,8 @@ pub trait ViotaMEmitter<T0, T1, T2> {
 /// Rust: `vl1r_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl1RVEmitter<T0, T1> {
     fn vl1r_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12085,8 +12085,8 @@ pub trait Vl1RVEmitter<T0, T1> {
 /// Rust: `vl1re16_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl1Re16VEmitter<T0, T1> {
     fn vl1re16_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12098,8 +12098,8 @@ pub trait Vl1Re16VEmitter<T0, T1> {
 /// Rust: `vl1re32_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl1Re32VEmitter<T0, T1> {
     fn vl1re32_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12111,8 +12111,8 @@ pub trait Vl1Re32VEmitter<T0, T1> {
 /// Rust: `vl1re64_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl1Re64VEmitter<T0, T1> {
     fn vl1re64_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12124,8 +12124,8 @@ pub trait Vl1Re64VEmitter<T0, T1> {
 /// Rust: `vl1re8_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl1Re8VEmitter<T0, T1> {
     fn vl1re8_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12137,8 +12137,8 @@ pub trait Vl1Re8VEmitter<T0, T1> {
 /// Rust: `vl2r_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl2RVEmitter<T0, T1> {
     fn vl2r_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12150,8 +12150,8 @@ pub trait Vl2RVEmitter<T0, T1> {
 /// Rust: `vl2re16_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl2Re16VEmitter<T0, T1> {
     fn vl2re16_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12163,8 +12163,8 @@ pub trait Vl2Re16VEmitter<T0, T1> {
 /// Rust: `vl2re32_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl2Re32VEmitter<T0, T1> {
     fn vl2re32_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12176,8 +12176,8 @@ pub trait Vl2Re32VEmitter<T0, T1> {
 /// Rust: `vl2re64_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl2Re64VEmitter<T0, T1> {
     fn vl2re64_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12189,8 +12189,8 @@ pub trait Vl2Re64VEmitter<T0, T1> {
 /// Rust: `vl2re8_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl2Re8VEmitter<T0, T1> {
     fn vl2re8_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12202,8 +12202,8 @@ pub trait Vl2Re8VEmitter<T0, T1> {
 /// Rust: `vl4r_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl4RVEmitter<T0, T1> {
     fn vl4r_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12215,8 +12215,8 @@ pub trait Vl4RVEmitter<T0, T1> {
 /// Rust: `vl4re16_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl4Re16VEmitter<T0, T1> {
     fn vl4re16_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12228,8 +12228,8 @@ pub trait Vl4Re16VEmitter<T0, T1> {
 /// Rust: `vl4re32_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl4Re32VEmitter<T0, T1> {
     fn vl4re32_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12241,8 +12241,8 @@ pub trait Vl4Re32VEmitter<T0, T1> {
 /// Rust: `vl4re64_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl4Re64VEmitter<T0, T1> {
     fn vl4re64_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12254,8 +12254,8 @@ pub trait Vl4Re64VEmitter<T0, T1> {
 /// Rust: `vl4re8_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl4Re8VEmitter<T0, T1> {
     fn vl4re8_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12267,8 +12267,8 @@ pub trait Vl4Re8VEmitter<T0, T1> {
 /// Rust: `vl8r_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl8RVEmitter<T0, T1> {
     fn vl8r_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12280,8 +12280,8 @@ pub trait Vl8RVEmitter<T0, T1> {
 /// Rust: `vl8re16_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl8Re16VEmitter<T0, T1> {
     fn vl8re16_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12293,8 +12293,8 @@ pub trait Vl8Re16VEmitter<T0, T1> {
 /// Rust: `vl8re32_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl8Re32VEmitter<T0, T1> {
     fn vl8re32_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12306,8 +12306,8 @@ pub trait Vl8Re32VEmitter<T0, T1> {
 /// Rust: `vl8re64_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl8Re64VEmitter<T0, T1> {
     fn vl8re64_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12319,8 +12319,8 @@ pub trait Vl8Re64VEmitter<T0, T1> {
 /// Rust: `vl8re8_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vl8Re8VEmitter<T0, T1> {
     fn vl8re8_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12332,10 +12332,10 @@ pub trait Vl8Re8VEmitter<T0, T1> {
 /// Rust: `vle16_v(vd, rs1, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vle16VEmitter<T0, T1, T2, T3> {
     fn vle16_v(&mut self, vd: T0, rs1: T1, vm: T2, nf: T3);
 }
@@ -12347,10 +12347,10 @@ pub trait Vle16VEmitter<T0, T1, T2, T3> {
 /// Rust: `vle16ff_v(vd, rs1, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vle16FfVEmitter<T0, T1, T2, T3> {
     fn vle16ff_v(&mut self, vd: T0, rs1: T1, vm: T2, nf: T3);
 }
@@ -12362,8 +12362,8 @@ pub trait Vle16FfVEmitter<T0, T1, T2, T3> {
 /// Rust: `vle1_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vle1VEmitter<T0, T1> {
     fn vle1_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12375,10 +12375,10 @@ pub trait Vle1VEmitter<T0, T1> {
 /// Rust: `vle32_v(vd, rs1, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vle32VEmitter<T0, T1, T2, T3> {
     fn vle32_v(&mut self, vd: T0, rs1: T1, vm: T2, nf: T3);
 }
@@ -12390,10 +12390,10 @@ pub trait Vle32VEmitter<T0, T1, T2, T3> {
 /// Rust: `vle32ff_v(vd, rs1, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vle32FfVEmitter<T0, T1, T2, T3> {
     fn vle32ff_v(&mut self, vd: T0, rs1: T1, vm: T2, nf: T3);
 }
@@ -12405,10 +12405,10 @@ pub trait Vle32FfVEmitter<T0, T1, T2, T3> {
 /// Rust: `vle64_v(vd, rs1, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vle64VEmitter<T0, T1, T2, T3> {
     fn vle64_v(&mut self, vd: T0, rs1: T1, vm: T2, nf: T3);
 }
@@ -12420,10 +12420,10 @@ pub trait Vle64VEmitter<T0, T1, T2, T3> {
 /// Rust: `vle64ff_v(vd, rs1, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vle64FfVEmitter<T0, T1, T2, T3> {
     fn vle64ff_v(&mut self, vd: T0, rs1: T1, vm: T2, nf: T3);
 }
@@ -12435,10 +12435,10 @@ pub trait Vle64FfVEmitter<T0, T1, T2, T3> {
 /// Rust: `vle8_v(vd, rs1, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vle8VEmitter<T0, T1, T2, T3> {
     fn vle8_v(&mut self, vd: T0, rs1: T1, vm: T2, nf: T3);
 }
@@ -12450,10 +12450,10 @@ pub trait Vle8VEmitter<T0, T1, T2, T3> {
 /// Rust: `vle8ff_v(vd, rs1, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vle8FfVEmitter<T0, T1, T2, T3> {
     fn vle8ff_v(&mut self, vd: T0, rs1: T1, vm: T2, nf: T3);
 }
@@ -12465,8 +12465,8 @@ pub trait Vle8FfVEmitter<T0, T1, T2, T3> {
 /// Rust: `vlm_v(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait VlmVEmitter<T0, T1> {
     fn vlm_v(&mut self, vd: T0, rs1: T1);
 }
@@ -12478,11 +12478,11 @@ pub trait VlmVEmitter<T0, T1> {
 /// Rust: `vloxei16_v(vd, rs1, vs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vloxei16VEmitter<T0, T1, T2, T3, T4> {
     fn vloxei16_v(&mut self, vd: T0, rs1: T1, vs2: T2, vm: T3, nf: T4);
 }
@@ -12494,11 +12494,11 @@ pub trait Vloxei16VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vloxei32_v(vd, rs1, vs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vloxei32VEmitter<T0, T1, T2, T3, T4> {
     fn vloxei32_v(&mut self, vd: T0, rs1: T1, vs2: T2, vm: T3, nf: T4);
 }
@@ -12510,11 +12510,11 @@ pub trait Vloxei32VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vloxei64_v(vd, rs1, vs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vloxei64VEmitter<T0, T1, T2, T3, T4> {
     fn vloxei64_v(&mut self, vd: T0, rs1: T1, vs2: T2, vm: T3, nf: T4);
 }
@@ -12526,11 +12526,11 @@ pub trait Vloxei64VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vloxei8_v(vd, rs1, vs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vloxei8VEmitter<T0, T1, T2, T3, T4> {
     fn vloxei8_v(&mut self, vd: T0, rs1: T1, vs2: T2, vm: T3, nf: T4);
 }
@@ -12542,11 +12542,11 @@ pub trait Vloxei8VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vlse16_v(vd, rs1, rs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vlse16VEmitter<T0, T1, T2, T3, T4> {
     fn vlse16_v(&mut self, vd: T0, rs1: T1, rs2: T2, vm: T3, nf: T4);
 }
@@ -12558,11 +12558,11 @@ pub trait Vlse16VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vlse32_v(vd, rs1, rs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vlse32VEmitter<T0, T1, T2, T3, T4> {
     fn vlse32_v(&mut self, vd: T0, rs1: T1, rs2: T2, vm: T3, nf: T4);
 }
@@ -12574,11 +12574,11 @@ pub trait Vlse32VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vlse64_v(vd, rs1, rs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vlse64VEmitter<T0, T1, T2, T3, T4> {
     fn vlse64_v(&mut self, vd: T0, rs1: T1, rs2: T2, vm: T3, nf: T4);
 }
@@ -12590,11 +12590,11 @@ pub trait Vlse64VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vlse8_v(vd, rs1, rs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vlse8VEmitter<T0, T1, T2, T3, T4> {
     fn vlse8_v(&mut self, vd: T0, rs1: T1, rs2: T2, vm: T3, nf: T4);
 }
@@ -12606,11 +12606,11 @@ pub trait Vlse8VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vluxei16_v(vd, rs1, vs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vluxei16VEmitter<T0, T1, T2, T3, T4> {
     fn vluxei16_v(&mut self, vd: T0, rs1: T1, vs2: T2, vm: T3, nf: T4);
 }
@@ -12622,11 +12622,11 @@ pub trait Vluxei16VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vluxei32_v(vd, rs1, vs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vluxei32VEmitter<T0, T1, T2, T3, T4> {
     fn vluxei32_v(&mut self, vd: T0, rs1: T1, vs2: T2, vm: T3, nf: T4);
 }
@@ -12638,11 +12638,11 @@ pub trait Vluxei32VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vluxei64_v(vd, rs1, vs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vluxei64VEmitter<T0, T1, T2, T3, T4> {
     fn vluxei64_v(&mut self, vd: T0, rs1: T1, vs2: T2, vm: T3, nf: T4);
 }
@@ -12654,11 +12654,11 @@ pub trait Vluxei64VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vluxei8_v(vd, rs1, vs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vluxei8VEmitter<T0, T1, T2, T3, T4> {
     fn vluxei8_v(&mut self, vd: T0, rs1: T1, vs2: T2, vm: T3, nf: T4);
 }
@@ -12670,10 +12670,10 @@ pub trait Vluxei8VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vmacc_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmaccVvEmitter<T0, T1, T2, T3> {
     fn vmacc_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -12685,10 +12685,10 @@ pub trait VmaccVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmacc_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmaccVxEmitter<T0, T1, T2, T3> {
     fn vmacc_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -12700,9 +12700,9 @@ pub trait VmaccVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vmadc_vi(vd, vs2, simm5)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
 pub trait VmadcViEmitter<T0, T1, T2> {
     fn vmadc_vi(&mut self, vd: T0, vs2: T1, simm5: T2);
 }
@@ -12714,9 +12714,9 @@ pub trait VmadcViEmitter<T0, T1, T2> {
 /// Rust: `vmadc_vim(vd, vs2, simm5)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
 pub trait VmadcVimEmitter<T0, T1, T2> {
     fn vmadc_vim(&mut self, vd: T0, vs2: T1, simm5: T2);
 }
@@ -12728,9 +12728,9 @@ pub trait VmadcVimEmitter<T0, T1, T2> {
 /// Rust: `vmadc_vv(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VmadcVvEmitter<T0, T1, T2> {
     fn vmadc_vv(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -12742,9 +12742,9 @@ pub trait VmadcVvEmitter<T0, T1, T2> {
 /// Rust: `vmadc_vvm(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VmadcVvmEmitter<T0, T1, T2> {
     fn vmadc_vvm(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -12756,9 +12756,9 @@ pub trait VmadcVvmEmitter<T0, T1, T2> {
 /// Rust: `vmadc_vx(vd, rs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vs2`: Vector register operand.
 pub trait VmadcVxEmitter<T0, T1, T2> {
     fn vmadc_vx(&mut self, vd: T0, rs1: T1, vs2: T2);
 }
@@ -12770,9 +12770,9 @@ pub trait VmadcVxEmitter<T0, T1, T2> {
 /// Rust: `vmadc_vxm(vd, rs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vs2`: Vector register operand.
 pub trait VmadcVxmEmitter<T0, T1, T2> {
     fn vmadc_vxm(&mut self, vd: T0, rs1: T1, vs2: T2);
 }
@@ -12784,10 +12784,10 @@ pub trait VmadcVxmEmitter<T0, T1, T2> {
 /// Rust: `vmadd_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmaddVvEmitter<T0, T1, T2, T3> {
     fn vmadd_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -12799,10 +12799,10 @@ pub trait VmaddVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmadd_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmaddVxEmitter<T0, T1, T2, T3> {
     fn vmadd_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -12814,9 +12814,9 @@ pub trait VmaddVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vmand_mm(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VmandMmEmitter<T0, T1, T2> {
     fn vmand_mm(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -12828,9 +12828,9 @@ pub trait VmandMmEmitter<T0, T1, T2> {
 /// Rust: `vmandn_mm(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VmandnMmEmitter<T0, T1, T2> {
     fn vmandn_mm(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -12842,10 +12842,10 @@ pub trait VmandnMmEmitter<T0, T1, T2> {
 /// Rust: `vmandnot_mm(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmandnotMmEmitter<T0, T1, T2, T3> {
     fn vmandnot_mm(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -12857,10 +12857,10 @@ pub trait VmandnotMmEmitter<T0, T1, T2, T3> {
 /// Rust: `vmax_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmaxVvEmitter<T0, T1, T2, T3> {
     fn vmax_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -12872,10 +12872,10 @@ pub trait VmaxVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmax_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmaxVxEmitter<T0, T1, T2, T3> {
     fn vmax_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -12887,10 +12887,10 @@ pub trait VmaxVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vmaxu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmaxuVvEmitter<T0, T1, T2, T3> {
     fn vmaxu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -12902,10 +12902,10 @@ pub trait VmaxuVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmaxu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmaxuVxEmitter<T0, T1, T2, T3> {
     fn vmaxu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -12917,9 +12917,9 @@ pub trait VmaxuVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vmerge_vim(vd, vs2, simm5)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
 pub trait VmergeVimEmitter<T0, T1, T2> {
     fn vmerge_vim(&mut self, vd: T0, vs2: T1, simm5: T2);
 }
@@ -12931,9 +12931,9 @@ pub trait VmergeVimEmitter<T0, T1, T2> {
 /// Rust: `vmerge_vvm(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VmergeVvmEmitter<T0, T1, T2> {
     fn vmerge_vvm(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -12945,9 +12945,9 @@ pub trait VmergeVvmEmitter<T0, T1, T2> {
 /// Rust: `vmerge_vxm(vd, rs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vs2`: Vector register operand.
 pub trait VmergeVxmEmitter<T0, T1, T2> {
     fn vmerge_vxm(&mut self, vd: T0, rs1: T1, vs2: T2);
 }
@@ -12959,10 +12959,10 @@ pub trait VmergeVxmEmitter<T0, T1, T2> {
 /// Rust: `vmfeq_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmfeqVfEmitter<T0, T1, T2, T3> {
     fn vmfeq_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -12974,10 +12974,10 @@ pub trait VmfeqVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vmfeq_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmfeqVvEmitter<T0, T1, T2, T3> {
     fn vmfeq_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -12989,10 +12989,10 @@ pub trait VmfeqVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmfge_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmfgeVfEmitter<T0, T1, T2, T3> {
     fn vmfge_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13004,10 +13004,10 @@ pub trait VmfgeVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vmfgt_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmfgtVfEmitter<T0, T1, T2, T3> {
     fn vmfgt_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13019,10 +13019,10 @@ pub trait VmfgtVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vmfle_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmfleVfEmitter<T0, T1, T2, T3> {
     fn vmfle_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13034,10 +13034,10 @@ pub trait VmfleVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vmfle_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmfleVvEmitter<T0, T1, T2, T3> {
     fn vmfle_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13049,10 +13049,10 @@ pub trait VmfleVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmflt_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmfltVfEmitter<T0, T1, T2, T3> {
     fn vmflt_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13064,10 +13064,10 @@ pub trait VmfltVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vmflt_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmfltVvEmitter<T0, T1, T2, T3> {
     fn vmflt_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13079,10 +13079,10 @@ pub trait VmfltVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmfne_vf(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmfneVfEmitter<T0, T1, T2, T3> {
     fn vmfne_vf(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13094,10 +13094,10 @@ pub trait VmfneVfEmitter<T0, T1, T2, T3> {
 /// Rust: `vmfne_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmfneVvEmitter<T0, T1, T2, T3> {
     fn vmfne_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13109,10 +13109,10 @@ pub trait VmfneVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmin_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VminVvEmitter<T0, T1, T2, T3> {
     fn vmin_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13124,10 +13124,10 @@ pub trait VminVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmin_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VminVxEmitter<T0, T1, T2, T3> {
     fn vmin_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13139,10 +13139,10 @@ pub trait VminVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vminu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VminuVvEmitter<T0, T1, T2, T3> {
     fn vminu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13154,10 +13154,10 @@ pub trait VminuVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vminu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VminuVxEmitter<T0, T1, T2, T3> {
     fn vminu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13169,9 +13169,9 @@ pub trait VminuVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vmnand_mm(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VmnandMmEmitter<T0, T1, T2> {
     fn vmnand_mm(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -13183,9 +13183,9 @@ pub trait VmnandMmEmitter<T0, T1, T2> {
 /// Rust: `vmnor_mm(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VmnorMmEmitter<T0, T1, T2> {
     fn vmnor_mm(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -13197,9 +13197,9 @@ pub trait VmnorMmEmitter<T0, T1, T2> {
 /// Rust: `vmor_mm(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VmorMmEmitter<T0, T1, T2> {
     fn vmor_mm(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -13211,9 +13211,9 @@ pub trait VmorMmEmitter<T0, T1, T2> {
 /// Rust: `vmorn_mm(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VmornMmEmitter<T0, T1, T2> {
     fn vmorn_mm(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -13225,10 +13225,10 @@ pub trait VmornMmEmitter<T0, T1, T2> {
 /// Rust: `vmornot_mm(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmornotMmEmitter<T0, T1, T2, T3> {
     fn vmornot_mm(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13240,9 +13240,9 @@ pub trait VmornotMmEmitter<T0, T1, T2, T3> {
 /// Rust: `vmsbc_vv(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VmsbcVvEmitter<T0, T1, T2> {
     fn vmsbc_vv(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -13254,9 +13254,9 @@ pub trait VmsbcVvEmitter<T0, T1, T2> {
 /// Rust: `vmsbc_vvm(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VmsbcVvmEmitter<T0, T1, T2> {
     fn vmsbc_vvm(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -13268,9 +13268,9 @@ pub trait VmsbcVvmEmitter<T0, T1, T2> {
 /// Rust: `vmsbc_vx(vd, rs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vs2`: Vector register operand.
 pub trait VmsbcVxEmitter<T0, T1, T2> {
     fn vmsbc_vx(&mut self, vd: T0, rs1: T1, vs2: T2);
 }
@@ -13282,9 +13282,9 @@ pub trait VmsbcVxEmitter<T0, T1, T2> {
 /// Rust: `vmsbc_vxm(vd, rs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vs2`: Vector register operand.
 pub trait VmsbcVxmEmitter<T0, T1, T2> {
     fn vmsbc_vxm(&mut self, vd: T0, rs1: T1, vs2: T2);
 }
@@ -13296,9 +13296,9 @@ pub trait VmsbcVxmEmitter<T0, T1, T2> {
 /// Rust: `vmsbf_m(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmsbfMEmitter<T0, T1, T2> {
     fn vmsbf_m(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -13310,10 +13310,10 @@ pub trait VmsbfMEmitter<T0, T1, T2> {
 /// Rust: `vmseq_vi(vd, vs2, simm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VmseqViEmitter<T0, T1, T2, T3> {
     fn vmseq_vi(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3);
 }
@@ -13325,10 +13325,10 @@ pub trait VmseqViEmitter<T0, T1, T2, T3> {
 /// Rust: `vmseq_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmseqVvEmitter<T0, T1, T2, T3> {
     fn vmseq_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13340,10 +13340,10 @@ pub trait VmseqVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmseq_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmseqVxEmitter<T0, T1, T2, T3> {
     fn vmseq_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13355,10 +13355,10 @@ pub trait VmseqVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vmsgt_vi(vd, vs2, simm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VmsgtViEmitter<T0, T1, T2, T3> {
     fn vmsgt_vi(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3);
 }
@@ -13370,10 +13370,10 @@ pub trait VmsgtViEmitter<T0, T1, T2, T3> {
 /// Rust: `vmsgt_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmsgtVxEmitter<T0, T1, T2, T3> {
     fn vmsgt_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13385,10 +13385,10 @@ pub trait VmsgtVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vmsgtu_vi(vd, vs2, simm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VmsgtuViEmitter<T0, T1, T2, T3> {
     fn vmsgtu_vi(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3);
 }
@@ -13400,10 +13400,10 @@ pub trait VmsgtuViEmitter<T0, T1, T2, T3> {
 /// Rust: `vmsgtu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmsgtuVxEmitter<T0, T1, T2, T3> {
     fn vmsgtu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13415,9 +13415,9 @@ pub trait VmsgtuVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vmsif_m(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmsifMEmitter<T0, T1, T2> {
     fn vmsif_m(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -13429,10 +13429,10 @@ pub trait VmsifMEmitter<T0, T1, T2> {
 /// Rust: `vmsle_vi(vd, vs2, simm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VmsleViEmitter<T0, T1, T2, T3> {
     fn vmsle_vi(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3);
 }
@@ -13444,10 +13444,10 @@ pub trait VmsleViEmitter<T0, T1, T2, T3> {
 /// Rust: `vmsle_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmsleVvEmitter<T0, T1, T2, T3> {
     fn vmsle_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13459,10 +13459,10 @@ pub trait VmsleVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmsle_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmsleVxEmitter<T0, T1, T2, T3> {
     fn vmsle_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13474,10 +13474,10 @@ pub trait VmsleVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vmsleu_vi(vd, vs2, simm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VmsleuViEmitter<T0, T1, T2, T3> {
     fn vmsleu_vi(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3);
 }
@@ -13489,10 +13489,10 @@ pub trait VmsleuViEmitter<T0, T1, T2, T3> {
 /// Rust: `vmsleu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmsleuVvEmitter<T0, T1, T2, T3> {
     fn vmsleu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13504,10 +13504,10 @@ pub trait VmsleuVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmsleu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmsleuVxEmitter<T0, T1, T2, T3> {
     fn vmsleu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13519,10 +13519,10 @@ pub trait VmsleuVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vmslt_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmsltVvEmitter<T0, T1, T2, T3> {
     fn vmslt_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13534,10 +13534,10 @@ pub trait VmsltVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmslt_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmsltVxEmitter<T0, T1, T2, T3> {
     fn vmslt_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13549,10 +13549,10 @@ pub trait VmsltVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vmsltu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmsltuVvEmitter<T0, T1, T2, T3> {
     fn vmsltu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13564,10 +13564,10 @@ pub trait VmsltuVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmsltu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmsltuVxEmitter<T0, T1, T2, T3> {
     fn vmsltu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13579,10 +13579,10 @@ pub trait VmsltuVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vmsne_vi(vd, vs2, simm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VmsneViEmitter<T0, T1, T2, T3> {
     fn vmsne_vi(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3);
 }
@@ -13594,10 +13594,10 @@ pub trait VmsneViEmitter<T0, T1, T2, T3> {
 /// Rust: `vmsne_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmsneVvEmitter<T0, T1, T2, T3> {
     fn vmsne_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13609,10 +13609,10 @@ pub trait VmsneVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmsne_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmsneVxEmitter<T0, T1, T2, T3> {
     fn vmsne_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13624,9 +13624,9 @@ pub trait VmsneVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vmsof_m(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmsofMEmitter<T0, T1, T2> {
     fn vmsof_m(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -13638,10 +13638,10 @@ pub trait VmsofMEmitter<T0, T1, T2> {
 /// Rust: `vmul_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmulVvEmitter<T0, T1, T2, T3> {
     fn vmul_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13653,10 +13653,10 @@ pub trait VmulVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmul_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmulVxEmitter<T0, T1, T2, T3> {
     fn vmul_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13668,10 +13668,10 @@ pub trait VmulVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vmulh_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmulhVvEmitter<T0, T1, T2, T3> {
     fn vmulh_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13683,10 +13683,10 @@ pub trait VmulhVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmulh_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmulhVxEmitter<T0, T1, T2, T3> {
     fn vmulh_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13698,10 +13698,10 @@ pub trait VmulhVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vmulhsu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmulhsuVvEmitter<T0, T1, T2, T3> {
     fn vmulhsu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13713,10 +13713,10 @@ pub trait VmulhsuVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmulhsu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmulhsuVxEmitter<T0, T1, T2, T3> {
     fn vmulhsu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13728,10 +13728,10 @@ pub trait VmulhsuVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vmulhu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VmulhuVvEmitter<T0, T1, T2, T3> {
     fn vmulhu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13743,10 +13743,10 @@ pub trait VmulhuVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vmulhu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VmulhuVxEmitter<T0, T1, T2, T3> {
     fn vmulhu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13758,8 +13758,8 @@ pub trait VmulhuVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vmv1r_v(vd, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait Vmv1RVEmitter<T0, T1> {
     fn vmv1r_v(&mut self, vd: T0, vs2: T1);
 }
@@ -13771,8 +13771,8 @@ pub trait Vmv1RVEmitter<T0, T1> {
 /// Rust: `vmv2r_v(vd, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait Vmv2RVEmitter<T0, T1> {
     fn vmv2r_v(&mut self, vd: T0, vs2: T1);
 }
@@ -13784,8 +13784,8 @@ pub trait Vmv2RVEmitter<T0, T1> {
 /// Rust: `vmv4r_v(vd, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait Vmv4RVEmitter<T0, T1> {
     fn vmv4r_v(&mut self, vd: T0, vs2: T1);
 }
@@ -13797,8 +13797,8 @@ pub trait Vmv4RVEmitter<T0, T1> {
 /// Rust: `vmv8r_v(vd, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait Vmv8RVEmitter<T0, T1> {
     fn vmv8r_v(&mut self, vd: T0, vs2: T1);
 }
@@ -13810,8 +13810,8 @@ pub trait Vmv8RVEmitter<T0, T1> {
 /// Rust: `vmv_s_x(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Source register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Source register.
 pub trait VmvSXEmitter<T0, T1> {
     fn vmv_s_x(&mut self, vd: T0, rs1: T1);
 }
@@ -13823,8 +13823,8 @@ pub trait VmvSXEmitter<T0, T1> {
 /// Rust: `vmv_v_i(vd, simm5)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
+/// - `vd`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
 pub trait VmvVIEmitter<T0, T1> {
     fn vmv_v_i(&mut self, vd: T0, simm5: T1);
 }
@@ -13836,8 +13836,8 @@ pub trait VmvVIEmitter<T0, T1> {
 /// Rust: `vmv_v_v(vd, vs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
 pub trait VmvVVEmitter<T0, T1> {
     fn vmv_v_v(&mut self, vd: T0, vs1: T1);
 }
@@ -13849,8 +13849,8 @@ pub trait VmvVVEmitter<T0, T1> {
 /// Rust: `vmv_v_x(vd, rs1)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Source register.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Source register.
 pub trait VmvVXEmitter<T0, T1> {
     fn vmv_v_x(&mut self, vd: T0, rs1: T1);
 }
@@ -13862,8 +13862,8 @@ pub trait VmvVXEmitter<T0, T1> {
 /// Rust: `vmv_x_s(rd, vs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `vs2` — Vector register operand.
+/// - `rd`: Destination register.
+/// - `vs2`: Vector register operand.
 pub trait VmvXSEmitter<T0, T1> {
     fn vmv_x_s(&mut self, rd: T0, vs2: T1);
 }
@@ -13875,9 +13875,9 @@ pub trait VmvXSEmitter<T0, T1> {
 /// Rust: `vmxnor_mm(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VmxnorMmEmitter<T0, T1, T2> {
     fn vmxnor_mm(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -13889,9 +13889,9 @@ pub trait VmxnorMmEmitter<T0, T1, T2> {
 /// Rust: `vmxor_mm(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VmxorMmEmitter<T0, T1, T2> {
     fn vmxor_mm(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -13903,10 +13903,10 @@ pub trait VmxorMmEmitter<T0, T1, T2> {
 /// Rust: `vnclip_wi(vd, vs2, zimm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VnclipWiEmitter<T0, T1, T2, T3> {
     fn vnclip_wi(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3);
 }
@@ -13918,10 +13918,10 @@ pub trait VnclipWiEmitter<T0, T1, T2, T3> {
 /// Rust: `vnclip_wv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VnclipWvEmitter<T0, T1, T2, T3> {
     fn vnclip_wv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13933,10 +13933,10 @@ pub trait VnclipWvEmitter<T0, T1, T2, T3> {
 /// Rust: `vnclip_wx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VnclipWxEmitter<T0, T1, T2, T3> {
     fn vnclip_wx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13948,10 +13948,10 @@ pub trait VnclipWxEmitter<T0, T1, T2, T3> {
 /// Rust: `vnclipu_wi(vd, vs2, zimm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VnclipuWiEmitter<T0, T1, T2, T3> {
     fn vnclipu_wi(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3);
 }
@@ -13963,10 +13963,10 @@ pub trait VnclipuWiEmitter<T0, T1, T2, T3> {
 /// Rust: `vnclipu_wv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VnclipuWvEmitter<T0, T1, T2, T3> {
     fn vnclipu_wv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -13978,10 +13978,10 @@ pub trait VnclipuWvEmitter<T0, T1, T2, T3> {
 /// Rust: `vnclipu_wx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VnclipuWxEmitter<T0, T1, T2, T3> {
     fn vnclipu_wx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -13993,10 +13993,10 @@ pub trait VnclipuWxEmitter<T0, T1, T2, T3> {
 /// Rust: `vnmsac_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VnmsacVvEmitter<T0, T1, T2, T3> {
     fn vnmsac_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14008,10 +14008,10 @@ pub trait VnmsacVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vnmsac_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VnmsacVxEmitter<T0, T1, T2, T3> {
     fn vnmsac_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -14023,10 +14023,10 @@ pub trait VnmsacVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vnmsub_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VnmsubVvEmitter<T0, T1, T2, T3> {
     fn vnmsub_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14038,10 +14038,10 @@ pub trait VnmsubVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vnmsub_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VnmsubVxEmitter<T0, T1, T2, T3> {
     fn vnmsub_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -14053,10 +14053,10 @@ pub trait VnmsubVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vnsra_wi(vd, vs2, zimm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VnsraWiEmitter<T0, T1, T2, T3> {
     fn vnsra_wi(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3);
 }
@@ -14068,10 +14068,10 @@ pub trait VnsraWiEmitter<T0, T1, T2, T3> {
 /// Rust: `vnsra_wv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VnsraWvEmitter<T0, T1, T2, T3> {
     fn vnsra_wv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14083,10 +14083,10 @@ pub trait VnsraWvEmitter<T0, T1, T2, T3> {
 /// Rust: `vnsra_wx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VnsraWxEmitter<T0, T1, T2, T3> {
     fn vnsra_wx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -14098,10 +14098,10 @@ pub trait VnsraWxEmitter<T0, T1, T2, T3> {
 /// Rust: `vnsrl_wi(vd, vs2, zimm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VnsrlWiEmitter<T0, T1, T2, T3> {
     fn vnsrl_wi(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3);
 }
@@ -14113,10 +14113,10 @@ pub trait VnsrlWiEmitter<T0, T1, T2, T3> {
 /// Rust: `vnsrl_wv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VnsrlWvEmitter<T0, T1, T2, T3> {
     fn vnsrl_wv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14128,10 +14128,10 @@ pub trait VnsrlWvEmitter<T0, T1, T2, T3> {
 /// Rust: `vnsrl_wx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VnsrlWxEmitter<T0, T1, T2, T3> {
     fn vnsrl_wx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -14143,10 +14143,10 @@ pub trait VnsrlWxEmitter<T0, T1, T2, T3> {
 /// Rust: `vor_vi(vd, vs2, simm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VorViEmitter<T0, T1, T2, T3> {
     fn vor_vi(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3);
 }
@@ -14158,10 +14158,10 @@ pub trait VorViEmitter<T0, T1, T2, T3> {
 /// Rust: `vor_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VorVvEmitter<T0, T1, T2, T3> {
     fn vor_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14173,10 +14173,10 @@ pub trait VorVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vor_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VorVxEmitter<T0, T1, T2, T3> {
     fn vor_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -14188,9 +14188,9 @@ pub trait VorVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vpopc_m(rd, vs2, vm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `rd`: Destination register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VpopcMEmitter<T0, T1, T2> {
     fn vpopc_m(&mut self, rd: T0, vs2: T1, vm: T2);
 }
@@ -14202,10 +14202,10 @@ pub trait VpopcMEmitter<T0, T1, T2> {
 /// Rust: `vredand_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VredandVsEmitter<T0, T1, T2, T3> {
     fn vredand_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14217,10 +14217,10 @@ pub trait VredandVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vredmax_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VredmaxVsEmitter<T0, T1, T2, T3> {
     fn vredmax_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14232,10 +14232,10 @@ pub trait VredmaxVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vredmaxu_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VredmaxuVsEmitter<T0, T1, T2, T3> {
     fn vredmaxu_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14247,10 +14247,10 @@ pub trait VredmaxuVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vredmin_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VredminVsEmitter<T0, T1, T2, T3> {
     fn vredmin_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14262,10 +14262,10 @@ pub trait VredminVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vredminu_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VredminuVsEmitter<T0, T1, T2, T3> {
     fn vredminu_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14277,10 +14277,10 @@ pub trait VredminuVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vredor_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VredorVsEmitter<T0, T1, T2, T3> {
     fn vredor_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14292,10 +14292,10 @@ pub trait VredorVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vredsum_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VredsumVsEmitter<T0, T1, T2, T3> {
     fn vredsum_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14307,10 +14307,10 @@ pub trait VredsumVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vredxor_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VredxorVsEmitter<T0, T1, T2, T3> {
     fn vredxor_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14322,10 +14322,10 @@ pub trait VredxorVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vrem_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VremVvEmitter<T0, T1, T2, T3> {
     fn vrem_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14337,10 +14337,10 @@ pub trait VremVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vrem_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VremVxEmitter<T0, T1, T2, T3> {
     fn vrem_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -14352,10 +14352,10 @@ pub trait VremVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vremu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VremuVvEmitter<T0, T1, T2, T3> {
     fn vremu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14367,10 +14367,10 @@ pub trait VremuVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vremu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VremuVxEmitter<T0, T1, T2, T3> {
     fn vremu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -14382,9 +14382,9 @@ pub trait VremuVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vrev8_v(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait Vrev8VEmitter<T0, T1, T2> {
     fn vrev8_v(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -14396,10 +14396,10 @@ pub trait Vrev8VEmitter<T0, T1, T2> {
 /// Rust: `vrgather_vi(vd, vs2, zimm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VrgatherViEmitter<T0, T1, T2, T3> {
     fn vrgather_vi(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3);
 }
@@ -14411,10 +14411,10 @@ pub trait VrgatherViEmitter<T0, T1, T2, T3> {
 /// Rust: `vrgather_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VrgatherVvEmitter<T0, T1, T2, T3> {
     fn vrgather_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14426,10 +14426,10 @@ pub trait VrgatherVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vrgather_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VrgatherVxEmitter<T0, T1, T2, T3> {
     fn vrgather_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -14441,10 +14441,10 @@ pub trait VrgatherVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vrgatherei16_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait Vrgatherei16VvEmitter<T0, T1, T2, T3> {
     fn vrgatherei16_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14456,10 +14456,10 @@ pub trait Vrgatherei16VvEmitter<T0, T1, T2, T3> {
 /// Rust: `vrol_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VrolVvEmitter<T0, T1, T2, T3> {
     fn vrol_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14471,10 +14471,10 @@ pub trait VrolVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vrol_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VrolVxEmitter<T0, T1, T2, T3> {
     fn vrol_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -14486,10 +14486,10 @@ pub trait VrolVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vror_vi(vd, vs2, zimm6lohi, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm6lohi` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm6lohi`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VrorViEmitter<T0, T1, T2, T3> {
     fn vror_vi(&mut self, vd: T0, vs2: T1, zimm6lohi: T2, vm: T3);
 }
@@ -14501,10 +14501,10 @@ pub trait VrorViEmitter<T0, T1, T2, T3> {
 /// Rust: `vror_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VrorVvEmitter<T0, T1, T2, T3> {
     fn vror_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14516,10 +14516,10 @@ pub trait VrorVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vror_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VrorVxEmitter<T0, T1, T2, T3> {
     fn vror_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -14531,10 +14531,10 @@ pub trait VrorVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vrsub_vi(vd, vs2, simm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VrsubViEmitter<T0, T1, T2, T3> {
     fn vrsub_vi(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3);
 }
@@ -14546,10 +14546,10 @@ pub trait VrsubViEmitter<T0, T1, T2, T3> {
 /// Rust: `vrsub_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VrsubVxEmitter<T0, T1, T2, T3> {
     fn vrsub_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -14561,8 +14561,8 @@ pub trait VrsubVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vs1r_v(vs3, rs1)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vs1RVEmitter<T0, T1> {
     fn vs1r_v(&mut self, vs3: T0, rs1: T1);
 }
@@ -14574,8 +14574,8 @@ pub trait Vs1RVEmitter<T0, T1> {
 /// Rust: `vs2r_v(vs3, rs1)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vs2RVEmitter<T0, T1> {
     fn vs2r_v(&mut self, vs3: T0, rs1: T1);
 }
@@ -14587,8 +14587,8 @@ pub trait Vs2RVEmitter<T0, T1> {
 /// Rust: `vs4r_v(vs3, rs1)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vs4RVEmitter<T0, T1> {
     fn vs4r_v(&mut self, vs3: T0, rs1: T1);
 }
@@ -14600,8 +14600,8 @@ pub trait Vs4RVEmitter<T0, T1> {
 /// Rust: `vs8r_v(vs3, rs1)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vs8RVEmitter<T0, T1> {
     fn vs8r_v(&mut self, vs3: T0, rs1: T1);
 }
@@ -14613,10 +14613,10 @@ pub trait Vs8RVEmitter<T0, T1> {
 /// Rust: `vsadd_vi(vd, vs2, simm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VsaddViEmitter<T0, T1, T2, T3> {
     fn vsadd_vi(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3);
 }
@@ -14628,10 +14628,10 @@ pub trait VsaddViEmitter<T0, T1, T2, T3> {
 /// Rust: `vsadd_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VsaddVvEmitter<T0, T1, T2, T3> {
     fn vsadd_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14643,10 +14643,10 @@ pub trait VsaddVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vsadd_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VsaddVxEmitter<T0, T1, T2, T3> {
     fn vsadd_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -14658,10 +14658,10 @@ pub trait VsaddVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vsaddu_vi(vd, vs2, simm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VsadduViEmitter<T0, T1, T2, T3> {
     fn vsaddu_vi(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3);
 }
@@ -14673,10 +14673,10 @@ pub trait VsadduViEmitter<T0, T1, T2, T3> {
 /// Rust: `vsaddu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VsadduVvEmitter<T0, T1, T2, T3> {
     fn vsaddu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -14688,10 +14688,10 @@ pub trait VsadduVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vsaddu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VsadduVxEmitter<T0, T1, T2, T3> {
     fn vsaddu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -14703,9 +14703,9 @@ pub trait VsadduVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vsbc_vvm(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait VsbcVvmEmitter<T0, T1, T2> {
     fn vsbc_vvm(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -14717,9 +14717,9 @@ pub trait VsbcVvmEmitter<T0, T1, T2> {
 /// Rust: `vsbc_vxm(vd, rs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vs2`: Vector register operand.
 pub trait VsbcVxmEmitter<T0, T1, T2> {
     fn vsbc_vxm(&mut self, vd: T0, rs1: T1, vs2: T2);
 }
@@ -14731,10 +14731,10 @@ pub trait VsbcVxmEmitter<T0, T1, T2> {
 /// Rust: `vse16_v(vs3, rs1, vm, nf)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vse16VEmitter<T0, T1, T2, T3> {
     fn vse16_v(&mut self, vs3: T0, rs1: T1, vm: T2, nf: T3);
 }
@@ -14746,8 +14746,8 @@ pub trait Vse16VEmitter<T0, T1, T2, T3> {
 /// Rust: `vse1_v(vs3, rs1)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait Vse1VEmitter<T0, T1> {
     fn vse1_v(&mut self, vs3: T0, rs1: T1);
 }
@@ -14759,10 +14759,10 @@ pub trait Vse1VEmitter<T0, T1> {
 /// Rust: `vse32_v(vs3, rs1, vm, nf)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vse32VEmitter<T0, T1, T2, T3> {
     fn vse32_v(&mut self, vs3: T0, rs1: T1, vm: T2, nf: T3);
 }
@@ -14774,10 +14774,10 @@ pub trait Vse32VEmitter<T0, T1, T2, T3> {
 /// Rust: `vse64_v(vs3, rs1, vm, nf)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vse64VEmitter<T0, T1, T2, T3> {
     fn vse64_v(&mut self, vs3: T0, rs1: T1, vm: T2, nf: T3);
 }
@@ -14789,10 +14789,10 @@ pub trait Vse64VEmitter<T0, T1, T2, T3> {
 /// Rust: `vse8_v(vs3, rs1, vm, nf)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vse8VEmitter<T0, T1, T2, T3> {
     fn vse8_v(&mut self, vs3: T0, rs1: T1, vm: T2, nf: T3);
 }
@@ -14804,9 +14804,9 @@ pub trait Vse8VEmitter<T0, T1, T2, T3> {
 /// Rust: `vsetivli(rd, zimm5, zimm10)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `zimm5` — Immediate encoding value.
-/// - `zimm10` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `zimm5`: Immediate encoding value.
+/// - `zimm10`: Immediate encoding value.
 pub trait VsetivliEmitter<T0, T1, T2> {
     fn vsetivli(&mut self, rd: T0, zimm5: T1, zimm10: T2);
 }
@@ -14818,9 +14818,9 @@ pub trait VsetivliEmitter<T0, T1, T2> {
 /// Rust: `vsetvl(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait VsetvlEmitter<T0, T1, T2> {
     fn vsetvl(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -14832,9 +14832,9 @@ pub trait VsetvlEmitter<T0, T1, T2> {
 /// Rust: `vsetvli(rd, rs1, zimm11)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `zimm11` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `zimm11`: Immediate encoding value.
 pub trait VsetvliEmitter<T0, T1, T2> {
     fn vsetvli(&mut self, rd: T0, rs1: T1, zimm11: T2);
 }
@@ -14846,9 +14846,9 @@ pub trait VsetvliEmitter<T0, T1, T2> {
 /// Rust: `vsext_vf2(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VsextVf2Emitter<T0, T1, T2> {
     fn vsext_vf2(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -14860,9 +14860,9 @@ pub trait VsextVf2Emitter<T0, T1, T2> {
 /// Rust: `vsext_vf4(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VsextVf4Emitter<T0, T1, T2> {
     fn vsext_vf4(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -14874,9 +14874,9 @@ pub trait VsextVf4Emitter<T0, T1, T2> {
 /// Rust: `vsext_vf8(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VsextVf8Emitter<T0, T1, T2> {
     fn vsext_vf8(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -14888,9 +14888,9 @@ pub trait VsextVf8Emitter<T0, T1, T2> {
 /// Rust: `vsha2ch_vv(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait Vsha2ChVvEmitter<T0, T1, T2> {
     fn vsha2ch_vv(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -14902,9 +14902,9 @@ pub trait Vsha2ChVvEmitter<T0, T1, T2> {
 /// Rust: `vsha2cl_vv(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait Vsha2ClVvEmitter<T0, T1, T2> {
     fn vsha2cl_vv(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -14916,9 +14916,9 @@ pub trait Vsha2ClVvEmitter<T0, T1, T2> {
 /// Rust: `vsha2ms_vv(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait Vsha2MsVvEmitter<T0, T1, T2> {
     fn vsha2ms_vv(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -14930,10 +14930,10 @@ pub trait Vsha2MsVvEmitter<T0, T1, T2> {
 /// Rust: `vslide1down_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait Vslide1DownVxEmitter<T0, T1, T2, T3> {
     fn vslide1down_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -14945,10 +14945,10 @@ pub trait Vslide1DownVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vslide1up_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait Vslide1UpVxEmitter<T0, T1, T2, T3> {
     fn vslide1up_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -14960,10 +14960,10 @@ pub trait Vslide1UpVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vslidedown_vi(vd, vs2, zimm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VslidedownViEmitter<T0, T1, T2, T3> {
     fn vslidedown_vi(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3);
 }
@@ -14975,10 +14975,10 @@ pub trait VslidedownViEmitter<T0, T1, T2, T3> {
 /// Rust: `vslidedown_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VslidedownVxEmitter<T0, T1, T2, T3> {
     fn vslidedown_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -14990,10 +14990,10 @@ pub trait VslidedownVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vslideup_vi(vd, vs2, zimm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VslideupViEmitter<T0, T1, T2, T3> {
     fn vslideup_vi(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3);
 }
@@ -15005,10 +15005,10 @@ pub trait VslideupViEmitter<T0, T1, T2, T3> {
 /// Rust: `vslideup_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VslideupVxEmitter<T0, T1, T2, T3> {
     fn vslideup_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15020,10 +15020,10 @@ pub trait VslideupVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vsll_vi(vd, vs2, zimm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VsllViEmitter<T0, T1, T2, T3> {
     fn vsll_vi(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3);
 }
@@ -15035,10 +15035,10 @@ pub trait VsllViEmitter<T0, T1, T2, T3> {
 /// Rust: `vsll_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VsllVvEmitter<T0, T1, T2, T3> {
     fn vsll_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15050,10 +15050,10 @@ pub trait VsllVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vsll_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VsllVxEmitter<T0, T1, T2, T3> {
     fn vsll_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15065,9 +15065,9 @@ pub trait VsllVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vsm3c_vi(vd, vs2, zimm5)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm5` — Immediate encoding value.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm5`: Immediate encoding value.
 pub trait Vsm3CViEmitter<T0, T1, T2> {
     fn vsm3c_vi(&mut self, vd: T0, vs2: T1, zimm5: T2);
 }
@@ -15079,9 +15079,9 @@ pub trait Vsm3CViEmitter<T0, T1, T2> {
 /// Rust: `vsm3me_vv(vd, vs1, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait Vsm3MeVvEmitter<T0, T1, T2> {
     fn vsm3me_vv(&mut self, vd: T0, vs1: T1, vs2: T2);
 }
@@ -15093,9 +15093,9 @@ pub trait Vsm3MeVvEmitter<T0, T1, T2> {
 /// Rust: `vsm4k_vi(vd, vs2, zimm5)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm5` — Immediate encoding value.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm5`: Immediate encoding value.
 pub trait Vsm4KViEmitter<T0, T1, T2> {
     fn vsm4k_vi(&mut self, vd: T0, vs2: T1, zimm5: T2);
 }
@@ -15107,8 +15107,8 @@ pub trait Vsm4KViEmitter<T0, T1, T2> {
 /// Rust: `vsm4r_vs(vd, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait Vsm4RVsEmitter<T0, T1> {
     fn vsm4r_vs(&mut self, vd: T0, vs2: T1);
 }
@@ -15120,8 +15120,8 @@ pub trait Vsm4RVsEmitter<T0, T1> {
 /// Rust: `vsm4r_vv(vd, vs2)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
 pub trait Vsm4RVvEmitter<T0, T1> {
     fn vsm4r_vv(&mut self, vd: T0, vs2: T1);
 }
@@ -15133,8 +15133,8 @@ pub trait Vsm4RVvEmitter<T0, T1> {
 /// Rust: `vsm_v(vs3, rs1)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
 pub trait VsmVEmitter<T0, T1> {
     fn vsm_v(&mut self, vs3: T0, rs1: T1);
 }
@@ -15146,10 +15146,10 @@ pub trait VsmVEmitter<T0, T1> {
 /// Rust: `vsmul_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VsmulVvEmitter<T0, T1, T2, T3> {
     fn vsmul_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15161,10 +15161,10 @@ pub trait VsmulVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vsmul_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VsmulVxEmitter<T0, T1, T2, T3> {
     fn vsmul_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15176,11 +15176,11 @@ pub trait VsmulVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vsoxei16_v(vs3, rs1, vs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vsoxei16VEmitter<T0, T1, T2, T3, T4> {
     fn vsoxei16_v(&mut self, vs3: T0, rs1: T1, vs2: T2, vm: T3, nf: T4);
 }
@@ -15192,11 +15192,11 @@ pub trait Vsoxei16VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vsoxei32_v(vs3, rs1, vs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vsoxei32VEmitter<T0, T1, T2, T3, T4> {
     fn vsoxei32_v(&mut self, vs3: T0, rs1: T1, vs2: T2, vm: T3, nf: T4);
 }
@@ -15208,11 +15208,11 @@ pub trait Vsoxei32VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vsoxei64_v(vs3, rs1, vs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vsoxei64VEmitter<T0, T1, T2, T3, T4> {
     fn vsoxei64_v(&mut self, vs3: T0, rs1: T1, vs2: T2, vm: T3, nf: T4);
 }
@@ -15224,11 +15224,11 @@ pub trait Vsoxei64VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vsoxei8_v(vs3, rs1, vs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vsoxei8VEmitter<T0, T1, T2, T3, T4> {
     fn vsoxei8_v(&mut self, vs3: T0, rs1: T1, vs2: T2, vm: T3, nf: T4);
 }
@@ -15240,10 +15240,10 @@ pub trait Vsoxei8VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vsra_vi(vd, vs2, zimm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VsraViEmitter<T0, T1, T2, T3> {
     fn vsra_vi(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3);
 }
@@ -15255,10 +15255,10 @@ pub trait VsraViEmitter<T0, T1, T2, T3> {
 /// Rust: `vsra_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VsraVvEmitter<T0, T1, T2, T3> {
     fn vsra_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15270,10 +15270,10 @@ pub trait VsraVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vsra_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VsraVxEmitter<T0, T1, T2, T3> {
     fn vsra_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15285,10 +15285,10 @@ pub trait VsraVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vsrl_vi(vd, vs2, zimm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VsrlViEmitter<T0, T1, T2, T3> {
     fn vsrl_vi(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3);
 }
@@ -15300,10 +15300,10 @@ pub trait VsrlViEmitter<T0, T1, T2, T3> {
 /// Rust: `vsrl_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VsrlVvEmitter<T0, T1, T2, T3> {
     fn vsrl_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15315,10 +15315,10 @@ pub trait VsrlVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vsrl_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VsrlVxEmitter<T0, T1, T2, T3> {
     fn vsrl_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15330,11 +15330,11 @@ pub trait VsrlVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vsse16_v(vs3, rs1, rs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vsse16VEmitter<T0, T1, T2, T3, T4> {
     fn vsse16_v(&mut self, vs3: T0, rs1: T1, rs2: T2, vm: T3, nf: T4);
 }
@@ -15346,11 +15346,11 @@ pub trait Vsse16VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vsse32_v(vs3, rs1, rs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vsse32VEmitter<T0, T1, T2, T3, T4> {
     fn vsse32_v(&mut self, vs3: T0, rs1: T1, rs2: T2, vm: T3, nf: T4);
 }
@@ -15362,11 +15362,11 @@ pub trait Vsse32VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vsse64_v(vs3, rs1, rs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vsse64VEmitter<T0, T1, T2, T3, T4> {
     fn vsse64_v(&mut self, vs3: T0, rs1: T1, rs2: T2, vm: T3, nf: T4);
 }
@@ -15378,11 +15378,11 @@ pub trait Vsse64VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vsse8_v(vs3, rs1, rs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `rs2` — Source register.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `rs2`: Source register.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vsse8VEmitter<T0, T1, T2, T3, T4> {
     fn vsse8_v(&mut self, vs3: T0, rs1: T1, rs2: T2, vm: T3, nf: T4);
 }
@@ -15394,10 +15394,10 @@ pub trait Vsse8VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vssra_vi(vd, vs2, zimm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VssraViEmitter<T0, T1, T2, T3> {
     fn vssra_vi(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3);
 }
@@ -15409,10 +15409,10 @@ pub trait VssraViEmitter<T0, T1, T2, T3> {
 /// Rust: `vssra_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VssraVvEmitter<T0, T1, T2, T3> {
     fn vssra_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15424,10 +15424,10 @@ pub trait VssraVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vssra_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VssraVxEmitter<T0, T1, T2, T3> {
     fn vssra_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15439,10 +15439,10 @@ pub trait VssraVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vssrl_vi(vd, vs2, zimm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VssrlViEmitter<T0, T1, T2, T3> {
     fn vssrl_vi(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3);
 }
@@ -15454,10 +15454,10 @@ pub trait VssrlViEmitter<T0, T1, T2, T3> {
 /// Rust: `vssrl_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VssrlVvEmitter<T0, T1, T2, T3> {
     fn vssrl_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15469,10 +15469,10 @@ pub trait VssrlVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vssrl_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VssrlVxEmitter<T0, T1, T2, T3> {
     fn vssrl_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15484,10 +15484,10 @@ pub trait VssrlVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vssub_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VssubVvEmitter<T0, T1, T2, T3> {
     fn vssub_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15499,10 +15499,10 @@ pub trait VssubVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vssub_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VssubVxEmitter<T0, T1, T2, T3> {
     fn vssub_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15514,10 +15514,10 @@ pub trait VssubVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vssubu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VssubuVvEmitter<T0, T1, T2, T3> {
     fn vssubu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15529,10 +15529,10 @@ pub trait VssubuVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vssubu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VssubuVxEmitter<T0, T1, T2, T3> {
     fn vssubu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15544,10 +15544,10 @@ pub trait VssubuVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vsub_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VsubVvEmitter<T0, T1, T2, T3> {
     fn vsub_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15559,10 +15559,10 @@ pub trait VsubVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vsub_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VsubVxEmitter<T0, T1, T2, T3> {
     fn vsub_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15574,11 +15574,11 @@ pub trait VsubVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vsuxei16_v(vs3, rs1, vs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vsuxei16VEmitter<T0, T1, T2, T3, T4> {
     fn vsuxei16_v(&mut self, vs3: T0, rs1: T1, vs2: T2, vm: T3, nf: T4);
 }
@@ -15590,11 +15590,11 @@ pub trait Vsuxei16VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vsuxei32_v(vs3, rs1, vs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vsuxei32VEmitter<T0, T1, T2, T3, T4> {
     fn vsuxei32_v(&mut self, vs3: T0, rs1: T1, vs2: T2, vm: T3, nf: T4);
 }
@@ -15606,11 +15606,11 @@ pub trait Vsuxei32VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vsuxei64_v(vs3, rs1, vs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vsuxei64VEmitter<T0, T1, T2, T3, T4> {
     fn vsuxei64_v(&mut self, vs3: T0, rs1: T1, vs2: T2, vm: T3, nf: T4);
 }
@@ -15622,11 +15622,11 @@ pub trait Vsuxei64VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vsuxei8_v(vs3, rs1, vs2, vm, nf)`
 ///
 /// # Arguments
-/// - `vs3` — Vector register operand.
-/// - `rs1` — Memory base register.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
-/// - `nf` — Vector segment field count.
+/// - `vs3`: Vector register operand.
+/// - `rs1`: Memory base register.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
+/// - `nf`: Vector segment field count.
 pub trait Vsuxei8VEmitter<T0, T1, T2, T3, T4> {
     fn vsuxei8_v(&mut self, vs3: T0, rs1: T1, vs2: T2, vm: T3, nf: T4);
 }
@@ -15638,10 +15638,10 @@ pub trait Vsuxei8VEmitter<T0, T1, T2, T3, T4> {
 /// Rust: `vwadd_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VwaddVvEmitter<T0, T1, T2, T3> {
     fn vwadd_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15653,10 +15653,10 @@ pub trait VwaddVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vwadd_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VwaddVxEmitter<T0, T1, T2, T3> {
     fn vwadd_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15668,10 +15668,10 @@ pub trait VwaddVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vwadd_wv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VwaddWvEmitter<T0, T1, T2, T3> {
     fn vwadd_wv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15683,10 +15683,10 @@ pub trait VwaddWvEmitter<T0, T1, T2, T3> {
 /// Rust: `vwadd_wx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VwaddWxEmitter<T0, T1, T2, T3> {
     fn vwadd_wx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15698,10 +15698,10 @@ pub trait VwaddWxEmitter<T0, T1, T2, T3> {
 /// Rust: `vwaddu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VwadduVvEmitter<T0, T1, T2, T3> {
     fn vwaddu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15713,10 +15713,10 @@ pub trait VwadduVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vwaddu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VwadduVxEmitter<T0, T1, T2, T3> {
     fn vwaddu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15728,10 +15728,10 @@ pub trait VwadduVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vwaddu_wv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VwadduWvEmitter<T0, T1, T2, T3> {
     fn vwaddu_wv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15743,10 +15743,10 @@ pub trait VwadduWvEmitter<T0, T1, T2, T3> {
 /// Rust: `vwaddu_wx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VwadduWxEmitter<T0, T1, T2, T3> {
     fn vwaddu_wx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15758,10 +15758,10 @@ pub trait VwadduWxEmitter<T0, T1, T2, T3> {
 /// Rust: `vwmacc_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VwmaccVvEmitter<T0, T1, T2, T3> {
     fn vwmacc_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15773,10 +15773,10 @@ pub trait VwmaccVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vwmacc_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VwmaccVxEmitter<T0, T1, T2, T3> {
     fn vwmacc_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15788,10 +15788,10 @@ pub trait VwmaccVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vwmaccsu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VwmaccsuVvEmitter<T0, T1, T2, T3> {
     fn vwmaccsu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15803,10 +15803,10 @@ pub trait VwmaccsuVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vwmaccsu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VwmaccsuVxEmitter<T0, T1, T2, T3> {
     fn vwmaccsu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15818,10 +15818,10 @@ pub trait VwmaccsuVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vwmaccu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VwmaccuVvEmitter<T0, T1, T2, T3> {
     fn vwmaccu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15833,10 +15833,10 @@ pub trait VwmaccuVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vwmaccu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VwmaccuVxEmitter<T0, T1, T2, T3> {
     fn vwmaccu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15848,10 +15848,10 @@ pub trait VwmaccuVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vwmaccus_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VwmaccusVxEmitter<T0, T1, T2, T3> {
     fn vwmaccus_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15863,10 +15863,10 @@ pub trait VwmaccusVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vwmul_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VwmulVvEmitter<T0, T1, T2, T3> {
     fn vwmul_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15878,10 +15878,10 @@ pub trait VwmulVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vwmul_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VwmulVxEmitter<T0, T1, T2, T3> {
     fn vwmul_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15893,10 +15893,10 @@ pub trait VwmulVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vwmulsu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VwmulsuVvEmitter<T0, T1, T2, T3> {
     fn vwmulsu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15908,10 +15908,10 @@ pub trait VwmulsuVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vwmulsu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VwmulsuVxEmitter<T0, T1, T2, T3> {
     fn vwmulsu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15923,10 +15923,10 @@ pub trait VwmulsuVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vwmulu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VwmuluVvEmitter<T0, T1, T2, T3> {
     fn vwmulu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15938,10 +15938,10 @@ pub trait VwmuluVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vwmulu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VwmuluVxEmitter<T0, T1, T2, T3> {
     fn vwmulu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -15953,10 +15953,10 @@ pub trait VwmuluVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vwredsum_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VwredsumVsEmitter<T0, T1, T2, T3> {
     fn vwredsum_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15968,10 +15968,10 @@ pub trait VwredsumVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vwredsumu_vs(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VwredsumuVsEmitter<T0, T1, T2, T3> {
     fn vwredsumu_vs(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -15983,10 +15983,10 @@ pub trait VwredsumuVsEmitter<T0, T1, T2, T3> {
 /// Rust: `vwsll_vi(vd, vs2, zimm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `zimm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `zimm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VwsllViEmitter<T0, T1, T2, T3> {
     fn vwsll_vi(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3);
 }
@@ -15998,10 +15998,10 @@ pub trait VwsllViEmitter<T0, T1, T2, T3> {
 /// Rust: `vwsll_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VwsllVvEmitter<T0, T1, T2, T3> {
     fn vwsll_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -16013,10 +16013,10 @@ pub trait VwsllVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vwsll_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VwsllVxEmitter<T0, T1, T2, T3> {
     fn vwsll_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -16028,10 +16028,10 @@ pub trait VwsllVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vwsub_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VwsubVvEmitter<T0, T1, T2, T3> {
     fn vwsub_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -16043,10 +16043,10 @@ pub trait VwsubVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vwsub_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VwsubVxEmitter<T0, T1, T2, T3> {
     fn vwsub_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -16058,10 +16058,10 @@ pub trait VwsubVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vwsub_wv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VwsubWvEmitter<T0, T1, T2, T3> {
     fn vwsub_wv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -16073,10 +16073,10 @@ pub trait VwsubWvEmitter<T0, T1, T2, T3> {
 /// Rust: `vwsub_wx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VwsubWxEmitter<T0, T1, T2, T3> {
     fn vwsub_wx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -16088,10 +16088,10 @@ pub trait VwsubWxEmitter<T0, T1, T2, T3> {
 /// Rust: `vwsubu_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VwsubuVvEmitter<T0, T1, T2, T3> {
     fn vwsubu_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -16103,10 +16103,10 @@ pub trait VwsubuVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vwsubu_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VwsubuVxEmitter<T0, T1, T2, T3> {
     fn vwsubu_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -16118,10 +16118,10 @@ pub trait VwsubuVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vwsubu_wv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VwsubuWvEmitter<T0, T1, T2, T3> {
     fn vwsubu_wv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -16133,10 +16133,10 @@ pub trait VwsubuWvEmitter<T0, T1, T2, T3> {
 /// Rust: `vwsubu_wx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VwsubuWxEmitter<T0, T1, T2, T3> {
     fn vwsubu_wx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -16148,10 +16148,10 @@ pub trait VwsubuWxEmitter<T0, T1, T2, T3> {
 /// Rust: `vxor_vi(vd, vs2, simm5, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `simm5` — Immediate encoding value.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `simm5`: Immediate encoding value.
+/// - `vm`: Vector mask control.
 pub trait VxorViEmitter<T0, T1, T2, T3> {
     fn vxor_vi(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3);
 }
@@ -16163,10 +16163,10 @@ pub trait VxorViEmitter<T0, T1, T2, T3> {
 /// Rust: `vxor_vv(vd, vs1, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs1` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs1`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VxorVvEmitter<T0, T1, T2, T3> {
     fn vxor_vv(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3);
 }
@@ -16178,10 +16178,10 @@ pub trait VxorVvEmitter<T0, T1, T2, T3> {
 /// Rust: `vxor_vx(vd, vs2, rs1, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `rs1` — Source register.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `rs1`: Source register.
+/// - `vm`: Vector mask control.
 pub trait VxorVxEmitter<T0, T1, T2, T3> {
     fn vxor_vx(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3);
 }
@@ -16193,9 +16193,9 @@ pub trait VxorVxEmitter<T0, T1, T2, T3> {
 /// Rust: `vzext_vf2(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VzextVf2Emitter<T0, T1, T2> {
     fn vzext_vf2(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -16207,9 +16207,9 @@ pub trait VzextVf2Emitter<T0, T1, T2> {
 /// Rust: `vzext_vf4(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VzextVf4Emitter<T0, T1, T2> {
     fn vzext_vf4(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -16221,9 +16221,9 @@ pub trait VzextVf4Emitter<T0, T1, T2> {
 /// Rust: `vzext_vf8(vd, vs2, vm)`
 ///
 /// # Arguments
-/// - `vd` — Vector register operand.
-/// - `vs2` — Vector register operand.
-/// - `vm` — Vector mask control.
+/// - `vd`: Vector register operand.
+/// - `vs2`: Vector register operand.
+/// - `vm`: Vector mask control.
 pub trait VzextVf8Emitter<T0, T1, T2> {
     fn vzext_vf8(&mut self, vd: T0, vs2: T1, vm: T2);
 }
@@ -16310,9 +16310,9 @@ pub trait WrsStoEmitter {
 /// Rust: `xnor(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait XnorEmitter<T0, T1, T2> {
     fn xnor(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -16326,9 +16326,9 @@ pub trait XnorEmitter<T0, T1, T2> {
 /// Rust: `xor(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait XorEmitter<T0, T1, T2> {
     fn xor(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -16342,9 +16342,9 @@ pub trait XorEmitter<T0, T1, T2> {
 /// Rust: `xori(rd, rs1, imm)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `imm` — Immediate encoding value.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `imm`: Immediate encoding value.
 pub trait XoriEmitter<T0, T1, T2> {
     fn xori(&mut self, rd: T0, rs1: T1, imm: T2);
 }
@@ -16360,9 +16360,9 @@ pub trait XoriEmitter<T0, T1, T2> {
 /// Rust: `xperm4(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Xperm4Emitter<T0, T1, T2> {
     fn xperm4(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -16378,9 +16378,9 @@ pub trait Xperm4Emitter<T0, T1, T2> {
 /// Rust: `xperm8(rd, rs1, rs2)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
-/// - `rs2` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
+/// - `rs2`: Source register.
 pub trait Xperm8Emitter<T0, T1, T2> {
     fn xperm8(&mut self, rd: T0, rs1: T1, rs2: T2);
 }
@@ -16392,8 +16392,8 @@ pub trait Xperm8Emitter<T0, T1, T2> {
 /// Rust: `zext_b(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait ZextBEmitter<T0, T1> {
     fn zext_b(&mut self, rd: T0, rs1: T1);
 }
@@ -16414,8 +16414,8 @@ pub trait ZextBEmitter<T0, T1> {
 /// Rust: `zext_h(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait ZextHEmitter<T0, T1> {
     fn zext_h(&mut self, rd: T0, rs1: T1);
 }
@@ -16436,8 +16436,8 @@ pub trait ZextHEmitter<T0, T1> {
 /// Rust: `zext_h_rv32(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait ZextHRv32Emitter<T0, T1> {
     fn zext_h_rv32(&mut self, rd: T0, rs1: T1);
 }
@@ -16449,8 +16449,8 @@ pub trait ZextHRv32Emitter<T0, T1> {
 /// Rust: `zext_w(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait ZextWEmitter<T0, T1> {
     fn zext_w(&mut self, rd: T0, rs1: T1);
 }
@@ -16466,8 +16466,8 @@ pub trait ZextWEmitter<T0, T1> {
 /// Rust: `zip(rd, rs1)`
 ///
 /// # Arguments
-/// - `rd` — Destination register.
-/// - `rs1` — Source register.
+/// - `rd`: Destination register.
+/// - `rs1`: Source register.
 pub trait ZipEmitter<T0, T1> {
     fn zip(&mut self, rd: T0, rs1: T1);
 }
@@ -28079,9 +28079,9 @@ impl Assembler<'_> {
     /// Rust: `add(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn add<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: AddEmitter<T0, T1, T2>,
@@ -28098,9 +28098,9 @@ impl Assembler<'_> {
     /// Rust: `add_uw(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn add_uw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: AddUwEmitter<T0, T1, T2>,
@@ -28116,9 +28116,9 @@ impl Assembler<'_> {
     /// Rust: `addi(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn addi<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: AddiEmitter<T0, T1, T2>,
@@ -28134,9 +28134,9 @@ impl Assembler<'_> {
     /// Rust: `addiw(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn addiw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: AddiwEmitter<T0, T1, T2>,
@@ -28153,9 +28153,9 @@ impl Assembler<'_> {
     /// Rust: `addw(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn addw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: AddwEmitter<T0, T1, T2>,
@@ -28169,10 +28169,10 @@ impl Assembler<'_> {
     /// Rust: `aes32dsi(rd, rs1, rs2, bs)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `bs` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `bs`: Immediate encoding value.
     pub fn aes32dsi<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, bs: T3)
     where
         Self: Aes32DsiEmitter<T0, T1, T2, T3>,
@@ -28186,10 +28186,10 @@ impl Assembler<'_> {
     /// Rust: `aes32dsmi(rd, rs1, rs2, bs)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `bs` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `bs`: Immediate encoding value.
     pub fn aes32dsmi<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, bs: T3)
     where
         Self: Aes32DsmiEmitter<T0, T1, T2, T3>,
@@ -28203,10 +28203,10 @@ impl Assembler<'_> {
     /// Rust: `aes32esi(rd, rs1, rs2, bs)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `bs` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `bs`: Immediate encoding value.
     pub fn aes32esi<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, bs: T3)
     where
         Self: Aes32EsiEmitter<T0, T1, T2, T3>,
@@ -28220,10 +28220,10 @@ impl Assembler<'_> {
     /// Rust: `aes32esmi(rd, rs1, rs2, bs)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `bs` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `bs`: Immediate encoding value.
     pub fn aes32esmi<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, bs: T3)
     where
         Self: Aes32EsmiEmitter<T0, T1, T2, T3>,
@@ -28237,9 +28237,9 @@ impl Assembler<'_> {
     /// Rust: `aes64ds(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn aes64ds<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Aes64DsEmitter<T0, T1, T2>,
@@ -28253,9 +28253,9 @@ impl Assembler<'_> {
     /// Rust: `aes64dsm(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn aes64dsm<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Aes64DsmEmitter<T0, T1, T2>,
@@ -28269,9 +28269,9 @@ impl Assembler<'_> {
     /// Rust: `aes64es(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn aes64es<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Aes64EsEmitter<T0, T1, T2>,
@@ -28285,9 +28285,9 @@ impl Assembler<'_> {
     /// Rust: `aes64esm(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn aes64esm<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Aes64EsmEmitter<T0, T1, T2>,
@@ -28301,8 +28301,8 @@ impl Assembler<'_> {
     /// Rust: `aes64im(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn aes64im<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: Aes64ImEmitter<T0, T1>,
@@ -28316,9 +28316,9 @@ impl Assembler<'_> {
     /// Rust: `aes64ks1i(rd, rs1, rnum)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rnum` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rnum`: Immediate encoding value.
     pub fn aes64ks1i<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rnum: T2)
     where
         Self: Aes64Ks1IEmitter<T0, T1, T2>,
@@ -28332,9 +28332,9 @@ impl Assembler<'_> {
     /// Rust: `aes64ks2(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn aes64ks2<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Aes64Ks2Emitter<T0, T1, T2>,
@@ -28348,11 +28348,11 @@ impl Assembler<'_> {
     /// Rust: `amoadd_b(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoadd_b<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoaddBEmitter<T0, T1, T2, T3, T4>,
@@ -28373,11 +28373,11 @@ impl Assembler<'_> {
     /// Rust: `amoadd_d(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoadd_d<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoaddDEmitter<T0, T1, T2, T3, T4>,
@@ -28391,11 +28391,11 @@ impl Assembler<'_> {
     /// Rust: `amoadd_h(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoadd_h<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoaddHEmitter<T0, T1, T2, T3, T4>,
@@ -28416,11 +28416,11 @@ impl Assembler<'_> {
     /// Rust: `amoadd_w(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoadd_w<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoaddWEmitter<T0, T1, T2, T3, T4>,
@@ -28434,11 +28434,11 @@ impl Assembler<'_> {
     /// Rust: `amoand_b(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoand_b<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoandBEmitter<T0, T1, T2, T3, T4>,
@@ -28459,11 +28459,11 @@ impl Assembler<'_> {
     /// Rust: `amoand_d(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoand_d<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoandDEmitter<T0, T1, T2, T3, T4>,
@@ -28477,11 +28477,11 @@ impl Assembler<'_> {
     /// Rust: `amoand_h(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoand_h<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoandHEmitter<T0, T1, T2, T3, T4>,
@@ -28502,11 +28502,11 @@ impl Assembler<'_> {
     /// Rust: `amoand_w(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoand_w<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoandWEmitter<T0, T1, T2, T3, T4>,
@@ -28520,11 +28520,11 @@ impl Assembler<'_> {
     /// Rust: `amocas_b(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amocas_b<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmocasBEmitter<T0, T1, T2, T3, T4>,
@@ -28538,11 +28538,11 @@ impl Assembler<'_> {
     /// Rust: `amocas_d(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amocas_d<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmocasDEmitter<T0, T1, T2, T3, T4>,
@@ -28556,11 +28556,11 @@ impl Assembler<'_> {
     /// Rust: `amocas_h(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amocas_h<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmocasHEmitter<T0, T1, T2, T3, T4>,
@@ -28574,11 +28574,11 @@ impl Assembler<'_> {
     /// Rust: `amocas_q(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amocas_q<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmocasQEmitter<T0, T1, T2, T3, T4>,
@@ -28592,11 +28592,11 @@ impl Assembler<'_> {
     /// Rust: `amocas_w(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amocas_w<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmocasWEmitter<T0, T1, T2, T3, T4>,
@@ -28610,11 +28610,11 @@ impl Assembler<'_> {
     /// Rust: `amomax_b(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amomax_b<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmomaxBEmitter<T0, T1, T2, T3, T4>,
@@ -28635,11 +28635,11 @@ impl Assembler<'_> {
     /// Rust: `amomax_d(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amomax_d<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmomaxDEmitter<T0, T1, T2, T3, T4>,
@@ -28653,11 +28653,11 @@ impl Assembler<'_> {
     /// Rust: `amomax_h(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amomax_h<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmomaxHEmitter<T0, T1, T2, T3, T4>,
@@ -28678,11 +28678,11 @@ impl Assembler<'_> {
     /// Rust: `amomax_w(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amomax_w<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmomaxWEmitter<T0, T1, T2, T3, T4>,
@@ -28696,11 +28696,11 @@ impl Assembler<'_> {
     /// Rust: `amomaxu_b(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amomaxu_b<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmomaxuBEmitter<T0, T1, T2, T3, T4>,
@@ -28721,11 +28721,11 @@ impl Assembler<'_> {
     /// Rust: `amomaxu_d(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amomaxu_d<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmomaxuDEmitter<T0, T1, T2, T3, T4>,
@@ -28739,11 +28739,11 @@ impl Assembler<'_> {
     /// Rust: `amomaxu_h(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amomaxu_h<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmomaxuHEmitter<T0, T1, T2, T3, T4>,
@@ -28764,11 +28764,11 @@ impl Assembler<'_> {
     /// Rust: `amomaxu_w(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amomaxu_w<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmomaxuWEmitter<T0, T1, T2, T3, T4>,
@@ -28782,11 +28782,11 @@ impl Assembler<'_> {
     /// Rust: `amomin_b(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amomin_b<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmominBEmitter<T0, T1, T2, T3, T4>,
@@ -28807,11 +28807,11 @@ impl Assembler<'_> {
     /// Rust: `amomin_d(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amomin_d<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmominDEmitter<T0, T1, T2, T3, T4>,
@@ -28825,11 +28825,11 @@ impl Assembler<'_> {
     /// Rust: `amomin_h(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amomin_h<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmominHEmitter<T0, T1, T2, T3, T4>,
@@ -28850,11 +28850,11 @@ impl Assembler<'_> {
     /// Rust: `amomin_w(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amomin_w<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmominWEmitter<T0, T1, T2, T3, T4>,
@@ -28868,11 +28868,11 @@ impl Assembler<'_> {
     /// Rust: `amominu_b(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amominu_b<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmominuBEmitter<T0, T1, T2, T3, T4>,
@@ -28893,11 +28893,11 @@ impl Assembler<'_> {
     /// Rust: `amominu_d(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amominu_d<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmominuDEmitter<T0, T1, T2, T3, T4>,
@@ -28911,11 +28911,11 @@ impl Assembler<'_> {
     /// Rust: `amominu_h(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amominu_h<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmominuHEmitter<T0, T1, T2, T3, T4>,
@@ -28936,11 +28936,11 @@ impl Assembler<'_> {
     /// Rust: `amominu_w(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amominu_w<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmominuWEmitter<T0, T1, T2, T3, T4>,
@@ -28954,11 +28954,11 @@ impl Assembler<'_> {
     /// Rust: `amoor_b(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoor_b<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoorBEmitter<T0, T1, T2, T3, T4>,
@@ -28979,11 +28979,11 @@ impl Assembler<'_> {
     /// Rust: `amoor_d(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoor_d<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoorDEmitter<T0, T1, T2, T3, T4>,
@@ -28997,11 +28997,11 @@ impl Assembler<'_> {
     /// Rust: `amoor_h(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoor_h<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoorHEmitter<T0, T1, T2, T3, T4>,
@@ -29022,11 +29022,11 @@ impl Assembler<'_> {
     /// Rust: `amoor_w(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoor_w<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoorWEmitter<T0, T1, T2, T3, T4>,
@@ -29040,11 +29040,11 @@ impl Assembler<'_> {
     /// Rust: `amoswap_b(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoswap_b<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoswapBEmitter<T0, T1, T2, T3, T4>,
@@ -29064,11 +29064,11 @@ impl Assembler<'_> {
     /// Rust: `amoswap_d(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoswap_d<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoswapDEmitter<T0, T1, T2, T3, T4>,
@@ -29082,11 +29082,11 @@ impl Assembler<'_> {
     /// Rust: `amoswap_h(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoswap_h<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoswapHEmitter<T0, T1, T2, T3, T4>,
@@ -29106,11 +29106,11 @@ impl Assembler<'_> {
     /// Rust: `amoswap_w(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoswap_w<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoswapWEmitter<T0, T1, T2, T3, T4>,
@@ -29124,11 +29124,11 @@ impl Assembler<'_> {
     /// Rust: `amoxor_b(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoxor_b<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoxorBEmitter<T0, T1, T2, T3, T4>,
@@ -29149,11 +29149,11 @@ impl Assembler<'_> {
     /// Rust: `amoxor_d(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoxor_d<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoxorDEmitter<T0, T1, T2, T3, T4>,
@@ -29167,11 +29167,11 @@ impl Assembler<'_> {
     /// Rust: `amoxor_h(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoxor_h<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoxorHEmitter<T0, T1, T2, T3, T4>,
@@ -29192,11 +29192,11 @@ impl Assembler<'_> {
     /// Rust: `amoxor_w(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn amoxor_w<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: AmoxorWEmitter<T0, T1, T2, T3, T4>,
@@ -29212,9 +29212,9 @@ impl Assembler<'_> {
     /// Rust: `and(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn and<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: AndEmitter<T0, T1, T2>,
@@ -29230,9 +29230,9 @@ impl Assembler<'_> {
     /// Rust: `andi(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn andi<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: AndiEmitter<T0, T1, T2>,
@@ -29249,9 +29249,9 @@ impl Assembler<'_> {
     /// Rust: `andn(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn andn<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: AndnEmitter<T0, T1, T2>,
@@ -29267,8 +29267,8 @@ impl Assembler<'_> {
     /// Rust: `auipc(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `imm`: Immediate encoding value.
     pub fn auipc<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: AuipcEmitter<T0, T1>,
@@ -29285,9 +29285,9 @@ impl Assembler<'_> {
     /// Rust: `bclr(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn bclr<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: BclrEmitter<T0, T1, T2>,
@@ -29305,9 +29305,9 @@ impl Assembler<'_> {
     /// Rust: `bclri(rd, rs1, shamtd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtd` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtd`: Immediate encoding value.
     pub fn bclri<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtd: T2)
     where
         Self: BclriEmitter<T0, T1, T2>,
@@ -29325,9 +29325,9 @@ impl Assembler<'_> {
     /// Rust: `bclri_rv32(rd, rs1, shamtw)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtw` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtw`: Immediate encoding value.
     pub fn bclri_rv32<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtw: T2)
     where
         Self: BclriRv32Emitter<T0, T1, T2>,
@@ -29346,9 +29346,9 @@ impl Assembler<'_> {
     /// Rust: `beq(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn beq<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: BeqEmitter<T0, T1, T2>,
@@ -29362,8 +29362,8 @@ impl Assembler<'_> {
     /// Rust: `beqz(rs1, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn beqz<T0, T1>(&mut self, rs1: T0, imm: T1)
     where
         Self: BeqzEmitter<T0, T1>,
@@ -29380,9 +29380,9 @@ impl Assembler<'_> {
     /// Rust: `bext(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn bext<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: BextEmitter<T0, T1, T2>,
@@ -29400,9 +29400,9 @@ impl Assembler<'_> {
     /// Rust: `bexti(rd, rs1, shamtd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtd` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtd`: Immediate encoding value.
     pub fn bexti<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtd: T2)
     where
         Self: BextiEmitter<T0, T1, T2>,
@@ -29420,9 +29420,9 @@ impl Assembler<'_> {
     /// Rust: `bexti_rv32(rd, rs1, shamtw)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtw` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtw`: Immediate encoding value.
     pub fn bexti_rv32<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtw: T2)
     where
         Self: BextiRv32Emitter<T0, T1, T2>,
@@ -29441,9 +29441,9 @@ impl Assembler<'_> {
     /// Rust: `bge(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn bge<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: BgeEmitter<T0, T1, T2>,
@@ -29462,9 +29462,9 @@ impl Assembler<'_> {
     /// Rust: `bgeu(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn bgeu<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: BgeuEmitter<T0, T1, T2>,
@@ -29478,8 +29478,8 @@ impl Assembler<'_> {
     /// Rust: `bgez(rs1, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn bgez<T0, T1>(&mut self, rs1: T0, imm: T1)
     where
         Self: BgezEmitter<T0, T1>,
@@ -29493,9 +29493,9 @@ impl Assembler<'_> {
     /// Rust: `bgt(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn bgt<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: BgtEmitter<T0, T1, T2>,
@@ -29509,9 +29509,9 @@ impl Assembler<'_> {
     /// Rust: `bgtu(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn bgtu<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: BgtuEmitter<T0, T1, T2>,
@@ -29525,8 +29525,8 @@ impl Assembler<'_> {
     /// Rust: `bgtz(rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn bgtz<T0, T1>(&mut self, rs2: T0, imm: T1)
     where
         Self: BgtzEmitter<T0, T1>,
@@ -29543,9 +29543,9 @@ impl Assembler<'_> {
     /// Rust: `binv(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn binv<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: BinvEmitter<T0, T1, T2>,
@@ -29563,9 +29563,9 @@ impl Assembler<'_> {
     /// Rust: `binvi(rd, rs1, shamtd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtd` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtd`: Immediate encoding value.
     pub fn binvi<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtd: T2)
     where
         Self: BinviEmitter<T0, T1, T2>,
@@ -29583,9 +29583,9 @@ impl Assembler<'_> {
     /// Rust: `binvi_rv32(rd, rs1, shamtw)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtw` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtw`: Immediate encoding value.
     pub fn binvi_rv32<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtw: T2)
     where
         Self: BinviRv32Emitter<T0, T1, T2>,
@@ -29599,9 +29599,9 @@ impl Assembler<'_> {
     /// Rust: `ble(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn ble<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: BleEmitter<T0, T1, T2>,
@@ -29615,9 +29615,9 @@ impl Assembler<'_> {
     /// Rust: `bleu(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn bleu<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: BleuEmitter<T0, T1, T2>,
@@ -29631,8 +29631,8 @@ impl Assembler<'_> {
     /// Rust: `blez(rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn blez<T0, T1>(&mut self, rs2: T0, imm: T1)
     where
         Self: BlezEmitter<T0, T1>,
@@ -29651,9 +29651,9 @@ impl Assembler<'_> {
     /// Rust: `blt(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn blt<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: BltEmitter<T0, T1, T2>,
@@ -29672,9 +29672,9 @@ impl Assembler<'_> {
     /// Rust: `bltu(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn bltu<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: BltuEmitter<T0, T1, T2>,
@@ -29688,8 +29688,8 @@ impl Assembler<'_> {
     /// Rust: `bltz(rs1, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn bltz<T0, T1>(&mut self, rs1: T0, imm: T1)
     where
         Self: BltzEmitter<T0, T1>,
@@ -29708,9 +29708,9 @@ impl Assembler<'_> {
     /// Rust: `bne(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn bne<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: BneEmitter<T0, T1, T2>,
@@ -29724,8 +29724,8 @@ impl Assembler<'_> {
     /// Rust: `bnez(rs1, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn bnez<T0, T1>(&mut self, rs1: T0, imm: T1)
     where
         Self: BnezEmitter<T0, T1>,
@@ -29741,8 +29741,8 @@ impl Assembler<'_> {
     /// Rust: `brev8(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn brev8<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: Brev8Emitter<T0, T1>,
@@ -29759,9 +29759,9 @@ impl Assembler<'_> {
     /// Rust: `bset(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn bset<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: BsetEmitter<T0, T1, T2>,
@@ -29779,9 +29779,9 @@ impl Assembler<'_> {
     /// Rust: `bseti(rd, rs1, shamtd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtd` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtd`: Immediate encoding value.
     pub fn bseti<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtd: T2)
     where
         Self: BsetiEmitter<T0, T1, T2>,
@@ -29799,9 +29799,9 @@ impl Assembler<'_> {
     /// Rust: `bseti_rv32(rd, rs1, shamtw)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtw` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtw`: Immediate encoding value.
     pub fn bseti_rv32<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtw: T2)
     where
         Self: BsetiRv32Emitter<T0, T1, T2>,
@@ -29818,8 +29818,8 @@ impl Assembler<'_> {
     /// Rust: `c_add(rd, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
-    /// - `rs2` — Instruction operand.
+    /// - `rd`: Destination/source register.
+    /// - `rs2`: Instruction operand.
     pub fn c_add<T0, T1>(&mut self, rd: T0, rs2: T1)
     where
         Self: CAddEmitter<T0, T1>,
@@ -29838,8 +29838,8 @@ impl Assembler<'_> {
     /// Rust: `c_addi(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination/source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_addi<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: CAddiEmitter<T0, T1>,
@@ -29858,7 +29858,7 @@ impl Assembler<'_> {
     /// Rust: `c_addi16sp(imm)`
     ///
     /// # Arguments
-    /// - `imm` — Immediate encoding value.
+    /// - `imm`: Immediate encoding value.
     pub fn c_addi16sp<T0>(&mut self, imm: T0)
     where
         Self: CAddi16spEmitter<T0>,
@@ -29877,8 +29877,8 @@ impl Assembler<'_> {
     /// Rust: `c_addi4spn(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_addi4spn<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: CAddi4spnEmitter<T0, T1>,
@@ -29897,8 +29897,8 @@ impl Assembler<'_> {
     /// Rust: `c_addiw(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination/source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_addiw<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: CAddiwEmitter<T0, T1>,
@@ -29916,8 +29916,8 @@ impl Assembler<'_> {
     /// Rust: `c_addw(rd, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination/source register.
+    /// - `rs2`: Source register.
     pub fn c_addw<T0, T1>(&mut self, rd: T0, rs2: T1)
     where
         Self: CAddwEmitter<T0, T1>,
@@ -29935,8 +29935,8 @@ impl Assembler<'_> {
     /// Rust: `c_and(rd, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination/source register.
+    /// - `rs2`: Source register.
     pub fn c_and<T0, T1>(&mut self, rd: T0, rs2: T1)
     where
         Self: CAndEmitter<T0, T1>,
@@ -29954,8 +29954,8 @@ impl Assembler<'_> {
     /// Rust: `c_andi(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination/source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_andi<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: CAndiEmitter<T0, T1>,
@@ -29972,8 +29972,8 @@ impl Assembler<'_> {
     /// Rust: `c_beqz(rs1, bimm9lohi)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `bimm9lohi` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `bimm9lohi`: Immediate encoding value.
     pub fn c_beqz<T0, T1>(&mut self, rs1: T0, bimm9lohi: T1)
     where
         Self: CBeqzEmitter<T0, T1>,
@@ -29990,8 +29990,8 @@ impl Assembler<'_> {
     /// Rust: `c_bnez(rs1, bimm9lohi)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `bimm9lohi` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `bimm9lohi`: Immediate encoding value.
     pub fn c_bnez<T0, T1>(&mut self, rs1: T0, bimm9lohi: T1)
     where
         Self: CBnezEmitter<T0, T1>,
@@ -30036,9 +30036,9 @@ impl Assembler<'_> {
     /// Rust: `c_fld(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_fld<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: CFldEmitter<T0, T1, T2>,
@@ -30057,8 +30057,8 @@ impl Assembler<'_> {
     /// Rust: `c_fldsp(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_fldsp<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: CFldspEmitter<T0, T1>,
@@ -30077,9 +30077,9 @@ impl Assembler<'_> {
     /// Rust: `c_flw(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_flw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: CFlwEmitter<T0, T1, T2>,
@@ -30098,8 +30098,8 @@ impl Assembler<'_> {
     /// Rust: `c_flwsp(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_flwsp<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: CFlwspEmitter<T0, T1>,
@@ -30118,9 +30118,9 @@ impl Assembler<'_> {
     /// Rust: `c_fsd(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_fsd<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: CFsdEmitter<T0, T1, T2>,
@@ -30139,8 +30139,8 @@ impl Assembler<'_> {
     /// Rust: `c_fsdsp(rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs2` — Instruction operand.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs2`: Instruction operand.
+    /// - `imm`: Immediate encoding value.
     pub fn c_fsdsp<T0, T1>(&mut self, rs2: T0, imm: T1)
     where
         Self: CFsdspEmitter<T0, T1>,
@@ -30159,9 +30159,9 @@ impl Assembler<'_> {
     /// Rust: `c_fsw(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_fsw<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: CFswEmitter<T0, T1, T2>,
@@ -30180,8 +30180,8 @@ impl Assembler<'_> {
     /// Rust: `c_fswsp(rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs2` — Instruction operand.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs2`: Instruction operand.
+    /// - `imm`: Immediate encoding value.
     pub fn c_fswsp<T0, T1>(&mut self, rs2: T0, imm: T1)
     where
         Self: CFswspEmitter<T0, T1>,
@@ -30198,7 +30198,7 @@ impl Assembler<'_> {
     /// Rust: `c_j(imm)`
     ///
     /// # Arguments
-    /// - `imm` — Immediate encoding value.
+    /// - `imm`: Immediate encoding value.
     pub fn c_j<T0>(&mut self, imm: T0)
     where
         Self: CJEmitter<T0>,
@@ -30215,7 +30215,7 @@ impl Assembler<'_> {
     /// Rust: `c_jal(imm)`
     ///
     /// # Arguments
-    /// - `imm` — Immediate encoding value.
+    /// - `imm`: Immediate encoding value.
     pub fn c_jal<T0>(&mut self, imm: T0)
     where
         Self: CJalEmitter<T0>,
@@ -30232,7 +30232,7 @@ impl Assembler<'_> {
     /// Rust: `c_jalr(rs1)`
     ///
     /// # Arguments
-    /// - `rs1` — Instruction operand.
+    /// - `rs1`: Instruction operand.
     pub fn c_jalr<T0>(&mut self, rs1: T0)
     where
         Self: CJalrEmitter<T0>,
@@ -30249,7 +30249,7 @@ impl Assembler<'_> {
     /// Rust: `c_jr(rs1)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
+    /// - `rs1`: Source register.
     pub fn c_jr<T0>(&mut self, rs1: T0)
     where
         Self: CJrEmitter<T0>,
@@ -30267,9 +30267,9 @@ impl Assembler<'_> {
     /// Rust: `c_lbu(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_lbu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: CLbuEmitter<T0, T1, T2>,
@@ -30288,9 +30288,9 @@ impl Assembler<'_> {
     /// Rust: `c_ld(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_ld<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: CLdEmitter<T0, T1, T2>,
@@ -30311,8 +30311,8 @@ impl Assembler<'_> {
     /// Rust: `c_ldsp(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_ldsp<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: CLdspEmitter<T0, T1>,
@@ -30330,9 +30330,9 @@ impl Assembler<'_> {
     /// Rust: `c_lh(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_lh<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: CLhEmitter<T0, T1, T2>,
@@ -30350,9 +30350,9 @@ impl Assembler<'_> {
     /// Rust: `c_lhu(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_lhu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: CLhuEmitter<T0, T1, T2>,
@@ -30370,8 +30370,8 @@ impl Assembler<'_> {
     /// Rust: `c_li(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_li<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: CLiEmitter<T0, T1>,
@@ -30390,8 +30390,8 @@ impl Assembler<'_> {
     /// Rust: `c_lui(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_lui<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: CLuiEmitter<T0, T1>,
@@ -30410,9 +30410,9 @@ impl Assembler<'_> {
     /// Rust: `c_lw(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_lw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: CLwEmitter<T0, T1, T2>,
@@ -30432,8 +30432,8 @@ impl Assembler<'_> {
     /// Rust: `c_lwsp(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_lwsp<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: CLwspEmitter<T0, T1>,
@@ -30551,7 +30551,7 @@ impl Assembler<'_> {
     /// Rust: `c_mop_n(mop_t)`
     ///
     /// # Arguments
-    /// - `mop_t` — Instruction operand.
+    /// - `mop_t`: Instruction operand.
     pub fn c_mop_n<T0>(&mut self, mop_t: T0)
     where
         Self: CMopNEmitter<T0>,
@@ -30567,8 +30567,8 @@ impl Assembler<'_> {
     /// Rust: `c_mul(rd, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination/source register.
+    /// - `rs2`: Source register.
     pub fn c_mul<T0, T1>(&mut self, rd: T0, rs2: T1)
     where
         Self: CMulEmitter<T0, T1>,
@@ -30585,8 +30585,8 @@ impl Assembler<'_> {
     /// Rust: `c_mv(rd, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs2` — Instruction operand.
+    /// - `rd`: Destination register.
+    /// - `rs2`: Instruction operand.
     pub fn c_mv<T0, T1>(&mut self, rd: T0, rs2: T1)
     where
         Self: CMvEmitter<T0, T1>,
@@ -30602,7 +30602,7 @@ impl Assembler<'_> {
     /// Rust: `c_nop(imm)`
     ///
     /// # Arguments
-    /// - `imm` — Immediate encoding value.
+    /// - `imm`: Immediate encoding value.
     pub fn c_nop<T0>(&mut self, imm: T0)
     where
         Self: CNopEmitter<T0>,
@@ -30619,7 +30619,7 @@ impl Assembler<'_> {
     /// Rust: `c_not(rd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
+    /// - `rd`: Destination/source register.
     pub fn c_not<T0>(&mut self, rd: T0)
     where
         Self: CNotEmitter<T0>,
@@ -30689,8 +30689,8 @@ impl Assembler<'_> {
     /// Rust: `c_or(rd, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination/source register.
+    /// - `rs2`: Source register.
     pub fn c_or<T0, T1>(&mut self, rd: T0, rs2: T1)
     where
         Self: COrEmitter<T0, T1>,
@@ -30708,9 +30708,9 @@ impl Assembler<'_> {
     /// Rust: `c_sb(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_sb<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: CSbEmitter<T0, T1, T2>,
@@ -30729,9 +30729,9 @@ impl Assembler<'_> {
     /// Rust: `c_sd(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_sd<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: CSdEmitter<T0, T1, T2>,
@@ -30750,8 +30750,8 @@ impl Assembler<'_> {
     /// Rust: `c_sdsp(rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs2` — Instruction operand.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs2`: Instruction operand.
+    /// - `imm`: Immediate encoding value.
     pub fn c_sdsp<T0, T1>(&mut self, rs2: T0, imm: T1)
     where
         Self: CSdspEmitter<T0, T1>,
@@ -30769,7 +30769,7 @@ impl Assembler<'_> {
     /// Rust: `c_sext_b(rd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
+    /// - `rd`: Destination/source register.
     pub fn c_sext_b<T0>(&mut self, rd: T0)
     where
         Self: CSextBEmitter<T0>,
@@ -30787,7 +30787,7 @@ impl Assembler<'_> {
     /// Rust: `c_sext_h(rd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
+    /// - `rd`: Destination/source register.
     pub fn c_sext_h<T0>(&mut self, rd: T0)
     where
         Self: CSextHEmitter<T0>,
@@ -30805,9 +30805,9 @@ impl Assembler<'_> {
     /// Rust: `c_sh(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_sh<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: CShEmitter<T0, T1, T2>,
@@ -30824,8 +30824,8 @@ impl Assembler<'_> {
     /// Rust: `c_slli(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination/source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_slli<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: CSlliEmitter<T0, T1>,
@@ -30842,8 +30842,8 @@ impl Assembler<'_> {
     /// Rust: `c_slli_rv32(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination/source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_slli_rv32<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: CSlliRv32Emitter<T0, T1>,
@@ -30861,8 +30861,8 @@ impl Assembler<'_> {
     /// Rust: `c_srai(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination/source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_srai<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: CSraiEmitter<T0, T1>,
@@ -30880,8 +30880,8 @@ impl Assembler<'_> {
     /// Rust: `c_srai_rv32(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination/source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_srai_rv32<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: CSraiRv32Emitter<T0, T1>,
@@ -30899,8 +30899,8 @@ impl Assembler<'_> {
     /// Rust: `c_srli(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination/source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_srli<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: CSrliEmitter<T0, T1>,
@@ -30918,8 +30918,8 @@ impl Assembler<'_> {
     /// Rust: `c_srli_rv32(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination/source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_srli_rv32<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: CSrliRv32Emitter<T0, T1>,
@@ -30963,8 +30963,8 @@ impl Assembler<'_> {
     /// Rust: `c_sub(rd, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination/source register.
+    /// - `rs2`: Source register.
     pub fn c_sub<T0, T1>(&mut self, rd: T0, rs2: T1)
     where
         Self: CSubEmitter<T0, T1>,
@@ -30982,8 +30982,8 @@ impl Assembler<'_> {
     /// Rust: `c_subw(rd, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination/source register.
+    /// - `rs2`: Source register.
     pub fn c_subw<T0, T1>(&mut self, rd: T0, rs2: T1)
     where
         Self: CSubwEmitter<T0, T1>,
@@ -31002,9 +31002,9 @@ impl Assembler<'_> {
     /// Rust: `c_sw(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn c_sw<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: CSwEmitter<T0, T1, T2>,
@@ -31023,8 +31023,8 @@ impl Assembler<'_> {
     /// Rust: `c_swsp(rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs2` — Instruction operand.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs2`: Instruction operand.
+    /// - `imm`: Immediate encoding value.
     pub fn c_swsp<T0, T1>(&mut self, rs2: T0, imm: T1)
     where
         Self: CSwspEmitter<T0, T1>,
@@ -31042,8 +31042,8 @@ impl Assembler<'_> {
     /// Rust: `c_xor(rd, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination/source register.
+    /// - `rs2`: Source register.
     pub fn c_xor<T0, T1>(&mut self, rd: T0, rs2: T1)
     where
         Self: CXorEmitter<T0, T1>,
@@ -31061,7 +31061,7 @@ impl Assembler<'_> {
     /// Rust: `c_zext_b(rd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
+    /// - `rd`: Destination/source register.
     pub fn c_zext_b<T0>(&mut self, rd: T0)
     where
         Self: CZextBEmitter<T0>,
@@ -31079,7 +31079,7 @@ impl Assembler<'_> {
     /// Rust: `c_zext_h(rd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
+    /// - `rd`: Destination/source register.
     pub fn c_zext_h<T0>(&mut self, rd: T0)
     where
         Self: CZextHEmitter<T0>,
@@ -31096,7 +31096,7 @@ impl Assembler<'_> {
     /// Rust: `c_zext_w(rd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination/source register.
+    /// - `rd`: Destination/source register.
     pub fn c_zext_w<T0>(&mut self, rd: T0)
     where
         Self: CZextWEmitter<T0>,
@@ -31140,7 +31140,7 @@ impl Assembler<'_> {
     /// Rust: `cbo_clean(rs1)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
+    /// - `rs1`: Source register.
     pub fn cbo_clean<T0>(&mut self, rs1: T0)
     where
         Self: CboCleanEmitter<T0>,
@@ -31178,7 +31178,7 @@ impl Assembler<'_> {
     /// Rust: `cbo_flush(rs1)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
+    /// - `rs1`: Source register.
     pub fn cbo_flush<T0>(&mut self, rs1: T0)
     where
         Self: CboFlushEmitter<T0>,
@@ -31255,7 +31255,7 @@ impl Assembler<'_> {
     /// Rust: `cbo_inval(rs1)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
+    /// - `rs1`: Source register.
     pub fn cbo_inval<T0>(&mut self, rs1: T0)
     where
         Self: CboInvalEmitter<T0>,
@@ -31295,7 +31295,7 @@ impl Assembler<'_> {
     /// Rust: `cbo_zero(rs1)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
+    /// - `rs1`: Source register.
     pub fn cbo_zero<T0>(&mut self, rs1: T0)
     where
         Self: CboZeroEmitter<T0>,
@@ -31311,9 +31311,9 @@ impl Assembler<'_> {
     /// Rust: `clmul(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn clmul<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: ClmulEmitter<T0, T1, T2>,
@@ -31329,9 +31329,9 @@ impl Assembler<'_> {
     /// Rust: `clmulh(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn clmulh<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: ClmulhEmitter<T0, T1, T2>,
@@ -31347,9 +31347,9 @@ impl Assembler<'_> {
     /// Rust: `clmulr(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn clmulr<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: ClmulrEmitter<T0, T1, T2>,
@@ -31368,8 +31368,8 @@ impl Assembler<'_> {
     /// Rust: `clz(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn clz<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: ClzEmitter<T0, T1>,
@@ -31387,8 +31387,8 @@ impl Assembler<'_> {
     /// Rust: `clzw(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn clzw<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: ClzwEmitter<T0, T1>,
@@ -31402,7 +31402,7 @@ impl Assembler<'_> {
     /// Rust: `cm_jalt(index)`
     ///
     /// # Arguments
-    /// - `index` — Instruction operand.
+    /// - `index`: Instruction operand.
     pub fn cm_jalt<T0>(&mut self, index: T0)
     where
         Self: CmJaltEmitter<T0>,
@@ -31430,8 +31430,8 @@ impl Assembler<'_> {
     /// Rust: `cpop(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn cpop<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: CpopEmitter<T0, T1>,
@@ -31459,8 +31459,8 @@ impl Assembler<'_> {
     /// Rust: `cpopw(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn cpopw<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: CpopwEmitter<T0, T1>,
@@ -31474,8 +31474,8 @@ impl Assembler<'_> {
     /// Rust: `csrc(rs1, csr)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `csr` — Control and status register number.
+    /// - `rs1`: Source register.
+    /// - `csr`: Control and status register number.
     pub fn csrc<T0, T1>(&mut self, rs1: T0, csr: T1)
     where
         Self: CsrcEmitter<T0, T1>,
@@ -31489,8 +31489,8 @@ impl Assembler<'_> {
     /// Rust: `csrci(csr, zimm5)`
     ///
     /// # Arguments
-    /// - `csr` — Control and status register number.
-    /// - `zimm5` — Immediate encoding value.
+    /// - `csr`: Control and status register number.
+    /// - `zimm5`: Immediate encoding value.
     pub fn csrci<T0, T1>(&mut self, csr: T0, zimm5: T1)
     where
         Self: CsrciEmitter<T0, T1>,
@@ -31504,8 +31504,8 @@ impl Assembler<'_> {
     /// Rust: `csrr(rd, csr)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `csr` — Control and status register number.
+    /// - `rd`: Destination register.
+    /// - `csr`: Control and status register number.
     pub fn csrr<T0, T1>(&mut self, rd: T0, csr: T1)
     where
         Self: CsrrEmitter<T0, T1>,
@@ -31519,9 +31519,9 @@ impl Assembler<'_> {
     /// Rust: `csrrc(rd, rs1, csr)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `csr` — Control and status register number.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `csr`: Control and status register number.
     pub fn csrrc<T0, T1, T2>(&mut self, rd: T0, rs1: T1, csr: T2)
     where
         Self: CsrrcEmitter<T0, T1, T2>,
@@ -31535,9 +31535,9 @@ impl Assembler<'_> {
     /// Rust: `csrrci(rd, csr, zimm5)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `csr` — Control and status register number.
-    /// - `zimm5` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `csr`: Control and status register number.
+    /// - `zimm5`: Immediate encoding value.
     pub fn csrrci<T0, T1, T2>(&mut self, rd: T0, csr: T1, zimm5: T2)
     where
         Self: CsrrciEmitter<T0, T1, T2>,
@@ -31560,9 +31560,9 @@ impl Assembler<'_> {
     /// Rust: `csrrs(rd, rs1, csr)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `csr` — Control and status register number.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `csr`: Control and status register number.
     pub fn csrrs<T0, T1, T2>(&mut self, rd: T0, rs1: T1, csr: T2)
     where
         Self: CsrrsEmitter<T0, T1, T2>,
@@ -31576,9 +31576,9 @@ impl Assembler<'_> {
     /// Rust: `csrrsi(rd, csr, zimm5)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `csr` — Control and status register number.
-    /// - `zimm5` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `csr`: Control and status register number.
+    /// - `zimm5`: Immediate encoding value.
     pub fn csrrsi<T0, T1, T2>(&mut self, rd: T0, csr: T1, zimm5: T2)
     where
         Self: CsrrsiEmitter<T0, T1, T2>,
@@ -31600,9 +31600,9 @@ impl Assembler<'_> {
     /// Rust: `csrrw(rd, rs1, csr)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `csr` — Control and status register number.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `csr`: Control and status register number.
     pub fn csrrw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, csr: T2)
     where
         Self: CsrrwEmitter<T0, T1, T2>,
@@ -31624,9 +31624,9 @@ impl Assembler<'_> {
     /// Rust: `csrrwi(rd, csr, zimm5)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `csr` — Control and status register number.
-    /// - `zimm5` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `csr`: Control and status register number.
+    /// - `zimm5`: Immediate encoding value.
     pub fn csrrwi<T0, T1, T2>(&mut self, rd: T0, csr: T1, zimm5: T2)
     where
         Self: CsrrwiEmitter<T0, T1, T2>,
@@ -31640,8 +31640,8 @@ impl Assembler<'_> {
     /// Rust: `csrs(rs1, csr)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `csr` — Control and status register number.
+    /// - `rs1`: Source register.
+    /// - `csr`: Control and status register number.
     pub fn csrs<T0, T1>(&mut self, rs1: T0, csr: T1)
     where
         Self: CsrsEmitter<T0, T1>,
@@ -31655,8 +31655,8 @@ impl Assembler<'_> {
     /// Rust: `csrsi(csr, zimm5)`
     ///
     /// # Arguments
-    /// - `csr` — Control and status register number.
-    /// - `zimm5` — Immediate encoding value.
+    /// - `csr`: Control and status register number.
+    /// - `zimm5`: Immediate encoding value.
     pub fn csrsi<T0, T1>(&mut self, csr: T0, zimm5: T1)
     where
         Self: CsrsiEmitter<T0, T1>,
@@ -31670,8 +31670,8 @@ impl Assembler<'_> {
     /// Rust: `csrw(rs1, csr)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `csr` — Control and status register number.
+    /// - `rs1`: Source register.
+    /// - `csr`: Control and status register number.
     pub fn csrw<T0, T1>(&mut self, rs1: T0, csr: T1)
     where
         Self: CsrwEmitter<T0, T1>,
@@ -31685,8 +31685,8 @@ impl Assembler<'_> {
     /// Rust: `csrwi(csr, zimm5)`
     ///
     /// # Arguments
-    /// - `csr` — Control and status register number.
-    /// - `zimm5` — Immediate encoding value.
+    /// - `csr`: Control and status register number.
+    /// - `zimm5`: Immediate encoding value.
     pub fn csrwi<T0, T1>(&mut self, csr: T0, zimm5: T1)
     where
         Self: CsrwiEmitter<T0, T1>,
@@ -31706,8 +31706,8 @@ impl Assembler<'_> {
     /// Rust: `ctz(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn ctz<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: CtzEmitter<T0, T1>,
@@ -31727,8 +31727,8 @@ impl Assembler<'_> {
     /// Rust: `ctzw(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn ctzw<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: CtzwEmitter<T0, T1>,
@@ -31742,9 +31742,9 @@ impl Assembler<'_> {
     /// Rust: `czero_eqz(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn czero_eqz<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: CzeroEqzEmitter<T0, T1, T2>,
@@ -31758,9 +31758,9 @@ impl Assembler<'_> {
     /// Rust: `czero_nez(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn czero_nez<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: CzeroNezEmitter<T0, T1, T2>,
@@ -31781,9 +31781,9 @@ impl Assembler<'_> {
     /// Rust: `div(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn div<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: DivEmitter<T0, T1, T2>,
@@ -31803,9 +31803,9 @@ impl Assembler<'_> {
     /// Rust: `divu(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn divu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: DivuEmitter<T0, T1, T2>,
@@ -31825,9 +31825,9 @@ impl Assembler<'_> {
     /// Rust: `divuw(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn divuw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: DivuwEmitter<T0, T1, T2>,
@@ -31851,9 +31851,9 @@ impl Assembler<'_> {
     /// Rust: `divw(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn divw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: DivwEmitter<T0, T1, T2>,
@@ -31935,9 +31935,9 @@ impl Assembler<'_> {
     /// Rust: `fabs_d(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fabs_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FabsDEmitter<T0, T1, T2>,
@@ -31951,9 +31951,9 @@ impl Assembler<'_> {
     /// Rust: `fabs_h(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fabs_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FabsHEmitter<T0, T1, T2>,
@@ -31967,9 +31967,9 @@ impl Assembler<'_> {
     /// Rust: `fabs_q(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fabs_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FabsQEmitter<T0, T1, T2>,
@@ -31983,9 +31983,9 @@ impl Assembler<'_> {
     /// Rust: `fabs_s(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fabs_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FabsSEmitter<T0, T1, T2>,
@@ -31999,10 +31999,10 @@ impl Assembler<'_> {
     /// Rust: `fadd_d(rd, rs1, rs2, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fadd_d<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3)
     where
         Self: FaddDEmitter<T0, T1, T2, T3>,
@@ -32016,10 +32016,10 @@ impl Assembler<'_> {
     /// Rust: `fadd_h(rd, rs1, rs2, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fadd_h<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3)
     where
         Self: FaddHEmitter<T0, T1, T2, T3>,
@@ -32033,10 +32033,10 @@ impl Assembler<'_> {
     /// Rust: `fadd_q(rd, rs1, rs2, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fadd_q<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3)
     where
         Self: FaddQEmitter<T0, T1, T2, T3>,
@@ -32053,10 +32053,10 @@ impl Assembler<'_> {
     /// Rust: `fadd_s(rd, rs1, rs2, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fadd_s<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3)
     where
         Self: FaddSEmitter<T0, T1, T2, T3>,
@@ -32070,8 +32070,8 @@ impl Assembler<'_> {
     /// Rust: `fclass_d(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fclass_d<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FclassDEmitter<T0, T1>,
@@ -32085,8 +32085,8 @@ impl Assembler<'_> {
     /// Rust: `fclass_h(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fclass_h<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FclassHEmitter<T0, T1>,
@@ -32100,8 +32100,8 @@ impl Assembler<'_> {
     /// Rust: `fclass_q(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fclass_q<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FclassQEmitter<T0, T1>,
@@ -32141,8 +32141,8 @@ impl Assembler<'_> {
     /// Rust: `fclass_s(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fclass_s<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FclassSEmitter<T0, T1>,
@@ -32156,9 +32156,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_bf16_s(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_bf16_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtBf16SEmitter<T0, T1, T2>,
@@ -32172,9 +32172,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_d_h(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_d_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtDHEmitter<T0, T1, T2>,
@@ -32188,9 +32188,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_d_l(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_d_l<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtDLEmitter<T0, T1, T2>,
@@ -32204,9 +32204,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_d_lu(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_d_lu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtDLuEmitter<T0, T1, T2>,
@@ -32220,9 +32220,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_d_q(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_d_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtDQEmitter<T0, T1, T2>,
@@ -32236,9 +32236,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_d_s(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_d_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtDSEmitter<T0, T1, T2>,
@@ -32252,9 +32252,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_d_w(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_d_w<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtDWEmitter<T0, T1, T2>,
@@ -32268,9 +32268,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_d_wu(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_d_wu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtDWuEmitter<T0, T1, T2>,
@@ -32284,9 +32284,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_h_d(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_h_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtHDEmitter<T0, T1, T2>,
@@ -32300,9 +32300,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_h_l(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_h_l<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtHLEmitter<T0, T1, T2>,
@@ -32316,9 +32316,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_h_lu(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_h_lu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtHLuEmitter<T0, T1, T2>,
@@ -32332,9 +32332,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_h_q(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_h_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtHQEmitter<T0, T1, T2>,
@@ -32356,9 +32356,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_h_s(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_h_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtHSEmitter<T0, T1, T2>,
@@ -32372,9 +32372,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_h_w(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_h_w<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtHWEmitter<T0, T1, T2>,
@@ -32388,9 +32388,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_h_wu(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_h_wu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtHWuEmitter<T0, T1, T2>,
@@ -32404,9 +32404,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_l_d(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_l_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtLDEmitter<T0, T1, T2>,
@@ -32420,9 +32420,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_l_h(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_l_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtLHEmitter<T0, T1, T2>,
@@ -32436,9 +32436,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_l_q(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_l_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtLQEmitter<T0, T1, T2>,
@@ -32452,9 +32452,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_l_s(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_l_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtLSEmitter<T0, T1, T2>,
@@ -32468,9 +32468,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_lu_d(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_lu_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtLuDEmitter<T0, T1, T2>,
@@ -32484,9 +32484,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_lu_h(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_lu_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtLuHEmitter<T0, T1, T2>,
@@ -32500,9 +32500,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_lu_q(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_lu_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtLuQEmitter<T0, T1, T2>,
@@ -32516,9 +32516,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_lu_s(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_lu_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtLuSEmitter<T0, T1, T2>,
@@ -32532,9 +32532,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_q_d(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_q_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtQDEmitter<T0, T1, T2>,
@@ -32548,9 +32548,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_q_h(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_q_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtQHEmitter<T0, T1, T2>,
@@ -32564,9 +32564,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_q_l(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_q_l<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtQLEmitter<T0, T1, T2>,
@@ -32580,9 +32580,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_q_lu(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_q_lu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtQLuEmitter<T0, T1, T2>,
@@ -32596,9 +32596,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_q_s(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_q_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtQSEmitter<T0, T1, T2>,
@@ -32612,9 +32612,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_q_w(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_q_w<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtQWEmitter<T0, T1, T2>,
@@ -32628,9 +32628,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_q_wu(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_q_wu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtQWuEmitter<T0, T1, T2>,
@@ -32644,9 +32644,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_s_bf16(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_s_bf16<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtSBf16Emitter<T0, T1, T2>,
@@ -32660,9 +32660,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_s_d(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_s_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtSDEmitter<T0, T1, T2>,
@@ -32681,9 +32681,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_s_h(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_s_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtSHEmitter<T0, T1, T2>,
@@ -32697,9 +32697,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_s_l(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_s_l<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtSLEmitter<T0, T1, T2>,
@@ -32713,9 +32713,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_s_lu(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_s_lu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtSLuEmitter<T0, T1, T2>,
@@ -32729,9 +32729,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_s_q(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_s_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtSQEmitter<T0, T1, T2>,
@@ -32756,9 +32756,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_s_w(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_s_w<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtSWEmitter<T0, T1, T2>,
@@ -32772,9 +32772,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_s_wu(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_s_wu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtSWuEmitter<T0, T1, T2>,
@@ -32788,9 +32788,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_w_d(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_w_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtWDEmitter<T0, T1, T2>,
@@ -32804,9 +32804,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_w_h(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_w_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtWHEmitter<T0, T1, T2>,
@@ -32820,9 +32820,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_w_q(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_w_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtWQEmitter<T0, T1, T2>,
@@ -32866,9 +32866,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_w_s(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_w_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtWSEmitter<T0, T1, T2>,
@@ -32882,9 +32882,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_wu_d(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_wu_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtWuDEmitter<T0, T1, T2>,
@@ -32898,9 +32898,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_wu_h(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_wu_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtWuHEmitter<T0, T1, T2>,
@@ -32914,9 +32914,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_wu_q(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_wu_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtWuQEmitter<T0, T1, T2>,
@@ -32930,9 +32930,9 @@ impl Assembler<'_> {
     /// Rust: `fcvt_wu_s(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fcvt_wu_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FcvtWuSEmitter<T0, T1, T2>,
@@ -32946,8 +32946,8 @@ impl Assembler<'_> {
     /// Rust: `fcvtmod_w_d(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fcvtmod_w_d<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FcvtmodWDEmitter<T0, T1>,
@@ -32961,10 +32961,10 @@ impl Assembler<'_> {
     /// Rust: `fdiv_d(rd, rs1, rs2, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fdiv_d<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3)
     where
         Self: FdivDEmitter<T0, T1, T2, T3>,
@@ -32978,10 +32978,10 @@ impl Assembler<'_> {
     /// Rust: `fdiv_h(rd, rs1, rs2, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fdiv_h<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3)
     where
         Self: FdivHEmitter<T0, T1, T2, T3>,
@@ -32995,10 +32995,10 @@ impl Assembler<'_> {
     /// Rust: `fdiv_q(rd, rs1, rs2, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fdiv_q<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3)
     where
         Self: FdivQEmitter<T0, T1, T2, T3>,
@@ -33012,10 +33012,10 @@ impl Assembler<'_> {
     /// Rust: `fdiv_s(rd, rs1, rs2, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fdiv_s<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3)
     where
         Self: FdivSEmitter<T0, T1, T2, T3>,
@@ -33144,11 +33144,11 @@ impl Assembler<'_> {
     /// Rust: `fence(fm, pred, succ, rs1, rd)`
     ///
     /// # Arguments
-    /// - `fm` — Immediate encoding value.
-    /// - `pred` — Immediate encoding value.
-    /// - `succ` — Immediate encoding value.
-    /// - `rs1` — Source register.
-    /// - `rd` — Destination/source register.
+    /// - `fm`: Immediate encoding value.
+    /// - `pred`: Immediate encoding value.
+    /// - `succ`: Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `rd`: Destination/source register.
     pub fn fence<T0, T1, T2, T3, T4>(&mut self, fm: T0, pred: T1, succ: T2, rs1: T3, rd: T4)
     where
         Self: FenceEmitter<T0, T1, T2, T3, T4>,
@@ -33216,9 +33216,9 @@ impl Assembler<'_> {
     /// Rust: `feq_d(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn feq_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FeqDEmitter<T0, T1, T2>,
@@ -33232,9 +33232,9 @@ impl Assembler<'_> {
     /// Rust: `feq_h(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn feq_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FeqHEmitter<T0, T1, T2>,
@@ -33248,9 +33248,9 @@ impl Assembler<'_> {
     /// Rust: `feq_q(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn feq_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FeqQEmitter<T0, T1, T2>,
@@ -33270,9 +33270,9 @@ impl Assembler<'_> {
     /// Rust: `feq_s(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn feq_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FeqSEmitter<T0, T1, T2>,
@@ -33286,9 +33286,9 @@ impl Assembler<'_> {
     /// Rust: `fld(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `imm`: Immediate encoding value.
     pub fn fld<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: FldEmitter<T0, T1, T2>,
@@ -33302,9 +33302,9 @@ impl Assembler<'_> {
     /// Rust: `fle_d(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fle_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FleDEmitter<T0, T1, T2>,
@@ -33318,9 +33318,9 @@ impl Assembler<'_> {
     /// Rust: `fle_h(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fle_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FleHEmitter<T0, T1, T2>,
@@ -33334,9 +33334,9 @@ impl Assembler<'_> {
     /// Rust: `fle_q(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fle_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FleQEmitter<T0, T1, T2>,
@@ -33357,9 +33357,9 @@ impl Assembler<'_> {
     /// Rust: `fle_s(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fle_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FleSEmitter<T0, T1, T2>,
@@ -33373,9 +33373,9 @@ impl Assembler<'_> {
     /// Rust: `fleq_d(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fleq_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FleqDEmitter<T0, T1, T2>,
@@ -33389,9 +33389,9 @@ impl Assembler<'_> {
     /// Rust: `fleq_h(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fleq_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FleqHEmitter<T0, T1, T2>,
@@ -33405,9 +33405,9 @@ impl Assembler<'_> {
     /// Rust: `fleq_q(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fleq_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FleqQEmitter<T0, T1, T2>,
@@ -33421,9 +33421,9 @@ impl Assembler<'_> {
     /// Rust: `fleq_s(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fleq_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FleqSEmitter<T0, T1, T2>,
@@ -33443,9 +33443,9 @@ impl Assembler<'_> {
     /// Rust: `flh(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `imm`: Immediate encoding value.
     pub fn flh<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: FlhEmitter<T0, T1, T2>,
@@ -33459,8 +33459,8 @@ impl Assembler<'_> {
     /// Rust: `fli_d(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fli_d<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FliDEmitter<T0, T1>,
@@ -33474,8 +33474,8 @@ impl Assembler<'_> {
     /// Rust: `fli_h(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fli_h<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FliHEmitter<T0, T1>,
@@ -33489,8 +33489,8 @@ impl Assembler<'_> {
     /// Rust: `fli_q(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fli_q<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FliQEmitter<T0, T1>,
@@ -33504,8 +33504,8 @@ impl Assembler<'_> {
     /// Rust: `fli_s(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fli_s<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FliSEmitter<T0, T1>,
@@ -33519,9 +33519,9 @@ impl Assembler<'_> {
     /// Rust: `flq(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `imm`: Immediate encoding value.
     pub fn flq<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: FlqEmitter<T0, T1, T2>,
@@ -33535,9 +33535,9 @@ impl Assembler<'_> {
     /// Rust: `flt_d(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn flt_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FltDEmitter<T0, T1, T2>,
@@ -33551,9 +33551,9 @@ impl Assembler<'_> {
     /// Rust: `flt_h(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn flt_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FltHEmitter<T0, T1, T2>,
@@ -33567,9 +33567,9 @@ impl Assembler<'_> {
     /// Rust: `flt_q(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn flt_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FltQEmitter<T0, T1, T2>,
@@ -33588,9 +33588,9 @@ impl Assembler<'_> {
     /// Rust: `flt_s(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn flt_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FltSEmitter<T0, T1, T2>,
@@ -33604,9 +33604,9 @@ impl Assembler<'_> {
     /// Rust: `fltq_d(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fltq_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FltqDEmitter<T0, T1, T2>,
@@ -33620,9 +33620,9 @@ impl Assembler<'_> {
     /// Rust: `fltq_h(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fltq_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FltqHEmitter<T0, T1, T2>,
@@ -33636,9 +33636,9 @@ impl Assembler<'_> {
     /// Rust: `fltq_q(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fltq_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FltqQEmitter<T0, T1, T2>,
@@ -33652,9 +33652,9 @@ impl Assembler<'_> {
     /// Rust: `fltq_s(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fltq_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FltqSEmitter<T0, T1, T2>,
@@ -33672,9 +33672,9 @@ impl Assembler<'_> {
     /// Rust: `flw(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `imm`: Immediate encoding value.
     pub fn flw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: FlwEmitter<T0, T1, T2>,
@@ -33688,11 +33688,11 @@ impl Assembler<'_> {
     /// Rust: `fmadd_d(rd, rs1, rs2, rs3, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rs3` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rs3`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fmadd_d<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4)
     where
         Self: FmaddDEmitter<T0, T1, T2, T3, T4>,
@@ -33706,11 +33706,11 @@ impl Assembler<'_> {
     /// Rust: `fmadd_h(rd, rs1, rs2, rs3, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rs3` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rs3`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fmadd_h<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4)
     where
         Self: FmaddHEmitter<T0, T1, T2, T3, T4>,
@@ -33724,11 +33724,11 @@ impl Assembler<'_> {
     /// Rust: `fmadd_q(rd, rs1, rs2, rs3, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rs3` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rs3`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fmadd_q<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4)
     where
         Self: FmaddQEmitter<T0, T1, T2, T3, T4>,
@@ -33742,11 +33742,11 @@ impl Assembler<'_> {
     /// Rust: `fmadd_s(rd, rs1, rs2, rs3, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rs3` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rs3`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fmadd_s<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4)
     where
         Self: FmaddSEmitter<T0, T1, T2, T3, T4>,
@@ -33760,9 +33760,9 @@ impl Assembler<'_> {
     /// Rust: `fmax_d(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmax_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FmaxDEmitter<T0, T1, T2>,
@@ -33776,9 +33776,9 @@ impl Assembler<'_> {
     /// Rust: `fmax_h(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmax_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FmaxHEmitter<T0, T1, T2>,
@@ -33792,9 +33792,9 @@ impl Assembler<'_> {
     /// Rust: `fmax_q(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmax_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FmaxQEmitter<T0, T1, T2>,
@@ -33808,9 +33808,9 @@ impl Assembler<'_> {
     /// Rust: `fmax_s(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmax_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FmaxSEmitter<T0, T1, T2>,
@@ -33824,9 +33824,9 @@ impl Assembler<'_> {
     /// Rust: `fmaxm_d(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmaxm_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FmaxmDEmitter<T0, T1, T2>,
@@ -33840,9 +33840,9 @@ impl Assembler<'_> {
     /// Rust: `fmaxm_h(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmaxm_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FmaxmHEmitter<T0, T1, T2>,
@@ -33856,9 +33856,9 @@ impl Assembler<'_> {
     /// Rust: `fmaxm_q(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmaxm_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FmaxmQEmitter<T0, T1, T2>,
@@ -33872,9 +33872,9 @@ impl Assembler<'_> {
     /// Rust: `fmaxm_s(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmaxm_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FmaxmSEmitter<T0, T1, T2>,
@@ -33888,9 +33888,9 @@ impl Assembler<'_> {
     /// Rust: `fmin_d(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmin_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FminDEmitter<T0, T1, T2>,
@@ -33904,9 +33904,9 @@ impl Assembler<'_> {
     /// Rust: `fmin_h(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmin_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FminHEmitter<T0, T1, T2>,
@@ -33920,9 +33920,9 @@ impl Assembler<'_> {
     /// Rust: `fmin_q(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmin_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FminQEmitter<T0, T1, T2>,
@@ -33936,9 +33936,9 @@ impl Assembler<'_> {
     /// Rust: `fmin_s(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmin_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FminSEmitter<T0, T1, T2>,
@@ -33952,9 +33952,9 @@ impl Assembler<'_> {
     /// Rust: `fminm_d(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fminm_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FminmDEmitter<T0, T1, T2>,
@@ -33968,9 +33968,9 @@ impl Assembler<'_> {
     /// Rust: `fminm_h(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fminm_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FminmHEmitter<T0, T1, T2>,
@@ -33984,9 +33984,9 @@ impl Assembler<'_> {
     /// Rust: `fminm_q(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fminm_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FminmQEmitter<T0, T1, T2>,
@@ -34000,9 +34000,9 @@ impl Assembler<'_> {
     /// Rust: `fminm_s(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fminm_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FminmSEmitter<T0, T1, T2>,
@@ -34016,11 +34016,11 @@ impl Assembler<'_> {
     /// Rust: `fmsub_d(rd, rs1, rs2, rs3, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rs3` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rs3`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fmsub_d<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4)
     where
         Self: FmsubDEmitter<T0, T1, T2, T3, T4>,
@@ -34034,11 +34034,11 @@ impl Assembler<'_> {
     /// Rust: `fmsub_h(rd, rs1, rs2, rs3, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rs3` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rs3`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fmsub_h<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4)
     where
         Self: FmsubHEmitter<T0, T1, T2, T3, T4>,
@@ -34052,11 +34052,11 @@ impl Assembler<'_> {
     /// Rust: `fmsub_q(rd, rs1, rs2, rs3, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rs3` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rs3`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fmsub_q<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4)
     where
         Self: FmsubQEmitter<T0, T1, T2, T3, T4>,
@@ -34070,11 +34070,11 @@ impl Assembler<'_> {
     /// Rust: `fmsub_s(rd, rs1, rs2, rs3, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rs3` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rs3`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fmsub_s<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4)
     where
         Self: FmsubSEmitter<T0, T1, T2, T3, T4>,
@@ -34088,10 +34088,10 @@ impl Assembler<'_> {
     /// Rust: `fmul_d(rd, rs1, rs2, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fmul_d<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3)
     where
         Self: FmulDEmitter<T0, T1, T2, T3>,
@@ -34105,10 +34105,10 @@ impl Assembler<'_> {
     /// Rust: `fmul_h(rd, rs1, rs2, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fmul_h<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3)
     where
         Self: FmulHEmitter<T0, T1, T2, T3>,
@@ -34122,10 +34122,10 @@ impl Assembler<'_> {
     /// Rust: `fmul_q(rd, rs1, rs2, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fmul_q<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3)
     where
         Self: FmulQEmitter<T0, T1, T2, T3>,
@@ -34139,10 +34139,10 @@ impl Assembler<'_> {
     /// Rust: `fmul_s(rd, rs1, rs2, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fmul_s<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3)
     where
         Self: FmulSEmitter<T0, T1, T2, T3>,
@@ -34156,9 +34156,9 @@ impl Assembler<'_> {
     /// Rust: `fmv_d(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmv_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FmvDEmitter<T0, T1, T2>,
@@ -34172,8 +34172,8 @@ impl Assembler<'_> {
     /// Rust: `fmv_d_x(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fmv_d_x<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FmvDXEmitter<T0, T1>,
@@ -34187,9 +34187,9 @@ impl Assembler<'_> {
     /// Rust: `fmv_h(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmv_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FmvHEmitter<T0, T1, T2>,
@@ -34208,8 +34208,8 @@ impl Assembler<'_> {
     /// Rust: `fmv_h_x(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fmv_h_x<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FmvHXEmitter<T0, T1>,
@@ -34223,9 +34223,9 @@ impl Assembler<'_> {
     /// Rust: `fmv_q(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmv_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FmvQEmitter<T0, T1, T2>,
@@ -34239,9 +34239,9 @@ impl Assembler<'_> {
     /// Rust: `fmv_s(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmv_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FmvSEmitter<T0, T1, T2>,
@@ -34255,8 +34255,8 @@ impl Assembler<'_> {
     /// Rust: `fmv_s_x(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fmv_s_x<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FmvSXEmitter<T0, T1>,
@@ -34275,8 +34275,8 @@ impl Assembler<'_> {
     /// Rust: `fmv_w_x(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fmv_w_x<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FmvWXEmitter<T0, T1>,
@@ -34290,8 +34290,8 @@ impl Assembler<'_> {
     /// Rust: `fmv_x_d(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fmv_x_d<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FmvXDEmitter<T0, T1>,
@@ -34314,8 +34314,8 @@ impl Assembler<'_> {
     /// Rust: `fmv_x_h(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fmv_x_h<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FmvXHEmitter<T0, T1>,
@@ -34329,8 +34329,8 @@ impl Assembler<'_> {
     /// Rust: `fmv_x_s(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fmv_x_s<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FmvXSEmitter<T0, T1>,
@@ -34351,8 +34351,8 @@ impl Assembler<'_> {
     /// Rust: `fmv_x_w(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fmv_x_w<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FmvXWEmitter<T0, T1>,
@@ -34366,8 +34366,8 @@ impl Assembler<'_> {
     /// Rust: `fmvh_x_d(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fmvh_x_d<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FmvhXDEmitter<T0, T1>,
@@ -34381,8 +34381,8 @@ impl Assembler<'_> {
     /// Rust: `fmvh_x_q(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fmvh_x_q<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FmvhXQEmitter<T0, T1>,
@@ -34396,9 +34396,9 @@ impl Assembler<'_> {
     /// Rust: `fmvp_d_x(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmvp_d_x<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FmvpDXEmitter<T0, T1, T2>,
@@ -34412,9 +34412,9 @@ impl Assembler<'_> {
     /// Rust: `fmvp_q_x(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fmvp_q_x<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FmvpQXEmitter<T0, T1, T2>,
@@ -34428,9 +34428,9 @@ impl Assembler<'_> {
     /// Rust: `fneg_d(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fneg_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FnegDEmitter<T0, T1, T2>,
@@ -34444,9 +34444,9 @@ impl Assembler<'_> {
     /// Rust: `fneg_h(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fneg_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FnegHEmitter<T0, T1, T2>,
@@ -34460,9 +34460,9 @@ impl Assembler<'_> {
     /// Rust: `fneg_q(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fneg_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FnegQEmitter<T0, T1, T2>,
@@ -34476,9 +34476,9 @@ impl Assembler<'_> {
     /// Rust: `fneg_s(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fneg_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FnegSEmitter<T0, T1, T2>,
@@ -34492,11 +34492,11 @@ impl Assembler<'_> {
     /// Rust: `fnmadd_d(rd, rs1, rs2, rs3, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rs3` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rs3`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fnmadd_d<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4)
     where
         Self: FnmaddDEmitter<T0, T1, T2, T3, T4>,
@@ -34510,11 +34510,11 @@ impl Assembler<'_> {
     /// Rust: `fnmadd_h(rd, rs1, rs2, rs3, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rs3` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rs3`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fnmadd_h<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4)
     where
         Self: FnmaddHEmitter<T0, T1, T2, T3, T4>,
@@ -34528,11 +34528,11 @@ impl Assembler<'_> {
     /// Rust: `fnmadd_q(rd, rs1, rs2, rs3, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rs3` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rs3`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fnmadd_q<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4)
     where
         Self: FnmaddQEmitter<T0, T1, T2, T3, T4>,
@@ -34546,11 +34546,11 @@ impl Assembler<'_> {
     /// Rust: `fnmadd_s(rd, rs1, rs2, rs3, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rs3` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rs3`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fnmadd_s<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4)
     where
         Self: FnmaddSEmitter<T0, T1, T2, T3, T4>,
@@ -34564,11 +34564,11 @@ impl Assembler<'_> {
     /// Rust: `fnmsub_d(rd, rs1, rs2, rs3, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rs3` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rs3`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fnmsub_d<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4)
     where
         Self: FnmsubDEmitter<T0, T1, T2, T3, T4>,
@@ -34582,11 +34582,11 @@ impl Assembler<'_> {
     /// Rust: `fnmsub_h(rd, rs1, rs2, rs3, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rs3` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rs3`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fnmsub_h<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4)
     where
         Self: FnmsubHEmitter<T0, T1, T2, T3, T4>,
@@ -34600,11 +34600,11 @@ impl Assembler<'_> {
     /// Rust: `fnmsub_q(rd, rs1, rs2, rs3, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rs3` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rs3`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fnmsub_q<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4)
     where
         Self: FnmsubQEmitter<T0, T1, T2, T3, T4>,
@@ -34618,11 +34618,11 @@ impl Assembler<'_> {
     /// Rust: `fnmsub_s(rd, rs1, rs2, rs3, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rs3` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rs3`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fnmsub_s<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, rs3: T3, rm: T4)
     where
         Self: FnmsubSEmitter<T0, T1, T2, T3, T4>,
@@ -34636,7 +34636,7 @@ impl Assembler<'_> {
     /// Rust: `frcsr(rd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
+    /// - `rd`: Destination register.
     pub fn frcsr<T0>(&mut self, rd: T0)
     where
         Self: FrcsrEmitter<T0>,
@@ -34650,7 +34650,7 @@ impl Assembler<'_> {
     /// Rust: `frflags(rd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
+    /// - `rd`: Destination register.
     pub fn frflags<T0>(&mut self, rd: T0)
     where
         Self: FrflagsEmitter<T0>,
@@ -34664,9 +34664,9 @@ impl Assembler<'_> {
     /// Rust: `fround_d(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fround_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FroundDEmitter<T0, T1, T2>,
@@ -34680,9 +34680,9 @@ impl Assembler<'_> {
     /// Rust: `fround_h(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fround_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FroundHEmitter<T0, T1, T2>,
@@ -34696,9 +34696,9 @@ impl Assembler<'_> {
     /// Rust: `fround_q(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fround_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FroundQEmitter<T0, T1, T2>,
@@ -34712,9 +34712,9 @@ impl Assembler<'_> {
     /// Rust: `fround_s(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fround_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FroundSEmitter<T0, T1, T2>,
@@ -34728,9 +34728,9 @@ impl Assembler<'_> {
     /// Rust: `froundnx_d(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn froundnx_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FroundnxDEmitter<T0, T1, T2>,
@@ -34744,9 +34744,9 @@ impl Assembler<'_> {
     /// Rust: `froundnx_h(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn froundnx_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FroundnxHEmitter<T0, T1, T2>,
@@ -34760,9 +34760,9 @@ impl Assembler<'_> {
     /// Rust: `froundnx_q(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn froundnx_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FroundnxQEmitter<T0, T1, T2>,
@@ -34776,9 +34776,9 @@ impl Assembler<'_> {
     /// Rust: `froundnx_s(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn froundnx_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FroundnxSEmitter<T0, T1, T2>,
@@ -34792,7 +34792,7 @@ impl Assembler<'_> {
     /// Rust: `frrm(rd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
+    /// - `rd`: Destination register.
     pub fn frrm<T0>(&mut self, rd: T0)
     where
         Self: FrrmEmitter<T0>,
@@ -34806,8 +34806,8 @@ impl Assembler<'_> {
     /// Rust: `fscsr(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fscsr<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FscsrEmitter<T0, T1>,
@@ -34821,9 +34821,9 @@ impl Assembler<'_> {
     /// Rust: `fsd(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn fsd<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: FsdEmitter<T0, T1, T2>,
@@ -34837,8 +34837,8 @@ impl Assembler<'_> {
     /// Rust: `fsflags(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fsflags<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FsflagsEmitter<T0, T1>,
@@ -34852,8 +34852,8 @@ impl Assembler<'_> {
     /// Rust: `fsflagsi(rd, zimm5)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `zimm5` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `zimm5`: Immediate encoding value.
     pub fn fsflagsi<T0, T1>(&mut self, rd: T0, zimm5: T1)
     where
         Self: FsflagsiEmitter<T0, T1>,
@@ -34867,9 +34867,9 @@ impl Assembler<'_> {
     /// Rust: `fsgnj_d(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fsgnj_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FsgnjDEmitter<T0, T1, T2>,
@@ -34883,9 +34883,9 @@ impl Assembler<'_> {
     /// Rust: `fsgnj_h(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fsgnj_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FsgnjHEmitter<T0, T1, T2>,
@@ -34899,9 +34899,9 @@ impl Assembler<'_> {
     /// Rust: `fsgnj_q(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fsgnj_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FsgnjQEmitter<T0, T1, T2>,
@@ -34919,9 +34919,9 @@ impl Assembler<'_> {
     /// Rust: `fsgnj_s(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fsgnj_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FsgnjSEmitter<T0, T1, T2>,
@@ -34935,9 +34935,9 @@ impl Assembler<'_> {
     /// Rust: `fsgnjn_d(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fsgnjn_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FsgnjnDEmitter<T0, T1, T2>,
@@ -34951,9 +34951,9 @@ impl Assembler<'_> {
     /// Rust: `fsgnjn_h(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fsgnjn_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FsgnjnHEmitter<T0, T1, T2>,
@@ -34967,9 +34967,9 @@ impl Assembler<'_> {
     /// Rust: `fsgnjn_q(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fsgnjn_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FsgnjnQEmitter<T0, T1, T2>,
@@ -34987,9 +34987,9 @@ impl Assembler<'_> {
     /// Rust: `fsgnjn_s(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fsgnjn_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FsgnjnSEmitter<T0, T1, T2>,
@@ -35003,9 +35003,9 @@ impl Assembler<'_> {
     /// Rust: `fsgnjx_d(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fsgnjx_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FsgnjxDEmitter<T0, T1, T2>,
@@ -35019,9 +35019,9 @@ impl Assembler<'_> {
     /// Rust: `fsgnjx_h(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fsgnjx_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FsgnjxHEmitter<T0, T1, T2>,
@@ -35035,9 +35035,9 @@ impl Assembler<'_> {
     /// Rust: `fsgnjx_q(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fsgnjx_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FsgnjxQEmitter<T0, T1, T2>,
@@ -35055,9 +35055,9 @@ impl Assembler<'_> {
     /// Rust: `fsgnjx_s(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn fsgnjx_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: FsgnjxSEmitter<T0, T1, T2>,
@@ -35080,9 +35080,9 @@ impl Assembler<'_> {
     /// Rust: `fsh(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn fsh<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: FshEmitter<T0, T1, T2>,
@@ -35096,9 +35096,9 @@ impl Assembler<'_> {
     /// Rust: `fsq(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn fsq<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: FsqEmitter<T0, T1, T2>,
@@ -35112,9 +35112,9 @@ impl Assembler<'_> {
     /// Rust: `fsqrt_d(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fsqrt_d<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FsqrtDEmitter<T0, T1, T2>,
@@ -35128,9 +35128,9 @@ impl Assembler<'_> {
     /// Rust: `fsqrt_h(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fsqrt_h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FsqrtHEmitter<T0, T1, T2>,
@@ -35144,9 +35144,9 @@ impl Assembler<'_> {
     /// Rust: `fsqrt_q(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fsqrt_q<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FsqrtQEmitter<T0, T1, T2>,
@@ -35160,9 +35160,9 @@ impl Assembler<'_> {
     /// Rust: `fsqrt_s(rd, rs1, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fsqrt_s<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rm: T2)
     where
         Self: FsqrtSEmitter<T0, T1, T2>,
@@ -35176,8 +35176,8 @@ impl Assembler<'_> {
     /// Rust: `fsrm(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn fsrm<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: FsrmEmitter<T0, T1>,
@@ -35191,8 +35191,8 @@ impl Assembler<'_> {
     /// Rust: `fsrmi(rd, zimm5)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `zimm5` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `zimm5`: Immediate encoding value.
     pub fn fsrmi<T0, T1>(&mut self, rd: T0, zimm5: T1)
     where
         Self: FsrmiEmitter<T0, T1>,
@@ -35206,10 +35206,10 @@ impl Assembler<'_> {
     /// Rust: `fsub_d(rd, rs1, rs2, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fsub_d<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3)
     where
         Self: FsubDEmitter<T0, T1, T2, T3>,
@@ -35223,10 +35223,10 @@ impl Assembler<'_> {
     /// Rust: `fsub_h(rd, rs1, rs2, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fsub_h<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3)
     where
         Self: FsubHEmitter<T0, T1, T2, T3>,
@@ -35240,10 +35240,10 @@ impl Assembler<'_> {
     /// Rust: `fsub_q(rd, rs1, rs2, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fsub_q<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3)
     where
         Self: FsubQEmitter<T0, T1, T2, T3>,
@@ -35260,10 +35260,10 @@ impl Assembler<'_> {
     /// Rust: `fsub_s(rd, rs1, rs2, rm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `rm` — Rounding mode.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `rm`: Rounding mode.
     pub fn fsub_s<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, rm: T3)
     where
         Self: FsubSEmitter<T0, T1, T2, T3>,
@@ -35281,9 +35281,9 @@ impl Assembler<'_> {
     /// Rust: `fsw(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn fsw<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: FswEmitter<T0, T1, T2>,
@@ -35297,8 +35297,8 @@ impl Assembler<'_> {
     /// Rust: `hfence_gvma(rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn hfence_gvma<T0, T1>(&mut self, rs1: T0, rs2: T1)
     where
         Self: HfenceGvmaEmitter<T0, T1>,
@@ -35312,8 +35312,8 @@ impl Assembler<'_> {
     /// Rust: `hfence_vvma(rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn hfence_vvma<T0, T1>(&mut self, rs1: T0, rs2: T1)
     where
         Self: HfenceVvmaEmitter<T0, T1>,
@@ -35330,8 +35330,8 @@ impl Assembler<'_> {
     /// Rust: `hinval_gvma(rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn hinval_gvma<T0, T1>(&mut self, rs1: T0, rs2: T1)
     where
         Self: HinvalGvmaEmitter<T0, T1>,
@@ -35348,8 +35348,8 @@ impl Assembler<'_> {
     /// Rust: `hinval_vvma(rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn hinval_vvma<T0, T1>(&mut self, rs1: T0, rs2: T1)
     where
         Self: HinvalVvmaEmitter<T0, T1>,
@@ -35363,8 +35363,8 @@ impl Assembler<'_> {
     /// Rust: `hlv_b(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn hlv_b<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: HlvBEmitter<T0, T1>,
@@ -35378,8 +35378,8 @@ impl Assembler<'_> {
     /// Rust: `hlv_bu(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn hlv_bu<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: HlvBuEmitter<T0, T1>,
@@ -35393,8 +35393,8 @@ impl Assembler<'_> {
     /// Rust: `hlv_d(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn hlv_d<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: HlvDEmitter<T0, T1>,
@@ -35408,8 +35408,8 @@ impl Assembler<'_> {
     /// Rust: `hlv_h(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn hlv_h<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: HlvHEmitter<T0, T1>,
@@ -35423,8 +35423,8 @@ impl Assembler<'_> {
     /// Rust: `hlv_hu(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn hlv_hu<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: HlvHuEmitter<T0, T1>,
@@ -35438,8 +35438,8 @@ impl Assembler<'_> {
     /// Rust: `hlv_w(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn hlv_w<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: HlvWEmitter<T0, T1>,
@@ -35453,8 +35453,8 @@ impl Assembler<'_> {
     /// Rust: `hlv_wu(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn hlv_wu<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: HlvWuEmitter<T0, T1>,
@@ -35468,8 +35468,8 @@ impl Assembler<'_> {
     /// Rust: `hlvx_hu(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn hlvx_hu<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: HlvxHuEmitter<T0, T1>,
@@ -35483,8 +35483,8 @@ impl Assembler<'_> {
     /// Rust: `hlvx_wu(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn hlvx_wu<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: HlvxWuEmitter<T0, T1>,
@@ -35498,8 +35498,8 @@ impl Assembler<'_> {
     /// Rust: `hsv_b(rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn hsv_b<T0, T1>(&mut self, rs1: T0, rs2: T1)
     where
         Self: HsvBEmitter<T0, T1>,
@@ -35513,8 +35513,8 @@ impl Assembler<'_> {
     /// Rust: `hsv_d(rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn hsv_d<T0, T1>(&mut self, rs1: T0, rs2: T1)
     where
         Self: HsvDEmitter<T0, T1>,
@@ -35528,8 +35528,8 @@ impl Assembler<'_> {
     /// Rust: `hsv_h(rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn hsv_h<T0, T1>(&mut self, rs1: T0, rs2: T1)
     where
         Self: HsvHEmitter<T0, T1>,
@@ -35543,8 +35543,8 @@ impl Assembler<'_> {
     /// Rust: `hsv_w(rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn hsv_w<T0, T1>(&mut self, rs1: T0, rs2: T1)
     where
         Self: HsvWEmitter<T0, T1>,
@@ -35558,7 +35558,7 @@ impl Assembler<'_> {
     /// Rust: `j(imm)`
     ///
     /// # Arguments
-    /// - `imm` — Immediate encoding value.
+    /// - `imm`: Immediate encoding value.
     pub fn j<T0>(&mut self, imm: T0)
     where
         Self: JEmitter<T0>,
@@ -35575,8 +35575,8 @@ impl Assembler<'_> {
     /// Rust: `jal(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `imm`: Immediate encoding value.
     pub fn jal<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: JalEmitter<T0, T1>,
@@ -35590,7 +35590,7 @@ impl Assembler<'_> {
     /// Rust: `jal_pseudo(imm)`
     ///
     /// # Arguments
-    /// - `imm` — Immediate encoding value.
+    /// - `imm`: Immediate encoding value.
     pub fn jal_pseudo<T0>(&mut self, imm: T0)
     where
         Self: JalPseudoEmitter<T0>,
@@ -35609,9 +35609,9 @@ impl Assembler<'_> {
     /// Rust: `jalr(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn jalr<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: JalrEmitter<T0, T1, T2>,
@@ -35625,7 +35625,7 @@ impl Assembler<'_> {
     /// Rust: `jalr_pseudo(rs1)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
+    /// - `rs1`: Source register.
     pub fn jalr_pseudo<T0>(&mut self, rs1: T0)
     where
         Self: JalrPseudoEmitter<T0>,
@@ -35639,7 +35639,7 @@ impl Assembler<'_> {
     /// Rust: `jr(rs1)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
+    /// - `rs1`: Source register.
     pub fn jr<T0>(&mut self, rs1: T0)
     where
         Self: JrEmitter<T0>,
@@ -35657,9 +35657,9 @@ impl Assembler<'_> {
     /// Rust: `lb(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `imm`: Immediate encoding value.
     pub fn lb<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: LbEmitter<T0, T1, T2>,
@@ -35677,9 +35677,9 @@ impl Assembler<'_> {
     /// Rust: `lbu(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `imm`: Immediate encoding value.
     pub fn lbu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: LbuEmitter<T0, T1, T2>,
@@ -35696,9 +35696,9 @@ impl Assembler<'_> {
     /// Rust: `ld(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `imm`: Immediate encoding value.
     pub fn ld<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: LdEmitter<T0, T1, T2>,
@@ -35716,9 +35716,9 @@ impl Assembler<'_> {
     /// Rust: `lh(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `imm`: Immediate encoding value.
     pub fn lh<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: LhEmitter<T0, T1, T2>,
@@ -35736,9 +35736,9 @@ impl Assembler<'_> {
     /// Rust: `lhu(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `imm`: Immediate encoding value.
     pub fn lhu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: LhuEmitter<T0, T1, T2>,
@@ -35752,7 +35752,7 @@ impl Assembler<'_> {
     /// Rust: `lpad(imm)`
     ///
     /// # Arguments
-    /// - `imm` — Immediate encoding value.
+    /// - `imm`: Immediate encoding value.
     pub fn lpad<T0>(&mut self, imm: T0)
     where
         Self: LpadEmitter<T0>,
@@ -35804,10 +35804,10 @@ impl Assembler<'_> {
     /// Rust: `lr_d(rd, rs1, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn lr_d<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, aq: T2, rl: T3)
     where
         Self: LrDEmitter<T0, T1, T2, T3>,
@@ -35864,10 +35864,10 @@ impl Assembler<'_> {
     /// Rust: `lr_w(rd, rs1, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn lr_w<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, aq: T2, rl: T3)
     where
         Self: LrWEmitter<T0, T1, T2, T3>,
@@ -35883,8 +35883,8 @@ impl Assembler<'_> {
     /// Rust: `lui(rd, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `imm`: Immediate encoding value.
     pub fn lui<T0, T1>(&mut self, rd: T0, imm: T1)
     where
         Self: LuiEmitter<T0, T1>,
@@ -35902,9 +35902,9 @@ impl Assembler<'_> {
     /// Rust: `lw(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `imm`: Immediate encoding value.
     pub fn lw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: LwEmitter<T0, T1, T2>,
@@ -35922,9 +35922,9 @@ impl Assembler<'_> {
     /// Rust: `lwu(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `imm`: Immediate encoding value.
     pub fn lwu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: LwuEmitter<T0, T1, T2>,
@@ -35948,9 +35948,9 @@ impl Assembler<'_> {
     /// Rust: `max(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn max<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: MaxEmitter<T0, T1, T2>,
@@ -35966,9 +35966,9 @@ impl Assembler<'_> {
     /// Rust: `maxu(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn maxu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: MaxuEmitter<T0, T1, T2>,
@@ -35984,9 +35984,9 @@ impl Assembler<'_> {
     /// Rust: `min(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn min<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: MinEmitter<T0, T1, T2>,
@@ -36002,9 +36002,9 @@ impl Assembler<'_> {
     /// Rust: `minu(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn minu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: MinuEmitter<T0, T1, T2>,
@@ -36031,8 +36031,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_0(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_0<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR0Emitter<T0, T1>,
@@ -36046,8 +36046,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_1(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_1<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR1Emitter<T0, T1>,
@@ -36061,8 +36061,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_10(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_10<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR10Emitter<T0, T1>,
@@ -36076,8 +36076,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_11(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_11<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR11Emitter<T0, T1>,
@@ -36091,8 +36091,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_12(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_12<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR12Emitter<T0, T1>,
@@ -36106,8 +36106,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_13(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_13<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR13Emitter<T0, T1>,
@@ -36121,8 +36121,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_14(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_14<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR14Emitter<T0, T1>,
@@ -36136,8 +36136,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_15(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_15<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR15Emitter<T0, T1>,
@@ -36151,8 +36151,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_16(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_16<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR16Emitter<T0, T1>,
@@ -36166,8 +36166,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_17(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_17<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR17Emitter<T0, T1>,
@@ -36181,8 +36181,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_18(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_18<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR18Emitter<T0, T1>,
@@ -36196,8 +36196,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_19(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_19<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR19Emitter<T0, T1>,
@@ -36211,8 +36211,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_2(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_2<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR2Emitter<T0, T1>,
@@ -36226,8 +36226,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_20(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_20<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR20Emitter<T0, T1>,
@@ -36241,8 +36241,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_21(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_21<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR21Emitter<T0, T1>,
@@ -36256,8 +36256,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_22(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_22<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR22Emitter<T0, T1>,
@@ -36271,8 +36271,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_23(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_23<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR23Emitter<T0, T1>,
@@ -36286,8 +36286,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_24(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_24<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR24Emitter<T0, T1>,
@@ -36301,8 +36301,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_25(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_25<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR25Emitter<T0, T1>,
@@ -36316,8 +36316,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_26(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_26<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR26Emitter<T0, T1>,
@@ -36331,8 +36331,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_27(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_27<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR27Emitter<T0, T1>,
@@ -36346,8 +36346,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_28(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_28<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR28Emitter<T0, T1>,
@@ -36361,8 +36361,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_29(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_29<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR29Emitter<T0, T1>,
@@ -36376,8 +36376,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_3(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_3<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR3Emitter<T0, T1>,
@@ -36391,8 +36391,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_30(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_30<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR30Emitter<T0, T1>,
@@ -36406,8 +36406,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_31(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_31<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR31Emitter<T0, T1>,
@@ -36421,8 +36421,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_4(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_4<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR4Emitter<T0, T1>,
@@ -36436,8 +36436,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_5(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_5<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR5Emitter<T0, T1>,
@@ -36451,8 +36451,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_6(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_6<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR6Emitter<T0, T1>,
@@ -36466,8 +36466,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_7(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_7<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR7Emitter<T0, T1>,
@@ -36481,8 +36481,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_8(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_8<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR8Emitter<T0, T1>,
@@ -36496,8 +36496,8 @@ impl Assembler<'_> {
     /// Rust: `mop_r_9(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mop_r_9<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MopR9Emitter<T0, T1>,
@@ -36511,9 +36511,9 @@ impl Assembler<'_> {
     /// Rust: `mop_rr_0(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn mop_rr_0<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: MopRr0Emitter<T0, T1, T2>,
@@ -36527,9 +36527,9 @@ impl Assembler<'_> {
     /// Rust: `mop_rr_1(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn mop_rr_1<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: MopRr1Emitter<T0, T1, T2>,
@@ -36543,9 +36543,9 @@ impl Assembler<'_> {
     /// Rust: `mop_rr_2(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn mop_rr_2<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: MopRr2Emitter<T0, T1, T2>,
@@ -36559,9 +36559,9 @@ impl Assembler<'_> {
     /// Rust: `mop_rr_3(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn mop_rr_3<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: MopRr3Emitter<T0, T1, T2>,
@@ -36575,9 +36575,9 @@ impl Assembler<'_> {
     /// Rust: `mop_rr_4(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn mop_rr_4<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: MopRr4Emitter<T0, T1, T2>,
@@ -36591,9 +36591,9 @@ impl Assembler<'_> {
     /// Rust: `mop_rr_5(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn mop_rr_5<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: MopRr5Emitter<T0, T1, T2>,
@@ -36607,9 +36607,9 @@ impl Assembler<'_> {
     /// Rust: `mop_rr_6(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn mop_rr_6<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: MopRr6Emitter<T0, T1, T2>,
@@ -36623,9 +36623,9 @@ impl Assembler<'_> {
     /// Rust: `mop_rr_7(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn mop_rr_7<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: MopRr7Emitter<T0, T1, T2>,
@@ -36666,9 +36666,9 @@ impl Assembler<'_> {
     /// Rust: `mul(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn mul<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: MulEmitter<T0, T1, T2>,
@@ -36694,9 +36694,9 @@ impl Assembler<'_> {
     /// Rust: `mulh(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn mulh<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: MulhEmitter<T0, T1, T2>,
@@ -36722,9 +36722,9 @@ impl Assembler<'_> {
     /// Rust: `mulhsu(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn mulhsu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: MulhsuEmitter<T0, T1, T2>,
@@ -36750,9 +36750,9 @@ impl Assembler<'_> {
     /// Rust: `mulhu(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn mulhu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: MulhuEmitter<T0, T1, T2>,
@@ -36777,9 +36777,9 @@ impl Assembler<'_> {
     /// Rust: `mulw(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn mulw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: MulwEmitter<T0, T1, T2>,
@@ -36793,8 +36793,8 @@ impl Assembler<'_> {
     /// Rust: `mv(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn mv<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: MvEmitter<T0, T1>,
@@ -36808,8 +36808,8 @@ impl Assembler<'_> {
     /// Rust: `neg(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn neg<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: NegEmitter<T0, T1>,
@@ -36890,9 +36890,9 @@ impl Assembler<'_> {
     /// Rust: `or(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn or<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: OrEmitter<T0, T1, T2>,
@@ -36910,8 +36910,8 @@ impl Assembler<'_> {
     /// Rust: `orc_b(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn orc_b<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: OrcBEmitter<T0, T1>,
@@ -36927,9 +36927,9 @@ impl Assembler<'_> {
     /// Rust: `ori(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn ori<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: OriEmitter<T0, T1, T2>,
@@ -36945,9 +36945,9 @@ impl Assembler<'_> {
     /// Rust: `orn(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn orn<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: OrnEmitter<T0, T1, T2>,
@@ -36961,9 +36961,9 @@ impl Assembler<'_> {
     /// Rust: `pack(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn pack<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: PackEmitter<T0, T1, T2>,
@@ -36977,9 +36977,9 @@ impl Assembler<'_> {
     /// Rust: `packh(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn packh<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: PackhEmitter<T0, T1, T2>,
@@ -36993,9 +36993,9 @@ impl Assembler<'_> {
     /// Rust: `packw(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn packw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: PackwEmitter<T0, T1, T2>,
@@ -37022,8 +37022,8 @@ impl Assembler<'_> {
     /// Rust: `prefetch_i(rs1, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn prefetch_i<T0, T1>(&mut self, rs1: T0, imm: T1)
     where
         Self: PrefetchIEmitter<T0, T1>,
@@ -37037,8 +37037,8 @@ impl Assembler<'_> {
     /// Rust: `prefetch_r(rs1, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn prefetch_r<T0, T1>(&mut self, rs1: T0, imm: T1)
     where
         Self: PrefetchREmitter<T0, T1>,
@@ -37052,8 +37052,8 @@ impl Assembler<'_> {
     /// Rust: `prefetch_w(rs1, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn prefetch_w<T0, T1>(&mut self, rs1: T0, imm: T1)
     where
         Self: PrefetchWEmitter<T0, T1>,
@@ -37067,7 +37067,7 @@ impl Assembler<'_> {
     /// Rust: `rdcycle(rd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
+    /// - `rd`: Destination register.
     pub fn rdcycle<T0>(&mut self, rd: T0)
     where
         Self: RdcycleEmitter<T0>,
@@ -37081,7 +37081,7 @@ impl Assembler<'_> {
     /// Rust: `rdcycleh(rd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
+    /// - `rd`: Destination register.
     pub fn rdcycleh<T0>(&mut self, rd: T0)
     where
         Self: RdcyclehEmitter<T0>,
@@ -37095,7 +37095,7 @@ impl Assembler<'_> {
     /// Rust: `rdinstret(rd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
+    /// - `rd`: Destination register.
     pub fn rdinstret<T0>(&mut self, rd: T0)
     where
         Self: RdinstretEmitter<T0>,
@@ -37109,7 +37109,7 @@ impl Assembler<'_> {
     /// Rust: `rdinstreth(rd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
+    /// - `rd`: Destination register.
     pub fn rdinstreth<T0>(&mut self, rd: T0)
     where
         Self: RdinstrethEmitter<T0>,
@@ -37123,7 +37123,7 @@ impl Assembler<'_> {
     /// Rust: `rdtime(rd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
+    /// - `rd`: Destination register.
     pub fn rdtime<T0>(&mut self, rd: T0)
     where
         Self: RdtimeEmitter<T0>,
@@ -37137,7 +37137,7 @@ impl Assembler<'_> {
     /// Rust: `rdtimeh(rd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
+    /// - `rd`: Destination register.
     pub fn rdtimeh<T0>(&mut self, rd: T0)
     where
         Self: RdtimehEmitter<T0>,
@@ -37157,9 +37157,9 @@ impl Assembler<'_> {
     /// Rust: `rem(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn rem<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: RemEmitter<T0, T1, T2>,
@@ -37175,9 +37175,9 @@ impl Assembler<'_> {
     /// Rust: `remu(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn remu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: RemuEmitter<T0, T1, T2>,
@@ -37196,9 +37196,9 @@ impl Assembler<'_> {
     /// Rust: `remuw(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn remuw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: RemuwEmitter<T0, T1, T2>,
@@ -37219,9 +37219,9 @@ impl Assembler<'_> {
     /// Rust: `remw(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn remw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: RemwEmitter<T0, T1, T2>,
@@ -37258,8 +37258,8 @@ impl Assembler<'_> {
     /// Rust: `rev8(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn rev8<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: Rev8Emitter<T0, T1>,
@@ -37283,8 +37283,8 @@ impl Assembler<'_> {
     /// Rust: `rev8_rv32(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn rev8_rv32<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: Rev8Rv32Emitter<T0, T1>,
@@ -37300,9 +37300,9 @@ impl Assembler<'_> {
     /// Rust: `rol(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn rol<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: RolEmitter<T0, T1, T2>,
@@ -37319,9 +37319,9 @@ impl Assembler<'_> {
     /// Rust: `rolw(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn rolw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: RolwEmitter<T0, T1, T2>,
@@ -37337,9 +37337,9 @@ impl Assembler<'_> {
     /// Rust: `ror(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn ror<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: RorEmitter<T0, T1, T2>,
@@ -37356,9 +37356,9 @@ impl Assembler<'_> {
     /// Rust: `rori(rd, rs1, shamtd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtd` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtd`: Immediate encoding value.
     pub fn rori<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtd: T2)
     where
         Self: RoriEmitter<T0, T1, T2>,
@@ -37375,9 +37375,9 @@ impl Assembler<'_> {
     /// Rust: `rori_rv32(rd, rs1, shamtw)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtw` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtw`: Immediate encoding value.
     pub fn rori_rv32<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtw: T2)
     where
         Self: RoriRv32Emitter<T0, T1, T2>,
@@ -37395,9 +37395,9 @@ impl Assembler<'_> {
     /// Rust: `roriw(rd, rs1, shamtw)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtw` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtw`: Immediate encoding value.
     pub fn roriw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtw: T2)
     where
         Self: RoriwEmitter<T0, T1, T2>,
@@ -37415,9 +37415,9 @@ impl Assembler<'_> {
     /// Rust: `rorw(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn rorw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: RorwEmitter<T0, T1, T2>,
@@ -37434,9 +37434,9 @@ impl Assembler<'_> {
     /// Rust: `sb(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn sb<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: SbEmitter<T0, T1, T2>,
@@ -37557,11 +37557,11 @@ impl Assembler<'_> {
     /// Rust: `sc_d(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn sc_d<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: ScDEmitter<T0, T1, T2, T3, T4>,
@@ -37675,11 +37675,11 @@ impl Assembler<'_> {
     /// Rust: `sc_w(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn sc_w<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: ScWEmitter<T0, T1, T2, T3, T4>,
@@ -37722,9 +37722,9 @@ impl Assembler<'_> {
     /// Rust: `sd(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn sd<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: SdEmitter<T0, T1, T2>,
@@ -37738,8 +37738,8 @@ impl Assembler<'_> {
     /// Rust: `seqz(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn seqz<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: SeqzEmitter<T0, T1>,
@@ -37756,8 +37756,8 @@ impl Assembler<'_> {
     /// Rust: `sext_b(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn sext_b<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: SextBEmitter<T0, T1>,
@@ -37774,8 +37774,8 @@ impl Assembler<'_> {
     /// Rust: `sext_h(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn sext_h<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: SextHEmitter<T0, T1>,
@@ -37789,8 +37789,8 @@ impl Assembler<'_> {
     /// Rust: `sext_w(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn sext_w<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: SextWEmitter<T0, T1>,
@@ -38023,8 +38023,8 @@ impl Assembler<'_> {
     /// Rust: `sfence_vma(rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sfence_vma<T0, T1>(&mut self, rs1: T0, rs2: T1)
     where
         Self: SfenceVmaEmitter<T0, T1>,
@@ -38055,8 +38055,8 @@ impl Assembler<'_> {
     /// Rust: `sgtz(rd, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs2`: Source register.
     pub fn sgtz<T0, T1>(&mut self, rd: T0, rs2: T1)
     where
         Self: SgtzEmitter<T0, T1>,
@@ -38073,9 +38073,9 @@ impl Assembler<'_> {
     /// Rust: `sh(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn sh<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: ShEmitter<T0, T1, T2>,
@@ -38091,9 +38091,9 @@ impl Assembler<'_> {
     /// Rust: `sh1add(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sh1add<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Sh1AddEmitter<T0, T1, T2>,
@@ -38111,9 +38111,9 @@ impl Assembler<'_> {
     /// Rust: `sh1add_uw(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sh1add_uw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Sh1AddUwEmitter<T0, T1, T2>,
@@ -38129,9 +38129,9 @@ impl Assembler<'_> {
     /// Rust: `sh2add(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sh2add<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Sh2AddEmitter<T0, T1, T2>,
@@ -38149,9 +38149,9 @@ impl Assembler<'_> {
     /// Rust: `sh2add_uw(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sh2add_uw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Sh2AddUwEmitter<T0, T1, T2>,
@@ -38167,9 +38167,9 @@ impl Assembler<'_> {
     /// Rust: `sh3add(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sh3add<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Sh3AddEmitter<T0, T1, T2>,
@@ -38187,9 +38187,9 @@ impl Assembler<'_> {
     /// Rust: `sh3add_uw(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sh3add_uw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Sh3AddUwEmitter<T0, T1, T2>,
@@ -38203,8 +38203,8 @@ impl Assembler<'_> {
     /// Rust: `sha256sig0(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn sha256sig0<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: Sha256Sig0Emitter<T0, T1>,
@@ -38218,8 +38218,8 @@ impl Assembler<'_> {
     /// Rust: `sha256sig1(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn sha256sig1<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: Sha256Sig1Emitter<T0, T1>,
@@ -38233,8 +38233,8 @@ impl Assembler<'_> {
     /// Rust: `sha256sum0(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn sha256sum0<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: Sha256Sum0Emitter<T0, T1>,
@@ -38248,8 +38248,8 @@ impl Assembler<'_> {
     /// Rust: `sha256sum1(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn sha256sum1<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: Sha256Sum1Emitter<T0, T1>,
@@ -38263,8 +38263,8 @@ impl Assembler<'_> {
     /// Rust: `sha512sig0(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn sha512sig0<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: Sha512Sig0Emitter<T0, T1>,
@@ -38278,9 +38278,9 @@ impl Assembler<'_> {
     /// Rust: `sha512sig0h(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sha512sig0h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Sha512Sig0HEmitter<T0, T1, T2>,
@@ -38294,9 +38294,9 @@ impl Assembler<'_> {
     /// Rust: `sha512sig0l(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sha512sig0l<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Sha512Sig0LEmitter<T0, T1, T2>,
@@ -38310,8 +38310,8 @@ impl Assembler<'_> {
     /// Rust: `sha512sig1(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn sha512sig1<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: Sha512Sig1Emitter<T0, T1>,
@@ -38325,9 +38325,9 @@ impl Assembler<'_> {
     /// Rust: `sha512sig1h(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sha512sig1h<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Sha512Sig1HEmitter<T0, T1, T2>,
@@ -38341,9 +38341,9 @@ impl Assembler<'_> {
     /// Rust: `sha512sig1l(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sha512sig1l<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Sha512Sig1LEmitter<T0, T1, T2>,
@@ -38357,8 +38357,8 @@ impl Assembler<'_> {
     /// Rust: `sha512sum0(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn sha512sum0<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: Sha512Sum0Emitter<T0, T1>,
@@ -38372,9 +38372,9 @@ impl Assembler<'_> {
     /// Rust: `sha512sum0r(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sha512sum0r<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Sha512Sum0REmitter<T0, T1, T2>,
@@ -38388,8 +38388,8 @@ impl Assembler<'_> {
     /// Rust: `sha512sum1(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn sha512sum1<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: Sha512Sum1Emitter<T0, T1>,
@@ -38403,9 +38403,9 @@ impl Assembler<'_> {
     /// Rust: `sha512sum1r(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sha512sum1r<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Sha512Sum1REmitter<T0, T1, T2>,
@@ -38419,8 +38419,8 @@ impl Assembler<'_> {
     /// Rust: `sinval_vma(rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sinval_vma<T0, T1>(&mut self, rs1: T0, rs2: T1)
     where
         Self: SinvalVmaEmitter<T0, T1>,
@@ -38436,9 +38436,9 @@ impl Assembler<'_> {
     /// Rust: `sll(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sll<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: SllEmitter<T0, T1, T2>,
@@ -38454,9 +38454,9 @@ impl Assembler<'_> {
     /// Rust: `slli(rd, rs1, shamtd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtd` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtd`: Immediate encoding value.
     pub fn slli<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtd: T2)
     where
         Self: SlliEmitter<T0, T1, T2>,
@@ -38472,9 +38472,9 @@ impl Assembler<'_> {
     /// Rust: `slli_rv32(rd, rs1, shamtw)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtw` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtw`: Immediate encoding value.
     pub fn slli_rv32<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtw: T2)
     where
         Self: SlliRv32Emitter<T0, T1, T2>,
@@ -38494,9 +38494,9 @@ impl Assembler<'_> {
     /// Rust: `slli_uw(rd, rs1, shamtd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtd` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtd`: Immediate encoding value.
     pub fn slli_uw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtd: T2)
     where
         Self: SlliUwEmitter<T0, T1, T2>,
@@ -38512,9 +38512,9 @@ impl Assembler<'_> {
     /// Rust: `slliw(rd, rs1, shamtw)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtw` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtw`: Immediate encoding value.
     pub fn slliw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtw: T2)
     where
         Self: SlliwEmitter<T0, T1, T2>,
@@ -38530,9 +38530,9 @@ impl Assembler<'_> {
     /// Rust: `sllw(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sllw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: SllwEmitter<T0, T1, T2>,
@@ -38549,9 +38549,9 @@ impl Assembler<'_> {
     /// Rust: `slt(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn slt<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: SltEmitter<T0, T1, T2>,
@@ -38568,9 +38568,9 @@ impl Assembler<'_> {
     /// Rust: `slti(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn slti<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: SltiEmitter<T0, T1, T2>,
@@ -38591,9 +38591,9 @@ impl Assembler<'_> {
     /// Rust: `sltiu(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn sltiu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: SltiuEmitter<T0, T1, T2>,
@@ -38610,9 +38610,9 @@ impl Assembler<'_> {
     /// Rust: `sltu(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sltu<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: SltuEmitter<T0, T1, T2>,
@@ -38626,8 +38626,8 @@ impl Assembler<'_> {
     /// Rust: `sltz(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn sltz<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: SltzEmitter<T0, T1>,
@@ -38641,8 +38641,8 @@ impl Assembler<'_> {
     /// Rust: `sm3p0(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn sm3p0<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: Sm3P0Emitter<T0, T1>,
@@ -38656,8 +38656,8 @@ impl Assembler<'_> {
     /// Rust: `sm3p1(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn sm3p1<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: Sm3P1Emitter<T0, T1>,
@@ -38671,10 +38671,10 @@ impl Assembler<'_> {
     /// Rust: `sm4ed(rd, rs1, rs2, bs)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `bs` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `bs`: Immediate encoding value.
     pub fn sm4ed<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, bs: T3)
     where
         Self: Sm4EdEmitter<T0, T1, T2, T3>,
@@ -38688,10 +38688,10 @@ impl Assembler<'_> {
     /// Rust: `sm4ks(rd, rs1, rs2, bs)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
-    /// - `bs` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
+    /// - `bs`: Immediate encoding value.
     pub fn sm4ks<T0, T1, T2, T3>(&mut self, rd: T0, rs1: T1, rs2: T2, bs: T3)
     where
         Self: Sm4KsEmitter<T0, T1, T2, T3>,
@@ -38705,8 +38705,8 @@ impl Assembler<'_> {
     /// Rust: `snez(rd, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs2`: Source register.
     pub fn snez<T0, T1>(&mut self, rd: T0, rs2: T1)
     where
         Self: SnezEmitter<T0, T1>,
@@ -38722,9 +38722,9 @@ impl Assembler<'_> {
     /// Rust: `sra(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sra<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: SraEmitter<T0, T1, T2>,
@@ -38741,9 +38741,9 @@ impl Assembler<'_> {
     /// Rust: `srai(rd, rs1, shamtd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtd` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtd`: Immediate encoding value.
     pub fn srai<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtd: T2)
     where
         Self: SraiEmitter<T0, T1, T2>,
@@ -38760,9 +38760,9 @@ impl Assembler<'_> {
     /// Rust: `srai_rv32(rd, rs1, shamtw)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtw` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtw`: Immediate encoding value.
     pub fn srai_rv32<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtw: T2)
     where
         Self: SraiRv32Emitter<T0, T1, T2>,
@@ -38779,9 +38779,9 @@ impl Assembler<'_> {
     /// Rust: `sraiw(rd, rs1, shamtw)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtw` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtw`: Immediate encoding value.
     pub fn sraiw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtw: T2)
     where
         Self: SraiwEmitter<T0, T1, T2>,
@@ -38797,9 +38797,9 @@ impl Assembler<'_> {
     /// Rust: `sraw(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sraw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: SrawEmitter<T0, T1, T2>,
@@ -38867,9 +38867,9 @@ impl Assembler<'_> {
     /// Rust: `srl(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn srl<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: SrlEmitter<T0, T1, T2>,
@@ -38885,9 +38885,9 @@ impl Assembler<'_> {
     /// Rust: `srli(rd, rs1, shamtd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtd` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtd`: Immediate encoding value.
     pub fn srli<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtd: T2)
     where
         Self: SrliEmitter<T0, T1, T2>,
@@ -38903,9 +38903,9 @@ impl Assembler<'_> {
     /// Rust: `srli_rv32(rd, rs1, shamtw)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtw` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtw`: Immediate encoding value.
     pub fn srli_rv32<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtw: T2)
     where
         Self: SrliRv32Emitter<T0, T1, T2>,
@@ -38921,9 +38921,9 @@ impl Assembler<'_> {
     /// Rust: `srliw(rd, rs1, shamtw)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `shamtw` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `shamtw`: Immediate encoding value.
     pub fn srliw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, shamtw: T2)
     where
         Self: SrliwEmitter<T0, T1, T2>,
@@ -38939,9 +38939,9 @@ impl Assembler<'_> {
     /// Rust: `srlw(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn srlw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: SrlwEmitter<T0, T1, T2>,
@@ -38955,11 +38955,11 @@ impl Assembler<'_> {
     /// Rust: `ssamoswap_d(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn ssamoswap_d<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: SsamoswapDEmitter<T0, T1, T2, T3, T4>,
@@ -38973,11 +38973,11 @@ impl Assembler<'_> {
     /// Rust: `ssamoswap_w(rd, rs1, rs2, aq, rl)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `aq` — Acquire-order bit.
-    /// - `rl` — Release-order bit; retained for the existing emitter API.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `aq`: Acquire-order bit.
+    /// - `rl`: Release-order bit; retained for the existing emitter API.
     pub fn ssamoswap_w<T0, T1, T2, T3, T4>(&mut self, rd: T0, rs1: T1, rs2: T2, aq: T3, rl: T4)
     where
         Self: SsamoswapWEmitter<T0, T1, T2, T3, T4>,
@@ -39043,7 +39043,7 @@ impl Assembler<'_> {
     /// Rust: `ssrdp(rd)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
+    /// - `rd`: Destination register.
     pub fn ssrdp<T0>(&mut self, rd: T0)
     where
         Self: SsrdpEmitter<T0>,
@@ -39059,9 +39059,9 @@ impl Assembler<'_> {
     /// Rust: `sub(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn sub<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: SubEmitter<T0, T1, T2>,
@@ -39077,9 +39077,9 @@ impl Assembler<'_> {
     /// Rust: `subw(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn subw<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: SubwEmitter<T0, T1, T2>,
@@ -39096,9 +39096,9 @@ impl Assembler<'_> {
     /// Rust: `sw(rs1, rs2, imm)`
     ///
     /// # Arguments
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn sw<T0, T1, T2>(&mut self, rs1: T0, rs2: T1, imm: T2)
     where
         Self: SwEmitter<T0, T1, T2>,
@@ -39116,8 +39116,8 @@ impl Assembler<'_> {
     /// Rust: `unzip(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn unzip<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: UnzipEmitter<T0, T1>,
@@ -39131,10 +39131,10 @@ impl Assembler<'_> {
     /// Rust: `vaadd_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vaadd_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VaaddVvEmitter<T0, T1, T2, T3>,
@@ -39148,10 +39148,10 @@ impl Assembler<'_> {
     /// Rust: `vaadd_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vaadd_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VaaddVxEmitter<T0, T1, T2, T3>,
@@ -39165,10 +39165,10 @@ impl Assembler<'_> {
     /// Rust: `vaaddu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vaaddu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VaadduVvEmitter<T0, T1, T2, T3>,
@@ -39182,10 +39182,10 @@ impl Assembler<'_> {
     /// Rust: `vaaddu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vaaddu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VaadduVxEmitter<T0, T1, T2, T3>,
@@ -39199,9 +39199,9 @@ impl Assembler<'_> {
     /// Rust: `vadc_vim(vd, vs2, simm5)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
     pub fn vadc_vim<T0, T1, T2>(&mut self, vd: T0, vs2: T1, simm5: T2)
     where
         Self: VadcVimEmitter<T0, T1, T2>,
@@ -39215,9 +39215,9 @@ impl Assembler<'_> {
     /// Rust: `vadc_vvm(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vadc_vvm<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: VadcVvmEmitter<T0, T1, T2>,
@@ -39231,9 +39231,9 @@ impl Assembler<'_> {
     /// Rust: `vadc_vxm(vd, rs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vs2`: Vector register operand.
     pub fn vadc_vxm<T0, T1, T2>(&mut self, vd: T0, rs1: T1, vs2: T2)
     where
         Self: VadcVxmEmitter<T0, T1, T2>,
@@ -39247,10 +39247,10 @@ impl Assembler<'_> {
     /// Rust: `vadd_vi(vd, vs2, simm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vadd_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3)
     where
         Self: VaddViEmitter<T0, T1, T2, T3>,
@@ -39264,10 +39264,10 @@ impl Assembler<'_> {
     /// Rust: `vadd_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vadd_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VaddVvEmitter<T0, T1, T2, T3>,
@@ -39281,10 +39281,10 @@ impl Assembler<'_> {
     /// Rust: `vadd_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vadd_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VaddVxEmitter<T0, T1, T2, T3>,
@@ -39298,8 +39298,8 @@ impl Assembler<'_> {
     /// Rust: `vaesdf_vs(vd, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vaesdf_vs<T0, T1>(&mut self, vd: T0, vs2: T1)
     where
         Self: VaesdfVsEmitter<T0, T1>,
@@ -39313,8 +39313,8 @@ impl Assembler<'_> {
     /// Rust: `vaesdf_vv(vd, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vaesdf_vv<T0, T1>(&mut self, vd: T0, vs2: T1)
     where
         Self: VaesdfVvEmitter<T0, T1>,
@@ -39328,8 +39328,8 @@ impl Assembler<'_> {
     /// Rust: `vaesdm_vs(vd, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vaesdm_vs<T0, T1>(&mut self, vd: T0, vs2: T1)
     where
         Self: VaesdmVsEmitter<T0, T1>,
@@ -39343,8 +39343,8 @@ impl Assembler<'_> {
     /// Rust: `vaesdm_vv(vd, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vaesdm_vv<T0, T1>(&mut self, vd: T0, vs2: T1)
     where
         Self: VaesdmVvEmitter<T0, T1>,
@@ -39358,8 +39358,8 @@ impl Assembler<'_> {
     /// Rust: `vaesef_vs(vd, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vaesef_vs<T0, T1>(&mut self, vd: T0, vs2: T1)
     where
         Self: VaesefVsEmitter<T0, T1>,
@@ -39373,8 +39373,8 @@ impl Assembler<'_> {
     /// Rust: `vaesef_vv(vd, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vaesef_vv<T0, T1>(&mut self, vd: T0, vs2: T1)
     where
         Self: VaesefVvEmitter<T0, T1>,
@@ -39388,8 +39388,8 @@ impl Assembler<'_> {
     /// Rust: `vaesem_vs(vd, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vaesem_vs<T0, T1>(&mut self, vd: T0, vs2: T1)
     where
         Self: VaesemVsEmitter<T0, T1>,
@@ -39403,8 +39403,8 @@ impl Assembler<'_> {
     /// Rust: `vaesem_vv(vd, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vaesem_vv<T0, T1>(&mut self, vd: T0, vs2: T1)
     where
         Self: VaesemVvEmitter<T0, T1>,
@@ -39418,9 +39418,9 @@ impl Assembler<'_> {
     /// Rust: `vaeskf1_vi(vd, vs2, zimm5)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm5` — Immediate encoding value.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm5`: Immediate encoding value.
     pub fn vaeskf1_vi<T0, T1, T2>(&mut self, vd: T0, vs2: T1, zimm5: T2)
     where
         Self: Vaeskf1ViEmitter<T0, T1, T2>,
@@ -39434,9 +39434,9 @@ impl Assembler<'_> {
     /// Rust: `vaeskf2_vi(vd, vs2, zimm5)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm5` — Immediate encoding value.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm5`: Immediate encoding value.
     pub fn vaeskf2_vi<T0, T1, T2>(&mut self, vd: T0, vs2: T1, zimm5: T2)
     where
         Self: Vaeskf2ViEmitter<T0, T1, T2>,
@@ -39450,8 +39450,8 @@ impl Assembler<'_> {
     /// Rust: `vaesz_vs(vd, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vaesz_vs<T0, T1>(&mut self, vd: T0, vs2: T1)
     where
         Self: VaeszVsEmitter<T0, T1>,
@@ -39465,10 +39465,10 @@ impl Assembler<'_> {
     /// Rust: `vand_vi(vd, vs2, simm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vand_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3)
     where
         Self: VandViEmitter<T0, T1, T2, T3>,
@@ -39482,10 +39482,10 @@ impl Assembler<'_> {
     /// Rust: `vand_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vand_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VandVvEmitter<T0, T1, T2, T3>,
@@ -39499,10 +39499,10 @@ impl Assembler<'_> {
     /// Rust: `vand_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vand_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VandVxEmitter<T0, T1, T2, T3>,
@@ -39516,10 +39516,10 @@ impl Assembler<'_> {
     /// Rust: `vandn_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vandn_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VandnVvEmitter<T0, T1, T2, T3>,
@@ -39533,10 +39533,10 @@ impl Assembler<'_> {
     /// Rust: `vandn_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vandn_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VandnVxEmitter<T0, T1, T2, T3>,
@@ -39550,10 +39550,10 @@ impl Assembler<'_> {
     /// Rust: `vasub_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vasub_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VasubVvEmitter<T0, T1, T2, T3>,
@@ -39567,10 +39567,10 @@ impl Assembler<'_> {
     /// Rust: `vasub_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vasub_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VasubVxEmitter<T0, T1, T2, T3>,
@@ -39584,10 +39584,10 @@ impl Assembler<'_> {
     /// Rust: `vasubu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vasubu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VasubuVvEmitter<T0, T1, T2, T3>,
@@ -39601,10 +39601,10 @@ impl Assembler<'_> {
     /// Rust: `vasubu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vasubu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VasubuVxEmitter<T0, T1, T2, T3>,
@@ -39618,9 +39618,9 @@ impl Assembler<'_> {
     /// Rust: `vbrev8_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vbrev8_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: Vbrev8VEmitter<T0, T1, T2>,
@@ -39634,9 +39634,9 @@ impl Assembler<'_> {
     /// Rust: `vbrev_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vbrev_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VbrevVEmitter<T0, T1, T2>,
@@ -39650,10 +39650,10 @@ impl Assembler<'_> {
     /// Rust: `vclmul_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vclmul_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VclmulVvEmitter<T0, T1, T2, T3>,
@@ -39667,10 +39667,10 @@ impl Assembler<'_> {
     /// Rust: `vclmul_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vclmul_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VclmulVxEmitter<T0, T1, T2, T3>,
@@ -39684,10 +39684,10 @@ impl Assembler<'_> {
     /// Rust: `vclmulh_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vclmulh_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VclmulhVvEmitter<T0, T1, T2, T3>,
@@ -39701,10 +39701,10 @@ impl Assembler<'_> {
     /// Rust: `vclmulh_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vclmulh_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VclmulhVxEmitter<T0, T1, T2, T3>,
@@ -39718,9 +39718,9 @@ impl Assembler<'_> {
     /// Rust: `vclz_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vclz_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VclzVEmitter<T0, T1, T2>,
@@ -39734,9 +39734,9 @@ impl Assembler<'_> {
     /// Rust: `vcompress_vm(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vcompress_vm<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: VcompressVmEmitter<T0, T1, T2>,
@@ -39750,9 +39750,9 @@ impl Assembler<'_> {
     /// Rust: `vcpop_m(rd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `rd`: Destination register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vcpop_m<T0, T1, T2>(&mut self, rd: T0, vs2: T1, vm: T2)
     where
         Self: VcpopMEmitter<T0, T1, T2>,
@@ -39766,9 +39766,9 @@ impl Assembler<'_> {
     /// Rust: `vcpop_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vcpop_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VcpopVEmitter<T0, T1, T2>,
@@ -39782,9 +39782,9 @@ impl Assembler<'_> {
     /// Rust: `vctz_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vctz_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VctzVEmitter<T0, T1, T2>,
@@ -39798,10 +39798,10 @@ impl Assembler<'_> {
     /// Rust: `vdiv_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vdiv_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VdivVvEmitter<T0, T1, T2, T3>,
@@ -39815,10 +39815,10 @@ impl Assembler<'_> {
     /// Rust: `vdiv_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vdiv_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VdivVxEmitter<T0, T1, T2, T3>,
@@ -39832,10 +39832,10 @@ impl Assembler<'_> {
     /// Rust: `vdivu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vdivu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VdivuVvEmitter<T0, T1, T2, T3>,
@@ -39849,10 +39849,10 @@ impl Assembler<'_> {
     /// Rust: `vdivu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vdivu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VdivuVxEmitter<T0, T1, T2, T3>,
@@ -39866,10 +39866,10 @@ impl Assembler<'_> {
     /// Rust: `vfadd_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfadd_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfaddVfEmitter<T0, T1, T2, T3>,
@@ -39883,10 +39883,10 @@ impl Assembler<'_> {
     /// Rust: `vfadd_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfadd_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfaddVvEmitter<T0, T1, T2, T3>,
@@ -39900,9 +39900,9 @@ impl Assembler<'_> {
     /// Rust: `vfclass_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfclass_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfclassVEmitter<T0, T1, T2>,
@@ -39916,9 +39916,9 @@ impl Assembler<'_> {
     /// Rust: `vfcvt_f_x_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfcvt_f_x_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfcvtFXVEmitter<T0, T1, T2>,
@@ -39932,9 +39932,9 @@ impl Assembler<'_> {
     /// Rust: `vfcvt_f_xu_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfcvt_f_xu_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfcvtFXuVEmitter<T0, T1, T2>,
@@ -39948,9 +39948,9 @@ impl Assembler<'_> {
     /// Rust: `vfcvt_rtz_x_f_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfcvt_rtz_x_f_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfcvtRtzXFVEmitter<T0, T1, T2>,
@@ -39964,9 +39964,9 @@ impl Assembler<'_> {
     /// Rust: `vfcvt_rtz_xu_f_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfcvt_rtz_xu_f_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfcvtRtzXuFVEmitter<T0, T1, T2>,
@@ -39980,9 +39980,9 @@ impl Assembler<'_> {
     /// Rust: `vfcvt_x_f_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfcvt_x_f_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfcvtXFVEmitter<T0, T1, T2>,
@@ -39996,9 +39996,9 @@ impl Assembler<'_> {
     /// Rust: `vfcvt_xu_f_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfcvt_xu_f_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfcvtXuFVEmitter<T0, T1, T2>,
@@ -40012,10 +40012,10 @@ impl Assembler<'_> {
     /// Rust: `vfdiv_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfdiv_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfdivVfEmitter<T0, T1, T2, T3>,
@@ -40029,10 +40029,10 @@ impl Assembler<'_> {
     /// Rust: `vfdiv_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfdiv_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfdivVvEmitter<T0, T1, T2, T3>,
@@ -40046,9 +40046,9 @@ impl Assembler<'_> {
     /// Rust: `vfirst_m(rd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `rd`: Destination register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfirst_m<T0, T1, T2>(&mut self, rd: T0, vs2: T1, vm: T2)
     where
         Self: VfirstMEmitter<T0, T1, T2>,
@@ -40062,10 +40062,10 @@ impl Assembler<'_> {
     /// Rust: `vfmacc_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfmacc_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfmaccVfEmitter<T0, T1, T2, T3>,
@@ -40079,10 +40079,10 @@ impl Assembler<'_> {
     /// Rust: `vfmacc_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfmacc_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfmaccVvEmitter<T0, T1, T2, T3>,
@@ -40096,10 +40096,10 @@ impl Assembler<'_> {
     /// Rust: `vfmadd_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfmadd_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfmaddVfEmitter<T0, T1, T2, T3>,
@@ -40113,10 +40113,10 @@ impl Assembler<'_> {
     /// Rust: `vfmadd_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfmadd_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfmaddVvEmitter<T0, T1, T2, T3>,
@@ -40130,10 +40130,10 @@ impl Assembler<'_> {
     /// Rust: `vfmax_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfmax_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfmaxVfEmitter<T0, T1, T2, T3>,
@@ -40147,10 +40147,10 @@ impl Assembler<'_> {
     /// Rust: `vfmax_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfmax_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfmaxVvEmitter<T0, T1, T2, T3>,
@@ -40164,9 +40164,9 @@ impl Assembler<'_> {
     /// Rust: `vfmerge_vfm(vd, rs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vs2`: Vector register operand.
     pub fn vfmerge_vfm<T0, T1, T2>(&mut self, vd: T0, rs1: T1, vs2: T2)
     where
         Self: VfmergeVfmEmitter<T0, T1, T2>,
@@ -40180,10 +40180,10 @@ impl Assembler<'_> {
     /// Rust: `vfmin_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfmin_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfminVfEmitter<T0, T1, T2, T3>,
@@ -40197,10 +40197,10 @@ impl Assembler<'_> {
     /// Rust: `vfmin_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfmin_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfminVvEmitter<T0, T1, T2, T3>,
@@ -40214,10 +40214,10 @@ impl Assembler<'_> {
     /// Rust: `vfmsac_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfmsac_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfmsacVfEmitter<T0, T1, T2, T3>,
@@ -40231,10 +40231,10 @@ impl Assembler<'_> {
     /// Rust: `vfmsac_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfmsac_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfmsacVvEmitter<T0, T1, T2, T3>,
@@ -40248,10 +40248,10 @@ impl Assembler<'_> {
     /// Rust: `vfmsub_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfmsub_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfmsubVfEmitter<T0, T1, T2, T3>,
@@ -40265,10 +40265,10 @@ impl Assembler<'_> {
     /// Rust: `vfmsub_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfmsub_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfmsubVvEmitter<T0, T1, T2, T3>,
@@ -40282,10 +40282,10 @@ impl Assembler<'_> {
     /// Rust: `vfmul_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfmul_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfmulVfEmitter<T0, T1, T2, T3>,
@@ -40299,10 +40299,10 @@ impl Assembler<'_> {
     /// Rust: `vfmul_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfmul_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfmulVvEmitter<T0, T1, T2, T3>,
@@ -40316,8 +40316,8 @@ impl Assembler<'_> {
     /// Rust: `vfmv_f_s(rd, vs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `vs2` — Vector register operand.
+    /// - `rd`: Destination register.
+    /// - `vs2`: Vector register operand.
     pub fn vfmv_f_s<T0, T1>(&mut self, rd: T0, vs2: T1)
     where
         Self: VfmvFSEmitter<T0, T1>,
@@ -40331,8 +40331,8 @@ impl Assembler<'_> {
     /// Rust: `vfmv_s_f(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Source register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Source register.
     pub fn vfmv_s_f<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: VfmvSFEmitter<T0, T1>,
@@ -40346,8 +40346,8 @@ impl Assembler<'_> {
     /// Rust: `vfmv_v_f(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Source register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Source register.
     pub fn vfmv_v_f<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: VfmvVFEmitter<T0, T1>,
@@ -40361,9 +40361,9 @@ impl Assembler<'_> {
     /// Rust: `vfncvt_f_f_w(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfncvt_f_f_w<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfncvtFFWEmitter<T0, T1, T2>,
@@ -40377,9 +40377,9 @@ impl Assembler<'_> {
     /// Rust: `vfncvt_f_x_w(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfncvt_f_x_w<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfncvtFXWEmitter<T0, T1, T2>,
@@ -40393,9 +40393,9 @@ impl Assembler<'_> {
     /// Rust: `vfncvt_f_xu_w(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfncvt_f_xu_w<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfncvtFXuWEmitter<T0, T1, T2>,
@@ -40409,9 +40409,9 @@ impl Assembler<'_> {
     /// Rust: `vfncvt_rod_f_f_w(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfncvt_rod_f_f_w<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfncvtRodFFWEmitter<T0, T1, T2>,
@@ -40425,9 +40425,9 @@ impl Assembler<'_> {
     /// Rust: `vfncvt_rtz_x_f_w(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfncvt_rtz_x_f_w<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfncvtRtzXFWEmitter<T0, T1, T2>,
@@ -40441,9 +40441,9 @@ impl Assembler<'_> {
     /// Rust: `vfncvt_rtz_xu_f_w(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfncvt_rtz_xu_f_w<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfncvtRtzXuFWEmitter<T0, T1, T2>,
@@ -40457,9 +40457,9 @@ impl Assembler<'_> {
     /// Rust: `vfncvt_x_f_w(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfncvt_x_f_w<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfncvtXFWEmitter<T0, T1, T2>,
@@ -40473,9 +40473,9 @@ impl Assembler<'_> {
     /// Rust: `vfncvt_xu_f_w(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfncvt_xu_f_w<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfncvtXuFWEmitter<T0, T1, T2>,
@@ -40489,9 +40489,9 @@ impl Assembler<'_> {
     /// Rust: `vfncvtbf16_f_f_w(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfncvtbf16_f_f_w<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: Vfncvtbf16FFWEmitter<T0, T1, T2>,
@@ -40505,10 +40505,10 @@ impl Assembler<'_> {
     /// Rust: `vfnmacc_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfnmacc_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfnmaccVfEmitter<T0, T1, T2, T3>,
@@ -40522,10 +40522,10 @@ impl Assembler<'_> {
     /// Rust: `vfnmacc_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfnmacc_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfnmaccVvEmitter<T0, T1, T2, T3>,
@@ -40539,10 +40539,10 @@ impl Assembler<'_> {
     /// Rust: `vfnmadd_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfnmadd_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfnmaddVfEmitter<T0, T1, T2, T3>,
@@ -40556,10 +40556,10 @@ impl Assembler<'_> {
     /// Rust: `vfnmadd_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfnmadd_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfnmaddVvEmitter<T0, T1, T2, T3>,
@@ -40573,10 +40573,10 @@ impl Assembler<'_> {
     /// Rust: `vfnmsac_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfnmsac_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfnmsacVfEmitter<T0, T1, T2, T3>,
@@ -40590,10 +40590,10 @@ impl Assembler<'_> {
     /// Rust: `vfnmsac_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfnmsac_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfnmsacVvEmitter<T0, T1, T2, T3>,
@@ -40607,10 +40607,10 @@ impl Assembler<'_> {
     /// Rust: `vfnmsub_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfnmsub_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfnmsubVfEmitter<T0, T1, T2, T3>,
@@ -40624,10 +40624,10 @@ impl Assembler<'_> {
     /// Rust: `vfnmsub_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfnmsub_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfnmsubVvEmitter<T0, T1, T2, T3>,
@@ -40641,10 +40641,10 @@ impl Assembler<'_> {
     /// Rust: `vfrdiv_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfrdiv_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfrdivVfEmitter<T0, T1, T2, T3>,
@@ -40658,9 +40658,9 @@ impl Assembler<'_> {
     /// Rust: `vfrec7_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfrec7_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: Vfrec7VEmitter<T0, T1, T2>,
@@ -40674,10 +40674,10 @@ impl Assembler<'_> {
     /// Rust: `vfredmax_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfredmax_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfredmaxVsEmitter<T0, T1, T2, T3>,
@@ -40691,10 +40691,10 @@ impl Assembler<'_> {
     /// Rust: `vfredmin_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfredmin_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfredminVsEmitter<T0, T1, T2, T3>,
@@ -40708,10 +40708,10 @@ impl Assembler<'_> {
     /// Rust: `vfredosum_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfredosum_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfredosumVsEmitter<T0, T1, T2, T3>,
@@ -40725,10 +40725,10 @@ impl Assembler<'_> {
     /// Rust: `vfredsum_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfredsum_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfredsumVsEmitter<T0, T1, T2, T3>,
@@ -40742,10 +40742,10 @@ impl Assembler<'_> {
     /// Rust: `vfredusum_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfredusum_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfredusumVsEmitter<T0, T1, T2, T3>,
@@ -40759,9 +40759,9 @@ impl Assembler<'_> {
     /// Rust: `vfrsqrt7_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfrsqrt7_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: Vfrsqrt7VEmitter<T0, T1, T2>,
@@ -40775,10 +40775,10 @@ impl Assembler<'_> {
     /// Rust: `vfrsub_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfrsub_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfrsubVfEmitter<T0, T1, T2, T3>,
@@ -40792,10 +40792,10 @@ impl Assembler<'_> {
     /// Rust: `vfsgnj_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfsgnj_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfsgnjVfEmitter<T0, T1, T2, T3>,
@@ -40809,10 +40809,10 @@ impl Assembler<'_> {
     /// Rust: `vfsgnj_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfsgnj_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfsgnjVvEmitter<T0, T1, T2, T3>,
@@ -40826,10 +40826,10 @@ impl Assembler<'_> {
     /// Rust: `vfsgnjn_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfsgnjn_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfsgnjnVfEmitter<T0, T1, T2, T3>,
@@ -40843,10 +40843,10 @@ impl Assembler<'_> {
     /// Rust: `vfsgnjn_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfsgnjn_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfsgnjnVvEmitter<T0, T1, T2, T3>,
@@ -40860,10 +40860,10 @@ impl Assembler<'_> {
     /// Rust: `vfsgnjx_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfsgnjx_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfsgnjxVfEmitter<T0, T1, T2, T3>,
@@ -40877,10 +40877,10 @@ impl Assembler<'_> {
     /// Rust: `vfsgnjx_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfsgnjx_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfsgnjxVvEmitter<T0, T1, T2, T3>,
@@ -40894,10 +40894,10 @@ impl Assembler<'_> {
     /// Rust: `vfslide1down_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfslide1down_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: Vfslide1DownVfEmitter<T0, T1, T2, T3>,
@@ -40911,10 +40911,10 @@ impl Assembler<'_> {
     /// Rust: `vfslide1up_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfslide1up_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: Vfslide1UpVfEmitter<T0, T1, T2, T3>,
@@ -40928,9 +40928,9 @@ impl Assembler<'_> {
     /// Rust: `vfsqrt_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfsqrt_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfsqrtVEmitter<T0, T1, T2>,
@@ -40944,10 +40944,10 @@ impl Assembler<'_> {
     /// Rust: `vfsub_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfsub_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfsubVfEmitter<T0, T1, T2, T3>,
@@ -40961,10 +40961,10 @@ impl Assembler<'_> {
     /// Rust: `vfsub_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfsub_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfsubVvEmitter<T0, T1, T2, T3>,
@@ -40978,10 +40978,10 @@ impl Assembler<'_> {
     /// Rust: `vfwadd_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfwadd_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfwaddVfEmitter<T0, T1, T2, T3>,
@@ -40995,10 +40995,10 @@ impl Assembler<'_> {
     /// Rust: `vfwadd_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwadd_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfwaddVvEmitter<T0, T1, T2, T3>,
@@ -41012,10 +41012,10 @@ impl Assembler<'_> {
     /// Rust: `vfwadd_wf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfwadd_wf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfwaddWfEmitter<T0, T1, T2, T3>,
@@ -41029,10 +41029,10 @@ impl Assembler<'_> {
     /// Rust: `vfwadd_wv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwadd_wv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfwaddWvEmitter<T0, T1, T2, T3>,
@@ -41046,9 +41046,9 @@ impl Assembler<'_> {
     /// Rust: `vfwcvt_f_f_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwcvt_f_f_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfwcvtFFVEmitter<T0, T1, T2>,
@@ -41062,9 +41062,9 @@ impl Assembler<'_> {
     /// Rust: `vfwcvt_f_x_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwcvt_f_x_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfwcvtFXVEmitter<T0, T1, T2>,
@@ -41078,9 +41078,9 @@ impl Assembler<'_> {
     /// Rust: `vfwcvt_f_xu_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwcvt_f_xu_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfwcvtFXuVEmitter<T0, T1, T2>,
@@ -41094,9 +41094,9 @@ impl Assembler<'_> {
     /// Rust: `vfwcvt_rtz_x_f_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwcvt_rtz_x_f_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfwcvtRtzXFVEmitter<T0, T1, T2>,
@@ -41110,9 +41110,9 @@ impl Assembler<'_> {
     /// Rust: `vfwcvt_rtz_xu_f_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwcvt_rtz_xu_f_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfwcvtRtzXuFVEmitter<T0, T1, T2>,
@@ -41126,9 +41126,9 @@ impl Assembler<'_> {
     /// Rust: `vfwcvt_x_f_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwcvt_x_f_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfwcvtXFVEmitter<T0, T1, T2>,
@@ -41142,9 +41142,9 @@ impl Assembler<'_> {
     /// Rust: `vfwcvt_xu_f_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwcvt_xu_f_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VfwcvtXuFVEmitter<T0, T1, T2>,
@@ -41158,9 +41158,9 @@ impl Assembler<'_> {
     /// Rust: `vfwcvtbf16_f_f_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwcvtbf16_f_f_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: Vfwcvtbf16FFVEmitter<T0, T1, T2>,
@@ -41174,10 +41174,10 @@ impl Assembler<'_> {
     /// Rust: `vfwmacc_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfwmacc_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfwmaccVfEmitter<T0, T1, T2, T3>,
@@ -41191,10 +41191,10 @@ impl Assembler<'_> {
     /// Rust: `vfwmacc_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwmacc_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfwmaccVvEmitter<T0, T1, T2, T3>,
@@ -41208,10 +41208,10 @@ impl Assembler<'_> {
     /// Rust: `vfwmaccbf16_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfwmaccbf16_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: Vfwmaccbf16VfEmitter<T0, T1, T2, T3>,
@@ -41225,10 +41225,10 @@ impl Assembler<'_> {
     /// Rust: `vfwmaccbf16_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwmaccbf16_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: Vfwmaccbf16VvEmitter<T0, T1, T2, T3>,
@@ -41242,10 +41242,10 @@ impl Assembler<'_> {
     /// Rust: `vfwmsac_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfwmsac_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfwmsacVfEmitter<T0, T1, T2, T3>,
@@ -41259,10 +41259,10 @@ impl Assembler<'_> {
     /// Rust: `vfwmsac_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwmsac_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfwmsacVvEmitter<T0, T1, T2, T3>,
@@ -41276,10 +41276,10 @@ impl Assembler<'_> {
     /// Rust: `vfwmul_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfwmul_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfwmulVfEmitter<T0, T1, T2, T3>,
@@ -41293,10 +41293,10 @@ impl Assembler<'_> {
     /// Rust: `vfwmul_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwmul_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfwmulVvEmitter<T0, T1, T2, T3>,
@@ -41310,10 +41310,10 @@ impl Assembler<'_> {
     /// Rust: `vfwnmacc_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfwnmacc_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfwnmaccVfEmitter<T0, T1, T2, T3>,
@@ -41327,10 +41327,10 @@ impl Assembler<'_> {
     /// Rust: `vfwnmacc_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwnmacc_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfwnmaccVvEmitter<T0, T1, T2, T3>,
@@ -41344,10 +41344,10 @@ impl Assembler<'_> {
     /// Rust: `vfwnmsac_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfwnmsac_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfwnmsacVfEmitter<T0, T1, T2, T3>,
@@ -41361,10 +41361,10 @@ impl Assembler<'_> {
     /// Rust: `vfwnmsac_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwnmsac_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfwnmsacVvEmitter<T0, T1, T2, T3>,
@@ -41378,10 +41378,10 @@ impl Assembler<'_> {
     /// Rust: `vfwredosum_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwredosum_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfwredosumVsEmitter<T0, T1, T2, T3>,
@@ -41395,10 +41395,10 @@ impl Assembler<'_> {
     /// Rust: `vfwredsum_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwredsum_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfwredsumVsEmitter<T0, T1, T2, T3>,
@@ -41412,10 +41412,10 @@ impl Assembler<'_> {
     /// Rust: `vfwredusum_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwredusum_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfwredusumVsEmitter<T0, T1, T2, T3>,
@@ -41429,10 +41429,10 @@ impl Assembler<'_> {
     /// Rust: `vfwsub_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfwsub_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfwsubVfEmitter<T0, T1, T2, T3>,
@@ -41446,10 +41446,10 @@ impl Assembler<'_> {
     /// Rust: `vfwsub_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwsub_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfwsubVvEmitter<T0, T1, T2, T3>,
@@ -41463,10 +41463,10 @@ impl Assembler<'_> {
     /// Rust: `vfwsub_wf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vfwsub_wf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VfwsubWfEmitter<T0, T1, T2, T3>,
@@ -41480,10 +41480,10 @@ impl Assembler<'_> {
     /// Rust: `vfwsub_wv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vfwsub_wv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VfwsubWvEmitter<T0, T1, T2, T3>,
@@ -41497,9 +41497,9 @@ impl Assembler<'_> {
     /// Rust: `vghsh_vv(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vghsh_vv<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: VghshVvEmitter<T0, T1, T2>,
@@ -41513,8 +41513,8 @@ impl Assembler<'_> {
     /// Rust: `vgmul_vv(vd, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vgmul_vv<T0, T1>(&mut self, vd: T0, vs2: T1)
     where
         Self: VgmulVvEmitter<T0, T1>,
@@ -41528,8 +41528,8 @@ impl Assembler<'_> {
     /// Rust: `vid_v(vd, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vid_v<T0, T1>(&mut self, vd: T0, vm: T1)
     where
         Self: VidVEmitter<T0, T1>,
@@ -41543,9 +41543,9 @@ impl Assembler<'_> {
     /// Rust: `viota_m(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn viota_m<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: ViotaMEmitter<T0, T1, T2>,
@@ -41559,8 +41559,8 @@ impl Assembler<'_> {
     /// Rust: `vl1r_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl1r_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl1RVEmitter<T0, T1>,
@@ -41574,8 +41574,8 @@ impl Assembler<'_> {
     /// Rust: `vl1re16_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl1re16_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl1Re16VEmitter<T0, T1>,
@@ -41589,8 +41589,8 @@ impl Assembler<'_> {
     /// Rust: `vl1re32_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl1re32_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl1Re32VEmitter<T0, T1>,
@@ -41604,8 +41604,8 @@ impl Assembler<'_> {
     /// Rust: `vl1re64_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl1re64_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl1Re64VEmitter<T0, T1>,
@@ -41619,8 +41619,8 @@ impl Assembler<'_> {
     /// Rust: `vl1re8_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl1re8_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl1Re8VEmitter<T0, T1>,
@@ -41634,8 +41634,8 @@ impl Assembler<'_> {
     /// Rust: `vl2r_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl2r_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl2RVEmitter<T0, T1>,
@@ -41649,8 +41649,8 @@ impl Assembler<'_> {
     /// Rust: `vl2re16_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl2re16_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl2Re16VEmitter<T0, T1>,
@@ -41664,8 +41664,8 @@ impl Assembler<'_> {
     /// Rust: `vl2re32_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl2re32_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl2Re32VEmitter<T0, T1>,
@@ -41679,8 +41679,8 @@ impl Assembler<'_> {
     /// Rust: `vl2re64_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl2re64_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl2Re64VEmitter<T0, T1>,
@@ -41694,8 +41694,8 @@ impl Assembler<'_> {
     /// Rust: `vl2re8_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl2re8_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl2Re8VEmitter<T0, T1>,
@@ -41709,8 +41709,8 @@ impl Assembler<'_> {
     /// Rust: `vl4r_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl4r_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl4RVEmitter<T0, T1>,
@@ -41724,8 +41724,8 @@ impl Assembler<'_> {
     /// Rust: `vl4re16_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl4re16_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl4Re16VEmitter<T0, T1>,
@@ -41739,8 +41739,8 @@ impl Assembler<'_> {
     /// Rust: `vl4re32_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl4re32_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl4Re32VEmitter<T0, T1>,
@@ -41754,8 +41754,8 @@ impl Assembler<'_> {
     /// Rust: `vl4re64_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl4re64_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl4Re64VEmitter<T0, T1>,
@@ -41769,8 +41769,8 @@ impl Assembler<'_> {
     /// Rust: `vl4re8_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl4re8_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl4Re8VEmitter<T0, T1>,
@@ -41784,8 +41784,8 @@ impl Assembler<'_> {
     /// Rust: `vl8r_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl8r_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl8RVEmitter<T0, T1>,
@@ -41799,8 +41799,8 @@ impl Assembler<'_> {
     /// Rust: `vl8re16_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl8re16_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl8Re16VEmitter<T0, T1>,
@@ -41814,8 +41814,8 @@ impl Assembler<'_> {
     /// Rust: `vl8re32_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl8re32_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl8Re32VEmitter<T0, T1>,
@@ -41829,8 +41829,8 @@ impl Assembler<'_> {
     /// Rust: `vl8re64_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl8re64_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl8Re64VEmitter<T0, T1>,
@@ -41844,8 +41844,8 @@ impl Assembler<'_> {
     /// Rust: `vl8re8_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vl8re8_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vl8Re8VEmitter<T0, T1>,
@@ -41859,10 +41859,10 @@ impl Assembler<'_> {
     /// Rust: `vle16_v(vd, rs1, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vle16_v<T0, T1, T2, T3>(&mut self, vd: T0, rs1: T1, vm: T2, nf: T3)
     where
         Self: Vle16VEmitter<T0, T1, T2, T3>,
@@ -41876,10 +41876,10 @@ impl Assembler<'_> {
     /// Rust: `vle16ff_v(vd, rs1, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vle16ff_v<T0, T1, T2, T3>(&mut self, vd: T0, rs1: T1, vm: T2, nf: T3)
     where
         Self: Vle16FfVEmitter<T0, T1, T2, T3>,
@@ -41893,8 +41893,8 @@ impl Assembler<'_> {
     /// Rust: `vle1_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vle1_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: Vle1VEmitter<T0, T1>,
@@ -41908,10 +41908,10 @@ impl Assembler<'_> {
     /// Rust: `vle32_v(vd, rs1, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vle32_v<T0, T1, T2, T3>(&mut self, vd: T0, rs1: T1, vm: T2, nf: T3)
     where
         Self: Vle32VEmitter<T0, T1, T2, T3>,
@@ -41925,10 +41925,10 @@ impl Assembler<'_> {
     /// Rust: `vle32ff_v(vd, rs1, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vle32ff_v<T0, T1, T2, T3>(&mut self, vd: T0, rs1: T1, vm: T2, nf: T3)
     where
         Self: Vle32FfVEmitter<T0, T1, T2, T3>,
@@ -41942,10 +41942,10 @@ impl Assembler<'_> {
     /// Rust: `vle64_v(vd, rs1, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vle64_v<T0, T1, T2, T3>(&mut self, vd: T0, rs1: T1, vm: T2, nf: T3)
     where
         Self: Vle64VEmitter<T0, T1, T2, T3>,
@@ -41959,10 +41959,10 @@ impl Assembler<'_> {
     /// Rust: `vle64ff_v(vd, rs1, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vle64ff_v<T0, T1, T2, T3>(&mut self, vd: T0, rs1: T1, vm: T2, nf: T3)
     where
         Self: Vle64FfVEmitter<T0, T1, T2, T3>,
@@ -41976,10 +41976,10 @@ impl Assembler<'_> {
     /// Rust: `vle8_v(vd, rs1, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vle8_v<T0, T1, T2, T3>(&mut self, vd: T0, rs1: T1, vm: T2, nf: T3)
     where
         Self: Vle8VEmitter<T0, T1, T2, T3>,
@@ -41993,10 +41993,10 @@ impl Assembler<'_> {
     /// Rust: `vle8ff_v(vd, rs1, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vle8ff_v<T0, T1, T2, T3>(&mut self, vd: T0, rs1: T1, vm: T2, nf: T3)
     where
         Self: Vle8FfVEmitter<T0, T1, T2, T3>,
@@ -42010,8 +42010,8 @@ impl Assembler<'_> {
     /// Rust: `vlm_v(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vlm_v<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: VlmVEmitter<T0, T1>,
@@ -42025,11 +42025,11 @@ impl Assembler<'_> {
     /// Rust: `vloxei16_v(vd, rs1, vs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vloxei16_v<T0, T1, T2, T3, T4>(&mut self, vd: T0, rs1: T1, vs2: T2, vm: T3, nf: T4)
     where
         Self: Vloxei16VEmitter<T0, T1, T2, T3, T4>,
@@ -42043,11 +42043,11 @@ impl Assembler<'_> {
     /// Rust: `vloxei32_v(vd, rs1, vs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vloxei32_v<T0, T1, T2, T3, T4>(&mut self, vd: T0, rs1: T1, vs2: T2, vm: T3, nf: T4)
     where
         Self: Vloxei32VEmitter<T0, T1, T2, T3, T4>,
@@ -42061,11 +42061,11 @@ impl Assembler<'_> {
     /// Rust: `vloxei64_v(vd, rs1, vs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vloxei64_v<T0, T1, T2, T3, T4>(&mut self, vd: T0, rs1: T1, vs2: T2, vm: T3, nf: T4)
     where
         Self: Vloxei64VEmitter<T0, T1, T2, T3, T4>,
@@ -42079,11 +42079,11 @@ impl Assembler<'_> {
     /// Rust: `vloxei8_v(vd, rs1, vs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vloxei8_v<T0, T1, T2, T3, T4>(&mut self, vd: T0, rs1: T1, vs2: T2, vm: T3, nf: T4)
     where
         Self: Vloxei8VEmitter<T0, T1, T2, T3, T4>,
@@ -42097,11 +42097,11 @@ impl Assembler<'_> {
     /// Rust: `vlse16_v(vd, rs1, rs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vlse16_v<T0, T1, T2, T3, T4>(&mut self, vd: T0, rs1: T1, rs2: T2, vm: T3, nf: T4)
     where
         Self: Vlse16VEmitter<T0, T1, T2, T3, T4>,
@@ -42115,11 +42115,11 @@ impl Assembler<'_> {
     /// Rust: `vlse32_v(vd, rs1, rs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vlse32_v<T0, T1, T2, T3, T4>(&mut self, vd: T0, rs1: T1, rs2: T2, vm: T3, nf: T4)
     where
         Self: Vlse32VEmitter<T0, T1, T2, T3, T4>,
@@ -42133,11 +42133,11 @@ impl Assembler<'_> {
     /// Rust: `vlse64_v(vd, rs1, rs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vlse64_v<T0, T1, T2, T3, T4>(&mut self, vd: T0, rs1: T1, rs2: T2, vm: T3, nf: T4)
     where
         Self: Vlse64VEmitter<T0, T1, T2, T3, T4>,
@@ -42151,11 +42151,11 @@ impl Assembler<'_> {
     /// Rust: `vlse8_v(vd, rs1, rs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vlse8_v<T0, T1, T2, T3, T4>(&mut self, vd: T0, rs1: T1, rs2: T2, vm: T3, nf: T4)
     where
         Self: Vlse8VEmitter<T0, T1, T2, T3, T4>,
@@ -42169,11 +42169,11 @@ impl Assembler<'_> {
     /// Rust: `vluxei16_v(vd, rs1, vs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vluxei16_v<T0, T1, T2, T3, T4>(&mut self, vd: T0, rs1: T1, vs2: T2, vm: T3, nf: T4)
     where
         Self: Vluxei16VEmitter<T0, T1, T2, T3, T4>,
@@ -42187,11 +42187,11 @@ impl Assembler<'_> {
     /// Rust: `vluxei32_v(vd, rs1, vs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vluxei32_v<T0, T1, T2, T3, T4>(&mut self, vd: T0, rs1: T1, vs2: T2, vm: T3, nf: T4)
     where
         Self: Vluxei32VEmitter<T0, T1, T2, T3, T4>,
@@ -42205,11 +42205,11 @@ impl Assembler<'_> {
     /// Rust: `vluxei64_v(vd, rs1, vs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vluxei64_v<T0, T1, T2, T3, T4>(&mut self, vd: T0, rs1: T1, vs2: T2, vm: T3, nf: T4)
     where
         Self: Vluxei64VEmitter<T0, T1, T2, T3, T4>,
@@ -42223,11 +42223,11 @@ impl Assembler<'_> {
     /// Rust: `vluxei8_v(vd, rs1, vs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vluxei8_v<T0, T1, T2, T3, T4>(&mut self, vd: T0, rs1: T1, vs2: T2, vm: T3, nf: T4)
     where
         Self: Vluxei8VEmitter<T0, T1, T2, T3, T4>,
@@ -42241,10 +42241,10 @@ impl Assembler<'_> {
     /// Rust: `vmacc_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmacc_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmaccVvEmitter<T0, T1, T2, T3>,
@@ -42258,10 +42258,10 @@ impl Assembler<'_> {
     /// Rust: `vmacc_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmacc_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmaccVxEmitter<T0, T1, T2, T3>,
@@ -42275,9 +42275,9 @@ impl Assembler<'_> {
     /// Rust: `vmadc_vi(vd, vs2, simm5)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
     pub fn vmadc_vi<T0, T1, T2>(&mut self, vd: T0, vs2: T1, simm5: T2)
     where
         Self: VmadcViEmitter<T0, T1, T2>,
@@ -42291,9 +42291,9 @@ impl Assembler<'_> {
     /// Rust: `vmadc_vim(vd, vs2, simm5)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
     pub fn vmadc_vim<T0, T1, T2>(&mut self, vd: T0, vs2: T1, simm5: T2)
     where
         Self: VmadcVimEmitter<T0, T1, T2>,
@@ -42307,9 +42307,9 @@ impl Assembler<'_> {
     /// Rust: `vmadc_vv(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vmadc_vv<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: VmadcVvEmitter<T0, T1, T2>,
@@ -42323,9 +42323,9 @@ impl Assembler<'_> {
     /// Rust: `vmadc_vvm(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vmadc_vvm<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: VmadcVvmEmitter<T0, T1, T2>,
@@ -42339,9 +42339,9 @@ impl Assembler<'_> {
     /// Rust: `vmadc_vx(vd, rs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vs2`: Vector register operand.
     pub fn vmadc_vx<T0, T1, T2>(&mut self, vd: T0, rs1: T1, vs2: T2)
     where
         Self: VmadcVxEmitter<T0, T1, T2>,
@@ -42355,9 +42355,9 @@ impl Assembler<'_> {
     /// Rust: `vmadc_vxm(vd, rs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vs2`: Vector register operand.
     pub fn vmadc_vxm<T0, T1, T2>(&mut self, vd: T0, rs1: T1, vs2: T2)
     where
         Self: VmadcVxmEmitter<T0, T1, T2>,
@@ -42371,10 +42371,10 @@ impl Assembler<'_> {
     /// Rust: `vmadd_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmadd_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmaddVvEmitter<T0, T1, T2, T3>,
@@ -42388,10 +42388,10 @@ impl Assembler<'_> {
     /// Rust: `vmadd_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmadd_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmaddVxEmitter<T0, T1, T2, T3>,
@@ -42405,9 +42405,9 @@ impl Assembler<'_> {
     /// Rust: `vmand_mm(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vmand_mm<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: VmandMmEmitter<T0, T1, T2>,
@@ -42421,9 +42421,9 @@ impl Assembler<'_> {
     /// Rust: `vmandn_mm(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vmandn_mm<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: VmandnMmEmitter<T0, T1, T2>,
@@ -42437,10 +42437,10 @@ impl Assembler<'_> {
     /// Rust: `vmandnot_mm(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmandnot_mm<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmandnotMmEmitter<T0, T1, T2, T3>,
@@ -42454,10 +42454,10 @@ impl Assembler<'_> {
     /// Rust: `vmax_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmax_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmaxVvEmitter<T0, T1, T2, T3>,
@@ -42471,10 +42471,10 @@ impl Assembler<'_> {
     /// Rust: `vmax_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmax_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmaxVxEmitter<T0, T1, T2, T3>,
@@ -42488,10 +42488,10 @@ impl Assembler<'_> {
     /// Rust: `vmaxu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmaxu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmaxuVvEmitter<T0, T1, T2, T3>,
@@ -42505,10 +42505,10 @@ impl Assembler<'_> {
     /// Rust: `vmaxu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmaxu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmaxuVxEmitter<T0, T1, T2, T3>,
@@ -42522,9 +42522,9 @@ impl Assembler<'_> {
     /// Rust: `vmerge_vim(vd, vs2, simm5)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
     pub fn vmerge_vim<T0, T1, T2>(&mut self, vd: T0, vs2: T1, simm5: T2)
     where
         Self: VmergeVimEmitter<T0, T1, T2>,
@@ -42538,9 +42538,9 @@ impl Assembler<'_> {
     /// Rust: `vmerge_vvm(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vmerge_vvm<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: VmergeVvmEmitter<T0, T1, T2>,
@@ -42554,9 +42554,9 @@ impl Assembler<'_> {
     /// Rust: `vmerge_vxm(vd, rs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vs2`: Vector register operand.
     pub fn vmerge_vxm<T0, T1, T2>(&mut self, vd: T0, rs1: T1, vs2: T2)
     where
         Self: VmergeVxmEmitter<T0, T1, T2>,
@@ -42570,10 +42570,10 @@ impl Assembler<'_> {
     /// Rust: `vmfeq_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmfeq_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmfeqVfEmitter<T0, T1, T2, T3>,
@@ -42587,10 +42587,10 @@ impl Assembler<'_> {
     /// Rust: `vmfeq_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmfeq_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmfeqVvEmitter<T0, T1, T2, T3>,
@@ -42604,10 +42604,10 @@ impl Assembler<'_> {
     /// Rust: `vmfge_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmfge_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmfgeVfEmitter<T0, T1, T2, T3>,
@@ -42621,10 +42621,10 @@ impl Assembler<'_> {
     /// Rust: `vmfgt_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmfgt_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmfgtVfEmitter<T0, T1, T2, T3>,
@@ -42638,10 +42638,10 @@ impl Assembler<'_> {
     /// Rust: `vmfle_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmfle_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmfleVfEmitter<T0, T1, T2, T3>,
@@ -42655,10 +42655,10 @@ impl Assembler<'_> {
     /// Rust: `vmfle_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmfle_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmfleVvEmitter<T0, T1, T2, T3>,
@@ -42672,10 +42672,10 @@ impl Assembler<'_> {
     /// Rust: `vmflt_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmflt_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmfltVfEmitter<T0, T1, T2, T3>,
@@ -42689,10 +42689,10 @@ impl Assembler<'_> {
     /// Rust: `vmflt_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmflt_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmfltVvEmitter<T0, T1, T2, T3>,
@@ -42706,10 +42706,10 @@ impl Assembler<'_> {
     /// Rust: `vmfne_vf(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmfne_vf<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmfneVfEmitter<T0, T1, T2, T3>,
@@ -42723,10 +42723,10 @@ impl Assembler<'_> {
     /// Rust: `vmfne_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmfne_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmfneVvEmitter<T0, T1, T2, T3>,
@@ -42740,10 +42740,10 @@ impl Assembler<'_> {
     /// Rust: `vmin_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmin_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VminVvEmitter<T0, T1, T2, T3>,
@@ -42757,10 +42757,10 @@ impl Assembler<'_> {
     /// Rust: `vmin_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmin_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VminVxEmitter<T0, T1, T2, T3>,
@@ -42774,10 +42774,10 @@ impl Assembler<'_> {
     /// Rust: `vminu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vminu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VminuVvEmitter<T0, T1, T2, T3>,
@@ -42791,10 +42791,10 @@ impl Assembler<'_> {
     /// Rust: `vminu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vminu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VminuVxEmitter<T0, T1, T2, T3>,
@@ -42808,9 +42808,9 @@ impl Assembler<'_> {
     /// Rust: `vmnand_mm(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vmnand_mm<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: VmnandMmEmitter<T0, T1, T2>,
@@ -42824,9 +42824,9 @@ impl Assembler<'_> {
     /// Rust: `vmnor_mm(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vmnor_mm<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: VmnorMmEmitter<T0, T1, T2>,
@@ -42840,9 +42840,9 @@ impl Assembler<'_> {
     /// Rust: `vmor_mm(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vmor_mm<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: VmorMmEmitter<T0, T1, T2>,
@@ -42856,9 +42856,9 @@ impl Assembler<'_> {
     /// Rust: `vmorn_mm(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vmorn_mm<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: VmornMmEmitter<T0, T1, T2>,
@@ -42872,10 +42872,10 @@ impl Assembler<'_> {
     /// Rust: `vmornot_mm(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmornot_mm<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmornotMmEmitter<T0, T1, T2, T3>,
@@ -42889,9 +42889,9 @@ impl Assembler<'_> {
     /// Rust: `vmsbc_vv(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vmsbc_vv<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: VmsbcVvEmitter<T0, T1, T2>,
@@ -42905,9 +42905,9 @@ impl Assembler<'_> {
     /// Rust: `vmsbc_vvm(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vmsbc_vvm<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: VmsbcVvmEmitter<T0, T1, T2>,
@@ -42921,9 +42921,9 @@ impl Assembler<'_> {
     /// Rust: `vmsbc_vx(vd, rs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vs2`: Vector register operand.
     pub fn vmsbc_vx<T0, T1, T2>(&mut self, vd: T0, rs1: T1, vs2: T2)
     where
         Self: VmsbcVxEmitter<T0, T1, T2>,
@@ -42937,9 +42937,9 @@ impl Assembler<'_> {
     /// Rust: `vmsbc_vxm(vd, rs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vs2`: Vector register operand.
     pub fn vmsbc_vxm<T0, T1, T2>(&mut self, vd: T0, rs1: T1, vs2: T2)
     where
         Self: VmsbcVxmEmitter<T0, T1, T2>,
@@ -42953,9 +42953,9 @@ impl Assembler<'_> {
     /// Rust: `vmsbf_m(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmsbf_m<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VmsbfMEmitter<T0, T1, T2>,
@@ -42969,10 +42969,10 @@ impl Assembler<'_> {
     /// Rust: `vmseq_vi(vd, vs2, simm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vmseq_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3)
     where
         Self: VmseqViEmitter<T0, T1, T2, T3>,
@@ -42986,10 +42986,10 @@ impl Assembler<'_> {
     /// Rust: `vmseq_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmseq_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmseqVvEmitter<T0, T1, T2, T3>,
@@ -43003,10 +43003,10 @@ impl Assembler<'_> {
     /// Rust: `vmseq_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmseq_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmseqVxEmitter<T0, T1, T2, T3>,
@@ -43020,10 +43020,10 @@ impl Assembler<'_> {
     /// Rust: `vmsgt_vi(vd, vs2, simm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vmsgt_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3)
     where
         Self: VmsgtViEmitter<T0, T1, T2, T3>,
@@ -43037,10 +43037,10 @@ impl Assembler<'_> {
     /// Rust: `vmsgt_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmsgt_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmsgtVxEmitter<T0, T1, T2, T3>,
@@ -43054,10 +43054,10 @@ impl Assembler<'_> {
     /// Rust: `vmsgtu_vi(vd, vs2, simm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vmsgtu_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3)
     where
         Self: VmsgtuViEmitter<T0, T1, T2, T3>,
@@ -43071,10 +43071,10 @@ impl Assembler<'_> {
     /// Rust: `vmsgtu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmsgtu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmsgtuVxEmitter<T0, T1, T2, T3>,
@@ -43088,9 +43088,9 @@ impl Assembler<'_> {
     /// Rust: `vmsif_m(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmsif_m<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VmsifMEmitter<T0, T1, T2>,
@@ -43104,10 +43104,10 @@ impl Assembler<'_> {
     /// Rust: `vmsle_vi(vd, vs2, simm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vmsle_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3)
     where
         Self: VmsleViEmitter<T0, T1, T2, T3>,
@@ -43121,10 +43121,10 @@ impl Assembler<'_> {
     /// Rust: `vmsle_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmsle_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmsleVvEmitter<T0, T1, T2, T3>,
@@ -43138,10 +43138,10 @@ impl Assembler<'_> {
     /// Rust: `vmsle_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmsle_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmsleVxEmitter<T0, T1, T2, T3>,
@@ -43155,10 +43155,10 @@ impl Assembler<'_> {
     /// Rust: `vmsleu_vi(vd, vs2, simm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vmsleu_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3)
     where
         Self: VmsleuViEmitter<T0, T1, T2, T3>,
@@ -43172,10 +43172,10 @@ impl Assembler<'_> {
     /// Rust: `vmsleu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmsleu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmsleuVvEmitter<T0, T1, T2, T3>,
@@ -43189,10 +43189,10 @@ impl Assembler<'_> {
     /// Rust: `vmsleu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmsleu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmsleuVxEmitter<T0, T1, T2, T3>,
@@ -43206,10 +43206,10 @@ impl Assembler<'_> {
     /// Rust: `vmslt_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmslt_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmsltVvEmitter<T0, T1, T2, T3>,
@@ -43223,10 +43223,10 @@ impl Assembler<'_> {
     /// Rust: `vmslt_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmslt_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmsltVxEmitter<T0, T1, T2, T3>,
@@ -43240,10 +43240,10 @@ impl Assembler<'_> {
     /// Rust: `vmsltu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmsltu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmsltuVvEmitter<T0, T1, T2, T3>,
@@ -43257,10 +43257,10 @@ impl Assembler<'_> {
     /// Rust: `vmsltu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmsltu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmsltuVxEmitter<T0, T1, T2, T3>,
@@ -43274,10 +43274,10 @@ impl Assembler<'_> {
     /// Rust: `vmsne_vi(vd, vs2, simm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vmsne_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3)
     where
         Self: VmsneViEmitter<T0, T1, T2, T3>,
@@ -43291,10 +43291,10 @@ impl Assembler<'_> {
     /// Rust: `vmsne_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmsne_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmsneVvEmitter<T0, T1, T2, T3>,
@@ -43308,10 +43308,10 @@ impl Assembler<'_> {
     /// Rust: `vmsne_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmsne_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmsneVxEmitter<T0, T1, T2, T3>,
@@ -43325,9 +43325,9 @@ impl Assembler<'_> {
     /// Rust: `vmsof_m(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmsof_m<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VmsofMEmitter<T0, T1, T2>,
@@ -43341,10 +43341,10 @@ impl Assembler<'_> {
     /// Rust: `vmul_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmul_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmulVvEmitter<T0, T1, T2, T3>,
@@ -43358,10 +43358,10 @@ impl Assembler<'_> {
     /// Rust: `vmul_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmul_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmulVxEmitter<T0, T1, T2, T3>,
@@ -43375,10 +43375,10 @@ impl Assembler<'_> {
     /// Rust: `vmulh_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmulh_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmulhVvEmitter<T0, T1, T2, T3>,
@@ -43392,10 +43392,10 @@ impl Assembler<'_> {
     /// Rust: `vmulh_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmulh_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmulhVxEmitter<T0, T1, T2, T3>,
@@ -43409,10 +43409,10 @@ impl Assembler<'_> {
     /// Rust: `vmulhsu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmulhsu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmulhsuVvEmitter<T0, T1, T2, T3>,
@@ -43426,10 +43426,10 @@ impl Assembler<'_> {
     /// Rust: `vmulhsu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmulhsu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmulhsuVxEmitter<T0, T1, T2, T3>,
@@ -43443,10 +43443,10 @@ impl Assembler<'_> {
     /// Rust: `vmulhu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vmulhu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VmulhuVvEmitter<T0, T1, T2, T3>,
@@ -43460,10 +43460,10 @@ impl Assembler<'_> {
     /// Rust: `vmulhu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vmulhu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VmulhuVxEmitter<T0, T1, T2, T3>,
@@ -43477,8 +43477,8 @@ impl Assembler<'_> {
     /// Rust: `vmv1r_v(vd, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vmv1r_v<T0, T1>(&mut self, vd: T0, vs2: T1)
     where
         Self: Vmv1RVEmitter<T0, T1>,
@@ -43492,8 +43492,8 @@ impl Assembler<'_> {
     /// Rust: `vmv2r_v(vd, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vmv2r_v<T0, T1>(&mut self, vd: T0, vs2: T1)
     where
         Self: Vmv2RVEmitter<T0, T1>,
@@ -43507,8 +43507,8 @@ impl Assembler<'_> {
     /// Rust: `vmv4r_v(vd, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vmv4r_v<T0, T1>(&mut self, vd: T0, vs2: T1)
     where
         Self: Vmv4RVEmitter<T0, T1>,
@@ -43522,8 +43522,8 @@ impl Assembler<'_> {
     /// Rust: `vmv8r_v(vd, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vmv8r_v<T0, T1>(&mut self, vd: T0, vs2: T1)
     where
         Self: Vmv8RVEmitter<T0, T1>,
@@ -43537,8 +43537,8 @@ impl Assembler<'_> {
     /// Rust: `vmv_s_x(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Source register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Source register.
     pub fn vmv_s_x<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: VmvSXEmitter<T0, T1>,
@@ -43552,8 +43552,8 @@ impl Assembler<'_> {
     /// Rust: `vmv_v_i(vd, simm5)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
+    /// - `vd`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
     pub fn vmv_v_i<T0, T1>(&mut self, vd: T0, simm5: T1)
     where
         Self: VmvVIEmitter<T0, T1>,
@@ -43567,8 +43567,8 @@ impl Assembler<'_> {
     /// Rust: `vmv_v_v(vd, vs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
     pub fn vmv_v_v<T0, T1>(&mut self, vd: T0, vs1: T1)
     where
         Self: VmvVVEmitter<T0, T1>,
@@ -43582,8 +43582,8 @@ impl Assembler<'_> {
     /// Rust: `vmv_v_x(vd, rs1)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Source register.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Source register.
     pub fn vmv_v_x<T0, T1>(&mut self, vd: T0, rs1: T1)
     where
         Self: VmvVXEmitter<T0, T1>,
@@ -43597,8 +43597,8 @@ impl Assembler<'_> {
     /// Rust: `vmv_x_s(rd, vs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `vs2` — Vector register operand.
+    /// - `rd`: Destination register.
+    /// - `vs2`: Vector register operand.
     pub fn vmv_x_s<T0, T1>(&mut self, rd: T0, vs2: T1)
     where
         Self: VmvXSEmitter<T0, T1>,
@@ -43612,9 +43612,9 @@ impl Assembler<'_> {
     /// Rust: `vmxnor_mm(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vmxnor_mm<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: VmxnorMmEmitter<T0, T1, T2>,
@@ -43628,9 +43628,9 @@ impl Assembler<'_> {
     /// Rust: `vmxor_mm(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vmxor_mm<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: VmxorMmEmitter<T0, T1, T2>,
@@ -43644,10 +43644,10 @@ impl Assembler<'_> {
     /// Rust: `vnclip_wi(vd, vs2, zimm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vnclip_wi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3)
     where
         Self: VnclipWiEmitter<T0, T1, T2, T3>,
@@ -43661,10 +43661,10 @@ impl Assembler<'_> {
     /// Rust: `vnclip_wv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vnclip_wv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VnclipWvEmitter<T0, T1, T2, T3>,
@@ -43678,10 +43678,10 @@ impl Assembler<'_> {
     /// Rust: `vnclip_wx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vnclip_wx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VnclipWxEmitter<T0, T1, T2, T3>,
@@ -43695,10 +43695,10 @@ impl Assembler<'_> {
     /// Rust: `vnclipu_wi(vd, vs2, zimm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vnclipu_wi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3)
     where
         Self: VnclipuWiEmitter<T0, T1, T2, T3>,
@@ -43712,10 +43712,10 @@ impl Assembler<'_> {
     /// Rust: `vnclipu_wv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vnclipu_wv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VnclipuWvEmitter<T0, T1, T2, T3>,
@@ -43729,10 +43729,10 @@ impl Assembler<'_> {
     /// Rust: `vnclipu_wx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vnclipu_wx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VnclipuWxEmitter<T0, T1, T2, T3>,
@@ -43746,10 +43746,10 @@ impl Assembler<'_> {
     /// Rust: `vnmsac_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vnmsac_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VnmsacVvEmitter<T0, T1, T2, T3>,
@@ -43763,10 +43763,10 @@ impl Assembler<'_> {
     /// Rust: `vnmsac_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vnmsac_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VnmsacVxEmitter<T0, T1, T2, T3>,
@@ -43780,10 +43780,10 @@ impl Assembler<'_> {
     /// Rust: `vnmsub_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vnmsub_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VnmsubVvEmitter<T0, T1, T2, T3>,
@@ -43797,10 +43797,10 @@ impl Assembler<'_> {
     /// Rust: `vnmsub_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vnmsub_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VnmsubVxEmitter<T0, T1, T2, T3>,
@@ -43814,10 +43814,10 @@ impl Assembler<'_> {
     /// Rust: `vnsra_wi(vd, vs2, zimm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vnsra_wi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3)
     where
         Self: VnsraWiEmitter<T0, T1, T2, T3>,
@@ -43831,10 +43831,10 @@ impl Assembler<'_> {
     /// Rust: `vnsra_wv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vnsra_wv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VnsraWvEmitter<T0, T1, T2, T3>,
@@ -43848,10 +43848,10 @@ impl Assembler<'_> {
     /// Rust: `vnsra_wx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vnsra_wx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VnsraWxEmitter<T0, T1, T2, T3>,
@@ -43865,10 +43865,10 @@ impl Assembler<'_> {
     /// Rust: `vnsrl_wi(vd, vs2, zimm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vnsrl_wi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3)
     where
         Self: VnsrlWiEmitter<T0, T1, T2, T3>,
@@ -43882,10 +43882,10 @@ impl Assembler<'_> {
     /// Rust: `vnsrl_wv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vnsrl_wv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VnsrlWvEmitter<T0, T1, T2, T3>,
@@ -43899,10 +43899,10 @@ impl Assembler<'_> {
     /// Rust: `vnsrl_wx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vnsrl_wx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VnsrlWxEmitter<T0, T1, T2, T3>,
@@ -43916,10 +43916,10 @@ impl Assembler<'_> {
     /// Rust: `vor_vi(vd, vs2, simm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vor_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3)
     where
         Self: VorViEmitter<T0, T1, T2, T3>,
@@ -43933,10 +43933,10 @@ impl Assembler<'_> {
     /// Rust: `vor_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vor_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VorVvEmitter<T0, T1, T2, T3>,
@@ -43950,10 +43950,10 @@ impl Assembler<'_> {
     /// Rust: `vor_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vor_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VorVxEmitter<T0, T1, T2, T3>,
@@ -43967,9 +43967,9 @@ impl Assembler<'_> {
     /// Rust: `vpopc_m(rd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `rd`: Destination register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vpopc_m<T0, T1, T2>(&mut self, rd: T0, vs2: T1, vm: T2)
     where
         Self: VpopcMEmitter<T0, T1, T2>,
@@ -43983,10 +43983,10 @@ impl Assembler<'_> {
     /// Rust: `vredand_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vredand_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VredandVsEmitter<T0, T1, T2, T3>,
@@ -44000,10 +44000,10 @@ impl Assembler<'_> {
     /// Rust: `vredmax_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vredmax_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VredmaxVsEmitter<T0, T1, T2, T3>,
@@ -44017,10 +44017,10 @@ impl Assembler<'_> {
     /// Rust: `vredmaxu_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vredmaxu_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VredmaxuVsEmitter<T0, T1, T2, T3>,
@@ -44034,10 +44034,10 @@ impl Assembler<'_> {
     /// Rust: `vredmin_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vredmin_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VredminVsEmitter<T0, T1, T2, T3>,
@@ -44051,10 +44051,10 @@ impl Assembler<'_> {
     /// Rust: `vredminu_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vredminu_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VredminuVsEmitter<T0, T1, T2, T3>,
@@ -44068,10 +44068,10 @@ impl Assembler<'_> {
     /// Rust: `vredor_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vredor_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VredorVsEmitter<T0, T1, T2, T3>,
@@ -44085,10 +44085,10 @@ impl Assembler<'_> {
     /// Rust: `vredsum_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vredsum_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VredsumVsEmitter<T0, T1, T2, T3>,
@@ -44102,10 +44102,10 @@ impl Assembler<'_> {
     /// Rust: `vredxor_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vredxor_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VredxorVsEmitter<T0, T1, T2, T3>,
@@ -44119,10 +44119,10 @@ impl Assembler<'_> {
     /// Rust: `vrem_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vrem_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VremVvEmitter<T0, T1, T2, T3>,
@@ -44136,10 +44136,10 @@ impl Assembler<'_> {
     /// Rust: `vrem_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vrem_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VremVxEmitter<T0, T1, T2, T3>,
@@ -44153,10 +44153,10 @@ impl Assembler<'_> {
     /// Rust: `vremu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vremu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VremuVvEmitter<T0, T1, T2, T3>,
@@ -44170,10 +44170,10 @@ impl Assembler<'_> {
     /// Rust: `vremu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vremu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VremuVxEmitter<T0, T1, T2, T3>,
@@ -44187,9 +44187,9 @@ impl Assembler<'_> {
     /// Rust: `vrev8_v(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vrev8_v<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: Vrev8VEmitter<T0, T1, T2>,
@@ -44203,10 +44203,10 @@ impl Assembler<'_> {
     /// Rust: `vrgather_vi(vd, vs2, zimm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vrgather_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3)
     where
         Self: VrgatherViEmitter<T0, T1, T2, T3>,
@@ -44220,10 +44220,10 @@ impl Assembler<'_> {
     /// Rust: `vrgather_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vrgather_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VrgatherVvEmitter<T0, T1, T2, T3>,
@@ -44237,10 +44237,10 @@ impl Assembler<'_> {
     /// Rust: `vrgather_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vrgather_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VrgatherVxEmitter<T0, T1, T2, T3>,
@@ -44254,10 +44254,10 @@ impl Assembler<'_> {
     /// Rust: `vrgatherei16_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vrgatherei16_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: Vrgatherei16VvEmitter<T0, T1, T2, T3>,
@@ -44271,10 +44271,10 @@ impl Assembler<'_> {
     /// Rust: `vrol_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vrol_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VrolVvEmitter<T0, T1, T2, T3>,
@@ -44288,10 +44288,10 @@ impl Assembler<'_> {
     /// Rust: `vrol_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vrol_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VrolVxEmitter<T0, T1, T2, T3>,
@@ -44305,10 +44305,10 @@ impl Assembler<'_> {
     /// Rust: `vror_vi(vd, vs2, zimm6lohi, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm6lohi` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm6lohi`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vror_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, zimm6lohi: T2, vm: T3)
     where
         Self: VrorViEmitter<T0, T1, T2, T3>,
@@ -44322,10 +44322,10 @@ impl Assembler<'_> {
     /// Rust: `vror_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vror_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VrorVvEmitter<T0, T1, T2, T3>,
@@ -44339,10 +44339,10 @@ impl Assembler<'_> {
     /// Rust: `vror_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vror_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VrorVxEmitter<T0, T1, T2, T3>,
@@ -44356,10 +44356,10 @@ impl Assembler<'_> {
     /// Rust: `vrsub_vi(vd, vs2, simm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vrsub_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3)
     where
         Self: VrsubViEmitter<T0, T1, T2, T3>,
@@ -44373,10 +44373,10 @@ impl Assembler<'_> {
     /// Rust: `vrsub_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vrsub_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VrsubVxEmitter<T0, T1, T2, T3>,
@@ -44390,8 +44390,8 @@ impl Assembler<'_> {
     /// Rust: `vs1r_v(vs3, rs1)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vs1r_v<T0, T1>(&mut self, vs3: T0, rs1: T1)
     where
         Self: Vs1RVEmitter<T0, T1>,
@@ -44405,8 +44405,8 @@ impl Assembler<'_> {
     /// Rust: `vs2r_v(vs3, rs1)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vs2r_v<T0, T1>(&mut self, vs3: T0, rs1: T1)
     where
         Self: Vs2RVEmitter<T0, T1>,
@@ -44420,8 +44420,8 @@ impl Assembler<'_> {
     /// Rust: `vs4r_v(vs3, rs1)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vs4r_v<T0, T1>(&mut self, vs3: T0, rs1: T1)
     where
         Self: Vs4RVEmitter<T0, T1>,
@@ -44435,8 +44435,8 @@ impl Assembler<'_> {
     /// Rust: `vs8r_v(vs3, rs1)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vs8r_v<T0, T1>(&mut self, vs3: T0, rs1: T1)
     where
         Self: Vs8RVEmitter<T0, T1>,
@@ -44450,10 +44450,10 @@ impl Assembler<'_> {
     /// Rust: `vsadd_vi(vd, vs2, simm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vsadd_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3)
     where
         Self: VsaddViEmitter<T0, T1, T2, T3>,
@@ -44467,10 +44467,10 @@ impl Assembler<'_> {
     /// Rust: `vsadd_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vsadd_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VsaddVvEmitter<T0, T1, T2, T3>,
@@ -44484,10 +44484,10 @@ impl Assembler<'_> {
     /// Rust: `vsadd_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vsadd_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VsaddVxEmitter<T0, T1, T2, T3>,
@@ -44501,10 +44501,10 @@ impl Assembler<'_> {
     /// Rust: `vsaddu_vi(vd, vs2, simm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vsaddu_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3)
     where
         Self: VsadduViEmitter<T0, T1, T2, T3>,
@@ -44518,10 +44518,10 @@ impl Assembler<'_> {
     /// Rust: `vsaddu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vsaddu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VsadduVvEmitter<T0, T1, T2, T3>,
@@ -44535,10 +44535,10 @@ impl Assembler<'_> {
     /// Rust: `vsaddu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vsaddu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VsadduVxEmitter<T0, T1, T2, T3>,
@@ -44552,9 +44552,9 @@ impl Assembler<'_> {
     /// Rust: `vsbc_vvm(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vsbc_vvm<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: VsbcVvmEmitter<T0, T1, T2>,
@@ -44568,9 +44568,9 @@ impl Assembler<'_> {
     /// Rust: `vsbc_vxm(vd, rs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vs2`: Vector register operand.
     pub fn vsbc_vxm<T0, T1, T2>(&mut self, vd: T0, rs1: T1, vs2: T2)
     where
         Self: VsbcVxmEmitter<T0, T1, T2>,
@@ -44584,10 +44584,10 @@ impl Assembler<'_> {
     /// Rust: `vse16_v(vs3, rs1, vm, nf)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vse16_v<T0, T1, T2, T3>(&mut self, vs3: T0, rs1: T1, vm: T2, nf: T3)
     where
         Self: Vse16VEmitter<T0, T1, T2, T3>,
@@ -44601,8 +44601,8 @@ impl Assembler<'_> {
     /// Rust: `vse1_v(vs3, rs1)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vse1_v<T0, T1>(&mut self, vs3: T0, rs1: T1)
     where
         Self: Vse1VEmitter<T0, T1>,
@@ -44616,10 +44616,10 @@ impl Assembler<'_> {
     /// Rust: `vse32_v(vs3, rs1, vm, nf)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vse32_v<T0, T1, T2, T3>(&mut self, vs3: T0, rs1: T1, vm: T2, nf: T3)
     where
         Self: Vse32VEmitter<T0, T1, T2, T3>,
@@ -44633,10 +44633,10 @@ impl Assembler<'_> {
     /// Rust: `vse64_v(vs3, rs1, vm, nf)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vse64_v<T0, T1, T2, T3>(&mut self, vs3: T0, rs1: T1, vm: T2, nf: T3)
     where
         Self: Vse64VEmitter<T0, T1, T2, T3>,
@@ -44650,10 +44650,10 @@ impl Assembler<'_> {
     /// Rust: `vse8_v(vs3, rs1, vm, nf)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vse8_v<T0, T1, T2, T3>(&mut self, vs3: T0, rs1: T1, vm: T2, nf: T3)
     where
         Self: Vse8VEmitter<T0, T1, T2, T3>,
@@ -44667,9 +44667,9 @@ impl Assembler<'_> {
     /// Rust: `vsetivli(rd, zimm5, zimm10)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `zimm5` — Immediate encoding value.
-    /// - `zimm10` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `zimm5`: Immediate encoding value.
+    /// - `zimm10`: Immediate encoding value.
     pub fn vsetivli<T0, T1, T2>(&mut self, rd: T0, zimm5: T1, zimm10: T2)
     where
         Self: VsetivliEmitter<T0, T1, T2>,
@@ -44683,9 +44683,9 @@ impl Assembler<'_> {
     /// Rust: `vsetvl(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn vsetvl<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: VsetvlEmitter<T0, T1, T2>,
@@ -44699,9 +44699,9 @@ impl Assembler<'_> {
     /// Rust: `vsetvli(rd, rs1, zimm11)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `zimm11` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `zimm11`: Immediate encoding value.
     pub fn vsetvli<T0, T1, T2>(&mut self, rd: T0, rs1: T1, zimm11: T2)
     where
         Self: VsetvliEmitter<T0, T1, T2>,
@@ -44715,9 +44715,9 @@ impl Assembler<'_> {
     /// Rust: `vsext_vf2(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vsext_vf2<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VsextVf2Emitter<T0, T1, T2>,
@@ -44731,9 +44731,9 @@ impl Assembler<'_> {
     /// Rust: `vsext_vf4(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vsext_vf4<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VsextVf4Emitter<T0, T1, T2>,
@@ -44747,9 +44747,9 @@ impl Assembler<'_> {
     /// Rust: `vsext_vf8(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vsext_vf8<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VsextVf8Emitter<T0, T1, T2>,
@@ -44763,9 +44763,9 @@ impl Assembler<'_> {
     /// Rust: `vsha2ch_vv(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vsha2ch_vv<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: Vsha2ChVvEmitter<T0, T1, T2>,
@@ -44779,9 +44779,9 @@ impl Assembler<'_> {
     /// Rust: `vsha2cl_vv(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vsha2cl_vv<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: Vsha2ClVvEmitter<T0, T1, T2>,
@@ -44795,9 +44795,9 @@ impl Assembler<'_> {
     /// Rust: `vsha2ms_vv(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vsha2ms_vv<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: Vsha2MsVvEmitter<T0, T1, T2>,
@@ -44811,10 +44811,10 @@ impl Assembler<'_> {
     /// Rust: `vslide1down_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vslide1down_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: Vslide1DownVxEmitter<T0, T1, T2, T3>,
@@ -44828,10 +44828,10 @@ impl Assembler<'_> {
     /// Rust: `vslide1up_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vslide1up_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: Vslide1UpVxEmitter<T0, T1, T2, T3>,
@@ -44845,10 +44845,10 @@ impl Assembler<'_> {
     /// Rust: `vslidedown_vi(vd, vs2, zimm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vslidedown_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3)
     where
         Self: VslidedownViEmitter<T0, T1, T2, T3>,
@@ -44862,10 +44862,10 @@ impl Assembler<'_> {
     /// Rust: `vslidedown_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vslidedown_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VslidedownVxEmitter<T0, T1, T2, T3>,
@@ -44879,10 +44879,10 @@ impl Assembler<'_> {
     /// Rust: `vslideup_vi(vd, vs2, zimm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vslideup_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3)
     where
         Self: VslideupViEmitter<T0, T1, T2, T3>,
@@ -44896,10 +44896,10 @@ impl Assembler<'_> {
     /// Rust: `vslideup_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vslideup_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VslideupVxEmitter<T0, T1, T2, T3>,
@@ -44913,10 +44913,10 @@ impl Assembler<'_> {
     /// Rust: `vsll_vi(vd, vs2, zimm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vsll_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3)
     where
         Self: VsllViEmitter<T0, T1, T2, T3>,
@@ -44930,10 +44930,10 @@ impl Assembler<'_> {
     /// Rust: `vsll_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vsll_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VsllVvEmitter<T0, T1, T2, T3>,
@@ -44947,10 +44947,10 @@ impl Assembler<'_> {
     /// Rust: `vsll_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vsll_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VsllVxEmitter<T0, T1, T2, T3>,
@@ -44964,9 +44964,9 @@ impl Assembler<'_> {
     /// Rust: `vsm3c_vi(vd, vs2, zimm5)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm5` — Immediate encoding value.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm5`: Immediate encoding value.
     pub fn vsm3c_vi<T0, T1, T2>(&mut self, vd: T0, vs2: T1, zimm5: T2)
     where
         Self: Vsm3CViEmitter<T0, T1, T2>,
@@ -44980,9 +44980,9 @@ impl Assembler<'_> {
     /// Rust: `vsm3me_vv(vd, vs1, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vsm3me_vv<T0, T1, T2>(&mut self, vd: T0, vs1: T1, vs2: T2)
     where
         Self: Vsm3MeVvEmitter<T0, T1, T2>,
@@ -44996,9 +44996,9 @@ impl Assembler<'_> {
     /// Rust: `vsm4k_vi(vd, vs2, zimm5)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm5` — Immediate encoding value.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm5`: Immediate encoding value.
     pub fn vsm4k_vi<T0, T1, T2>(&mut self, vd: T0, vs2: T1, zimm5: T2)
     where
         Self: Vsm4KViEmitter<T0, T1, T2>,
@@ -45012,8 +45012,8 @@ impl Assembler<'_> {
     /// Rust: `vsm4r_vs(vd, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vsm4r_vs<T0, T1>(&mut self, vd: T0, vs2: T1)
     where
         Self: Vsm4RVsEmitter<T0, T1>,
@@ -45027,8 +45027,8 @@ impl Assembler<'_> {
     /// Rust: `vsm4r_vv(vd, vs2)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
     pub fn vsm4r_vv<T0, T1>(&mut self, vd: T0, vs2: T1)
     where
         Self: Vsm4RVvEmitter<T0, T1>,
@@ -45042,8 +45042,8 @@ impl Assembler<'_> {
     /// Rust: `vsm_v(vs3, rs1)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
     pub fn vsm_v<T0, T1>(&mut self, vs3: T0, rs1: T1)
     where
         Self: VsmVEmitter<T0, T1>,
@@ -45057,10 +45057,10 @@ impl Assembler<'_> {
     /// Rust: `vsmul_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vsmul_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VsmulVvEmitter<T0, T1, T2, T3>,
@@ -45074,10 +45074,10 @@ impl Assembler<'_> {
     /// Rust: `vsmul_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vsmul_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VsmulVxEmitter<T0, T1, T2, T3>,
@@ -45091,11 +45091,11 @@ impl Assembler<'_> {
     /// Rust: `vsoxei16_v(vs3, rs1, vs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vsoxei16_v<T0, T1, T2, T3, T4>(&mut self, vs3: T0, rs1: T1, vs2: T2, vm: T3, nf: T4)
     where
         Self: Vsoxei16VEmitter<T0, T1, T2, T3, T4>,
@@ -45109,11 +45109,11 @@ impl Assembler<'_> {
     /// Rust: `vsoxei32_v(vs3, rs1, vs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vsoxei32_v<T0, T1, T2, T3, T4>(&mut self, vs3: T0, rs1: T1, vs2: T2, vm: T3, nf: T4)
     where
         Self: Vsoxei32VEmitter<T0, T1, T2, T3, T4>,
@@ -45127,11 +45127,11 @@ impl Assembler<'_> {
     /// Rust: `vsoxei64_v(vs3, rs1, vs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vsoxei64_v<T0, T1, T2, T3, T4>(&mut self, vs3: T0, rs1: T1, vs2: T2, vm: T3, nf: T4)
     where
         Self: Vsoxei64VEmitter<T0, T1, T2, T3, T4>,
@@ -45145,11 +45145,11 @@ impl Assembler<'_> {
     /// Rust: `vsoxei8_v(vs3, rs1, vs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vsoxei8_v<T0, T1, T2, T3, T4>(&mut self, vs3: T0, rs1: T1, vs2: T2, vm: T3, nf: T4)
     where
         Self: Vsoxei8VEmitter<T0, T1, T2, T3, T4>,
@@ -45163,10 +45163,10 @@ impl Assembler<'_> {
     /// Rust: `vsra_vi(vd, vs2, zimm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vsra_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3)
     where
         Self: VsraViEmitter<T0, T1, T2, T3>,
@@ -45180,10 +45180,10 @@ impl Assembler<'_> {
     /// Rust: `vsra_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vsra_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VsraVvEmitter<T0, T1, T2, T3>,
@@ -45197,10 +45197,10 @@ impl Assembler<'_> {
     /// Rust: `vsra_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vsra_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VsraVxEmitter<T0, T1, T2, T3>,
@@ -45214,10 +45214,10 @@ impl Assembler<'_> {
     /// Rust: `vsrl_vi(vd, vs2, zimm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vsrl_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3)
     where
         Self: VsrlViEmitter<T0, T1, T2, T3>,
@@ -45231,10 +45231,10 @@ impl Assembler<'_> {
     /// Rust: `vsrl_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vsrl_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VsrlVvEmitter<T0, T1, T2, T3>,
@@ -45248,10 +45248,10 @@ impl Assembler<'_> {
     /// Rust: `vsrl_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vsrl_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VsrlVxEmitter<T0, T1, T2, T3>,
@@ -45265,11 +45265,11 @@ impl Assembler<'_> {
     /// Rust: `vsse16_v(vs3, rs1, rs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vsse16_v<T0, T1, T2, T3, T4>(&mut self, vs3: T0, rs1: T1, rs2: T2, vm: T3, nf: T4)
     where
         Self: Vsse16VEmitter<T0, T1, T2, T3, T4>,
@@ -45283,11 +45283,11 @@ impl Assembler<'_> {
     /// Rust: `vsse32_v(vs3, rs1, rs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vsse32_v<T0, T1, T2, T3, T4>(&mut self, vs3: T0, rs1: T1, rs2: T2, vm: T3, nf: T4)
     where
         Self: Vsse32VEmitter<T0, T1, T2, T3, T4>,
@@ -45301,11 +45301,11 @@ impl Assembler<'_> {
     /// Rust: `vsse64_v(vs3, rs1, rs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vsse64_v<T0, T1, T2, T3, T4>(&mut self, vs3: T0, rs1: T1, rs2: T2, vm: T3, nf: T4)
     where
         Self: Vsse64VEmitter<T0, T1, T2, T3, T4>,
@@ -45319,11 +45319,11 @@ impl Assembler<'_> {
     /// Rust: `vsse8_v(vs3, rs1, rs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `rs2` — Source register.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `rs2`: Source register.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vsse8_v<T0, T1, T2, T3, T4>(&mut self, vs3: T0, rs1: T1, rs2: T2, vm: T3, nf: T4)
     where
         Self: Vsse8VEmitter<T0, T1, T2, T3, T4>,
@@ -45337,10 +45337,10 @@ impl Assembler<'_> {
     /// Rust: `vssra_vi(vd, vs2, zimm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vssra_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3)
     where
         Self: VssraViEmitter<T0, T1, T2, T3>,
@@ -45354,10 +45354,10 @@ impl Assembler<'_> {
     /// Rust: `vssra_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vssra_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VssraVvEmitter<T0, T1, T2, T3>,
@@ -45371,10 +45371,10 @@ impl Assembler<'_> {
     /// Rust: `vssra_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vssra_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VssraVxEmitter<T0, T1, T2, T3>,
@@ -45388,10 +45388,10 @@ impl Assembler<'_> {
     /// Rust: `vssrl_vi(vd, vs2, zimm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vssrl_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3)
     where
         Self: VssrlViEmitter<T0, T1, T2, T3>,
@@ -45405,10 +45405,10 @@ impl Assembler<'_> {
     /// Rust: `vssrl_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vssrl_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VssrlVvEmitter<T0, T1, T2, T3>,
@@ -45422,10 +45422,10 @@ impl Assembler<'_> {
     /// Rust: `vssrl_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vssrl_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VssrlVxEmitter<T0, T1, T2, T3>,
@@ -45439,10 +45439,10 @@ impl Assembler<'_> {
     /// Rust: `vssub_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vssub_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VssubVvEmitter<T0, T1, T2, T3>,
@@ -45456,10 +45456,10 @@ impl Assembler<'_> {
     /// Rust: `vssub_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vssub_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VssubVxEmitter<T0, T1, T2, T3>,
@@ -45473,10 +45473,10 @@ impl Assembler<'_> {
     /// Rust: `vssubu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vssubu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VssubuVvEmitter<T0, T1, T2, T3>,
@@ -45490,10 +45490,10 @@ impl Assembler<'_> {
     /// Rust: `vssubu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vssubu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VssubuVxEmitter<T0, T1, T2, T3>,
@@ -45507,10 +45507,10 @@ impl Assembler<'_> {
     /// Rust: `vsub_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vsub_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VsubVvEmitter<T0, T1, T2, T3>,
@@ -45524,10 +45524,10 @@ impl Assembler<'_> {
     /// Rust: `vsub_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vsub_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VsubVxEmitter<T0, T1, T2, T3>,
@@ -45541,11 +45541,11 @@ impl Assembler<'_> {
     /// Rust: `vsuxei16_v(vs3, rs1, vs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vsuxei16_v<T0, T1, T2, T3, T4>(&mut self, vs3: T0, rs1: T1, vs2: T2, vm: T3, nf: T4)
     where
         Self: Vsuxei16VEmitter<T0, T1, T2, T3, T4>,
@@ -45559,11 +45559,11 @@ impl Assembler<'_> {
     /// Rust: `vsuxei32_v(vs3, rs1, vs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vsuxei32_v<T0, T1, T2, T3, T4>(&mut self, vs3: T0, rs1: T1, vs2: T2, vm: T3, nf: T4)
     where
         Self: Vsuxei32VEmitter<T0, T1, T2, T3, T4>,
@@ -45577,11 +45577,11 @@ impl Assembler<'_> {
     /// Rust: `vsuxei64_v(vs3, rs1, vs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vsuxei64_v<T0, T1, T2, T3, T4>(&mut self, vs3: T0, rs1: T1, vs2: T2, vm: T3, nf: T4)
     where
         Self: Vsuxei64VEmitter<T0, T1, T2, T3, T4>,
@@ -45595,11 +45595,11 @@ impl Assembler<'_> {
     /// Rust: `vsuxei8_v(vs3, rs1, vs2, vm, nf)`
     ///
     /// # Arguments
-    /// - `vs3` — Vector register operand.
-    /// - `rs1` — Memory base register.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
-    /// - `nf` — Vector segment field count.
+    /// - `vs3`: Vector register operand.
+    /// - `rs1`: Memory base register.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
+    /// - `nf`: Vector segment field count.
     pub fn vsuxei8_v<T0, T1, T2, T3, T4>(&mut self, vs3: T0, rs1: T1, vs2: T2, vm: T3, nf: T4)
     where
         Self: Vsuxei8VEmitter<T0, T1, T2, T3, T4>,
@@ -45613,10 +45613,10 @@ impl Assembler<'_> {
     /// Rust: `vwadd_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vwadd_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VwaddVvEmitter<T0, T1, T2, T3>,
@@ -45630,10 +45630,10 @@ impl Assembler<'_> {
     /// Rust: `vwadd_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vwadd_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VwaddVxEmitter<T0, T1, T2, T3>,
@@ -45647,10 +45647,10 @@ impl Assembler<'_> {
     /// Rust: `vwadd_wv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vwadd_wv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VwaddWvEmitter<T0, T1, T2, T3>,
@@ -45664,10 +45664,10 @@ impl Assembler<'_> {
     /// Rust: `vwadd_wx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vwadd_wx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VwaddWxEmitter<T0, T1, T2, T3>,
@@ -45681,10 +45681,10 @@ impl Assembler<'_> {
     /// Rust: `vwaddu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vwaddu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VwadduVvEmitter<T0, T1, T2, T3>,
@@ -45698,10 +45698,10 @@ impl Assembler<'_> {
     /// Rust: `vwaddu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vwaddu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VwadduVxEmitter<T0, T1, T2, T3>,
@@ -45715,10 +45715,10 @@ impl Assembler<'_> {
     /// Rust: `vwaddu_wv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vwaddu_wv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VwadduWvEmitter<T0, T1, T2, T3>,
@@ -45732,10 +45732,10 @@ impl Assembler<'_> {
     /// Rust: `vwaddu_wx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vwaddu_wx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VwadduWxEmitter<T0, T1, T2, T3>,
@@ -45749,10 +45749,10 @@ impl Assembler<'_> {
     /// Rust: `vwmacc_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vwmacc_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VwmaccVvEmitter<T0, T1, T2, T3>,
@@ -45766,10 +45766,10 @@ impl Assembler<'_> {
     /// Rust: `vwmacc_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vwmacc_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VwmaccVxEmitter<T0, T1, T2, T3>,
@@ -45783,10 +45783,10 @@ impl Assembler<'_> {
     /// Rust: `vwmaccsu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vwmaccsu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VwmaccsuVvEmitter<T0, T1, T2, T3>,
@@ -45800,10 +45800,10 @@ impl Assembler<'_> {
     /// Rust: `vwmaccsu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vwmaccsu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VwmaccsuVxEmitter<T0, T1, T2, T3>,
@@ -45817,10 +45817,10 @@ impl Assembler<'_> {
     /// Rust: `vwmaccu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vwmaccu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VwmaccuVvEmitter<T0, T1, T2, T3>,
@@ -45834,10 +45834,10 @@ impl Assembler<'_> {
     /// Rust: `vwmaccu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vwmaccu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VwmaccuVxEmitter<T0, T1, T2, T3>,
@@ -45851,10 +45851,10 @@ impl Assembler<'_> {
     /// Rust: `vwmaccus_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vwmaccus_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VwmaccusVxEmitter<T0, T1, T2, T3>,
@@ -45868,10 +45868,10 @@ impl Assembler<'_> {
     /// Rust: `vwmul_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vwmul_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VwmulVvEmitter<T0, T1, T2, T3>,
@@ -45885,10 +45885,10 @@ impl Assembler<'_> {
     /// Rust: `vwmul_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vwmul_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VwmulVxEmitter<T0, T1, T2, T3>,
@@ -45902,10 +45902,10 @@ impl Assembler<'_> {
     /// Rust: `vwmulsu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vwmulsu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VwmulsuVvEmitter<T0, T1, T2, T3>,
@@ -45919,10 +45919,10 @@ impl Assembler<'_> {
     /// Rust: `vwmulsu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vwmulsu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VwmulsuVxEmitter<T0, T1, T2, T3>,
@@ -45936,10 +45936,10 @@ impl Assembler<'_> {
     /// Rust: `vwmulu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vwmulu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VwmuluVvEmitter<T0, T1, T2, T3>,
@@ -45953,10 +45953,10 @@ impl Assembler<'_> {
     /// Rust: `vwmulu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vwmulu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VwmuluVxEmitter<T0, T1, T2, T3>,
@@ -45970,10 +45970,10 @@ impl Assembler<'_> {
     /// Rust: `vwredsum_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vwredsum_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VwredsumVsEmitter<T0, T1, T2, T3>,
@@ -45987,10 +45987,10 @@ impl Assembler<'_> {
     /// Rust: `vwredsumu_vs(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vwredsumu_vs<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VwredsumuVsEmitter<T0, T1, T2, T3>,
@@ -46004,10 +46004,10 @@ impl Assembler<'_> {
     /// Rust: `vwsll_vi(vd, vs2, zimm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `zimm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `zimm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vwsll_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, zimm5: T2, vm: T3)
     where
         Self: VwsllViEmitter<T0, T1, T2, T3>,
@@ -46021,10 +46021,10 @@ impl Assembler<'_> {
     /// Rust: `vwsll_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vwsll_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VwsllVvEmitter<T0, T1, T2, T3>,
@@ -46038,10 +46038,10 @@ impl Assembler<'_> {
     /// Rust: `vwsll_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vwsll_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VwsllVxEmitter<T0, T1, T2, T3>,
@@ -46055,10 +46055,10 @@ impl Assembler<'_> {
     /// Rust: `vwsub_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vwsub_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VwsubVvEmitter<T0, T1, T2, T3>,
@@ -46072,10 +46072,10 @@ impl Assembler<'_> {
     /// Rust: `vwsub_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vwsub_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VwsubVxEmitter<T0, T1, T2, T3>,
@@ -46089,10 +46089,10 @@ impl Assembler<'_> {
     /// Rust: `vwsub_wv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vwsub_wv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VwsubWvEmitter<T0, T1, T2, T3>,
@@ -46106,10 +46106,10 @@ impl Assembler<'_> {
     /// Rust: `vwsub_wx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vwsub_wx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VwsubWxEmitter<T0, T1, T2, T3>,
@@ -46123,10 +46123,10 @@ impl Assembler<'_> {
     /// Rust: `vwsubu_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vwsubu_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VwsubuVvEmitter<T0, T1, T2, T3>,
@@ -46140,10 +46140,10 @@ impl Assembler<'_> {
     /// Rust: `vwsubu_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vwsubu_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VwsubuVxEmitter<T0, T1, T2, T3>,
@@ -46157,10 +46157,10 @@ impl Assembler<'_> {
     /// Rust: `vwsubu_wv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vwsubu_wv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VwsubuWvEmitter<T0, T1, T2, T3>,
@@ -46174,10 +46174,10 @@ impl Assembler<'_> {
     /// Rust: `vwsubu_wx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vwsubu_wx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VwsubuWxEmitter<T0, T1, T2, T3>,
@@ -46191,10 +46191,10 @@ impl Assembler<'_> {
     /// Rust: `vxor_vi(vd, vs2, simm5, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `simm5` — Immediate encoding value.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `simm5`: Immediate encoding value.
+    /// - `vm`: Vector mask control.
     pub fn vxor_vi<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, simm5: T2, vm: T3)
     where
         Self: VxorViEmitter<T0, T1, T2, T3>,
@@ -46208,10 +46208,10 @@ impl Assembler<'_> {
     /// Rust: `vxor_vv(vd, vs1, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs1` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs1`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vxor_vv<T0, T1, T2, T3>(&mut self, vd: T0, vs1: T1, vs2: T2, vm: T3)
     where
         Self: VxorVvEmitter<T0, T1, T2, T3>,
@@ -46225,10 +46225,10 @@ impl Assembler<'_> {
     /// Rust: `vxor_vx(vd, vs2, rs1, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `rs1` — Source register.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `rs1`: Source register.
+    /// - `vm`: Vector mask control.
     pub fn vxor_vx<T0, T1, T2, T3>(&mut self, vd: T0, vs2: T1, rs1: T2, vm: T3)
     where
         Self: VxorVxEmitter<T0, T1, T2, T3>,
@@ -46242,9 +46242,9 @@ impl Assembler<'_> {
     /// Rust: `vzext_vf2(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vzext_vf2<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VzextVf2Emitter<T0, T1, T2>,
@@ -46258,9 +46258,9 @@ impl Assembler<'_> {
     /// Rust: `vzext_vf4(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vzext_vf4<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VzextVf4Emitter<T0, T1, T2>,
@@ -46274,9 +46274,9 @@ impl Assembler<'_> {
     /// Rust: `vzext_vf8(vd, vs2, vm)`
     ///
     /// # Arguments
-    /// - `vd` — Vector register operand.
-    /// - `vs2` — Vector register operand.
-    /// - `vm` — Vector mask control.
+    /// - `vd`: Vector register operand.
+    /// - `vs2`: Vector register operand.
+    /// - `vm`: Vector mask control.
     pub fn vzext_vf8<T0, T1, T2>(&mut self, vd: T0, vs2: T1, vm: T2)
     where
         Self: VzextVf8Emitter<T0, T1, T2>,
@@ -46371,9 +46371,9 @@ impl Assembler<'_> {
     /// Rust: `xnor(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn xnor<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: XnorEmitter<T0, T1, T2>,
@@ -46389,9 +46389,9 @@ impl Assembler<'_> {
     /// Rust: `xor(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn xor<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: XorEmitter<T0, T1, T2>,
@@ -46407,9 +46407,9 @@ impl Assembler<'_> {
     /// Rust: `xori(rd, rs1, imm)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `imm` — Immediate encoding value.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `imm`: Immediate encoding value.
     pub fn xori<T0, T1, T2>(&mut self, rd: T0, rs1: T1, imm: T2)
     where
         Self: XoriEmitter<T0, T1, T2>,
@@ -46427,9 +46427,9 @@ impl Assembler<'_> {
     /// Rust: `xperm4(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn xperm4<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Xperm4Emitter<T0, T1, T2>,
@@ -46447,9 +46447,9 @@ impl Assembler<'_> {
     /// Rust: `xperm8(rd, rs1, rs2)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
-    /// - `rs2` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
+    /// - `rs2`: Source register.
     pub fn xperm8<T0, T1, T2>(&mut self, rd: T0, rs1: T1, rs2: T2)
     where
         Self: Xperm8Emitter<T0, T1, T2>,
@@ -46463,8 +46463,8 @@ impl Assembler<'_> {
     /// Rust: `zext_b(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn zext_b<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: ZextBEmitter<T0, T1>,
@@ -46487,8 +46487,8 @@ impl Assembler<'_> {
     /// Rust: `zext_h(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn zext_h<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: ZextHEmitter<T0, T1>,
@@ -46511,8 +46511,8 @@ impl Assembler<'_> {
     /// Rust: `zext_h_rv32(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn zext_h_rv32<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: ZextHRv32Emitter<T0, T1>,
@@ -46526,8 +46526,8 @@ impl Assembler<'_> {
     /// Rust: `zext_w(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn zext_w<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: ZextWEmitter<T0, T1>,
@@ -46545,8 +46545,8 @@ impl Assembler<'_> {
     /// Rust: `zip(rd, rs1)`
     ///
     /// # Arguments
-    /// - `rd` — Destination register.
-    /// - `rs1` — Source register.
+    /// - `rd`: Destination register.
+    /// - `rs1`: Source register.
     pub fn zip<T0, T1>(&mut self, rd: T0, rs1: T1)
     where
         Self: ZipEmitter<T0, T1>,

@@ -10,7 +10,7 @@
 //! [`super::rwflags::RW_FLAGS_TABLE`], looked up here by real id. Flags are unioned across all
 //! database forms of a name, so e.g. `b` conservatively reads NZCV via its conditional form.
 //!
-//! Derived from AsmJit (Zlib license) — this file is an altered version; see LICENSE notices.
+//! Derived from AsmJit (Zlib license): this file is an altered version; see LICENSE notices.
 
 use crate::AsmError;
 use crate::core::arch_traits::Arch;

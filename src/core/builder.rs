@@ -1,7 +1,7 @@
 //! Deferred instruction builder.
 //!
 //! A [`Builder`] records a sequence of nodes (instructions and label-bind points) so passes
-//! can inspect and mutate them — most importantly a future register-allocation pass — before
+//! can inspect and mutate them: most importantly a future register-allocation pass: before
 //! machine code is produced. Replaying a builder into an [`InstSink`] (implemented by each
 //! architecture's `Assembler`) emits the exact same bytes as direct assembly: labels and
 //! relocations are recorded at emit time and resolved by `CodeBuffer::finish()` as usual.
@@ -23,7 +23,7 @@ pub enum Node {
     Label(Label),
 }
 
-/// Sink that consumes replayed nodes — implemented by each architecture's `Assembler`.
+/// Sink that consumes replayed nodes: implemented by each architecture's `Assembler`.
 pub trait InstSink {
     /// Target architecture accepted by this sink.
     fn arch(&self) -> Arch;
