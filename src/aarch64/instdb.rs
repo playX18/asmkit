@@ -248,6 +248,7 @@ impl TryFrom<u8> for Encoding {
     type Error = ();
 
     fn try_from(value: u8) -> Result<Self, Self::Error> {
+        // SAFETY: `Encoding` is `#[repr(u8)]`
         unsafe {
             if value >= Self::Count as u8 {
                 Err(())

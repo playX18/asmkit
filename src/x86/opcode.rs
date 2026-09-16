@@ -17,7 +17,6 @@ pub struct Opcode(pub u32);
 // generated database rows or parity tests in a given build configuration.
 #[allow(dead_code, non_upper_case_globals)]
 impl Opcode {
-
     // Two meanings: part of a legacy opcode (prefix bytes) or the `MMMMM` field of
     // VEX|EVEX|XOP instructions. [2:0] = 0F/0F38/0F3A + XOP/AVX/AVX512 MMM bits; [3] = XOP;
     // [4] = force EVEX.

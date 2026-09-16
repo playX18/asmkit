@@ -51,8 +51,16 @@ pub fn lookup_with_dlsym(name: &str) -> *const u8 {
     use alloc::ffi::CString;
     use core::ptr::null;
 
-    let c_str = CString::new(name).unwrap();
+    let c_str = match CString::new(name) {
+        Ok(c_str) => c_str,
+        // A name containing an interior NUL can never resolve; treat it like a
+        // symbol that was not found rather than panicking.
+        Err(_) => return null(),
+    };
     let c_str_ptr = c_str.as_ptr();
+    // SAFETY: `c_str` is a `CString`, so `c_str_ptr` is a NUL-terminated string
+    // that stays alive across the call; `dlsym` only reads it. A null return is
+    // mapped to a null pointer below.
     let sym = unsafe { libc::dlsym(libc::RTLD_DEFAULT, c_str_ptr) };
     if sym.is_null() {
         null()

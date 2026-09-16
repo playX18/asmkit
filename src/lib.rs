@@ -90,6 +90,8 @@
 //! ```
 
 #![cfg_attr(not(test), no_std)]
+#![deny(unsafe_op_in_unsafe_fn)]
+#![warn(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
 extern crate alloc;
 
@@ -103,6 +105,8 @@ pub(crate) mod util;
 #[cfg(feature = "x86")]
 pub mod x86;
 
+#[cfg(feature = "jit")]
+pub use core::buffer::LoadedRelocatedCode;
 #[cfg(feature = "jit")]
 pub use core::jit_allocator::{JitAllocator, JitAllocatorOptions, ResetPolicy, Span};
 #[cfg(feature = "aarch64")]
@@ -136,8 +140,6 @@ pub use core::{
     section::{FinalizedSection, Section},
     target::Environment,
 };
-#[cfg(feature = "jit")]
-pub use core::buffer::LoadedRelocatedCode;
 
 use ::core::fmt;
 
@@ -215,7 +217,15 @@ impl From<X86Error> for AsmError {
     }
 }
 
-impl ::core::error::Error for AsmError {}
+impl ::core::error::Error for AsmError {
+    fn source(&self) -> Option<&(dyn ::core::error::Error + 'static)> {
+        match self {
+            AsmError::Link(error) => Some(error),
+            AsmError::X86(error) => Some(error),
+            _ => None,
+        }
+    }
+}
 
 /// Detailed x86/x64 encoding error, wrapped by [`AsmError::X86`].
 #[derive(Clone, PartialEq, Eq, PartialOrd, Ord, Debug)]

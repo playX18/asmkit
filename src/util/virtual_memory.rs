@@ -292,6 +292,8 @@ cfgenius::cond! {
                 fn getpagesize() -> c_int;
             }
 
+            // SAFETY: `getpagesize` is a POSIX function with no preconditions;
+            // it returns the kernel's page size or a positive fallback.
             let page_size = unsafe { getpagesize() as usize };
 
             Info {
@@ -307,6 +309,10 @@ cfgenius::cond! {
             let mut ver = GLOBAL_VERSION.load(Ordering::Relaxed);
 
             if ver == 0 {
+                // SAFETY: `uname` fills the `utsname` we pass; its `release`
+                // field is a NUL-terminated C string that stays alive for the
+                // duration of the block. `atoi` is called with a pointer into
+                // that same buffer, which remains NUL-terminated.
                 unsafe {
                     let mut osname: MaybeUninit<utsname> = MaybeUninit::uninit();
                     uname(osname.as_mut_ptr());
@@ -344,6 +350,10 @@ cfgenius::cond! {
 
         #[cfg(not(target_os="freebsd"))]
         fn get_tmp_dir() -> String {
+            // SAFETY: `getenv` returns either null or a pointer to a
+            // NUL-terminated string owned by the process environment. It is
+            // only read here, and no `setenv`/`putenv` call can run
+            // concurrently because this module never mutates the environment.
             unsafe{
                 let env = getenv(c"TMPDIR".as_ptr() as *const _);
 
@@ -388,6 +398,10 @@ cfgenius::cond! {
                         static MEMFD_CREATE_NOT_SUPPORTED: AtomicBool = AtomicBool::new(false);
 
                         if !MEMFD_CREATE_NOT_SUPPORTED.load(Ordering::Relaxed) {
+                            // SAFETY: `SYS_memfd_create` expects a NUL-terminated
+                            // name pointer and a flags value. `c"vmem"` is a static
+                            // C string literal and `MFD_CLOEXEC` is a valid flag.
+                            // The returned fd is range-checked right after.
                             unsafe {
                                 self.fd = libc::syscall(libc::SYS_memfd_create, c"vmem".as_ptr(), libc::MFD_CLOEXEC) as i32;
 
@@ -408,6 +422,9 @@ cfgenius::cond! {
 
                 cfgenius::cond! {
                     if all(macro(has_shm_open), macro(has_shm_anon)) {
+                        // SAFETY: `shm_open` is passed the static `SHM_ANON`
+                        // C string and ordinary POSIX flags/mode. The returned
+                        // fd is checked before use.
                         unsafe {
                             let _ = prefer_tmp_over_dev_shm;
                             self.fd = shm_open(libc::SHM_ANON, libc::O_RDWR | libc::O_CREAT | libc::O_EXCL, libc::S_IRUSR | libc::S_IWUSR);
@@ -447,6 +464,9 @@ cfgenius::cond! {
                                 self.tmpname.push_str(&get_tmp_dir());
                                 self.tmpname.push_str(&format!("/shm-id-{:016X}\0", bits));
 
+                                // SAFETY: `tmpname` is a `String` with a trailing
+                                // NUL byte, kept alive across the call; flags and
+                                // mode are valid POSIX values. The fd is checked.
                                 unsafe {
                                     self.fd = libc::open(
                                         self.tmpname.as_ptr() as *const c_char,
@@ -462,6 +482,9 @@ cfgenius::cond! {
                             } else {
                                 self.tmpname = format!("shm-id-{:016X}\0", bits);
 
+                                // SAFETY: `tmpname` is a `String` with a trailing
+                                // NUL byte, kept alive across the call; flags are
+                                // valid POSIX values. The fd is checked.
                                 unsafe {
                                     self.fd = libc::shm_open(
                                         self.tmpname.as_ptr() as *const c_char,
@@ -494,6 +517,8 @@ cfgenius::cond! {
                 cfgenius::cond! {
                     if macro(has_shm_open) {
                         if typ== FileType::Shm {
+                            // SAFETY: `tmpname` is the NUL-terminated name of
+                            // the shm segment created by `open`; it is alive here.
                             unsafe {
                                 libc::shm_unlink(self.tmpname.as_ptr() as *const c_char);
                                 return;
@@ -504,6 +529,8 @@ cfgenius::cond! {
                 }
                 #[allow(unreachable_code)]
                 if typ == FileType::Tmp {
+                    // SAFETY: `tmpname` is the NUL-terminated path of the file
+                    // created by `open`; it is alive here.
                     unsafe {
                         libc::unlink(self.tmpname.as_ptr() as *const c_char);
                     }
@@ -515,6 +542,8 @@ cfgenius::cond! {
 
             fn close(&mut self) {
                 if self.fd >= 0 {
+                    // SAFETY: the fd is checked non-negative immediately above,
+                    // and `&mut self` guarantees no other close is in flight.
                     unsafe {
                         libc::close(self.fd);
                     }
@@ -532,6 +561,9 @@ cfgenius::cond! {
             }
 
             fn allocate(&self, size: usize) -> Result<(), AsmError> {
+                // SAFETY: `AnonymousMemory::open` guarantees `fd` is a valid
+                // open file description for the lifetime of `self`; `ftruncate`
+                // only changes its length and the return value is checked.
                 unsafe {
                     if libc::ftruncate(self.fd, size as _) != 0 {
                         return Err(error_from_errno());
@@ -560,6 +592,10 @@ cfgenius::cond! {
             anon_mem.open(false)?;
             anon_mem.allocate(vm_info.page_size as usize)?;
 
+            // SAFETY: `anon_mem.fd` is an open shm fd sized to one page by
+            // `allocate`; the mapping is PROT_READ|PROT_EXEC of that page. The
+            // result is checked against MAP_FAILED and, on success, unmapped
+            // again with the same length before returning.
             unsafe {
                 let ptr = libc::mmap(core::ptr::null_mut(), vm_info.page_size as _, libc::PROT_READ | libc::PROT_EXEC, libc::MAP_SHARED, anon_mem.fd, 0);
                 if ptr == libc::MAP_FAILED {
@@ -587,6 +623,10 @@ cfgenius::cond! {
                     static GLOBAL_STRATEGY: AtomicU8 = AtomicU8::new(0);
 
                     if GLOBAL_STRATEGY.load(Ordering::Acquire) != 0 {
+                        // SAFETY: `GLOBAL_STRATEGY` is only ever stored with
+                        // `strategy as u8` from a valid `AnonymousMemoryStrategy`;
+                        // the `Unknown` discriminant (0) is rejected just above,
+                        // so the loaded byte is a valid discriminant.
                         return Ok(unsafe { core::mem::transmute(GLOBAL_STRATEGY.load(Ordering::Acquire)) });
                     }
 
@@ -616,6 +656,10 @@ pub fn has_hardened_runtime() -> bool {
             if flag == 0 {
                 let page_size = info().page_size;
 
+                // SAFETY: probing with an anonymous RWX mapping of one page and
+                // no fd; the address is null and the length is a real page size.
+                // The result is checked and a successful mapping is unmapped
+                // with the same length before the block ends.
                 unsafe {
                     let ptr = libc::mmap(core::ptr::null_mut(), page_size as _, libc::PROT_READ | libc::PROT_WRITE | libc::PROT_EXEC, libc::MAP_PRIVATE | libc::MAP_ANONYMOUS, -1, 0);
 
@@ -711,6 +755,10 @@ pub fn mm_max_prot_from_memory_flags(_memory_flags: MemoryFlags) -> i32 {
 }
 
 
+/// Maps `size` bytes according to `memory_flags`.
+///
+/// The caller must guarantee that `fd` is either `-1` (anonymous mapping) or a
+/// valid open file descriptor, and that `offset` is a valid offset into it.
 fn map_memory(
     size: usize,
     memory_flags: MemoryFlags,
@@ -734,6 +782,10 @@ fn map_memory(
     if fd == -1 {
         mm_flags |= libc::MAP_ANONYMOUS;
     }
+    // SAFETY: `size` is non-zero (checked above); `fd` is either -1 with
+    // MAP_ANONYMOUS set, or an open descriptor owned by the caller; `offset`
+    // is supplied by the caller per the documented contract. The result is
+    // checked against MAP_FAILED before being returned.
     unsafe {
         let ptr = libc::mmap(
             core::ptr::null_mut(),
@@ -751,11 +803,17 @@ fn map_memory(
     }
 }
 
+/// Unmaps a mapping previously produced by [`map_memory`].
+///
+/// The caller must guarantee that `ptr`/`size` describe a live mapping
+/// returned by this module and not already released.
 fn unmap_memory(ptr: *mut u8, size: usize) -> Result<(), AsmError> {
     if size == 0 {
         return Err(AsmError::InvalidArgument);
     }
 
+    // SAFETY: per the caller contract, `ptr`/`size` describe a mapping created
+    // by `map_memory` (or by the OS support module) that has not been released.
     unsafe {
         if libc::munmap(ptr.cast(), size as _) == 0 {
             Ok(())
@@ -769,13 +827,29 @@ pub fn alloc(size: usize, memory_flags: MemoryFlags) -> Result<*mut u8, AsmError
     map_memory(size, memory_flags, -1, 0)
 }
 
-pub fn release(ptr: *mut u8, size: usize) -> Result<(), AsmError> {
+/// Releases memory previously obtained from [`alloc`] or [`alloc_dual_mapping`].
+///
+/// # Safety
+///
+/// `ptr` and `size` must describe a mapping returned by this module that has
+/// not already been released, and must not be used after this call. Passing
+/// memory not owned by this module, or releasing the same mapping twice, is
+/// undefined behavior.
+pub unsafe fn release(ptr: *mut u8, size: usize) -> Result<(), AsmError> {
     unmap_memory(ptr, size)
 }
 
-pub fn protect(p: *mut u8, size: usize, memory_flags: MemoryFlags) -> Result<(), AsmError> {
+/// Changes the access protection of memory previously obtained from [`alloc`].
+///
+/// # Safety
+///
+/// `p` and `size` must describe a live mapping returned by this module. The
+/// range must remain mapped for the entire call.
+pub unsafe fn protect(p: *mut u8, size: usize, memory_flags: MemoryFlags) -> Result<(), AsmError> {
     let protection = mm_prot_from_memory_flags(memory_flags);
 
+    // SAFETY: per the caller contract, `p`/`size` describe a live mapping owned
+    // by this module; `protection` is derived from valid `MemoryFlags`.
     unsafe {
         if libc::mprotect(p.cast(), size as _, protection) == 0 {
             Ok(())
@@ -883,6 +957,10 @@ pub fn info() -> Info {
 
     loop {
         match INFO_STATE.load(Ordering::Acquire) {
+            // SAFETY: the Acquire load above synchronizes with the Release store
+            // of `2`, which happens after `INFO` is fully initialized by the
+            // single writer that won the 0 -> 1 CAS. No `&mut` to `INFO` exists
+            // once state reaches 2, so the read cannot race with a write.
             2 => return unsafe { addr_of!(INFO).read() },
             0 => {
                 if INFO_STATE
@@ -890,6 +968,9 @@ pub fn info() -> Info {
                     .is_ok()
                 {
                     let info = get_vm_info();
+                    // SAFETY: the successful CAS makes this thread the unique
+                    // initializing writer of `INFO`; no other thread can read or
+                    // write it until the Release store below publishes state 2.
                     unsafe { addr_of_mut!(INFO).write(info) };
                     INFO_STATE.store(2, Ordering::Release);
                     return info;
@@ -935,6 +1016,8 @@ pub unsafe fn flush_instruction_cache(p: *const u8, size: usize) -> Result<(), A
                 fn sys_icache_invalidate(p: *const u8, size: usize);
             }
 
+            // SAFETY: `sys_icache_invalidate` requires a valid mapped range,
+            // which the documented contract of this function guarantees.
             unsafe {
                 sys_icache_invalidate(p, size);
             }
@@ -948,6 +1031,9 @@ pub unsafe fn flush_instruction_cache(p: *const u8, size: usize) -> Result<(), A
                 ) -> i32;
             }
 
+            // SAFETY: `GetCurrentProcess` is a no-argument pseudo-handle accessor
+            // and always succeeds. `p`/`size` are a valid mapped range per this
+            // function's contract; the return value is checked.
             unsafe {
                 if FlushInstructionCache(GetCurrentProcess(), p, size) == 0 {
                     return Err(AsmError::InvalidState);
@@ -967,12 +1053,18 @@ pub unsafe fn flush_instruction_cache(p: *const u8, size: usize) -> Result<(), A
                 let mut addr = code & !(DCACHE_LINE_SIZE - 1);
 
                 while addr < end {
+                    // SAFETY: `dc civac` is a cache-maintenance instruction with
+                    // no memory-safety preconditions beyond being privileged to
+                    // execute on the current target; `addr` is cache-line aligned
+                    // and inside the range the caller declared valid.
                     unsafe {
                         asm!("dc civac, {x}", x = in(reg) addr);
                     }
                     addr += ICACHE_LINE_SIZE;
                 }
 
+                // SAFETY: architectural barrier with no register operands; safe
+                // to execute in any context on AArch64.
                 unsafe {
                     asm!("dsb ish");
                 }
@@ -980,12 +1072,17 @@ pub unsafe fn flush_instruction_cache(p: *const u8, size: usize) -> Result<(), A
                 addr = code & !(ICACHE_LINE_SIZE - 1);
 
                 while addr < end {
+                    // SAFETY: `ic ivau` invalidates by VA; `addr` is 4-byte
+                    // aligned and within the caller-declared valid range.
                     unsafe {
                         asm!("ic ivau, {x}", x = in(reg) addr);
                     }
                     addr += ICACHE_LINE_SIZE;
                 }
 
+                // SAFETY: barrier and instruction-synchronization instructions
+                // with no memory operands; required to complete the cache
+                // maintenance sequence started above.
                 unsafe {
                     asm!(
                         "dsb ish"
@@ -996,12 +1093,23 @@ pub unsafe fn flush_instruction_cache(p: *const u8, size: usize) -> Result<(), A
                 }
 
             } else if cfg(any(target_arch="riscv64", target_arch = "riscv32")) {
+                // SAFETY: `clear_cache` requires a valid mapped range, which the
+                // documented contract of this function guarantees.
                 unsafe {
                     wasmtime_jit_icache_coherence::clear_cache(p.cast(), size)
                         .map_err(|_| AsmError::InvalidState)?;
                 }
                 wasmtime_jit_icache_coherence::pipeline_flush_mt()
                     .map_err(|_| AsmError::InvalidState)?;
+                // `fence.i` is the architectural local flush; it covers
+                // platforms where the `riscv_flush_icache` syscall is
+                // unavailable or not honoured.
+                //
+                // SAFETY: `fence.i` has no memory operands and no preconditions;
+                // it synchronizes the local instruction stream with prior stores.
+                unsafe {
+                    core::arch::asm!("fence.i");
+                }
             } else {
                 return Err(AsmError::UnsupportedInstruction {
                     reason: "instruction-cache synchronization is unavailable on this target",
@@ -1029,6 +1137,10 @@ pub fn hardened_runtime_info() -> HardenedRuntimeInfo {
 pub fn protect_jit_memory(access: ProtectJitAccess) {
     #[cfg(all(target_os = "macos", target_arch = "aarch64"))]
     {
+        // SAFETY: `pthread_jit_write_protect_np` is available on this exact
+        // target (cfg-gated) and takes only a boolean. It must be called from
+        // the thread that will write the JIT pages, which is why this function
+        // is invoked synchronously by its caller.
         unsafe {
             let x = match access {
                 ProtectJitAccess::ReadWrite => 0,
@@ -1110,6 +1222,8 @@ mod windows_support {
     impl Drop for ScopedHandle {
         fn drop(&mut self) {
             if !self.value.is_invalid() {
+                // SAFETY: `value` is a non-invalid handle owned by this struct;
+                // `Drop` runs once, so the handle is closed exactly once.
                 unsafe {
                     let _ = CloseHandle(self.value);
                 }
@@ -1119,6 +1233,8 @@ mod windows_support {
 
     pub(super) fn get_vm_info() -> Info {
         let mut system_info = MaybeUninit::<SYSTEM_INFO>::uninit();
+        // SAFETY: `GetSystemInfo` initializes the `SYSTEM_INFO` behind the
+        // pointer; `assume_init` runs only after that call returns.
         unsafe {
             GetSystemInfo(system_info.as_mut_ptr());
 
@@ -1174,6 +1290,8 @@ mod windows_support {
             return Err(AsmError::InvalidArgument);
         }
 
+        // SAFETY: `size` is non-zero (checked above) and a null base address lets
+        // the OS choose; the returned pointer is checked before use.
         unsafe {
             let protect = protect_flags_from_memory_flags(memory_flags);
             let result = VirtualAlloc(None, size, MEM_COMMIT | MEM_RESERVE, protect);
@@ -1186,11 +1304,19 @@ mod windows_support {
         }
     }
 
-    pub fn release(ptr: *mut u8, size: usize) -> Result<(), AsmError> {
+    /// Releases memory previously obtained from [`alloc`] or [`alloc_dual_mapping`].
+    ///
+    /// # Safety
+    ///
+    /// `ptr` must be a live allocation returned by this module that has not
+    /// already been released, and must not be used after this call.
+    pub unsafe fn release(ptr: *mut u8, size: usize) -> Result<(), AsmError> {
         if size == 0 || ptr.is_null() {
             return Err(AsmError::InvalidArgument);
         }
 
+        // SAFETY: per the caller contract, `ptr` is a live allocation from this
+        // module; `MEM_RELEASE` requires the `0` size argument used here.
         unsafe {
             if VirtualFree(ptr as *mut _, 0, MEM_RELEASE).is_err() {
                 return Err(AsmError::InvalidArgument);
@@ -1200,10 +1326,17 @@ mod windows_support {
         Ok(())
     }
 
-    pub fn protect(p: *mut u8, size: usize, memory_flags: MemoryFlags) -> Result<(), AsmError> {
+    /// Changes the access protection of memory previously obtained from [`alloc`].
+    ///
+    /// # Safety
+    ///
+    /// `p` and `size` must describe a live mapping returned by this module.
+    pub unsafe fn protect(p: *mut u8, size: usize, memory_flags: MemoryFlags) -> Result<(), AsmError> {
         let protect_flags = protect_flags_from_memory_flags(memory_flags);
         let mut old_flags = PAGE_PROTECTION_FLAGS(0);
 
+        // SAFETY: per the caller contract, `p`/`size` describe a live mapping
+        // owned by this module; `old_flags` is a valid out-parameter.
         unsafe {
             if VirtualProtect(p as _, size, protect_flags, &mut old_flags).is_ok() {
                 return Ok(());
@@ -1223,6 +1356,13 @@ mod windows_support {
 
         let mut handle = ScopedHandle::new();
 
+        // SAFETY: `CreateFileMappingW` is called with a valid page protection,
+        // a size that fits in two 32-bit halves, and a null name. The returned
+        // handle is checked (invalid handles are rejected) and owned by
+        // `ScopedHandle`, which closes it on drop. `MapViewOfFile` is then
+        // called with that valid handle and a legitimate `FILE_MAP` access mask;
+        // each returned view is null-checked, and a failure of the second view
+        // unmaps the first.
         unsafe {
             handle.value = CreateFileMappingW(
                 INVALID_HANDLE_VALUE,
@@ -1267,6 +1407,10 @@ mod windows_support {
     pub fn release_dual_mapping(dm: &mut DualMapping, _size: usize) -> Result<(), AsmError> {
         let mut failed = false;
 
+        // SAFETY: `rx`/`rw` come from `MapViewOfFile` in `alloc_dual_mapping`
+        // and are only unmapped here, once, through `&mut DualMapping`. A null
+        // view (already released) is rejected by `UnmapViewOfFile` rather than
+        // dereferenced.
         unsafe {
             if UnmapViewOfFile(MEMORY_MAPPED_VIEW_ADDRESS { Value: dm.rx as _ }).is_err() {
                 failed = true;

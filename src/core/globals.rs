@@ -22,6 +22,7 @@ pub const NO_BASE_ADDRESS: u64 = !0u64;
 pub const NUM_VIRT_GROUPS: usize = 4;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[repr(u8)]
 pub enum CondCode {
     /// (no condition code) (always)
     AL = 0x00,

@@ -1,6 +1,7 @@
 #![allow(dead_code)]
 use super::emit::{self, PendingPrefixes};
 use super::emitter::{CallEmitter, JmpEmitter, MovEmitter};
+use super::instdb::InstId;
 use super::operands::*;
 use crate::{
     X86Error,
@@ -13,7 +14,6 @@ use crate::{
         target::Environment,
     },
 };
-use super::instdb::InstId;
 
 /// X86/X64 Assembler implementation.
 pub struct Assembler<'a> {
@@ -463,6 +463,8 @@ impl<'a> Assembler<'a> {
                     operand_index: 1,
                     reason: "patchable_mov requires an immediate source",
                 }));
+            // SAFETY: poisoned handle for an error path; the sentinel offset is
+            // rejected by the bounds checks when applied.
             return unsafe { PatchableBlock::new(u32::MAX, size, arch) };
         }
 
@@ -473,6 +475,8 @@ impl<'a> Assembler<'a> {
         if self.buffer.error().cloned() != previous_error
             || self.buffer.cur_offset() < offset + size
         {
+            // SAFETY: poisoned handle for an error path; the sentinel offset is
+            // rejected by the bounds checks when applied.
             return unsafe { PatchableBlock::new(u32::MAX, size, arch) };
         }
 
@@ -826,7 +830,10 @@ mod tests {
             imm_block.repatch_u32(&mut bytes, 0x99).unwrap();
             jcc.retarget(&mut bytes, alt).unwrap();
         }
-        assert_eq!(&bytes[imm_block.offset() as usize..][..4], &0x99u32.to_le_bytes());
+        assert_eq!(
+            &bytes[imm_block.offset() as usize..][..4],
+            &0x99u32.to_le_bytes()
+        );
     }
 
     #[test]

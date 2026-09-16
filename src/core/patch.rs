@@ -249,16 +249,17 @@ impl PatchableSite {
             return Err(AsmError::InvalidState);
         }
 
+        // SAFETY: per this method's contract, `span` is the loaded image this
+        // site was recorded against; the range `offset..offset + patch_size`
+        // was bounds-checked against `span.size()` above. `JitAllocator::write`
+        // toggles JIT write access and flushes the instruction cache, and the
+        // caller synchronizes concurrent execution.
         unsafe {
             jit_allocator.write(span, |span| {
                 let patch_ptr = span.rw().add(self.offset as usize);
                 let patch_slice = core::slice::from_raw_parts_mut(patch_ptr, patch_size);
-                self.kind.patch_with_addend(
-                    patch_slice,
-                    self.offset,
-                    target_offset,
-                    self.addend,
-                );
+                self.kind
+                    .patch_with_addend(patch_slice, self.offset, target_offset, self.addend);
             })?;
         }
         Ok(())
@@ -281,11 +282,7 @@ impl PatchableBlock {
     /// `offset..offset+size` in any image you later patch must be a reserved patch region for
     /// `arch` (instruction alignment and nop-fill rules apply).
     pub const unsafe fn new(offset: CodeOffset, size: CodeOffset, arch: Arch) -> Self {
-        Self {
-            offset,
-            size,
-            arch,
-        }
+        Self { offset, size, arch }
     }
 
     pub const fn offset(self) -> CodeOffset {
@@ -336,6 +333,8 @@ impl PatchableBlock {
         if self.size != 4 {
             return Err(AsmError::InvalidArgument);
         }
+        // SAFETY: forwarding the caller's `rewrite` contract; a 4-byte payload
+        // is aligned for every supported architecture.
         unsafe { self.rewrite(bytes, &value.to_le_bytes()) }
     }
 
@@ -348,6 +347,8 @@ impl PatchableBlock {
         if self.size != 8 {
             return Err(AsmError::InvalidArgument);
         }
+        // SAFETY: forwarding the caller's `rewrite` contract; an 8-byte payload
+        // is aligned for every supported architecture.
         unsafe { self.rewrite(bytes, &value.to_le_bytes()) }
     }
 
@@ -378,6 +379,12 @@ impl PatchableBlock {
         }
 
         let mut fill_result = Ok(());
+        // SAFETY: per this method's contract, `span` is the loaded image this
+        // block was recorded against; `offset..offset + size` was bounds-checked
+        // against `span.size()` above and the payload length was checked to be
+        // at most `size`. `JitAllocator::write` synchronizes JIT access and the
+        // instruction cache; `fill_result` is written by the closure and read
+        // only after `write` returns.
         unsafe {
             jit_allocator.write(span, |span| {
                 let block_ptr = span.rw().add(self.offset as usize);
@@ -407,6 +414,8 @@ impl PatchableBlock {
         if self.size != 4 {
             return Err(AsmError::InvalidArgument);
         }
+        // SAFETY: forwarding the caller's `rewrite_span` contract; a 4-byte
+        // payload satisfies the minimum patch alignment for every arch.
         unsafe { self.rewrite_span(jit_allocator, span, &value.to_le_bytes()) }
     }
 
@@ -425,6 +434,8 @@ impl PatchableBlock {
         if self.size != 8 {
             return Err(AsmError::InvalidArgument);
         }
+        // SAFETY: forwarding the caller's `rewrite_span` contract; an 8-byte
+        // payload satisfies the minimum patch alignment for every arch.
         unsafe { self.rewrite_span(jit_allocator, span, &value.to_le_bytes()) }
     }
 }

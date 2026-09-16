@@ -6,8 +6,8 @@ use smallvec::SmallVec;
 use crate::AsmError;
 use crate::core::arch_traits::Arch;
 use crate::core::patch::{
-    PatchBlock, PatchBlockId, PatchCatalog, PatchSite, PatchSiteId, PatchableBlock,
-    fill_with_nops, minimum_patch_alignment,
+    PatchBlock, PatchBlockId, PatchCatalog, PatchSite, PatchSiteId, PatchableBlock, fill_with_nops,
+    minimum_patch_alignment,
 };
 #[cfg(feature = "riscv")]
 use crate::riscv;
@@ -364,6 +364,8 @@ impl CodeBufferFinalized {
     pub fn allocate(&self, jit_allocator: &mut JitAllocator) -> Result<Span, AsmError> {
         let mut span = jit_allocator.alloc(self.data().len())?;
 
+        // SAFETY: `span` was just allocated by `jit_allocator` with exactly
+        // `self.data().len()` bytes.
         unsafe {
             jit_allocator.write(&mut span, |span| {
                 span.rw()
@@ -408,6 +410,11 @@ impl CodeBufferFinalized {
         let mut span = jit_allocator.alloc(total_size)?;
 
         let mut relocation_result = Ok(());
+        // SAFETY: `span` was just allocated with `total_size` bytes (code plus
+        // GOT); `JitAllocator::write` validates it and handles JIT write access
+        // and the instruction-cache flush. Every write inside `perform_relocations`
+        // is bounds-checked against `code_size`, and the GOT entries are written
+        // through `got_rw`, which points inside the same mapping.
         unsafe {
             jit_allocator.write(&mut span, |span| {
                 relocation_result = (|| {
@@ -1313,11 +1320,10 @@ impl CodeBuffer {
 
         for constant in core::mem::take(&mut self.pending_constants) {
             let (_, AsmConstant { align, size, .. }) = self.constants[constant.0 as usize];
-            let label = self.constants[constant.0 as usize]
-                .1
-                .upcoming_label
-                .take()
-                .unwrap();
+            let label = match self.constants[constant.0 as usize].1.upcoming_label.take() {
+                Some(label) => label,
+                None => unreachable!("pending constants always have an upcoming label"),
+            };
             self.try_align_to(align as _)?;
             self.try_bind_label(label)?;
             self.used_constants.push((constant, self.cur_offset()));
@@ -1345,7 +1351,10 @@ impl CodeBuffer {
             if !self.should_apply_fixup(fixup, forced_threshold) {
                 break;
             }
-            let fixup = self.fixup_records.pop().unwrap();
+            let fixup = match self.fixup_records.pop() {
+                Some(fixup) => fixup,
+                None => unreachable!("peek confirmed a fixup is present"),
+            };
             self.handle_fixup(fixup)?;
         }
         Ok(())
@@ -1411,9 +1420,9 @@ impl CodeBuffer {
                     .checked_add(2)
                     .ok_or(AsmError::TooLarge)?;
                 let displacement = i64::from(target_after) - i64::from(short_end);
-                let Ok(displacement) = i8::try_from(displacement) else {
+                if i8::try_from(displacement).is_err() {
                     continue;
-                };
+                }
 
                 let cut_start = short_end;
                 let cut_end = old_end;
@@ -1427,11 +1436,11 @@ impl CodeBuffer {
                     continue;
                 }
 
-                selected = Some((index, candidate, displacement, cut_start, cut_end));
+                selected = Some((index, candidate, cut_start, cut_end));
                 break;
             }
 
-            let Some((index, candidate, displacement, cut_start, cut_end)) = selected else {
+            let Some((index, candidate, cut_start, cut_end)) = selected else {
                 return Ok(());
             };
             let removed = cut_end - cut_start;
@@ -1501,14 +1510,37 @@ impl CodeBuffer {
 
             let start = candidate.opcode_offset as usize;
             self.data[start] = candidate.short_opcode;
-            self.data[start + 1] = displacement as u8;
             self.data.drain(cut_start as usize..cut_end as usize);
             self.x86_branch_relaxations.remove(index);
 
-            self.pending_fixup_records
-                .retain(|fixup| !is_candidate_fixup(fixup));
+            // The shrunk branch keeps a rel8 fixup (rewritten here, or
+            // freshly recorded when its near fixup was already applied)
+            // so later shrinks keep rebasing it; the final displacement
+            // is written at fixup application.
+            let disp_offset = cut_start - 1;
+            let mut rerecorded = false;
+            for fixup in &mut self.pending_fixup_records {
+                if is_candidate_fixup(fixup) {
+                    fixup.kind = LabelUse::X86BranchRel8;
+                    fixup.offset = disp_offset;
+                    rerecorded = true;
+                }
+            }
             let mut fixups = core::mem::take(&mut self.fixup_records).into_vec();
-            fixups.retain(|fixup| !is_candidate_fixup(fixup));
+            for fixup in &mut fixups {
+                if is_candidate_fixup(fixup) {
+                    fixup.kind = LabelUse::X86BranchRel8;
+                    fixup.offset = disp_offset;
+                    rerecorded = true;
+                }
+            }
+            if !rerecorded {
+                self.pending_fixup_records.push(AsmFixup {
+                    label: candidate.label,
+                    offset: disp_offset,
+                    kind: LabelUse::X86BranchRel8,
+                });
+            }
 
             let rebase = |offset: &mut CodeOffset| -> Result<(), AsmError> {
                 if *offset >= cut_end {
@@ -1954,6 +1986,10 @@ impl Reloc {
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug, Hash)]
 pub enum LabelUse {
     X86JmpRel32,
+    /// 8-bit PC-relative branch displacement (short `jmp`/`jcc`). Recorded
+    /// by x86 branch relaxation for already-shrunk branches so later
+    /// shrinks keep rebasing them; written at fixup application.
+    X86BranchRel8,
     /// 20-bit branch offset (unconditional branches). PC-rel, offset is
     /// imm << 1. Immediate is 20 signed bits. Use in Jal instructions.
     RVJal20,
@@ -2009,6 +2045,11 @@ pub enum LabelUse {
     A64Adrp21,
     A64Ldr12,
 
+    /// Absolute low 12 bits of a label address for ADD (pairs with a
+    /// preceding ADRP to form the full address). Unlike the PC-relative
+    /// uses, this encodes `label & 0xfff`, which is address-correct
+    /// whenever the image loads at a page-aligned base (as JIT mappings
+    /// do, and as ADRP itself requires).
     A64AddAbsLo12,
 }
 
@@ -2027,7 +2068,9 @@ impl LabelUse {
 
     const fn supports_arch(self, arch: Arch) -> bool {
         match self {
-            Self::X86JmpRel32 => cfg!(feature = "x86") && matches!(arch, Arch::X86 | Arch::X64),
+            Self::X86JmpRel32 | Self::X86BranchRel8 => {
+                cfg!(feature = "x86") && matches!(arch, Arch::X86 | Arch::X64)
+            }
             Self::RVJal20
             | Self::RVPCRel32
             | Self::RVB12
@@ -2056,6 +2099,10 @@ impl LabelUse {
                 let disp = delta - 4;
                 i32::try_from(disp).is_ok()
             }
+            Self::X86BranchRel8 => {
+                let disp = delta - 1;
+                i8::try_from(disp).is_ok()
+            }
             Self::RVJal20 => delta % 2 == 0 && (-(1 << 20)..=((1 << 20) - 2)).contains(&delta),
             Self::RVB12 => delta % 2 == 0 && (-(1 << 12)..=((1 << 12) - 2)).contains(&delta),
             Self::RVCJump => delta % 2 == 0 && (-(1 << 11)..=((1 << 11) - 2)).contains(&delta),
@@ -2075,7 +2122,10 @@ impl LabelUse {
             }
 
             Self::A64AddAbsLo12 => {
-                delta % 4096 == delta && (-(1 << 12)..=(1 << 12) - 1).contains(&delta)
+                // Reachable exactly when the paired ADRP reaches the
+                // label's page.
+                let page_delta = ((label_offset & !0xfff) as i64) - ((use_offset & !0xfff) as i64);
+                page_delta % 4096 == 0 && (-(1 << 32)..=((1 << 32) - 4096)).contains(&page_delta)
             }
 
             Self::A64Ldr12 => true,
@@ -2095,6 +2145,7 @@ impl LabelUse {
             LabelUse::RVCB9 => ((1 << 8) - 1) * 2,
             LabelUse::RVCJump => ((1 << 10) - 1) * 2,
             LabelUse::X86JmpRel32 => i32::MAX as _,
+            LabelUse::X86BranchRel8 => 127,
             _ => u32::MAX,
         }
     }
@@ -2113,6 +2164,7 @@ impl LabelUse {
     pub const fn patch_size(&self) -> usize {
         match self {
             Self::X86JmpRel32 => 4,
+            Self::X86BranchRel8 => 1,
             Self::RVCJump | Self::RVCB9 => 2,
             Self::RVJal20 | Self::RVB12 | Self::RVPCRelHi20 | Self::RVPCRelLo12I => 4,
             Self::RVPCRel32 => 8,
@@ -2122,7 +2174,7 @@ impl LabelUse {
 
     pub const fn align(&self) -> usize {
         match self {
-            Self::X86JmpRel32 => 1,
+            Self::X86JmpRel32 | Self::X86BranchRel8 => 1,
             Self::RVCJump => 4,
             Self::RVJal20 | Self::RVB12 | Self::RVCB9 | Self::RVPCRelHi20 | Self::RVPCRelLo12I => 4,
             Self::RVPCRel32 => 4,
@@ -2210,6 +2262,12 @@ impl LabelUse {
                 buffer.copy_from_slice(&value.to_le_bytes());
             }
 
+            Self::X86BranchRel8 => {
+                let value = pc_reli.wrapping_add(addend).wrapping_sub(1) as u8;
+
+                buffer[0] = value;
+            }
+
             Self::RVJal20 => {
                 let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
                 let offset = pc_rel;
@@ -2217,7 +2275,9 @@ impl LabelUse {
                     | ((offset >> 11 & 0b1) << 20)
                     | ((offset >> 1 & 0b11_1111_1111) << 21)
                     | ((offset >> 20 & 0b1) << 31);
-                buffer[0..4].clone_from_slice(&u32::to_le_bytes(insn | v));
+                // The immediate occupies bits 31..12; clear the old value
+                // (retargets must not OR into a previous immediate).
+                buffer[0..4].clone_from_slice(&u32::to_le_bytes((insn & 0xFFF) | v));
             }
 
             Self::RVPCRel32 => {
@@ -2254,7 +2314,9 @@ impl LabelUse {
                         | ((offset >> 1 & 0b1111) << 8)
                         | ((offset >> 5 & 0b11_1111) << 25)
                         | ((offset >> 12 & 0b1) << 31);
-                    buffer[0..4].clone_from_slice(&u32::to_le_bytes(insn | v));
+                    // B-type immediate fields are bits 31, 30..25, 11..8,
+                    // and 7; clear them before OR-ing in the new offset.
+                    buffer[0..4].clone_from_slice(&u32::to_le_bytes((insn & 0x01FF_F07F) | v));
                 }
                 #[cfg(not(feature = "riscv"))]
                 {
@@ -2386,7 +2448,8 @@ impl LabelUse {
             Self::A64AddAbsLo12 => {
                 let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
 
-                let imm12 = ((pc_reli as i32 as u32) & 0xfff) << 10;
+                // Absolute page offset of the label (see the variant docs).
+                let imm12 = (label_offset & 0xfff) << 10;
                 let insn = insn | imm12;
                 buffer[0..4].copy_from_slice(&insn.to_le_bytes());
             }
@@ -2525,6 +2588,8 @@ pub unsafe fn perform_relocations(
         if patch_end > code_size {
             return Err(AsmError::InvalidArgument);
         }
+        // SAFETY: `patch_end <= code_size` was checked above, so `patch_start` is
+        // within the caller-provided writable/executable mapping.
         let at = unsafe { code.add(patch_start) };
         let atrx = code_rx
             .addr()
@@ -2542,6 +2607,9 @@ pub unsafe fn perform_relocations(
             Reloc::Abs4 => {
                 let what = resolve(&get_address)?;
                 let what = u32::try_from(what).map_err(|_| AsmError::TooLarge)?;
+                // SAFETY: `relocation_patch_size(Abs4) == 4` and the patch span
+                // was bounds-checked; `at` is 4-byte sized and the store is
+                // unaligned-safe.
                 unsafe {
                     write_unaligned(at as *mut u32, what);
                 }
@@ -2550,6 +2618,8 @@ pub unsafe fn perform_relocations(
             Reloc::Abs8 | Reloc::RiscvAbs8 => {
                 let what = resolve(&get_address)?;
                 let what = u64::try_from(what).map_err(|_| AsmError::TooLarge)?;
+                // SAFETY: `relocation_patch_size` is 8 for these kinds and the
+                // patch span was bounds-checked; the store is unaligned-safe.
                 unsafe {
                     write_unaligned(at as *mut u64, what);
                 }
@@ -2560,6 +2630,7 @@ pub unsafe fn perform_relocations(
                 let pcrel =
                     i32::try_from(checked_pcrel(what, atrx)?).map_err(|_| AsmError::TooLarge)?;
 
+                // SAFETY: 4-byte rel32 patch span, bounds-checked above.
                 unsafe {
                     write_unaligned(at as *mut i32, pcrel);
                 }
@@ -2570,6 +2641,7 @@ pub unsafe fn perform_relocations(
                 let pcrel =
                     i32::try_from(checked_pcrel(what, atrx)?).map_err(|_| AsmError::TooLarge)?;
 
+                // SAFETY: 4-byte GOT-relative patch span, bounds-checked above.
                 unsafe {
                     write_unaligned(at as *mut i32, pcrel);
                 }
@@ -2579,6 +2651,7 @@ pub unsafe fn perform_relocations(
                 let what = resolve(&get_plt_entry)?;
                 let pcrel =
                     i32::try_from(checked_pcrel(what, atrx)?).map_err(|_| AsmError::TooLarge)?;
+                // SAFETY: 4-byte PLT-relative patch span, bounds-checked above.
                 unsafe { write_unaligned(at as *mut i32, pcrel) };
             }
 
@@ -2586,6 +2659,8 @@ pub unsafe fn perform_relocations(
                 let what = resolve(&get_got_entry)?;
                 let pc_rel =
                     i32::try_from(checked_pcrel(what, atrx)?).map_err(|_| AsmError::TooLarge)?;
+                // SAFETY: a RISC-V HI20 patch covers one 4-byte instruction, so
+                // the slice from `at` is in bounds of the checked patch span.
                 unsafe {
                     let buffer = core::slice::from_raw_parts_mut(at, 4);
                     let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
@@ -2600,6 +2675,8 @@ pub unsafe fn perform_relocations(
                 let pc_rel = checked_pcrel(what, atrx)?;
                 let pc_rel = i32::try_from(pc_rel).map_err(|_| AsmError::TooLarge)?;
 
+                // SAFETY: a RISC-V LO12 patch covers one 4-byte instruction, so
+                // the slice from `at` is in bounds of the checked patch span.
                 unsafe {
                     let buffer = core::slice::from_raw_parts_mut(at, 4);
                     let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
@@ -2641,6 +2718,10 @@ pub unsafe fn perform_relocations(
                     let hi20 = pcrel.wrapping_add(0x800) as u32 & 0xFFFFF000u32;
                     let lo12 = (pcrel as u32).wrapping_sub(hi20) & 0xFFF;
 
+                    // SAFETY: a RiscvCallPlt patch spans two 4-byte instructions
+                    // (`relocation_patch_size` returns 8), both within the checked
+                    // patch span; the read-modify-write preserves the register
+                    // fields and only ORs in the immediate.
                     unsafe {
                         let auipc_addr = at as *mut u32;
                         let auipc = riscv::opcodes::Inst::new(riscv::Opcode::AUIPC)
@@ -2669,6 +2750,9 @@ pub unsafe fn perform_relocations(
                 let imm21 = pages as u32 & 0x1f_ffff;
                 let lo = (imm21 & 0x3) << 29;
                 let hi = ((imm21 >> 2) & 0x7ffff) << 5;
+                // SAFETY: an AArch64 ADR page patch covers one 4-byte instruction,
+                // inside the checked patch span; the OR preserves the opcode and
+                // register fields.
                 unsafe {
                     let insn = iptr.read_unaligned();
                     write_unaligned(iptr, insn | lo | hi);
@@ -2679,6 +2763,7 @@ pub unsafe fn perform_relocations(
                 let what = resolve(&get_address)?;
                 let iptr = at as *mut u32;
                 let imm12 = (what as u32 & 0xfff) << 10;
+                // SAFETY: a 4-byte instruction inside the checked patch span.
                 unsafe {
                     let insn = iptr.read_unaligned();
                     write_unaligned(iptr, insn | imm12);
@@ -2695,6 +2780,7 @@ pub unsafe fn perform_relocations(
                 let imm21 = pages as u32 & 0x1f_ffff;
                 let lo = (imm21 & 0x3) << 29;
                 let hi = ((imm21 >> 2) & 0x7ffff) << 5;
+                // SAFETY: a 4-byte instruction inside the checked patch span.
                 unsafe {
                     let insn = iptr.read_unaligned();
                     write_unaligned(iptr, insn | lo | hi);
@@ -2708,6 +2794,7 @@ pub unsafe fn perform_relocations(
                 }
                 let iptr = at as *mut u32;
                 let imm12 = ((what as u32 & 0xfff) >> 3) << 10;
+                // SAFETY: a 4-byte instruction inside the checked patch span.
                 unsafe {
                     let insn = iptr.read_unaligned();
                     write_unaligned(iptr, insn | imm12);
@@ -3009,10 +3096,7 @@ mod tests {
         assert_ne!(first, other_ns);
         assert_ne!(first, other_idx);
         assert_eq!(buf.symbol_distance(first), Some(RelocDistance::Far));
-        assert_eq!(
-            buf.symbol_name(first),
-            Some(&ExternalName::user(0, 1))
-        );
+        assert_eq!(buf.symbol_name(first), Some(&ExternalName::user(0, 1)));
     }
 
     #[test]
@@ -3347,7 +3431,14 @@ mod tests {
         assert_eq!(&first.data()[..3], &[0xEB, 1, 0x90]);
         assert_eq!(first.defined_symbol_str("target"), Some(3));
         assert_eq!(first.relocs()[0].offset, 3);
-        assert_eq!(first.patch_catalog().block(PatchBlockId::from_index(0)).unwrap().offset, 7);
+        assert_eq!(
+            first
+                .patch_catalog()
+                .block(PatchBlockId::from_index(0))
+                .unwrap()
+                .offset,
+            7
+        );
         let patch_site = first.patch_catalog().site(site).unwrap();
         assert_eq!(patch_site.offset, 7);
         assert_eq!(patch_site.current_target, 3);

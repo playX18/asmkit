@@ -99,6 +99,8 @@ impl fmt::Display for LinkError {
     }
 }
 
+impl core::error::Error for LinkError {}
+
 impl Linker {
     pub fn new() -> Self {
         Self {
@@ -283,8 +285,9 @@ impl Linker {
                             .get(sym.id() as usize)
                             .ok_or_else(|| invalid_reloc("symbol id is outside the section"))?
                             .name;
-                        let defined_index =
-                            defined.iter().position(|(defined_name, _, _)| defined_name == name);
+                        let defined_index = defined
+                            .iter()
+                            .position(|(defined_name, _, _)| defined_name == name);
                         match defined_index {
                             // Defined in this link: bind to the synthetic label.
                             Some(index) => RelocTarget::Label(Label::from_id(
@@ -523,10 +526,7 @@ mod tests {
         }
         match &image.relocs()[1].target {
             RelocTarget::Sym(sym) => {
-                assert_eq!(
-                    image.symbol_name(*sym),
-                    Some(&ExternalName::user(FUNC, 2))
-                );
+                assert_eq!(image.symbol_name(*sym), Some(&ExternalName::user(FUNC, 2)));
             }
             target => panic!("expected symbol target, got {target:?}"),
         }

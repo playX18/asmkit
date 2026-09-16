@@ -287,20 +287,33 @@ impl JitAllocatorBlock {
     }
 
     fn used_bitvector(&self) -> &alloc::vec::Vec<u32> {
+        // SAFETY: `JitAllocatorBlock` is only reachable through
+        // `JitAllocator`/`Span`, which are `!Send`/`!Sync` (they hold `Rc` and
+        // `RefCell`). Every caller mutates bitvectors only while holding an
+        // exclusive `&mut JitAllocatorState` borrow, and never holds a shared
+        // reference to the same vector at the same time.
         unsafe { &*self.used_bitvector.get() }
     }
 
     fn stop_bitvector(&self) -> &alloc::vec::Vec<u32> {
+        // SAFETY: same invariant as `used_bitvector`: exclusive state access
+        // through `RefCell::borrow_mut`, and no aliasing shared borrow at the
+        // call site.
         unsafe { &*self.stop_bitvector.get() }
     }
 
     #[allow(clippy::mut_from_ref)]
     fn used_bitvector_mut(&self) -> &mut alloc::vec::Vec<u32> {
+        // SAFETY: the block is owned by a `JitAllocatorState` that is only
+        // entered through `RefCell::borrow_mut`, and this module never creates
+        // a live `&`/`&mut` pair to the same vector: `mark_*` callers use one
+        // bitvector at a time and drop the borrow before the next.
         unsafe { &mut *self.used_bitvector.get() }
     }
 
     #[allow(clippy::mut_from_ref)]
     fn stop_bitvector_mut(&self) -> &mut alloc::vec::Vec<u32> {
+        // SAFETY: same exclusive-access invariant as `used_bitvector_mut`.
         unsafe { &mut *self.stop_bitvector.get() }
     }
 
@@ -322,7 +335,10 @@ impl JitAllocatorBlock {
             true,
         );
 
-        // SAFETY: Done inside JitAllocator behind mutex and pool is valid.
+        // SAFETY: `self.pool` is assigned in `new_block` before the block is
+        // published to any list/tree and is never changed afterwards. The pool
+        // is owned by the `JitAllocatorState` that owns this block, and freed
+        // only after every block is removed in `Drop`, so it is live here.
         unsafe {
             (*self.pool).total_area_used += allocated_area_size as usize;
         }
@@ -349,7 +365,9 @@ impl JitAllocatorBlock {
     fn mark_released_area(&self, released_area_start: u32, released_area_end: u32) {
         let released_area_size = released_area_end - released_area_start;
 
-        // SAFETY: Done behind mutex and pool is valid.
+        // SAFETY: same invariant as `mark_allocated_area`: `self.pool` is live
+        // and owned by the allocator state that owns this block, and all
+        // mutations are serialized through `RefCell::borrow_mut`.
         unsafe {
             (*self.pool).total_area_used -= released_area_size as usize;
         }
@@ -390,7 +408,9 @@ impl JitAllocatorBlock {
         assert!(shrunk_area_start != 0);
         assert!(shrunk_area_end <= self.area_size());
 
-        // SAFETY: Done behind mutex and pool is valid.
+        // SAFETY: same invariant as `mark_allocated_area`: `self.pool` is live
+        // and owned by the allocator state that owns this block, and all
+        // mutations are serialized through `RefCell::borrow_mut`.
         unsafe {
             (*self.pool).total_area_used -= shrunk_area_size as usize;
         }
@@ -644,13 +664,15 @@ impl JitAllocatorState {
         pool: *mut JitAllocatorPool,
         allocation_size: usize,
     ) -> usize {
+        // SAFETY: callers pass a pointer taken from `self.pools`, which owns the
+        // pool for the lifetime of the state, and call this while holding the
+        // state's exclusive `RefCell` borrow.
         unsafe {
             let last = (*pool).blocks.back();
 
-            let mut block_size = if !last.is_null() {
-                last.get().unwrap().block_size()
-            } else {
-                self.block_size
+            let mut block_size = match last.get() {
+                Some(block) => block.block_size(),
+                None => self.block_size,
             };
 
             if block_size < MAX_BLOCK_SIZE {
@@ -670,11 +692,23 @@ impl JitAllocatorState {
         }
     }
 
+    /// Creates a new block owned by `pool` and maps `block_size` bytes for it.
+    ///
+    /// # Safety
+    ///
+    /// `pool` must be a live pool pointer owned by the same `JitAllocatorState`
+    /// as `self`, and `self` must hold the state's exclusive borrow. The
+    /// returned `Box` owns the only pointer to the block until the caller
+    /// publishes it with [`Self::insert_block`].
     unsafe fn new_block(
         &mut self,
         pool: *mut JitAllocatorPool,
         block_size: usize,
     ) -> Result<Box<JitAllocatorBlock>, AsmError> {
+        // SAFETY: `pool` is live per the function contract; the area size is
+        // computed from the block size and the pool's power-of-two granularity
+        // (validated in `JitAllocatorState::new`), no arithmetic can overflow
+        // because `block_size` is validated to be at most `MAX_BLOCK_SIZE`.
         unsafe {
             let area_size =
                 (block_size + (*pool).granularity as usize - 1) >> (*pool).granularity_log2;
@@ -721,7 +755,20 @@ impl JitAllocatorState {
         }
     }
 
+    /// Destroys `block`, unmapping its memory.
+    ///
+    /// # Safety
+    ///
+    /// `block` must be a pointer previously returned by [`Self::new_block`] (or
+    /// `Box::into_raw` of such a block) that has already been removed from the
+    /// RB tree and its pool's list, and must not be used afterwards.
     unsafe fn delete_block(&mut self, block: *mut JitAllocatorBlock) {
+        // SAFETY: per the contract, `block` is an owned `Box` allocation that is
+        // no longer reachable from any tree/list, so reclaiming it with
+        // `Box::from_raw` is the unique owner. The mapping pointers stored in
+        // the block were produced by `alloc`/`alloc_dual_mapping` and are
+        // released exactly once here, matching the mapping kind recorded in
+        // `FLAG_DUAL_MAPPED`.
         unsafe {
             let mut block = Box::from_raw(block);
             if (block.flags() & JitAllocatorBlock::FLAG_DUAL_MAPPED) != 0 {
@@ -734,7 +781,19 @@ impl JitAllocatorState {
         }
     }
 
+    /// Publishes `block` into the RB tree and its pool's block list.
+    ///
+    /// # Safety
+    ///
+    /// `block` must be a live, uniquely owned pointer from [`Self::new_block`]
+    /// that has not yet been inserted, and `self` must hold the state's
+    /// exclusive borrow. Ownership of the pointer is transferred to the tree
+    /// and list (reclaimed by [`Self::remove_block`]).
     unsafe fn insert_block(&mut self, block: *mut JitAllocatorBlock) {
+        // SAFETY: per the contract `block` is a live uniquely owned allocation;
+        // `b.pool()` was set by `new_block` and points at a live pool, so
+        // `&mut *b.pool()` is a unique borrow. `UnsafeRef::from_raw` hands the
+        // raw pointer to the tree/list, which now own it until removal.
         unsafe {
             let b = &mut *block;
             let pool = &mut *b.pool();
@@ -754,12 +813,28 @@ impl JitAllocatorState {
         }
     }
 
+    /// Removes the block under `block` from the RB tree and its pool list and
+    /// returns its raw pointer, transferring ownership back to the caller.
+    ///
+    /// # Safety
+    ///
+    /// `block` must be a non-null cursor positioned on a block that was
+    /// published by [`Self::insert_block`], and `self` must hold the state's
+    /// exclusive borrow. The returned pointer must be reclaimed exactly once,
+    /// normally with [`Self::delete_block`].
     unsafe fn remove_block(
         &mut self,
         block: &mut intrusive_collections::linked_list::CursorMut<'_, BlockListAdapter>,
     ) -> *mut JitAllocatorBlock {
+        // SAFETY: per the contract the cursor is positioned on a live block
+        // owned by the list; the block's `pool` pointer is still valid because
+        // the pool outlives all of its blocks, and all other accesses happen
+        // under the state's exclusive borrow.
         unsafe {
-            let b = block.get().unwrap();
+            let b = match block.get() {
+                Some(b) => b,
+                None => unreachable!("remove_block is only called on a positioned cursor"),
+            };
             let pool = &mut *b.pool();
 
             if core::ptr::eq(pool.cursor, b) {
@@ -776,8 +851,12 @@ impl JitAllocatorState {
                 rxptr: b.rx_ptr(),
                 block_size: b.block_size as _,
             }) {
+                let removed = match c.remove() {
+                    Some(removed) => removed,
+                    None => unreachable!("an occupied tree entry always yields its block"),
+                };
                 assert_eq!(
-                    UnsafeRef::into_raw(c.remove().unwrap()),
+                    UnsafeRef::into_raw(removed),
                     b as *const _ as *mut JitAllocatorBlock,
                     "blocks are not the same"
                 );
@@ -790,16 +869,34 @@ impl JitAllocatorState {
             pool.total_overhead_bytes -=
                 size_of::<JitAllocatorBlock>() + Self::bitvector_size_to_byte_size(area_size) * 2;
 
-            UnsafeRef::into_raw(block.remove().unwrap())
+            match block.remove() {
+                Some(removed) => UnsafeRef::into_raw(removed),
+                None => unreachable!("a positioned cursor always removes its block"),
+            }
         }
     }
 
+    /// Marks a block as empty, optionally re-filling its memory with the
+    /// allocator fill pattern.
+    ///
+    /// # Safety
+    ///
+    /// `block` must be a non-null cursor positioned on a live block of `self`'s
+    /// tree/list, and `self` must hold the state's exclusive borrow. The block
+    /// must not be in use by any allocation.
     unsafe fn wipe_out_block(
         &mut self,
         block: &mut intrusive_collections::linked_list::CursorMut<'_, BlockListAdapter>,
     ) {
+        // SAFETY: per the contract the cursor is positioned on a live block; its
+        // `pool` pointer stays valid for the block's lifetime, and this runs
+        // under the state's exclusive borrow so the fill writes cannot race
+        // with an allocation.
         unsafe {
-            let b = block.get().unwrap();
+            let b = match block.get() {
+                Some(b) => b,
+                None => unreachable!("wipe_out_block is only called on a positioned cursor"),
+            };
             if (b.flags() & JitAllocatorBlock::FLAG_EMPTY) != 0 {
                 return;
             }
@@ -827,6 +924,11 @@ impl JitAllocatorState {
 
                     let mut n = 0;
                     while n < span_size {
+                        // SAFETY (inside the outer `unsafe` block): `span_ptr`
+                        // points into the block's RW mapping, `n` stays below
+                        // `span_size` (the span length in bytes), and the span
+                        // is granularity-aligned so each 4-byte write is in
+                        // bounds and `u32`-aligned.
                         *span_ptr.add(n).cast::<u32>() = self.fill_pattern;
                         n += size_of::<u32>();
                     }
@@ -835,7 +937,10 @@ impl JitAllocatorState {
                 }
             });
 
-            let b = block.get().unwrap();
+            let b = match block.get() {
+                Some(b) => b,
+                None => unreachable!("the cursor still points at the wiped block"),
+            };
             b.used_bitvector_mut().fill(0);
             b.stop_bitvector_mut().fill(0);
 
@@ -861,6 +966,10 @@ impl JitAllocatorState {
         let pool_count = self.pools.len();
 
         for pool_id in 0..pool_count {
+            // SAFETY: `self.pools` is an owned slice of heap pools that are freed
+            // only in `Drop for JitAllocatorState` (after a final hard reset);
+            // `pool_id` is in bounds. Taking `&mut` is exclusive because this
+            // method has `&mut self`.
             let pool = unsafe { &mut *self.pools[pool_id] };
             let block_to_keep =
                 if reset_policy != ResetPolicy::Hard && !self.options.immediate_release {
@@ -873,12 +982,19 @@ impl JitAllocatorState {
                     None
                 };
 
+            // SAFETY: every block in `pool.blocks` was published by
+            // `insert_block` and is uniquely owned by this list. `remove_block`
+            // unlinks and returns each one, after which `delete_block` reclaims
+            // it; `block_to_keep` points at a block left in the list, and the
+            // caller's contract guarantees no other code or thread is using it.
             unsafe {
                 let mut cursor = pool.blocks.cursor_mut();
                 cursor.move_next();
                 while !cursor.is_null() {
-                    let block =
-                        cursor.get().unwrap() as *const JitAllocatorBlock as *mut JitAllocatorBlock;
+                    let block = match cursor.get() {
+                        Some(block) => block as *const JitAllocatorBlock as *mut JitAllocatorBlock,
+                        None => unreachable!("a non-null cursor always has a current block"),
+                    };
                     if Some(block) != block_to_keep {
                         let block = self.remove_block(&mut cursor);
                         self.delete_block(block);
@@ -888,6 +1004,9 @@ impl JitAllocatorState {
                 }
 
                 if let Some(block) = block_to_keep {
+                    // SAFETY: `block_to_keep` is still linked in `pool.blocks`
+                    // (it was skipped above), so a cursor can be constructed
+                    // from its pointer.
                     let mut cursor = pool.blocks.cursor_mut_from_ptr(&*block);
                     self.wipe_out_block(&mut cursor);
                     pool.cursor = block;
@@ -927,6 +1046,10 @@ impl JitAllocatorState {
             return Err(AsmError::TooLarge);
         }
 
+        // SAFETY: `self.pools` owns live pools; `pool_id` is in bounds; every
+        // pointer stored in `allocation_ids` and the block fields was produced
+        // by previous `alloc`/`insert_block` calls under the same exclusive
+        // borrow, so the reachability and liveness invariants below hold.
         unsafe {
             let pool_id = self.size_to_pool_id(size);
             let pool = &mut *self.pools[pool_id];
@@ -938,7 +1061,10 @@ impl JitAllocatorState {
             block.move_next();
             if let Some(initial) = block.get().map(|x| x as *const JitAllocatorBlock) {
                 loop {
-                    let b = block.get().unwrap();
+                    let b = match block.get() {
+                        Some(b) => b,
+                        None => unreachable!("the cursor was positioned on a block"),
+                    };
 
                     if b.area_available() >= area_size
                         && (b.is_dirty() || b.largest_unused_area() >= area_size)
@@ -1020,20 +1146,32 @@ impl JitAllocatorState {
 
                     block = Some(&*nblock);
                 }
-            } else if (block.unwrap().flags() & JitAllocatorBlock::FLAG_EMPTY) != 0 {
-                pool.empty_block_count -= 1;
-                block.unwrap().clear_flags(JitAllocatorBlock::FLAG_EMPTY);
+            } else {
+                let b = match block {
+                    Some(b) => b,
+                    None => unreachable!("area_index was found in an existing block"),
+                };
+                if (b.flags() & JitAllocatorBlock::FLAG_EMPTY) != 0 {
+                    pool.empty_block_count -= 1;
+                    b.clear_flags(JitAllocatorBlock::FLAG_EMPTY);
+                }
             }
 
             self.allocation_count += 1;
             self.next_allocation_id = allocation_id;
 
-            let block = block.unwrap();
+            let block = match block {
+                Some(block) => block,
+                None => unreachable!("a block is selected when area_index is valid"),
+            };
 
             block.mark_allocated_area(area_index, area_index + area_size);
 
             let offset = pool.byte_size_from_area_size(area_index);
 
+            // SAFETY: `offset` is the byte offset of the freshly marked area
+            // inside the block, so it is within `block_size`; both `rx` and `rw`
+            // point at the start of a live mapping of at least that size.
             let rx = block.rx_ptr().add(offset);
             let rw = block.rw_ptr().add(offset);
             self.allocation_ids.insert(rx as usize, allocation_id);
@@ -1050,15 +1188,26 @@ impl JitAllocatorState {
 
     /// Releases the memory allocated by `alloc`.
     ///
-    /// # SAFETY
-    /// - `rx_ptr` must have been returned from `alloc`
-    /// - `rx_ptr` must have been allocaetd from this allocator
-    /// - `rx_ptr` must not have been passed to `release` before
-    /// - `rx_ptr` must point to read-execute part of memory returned from `alloc`.
+    /// # Safety
+    ///
+    /// - `rx_ptr` must have been returned from `alloc` on this allocator.
+    /// - `rx_ptr` must not have been passed to `release`/`shrink` before.
+    /// - `rx_ptr` must point to the read-execute mapping returned by `alloc`,
+    ///   and no pointer into the released area may be used afterwards.
     pub unsafe fn release(&mut self, rx_ptr: *const u8) -> Result<(), AsmError> {
+        // SAFETY: forwarding the caller's contract unchanged.
         unsafe { self.release_with_id(rx_ptr, None) }
     }
 
+    /// Releases a specific allocation, verifying `allocation_id` when present.
+    ///
+    /// # Safety
+    ///
+    /// Same contract as [`Self::release`]: the pointer must identify a live
+    /// allocation of this allocator, and the allocation must not be used after
+    /// the call. When `allocation_id` is `Some`, it must be the ID recorded for
+    /// that allocation, so a stale [`Span`] cannot release a later allocation
+    /// that reuses the same address.
     unsafe fn release_with_id(
         &mut self,
         rx_ptr: *const u8,
@@ -1084,6 +1233,13 @@ impl JitAllocatorState {
             return Err(AsmError::InvalidState);
         };
 
+        // SAFETY: `block` was located in the RB tree, so it is live and owned by
+        // this state; `block.pool` was set by `new_block` at the pool that owns
+        // the block, which outlives it. `allocation_ids` proves `rx_ptr` belongs
+        // to this block, so the offset arithmetic stays inside the mapping and
+        // the bitvector probes are in bounds. The fill writes `area_size`
+        // bytes of the RW mapping, and the raw pointers are advanced by that
+        // allocation's exact offset.
         unsafe {
             let pool = &mut *block.pool;
 
@@ -1142,15 +1298,17 @@ impl JitAllocatorState {
     }
     /// Shrinks the memory allocated by `alloc`.
     ///
-    /// # SAFETY
+    /// # Safety
     ///
-    /// `rx_ptr` must be a pointer returned by `alloc`.
+    /// `rx_ptr` must identify a live allocation returned by `alloc` on this
+    /// allocator; no pointer into the released tail may be used afterwards.
     pub unsafe fn shrink(&mut self, rx_ptr: *const u8, new_size: usize) -> Result<(), AsmError> {
         if rx_ptr.is_null() {
             return Err(AsmError::InvalidArgument);
         }
 
         if new_size == 0 {
+            // SAFETY: forwarding the caller's contract unchanged.
             return unsafe { self.release(rx_ptr) };
         }
 
@@ -1165,6 +1323,11 @@ impl JitAllocatorState {
             return Err(AsmError::InvalidArgument);
         };
 
+        // SAFETY: `block` was located in the RB tree, so it is live; `block.pool`
+        // points at the live owning pool. The bitvector probes are bounded by
+        // the allocation start/end checks, and the fill range lies inside the
+        // retained allocation's mapping, so the raw pointer arithmetic is in
+        // bounds and the flush covers exactly the shrunk tail.
         unsafe {
             let pool = &mut *block.pool;
             let offset = rx_ptr as usize - block.rx_ptr() as usize;
@@ -1227,6 +1390,10 @@ impl JitAllocatorState {
             return Err(AsmError::InvalidArgument);
         };
 
+        // SAFETY: `block` was located in the RB tree, so it is live; `block.pool`
+        // points at its live owning pool. `rx_ptr` lies inside the block because
+        // `BlockKey` ordered it there, so the offset is in bounds and the
+        // bitvector probes/pointers stay inside the mapping.
         unsafe {
             let pool = &mut *block.pool;
             let offset = rx_ptr as usize - block.rx_ptr() as usize;
@@ -1274,6 +1441,11 @@ impl JitAllocatorState {
 
 impl Drop for JitAllocatorState {
     fn drop(&mut self) {
+        // SAFETY: this is the unique owner of `self.pools`; reset removes and
+        // deletes every block from every pool (guaranteed to have `&mut self`,
+        // so no other user of the mappings can exist), after which each pool
+        // `Box` is reclaimed exactly once. No `Span` can be alive here because
+        // spans hold an `Rc` to the state and keep it from being dropped.
         unsafe {
             self.reset(ResetPolicy::Hard);
             for pool in &mut self.pools {
@@ -1307,6 +1479,9 @@ impl JitAllocator {
     /// The caller must ensure that no code or pointer from an existing span is
     /// used after this call. Existing spans remain safe to drop.
     pub unsafe fn reset(&mut self, reset_policy: ResetPolicy) {
+        // SAFETY: forwarding the caller's contract; `borrow_mut` gives the state
+        // exclusive access and cannot already be borrowed (no `Span` method
+        // holds a borrow across a call into user code).
         unsafe { self.state.borrow_mut().reset(reset_policy) }
     }
 
@@ -1335,6 +1510,7 @@ impl JitAllocator {
     /// [`Span`] may only be dropped; its allocation ID prevents it from
     /// releasing a later allocation that reuses the same address.
     pub unsafe fn release(&mut self, rx_ptr: *const u8) -> Result<(), AsmError> {
+        // SAFETY: forwarding the caller's contract unchanged.
         unsafe { self.state.borrow_mut().release(rx_ptr) }
     }
 
@@ -1345,6 +1521,7 @@ impl JitAllocator {
     /// `rx_ptr` must identify a live allocation from this allocator and no
     /// pointer into the released tail may be used after this call.
     pub unsafe fn shrink(&mut self, rx_ptr: *const u8, new_size: usize) -> Result<(), AsmError> {
+        // SAFETY: forwarding the caller's contract unchanged.
         unsafe { self.state.borrow_mut().shrink(rx_ptr, new_size) }
     }
 
@@ -1373,6 +1550,9 @@ impl JitAllocator {
 
         span.icache_clean = false;
         virtual_memory::with_jit_write_access(|| write_func(span));
+        // SAFETY: `span` was validated against this allocator above, so `rx()`
+        // and `size()` describe a live mapped allocation; the caller guarantees
+        // no thread is executing it during the write.
         unsafe { flush_instruction_cache(span.rx(), span.size())? };
         span.icache_clean = true;
         Ok(())
@@ -1402,16 +1582,28 @@ impl JitAllocator {
 
         span.icache_clean = false;
         virtual_memory::with_jit_write_access(|| unsafe {
+            // SAFETY: `validate_span` proved `span` is a live allocation of this
+            // allocator and `offset + slice.len()` was bounds-checked against
+            // `span.size()`, so both pointers stay inside the RW mapping for the
+            // duration of the non-overlapping copy.
             span.rw()
                 .add(offset)
                 .copy_from_nonoverlapping(slice.as_ptr(), slice.len());
         });
+        // SAFETY: the same validated span and in-bounds range are flushed; the
+        // newly written bytes are now visible to instruction fetch.
         unsafe { flush_instruction_cache(span.rx().add(offset), slice.len())? };
         span.icache_clean = true;
         Ok(())
     }
 }
 
+/// Fills `size_in_bytes` of `mem` (rounded down to 4-byte units) with `pattern`.
+///
+/// # Safety
+///
+/// `mem` must be valid for writes of `size_in_bytes / 4 * 4` bytes and must be
+/// aligned at least to `u32`.
 #[inline]
 unsafe fn fill_pattern(mem: *mut u8, pattern: u32, size_in_bytes: usize) {
     let n = size_in_bytes / 4;
@@ -1419,6 +1611,8 @@ unsafe fn fill_pattern(mem: *mut u8, pattern: u32, size_in_bytes: usize) {
     let p = mem as *mut u32;
 
     for i in 0..n {
+        // SAFETY: `i < n`, so `p.add(i)` is within the first `n * 4` bytes, which
+        // the caller guarantees are writable and aligned for `u32`.
         unsafe {
             p.add(i).write(pattern);
         }
@@ -1452,6 +1646,11 @@ impl core::fmt::Debug for Span {
 
 impl Drop for Span {
     fn drop(&mut self) {
+        // SAFETY: `self.rx` was returned by `alloc` on the same state that
+        // `self.owner` points to, and this `Span` is the unique owner of that
+        // allocation (it is neither `Clone` nor `Copy`). `allocation_id` makes
+        // the release a no-op if the allocation was already released explicitly
+        // and the address was reused, so a stale span cannot free new memory.
         let _ = unsafe {
             self.owner
                 .borrow_mut()

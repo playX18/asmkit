@@ -1031,6 +1031,10 @@ fn query_rw_info_internal(
 
 #[cfg(all(test, feature = "x86"))]
 mod tests {
+    // `clippy.toml`'s allow-*-in-tests covers `#[test]` functions, but not the
+    // shared helpers in this module; panicking is fine throughout test code.
+    #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
+
     use super::*;
     use crate::core::globals::InstOptions;
     use crate::core::inst::Inst;

@@ -209,6 +209,7 @@ mod builder_tests {
 
 #[cfg(all(test, feature = "aarch64"))]
 mod tests {
+    #![allow(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
     use super::*;
     use crate::aarch64::instdb::InstId;
     use crate::aarch64::*;

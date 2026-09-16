@@ -10,6 +10,9 @@ pub fn get_tick_count() -> u32 {
             use core::mem::MaybeUninit;
             let mut ts: MaybeUninit<libc::timespec> = MaybeUninit::zeroed();
 
+            // SAFETY: `CLOCK_MONOTONIC` is a valid clock id and `ts` is a valid
+            // pointer to writable storage. The call fills `ts` before
+            // `assume_init`, and the return value is checked first.
             unsafe {
                 if libc::clock_gettime(libc::CLOCK_MONOTONIC, ts.as_mut_ptr()) != 0 {
                     return 0;

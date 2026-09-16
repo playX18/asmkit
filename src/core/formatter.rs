@@ -12,6 +12,6 @@ impl FormatterOutput for alloc::string::String {
     }
 
     fn write_fmt(&mut self, args: core::fmt::Arguments<'_>) {
-        core::fmt::write(self, args).unwrap();
+        let _ = core::fmt::write(self, args);
     }
 }

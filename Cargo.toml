@@ -4,10 +4,10 @@ version = "0.5.0"
 edition = "2024"
 rust-version = "1.85"
 license = "MIT OR Apache-2.0"
-readme = "README.md"
 description = "Portable assembler toolkit for encoding x86/x64, AArch64, and RISC-V"
 repository = "https://codeberg.org/playXE/asmkit"
 keywords = ["assembler", "asm", "jit", "riscv", "x86"]
+authors = ["Adel Prokurov <adel.prokurov@gmail.com>"]
 
 [lib]
 name = "asmkit"
@@ -15,8 +15,8 @@ name = "asmkit"
 [dependencies]
 smallvec = "1.13"
 libc = { version = "0.2.162", optional = true, default-features = false }
-cfgenius = "0.1"
-intrusive-collections = "0.9"
+cfgenius = { version = "0.1", optional = true }
+intrusive-collections = { version = "0.9", optional = true }
 errno = { version = "0.3.9", optional = true, default-features = false }
 paste = "1.0"
 num-traits = { version = "0.2.19", default-features = false }
@@ -39,7 +39,13 @@ default = ["x86", "riscv", "aarch64"]
 x86 = []
 riscv = []
 aarch64 = []
-jit = ["wasmtime-jit-icache-coherence", "libc", "errno"]
+jit = [
+	"wasmtime-jit-icache-coherence",
+	"libc",
+	"errno",
+	"cfgenius",
+	"intrusive-collections",
+]
 # Exposes instruction-database metadata used by the exhaustive validation suites.
 validation = []
 
@@ -62,6 +68,10 @@ required-features = ["x86", "riscv", "aarch64", "jit"]
 
 [[example]]
 name = "patch"
+required-features = ["x86", "jit"]
+
+[[example]]
+name = "reloc"
 required-features = ["x86", "jit"]
 
 

@@ -13,7 +13,7 @@
 //! Default operand types available across all backends. All Operands derive from [`Operand`] and all of them
 //! must be of the same size and downcast-able/upcast-able from/to Operand itself.
 use core::ops::{BitAnd, BitOr, BitXor, Deref, DerefMut};
-use num_traits::{FromPrimitive, ToPrimitive};
+use num_traits::FromPrimitive;
 
 use super::{globals::INVALID_ID, support::bitmask_from_bool, types::TypeId};
 
@@ -1495,8 +1495,8 @@ impl Imm {
         self.is_int() && self.data[DATA_IMM_VALUE_HI] == 0
     }
 
-    pub fn value_as<T: FromPrimitive>(&self) -> T {
-        T::from_i64(self.value()).unwrap()
+    pub fn value_as<T: FromPrimitive>(&self) -> Option<T> {
+        T::from_i64(self.value())
     }
 
     pub fn int32_lo(&self) -> i32 {
@@ -1515,8 +1515,7 @@ impl Imm {
         self.data[DATA_IMM_VALUE_HI]
     }
 
-    pub fn set_value<T: ToPrimitive>(&mut self, val: T) {
-        let value = val.to_i64().unwrap();
+    pub fn set_value(&mut self, value: i64) {
         self.data[DATA_IMM_VALUE_LO] = value as u32;
         self.data[DATA_IMM_VALUE_HI] = (value >> 32) as u32;
         self.set_type(ImmType::Int);
@@ -1529,23 +1528,23 @@ impl Imm {
     }
 
     pub fn sign_extend_8_bits(&mut self) {
-        self.set_value(self.value_as::<i8>() as i64);
+        self.set_value((self.value() as i8) as i64);
     }
 
     pub fn sign_extend_16_bits(&mut self) {
-        self.set_value(self.value_as::<i16>() as i64);
+        self.set_value((self.value() as i16) as i64);
     }
 
     pub fn sign_extend_32_bits(&mut self) {
-        self.set_value(self.value_as::<i32>() as i64);
+        self.set_value((self.value() as i32) as i64);
     }
 
     pub fn zero_extend_8_bits(&mut self) {
-        self.set_value(self.value_as::<u8>() as u64);
+        self.set_value((self.value() as u8) as i64);
     }
 
     pub fn zero_extend_16_bits(&mut self) {
-        self.set_value(self.value_as::<u16>() as u64);
+        self.set_value((self.value() as u16) as i64);
     }
 
     pub fn zero_extend_32_bits(&mut self) {
@@ -1728,6 +1727,17 @@ impl fmt::Display for BaseReg {
 
 #[cfg(test)]
 mod tests {
+    // `clippy.toml`'s allow-*-in-tests covers `#[test]` functions, but not the
+    // shared helpers in this module; panicking is fine throughout test code.
+    // The trailing `Display` impls are pre-existing file organization; moving
+    // them ahead of the tests would churn the file for no functional gain.
+    #![allow(
+        clippy::unwrap_used,
+        clippy::expect_used,
+        clippy::panic,
+        clippy::items_after_test_module
+    )]
+
     use super::*;
 
     #[test]
