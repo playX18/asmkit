@@ -137,6 +137,8 @@ impl<'a> Assembler<'a> {
 
     pub fn patchable_j(&mut self, label: Label) -> PatchableSite {
         if self.buffer.error().is_some() {
+            // SAFETY: poisoned handle for an error path; `u32::MAX` is not a
+            // valid offset into any real image, so applying it fails bounds checks.
             return unsafe { PatchableSite::new(u32::MAX, LabelUse::RVJal20, 0) };
         }
         let checkpoint = self.buffer.checkpoint();
@@ -147,6 +149,8 @@ impl<'a> Assembler<'a> {
             .record_label_patch_site(offset, label, LabelUse::RVJal20);
         if self.buffer.error().is_some() {
             self.buffer.rollback(checkpoint);
+            // SAFETY: poisoned handle for an error path; `u32::MAX` is not a
+            // valid offset into any real image, so applying it fails bounds checks.
             return unsafe { PatchableSite::new(u32::MAX, LabelUse::RVJal20, 0) };
         }
         // SAFETY: `j` emits a JAL-style instruction at `offset`.
@@ -155,6 +159,8 @@ impl<'a> Assembler<'a> {
 
     pub fn patchable_call(&mut self, label: Label) -> PatchableSite {
         if self.buffer.error().is_some() {
+            // SAFETY: poisoned handle for an error path; `u32::MAX` is not a
+            // valid offset into any real image, so applying it fails bounds checks.
             return unsafe { PatchableSite::new(u32::MAX, LabelUse::RVJal20, 0) };
         }
         let checkpoint = self.buffer.checkpoint();
@@ -165,6 +171,8 @@ impl<'a> Assembler<'a> {
             .record_label_patch_site(offset, label, LabelUse::RVJal20);
         if self.buffer.error().is_some() {
             self.buffer.rollback(checkpoint);
+            // SAFETY: poisoned handle for an error path; `u32::MAX` is not a
+            // valid offset into any real image, so applying it fails bounds checks.
             return unsafe { PatchableSite::new(u32::MAX, LabelUse::RVJal20, 0) };
         }
         // SAFETY: `jal` emits a JAL instruction at `offset`.
@@ -181,32 +189,38 @@ impl<'a> Assembler<'a> {
         let arch = self.buffer.env().arch();
         let value = imm.into();
         if self.buffer.error().is_some() {
+            // SAFETY: poisoned handle for an error path; the sentinel offset is
+            // rejected by the bounds checks when applied.
             return unsafe { PatchableBlock::new(u32::MAX, 4, arch) };
         }
         let checkpoint = self.buffer.checkpoint();
 
         if self.is_32bit() {
             self.auipc(rd, crate::core::operand::imm(0));
-            self.lw(rd, rd, crate::core::operand::imm(8));
+            self.lw(rd, rd, crate::core::operand::imm(12));
             self.jal(ZERO, crate::core::operand::imm(8));
             let lit = self.buffer.cur_offset();
             self.buffer.write_u32(value as u32);
             let _ = self.buffer.record_patch_block(lit, 4, 4);
             if self.buffer.error().is_some() {
                 self.buffer.rollback(checkpoint);
+                // SAFETY: poisoned handle for the rollback path; the sentinel
+                // offset is rejected by the bounds checks when applied.
                 return unsafe { PatchableBlock::new(u32::MAX, 4, arch) };
             }
             // SAFETY: literal word recorded as a patch block at `lit`.
             unsafe { PatchableBlock::new(lit, 4, arch) }
         } else {
             self.auipc(rd, crate::core::operand::imm(0));
-            self.ld(rd, rd, crate::core::operand::imm(8));
+            self.ld(rd, rd, crate::core::operand::imm(12));
             self.jal(ZERO, crate::core::operand::imm(12));
             let lit = self.buffer.cur_offset();
             self.buffer.write_u64(value as u64);
             let _ = self.buffer.record_patch_block(lit, 8, 4);
             if self.buffer.error().is_some() {
                 self.buffer.rollback(checkpoint);
+                // SAFETY: poisoned handle for the rollback path; the sentinel
+                // offset is rejected by the bounds checks when applied.
                 return unsafe { PatchableBlock::new(u32::MAX, 8, arch) };
             }
             // SAFETY: literal dword recorded as a patch block at `lit`.
@@ -1371,8 +1385,8 @@ impl<'a> Assembler<'a> {
             Encoding::RdRs2 => {
                 if isign3 == enc_ops2!(Reg, Reg) {
                     let rd = ops[0].id();
-                    let rs1 = ops[1].id();
-                    inst = inst.set_rd(rd).set_rs1(rs1);
+                    let rs2 = ops[1].id();
+                    inst = inst.set_rd(rd).set_rs2(rs2);
                 } else {
                     self.last_error = Some(AsmError::InvalidOperand);
                     return;
@@ -2647,10 +2661,21 @@ mod tests {
             &code.data()[block.offset() as usize..][..8],
             &0x1122_3344_5566_7788u64.to_le_bytes()
         );
+        // The `ld` must read the literal at `auipc + 12`, not the `jal`
+        // that skips over it.
+        let ld = u32::from_le_bytes([
+            code.data()[4],
+            code.data()[5],
+            code.data()[6],
+            code.data()[7],
+        ]);
+        assert_eq!(((ld as i32) >> 20) & 0xFFF, 12);
 
         let mut bytes = code.data().to_vec();
         unsafe {
-            block.repatch_u64(&mut bytes, 0xAABB_CCDD_EEFF_0011).unwrap();
+            block
+                .repatch_u64(&mut bytes, 0xAABB_CCDD_EEFF_0011)
+                .unwrap();
         }
         assert_eq!(
             &bytes[block.offset() as usize..][..8],
