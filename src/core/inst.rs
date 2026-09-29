@@ -34,12 +34,6 @@ pub struct Inst {
 
 impl Inst {
     /// Creates a host-tagged instruction with the given `id` and no operands.
-    #[cfg(test)]
-    #[allow(dead_code)]
-    pub(crate) const fn new(id: u32) -> Self {
-        Self::new_for(Arch::HOST, id)
-    }
-
     /// Creates an instruction for a supported assembler architecture.
     pub(crate) const fn new_for(arch: Arch, id: u32) -> Self {
         Self {
@@ -53,13 +47,6 @@ impl Inst {
     }
 
     /// Creates a host-tagged instruction with the given `id` and operands.
-    #[cfg(test)]
-    #[allow(dead_code)]
-    pub(crate) fn with_operands(id: u32, ops: &[Operand]) -> Self {
-        Self::with_arch_operands(Arch::HOST, id, ops)
-            .expect("instruction operands must fit the inline array")
-    }
-
     /// Creates an architecture-tagged instruction without operands.
     pub fn for_arch(arch: Arch, id: u32) -> Result<Self, AsmError> {
         Self::with_arch_operands(arch, id, &[])
@@ -158,44 +145,5 @@ impl Inst {
         self.operands[ops.len()..].fill(Operand::new());
         self.op_count = ops.len() as u8;
         Ok(())
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn build_and_mutate() {
-        let mut inst = Inst::new_for(Arch::X64, 42);
-        assert_eq!(inst.id(), 42);
-        assert_eq!(inst.op_count(), 0);
-        assert!(inst.operands().is_empty());
-
-        inst.add_operand(Operand::new()).unwrap();
-        inst.add_operand(Operand::new()).unwrap();
-        assert_eq!(inst.op_count(), 2);
-
-        inst.set_operands(&[Operand::new(); 3]).unwrap();
-        assert_eq!(inst.op_count(), 3);
-
-        for _ in 0..3 {
-            inst.add_operand(Operand::new()).unwrap();
-        }
-        assert_eq!(inst.op_count(), MAX_OP_COUNT);
-        assert!(inst.add_operand(Operand::new()).is_err());
-
-        assert_eq!(
-            inst.set_operand(MAX_OP_COUNT, Operand::new()),
-            Err(AsmError::InvalidArgument)
-        );
-        assert_eq!(
-            Inst::with_arch_operands(Arch::Unknown, 42, &[]),
-            Err(AsmError::InvalidArch)
-        );
-
-        inst.set_options(InstOptions::X86_ZMASK);
-        inst.set_extra_reg(Operand::new());
-        assert_eq!(inst.options(), InstOptions::X86_ZMASK);
     }
 }

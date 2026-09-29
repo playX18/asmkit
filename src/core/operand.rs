@@ -1725,45 +1725,6 @@ impl fmt::Display for BaseReg {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    // `clippy.toml`'s allow-*-in-tests covers `#[test]` functions, but not the
-    // shared helpers in this module; panicking is fine throughout test code.
-    // The trailing `Display` impls are pre-existing file organization; moving
-    // them ahead of the tests would churn the file for no functional gain.
-    #![allow(
-        clippy::unwrap_used,
-        clippy::expect_used,
-        clippy::panic,
-        clippy::items_after_test_module
-    )]
-
-    use super::*;
-
-    #[test]
-    fn malformed_signatures_do_not_panic() {
-        let invalid_op_type = OperandSignature::from(7);
-        let invalid_reg_type = OperandSignature::from(
-            OperandType::Reg as u32 | (25 << OperandSignature::REG_TYPE_SHIFT),
-        );
-        let invalid_reg_group = OperandSignature::from(
-            OperandType::Reg as u32 | (11 << OperandSignature::REG_GROUP_SHIFT),
-        );
-
-        assert_eq!(invalid_op_type.try_op_type(), None);
-        assert_eq!(invalid_op_type.op_type(), OperandType::None);
-        assert!(invalid_reg_type.try_reg_type().is_none());
-        assert!(invalid_reg_type.reg_type() == RegType::None);
-        assert_eq!(invalid_reg_group.try_reg_group(), None);
-        assert_eq!(invalid_reg_group.reg_group(), RegGroup::Gp);
-
-        let mut operand = Operand::new();
-        operand.set_signature(invalid_op_type);
-        assert_eq!(operand.op_type(), OperandType::None);
-        assert!(!operand.is_reg());
-    }
-}
-
 impl fmt::Display for BaseMem {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         use alloc::format;

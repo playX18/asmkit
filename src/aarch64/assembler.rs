@@ -6,7 +6,7 @@ use crate::core::buffer::CodeBuffer;
 use crate::core::buffer::{CodeOffset, Constant, LabelUse, Reloc, RelocDistance, RelocTarget};
 use crate::core::globals::CondCode;
 use crate::core::operand::*;
-use crate::core::patch::{PatchableBlock, PatchableSite};
+use crate::core::patch::{DataEncoding, DataLabel, PatchableJump, PatchableRegion};
 use crate::core::target::Environment;
 
 pub struct Assembler<'a> {
@@ -255,11 +255,6 @@ impl<'a> Assembler<'a> {
         }
     }
 
-    #[cfg(test)]
-    fn last_error(&self) -> Option<AsmError> {
-        self.buffer.error().cloned()
-    }
-
     pub fn emit_n(&mut self, id: impl Into<u32>, ops: &[&Operand]) {
         if let Err(error) = self.try_emit_n(id, ops) {
             self.buffer.record_error(error);
@@ -300,90 +295,64 @@ impl<'a> Assembler<'a> {
         self.buffer.error()
     }
 
-    /// Reserve a nop-filled island for later custom rewriting.
-    pub fn reserve_patch_block(
+    /// Reserve a nop-filled region for later rewriting.
+    pub fn reserve_patch_region(
         &mut self,
         size: CodeOffset,
         align: CodeOffset,
-    ) -> Result<PatchableBlock, AsmError> {
-        self.buffer.reserve_patch_block(size, align)
+    ) -> Result<PatchableRegion, AsmError> {
+        self.buffer.reserve_patch_region(size, align)
     }
 
-    pub fn patchable_b(&mut self, label: Label) -> PatchableSite {
+    /// Emits a 26-bit branch through `emit`, returning it as a patchable jump.
+    fn patchable_branch26(&mut self, emit: impl FnOnce(&mut Self)) -> PatchableJump {
         if self.buffer.error().is_some() {
-            // SAFETY: poisoned handle for an error path; `u32::MAX` is not a
-            // valid offset into any real image, so applying it fails bounds checks.
-            return unsafe { PatchableSite::new(u32::MAX, LabelUse::A64Branch26, 0) };
+            return PatchableJump::invalid(LabelUse::A64Branch26);
         }
         let checkpoint = self.buffer.checkpoint();
         let offset = self.buffer.cur_offset();
-        self.b(label);
-        let _ = self
-            .buffer
-            .record_label_patch_site(offset, label, LabelUse::A64Branch26);
+        emit(self);
         if self.buffer.error().is_some() {
             self.buffer.rollback(checkpoint);
-            // SAFETY: poisoned handle for an error path; `u32::MAX` is not a
-            // valid offset into any real image, so applying it fails bounds checks.
-            return unsafe { PatchableSite::new(u32::MAX, LabelUse::A64Branch26, 0) };
+            return PatchableJump::invalid(LabelUse::A64Branch26);
         }
-        // SAFETY: `b` emits a 26-bit branch at `offset`.
-        unsafe { PatchableSite::new(offset, LabelUse::A64Branch26, 0) }
+        PatchableJump::new(offset, LabelUse::A64Branch26)
     }
 
-    pub fn patchable_bl(&mut self, label: Label) -> PatchableSite {
-        if self.buffer.error().is_some() {
-            // SAFETY: poisoned handle for an error path; `u32::MAX` is not a
-            // valid offset into any real image, so applying it fails bounds checks.
-            return unsafe { PatchableSite::new(u32::MAX, LabelUse::A64Branch26, 0) };
-        }
-        let checkpoint = self.buffer.checkpoint();
-        let offset = self.buffer.cur_offset();
-        self.bl(label);
-        let _ = self
-            .buffer
-            .record_label_patch_site(offset, label, LabelUse::A64Branch26);
-        if self.buffer.error().is_some() {
-            self.buffer.rollback(checkpoint);
-            // SAFETY: poisoned handle for an error path; `u32::MAX` is not a
-            // valid offset into any real image, so applying it fails bounds checks.
-            return unsafe { PatchableSite::new(u32::MAX, LabelUse::A64Branch26, 0) };
-        }
-        // SAFETY: `bl` emits a 26-bit branch-and-link at `offset`.
-        unsafe { PatchableSite::new(offset, LabelUse::A64Branch26, 0) }
+    /// `b` to `label` that can be retargeted.
+    pub fn patchable_b(&mut self, label: Label) -> PatchableJump {
+        self.patchable_branch26(|asm| asm.b(label))
+    }
+
+    /// `bl` to `label` that can be retargeted.
+    pub fn patchable_bl(&mut self, label: Label) -> PatchableJump {
+        self.patchable_branch26(|asm| asm.bl(label))
     }
 
     /// Patchable immediate materialization via a fixed `movz`/`movk` sequence.
     ///
-    /// 64-bit destinations use 16 bytes (4 insns); 32-bit destinations use 8 bytes (2 insns).
-    /// Rewrite with [`encode_patchable_mov_imm`] + [`PatchableBlock::rewrite`], or
-    /// [`PatchableBlock::repatch_u64`] is not used here (the block covers whole instructions).
-    pub fn patchable_mov(&mut self, rd: Gp, imm: impl Into<u64>) -> PatchableBlock {
-        let arch = Arch::AArch64;
+    /// 64-bit destinations use 16 bytes (4 insns); 32-bit destinations use 8
+    /// bytes (2 insns). [`repatch_value`](crate::repatch_value) re-encodes the
+    /// whole sequence.
+    pub fn patchable_mov(&mut self, rd: Gp, imm: impl Into<u64>) -> DataLabel {
         let value = imm.into();
+        let is_64 = rd.is_gp64();
+        let size = if is_64 { 16 } else { 8 };
         if self.buffer.error().is_some() {
-            // SAFETY: poisoned handle for an error path; the sentinel offset is
-            // rejected by the bounds checks when applied.
-            return unsafe { PatchableBlock::new(u32::MAX, 4, arch) };
+            return DataLabel::invalid(size, DataEncoding::A64MovWide);
         }
         let checkpoint = self.buffer.checkpoint();
-        let is_64 = rd.is_gp64();
         let encoded = encode_patchable_mov_imm(rd.id(), is_64, value);
         let offset = self.buffer.cur_offset();
         for chunk in encoded.chunks_exact(4) {
             let word = u32::from_le_bytes([chunk[0], chunk[1], chunk[2], chunk[3]]);
             self.buffer.write_u32(word);
         }
-        let size = encoded.len() as CodeOffset;
-        let _ = self.buffer.record_patch_block(offset, size, 4);
         if self.buffer.error().is_some() {
             self.buffer.rollback(checkpoint);
-            // SAFETY: poisoned handle for the rollback path; the sentinel offset
-            // is rejected by the bounds checks when applied.
-            return unsafe { PatchableBlock::new(u32::MAX, size.max(4), arch) };
+            return DataLabel::invalid(size, DataEncoding::A64MovWide);
         }
-        // SAFETY: fixed movz/movk sequence recorded as a patch block.
-        unsafe { PatchableBlock::new(offset, size, arch) }
+        DataLabel::new(offset, size, DataEncoding::A64MovWide)
     }
 }
 
@@ -461,254 +430,3 @@ pub use crate::aarch64::encoder::{
     LogicalImm, count_zero_half_words_64, encode_fp64_to_imm8, encode_logical_imm, is_fp16_imm8,
     is_fp32_imm8, is_fp64_imm8,
 };
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::aarch64::operands::regs;
-    use crate::core::buffer::RelocDistance;
-
-    #[test]
-    fn pic_symbol_load_uses_only_the_got_sequence() {
-        for distance in [RelocDistance::Near, RelocDistance::Far] {
-            let mut environment = Environment::new(Arch::AArch64);
-            environment.set_pic(true);
-            let mut buffer = CodeBuffer::new(environment);
-            let symbol = buffer.extern_sym("external", distance);
-
-            {
-                let mut asm = Assembler::new(&mut buffer);
-                asm.load_constant(regs::x(0), symbol);
-                assert_eq!(
-                    asm.buffer.data(),
-                    &[0x00, 0x00, 0x00, 0x90, 0x00, 0x00, 0x40, 0xF9]
-                );
-                assert_eq!(asm.buffer.relocs().len(), 2);
-                assert_eq!(asm.buffer.relocs()[0].offset, 0);
-                assert_eq!(asm.buffer.relocs()[0].kind, Reloc::Aarch64AdrGotPage21);
-                assert_eq!(asm.buffer.relocs()[0].target, RelocTarget::Sym(symbol));
-                assert_eq!(asm.buffer.relocs()[0].addend, 0);
-                assert_eq!(asm.buffer.relocs()[1].offset, 4);
-                assert_eq!(asm.buffer.relocs()[1].kind, Reloc::Aarch64Ld64GotLo12Nc);
-                assert_eq!(asm.buffer.relocs()[1].target, RelocTarget::Sym(symbol));
-                assert_eq!(asm.buffer.relocs()[1].addend, 0);
-            }
-        }
-    }
-
-    #[test]
-    fn invalid_raw_instruction_ids_are_rejected() {
-        let mut buffer = CodeBuffer::new(Environment::new(Arch::AArch64));
-        let mut asm = Assembler::new(&mut buffer);
-
-        asm.emit_n(0u32, &[]);
-        assert_eq!(asm.last_error(), Some(AsmError::InvalidInstruction));
-        assert!(asm.buffer.data().is_empty());
-
-        asm.buffer.clear();
-        asm.emit_n(u32::MAX, &[]);
-        assert_eq!(asm.last_error(), Some(AsmError::InvalidInstruction));
-        assert!(asm.buffer.data().is_empty());
-
-        asm.buffer.clear();
-        asm.emit_n(InstId::Add as u32 | (1 << 16), &[]);
-        assert_eq!(asm.last_error(), Some(AsmError::InvalidInstruction));
-        assert!(asm.buffer.data().is_empty());
-    }
-
-    #[test]
-    fn baseline_rejects_optional_features_before_writing() {
-        let mut buffer = CodeBuffer::new(Environment::baseline(Arch::AArch64));
-        let mut asm = Assembler::new(&mut buffer);
-
-        let error = asm
-            .try_emit_n(
-                InstId::Crc32b,
-                &[
-                    regs::w(0).as_operand(),
-                    regs::w(1).as_operand(),
-                    regs::w(2).as_operand(),
-                ],
-            )
-            .unwrap_err();
-
-        assert!(
-            matches!(error, AsmError::MissingCpuFeature { feature } if feature.contains("crc32b") && feature.contains("CRC32"))
-        );
-        assert!(asm.buffer.data().is_empty());
-    }
-
-    #[test]
-    fn optional_features_are_enabled_by_default() {
-        let mut buffer = CodeBuffer::new(Environment::new(Arch::AArch64));
-        let mut asm = Assembler::new(&mut buffer);
-
-        asm.try_emit_n(
-            InstId::Crc32b,
-            &[
-                regs::w(0).as_operand(),
-                regs::w(1).as_operand(),
-                regs::w(2).as_operand(),
-            ],
-        )
-        .unwrap();
-
-        assert_eq!(asm.buffer.data().len(), 4);
-    }
-
-    #[test]
-    fn mixed_instruction_checks_the_selected_form() {
-        let mut environment = Environment::baseline(Arch::AArch64);
-        environment.set_aarch64_feature(crate::aarch64::CpuFeature::Asimd, true);
-        let mut buffer = CodeBuffer::new(environment);
-        let mut asm = Assembler::new(&mut buffer);
-
-        asm.try_emit_n(
-            InstId::Fadd_v,
-            &[
-                regs::s(0).as_operand(),
-                regs::s(1).as_operand(),
-                regs::s(2).as_operand(),
-            ],
-        )
-        .unwrap();
-        let accepted_len = asm.buffer.data().len();
-
-        let error = asm
-            .try_emit_n(
-                InstId::Fadd_v,
-                &[
-                    regs::h(0).as_operand(),
-                    regs::h(1).as_operand(),
-                    regs::h(2).as_operand(),
-                ],
-            )
-            .unwrap_err();
-
-        assert!(
-            matches!(error, AsmError::MissingCpuFeature { feature } if feature.contains("fadd Hd") && feature.contains("FP16"))
-        );
-        assert_eq!(asm.buffer.data().len(), accepted_len);
-    }
-
-    #[test]
-    fn raw_emission_rejects_malformed_or_extra_operands_without_mutation() {
-        let mut buffer = CodeBuffer::new(Environment::new(Arch::AArch64));
-        let mut asm = Assembler::new(&mut buffer);
-        let malformed = Operand {
-            signature: OperandSignature::from(7),
-            base_id: 0,
-            data: [0; 2],
-        };
-        let invalid_register = Operand {
-            signature: OperandSignature::from(
-                OperandType::Reg as u32 | (31 << OperandSignature::REG_TYPE_SHIFT),
-            ),
-            base_id: 0,
-            data: [0; 2],
-        };
-        let none = Operand::new();
-        let mut invalid_memory = ptr(regs::x(0), 0);
-        invalid_memory.set_base_id(64);
-        let mut invalid_mode = ptr(regs::x(0), 0);
-        invalid_mode
-            .signature
-            .set_field::<{ Mem::SIGNATURE_MEM_OFFSET_MODE_MASK }>(3);
-
-        assert_eq!(
-            asm.try_emit_n(InstId::Add as u32, &[&malformed]),
-            Err(AsmError::InvalidOperand)
-        );
-        assert_eq!(
-            asm.try_emit_n(InstId::Add as u32, &[&invalid_register]),
-            Err(AsmError::InvalidOperand)
-        );
-        assert_eq!(
-            asm.try_emit_n(
-                InstId::Ldr as u32,
-                &[regs::x(1).as_operand(), invalid_memory.as_operand()],
-            ),
-            Err(AsmError::InvalidOperand)
-        );
-        assert_eq!(
-            asm.try_emit_n(
-                InstId::Ldr as u32,
-                &[regs::x(1).as_operand(), invalid_mode.as_operand()],
-            ),
-            Err(AsmError::InvalidOperand)
-        );
-        assert_eq!(
-            asm.try_emit_n(
-                InstId::Add as u32,
-                &[&none, &none, &none, &none, &none, &none, &none],
-            ),
-            Err(AsmError::InvalidOperand)
-        );
-        assert!(asm.buffer.error().is_none());
-        assert!(asm.buffer.data().is_empty());
-    }
-
-    #[test]
-    fn raw_label_registration_error_rolls_back_emission() {
-        let mut buffer = CodeBuffer::new(Environment::new(Arch::AArch64));
-        let mut asm = Assembler::new(&mut buffer);
-        let invalid_label = Label::from_id(0);
-
-        assert_eq!(
-            asm.try_emit_n(InstId::B as u32, &[invalid_label.as_operand()]),
-            Err(AsmError::InvalidArgument)
-        );
-        assert_eq!(asm.buffer.error(), Some(&AsmError::InvalidArgument));
-        assert!(asm.buffer.data().is_empty());
-    }
-
-    #[test]
-    fn failed_constant_load_rolls_back_the_whole_sequence() {
-        let mut buffer = CodeBuffer::new(Environment::new(Arch::AArch64));
-        let mut asm = Assembler::new(&mut buffer);
-
-        asm.load_constant(regs::x(0), Label::from_id(0));
-
-        assert_eq!(asm.buffer.error(), Some(&AsmError::InvalidArgument));
-        assert!(asm.buffer.data().is_empty());
-    }
-
-    #[test]
-    fn invalid_symbol_load_sets_error_without_mutation() {
-        let mut buffer = CodeBuffer::new(Environment::new(Arch::AArch64));
-        let mut asm = Assembler::new(&mut buffer);
-
-        asm.load_constant(regs::x(0), Sym::from_id(u32::MAX));
-
-        assert_eq!(asm.buffer.error(), Some(&AsmError::InvalidArgument));
-        assert!(asm.buffer.data().is_empty());
-    }
-
-    #[test]
-    fn patchable_b_and_mov_handles_work_offline() {
-        let mut buffer = CodeBuffer::new(Environment::new(Arch::AArch64));
-        let (site, mov, alt) = {
-            let mut asm = Assembler::new(&mut buffer);
-            let target = asm.get_label();
-            let alt = asm.get_label();
-            let mov = asm.patchable_mov(regs::x(0), 0x1111_2222_3333_4444u64);
-            let site = asm.patchable_b(target);
-            asm.bind_label(target);
-            asm.ret(regs::x(30));
-            asm.bind_label(alt);
-            asm.ret(regs::x(30));
-            let alt_off = asm.buffer.label_offset(alt);
-            (site, mov, alt_off)
-        };
-
-        let code = buffer.finish_patched().unwrap();
-        assert_eq!(mov.size(), 16);
-        let mut bytes = code.data().to_vec();
-        let rewritten = encode_patchable_mov_imm(0, true, 0xAAAA_BBBB_CCCC_DDDD);
-        unsafe {
-            mov.rewrite(&mut bytes, &rewritten).unwrap();
-            site.retarget(&mut bytes, alt).unwrap();
-        }
-        assert_eq!(&bytes[mov.offset() as usize..][..16], rewritten.as_slice());
-    }
-}

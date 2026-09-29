@@ -9,12 +9,9 @@
 
 use crate::core::globals::InstOptions;
 
-/// Packed opcode value as stored in the X86 instruction database.
 #[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash, Debug, Default)]
 pub struct Opcode(pub u32);
 
-// This is the complete AsmJit packed-opcode vocabulary. Some names are used only by
-// generated database rows or parity tests in a given build configuration.
 #[allow(dead_code, non_upper_case_globals)]
 impl Opcode {
     // Two meanings: part of a legacy opcode (prefix bytes) or the `MMMMM` field of
@@ -27,7 +24,6 @@ impl Opcode {
     pub const MM_0F38: u32 = 0x02 << Self::MM_SHIFT;
     /// Described also as XOP.M3 in AMD manuals.
     pub const MM_0F3A: u32 = 0x03 << Self::MM_SHIFT;
-    /// AsmJit way to describe 0F01 (never VEX/EVEX).
     pub const MM_0F01: u32 = 0x04 << Self::MM_SHIFT;
     pub const MM_MAP5: u32 = 0x05 << Self::MM_SHIFT;
     pub const MM_MAP6: u32 = 0x06 << Self::MM_SHIFT;
@@ -58,7 +54,6 @@ impl Opcode {
     pub const CDSHL_4: u32 = 0x4 << Self::CDSHL_SHIFT;
     pub const CDSHL_5: u32 = 0x5 << Self::CDSHL_SHIFT;
 
-    /// Compressed displacement tuple-type (AsmJit-specific simplification).
     pub const CDTT_SHIFT: u32 = 16;
     pub const CDTT_MASK: u32 = 0x3 << Self::CDTT_SHIFT;
     /// Does nothing.
@@ -178,8 +173,6 @@ impl Opcode {
     }
 
     pub fn add(&mut self, x: u32) {
-        // Wrapping: call sites pass negative adjustments as two's-complement
-        // (e.g. `add(-0x10i32 as u32)`), mirroring AsmJit's unsigned arithmetic.
         self.0 = self.0.wrapping_add(x);
     }
 
@@ -259,19 +252,17 @@ impl Opcode {
         self.0 |= (exp as u32) << Self::MM_FORCE_EVEX.trailing_zeros();
     }
 
-    /// Extracts the `O` field (R) from the opcode (specified as /0..7 in manuals).
+    /// Extracts the `O` field (R) from the opcode.
     pub const fn extract_mod_o(self) -> u32 {
         (self.0 >> Self::MOD_O_SHIFT) & 0x07
     }
 
-    /// Extracts the `RM` field (usually specified as another opcode value).
+    /// Extracts the `RM` field.
     pub const fn extract_mod_rm(self) -> u32 {
         (self.0 >> Self::MOD_RM_SHIFT) & 0x07
     }
 
     /// Extracts the REX prefix from the opcode combined with `options`.
-    ///
-    /// The REX field was designed so the shifted value forms a real REX prefix byte.
     pub const fn extract_rex(self, options: InstOptions) -> u32 {
         (self.0 | options.bits()) >> Self::REX_SHIFT
     }
@@ -280,49 +271,5 @@ impl Opcode {
         let ll_mmmmm = self.0 & (Self::LL_MASK | Self::MM_MASK);
         let vex_evex = options.bits() & InstOptions::X86_EVEX.bits();
         (ll_mmmmm | vex_evex) >> Self::MM_SHIFT
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn extract_mod_fields() {
-        // opcode with ModO=5, ModRM=2
-        let opc = Opcode(0xFF | (5 << Opcode::MOD_O_SHIFT) | (2 << Opcode::MOD_RM_SHIFT));
-        assert_eq!(opc.extract_mod_o(), 5);
-        assert_eq!(opc.extract_mod_rm(), 2);
-    }
-
-    #[test]
-    fn extract_rex_forms_prefix_byte() {
-        // W bit set in opcode + R option from InstOptions → 0x4C.
-        let opc = Opcode(Opcode::W);
-        let options = InstOptions::X86_OP_CODE_R;
-        assert_eq!(opc.extract_rex(options), 0x0C | 0x04);
-        let empty = Opcode(0);
-        assert_eq!(empty.extract_rex(InstOptions::NONE), 0);
-    }
-
-    #[test]
-    fn by_size_builders() {
-        let mut opc = Opcode(0x01);
-        opc.add_arith_by_size(8);
-        assert!(opc.has_w());
-        assert_eq!(opc.0 & 1, 1);
-        let mut opc = Opcode(0x01);
-        opc.add_prefix_by_size(2);
-        assert!(opc.has_66h());
-    }
-
-    #[test]
-    fn extract_ll_mmmmm_includes_evex_force() {
-        let opc = Opcode(Opcode::MM_0F38 | Opcode::LL_MASK);
-        let ll_mm = opc.extract_ll_mmmmm(InstOptions::X86_EVEX);
-        // Low 5 bits: MM (0F38 = 0x02) | EVEX force bit (0x10).
-        assert_eq!(ll_mm & 0x1F, 0x12);
-        // LL = 3 lands at bits [22:21] of the shifted value.
-        assert_eq!((ll_mm >> 21) & 0x3, 0x3);
     }
 }

@@ -1,6 +1,6 @@
 [package]
 name = "asmkit-rs"
-version = "0.6.3"
+version = "0.7.0"
 edition = "2024"
 rust-version = "1.85"
 license = "BSD-3-Clause"
@@ -35,7 +35,7 @@ features = [
 ]
 
 [features]
-default = ["x86", "riscv", "aarch64"]
+default = ["x86", "riscv", "aarch64", "jit"]
 x86 = []
 riscv = []
 aarch64 = []

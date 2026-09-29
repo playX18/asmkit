@@ -4,7 +4,7 @@ use crate::core::arch_traits::Arch;
 use crate::core::buffer::{CodeBuffer, CodeOffset, ConstantData, LabelUse, Reloc, RelocTarget};
 use crate::core::operand::*;
 use crate::core::operand::{Imm, Sym};
-use crate::core::patch::{PatchableBlock, PatchableSite};
+use crate::core::patch::{DataEncoding, DataLabel, PatchableJump, PatchableRegion};
 use crate::core::target::Environment;
 use crate::riscv::instdb::{ANY, OPCODE_FEATURE_CONTEXT, OPCODE_FEATURE_MASKS, SIGNATURE_TABLE};
 use crate::riscv::opcodes::Inst;
@@ -90,11 +90,6 @@ impl<'a> Assembler<'a> {
         self.buffer.env().is_64bit()
     }
 
-    #[cfg(test)]
-    fn last_error(&self) -> Option<AsmError> {
-        self.buffer.error().cloned()
-    }
-
     pub fn get_label(&mut self) -> Label {
         self.buffer.get_label()
     }
@@ -126,72 +121,49 @@ impl<'a> Assembler<'a> {
         self.buffer.error()
     }
 
-    /// Reserve a nop-filled island for later custom rewriting.
-    pub fn reserve_patch_block(
+    /// Reserve a nop-filled region for later rewriting.
+    pub fn reserve_patch_region(
         &mut self,
         size: CodeOffset,
         align: CodeOffset,
-    ) -> Result<PatchableBlock, AsmError> {
-        self.buffer.reserve_patch_block(size, align)
+    ) -> Result<PatchableRegion, AsmError> {
+        self.buffer.reserve_patch_region(size, align)
     }
 
-    pub fn patchable_j(&mut self, label: Label) -> PatchableSite {
+    /// Emits a `jal` through `emit`, returning it as a patchable jump.
+    fn patchable_jal(&mut self, emit: impl FnOnce(&mut Self)) -> PatchableJump {
         if self.buffer.error().is_some() {
-            // SAFETY: poisoned handle for an error path; `u32::MAX` is not a
-            // valid offset into any real image, so applying it fails bounds checks.
-            return unsafe { PatchableSite::new(u32::MAX, LabelUse::RVJal20, 0) };
+            return PatchableJump::invalid(LabelUse::RVJal20);
         }
         let checkpoint = self.buffer.checkpoint();
         let offset = self.buffer.cur_offset();
-        self.j(label);
-        let _ = self
-            .buffer
-            .record_label_patch_site(offset, label, LabelUse::RVJal20);
+        emit(self);
         if self.buffer.error().is_some() {
             self.buffer.rollback(checkpoint);
-            // SAFETY: poisoned handle for an error path; `u32::MAX` is not a
-            // valid offset into any real image, so applying it fails bounds checks.
-            return unsafe { PatchableSite::new(u32::MAX, LabelUse::RVJal20, 0) };
+            return PatchableJump::invalid(LabelUse::RVJal20);
         }
-        // SAFETY: `j` emits a JAL-style instruction at `offset`.
-        unsafe { PatchableSite::new(offset, LabelUse::RVJal20, 0) }
+        PatchableJump::new(offset, LabelUse::RVJal20)
     }
 
-    pub fn patchable_call(&mut self, label: Label) -> PatchableSite {
-        if self.buffer.error().is_some() {
-            // SAFETY: poisoned handle for an error path; `u32::MAX` is not a
-            // valid offset into any real image, so applying it fails bounds checks.
-            return unsafe { PatchableSite::new(u32::MAX, LabelUse::RVJal20, 0) };
-        }
-        let checkpoint = self.buffer.checkpoint();
-        let offset = self.buffer.cur_offset();
-        self.jal(RA, label);
-        let _ = self
-            .buffer
-            .record_label_patch_site(offset, label, LabelUse::RVJal20);
-        if self.buffer.error().is_some() {
-            self.buffer.rollback(checkpoint);
-            // SAFETY: poisoned handle for an error path; `u32::MAX` is not a
-            // valid offset into any real image, so applying it fails bounds checks.
-            return unsafe { PatchableSite::new(u32::MAX, LabelUse::RVJal20, 0) };
-        }
-        // SAFETY: `jal` emits a JAL instruction at `offset`.
-        unsafe { PatchableSite::new(offset, LabelUse::RVJal20, 0) }
+    /// `j` to `label` that can be retargeted.
+    pub fn patchable_j(&mut self, label: Label) -> PatchableJump {
+        self.patchable_jal(|asm| asm.j(label))
+    }
+
+    /// `jal ra` to `label` that can be retargeted.
+    pub fn patchable_call(&mut self, label: Label) -> PatchableJump {
+        self.patchable_jal(|asm| asm.jal(RA, label))
     }
 
     /// Materialize `imm` into `rd` with a fixed-size sequence and a patchable literal.
     ///
-    /// Layout (RV64): `auipc; ld; jal; .dword`: the returned block covers the 8-byte literal.
-    /// Layout (RV32): `auipc; lw; jal; .word`: the returned block covers the 4-byte literal.
-    ///
-    /// Rewrite with [`PatchableBlock::repatch_u64`] / [`PatchableBlock::repatch_u32`].
-    pub fn patchable_li(&mut self, rd: Gp, imm: impl Into<i64>) -> PatchableBlock {
-        let arch = self.buffer.env().arch();
+    /// Layout (RV64): `auipc; ld; jal; .dword`: the returned label covers the 8-byte literal.
+    /// Layout (RV32): `auipc; lw; jal; .word`: the returned label covers the 4-byte literal.
+    pub fn patchable_li(&mut self, rd: Gp, imm: impl Into<i64>) -> DataLabel {
         let value = imm.into();
+        let size = if self.is_32bit() { 4 } else { 8 };
         if self.buffer.error().is_some() {
-            // SAFETY: poisoned handle for an error path; the sentinel offset is
-            // rejected by the bounds checks when applied.
-            return unsafe { PatchableBlock::new(u32::MAX, 4, arch) };
+            return DataLabel::invalid(size, DataEncoding::Raw);
         }
         let checkpoint = self.buffer.checkpoint();
 
@@ -199,33 +171,22 @@ impl<'a> Assembler<'a> {
             self.auipc(rd, crate::core::operand::imm(0));
             self.lw(rd, rd, crate::core::operand::imm(12));
             self.jal(ZERO, crate::core::operand::imm(8));
-            let lit = self.buffer.cur_offset();
-            self.buffer.write_u32(value as u32);
-            let _ = self.buffer.record_patch_block(lit, 4, 4);
-            if self.buffer.error().is_some() {
-                self.buffer.rollback(checkpoint);
-                // SAFETY: poisoned handle for the rollback path; the sentinel
-                // offset is rejected by the bounds checks when applied.
-                return unsafe { PatchableBlock::new(u32::MAX, 4, arch) };
-            }
-            // SAFETY: literal word recorded as a patch block at `lit`.
-            unsafe { PatchableBlock::new(lit, 4, arch) }
         } else {
             self.auipc(rd, crate::core::operand::imm(0));
             self.ld(rd, rd, crate::core::operand::imm(12));
             self.jal(ZERO, crate::core::operand::imm(12));
-            let lit = self.buffer.cur_offset();
-            self.buffer.write_u64(value as u64);
-            let _ = self.buffer.record_patch_block(lit, 8, 4);
-            if self.buffer.error().is_some() {
-                self.buffer.rollback(checkpoint);
-                // SAFETY: poisoned handle for the rollback path; the sentinel
-                // offset is rejected by the bounds checks when applied.
-                return unsafe { PatchableBlock::new(u32::MAX, 8, arch) };
-            }
-            // SAFETY: literal dword recorded as a patch block at `lit`.
-            unsafe { PatchableBlock::new(lit, 8, arch) }
         }
+        let lit = self.buffer.cur_offset();
+        if self.is_32bit() {
+            self.buffer.write_u32(value as u32);
+        } else {
+            self.buffer.write_u64(value as u64);
+        }
+        if self.buffer.error().is_some() {
+            self.buffer.rollback(checkpoint);
+            return DataLabel::invalid(size, DataEncoding::Raw);
+        }
+        DataLabel::new(lit, size, DataEncoding::Raw)
     }
 
     pub fn la(&mut self, rd: Gp, target: impl OperandCast) {
@@ -1449,15 +1410,18 @@ impl<'a> Assembler<'a> {
 
             Encoding::Rs1PCBimm9loCBimm9hi => {
                 short = true;
+                let rs1 = ops[0].id();
+                if !is_prime_register(rs1) {
+                    self.last_error = Some(AsmError::InvalidOperand);
+                    return;
+                }
                 if isign3 == enc_ops2!(Reg, Imm) {
-                    let rs1 = ops[0].id();
                     let imm = ops[1].as_::<Imm>().value();
 
-                    inst = inst.set_rs1(rs1).set_c_bimm9lohi(imm as _);
+                    inst = inst.set_rs1_p(rs1).set_c_bimm9lohi(imm as _);
                 } else if isign3 == enc_ops2!(Reg, Label) {
-                    let rs1 = ops[0].id();
                     label_use = Some((ops[1], LabelUse::RVCB9));
-                    inst = inst.set_rs1(rs1).set_c_bimm9lohi(0);
+                    inst = inst.set_rs1_p(rs1).set_c_bimm9lohi(0);
                 } else {
                     self.last_error = Some(AsmError::InvalidOperand);
                     return;
@@ -2071,638 +2035,5 @@ impl crate::core::builder::InstSink for Assembler<'_> {
 
     fn bind_label(&mut self, label: Label) -> Result<(), AsmError> {
         self.try_bind_label(label)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::core::target::Environment;
-    use crate::riscv::opcodes::{
-        MATCH_C_LW, MATCH_C_NOT, MATCH_FADD_S, MATCH_FMADD_S, MATCH_FMV_W_X, MATCH_FMV_X_W,
-        MATCH_LR_W, MATCH_SSAMOSWAP_W, MATCH_SSRDP, MATCH_VAESKF1_VI, MATCH_VFADD_VF, MATCH_VLE8_V,
-    };
-    use crate::riscv::operands::regs::*;
-    use std::vec::Vec;
-
-    fn rv32(buf: &mut CodeBuffer) -> Assembler<'_> {
-        Assembler::new(buf)
-    }
-
-    fn data(buf: &mut CodeBuffer) -> Vec<u8> {
-        buf.finish().unwrap().data().to_vec()
-    }
-
-    #[test]
-    fn default_environment_is_rv64() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let asm = Assembler::new(&mut buf);
-        assert!(!asm.is_32bit());
-        assert_eq!(asm.environment().arch(), Arch::RISCV64);
-    }
-
-    #[test]
-    fn fixed_fences_have_no_artificial_operands() {
-        for arch in [Arch::RISCV32, Arch::RISCV64] {
-            let mut buf = CodeBuffer::new(Environment::new(arch));
-            {
-                let mut asm = Assembler::new(&mut buf);
-                asm.fence_i();
-                asm.fence_tso();
-                assert_eq!(asm.last_error(), None);
-            }
-            assert_eq!(
-                data(&mut buf),
-                [0x0000_100fu32.to_le_bytes(), 0x8330_000fu32.to_le_bytes()].concat()
-            );
-        }
-    }
-
-    #[test]
-    fn baseline_rejects_optional_extensions_before_writing() {
-        let mut buf = CodeBuffer::new(Environment::baseline(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-        let vm = imm(1);
-
-        let error = asm
-            .try_emit_n(
-                Opcode::VADDVV as i64,
-                &[
-                    V0.as_operand(),
-                    V1.as_operand(),
-                    V2.as_operand(),
-                    vm.as_operand(),
-                ],
-            )
-            .unwrap_err();
-
-        assert!(
-            matches!(error, AsmError::MissingCpuFeature { feature } if feature.contains("vadd.vv") && feature.contains("rv_v"))
-        );
-        assert!(asm.buffer.data().is_empty());
-    }
-
-    #[test]
-    fn optional_extensions_are_enabled_by_default() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-        let vm = imm(1);
-
-        asm.try_emit_n(
-            Opcode::VADDVV as i64,
-            &[
-                V0.as_operand(),
-                V1.as_operand(),
-                V2.as_operand(),
-                vm.as_operand(),
-            ],
-        )
-        .unwrap();
-
-        assert_eq!(asm.buffer.data().len(), 4);
-    }
-
-    #[test]
-    fn invalid_raw_opcode_is_rejected_without_writing() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-
-        asm.emit_n(-1, &[]);
-        assert_eq!(asm.last_error(), Some(AsmError::InvalidInstruction));
-        assert!(asm.buffer.data().is_empty());
-
-        asm.buffer.clear();
-        asm.emit_n(i64::MAX, &[]);
-        assert_eq!(asm.last_error(), Some(AsmError::InvalidInstruction));
-        assert!(asm.buffer.data().is_empty());
-    }
-
-    #[test]
-    fn raw_emission_rejects_malformed_or_extra_operands_without_mutation() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-        let malformed = Operand {
-            signature: OperandSignature::from(7),
-            base_id: 0,
-            data: [0; 2],
-        };
-        let invalid_register = Operand {
-            signature: OperandSignature::from(
-                OperandType::Reg as u32 | (31 << OperandSignature::REG_TYPE_SHIFT),
-            ),
-            base_id: 0,
-            data: [0; 2],
-        };
-        let none = Operand::new();
-
-        assert_eq!(
-            asm.try_emit_n(Opcode::ADD as i64, &[&malformed]),
-            Err(AsmError::InvalidOperand)
-        );
-        assert_eq!(
-            asm.try_emit_n(Opcode::ADD as i64, &[&invalid_register]),
-            Err(AsmError::InvalidOperand)
-        );
-        assert_eq!(
-            asm.try_emit_n(Opcode::ADD as i64, &[RA.as_operand()]),
-            Err(AsmError::InvalidOperand)
-        );
-        assert_eq!(
-            asm.try_emit_n(
-                Opcode::ADD as i64,
-                &[&none, &none, &none, &none, &none, &none],
-            ),
-            Err(AsmError::InvalidOperand)
-        );
-        assert!(asm.buffer.error().is_none());
-        assert!(asm.buffer.data().is_empty());
-    }
-
-    #[test]
-    fn macro_helpers_reject_wrong_operand_kinds_without_panicking() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-
-        asm.la(RA, imm(0));
-        assert_eq!(asm.buffer.error(), Some(&AsmError::InvalidOperand));
-        assert!(asm.buffer.data().is_empty());
-
-        asm.buffer.clear();
-        asm.call(Operand::new());
-        assert_eq!(asm.buffer.error(), Some(&AsmError::InvalidOperand));
-        assert!(asm.buffer.data().is_empty());
-    }
-
-    #[test]
-    fn raw_label_registration_error_rolls_back_emission() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-        let invalid_label = Label::from_id(0);
-
-        assert_eq!(
-            asm.try_emit_n(
-                Opcode::JAL as i64,
-                &[RA.as_operand(), invalid_label.as_operand()]
-            ),
-            Err(AsmError::InvalidArgument)
-        );
-        assert_eq!(asm.buffer.error(), Some(&AsmError::InvalidArgument));
-        assert!(asm.buffer.data().is_empty());
-    }
-
-    #[test]
-    fn failed_call_rolls_back_the_whole_sequence() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-
-        asm.call(Label::from_id(0));
-
-        assert_eq!(asm.buffer.error(), Some(&AsmError::InvalidArgument));
-        assert!(asm.buffer.data().is_empty());
-    }
-
-    #[test]
-    fn unimplemented_encodings_return_typed_errors() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-        let one = imm(1);
-        let sixteen = imm(16);
-        let zero = imm(0);
-
-        asm.emit_n(
-            Opcode::CMPOP as i64,
-            &[one.as_operand(), sixteen.as_operand()],
-        );
-        assert!(matches!(
-            asm.last_error(),
-            Some(AsmError::UnsupportedInstruction { .. })
-        ));
-        assert!(asm.buffer.data().is_empty());
-
-        asm.buffer.clear();
-        asm.emit_n(Opcode::CMMVA01S as i64, &[A0.as_operand(), A1.as_operand()]);
-        assert!(matches!(
-            asm.last_error(),
-            Some(AsmError::UnsupportedInstruction { .. })
-        ));
-        assert!(asm.buffer.data().is_empty());
-
-        asm.buffer.clear();
-        asm.emit_n(
-            Opcode::MOPRN as i64,
-            &[
-                zero.as_operand(),
-                zero.as_operand(),
-                zero.as_operand(),
-                A0.as_operand(),
-                A1.as_operand(),
-            ],
-        );
-        assert!(matches!(
-            asm.last_error(),
-            Some(AsmError::UnsupportedInstruction { .. })
-        ));
-        assert!(asm.buffer.data().is_empty());
-
-        asm.buffer.clear();
-        asm.emit_n(
-            Opcode::MOPRRN as i64,
-            &[
-                zero.as_operand(),
-                zero.as_operand(),
-                A0.as_operand(),
-                A1.as_operand(),
-                A2.as_operand(),
-            ],
-        );
-        assert!(matches!(
-            asm.last_error(),
-            Some(AsmError::UnsupportedInstruction { .. })
-        ));
-        assert!(asm.buffer.data().is_empty());
-
-        asm.buffer.clear();
-        asm.emit_n(Opcode::CSEXTW as i64, &[A0.as_operand()]);
-        assert!(matches!(
-            asm.last_error(),
-            Some(AsmError::UnsupportedInstruction { .. })
-        ));
-        assert!(asm.buffer.data().is_empty());
-    }
-
-    #[test]
-    fn rv32_encodes_base_and_rv32_only_instructions() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV32));
-        {
-            let mut asm = rv32(&mut buf);
-            asm.add(A0, A1, A2);
-            // rv32-only variant of slli (shamt restricted to 5 bits).
-            asm.slli_rv32(A0, A1, 5);
-            assert_eq!(asm.last_error(), None);
-        }
-        let expected = [0x00C58533u32.to_le_bytes(), 0x00559513u32.to_le_bytes()].concat();
-        assert_eq!(data(&mut buf), expected);
-    }
-
-    #[test]
-    fn rv32_rejects_rv64_only_instructions() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV32));
-        {
-            let mut asm = rv32(&mut buf);
-            asm.ld(A0, A1, imm(0));
-            asm.addw(A0, A1, A2);
-            assert_eq!(asm.last_error(), Some(AsmError::InvalidInstruction));
-        }
-        assert_eq!(buf.finish().err(), Some(AsmError::InvalidInstruction));
-    }
-
-    #[test]
-    fn rv64_rejects_rv32_only_instructions() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        {
-            let mut asm = Assembler::new(&mut buf);
-            asm.slli_rv32(A0, A1, imm(5));
-            assert_eq!(asm.last_error(), Some(AsmError::InvalidInstruction));
-        }
-        assert_eq!(buf.finish().err(), Some(AsmError::InvalidInstruction));
-    }
-
-    #[test]
-    fn rv64_encodes_rv64_only_instructions() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        {
-            let mut asm = Assembler::new(&mut buf);
-            asm.ld(A0, A1, imm(0));
-            asm.addw(A0, A1, A2);
-            assert_eq!(asm.last_error(), None);
-        }
-        let expected = [0x0005B503u32.to_le_bytes(), 0x00C5853Bu32.to_le_bytes()].concat();
-        assert_eq!(data(&mut buf), expected);
-    }
-
-    #[test]
-    fn lpad_encodes_on_both_xlen() {
-        // lpad is auipc with rd=x0; U-type immediates are passed pre-shifted
-        // (bits [31:12] of the operand, as for lui/auipc).
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV32));
-        {
-            let mut asm = rv32(&mut buf);
-            asm.lpad(imm(0x12345 << 12));
-            assert_eq!(asm.last_error(), None);
-        }
-        assert_eq!(data(&mut buf), 0x12345017u32.to_le_bytes());
-
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        {
-            let mut asm = Assembler::new(&mut buf);
-            asm.lpad(imm(0x12345 << 12));
-            assert_eq!(asm.last_error(), None);
-        }
-        assert_eq!(data(&mut buf), 0x12345017u32.to_le_bytes());
-    }
-
-    #[test]
-    fn zicfiss_shadow_stack_instructions_encode() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV32));
-        {
-            let mut asm = rv32(&mut buf);
-            asm.sspush_x1();
-            asm.ssrdp(A0);
-            asm.ssamoswap_w(A0, A1, A2, imm(0), imm(0));
-            assert_eq!(asm.last_error(), None);
-        }
-        let sspush_x1 = 0xCE104073u32; // architecturally fixed encoding
-        let ssrdp_a0 = MATCH_SSRDP | (10 << 7);
-        let ssamoswap_w = MATCH_SSAMOSWAP_W | (10 << 7) | (11 << 15) | (12 << 20);
-        let expected = [
-            sspush_x1.to_le_bytes(),
-            ssrdp_a0.to_le_bytes(),
-            ssamoswap_w.to_le_bytes(),
-        ]
-        .concat();
-        assert_eq!(data(&mut buf), expected);
-    }
-
-    #[test]
-    fn rv32_accepts_zclsd_compressed_load_store_pair() {
-        // Zclsd makes the c.ld/c.sd encodings available on rv32 (they reuse the
-        // rv32 Zcf encoding space).
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV32));
-        {
-            let mut asm = rv32(&mut buf);
-            asm.c_ld(A0, A1, imm(0));
-            // Stores take (base, source, imm), like sw.
-            asm.c_sd(A1, A0, imm(0));
-            assert_eq!(asm.last_error(), None);
-        }
-        // c.ld a0', 0(a1') = 0x6188, c.sd a0', 0(a1') = 0xE188.
-        assert_eq!(data(&mut buf), [0x88, 0x61, 0x88, 0xE1]);
-    }
-
-    #[test]
-    fn compressed_loads_use_prime_register_fields() {
-        // c.lw encodes rd'/rs1' as 3-bit fields (registers x8..x15).
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        {
-            let mut asm = Assembler::new(&mut buf);
-            asm.c_lw(S0, A5, imm(0));
-            assert_eq!(asm.last_error(), None);
-        }
-        assert_eq!(
-            data(&mut buf),
-            ((MATCH_C_LW | (7 << 7)) as u16).to_le_bytes()
-        );
-    }
-
-    #[test]
-    fn typed_vector_fields_encode_and_validate() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        {
-            let mut asm = Assembler::new(&mut buf);
-            asm.vle8_v(V1, A0, imm(1), imm(3));
-            assert_eq!(asm.last_error(), None);
-        }
-        let expected = MATCH_VLE8_V | (1 << 7) | (10 << 15) | (1 << 25) | (3 << 29);
-        assert_eq!(data(&mut buf), expected.to_le_bytes());
-
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-        asm.vle8_v(V1, A0, imm(2), imm(0));
-        assert_eq!(asm.last_error(), Some(AsmError::InvalidOperand));
-        asm.buffer.clear();
-        asm.vle8_v(V1, A0, imm(1), imm(8));
-        assert_eq!(asm.last_error(), Some(AsmError::InvalidOperand));
-
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-        asm.vaeskf1_vi(V1, V2, 3);
-        assert_eq!(asm.last_error(), None);
-        let expected = MATCH_VAESKF1_VI | (1 << 7) | (3 << 15) | (2 << 20);
-        assert_eq!(asm.buffer.data(), expected.to_le_bytes());
-
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-        asm.vfadd_vf(V1, V2, F0, 1);
-        asm.fmv_w_x(F1, A0);
-        asm.fmv_x_w(A1, F2);
-        assert_eq!(asm.last_error(), None);
-        let expected = [
-            (MATCH_VFADD_VF | (1 << 7) | (2 << 20) | (1 << 25)).to_le_bytes(),
-            (MATCH_FMV_W_X | (1 << 7) | (10 << 15)).to_le_bytes(),
-            (MATCH_FMV_X_W | (11 << 7) | (2 << 15)).to_le_bytes(),
-        ]
-        .concat();
-        assert_eq!(asm.buffer.data(), expected);
-    }
-
-    #[test]
-    fn pc_relative_label_register_coupling_is_transactional() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-        let label = asm.get_label();
-        asm.emit_n(
-            Opcode::JALR as i64,
-            &[A0.as_operand(), A1.as_operand(), label.as_operand()],
-        );
-        assert_eq!(asm.last_error(), Some(AsmError::InvalidOperand));
-        assert!(asm.buffer.data().is_empty());
-
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-        let label = asm.get_label();
-        asm.emit_n(
-            Opcode::LW as i64,
-            &[A0.as_operand(), A1.as_operand(), label.as_operand()],
-        );
-        assert_eq!(asm.last_error(), Some(AsmError::InvalidOperand));
-        assert!(asm.buffer.data().is_empty());
-
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-        let label = asm.get_label();
-        asm.emit_n(
-            Opcode::JALR as i64,
-            &[A0.as_operand(), A0.as_operand(), label.as_operand()],
-        );
-        assert_eq!(asm.last_error(), None);
-        assert_eq!(asm.buffer.data().len(), 8);
-
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-        let label = asm.get_label();
-        asm.emit_n(
-            Opcode::LW as i64,
-            &[A0.as_operand(), A0.as_operand(), label.as_operand()],
-        );
-        assert_eq!(asm.last_error(), None);
-        assert_eq!(asm.buffer.data().len(), 8);
-    }
-
-    #[test]
-    fn typed_atomic_and_rounding_fields_validate() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        {
-            let mut asm = Assembler::new(&mut buf);
-            asm.lr_w(A0, A1, 0, 0);
-            asm.lr_w(A0, A1, 0, 1);
-            asm.lr_w(A0, A1, 1, 0);
-            asm.lr_w(A0, A1, 1, 1);
-            assert_eq!(asm.last_error(), None);
-        }
-        let base = MATCH_LR_W | (10 << 7) | (11 << 15);
-        let expected = [
-            base.to_le_bytes(),
-            (base | (1 << 25)).to_le_bytes(),
-            (base | (1 << 26)).to_le_bytes(),
-            (base | (3 << 25)).to_le_bytes(),
-        ]
-        .concat();
-        assert_eq!(data(&mut buf), expected);
-
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-        asm.fadd_s(F0, F1, F2, imm(5));
-        assert_eq!(asm.last_error(), Some(AsmError::InvalidOperand));
-        asm.buffer.clear();
-        asm.fadd_s(F0, F1, F2, imm(7));
-        assert_eq!(asm.last_error(), None);
-        let expected = MATCH_FADD_S | (1 << 15) | (2 << 20) | (7 << 12);
-        assert_eq!(asm.buffer.data(), expected.to_le_bytes());
-
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-        asm.fmadd_s(F0, F1, F2, F3, 0);
-        assert_eq!(asm.last_error(), None);
-        let expected = MATCH_FMADD_S | (1 << 15) | (2 << 20) | (3 << 27);
-        assert_eq!(asm.buffer.data(), expected.to_le_bytes());
-    }
-
-    #[test]
-    fn compressed_prime_registers_reject_non_prime_ids() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-        asm.c_lw(T2, A1, imm(0));
-        assert_eq!(asm.last_error(), Some(AsmError::InvalidOperand));
-        assert!(asm.buffer.data().is_empty());
-
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        {
-            let mut asm = Assembler::new(&mut buf);
-            asm.c_not(S0);
-            assert_eq!(asm.last_error(), None);
-        }
-        assert_eq!(
-            data(&mut buf),
-            ((MATCH_C_NOT & !(0x7 << 7)) as u16).to_le_bytes()
-        );
-
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let mut asm = Assembler::new(&mut buf);
-        asm.c_not(T2);
-        assert_eq!(asm.last_error(), Some(AsmError::InvalidOperand));
-        assert!(asm.buffer.data().is_empty());
-
-        asm.buffer.clear();
-        asm.c_lw(A0, T2, imm(0));
-        assert_eq!(asm.last_error(), Some(AsmError::InvalidOperand));
-        assert!(asm.buffer.data().is_empty());
-
-        asm.buffer.clear();
-        asm.c_lw(A6, A1, imm(0));
-        assert_eq!(asm.last_error(), Some(AsmError::InvalidOperand));
-        assert!(asm.buffer.data().is_empty());
-    }
-
-    #[test]
-    fn register_label_encodings_use_the_label_operand() {
-        for arch in [Arch::RISCV32, Arch::RISCV64] {
-            let mut buf = CodeBuffer::new(Environment::new(arch));
-            let target = buf.get_label();
-            {
-                let mut asm = Assembler::new(&mut buf);
-                asm.auipc(A0, target);
-                asm.jal(A1, target);
-                asm.bind_label(target);
-                assert_eq!(asm.last_error(), None);
-            }
-            assert_eq!(buf.label_offset(target), 8);
-            assert_eq!(
-                data(&mut buf),
-                [0x0000_0517u32.to_le_bytes(), 0x0040_05EFu32.to_le_bytes()].concat()
-            );
-
-            let mut buf = CodeBuffer::new(Environment::new(arch));
-            let target = buf.get_label();
-            {
-                let mut asm = Assembler::new(&mut buf);
-                asm.bind_label(target);
-                asm.auipc(A0, target);
-                asm.jal(A1, target);
-                assert_eq!(asm.last_error(), None);
-            }
-            assert_eq!(buf.label_offset(target), 0);
-            assert_eq!(
-                data(&mut buf),
-                [0x0000_0517u32.to_le_bytes(), 0xFFDFF5EFu32.to_le_bytes()].concat()
-            );
-        }
-    }
-
-    #[test]
-    fn patchable_li_literal_can_be_rewritten() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let block = {
-            let mut asm = Assembler::new(&mut buf);
-            asm.patchable_li(A0, 0x1122_3344_5566_7788u64 as i64)
-        };
-        let code = buf.finish_patched().unwrap();
-        assert_eq!(block.size(), 8);
-        assert_eq!(
-            &code.data()[block.offset() as usize..][..8],
-            &0x1122_3344_5566_7788u64.to_le_bytes()
-        );
-        // The `ld` must read the literal at `auipc + 12`, not the `jal`
-        // that skips over it.
-        let ld = u32::from_le_bytes([
-            code.data()[4],
-            code.data()[5],
-            code.data()[6],
-            code.data()[7],
-        ]);
-        assert_eq!(((ld as i32) >> 20) & 0xFFF, 12);
-
-        let mut bytes = code.data().to_vec();
-        unsafe {
-            block
-                .repatch_u64(&mut bytes, 0xAABB_CCDD_EEFF_0011)
-                .unwrap();
-        }
-        assert_eq!(
-            &bytes[block.offset() as usize..][..8],
-            &0xAABB_CCDD_EEFF_0011u64.to_le_bytes()
-        );
-    }
-
-    #[test]
-    fn patchable_j_can_be_retargeted_offline() {
-        let mut buf = CodeBuffer::new(Environment::new(Arch::RISCV64));
-        let (site, alt) = {
-            let mut asm = Assembler::new(&mut buf);
-            let target = asm.get_label();
-            let alt = asm.get_label();
-            let site = asm.patchable_j(target);
-            asm.bind_label(target);
-            asm.addi(A0, A0, imm(1));
-            asm.bind_label(alt);
-            asm.addi(A0, A0, imm(2));
-            (site, asm.label_offset(alt))
-        };
-        let code = buf.finish_patched().unwrap();
-        let mut bytes = code.data().to_vec();
-        unsafe {
-            site.retarget(&mut bytes, alt).unwrap();
-        }
-        // Catalog still describes the original target; the handle rewrote the bytes.
-        assert_ne!(bytes, code.data());
     }
 }

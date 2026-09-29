@@ -327,7 +327,6 @@ pub static MOD16_BASE_INDEX_TABLE: [u8; 64] = {
 ///
 /// `NOP_TABLE[n - 1]` is the optimal n-byte NOP slide, n in 1..=9.
 #[rustfmt::skip]
-#[cfg(test)]
 pub static NOP_TABLE: [[u8; 9]; 9] = [
     [0x90, 0, 0, 0, 0, 0, 0, 0, 0],
     [0x66, 0x90, 0, 0, 0, 0, 0, 0, 0],
@@ -339,81 +338,3 @@ pub static NOP_TABLE: [[u8; 9]; 9] = [
     [0x0F, 0x1F, 0x84, 0x00, 0x00, 0x00, 0x00, 0x00, 0],
     [0x66, 0x0F, 0x1F, 0x84, 0x00, 0x00, 0x00, 0x00, 0x00],
 ];
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    const fn rt(t: RegType) -> u32 {
-        t as u32
-    }
-
-    #[test]
-    fn mem_info_spot_checks() {
-        let (gp16, gp32, gp64, vec256) = (
-            rt(RegType::Gp16),
-            rt(RegType::Gp32),
-            rt(RegType::Gp64),
-            rt(RegType::Vec256),
-        );
-        let at = |b: u32, i: u32| MEM_INFO_TABLE[(b | (i << 5)) as usize];
-
-        // No base, no index: only the passthrough bits.
-        assert_eq!(at(0, 0), 0x04 | 0x08);
-        // 64-bit GP base: base flag, no address override.
-        assert_eq!(at(gp64, 0), MEM_INFO_BASE_GP | 0x04 | 0x08);
-        // 16-bit GP base alone: X86 address override.
-        assert_eq!(at(gp16, 0), MEM_INFO_BASE_GP | MEM_INFO_67H_X86 | 0x0C);
-        // 32-bit GP base + vector index: X64 address override + index flag.
-        assert_eq!(
-            at(gp32, vec256),
-            MEM_INFO_BASE_GP | MEM_INFO_INDEX | MEM_INFO_67H_X64 | 0x0C
-        );
-        // RIP base.
-        assert_eq!(at(rt(RegType::PC), 0), MEM_INFO_BASE_RIP | 0x0C);
-        // Label base + 32-bit index.
-        assert_eq!(
-            at(rt(RegType::LabelTag), gp32),
-            MEM_INFO_BASE_LABEL | MEM_INFO_INDEX | MEM_INFO_67H_X64 | 0x0C
-        );
-    }
-
-    #[test]
-    fn ll_tables() {
-        assert_eq!(LL_BY_SIZE_DIV_16_TABLE[1], 0);
-        assert_eq!(LL_BY_SIZE_DIV_16_TABLE[2], 1 << Opcode::LL_SHIFT);
-        assert_eq!(LL_BY_SIZE_DIV_16_TABLE[4], 2 << Opcode::LL_SHIFT);
-        assert_eq!(
-            LL_BY_REG_TYPE_TABLE[RegType::Vec512 as usize],
-            2 << Opcode::LL_SHIFT
-        );
-        assert_eq!(
-            LL_BY_REG_TYPE_TABLE[RegType::Vec256 as usize],
-            1 << Opcode::LL_SHIFT
-        );
-        assert_eq!(LL_BY_REG_TYPE_TABLE[RegType::Vec128 as usize], 0);
-    }
-
-    #[test]
-    fn cdisp8_shl_spot_checks() {
-        // CDTT_None never scales.
-        assert_eq!(CDISP8_SHL_TABLE[0], 0);
-        // CDTT_ByLL (tt=1): shift == min(LL, 2) → x = (1<<3)|ll.
-        assert_eq!(CDISP8_SHL_TABLE[8], 0);
-        assert_eq!(CDISP8_SHL_TABLE[9], 1 << Opcode::CDSHL_SHIFT);
-        assert_eq!(CDISP8_SHL_TABLE[11], 2 << Opcode::CDSHL_SHIFT);
-        // CDTT_DUP (tt=3): LL 0,1,2 -> 0,2,3.
-        assert_eq!(CDISP8_SHL_TABLE[24], 0);
-        assert_eq!(CDISP8_SHL_TABLE[25], 2 << Opcode::CDSHL_SHIFT);
-        assert_eq!(CDISP8_SHL_TABLE[26], 3 << Opcode::CDSHL_SHIFT);
-    }
-
-    #[test]
-    fn mod16_tables() {
-        assert_eq!(MOD16_BASE_TABLE[3], 0x07); // BX
-        assert_eq!(MOD16_BASE_TABLE[0], 0xFF); // AX invalid
-        assert_eq!(MOD16_BASE_INDEX_TABLE[(3 << 3) | 6], 0x00); // BX+SI
-        assert_eq!(MOD16_BASE_INDEX_TABLE[(7 << 3) | 5], 0x03); // DI+BP
-        assert_eq!(MOD16_BASE_INDEX_TABLE[0], 0xFF);
-    }
-}

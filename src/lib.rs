@@ -33,14 +33,13 @@
 //! 1. Emit into a [`CodeBuffer`] through a backend `Assembler`.
 //! 2. Finalize with [`CodeBuffer::finish`], optionally combining several modules —
 //!    [`Section`]s or plain buffers: into one image with [`Linker`].
-//! 3. Load with [`CodeBufferFinalized::allocate`] (no relocations),
-//!    [`allocate_relocated`](CodeBufferFinalized::allocate_relocated),
-//!    or [`allocate_resolved`](CodeBufferFinalized::allocate_resolved)
-//!    (external symbols resolved via [`ExternalName`]).
-//! 4. Find entry points with
-//!    [`CodeBufferFinalized::defined_symbol_offset`] /
-//!    [`defined_symbol_str`](CodeBufferFinalized::defined_symbol_str)
-//!    and call through `rx() + offset`.
+//! 3. Load with [`CodeBufferFinalized::load`], which applies relocations and
+//!    resolves external symbols by [`ExternalName`], or with
+//!    [`CodeBufferFinalized::allocate`] when the image has no relocations.
+//!    [`CodeBufferFinalized::relocate_to_base`] does the relocation step into
+//!    memory you manage yourself.
+//! 4. Find entry points with [`LoadedCode::symbol`] /
+//!    [`symbol_by_name`](LoadedCode::symbol_by_name).
 //!
 //! External names are either string [`ExternalName::Symbol`]s or Cranelift-style
 //! [`ExternalName::User`] namespace+index keys (`extern_user` / `bind_symbol`), so
@@ -89,7 +88,7 @@
 //! # }
 //! ```
 
-#![cfg_attr(not(test), no_std)]
+#![no_std]
 #![deny(unsafe_op_in_unsafe_fn)]
 #![warn(clippy::unwrap_used, clippy::expect_used, clippy::panic)]
 
@@ -106,9 +105,11 @@ pub(crate) mod util;
 pub mod x86;
 
 #[cfg(feature = "jit")]
-pub use core::buffer::LoadedRelocatedCode;
+pub use core::buffer::LoadedCode;
 #[cfg(feature = "jit")]
 pub use core::jit_allocator::{JitAllocator, JitAllocatorOptions, ResetPolicy, Span};
+#[cfg(feature = "jit")]
+pub use core::patch::{read_value_span, repatch_jump_span, repatch_value_span, rewrite_region_span};
 #[cfg(feature = "aarch64")]
 pub use core::target::AArch64Feature;
 #[cfg(feature = "riscv")]
@@ -130,8 +131,8 @@ pub use core::{
         RegGroup, RegMask, RegTraits, RegType, Sym, imm,
     },
     patch::{
-        PatchBlock, PatchBlockId, PatchCatalog, PatchSite, PatchSiteId, PatchableBlock,
-        PatchableSite,
+        CodeLocationData, CodeLocationJump, CodeLocationRegion, DataLabel, PatchMark,
+        PatchableJump, PatchableRegion, read_value, repatch_jump, repatch_value, rewrite_region,
     },
     rwinfo::{
         CpuRwFlags, INVALID_PHYS_ID, InstControlFlow, InstRwFlags, InstRwInfo, InstSameRegHint,

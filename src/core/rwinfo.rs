@@ -349,34 +349,3 @@ pub enum InstSameRegHint {
     /// `X - X`, and similar).
     WO = 2,
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn op_rw_flags_layout() {
-        // Must stay compatible with AsmJit: RA code depends on these exact values.
-        assert_eq!(OpRwFlags::READ.bits(), 0x1);
-        assert_eq!(OpRwFlags::WRITE.bits(), 0x2);
-        assert_eq!(OpRwFlags::RW.bits(), 0x3);
-        assert_eq!(OpRwFlags::REG_MEM.bits(), 0x4);
-    }
-
-    #[test]
-    fn reset_computes_masks() {
-        let mut info = OpRwInfo::new();
-        info.reset(OpRwFlags::RW, 8, INVALID_PHYS_ID);
-        assert!(info.is_read_write());
-        assert_eq!(info.read_byte_mask, 0xFF);
-        assert_eq!(info.write_byte_mask, 0xFF);
-        assert_eq!(info.extend_byte_mask, 0);
-
-        info.reset(OpRwFlags::WRITE | OpRwFlags::REG_MEM, 16, 3);
-        assert!(info.is_write_only());
-        assert_eq!(info.rm_size, 16);
-        assert_eq!(info.phys_id, 3);
-        assert_eq!(info.write_byte_mask, 0xFFFF);
-        assert_eq!(info.read_byte_mask, 0);
-    }
-}

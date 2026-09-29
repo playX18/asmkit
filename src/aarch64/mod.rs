@@ -35,10 +35,6 @@ pub(crate) mod rwflags;
 
 pub use crate::core::operand::imm;
 pub use assembler::*;
-#[cfg(test)]
-pub(crate) use emit::CPU_FEATURE_REPRESENTATIVE;
-#[cfg(test)]
-pub(crate) use emit::INST_FEATURE_MASKS;
 pub use emit::{ALL_CPU_FEATURES, CPU_FEATURE_COUNT, CPU_FEATURE_NAMES, CpuFeature};
 pub use emitter::*;
 pub use instapi::query_rw_info;

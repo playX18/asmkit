@@ -1,26 +1,15 @@
-//! Post-emit code patching.
+//! Post-finalization code patching.
 //!
-//! # Workflow
+//! # Usage
 //!
-//! 1. During emission, call arch `patchable_*` helpers (or
-//!    [`CodeBuffer::reserve_patch_block`](crate::CodeBuffer::reserve_patch_block)).
-//!    These return self-describing [`PatchableSite`] / [`PatchableBlock`] handles.
-//! 2. Finalize with [`CodeBuffer::finish_patched`](crate::CodeBuffer::finish_patched)
-//!    so the [`PatchCatalog`] validates reachability (and the linker can rebase it).
-//! 3. Apply patches with **`unsafe`** methods on a JIT [`Span`] or `&mut [u8]`.
-//!    Patching does **not** go through [`CodeBufferFinalized`].
-//!
-//!
-//! # Safety
-//!
-//! Handles from `patchable_*` describe locations in the buffer that produced them. Applying a
-//! handle is still `unsafe`: the bytes/`Span` must be that image (after finalize/link with
-//! stable offsets), and the caller must synchronize concurrent execution of the patched region.
-//! [`PatchableSite::new`] / [`PatchableBlock::new`] are `unsafe` for the same reason when
-//! constructing handles by hand.
-//!
-//! [`PatchCatalog`] remains for `finish_patched` validation and linker rebasing. After rebase,
-//! convert entries with [`PatchSite::to_patchable`] / [`PatchBlock::to_patchable`].
+//! 1. While emitting, the arch `patchable_*` helpers and
+//!    [`CodeBuffer::reserve_patch_region`](crate::CodeBuffer::reserve_patch_region)
+//!    return marks: [`PatchableJump`], [`DataLabel`] and [`PatchableRegion`].
+//! 2. After [`CodeBuffer::finish`](crate::CodeBuffer::finish), turn a mark into a
+//!    location in the image with [`CodeBufferFinalized::location_of`] (or
+//!    [`CodeBufferFinalized::location_in`] for a linked image).
+//! 3. Patch the image with [`repatch_jump`], [`repatch_value`] and
+//!    [`rewrite_region`], or loaded code with their `_span` variants.
 
 use smallvec::SmallVec;
 
@@ -35,140 +24,92 @@ use crate::{
 #[cfg(feature = "jit")]
 use crate::core::jit_allocator::{JitAllocator, Span};
 
-/// Catalog index for a patch block (linker / introspection).
+/// A jump or call emitted with a fixed-size displacement whose target can be
+/// changed after finalization.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct PatchBlockId(u32);
-
-impl PatchBlockId {
-    pub(crate) const fn from_index(index: usize) -> Self {
-        Self(index as u32)
-    }
-
-    pub const fn index(self) -> usize {
-        self.0 as usize
-    }
-}
-
-/// Catalog index for a patch site (linker / introspection).
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct PatchSiteId(u32);
-
-impl PatchSiteId {
-    pub(crate) const fn from_index(index: usize) -> Self {
-        Self(index as u32)
-    }
-
-    pub const fn index(self) -> usize {
-        self.0 as usize
-    }
-}
-
-/// Catalog entry for a rewritable byte range.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub struct PatchBlock {
-    pub offset: CodeOffset,
-    pub size: CodeOffset,
-    pub align: CodeOffset,
-}
-
-impl PatchBlock {
-    /// Build a patch handle from a (possibly rebased) catalog entry.
-    pub const fn to_patchable(self, arch: Arch) -> PatchableBlock {
-        // SAFETY: catalog entries describe blocks recorded during emission.
-        unsafe { PatchableBlock::new(self.offset, self.size, arch) }
-    }
-}
-
-/// Catalog entry for a displacement field.
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub struct PatchSite {
-    pub offset: CodeOffset,
-    pub kind: LabelUse,
-    pub current_target: CodeOffset,
-    pub addend: i64,
-}
-
-impl PatchSite {
-    /// Build a patch handle from a (possibly rebased) catalog entry.
-    pub const fn to_patchable(self) -> PatchableSite {
-        // SAFETY: catalog entries describe sites recorded during emission.
-        unsafe { PatchableSite::new(self.offset, self.kind, self.addend) }
-    }
-}
-
-/// Finalized patch metadata for validation and linker rebasing.
-#[derive(Clone, Debug, PartialEq, Eq)]
-pub struct PatchCatalog {
-    arch: Arch,
-    blocks: SmallVec<[PatchBlock; 4]>,
-    sites: SmallVec<[PatchSite; 8]>,
-}
-
-impl PatchCatalog {
-    pub(crate) fn with_parts(
-        arch: Arch,
-        blocks: SmallVec<[PatchBlock; 4]>,
-        sites: SmallVec<[PatchSite; 8]>,
-    ) -> Self {
-        Self {
-            arch,
-            blocks,
-            sites,
-        }
-    }
-
-    pub fn arch(&self) -> Arch {
-        self.arch
-    }
-
-    pub fn is_empty(&self) -> bool {
-        self.blocks.is_empty() && self.sites.is_empty()
-    }
-
-    pub fn blocks(&self) -> &[PatchBlock] {
-        &self.blocks
-    }
-
-    pub fn sites(&self) -> &[PatchSite] {
-        &self.sites
-    }
-
-    pub fn block(&self, id: PatchBlockId) -> Option<&PatchBlock> {
-        self.blocks.get(id.index())
-    }
-
-    pub fn site(&self, id: PatchSiteId) -> Option<&PatchSite> {
-        self.sites.get(id.index())
-    }
-
-    pub fn site_mut(&mut self, id: PatchSiteId) -> Option<&mut PatchSite> {
-        self.sites.get_mut(id.index())
-    }
-}
-
-/// Self-describing handle for a patchable displacement (jump/call).
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct PatchableSite {
+pub struct PatchableJump {
     offset: CodeOffset,
     kind: LabelUse,
-    addend: i64,
 }
 
-impl PatchableSite {
-    /// Construct a site handle manually.
-    ///
-    /// # Safety
-    ///
-    /// `offset` in any image you later patch must be a valid displacement field of `kind`
-    /// with the same layout as when the site was emitted or recorded.
-    pub const unsafe fn new(offset: CodeOffset, kind: LabelUse, addend: i64) -> Self {
+impl PatchableJump {
+    pub(crate) const fn new(offset: CodeOffset, kind: LabelUse) -> Self {
+        Self { offset, kind }
+    }
+
+    /// The mark returned when emission fails. Its location is out of bounds
+    /// in every image, so patching through it fails.
+    pub(crate) const fn invalid(kind: LabelUse) -> Self {
+        Self::new(u32::MAX, kind)
+    }
+}
+
+/// A patchable immediate: a fixed-size `mov` immediate on x86, a
+/// `movz`/`movk` sequence on AArch64, or a literal on RISC-V.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub struct DataLabel {
+    offset: CodeOffset,
+    size: u8,
+    encoding: DataEncoding,
+}
+
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub(crate) enum DataEncoding {
+    /// `size` little-endian bytes.
+    #[cfg_attr(not(any(feature = "x86", feature = "riscv")), allow(dead_code))]
+    Raw,
+    /// `size / 4` AArch64 instructions: `movz` then `movk` for each further
+    /// 16-bit chunk.
+    #[cfg_attr(not(feature = "aarch64"), allow(dead_code))]
+    A64MovWide,
+}
+
+impl DataLabel {
+    pub(crate) const fn new(offset: CodeOffset, size: u8, encoding: DataEncoding) -> Self {
         Self {
             offset,
-            kind,
-            addend,
+            size,
+            encoding,
         }
     }
 
+    pub(crate) const fn invalid(size: u8, encoding: DataEncoding) -> Self {
+        Self::new(u32::MAX, size, encoding)
+    }
+
+    /// Size in bytes of the patched field.
+    pub const fn size(self) -> u8 {
+        self.size
+    }
+}
+
+/// A nop-filled code region reserved for later rewriting.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub struct PatchableRegion {
+    offset: CodeOffset,
+    size: CodeOffset,
+    arch: Arch,
+}
+
+impl PatchableRegion {
+    pub(crate) const fn new(offset: CodeOffset, size: CodeOffset, arch: Arch) -> Self {
+        Self { offset, size, arch }
+    }
+
+    pub const fn size(self) -> CodeOffset {
+        self.size
+    }
+}
+
+/// Where a [`PatchableJump`] is in a finished image.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub struct CodeLocationJump {
+    offset: CodeOffset,
+    kind: LabelUse,
+}
+
+impl CodeLocationJump {
+    /// Offset of the displacement field.
     pub const fn offset(self) -> CodeOffset {
         self.offset
     }
@@ -176,98 +117,36 @@ impl PatchableSite {
     pub const fn kind(self) -> LabelUse {
         self.kind
     }
+}
 
-    pub const fn addend(self) -> i64 {
-        self.addend
+/// Where a [`DataLabel`] is in a finished image.
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
+pub struct CodeLocationData {
+    offset: CodeOffset,
+    size: u8,
+    encoding: DataEncoding,
+}
+
+impl CodeLocationData {
+    /// Offset of the first byte of the field.
+    pub const fn offset(self) -> CodeOffset {
+        self.offset
     }
 
-    /// Retarget this site in a mutable code image.
-    ///
-    /// # Safety
-    ///
-    /// `bytes` must be the code image this site was recorded against (same layout). The caller
-    /// synchronizes concurrent execution of the patched region.
-    pub unsafe fn retarget(
-        self,
-        bytes: &mut [u8],
-        target_offset: CodeOffset,
-    ) -> Result<(), AsmError> {
-        if !self.kind.can_reach(self.offset, target_offset) {
-            return Err(AsmError::TooLarge);
-        }
-        let patch_size = self.kind.patch_size();
-        let patch_end = (self.offset as usize)
-            .checked_add(patch_size)
-            .ok_or(AsmError::InvalidState)?;
-        if patch_end > bytes.len() {
-            return Err(AsmError::InvalidState);
-        }
-        let patch_slice = &mut bytes[self.offset as usize..patch_end];
-        self.kind
-            .patch_with_addend(patch_slice, self.offset, target_offset, self.addend);
-        Ok(())
-    }
-
-    /// Retarget this site in executable memory.
-    ///
-    /// # Safety
-    ///
-    /// `span` must be the loaded image this site was recorded against. The caller synchronizes
-    /// concurrent execution of the patched region.
-    #[cfg(feature = "jit")]
-    pub unsafe fn retarget_span(
-        self,
-        jit_allocator: &mut JitAllocator,
-        span: &mut Span,
-        target_offset: CodeOffset,
-    ) -> Result<(), AsmError> {
-        if !self.kind.can_reach(self.offset, target_offset) {
-            return Err(AsmError::TooLarge);
-        }
-        let patch_size = self.kind.patch_size();
-        let patch_end = (self.offset as usize)
-            .checked_add(patch_size)
-            .ok_or(AsmError::InvalidState)?;
-        if patch_end > span.size() {
-            return Err(AsmError::InvalidState);
-        }
-
-        // SAFETY: per this method's contract, `span` is the loaded image this
-        // site was recorded against; the range `offset..offset + patch_size`
-        // was bounds-checked against `span.size()` above. `JitAllocator::write`
-        // toggles JIT write access and flushes the instruction cache, and the
-        // caller synchronizes concurrent execution.
-        unsafe {
-            jit_allocator.write(span, |span| {
-                let patch_ptr = span.rw().add(self.offset as usize);
-                let patch_slice = core::slice::from_raw_parts_mut(patch_ptr, patch_size);
-                self.kind
-                    .patch_with_addend(patch_slice, self.offset, target_offset, self.addend);
-            })?;
-        }
-        Ok(())
+    pub const fn size(self) -> u8 {
+        self.size
     }
 }
 
-/// Self-describing handle for a rewritable code region (immediate or custom block).
+/// Where a [`PatchableRegion`] is in a finished image.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct PatchableBlock {
+pub struct CodeLocationRegion {
     offset: CodeOffset,
     size: CodeOffset,
     arch: Arch,
 }
 
-impl PatchableBlock {
-    /// Construct a block handle manually.
-    ///
-    /// # Safety
-    ///
-    /// `offset..offset+size` in any image you later patch must be a reserved patch region for
-    /// `arch` (instruction alignment and nop-fill rules apply).
-    pub const unsafe fn new(offset: CodeOffset, size: CodeOffset, arch: Arch) -> Self {
-        Self { offset, size, arch }
-    }
-
+impl CodeLocationRegion {
     pub const fn offset(self) -> CodeOffset {
         self.offset
     }
@@ -275,152 +154,302 @@ impl PatchableBlock {
     pub const fn size(self) -> CodeOffset {
         self.size
     }
+}
 
-    pub const fn arch(self) -> Arch {
-        self.arch
+mod sealed {
+    pub trait Sealed {}
+    impl Sealed for super::PatchableJump {}
+    impl Sealed for super::DataLabel {}
+    impl Sealed for super::PatchableRegion {}
+}
+
+/// A mark that [`CodeBufferFinalized::location_of`] turns into a location.
+pub trait PatchMark: Copy + sealed::Sealed {
+    type Location: Copy;
+
+    #[doc(hidden)]
+    fn locate(self, base: CodeOffset) -> Self::Location;
+}
+
+/// Moves a buffer offset to its section, keeping the out-of-bounds offset of
+/// an invalid mark out of bounds.
+fn place(base: CodeOffset, offset: CodeOffset) -> CodeOffset {
+    if offset == u32::MAX {
+        return offset;
+    }
+    base.saturating_add(offset)
+}
+
+impl PatchMark for PatchableJump {
+    type Location = CodeLocationJump;
+
+    fn locate(self, base: CodeOffset) -> CodeLocationJump {
+        CodeLocationJump {
+            offset: place(base, self.offset),
+            kind: self.kind,
+        }
+    }
+}
+
+impl PatchMark for DataLabel {
+    type Location = CodeLocationData;
+
+    fn locate(self, base: CodeOffset) -> CodeLocationData {
+        CodeLocationData {
+            offset: place(base, self.offset),
+            size: self.size,
+            encoding: self.encoding,
+        }
+    }
+}
+
+impl PatchMark for PatchableRegion {
+    type Location = CodeLocationRegion;
+
+    fn locate(self, base: CodeOffset) -> CodeLocationRegion {
+        CodeLocationRegion {
+            offset: place(base, self.offset),
+            size: self.size,
+            arch: self.arch,
+        }
+    }
+}
+
+impl CodeBufferFinalized {
+    /// Returns where `mark` is in this image.
+    ///
+    /// `mark` must come from the buffer this image was finished from. For an
+    /// image made by [`Linker::link`](crate::Linker::link), use
+    /// [`Self::location_in`].
+    pub fn location_of<M: PatchMark>(&self, mark: M) -> M::Location {
+        debug_assert_eq!(self.section_bases.len(), 1, "linked images need `location_in`");
+        mark.locate(self.section_bases[0])
     }
 
-    /// Overwrite this block; shorter payloads are padded with architecture nops.
-    ///
-    /// # Safety
-    ///
-    /// `bytes` must be the code image this block was recorded against. The caller synchronizes
-    /// concurrent execution of the patched region.
-    pub unsafe fn rewrite(self, bytes: &mut [u8], new_bytes: &[u8]) -> Result<(), AsmError> {
-        if new_bytes.len() > self.size as usize {
-            return Err(AsmError::TooLarge);
-        }
-        let instruction_alignment = minimum_patch_alignment(self.arch) as usize;
-        if new_bytes.len() % instruction_alignment != 0 {
-            return Err(AsmError::InvalidArgument);
-        }
-        let block_end = (self.offset as usize)
-            .checked_add(self.size as usize)
-            .ok_or(AsmError::InvalidState)?;
-        if block_end > bytes.len() {
-            return Err(AsmError::InvalidState);
-        }
-
-        let block = &mut bytes[self.offset as usize..block_end];
-        block[..new_bytes.len()].copy_from_slice(new_bytes);
-        fill_with_nops(self.arch, &mut block[new_bytes.len()..])?;
-        Ok(())
+    /// Returns where `mark`, from the buffer added as `section` to a
+    /// [`Linker`](crate::Linker), is in this image. Returns `None` when there
+    /// is no such section.
+    pub fn location_in<M: PatchMark>(&self, section: usize, mark: M) -> Option<M::Location> {
+        Some(mark.locate(*self.section_bases.get(section)?))
     }
+}
 
-    /// Write a little-endian `u32` into a 4-byte block (x86 `patchable_mov` on `Gp32`, etc.).
-    ///
-    /// # Safety
-    ///
-    /// See [`rewrite`](Self::rewrite).
-    pub unsafe fn repatch_u32(self, bytes: &mut [u8], value: u32) -> Result<(), AsmError> {
-        if self.size != 4 {
-            return Err(AsmError::InvalidArgument);
-        }
-        // SAFETY: forwarding the caller's `rewrite` contract; a 4-byte payload
-        // is aligned for every supported architecture.
-        unsafe { self.rewrite(bytes, &value.to_le_bytes()) }
+fn field(len: usize, offset: CodeOffset, size: usize) -> Result<core::ops::Range<usize>, AsmError> {
+    let start = offset as usize;
+    let end = start.checked_add(size).ok_or(AsmError::InvalidState)?;
+    if end > len {
+        return Err(AsmError::InvalidState);
     }
+    Ok(start..end)
+}
 
-    /// Write a little-endian `u64` into an 8-byte block (x86 `patchable_mov` on `Gp64`, etc.).
-    ///
-    /// # Safety
-    ///
-    /// See [`rewrite`](Self::rewrite).
-    pub unsafe fn repatch_u64(self, bytes: &mut [u8], value: u64) -> Result<(), AsmError> {
-        if self.size != 8 {
-            return Err(AsmError::InvalidArgument);
-        }
-        // SAFETY: forwarding the caller's `rewrite` contract; an 8-byte payload
-        // is aligned for every supported architecture.
-        unsafe { self.rewrite(bytes, &value.to_le_bytes()) }
+fn relink(bytes: &mut [u8], kind: LabelUse, delta: i64) -> Result<(), AsmError> {
+    if !kind.can_reach_delta(delta) {
+        return Err(AsmError::TooLarge);
     }
+    kind.patch_with_addend(bytes, 0, 0, delta);
+    Ok(())
+}
 
-    /// Overwrite this block in executable memory.
-    ///
-    /// # Safety
-    ///
-    /// `span` must be the loaded image this block was recorded against.
-    #[cfg(feature = "jit")]
-    pub unsafe fn rewrite_span(
-        self,
-        jit_allocator: &mut JitAllocator,
-        span: &mut Span,
-        new_bytes: &[u8],
-    ) -> Result<(), AsmError> {
-        if new_bytes.len() > self.size as usize {
-            return Err(AsmError::TooLarge);
-        }
-        let instruction_alignment = minimum_patch_alignment(self.arch) as usize;
-        if new_bytes.len() % instruction_alignment != 0 {
-            return Err(AsmError::InvalidArgument);
-        }
-        let block_end = (self.offset as usize)
-            .checked_add(self.size as usize)
-            .ok_or(AsmError::InvalidState)?;
-        if block_end > span.size() {
-            return Err(AsmError::InvalidState);
-        }
+/// Points `jump` at `target`, an offset in the same image.
+pub fn repatch_jump(
+    code: &mut [u8],
+    jump: CodeLocationJump,
+    target: CodeOffset,
+) -> Result<(), AsmError> {
+    let range = field(code.len(), jump.offset, jump.kind.patch_size())?;
+    let delta = i64::from(target) - i64::from(jump.offset);
+    relink(&mut code[range], jump.kind, delta)
+}
 
-        let mut fill_result = Ok(());
-        // SAFETY: per this method's contract, `span` is the loaded image this
-        // block was recorded against; `offset..offset + size` was bounds-checked
-        // against `span.size()` above and the payload length was checked to be
-        // at most `size`. `JitAllocator::write` synchronizes JIT access and the
-        // instruction cache; `fill_result` is written by the closure and read
-        // only after `write` returns.
-        unsafe {
-            jit_allocator.write(span, |span| {
-                let block_ptr = span.rw().add(self.offset as usize);
-                block_ptr.copy_from_nonoverlapping(new_bytes.as_ptr(), new_bytes.len());
-                let tail = core::slice::from_raw_parts_mut(
-                    block_ptr.add(new_bytes.len()),
-                    self.size as usize - new_bytes.len(),
-                );
-                fill_result = fill_with_nops(self.arch, tail);
-            })?;
-        }
-        fill_result
+/// Points `jump` in loaded code at the absolute address `target`.
+///
+/// # Safety
+///
+/// `span` must hold the image `jump` was located in, and no thread may execute
+/// the jump while it is rewritten.
+#[cfg(feature = "jit")]
+pub unsafe fn repatch_jump_span(
+    jit_allocator: &mut JitAllocator,
+    span: &mut Span,
+    jump: CodeLocationJump,
+    target: *const u8,
+) -> Result<(), AsmError> {
+    let range = field(span.size(), jump.offset, jump.kind.patch_size())?;
+    let at = span.rx().addr() + range.start;
+    let delta = i64::try_from(target.addr() as i128 - at as i128).map_err(|_| AsmError::TooLarge)?;
+    if !jump.kind.can_reach_delta(delta) {
+        return Err(AsmError::TooLarge);
     }
-
-    /// Write a little-endian `u32` into a 4-byte block in executable memory.
-    ///
-    /// # Safety
-    ///
-    /// See [`rewrite_span`](Self::rewrite_span).
-    #[cfg(feature = "jit")]
-    pub unsafe fn repatch_u32_span(
-        self,
-        jit_allocator: &mut JitAllocator,
-        span: &mut Span,
-        value: u32,
-    ) -> Result<(), AsmError> {
-        if self.size != 4 {
-            return Err(AsmError::InvalidArgument);
-        }
-        // SAFETY: forwarding the caller's `rewrite_span` contract; a 4-byte
-        // payload satisfies the minimum patch alignment for every arch.
-        unsafe { self.rewrite_span(jit_allocator, span, &value.to_le_bytes()) }
+    // SAFETY: `range` is inside the span, and the caller guarantees the span
+    // holds this jump and that nothing executes it concurrently.
+    unsafe {
+        jit_allocator.write(span, |span| {
+            let bytes = core::slice::from_raw_parts_mut(span.rw().add(range.start), range.len());
+            jump.kind.patch_with_addend(bytes, 0, 0, delta);
+        })
     }
+}
 
-    /// Write a little-endian `u64` into an 8-byte block in executable memory.
-    ///
-    /// # Safety
-    ///
-    /// See [`rewrite_span`](Self::rewrite_span).
-    #[cfg(feature = "jit")]
-    pub unsafe fn repatch_u64_span(
-        self,
-        jit_allocator: &mut JitAllocator,
-        span: &mut Span,
-        value: u64,
-    ) -> Result<(), AsmError> {
-        if self.size != 8 {
-            return Err(AsmError::InvalidArgument);
+fn encode_value(
+    current: &[u8],
+    data: CodeLocationData,
+    value: u64,
+) -> Result<SmallVec<[u8; 16]>, AsmError> {
+    let size = data.size as usize;
+    match data.encoding {
+        DataEncoding::Raw => {
+            if size < 8 && value >> (size * 8) != 0 {
+                return Err(AsmError::TooLarge);
+            }
+            Ok(SmallVec::from_slice(&value.to_le_bytes()[..size]))
         }
-        // SAFETY: forwarding the caller's `rewrite_span` contract; an 8-byte
-        // payload satisfies the minimum patch alignment for every arch.
-        unsafe { self.rewrite_span(jit_allocator, span, &value.to_le_bytes()) }
+        DataEncoding::A64MovWide => {
+            #[cfg(feature = "aarch64")]
+            {
+                // Re-encode for the register and width the sequence was
+                // emitted with, read back from the `movz`.
+                let movz = u32::from_le_bytes([current[0], current[1], current[2], current[3]]);
+                let is_64bit = movz >> 31 == 1;
+                if !is_64bit && value > u64::from(u32::MAX) {
+                    return Err(AsmError::TooLarge);
+                }
+                Ok(crate::aarch64::encode_patchable_mov_imm(
+                    movz & 0x1f,
+                    is_64bit,
+                    value,
+                ))
+            }
+            #[cfg(not(feature = "aarch64"))]
+            {
+                let _ = (current, value);
+                Err(AsmError::InvalidArch)
+            }
+        }
     }
+}
+
+fn decode_value(bytes: &[u8], data: CodeLocationData) -> u64 {
+    match data.encoding {
+        DataEncoding::Raw => {
+            let mut value = [0u8; 8];
+            value[..bytes.len()].copy_from_slice(bytes);
+            u64::from_le_bytes(value)
+        }
+        DataEncoding::A64MovWide => bytes.chunks_exact(4).fold(0, |value, insn| {
+            let insn = u32::from_le_bytes([insn[0], insn[1], insn[2], insn[3]]);
+            let imm16 = u64::from((insn >> 5) & 0xffff);
+            let hw = (insn >> 21) & 3;
+            value | (imm16 << (16 * hw))
+        }),
+    }
+}
+
+/// Writes `value` into the immediate at `data`. Fails with [`AsmError::TooLarge`] when
+/// `value` does not fit the field.
+pub fn repatch_value(code: &mut [u8], data: CodeLocationData, value: u64) -> Result<(), AsmError> {
+    let range = field(code.len(), data.offset, data.size as usize)?;
+    let encoded = encode_value(&code[range.clone()], data, value)?;
+    code[range].copy_from_slice(&encoded);
+    Ok(())
+}
+
+/// Reads back the immediate at `data`.
+pub fn read_value(code: &[u8], data: CodeLocationData) -> Result<u64, AsmError> {
+    let range = field(code.len(), data.offset, data.size as usize)?;
+    Ok(decode_value(&code[range], data))
+}
+
+/// Writes `value` into the immediate at `data` in loaded code.
+///
+/// # Safety
+///
+/// `span` must hold the image `data` was located in, and no thread may execute
+/// the instruction while it is rewritten.
+#[cfg(feature = "jit")]
+pub unsafe fn repatch_value_span(
+    jit_allocator: &mut JitAllocator,
+    span: &mut Span,
+    data: CodeLocationData,
+    value: u64,
+) -> Result<(), AsmError> {
+    let range = field(span.size(), data.offset, data.size as usize)?;
+    // SAFETY: `range` is inside the span, which the caller guarantees is live.
+    let current = unsafe { core::slice::from_raw_parts(span.rx().add(range.start), range.len()) };
+    let encoded = encode_value(current, data, value)?;
+    // SAFETY: as above, and nothing executes the range while it is written.
+    unsafe {
+        jit_allocator.write(span, |span| {
+            span.rw()
+                .add(range.start)
+                .copy_from_nonoverlapping(encoded.as_ptr(), encoded.len());
+        })
+    }
+}
+
+/// Reads back the immediate at `data` in loaded code.
+///
+/// # Safety
+///
+/// `span` must be a live allocation holding the image `data` was located in.
+#[cfg(feature = "jit")]
+pub unsafe fn read_value_span(span: &Span, data: CodeLocationData) -> Result<u64, AsmError> {
+    let range = field(span.size(), data.offset, data.size as usize)?;
+    // SAFETY: `range` is inside the span, which the caller guarantees is live.
+    let bytes = unsafe { core::slice::from_raw_parts(span.rx().add(range.start), range.len()) };
+    Ok(decode_value(bytes, data))
+}
+
+fn check_region_payload(region: CodeLocationRegion, new_bytes: &[u8]) -> Result<(), AsmError> {
+    if new_bytes.len() > region.size as usize {
+        return Err(AsmError::TooLarge);
+    }
+    if new_bytes.len() % minimum_patch_alignment(region.arch) as usize != 0 {
+        return Err(AsmError::InvalidArgument);
+    }
+    Ok(())
+}
+
+/// Overwrites `region` with `new_bytes`, padding the rest with nops.
+pub fn rewrite_region(
+    code: &mut [u8],
+    region: CodeLocationRegion,
+    new_bytes: &[u8],
+) -> Result<(), AsmError> {
+    check_region_payload(region, new_bytes)?;
+    let range = field(code.len(), region.offset, region.size as usize)?;
+    let block = &mut code[range];
+    block[..new_bytes.len()].copy_from_slice(new_bytes);
+    fill_with_nops(region.arch, &mut block[new_bytes.len()..])
+}
+
+/// Overwrites `region` in loaded code with `new_bytes`, padding the rest with
+/// nops.
+///
+/// # Safety
+///
+/// `span` must hold the image `region` was located in, and no thread may
+/// execute the region while it is rewritten.
+#[cfg(feature = "jit")]
+pub unsafe fn rewrite_region_span(
+    jit_allocator: &mut JitAllocator,
+    span: &mut Span,
+    region: CodeLocationRegion,
+    new_bytes: &[u8],
+) -> Result<(), AsmError> {
+    check_region_payload(region, new_bytes)?;
+    let range = field(span.size(), region.offset, region.size as usize)?;
+    let mut result = Ok(());
+    // SAFETY: `range` is inside the span, and the caller guarantees the span
+    // holds this region and that nothing executes it concurrently.
+    unsafe {
+        jit_allocator.write(span, |span| {
+            let block = core::slice::from_raw_parts_mut(span.rw().add(range.start), range.len());
+            block[..new_bytes.len()].copy_from_slice(new_bytes);
+            result = fill_with_nops(region.arch, &mut block[new_bytes.len()..]);
+        })?;
+    }
+    result
 }
 
 pub fn minimum_patch_alignment(arch: Arch) -> CodeOffset {
@@ -447,65 +476,4 @@ pub fn fill_with_nops(arch: Arch, buffer: &mut [u8]) -> Result<(), AsmError> {
     }
 
     Ok(())
-}
-
-impl CodeBufferFinalized {
-    pub fn patch_catalog(&self) -> &PatchCatalog {
-        &self.patch_catalog
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn retarget_rejects_out_of_range_slice() {
-        let site = unsafe { PatchableSite::new(62, LabelUse::X86JmpRel32, 0) };
-        let mut bytes = [0u8; 64];
-        assert_eq!(
-            unsafe { site.retarget(&mut bytes, 0) }.unwrap_err(),
-            AsmError::InvalidState
-        );
-    }
-
-    #[test]
-    fn rewrite_rejects_misaligned_payload_for_a64() {
-        let block = unsafe { PatchableBlock::new(0, 4, Arch::AArch64) };
-        let mut bytes = [0u8; 4];
-        assert_eq!(
-            unsafe { block.rewrite(&mut bytes, &[0]) }.unwrap_err(),
-            AsmError::InvalidArgument
-        );
-    }
-
-    #[test]
-    fn repatch_u32_round_trips() {
-        let block = unsafe { PatchableBlock::new(1, 4, Arch::X64) };
-        let mut bytes = [0xB8, 0, 0, 0, 0];
-        unsafe { block.repatch_u32(&mut bytes, 0x11223344).unwrap() };
-        assert_eq!(&bytes[1..], &[0x44, 0x33, 0x22, 0x11]);
-    }
-
-    #[cfg(feature = "jit")]
-    #[test]
-    fn span_patch_rejects_ranges_outside_span() {
-        use crate::core::jit_allocator::JitAllocatorOptions;
-
-        let mut allocator = JitAllocator::new(JitAllocatorOptions::default());
-        let mut span = allocator.alloc(64).unwrap();
-        let span_size = span.size() as CodeOffset;
-
-        let block = unsafe { PatchableBlock::new(span_size, 1, Arch::X64) };
-        assert_eq!(
-            unsafe { block.rewrite_span(&mut allocator, &mut span, &[0x90]) }.unwrap_err(),
-            AsmError::InvalidState
-        );
-
-        let site = unsafe { PatchableSite::new(span_size - 3, LabelUse::X86JmpRel32, 0) };
-        assert_eq!(
-            unsafe { site.retarget_span(&mut allocator, &mut span, 0) }.unwrap_err(),
-            AsmError::InvalidState
-        );
-    }
 }

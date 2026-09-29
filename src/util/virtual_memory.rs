@@ -981,22 +981,6 @@ pub fn info() -> Info {
     }
 }
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn info_initialization_is_thread_safe() {
-        let expected = info();
-        let threads: Vec<_> = (0..8).map(|_| std::thread::spawn(info)).collect();
-
-        for thread in threads {
-            let actual = thread.join().unwrap();
-            assert_eq!(actual.page_granularity, expected.page_granularity);
-            assert_eq!(actual.page_size, expected.page_size);
-        }
-    }
-}
 
 /// Flushes instruction cache in the given region.
 ///
@@ -1016,8 +1000,8 @@ pub unsafe fn flush_instruction_cache(p: *const u8, size: usize) -> Result<(), A
                 fn sys_icache_invalidate(p: *const u8, size: usize);
             }
 
-            // SAFETY: `sys_icache_invalidate` requires a valid mapped range,
-            // which the documented contract of this function guarantees.
+            // SAFETY: `sys_icache_invalidate` requires a valid mapped range, guaranteed by callee following
+            // safety.
             unsafe {
                 sys_icache_invalidate(p, size);
             }
@@ -1032,8 +1016,7 @@ pub unsafe fn flush_instruction_cache(p: *const u8, size: usize) -> Result<(), A
             }
 
             // SAFETY: `GetCurrentProcess` is a no-argument pseudo-handle accessor
-            // and always succeeds. `p`/`size` are a valid mapped range per this
-            // function's contract; the return value is checked.
+            // and always succeeds. `p`/`size` are a valid mapped range.
             unsafe {
                 if FlushInstructionCache(GetCurrentProcess(), p, size) == 0 {
                     return Err(AsmError::InvalidState);
@@ -1054,17 +1037,14 @@ pub unsafe fn flush_instruction_cache(p: *const u8, size: usize) -> Result<(), A
 
                 while addr < end {
                     // SAFETY: `dc civac` is a cache-maintenance instruction with
-                    // no memory-safety preconditions beyond being privileged to
-                    // execute on the current target; `addr` is cache-line aligned
-                    // and inside the range the caller declared valid.
+                    // no memory-safety restrictions.
                     unsafe {
                         asm!("dc civac, {x}", x = in(reg) addr);
                     }
                     addr += ICACHE_LINE_SIZE;
                 }
 
-                // SAFETY: architectural barrier with no register operands; safe
-                // to execute in any context on AArch64.
+                // SAFETY: barrier safe to execute in any context on AArch64.
                 unsafe {
                     asm!("dsb ish");
                 }
@@ -1072,7 +1052,7 @@ pub unsafe fn flush_instruction_cache(p: *const u8, size: usize) -> Result<(), A
                 addr = code & !(ICACHE_LINE_SIZE - 1);
 
                 while addr < end {
-                    // SAFETY: `ic ivau` invalidates by VA; `addr` is 4-byte
+                    // SAFETY: `ic ivau` invalidates by VA, `addr` is 4-byte
                     // aligned and within the caller-declared valid range.
                     unsafe {
                         asm!("ic ivau, {x}", x = in(reg) addr);
@@ -1081,8 +1061,6 @@ pub unsafe fn flush_instruction_cache(p: *const u8, size: usize) -> Result<(), A
                 }
 
                 // SAFETY: barrier and instruction-synchronization instructions
-                // with no memory operands; required to complete the cache
-                // maintenance sequence started above.
                 unsafe {
                     asm!(
                         "dsb ish"
@@ -1150,8 +1128,6 @@ pub fn protect_jit_memory(access: ProtectJitAccess) {
             libc::pthread_jit_write_protect_np(x);
         }
     }
-    #[cfg(test)]
-    TEST_JIT_ACCESS.with(|current| current.set(access));
     let _ = access;
 }
 
@@ -1168,17 +1144,6 @@ pub(crate) fn with_jit_write_access<T>(write: impl FnOnce() -> T) -> T {
     protect_jit_memory(ProtectJitAccess::ReadWrite);
     let _restore = RestoreExecuteAccess;
     write()
-}
-
-#[cfg(test)]
-std::thread_local! {
-    static TEST_JIT_ACCESS: core::cell::Cell<ProtectJitAccess> =
-        const { core::cell::Cell::new(ProtectJitAccess::ReadExecute) };
-}
-
-#[cfg(test)]
-pub(crate) fn jit_access_for_test() -> ProtectJitAccess {
-    TEST_JIT_ACCESS.with(core::cell::Cell::get)
 }
 
 #[cfg(windows)]

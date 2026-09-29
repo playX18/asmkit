@@ -19,10 +19,8 @@ use crate::util::{
     align_down, align_up, bit_vector_clear, bit_vector_fill, bit_vector_get_bit,
     bit_vector_index_of, bit_vector_set_bit,
 };
-use alloc::collections::BTreeMap;
-use alloc::rc::Rc;
 use alloc::vec::Vec;
-use core::cell::{Cell, RefCell, UnsafeCell};
+use core::cell::{Cell, UnsafeCell};
 use core::mem::size_of;
 use core::ops::Range;
 use core::ptr::null_mut;
@@ -288,24 +286,24 @@ impl JitAllocatorBlock {
 
     fn used_bitvector(&self) -> &alloc::vec::Vec<u32> {
         // SAFETY: `JitAllocatorBlock` is only reachable through
-        // `JitAllocator`/`Span`, which are `!Send`/`!Sync` (they hold `Rc` and
-        // `RefCell`). Every caller mutates bitvectors only while holding an
-        // exclusive `&mut JitAllocatorState` borrow, and never holds a shared
-        // reference to the same vector at the same time.
+        // `JitAllocator`, which is `!Send`/`!Sync` (it holds raw pointers).
+        // Every caller mutates bitvectors only while holding `&mut
+        // JitAllocator`, and never holds a shared reference to the same vector
+        // at the same time.
         unsafe { &*self.used_bitvector.get() }
     }
 
     fn stop_bitvector(&self) -> &alloc::vec::Vec<u32> {
-        // SAFETY: same invariant as `used_bitvector`: exclusive state access
-        // through `RefCell::borrow_mut`, and no aliasing shared borrow at the
+        // SAFETY: same invariant as `used_bitvector`: exclusive access
+        // through `&mut JitAllocator`, and no aliasing shared borrow at the
         // call site.
         unsafe { &*self.stop_bitvector.get() }
     }
 
     #[allow(clippy::mut_from_ref)]
     fn used_bitvector_mut(&self) -> &mut alloc::vec::Vec<u32> {
-        // SAFETY: the block is owned by a `JitAllocatorState` that is only
-        // entered through `RefCell::borrow_mut`, and this module never creates
+        // SAFETY: the block is owned by a `JitAllocator` that is only
+        // mutated through `&mut JitAllocator`, and this module never creates
         // a live `&`/`&mut` pair to the same vector: `mark_*` callers use one
         // bitvector at a time and drop the borrow before the next.
         unsafe { &mut *self.used_bitvector.get() }
@@ -337,7 +335,7 @@ impl JitAllocatorBlock {
 
         // SAFETY: `self.pool` is assigned in `new_block` before the block is
         // published to any list/tree and is never changed afterwards. The pool
-        // is owned by the `JitAllocatorState` that owns this block, and freed
+        // is owned by the `JitAllocator` that owns this block, and freed
         // only after every block is removed in `Drop`, so it is live here.
         unsafe {
             (*self.pool).total_area_used += allocated_area_size as usize;
@@ -367,7 +365,7 @@ impl JitAllocatorBlock {
 
         // SAFETY: same invariant as `mark_allocated_area`: `self.pool` is live
         // and owned by the allocator state that owns this block, and all
-        // mutations are serialized through `RefCell::borrow_mut`.
+        // mutations are serialized through `&mut JitAllocator`.
         unsafe {
             (*self.pool).total_area_used -= released_area_size as usize;
         }
@@ -410,7 +408,7 @@ impl JitAllocatorBlock {
 
         // SAFETY: same invariant as `mark_allocated_area`: `self.pool` is live
         // and owned by the allocator state that owns this block, and all
-        // mutations are serialized through `RefCell::borrow_mut`.
+        // mutations are serialized through `&mut JitAllocator`.
         unsafe {
             (*self.pool).total_area_used -= shrunk_area_size as usize;
         }
@@ -582,22 +580,33 @@ use alloc::boxed::Box;
 ///
 /// - Internally, the allocator also uses RB tree to keep track of all blocks across all pools. Each inserted block is
 ///   added to the tree so it can be matched fast during `release()` and `shrink()`.
-struct JitAllocatorState {
+///
+/// Like asmjit's `JitAllocator`, this is a low-level interface: [`Span`]s are plain handles that do not own
+/// their memory. Allocations live until they are passed to [`JitAllocator::release`], or until the allocator
+/// is reset or dropped, and it is up to the caller not to use a span past that point.
+pub struct JitAllocator {
     options: JitAllocatorOptions,
     block_size: usize,
     granulariy: usize,
     fill_pattern: u32,
 
     allocation_count: usize,
-    next_allocation_id: u64,
-    allocation_ids: BTreeMap<usize, u64>,
     tree: RBTree<JitAllocatorBlockAdapter>,
     pools: Box<[*mut JitAllocatorPool]>,
 }
 
-impl JitAllocatorState {
-    fn new(params: JitAllocatorOptions) -> Self {
+impl JitAllocator {
+    /// Creates a new JIT allocator.
+    pub fn new(mut params: JitAllocatorOptions) -> Box<Self> {
         let vm_info = virtual_memory::info();
+
+        // Apple platforms refuse executable `MAP_SHARED` mappings, so dual
+        // mapping fails there. Use a single `MAP_JIT` mapping instead and toggle
+        // write access with `pthread_jit_write_protect_np`, as asmjit does.
+        #[cfg(not(windows))]
+        if virtual_memory::has_map_jit_support() {
+            params.use_dual_mapping = false;
+        }
 
         let mut block_size = params.block_size;
         let mut granularity = params.granularity;
@@ -626,17 +635,15 @@ impl JitAllocatorState {
             pools.push(Box::into_raw(Box::new(JitAllocatorPool::new(granularity))));
         }
 
-        Self {
+        Box::new(Self {
             options: params,
             block_size: block_size as _,
             granulariy: granularity as _,
             fill_pattern,
             allocation_count: 0,
-            next_allocation_id: 0,
-            allocation_ids: BTreeMap::new(),
             tree: RBTree::new(JitAllocatorBlockAdapter::new()),
             pools: pools.into_boxed_slice(),
-        }
+        })
     }
 
     fn size_to_pool_id(&self, size: usize) -> usize {
@@ -666,7 +673,7 @@ impl JitAllocatorState {
     ) -> usize {
         // SAFETY: callers pass a pointer taken from `self.pools`, which owns the
         // pool for the lifetime of the state, and call this while holding the
-        // state's exclusive `RefCell` borrow.
+        // allocator's exclusive borrow.
         unsafe {
             let last = (*pool).blocks.back();
 
@@ -696,7 +703,7 @@ impl JitAllocatorState {
     ///
     /// # Safety
     ///
-    /// `pool` must be a live pool pointer owned by the same `JitAllocatorState`
+    /// `pool` must be a live pool pointer owned by the same `JitAllocator`
     /// as `self`, and `self` must hold the state's exclusive borrow. The
     /// returned `Box` owns the only pointer to the block until the caller
     /// publishes it with [`Self::insert_block`].
@@ -707,7 +714,7 @@ impl JitAllocatorState {
     ) -> Result<Box<JitAllocatorBlock>, AsmError> {
         // SAFETY: `pool` is live per the function contract; the area size is
         // computed from the block size and the pool's power-of-two granularity
-        // (validated in `JitAllocatorState::new`), no arithmetic can overflow
+        // (validated in `JitAllocator::new`), no arithmetic can overflow
         // because `block_size` is validated to be at most `MAX_BLOCK_SIZE`.
         unsafe {
             let area_size =
@@ -967,7 +974,7 @@ impl JitAllocatorState {
 
         for pool_id in 0..pool_count {
             // SAFETY: `self.pools` is an owned slice of heap pools that are freed
-            // only in `Drop for JitAllocatorState` (after a final hard reset);
+            // only in `Drop for JitAllocator` (after a final hard reset);
             // `pool_id` is in bounds. Taking `&mut` is exclusive because this
             // method has `&mut self`.
             let pool = unsafe { &mut *self.pools[pool_id] };
@@ -1019,22 +1026,14 @@ impl JitAllocatorState {
         }
 
         self.allocation_count = 0;
-        self.allocation_ids.clear();
     }
 
     /// Allocates `size` bytes in the executable memory region.
-    /// Returns two pointers. One points to Read-Execute mapping and another to Read-Write mapping.
-    /// All code writes *must* go to the Read-Write mapping.
-    fn alloc(
-        &mut self,
-        size: usize,
-    ) -> Result<(*const u8, *mut u8, usize, *mut u8, u64), AsmError> {
+    ///
+    /// The returned [`Span`] holds two pointers. One points to Read-Execute mapping and another to Read-Write
+    /// mapping. All code writes *must* go to the Read-Write mapping.
+    pub fn alloc(&mut self, size: usize) -> Result<Span, AsmError> {
         const NO_INDEX: u32 = u32::MAX;
-
-        let allocation_id = self
-            .next_allocation_id
-            .checked_add(1)
-            .ok_or(AsmError::TooManyHandles)?;
 
         let size = align_up(size, self.granulariy);
 
@@ -1047,9 +1046,8 @@ impl JitAllocatorState {
         }
 
         // SAFETY: `self.pools` owns live pools; `pool_id` is in bounds; every
-        // pointer stored in `allocation_ids` and the block fields was produced
-        // by previous `alloc`/`insert_block` calls under the same exclusive
-        // borrow, so the reachability and liveness invariants below hold.
+        // block pointer reachable from the pools was produced by previous
+        // `insert_block` calls under `&mut self`, so it is live.
         unsafe {
             let pool_id = self.size_to_pool_id(size);
             let pool = &mut *self.pools[pool_id];
@@ -1158,7 +1156,6 @@ impl JitAllocatorState {
             }
 
             self.allocation_count += 1;
-            self.next_allocation_id = allocation_id;
 
             let block = match block {
                 Some(block) => block,
@@ -1172,17 +1169,13 @@ impl JitAllocatorState {
             // SAFETY: `offset` is the byte offset of the freshly marked area
             // inside the block, so it is within `block_size`; both `rx` and `rw`
             // point at the start of a live mapping of at least that size.
-            let rx = block.rx_ptr().add(offset);
-            let rw = block.rw_ptr().add(offset);
-            self.allocation_ids.insert(rx as usize, allocation_id);
-
-            Ok((
-                rx,
-                rw,
+            Ok(Span {
+                rx: block.rx_ptr().add(offset),
+                rw: block.rw_ptr().add(offset),
                 size,
-                block as *const JitAllocatorBlock as *mut u8,
-                allocation_id,
-            ))
+                block: block as *const JitAllocatorBlock as *mut u8,
+                icache_clean: true,
+            })
         }
     }
 
@@ -1195,33 +1188,8 @@ impl JitAllocatorState {
     /// - `rx_ptr` must point to the read-execute mapping returned by `alloc`,
     ///   and no pointer into the released area may be used afterwards.
     pub unsafe fn release(&mut self, rx_ptr: *const u8) -> Result<(), AsmError> {
-        // SAFETY: forwarding the caller's contract unchanged.
-        unsafe { self.release_with_id(rx_ptr, None) }
-    }
-
-    /// Releases a specific allocation, verifying `allocation_id` when present.
-    ///
-    /// # Safety
-    ///
-    /// Same contract as [`Self::release`]: the pointer must identify a live
-    /// allocation of this allocator, and the allocation must not be used after
-    /// the call. When `allocation_id` is `Some`, it must be the ID recorded for
-    /// that allocation, so a stale [`Span`] cannot release a later allocation
-    /// that reuses the same address.
-    unsafe fn release_with_id(
-        &mut self,
-        rx_ptr: *const u8,
-        allocation_id: Option<u64>,
-    ) -> Result<(), AsmError> {
         if rx_ptr.is_null() {
             return Err(AsmError::InvalidArgument);
-        }
-
-        let Some(&current_id) = self.allocation_ids.get(&(rx_ptr as usize)) else {
-            return Err(AsmError::InvalidState);
-        };
-        if allocation_id.is_some_and(|allocation_id| allocation_id != current_id) {
-            return Err(AsmError::InvalidState);
         }
 
         let block = self.tree.find(&BlockKey {
@@ -1235,8 +1203,8 @@ impl JitAllocatorState {
 
         // SAFETY: `block` was located in the RB tree, so it is live and owned by
         // this state; `block.pool` was set by `new_block` at the pool that owns
-        // the block, which outlives it. `allocation_ids` proves `rx_ptr` belongs
-        // to this block, so the offset arithmetic stays inside the mapping and
+        // the block, which outlives it. The tree lookup places `rx_ptr` inside
+        // this block, so the offset arithmetic stays inside the mapping and
         // the bitvector probes are in bounds. The fill writes `area_size`
         // bytes of the RW mapping, and the raw pointers are advanced by that
         // allocation's exact offset.
@@ -1261,7 +1229,6 @@ impl JitAllocatorState {
             let area_size = area_end - area_index;
 
             self.allocation_count -= 1;
-            self.allocation_ids.remove(&(rx_ptr as usize));
 
             block.mark_released_area(area_index, area_end);
 
@@ -1296,20 +1263,25 @@ impl JitAllocatorState {
 
         Ok(())
     }
-    /// Shrinks the memory allocated by `alloc`.
+    /// Shrinks the memory allocated by `alloc` and updates `span.size()` to match.
+    ///
+    /// A `new_size` of zero releases the allocation.
     ///
     /// # Safety
     ///
-    /// `rx_ptr` must identify a live allocation returned by `alloc` on this
+    /// `span` must describe a live allocation returned by `alloc` on this
     /// allocator; no pointer into the released tail may be used afterwards.
-    pub unsafe fn shrink(&mut self, rx_ptr: *const u8, new_size: usize) -> Result<(), AsmError> {
+    pub unsafe fn shrink(&mut self, span: &mut Span, new_size: usize) -> Result<(), AsmError> {
+        let rx_ptr = span.rx;
         if rx_ptr.is_null() {
             return Err(AsmError::InvalidArgument);
         }
 
         if new_size == 0 {
             // SAFETY: forwarding the caller's contract unchanged.
-            return unsafe { self.release(rx_ptr) };
+            unsafe { self.release(rx_ptr)? };
+            span.size = 0;
+            return Ok(());
         }
 
         let Some(block) = self
@@ -1371,14 +1343,16 @@ impl JitAllocatorState {
                     let _ = flush_instruction_cache(block.rx_ptr().add(area_offset), span_size);
                 }
             }
+
+            span.size = pool.byte_size_from_area_size(area_shrunk_size);
         }
 
         Ok(())
     }
 
-    /// Takes a pointer into the JIT memory and tries to query
-    /// RX, RW mappings and size of the allocation.
-    fn query(&self, rx_ptr: *const u8) -> Result<(*const u8, *mut u8, usize, *mut u8), AsmError> {
+    /// Takes a pointer to the start of an allocation and returns a [`Span`]
+    /// describing its RX and RW mappings and size.
+    pub fn query(&self, rx_ptr: *const u8) -> Result<Span, AsmError> {
         let Some(block) = self
             .tree
             .find(&BlockKey {
@@ -1416,164 +1390,61 @@ impl JitAllocatorState {
             let byte_offset = pool.byte_size_from_area_size(area_start);
             let byte_size = pool.byte_size_from_area_size(area_end - area_start);
 
-            Ok((
-                block.rx_ptr().add(byte_offset),
-                block.rw_ptr().add(byte_offset),
-                byte_size,
-                block as *const JitAllocatorBlock as *mut u8,
-            ))
+            Ok(Span {
+                rx: block.rx_ptr().add(byte_offset),
+                rw: block.rw_ptr().add(byte_offset),
+                size: byte_size,
+                block: block as *const JitAllocatorBlock as *mut u8,
+                icache_clean: true,
+            })
         }
-    }
-
-    fn validate_span(&self, span: &Span) -> Result<(), AsmError> {
-        let (rx, rw, size, block) = self.query(span.rx())?;
-        if rx != span.rx
-            || rw != span.rw
-            || size != span.size
-            || block != span.block
-            || self.allocation_ids.get(&(rx as usize)) != Some(&span.allocation_id)
-        {
-            return Err(AsmError::InvalidArgument);
-        }
-        Ok(())
-    }
-}
-
-impl Drop for JitAllocatorState {
-    fn drop(&mut self) {
-        // SAFETY: this is the unique owner of `self.pools`; reset removes and
-        // deletes every block from every pool (guaranteed to have `&mut self`,
-        // so no other user of the mappings can exist), after which each pool
-        // `Box` is reclaimed exactly once. No `Span` can be alive here because
-        // spans hold an `Rc` to the state and keep it from being dropped.
-        unsafe {
-            self.reset(ResetPolicy::Hard);
-            for pool in &mut self.pools {
-                drop(Box::from_raw(*pool));
-            }
-        }
-    }
-}
-
-/// A virtual-memory allocator for JIT compiled code.
-///
-/// Allocations own a reference to the allocator state and release themselves
-/// when dropped. The state, including its mappings, therefore outlives every
-/// [`Span`] returned from it.
-pub struct JitAllocator {
-    state: Rc<RefCell<JitAllocatorState>>,
-}
-
-impl JitAllocator {
-    /// Creates a new JIT allocator.
-    pub fn new(params: JitAllocatorOptions) -> Box<Self> {
-        Box::new(Self {
-            state: Rc::new(RefCell::new(JitAllocatorState::new(params))),
-        })
-    }
-
-    /// Resets current allocator by emptying all pools and blocks.
-    ///
-    /// # Safety
-    ///
-    /// The caller must ensure that no code or pointer from an existing span is
-    /// used after this call. Existing spans remain safe to drop.
-    pub unsafe fn reset(&mut self, reset_policy: ResetPolicy) {
-        // SAFETY: forwarding the caller's contract; `borrow_mut` gives the state
-        // exclusive access and cannot already be borrowed (no `Span` method
-        // holds a borrow across a call into user code).
-        unsafe { self.state.borrow_mut().reset(reset_policy) }
-    }
-
-    /// Allocates `size` bytes in executable memory.
-    pub fn alloc(&mut self, size: usize) -> Result<Span, AsmError> {
-        let (rx, rw, size, block, allocation_id) = self.state.borrow_mut().alloc(size)?;
-        Ok(Span {
-            owner: Rc::clone(&self.state),
-            rx,
-            rw,
-            size,
-            block,
-            allocation_id,
-            icache_clean: true,
-        })
-    }
-
-    /// Releases an allocation identified by its RX pointer.
-    ///
-    /// Dropping its [`Span`] is the safe release path.
-    ///
-    /// # Safety
-    ///
-    /// `rx_ptr` must identify a live allocation from this allocator and no
-    /// pointer into the allocation may be used after this call. A retained
-    /// [`Span`] may only be dropped; its allocation ID prevents it from
-    /// releasing a later allocation that reuses the same address.
-    pub unsafe fn release(&mut self, rx_ptr: *const u8) -> Result<(), AsmError> {
-        // SAFETY: forwarding the caller's contract unchanged.
-        unsafe { self.state.borrow_mut().release(rx_ptr) }
-    }
-
-    /// Shrinks an allocation identified by its RX pointer.
-    ///
-    /// # Safety
-    ///
-    /// `rx_ptr` must identify a live allocation from this allocator and no
-    /// pointer into the released tail may be used after this call.
-    pub unsafe fn shrink(&mut self, rx_ptr: *const u8, new_size: usize) -> Result<(), AsmError> {
-        // SAFETY: forwarding the caller's contract unchanged.
-        unsafe { self.state.borrow_mut().shrink(rx_ptr, new_size) }
-    }
-
-    fn validate_span(&self, span: &Span) -> Result<(), AsmError> {
-        if !Rc::ptr_eq(&self.state, &span.owner) {
-            return Err(AsmError::InvalidArgument);
-        }
-        self.state.borrow().validate_span(span)
     }
 
     /// Writes through a span and synchronizes the instruction cache.
     ///
+    /// Makes JIT memory writable for the duration of `write_func` (MAP_JIT
+    /// platforms), then flushes the instruction cache for the whole span.
+    ///
     /// # Safety
     ///
-    /// `write_func` must leave valid executable code in the allocation, and no
-    /// thread may execute it while the closure is modifying it.
+    /// `span` must describe a live allocation of this allocator,
+    /// `write_func` must only write inside it and leave valid executable code
+    /// there, and no thread may execute it while the closure is modifying it.
     pub unsafe fn write(
         &mut self,
         span: &mut Span,
-        mut write_func: impl FnMut(&mut Span),
+        write_func: impl FnOnce(&mut Span),
     ) -> Result<(), AsmError> {
-        self.validate_span(span)?;
-        if span.size() == 0 {
+        if span.size == 0 {
             return Ok(());
         }
 
         span.icache_clean = false;
         virtual_memory::with_jit_write_access(|| write_func(span));
-        // SAFETY: `span` was validated against this allocator above, so `rx()`
-        // and `size()` describe a live mapped allocation; the caller guarantees
-        // no thread is executing it during the write.
-        unsafe { flush_instruction_cache(span.rx(), span.size())? };
+        // SAFETY: the caller guarantees `span` is a live mapped allocation.
+        unsafe { flush_instruction_cache(span.rx, span.size)? };
         span.icache_clean = true;
         Ok(())
     }
 
-    /// Copies bytes into a span and synchronizes the written instruction-cache range.
+    /// Copies `slice` into `span` at `offset` and synchronizes the written
+    /// instruction-cache range.
     ///
-    /// This is the bounds-checked alternative to writing through [`Span::rw`].
-    /// Executing the bytes still requires the caller to ensure that they form
-    /// valid code for the target architecture.
-    pub fn copy_from_slice(
+    /// # Safety
+    ///
+    /// `span` must describe a live allocation of this allocator, and no thread
+    /// may execute the written range while it is being modified. The range is
+    /// bounds-checked against `span.size()`.
+    pub unsafe fn copy_from_slice(
         &mut self,
         span: &mut Span,
         offset: usize,
         slice: &[u8],
     ) -> Result<(), AsmError> {
-        self.validate_span(span)?;
         let end = offset
             .checked_add(slice.len())
             .ok_or(AsmError::InvalidArgument)?;
-        if end > span.size() {
+        if end > span.size {
             return Err(AsmError::InvalidArgument);
         }
         if slice.is_empty() {
@@ -1581,20 +1452,35 @@ impl JitAllocator {
         }
 
         span.icache_clean = false;
-        virtual_memory::with_jit_write_access(|| unsafe {
-            // SAFETY: `validate_span` proved `span` is a live allocation of this
-            // allocator and `offset + slice.len()` was bounds-checked against
-            // `span.size()`, so both pointers stay inside the RW mapping for the
-            // duration of the non-overlapping copy.
-            span.rw()
-                .add(offset)
-                .copy_from_nonoverlapping(slice.as_ptr(), slice.len());
-        });
-        // SAFETY: the same validated span and in-bounds range are flushed; the
-        // newly written bytes are now visible to instruction fetch.
-        unsafe { flush_instruction_cache(span.rx().add(offset), slice.len())? };
+        // SAFETY: the caller guarantees `span` is live and `offset..end` was
+        // bounds-checked against its size, so the copy and the flush stay
+        // inside its mappings.
+        unsafe {
+            virtual_memory::with_jit_write_access(|| {
+                span.rw
+                    .add(offset)
+                    .copy_from_nonoverlapping(slice.as_ptr(), slice.len());
+            });
+            flush_instruction_cache(span.rx.add(offset), slice.len())?;
+        }
         span.icache_clean = true;
         Ok(())
+    }
+}
+
+impl Drop for JitAllocator {
+    fn drop(&mut self) {
+        // SAFETY: this is the unique owner of `self.pools`; reset removes and
+        // deletes every block from every pool (guaranteed to have `&mut self`,
+        // so no other user of the mappings can exist), after which each pool
+        // `Box` is reclaimed exactly once. Any `Span` still held by the caller
+        // dangles after this, as with asmjit.
+        unsafe {
+            self.reset(ResetPolicy::Hard);
+            for pool in &mut self.pools {
+                drop(Box::from_raw(*pool));
+            }
+        }
     }
 }
 
@@ -1619,44 +1505,19 @@ unsafe fn fill_pattern(mem: *mut u8, pattern: u32, size_in_bytes: usize) {
     }
 }
 
-/// An owning executable-memory allocation returned by [`JitAllocator::alloc`].
+
+/// A region of executable memory returned by [`JitAllocator::alloc`].
 ///
-/// The allocation is released on drop. This handle is intentionally neither
-/// `Clone` nor `Copy`.
+/// This is a plain handle: copying or
+/// dropping it does nothing to the allocation. Release it explicitly with
+/// [`JitAllocator::release`], or let the allocator free it on reset or drop.
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub struct Span {
-    owner: Rc<RefCell<JitAllocatorState>>,
     rx: *const u8,
     rw: *mut u8,
     size: usize,
     block: *mut u8,
-    allocation_id: u64,
     icache_clean: bool,
-}
-
-impl core::fmt::Debug for Span {
-    fn fmt(&self, f: &mut core::fmt::Formatter<'_>) -> core::fmt::Result {
-        f.debug_struct("Span")
-            .field("rx", &self.rx)
-            .field("rw", &self.rw)
-            .field("size", &self.size)
-            .field("icache_clean", &self.icache_clean)
-            .finish()
-    }
-}
-
-impl Drop for Span {
-    fn drop(&mut self) {
-        // SAFETY: `self.rx` was returned by `alloc` on the same state that
-        // `self.owner` points to, and this `Span` is the unique owner of that
-        // allocation (it is neither `Clone` nor `Copy`). `allocation_id` makes
-        // the release a no-op if the allocation was already released explicitly
-        // and the address was reused, so a stale span cannot free new memory.
-        let _ = unsafe {
-            self.owner
-                .borrow_mut()
-                .release_with_id(self.rx, Some(self.allocation_id))
-        };
-    }
 }
 
 impl Span {
@@ -1675,9 +1536,6 @@ impl Span {
     ///   - a valid pointer, but not the same as `rx` - this would be valid if dual mapping is used.
     ///   - NULL pointer, in case that the allocation strategy doesn't use RWX, MAP_JIT, or dual mapping. In this
     ///     case only [JitAllocator] can copy new code into the executable memory referenced by [Span].
-    ///
-    /// Dereferencing this pointer is unsafe. Prefer
-    /// [`JitAllocator::copy_from_slice`] for bounds-checked writes.
     pub const fn rw(&self) -> *mut u8 {
         self.rw
     }
@@ -1686,245 +1544,16 @@ impl Span {
         self.size
     }
 
-    pub fn is_icache_clean(&self) -> bool {
+    /// Returns the allocator block this span lives in, as an opaque pointer.
+    pub const fn block(&self) -> *mut u8 {
+        self.block
+    }
+
+    pub const fn is_icache_clean(&self) -> bool {
         self.icache_clean
     }
 
-    pub fn is_directly_writeable(&self) -> bool {
+    pub const fn is_directly_writeable(&self) -> bool {
         !self.rw.is_null()
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use crate::util::virtual_memory::ProtectJitAccess;
-
-    #[test]
-    fn copy_from_slice_rejects_out_of_bounds_write() {
-        let mut allocator = JitAllocator::new(JitAllocatorOptions::default());
-        let mut span = allocator.alloc(64).unwrap();
-
-        let error = allocator
-            .copy_from_slice(&mut span, 63, &[1, 2])
-            .unwrap_err();
-        assert_eq!(error, AsmError::InvalidArgument);
-    }
-
-    #[test]
-    fn span_releases_allocation_on_drop() {
-        let mut allocator = JitAllocator::new(JitAllocatorOptions::default());
-        let span = allocator.alloc(64).unwrap();
-        assert_eq!(allocator.state.borrow().allocation_count, 1);
-
-        drop(span);
-
-        assert_eq!(allocator.state.borrow().allocation_count, 0);
-    }
-
-    #[test]
-    fn adjacent_span_releases_after_preceding_span() {
-        let mut allocator = JitAllocator::new(JitAllocatorOptions::default());
-        let first = allocator.alloc(64).unwrap();
-        let second = allocator.alloc(64).unwrap();
-
-        drop(first);
-        drop(second);
-
-        assert_eq!(allocator.state.borrow().allocation_count, 0);
-    }
-
-    #[test]
-    fn span_keeps_allocator_state_alive() {
-        let mut allocator = JitAllocator::new(JitAllocatorOptions::default());
-        let state = Rc::downgrade(&allocator.state);
-        let span = allocator.alloc(64).unwrap();
-
-        drop(allocator);
-        assert!(state.upgrade().is_some());
-
-        drop(span);
-        assert!(state.upgrade().is_none());
-    }
-
-    #[test]
-    fn wrong_allocator_rejects_span() {
-        let mut first = JitAllocator::new(JitAllocatorOptions::default());
-        let mut second = JitAllocator::new(JitAllocatorOptions::default());
-        let mut span = first.alloc(64).unwrap();
-
-        let error = second.copy_from_slice(&mut span, 0, &[0x90]).unwrap_err();
-
-        assert_eq!(error, AsmError::InvalidArgument);
-    }
-
-    #[test]
-    fn dropped_manually_released_span_is_a_no_op() {
-        let mut allocator = JitAllocator::new(JitAllocatorOptions::default());
-        let span = allocator.alloc(64).unwrap();
-
-        unsafe { allocator.release(span.rx()).unwrap() };
-        drop(span);
-
-        assert_eq!(allocator.state.borrow().allocation_count, 0);
-    }
-
-    #[test]
-    fn stale_span_drop_does_not_release_reused_allocation() {
-        let options = JitAllocatorOptions {
-            use_dual_mapping: false,
-            use_multiple_pools: false,
-            fill_unused_memory: false,
-            ..Default::default()
-        };
-        let mut allocator = JitAllocator::new(options);
-        let stale = allocator.alloc(64).unwrap();
-        let reused_address = stale.rx();
-
-        unsafe { allocator.release(reused_address).unwrap() };
-        let replacement = allocator.alloc(64).unwrap();
-        assert_eq!(replacement.rx(), reused_address);
-
-        drop(stale);
-        assert_eq!(allocator.state.borrow().allocation_count, 1);
-        drop(replacement);
-        assert_eq!(allocator.state.borrow().allocation_count, 0);
-    }
-
-    #[test]
-    fn pre_reset_span_drop_does_not_release_reused_allocation() {
-        let options = JitAllocatorOptions {
-            use_dual_mapping: false,
-            use_multiple_pools: false,
-            fill_unused_memory: false,
-            ..Default::default()
-        };
-        let mut allocator = JitAllocator::new(options);
-        let stale = allocator.alloc(64).unwrap();
-        let reused_address = stale.rx();
-
-        unsafe { allocator.reset(ResetPolicy::Soft) };
-        let replacement = allocator.alloc(64).unwrap();
-        assert_eq!(replacement.rx(), reused_address);
-
-        drop(stale);
-        assert_eq!(allocator.state.borrow().allocation_count, 1);
-        drop(replacement);
-        assert_eq!(allocator.state.borrow().allocation_count, 0);
-    }
-
-    #[test]
-    fn write_restores_execute_access_after_panic() {
-        let mut allocator = JitAllocator::new(JitAllocatorOptions::default());
-        let mut span = allocator.alloc(64).unwrap();
-
-        let panic = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| unsafe {
-            allocator
-                .write(&mut span, |_| panic!("stop writing"))
-                .unwrap();
-        }));
-
-        assert!(panic.is_err());
-        assert_eq!(
-            virtual_memory::jit_access_for_test(),
-            ProtectJitAccess::ReadExecute
-        );
-        assert!(!span.is_icache_clean());
-    }
-
-    #[test]
-    fn shrink_preserves_retained_bytes() {
-        let mut allocator = JitAllocator::new(JitAllocatorOptions::default());
-        let mut span = allocator.alloc(128).unwrap();
-        let bytes = [0x90; 128];
-        allocator.copy_from_slice(&mut span, 0, &bytes).unwrap();
-
-        unsafe { allocator.shrink(span.rx(), 64).unwrap() };
-
-        let retained = unsafe { core::slice::from_raw_parts(span.rw(), 64) };
-        assert_eq!(retained, &bytes[..64]);
-    }
-
-    #[test]
-    fn shrink_allocation_at_block_end() {
-        let options = JitAllocatorOptions {
-            use_dual_mapping: false,
-            use_multiple_pools: false,
-            fill_unused_memory: false,
-            block_size: 64 * 1024,
-            ..Default::default()
-        };
-        let mut allocator = JitAllocator::new(options);
-        let span = allocator.alloc(128 * 1024).unwrap();
-
-        unsafe { allocator.shrink(span.rx(), 64 * 1024).unwrap() };
-        drop(span);
-    }
-
-    #[test]
-    fn soft_reset_keeps_one_reusable_block() {
-        let options = JitAllocatorOptions {
-            use_dual_mapping: false,
-            use_multiple_pools: false,
-            fill_unused_memory: false,
-            ..Default::default()
-        };
-        let mut allocator = JitAllocator::new(options);
-        let span = allocator.alloc(64).unwrap();
-        let rx = span.rx();
-        drop(span);
-
-        unsafe { allocator.reset(ResetPolicy::Soft) };
-
-        let span = allocator.alloc(64).unwrap();
-        assert_eq!(span.rx(), rx);
-    }
-
-    #[test]
-    fn soft_reset_releases_extra_blocks() {
-        let options = JitAllocatorOptions {
-            use_dual_mapping: false,
-            use_multiple_pools: false,
-            fill_unused_memory: false,
-            block_size: 64 * 1024,
-            ..Default::default()
-        };
-        let mut allocator = JitAllocator::new(options);
-        {
-            let mut state = allocator.state.borrow_mut();
-            state.alloc(128 * 1024).unwrap();
-            state.alloc(256 * 1024).unwrap();
-            state.alloc(512 * 1024).unwrap();
-            assert_eq!(state.tree.iter().count(), 3);
-        }
-
-        unsafe { allocator.reset(ResetPolicy::Soft) };
-
-        let state = allocator.state.borrow();
-        assert_eq!(state.tree.iter().count(), 1);
-        let pool = unsafe { &*state.pools[0] };
-        assert_eq!(pool.block_count, 1);
-        assert_eq!(pool.blocks.iter().count(), 1);
-    }
-
-    #[test]
-    fn stale_span_cannot_write_reallocated_shrunk_tail() {
-        let options = JitAllocatorOptions {
-            use_dual_mapping: false,
-            use_multiple_pools: false,
-            fill_unused_memory: false,
-            ..Default::default()
-        };
-        let mut allocator = JitAllocator::new(options);
-        let mut stale = allocator.alloc(128).unwrap();
-        unsafe { allocator.shrink(stale.rx(), 64).unwrap() };
-        let mut tail = allocator.alloc(64).unwrap();
-        allocator.copy_from_slice(&mut tail, 0, &[0x11]).unwrap();
-
-        let error = allocator
-            .copy_from_slice(&mut stale, 64, &[0x22])
-            .unwrap_err();
-        assert_eq!(error, AsmError::InvalidArgument);
-        assert_eq!(unsafe { tail.rw().read() }, 0x11);
     }
 }

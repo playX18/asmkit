@@ -15,6 +15,40 @@ fn resolve(name: &ExternalName) -> *const u8 {
     }
 }
 
+fn disassemble(cs: &Capstone, bytes: &[u8], address: u64, code_end: usize, unit: usize) {
+    let mut offset = 0;
+    while offset < code_end {
+        let insns = cs.disasm_count(&bytes[offset..code_end], address + offset as u64, 1);
+        if let Some(insn) = insns.as_ref().ok().and_then(|insns| insns.iter().next()) {
+            println!(
+                "0x{:x}:\t{}\t{}",
+                insn.address(),
+                insn.mnemonic().unwrap_or(""),
+                insn.op_str().unwrap_or("")
+            );
+            offset += insn.len();
+        } else {
+            let chunk = &bytes[offset..code_end.min(offset + unit)];
+            print_data(address + offset as u64, chunk);
+            offset += chunk.len();
+        }
+    }
+
+    for chunk in bytes[code_end..].chunks(16) {
+        print_data(address + offset as u64, chunk);
+        offset += chunk.len();
+    }
+}
+
+fn print_data(address: u64, chunk: &[u8]) {
+    let hex: Vec<String> = chunk.iter().map(|b| format!("0x{b:02x}")).collect();
+    let ascii: String = chunk
+        .iter()
+        .map(|&b| if b.is_ascii_graphic() || b == b' ' { b as char } else { '.' })
+        .collect();
+    println!("0x{address:x}:\t.byte\t{}\t; {ascii}", hex.join(", "));
+}
+
 fn main() {
     #[cfg(unix)]
     {
@@ -42,11 +76,8 @@ fn main() {
         let mut linker = Linker::new();
         linker.add_buffer(buf.finish().unwrap());
         let image = linker.link().unwrap();
-        let entry_offset = image.defined_symbol_str("main").unwrap();
-
         let mut jit = JitAllocator::new(Default::default());
-        let loaded = image.allocate_resolved(&mut jit, resolve).unwrap();
-        let span = loaded.span();
+        let code = image.load(&mut jit, resolve).unwrap();
 
         unsafe {
             let cs = Capstone::new()
@@ -55,25 +86,17 @@ fn main() {
                 .build()
                 .unwrap();
 
-            let insns = cs
-                .disasm_all(
-                    std::slice::from_raw_parts(span.rx(), code_len as usize),
-                    span.rx() as u64,
-                )
-                .unwrap();
-
-            for i in insns.iter() {
-                println!(
-                    "0x{:x}:\t{}\t{}",
-                    i.address(),
-                    i.mnemonic().unwrap(),
-                    i.op_str().unwrap()
-                );
-            }
+            disassemble(
+                &cs,
+                std::slice::from_raw_parts(code.rx(), code.code_size()),
+                code.rx() as u64,
+                code_len as usize,
+                1,
+            );
 
             #[cfg(target_arch = "x86_64")]
             {
-                let f: extern "C" fn() = std::mem::transmute(span.rx().add(entry_offset as usize));
+                let f: extern "C" fn() = std::mem::transmute(code.symbol("main").unwrap());
 
                 f();
             }
@@ -106,11 +129,8 @@ fn main() {
         let mut linker = Linker::new();
         linker.add_buffer(buf.finish().unwrap());
         let image = linker.link().unwrap();
-        let entry_offset = image.defined_symbol_str("main").unwrap();
-
         let mut jit = JitAllocator::new(Default::default());
-        let loaded = image.allocate_resolved(&mut jit, resolve).unwrap();
-        let span = loaded.span();
+        let code = image.load(&mut jit, resolve).unwrap();
 
         unsafe {
             let cs = Capstone::new()
@@ -119,25 +139,17 @@ fn main() {
                 .build()
                 .unwrap();
 
-            let insns = cs
-                .disasm_all(
-                    std::slice::from_raw_parts(span.rx(), code_len as usize),
-                    span.rx() as u64,
-                )
-                .unwrap();
-
-            for i in insns.iter() {
-                println!(
-                    "0x{:x}:\t{}\t{}",
-                    i.address(),
-                    i.mnemonic().unwrap(),
-                    i.op_str().unwrap()
-                );
-            }
+            disassemble(
+                &cs,
+                std::slice::from_raw_parts(code.rx(), code.code_size()),
+                code.rx() as u64,
+                code_len as usize,
+                1,
+            );
 
             #[cfg(target_arch = "x86_64")]
             {
-                let f: extern "C" fn() = std::mem::transmute(span.rx().add(entry_offset as usize));
+                let f: extern "C" fn() = std::mem::transmute(code.symbol("main").unwrap());
 
                 f();
             }
@@ -173,22 +185,21 @@ fn main() {
         let result = buf.finish().unwrap();
 
         let mut jit = JitAllocator::new(Default::default());
-        let loaded = result.allocate_resolved(&mut jit, resolve).unwrap();
-        let span = loaded.span();
+        let code = result.load(&mut jit, resolve).unwrap();
 
         unsafe {
             let mut out = String::new();
             pretty_disassembler(
                 &mut out,
                 64,
-                std::slice::from_raw_parts(span.rx(), off as usize),
-                span.rx() as _,
+                std::slice::from_raw_parts(code.rx(), off as usize),
+                code.rx() as _,
             )
             .unwrap();
 
             println!("{}", out);
 
-            let f: extern "C" fn() = std::mem::transmute(span.rx());
+            let f: extern "C" fn() = std::mem::transmute(code.rx());
 
             f();
         }
@@ -203,9 +214,13 @@ fn main() {
 
         let end = {
             let mut asm = Assembler::new(&mut buf);
+            // `blr` overwrites lr, so save the caller's frame record first.
+            asm.stp(x29, x30, ptr(sp, 0).pre_offset(-16));
+            asm.mov(x29, sp);
             asm.load_constant(x0, str_constant);
             asm.load_constant(x1, puts_sym);
             asm.blr(x1);
+            asm.ldp(x29, x30, ptr(sp, 0).post_offset(16));
             asm.ret(lr);
 
             let end = asm.get_label();
@@ -220,8 +235,7 @@ fn main() {
 
         let mut jit = JitAllocator::new(Default::default());
 
-        let loaded = result.allocate_resolved(&mut jit, resolve).unwrap();
-        let span = loaded.span();
+        let code = result.load(&mut jit, resolve).unwrap();
 
         unsafe {
             let cs = Capstone::new()
@@ -230,24 +244,16 @@ fn main() {
                 .build()
                 .unwrap();
 
-            let insns = cs
-                .disasm_all(
-                    std::slice::from_raw_parts(span.rx(), off as usize),
-                    span.rx() as u64,
-                )
-                .unwrap();
-
-            for i in insns.iter() {
-                println!(
-                    "0x{:x}:\t{}\t{}",
-                    i.address(),
-                    i.mnemonic().unwrap(),
-                    i.op_str().unwrap()
-                );
-            }
+            disassemble(
+                &cs,
+                std::slice::from_raw_parts(code.rx(), code.code_size()),
+                code.rx() as u64,
+                off as usize,
+                4,
+            );
             #[cfg(target_arch = "aarch64")]
             {
-                let f: extern "C" fn() = std::mem::transmute(span.rx());
+                let f: extern "C" fn() = std::mem::transmute(code.rx());
 
                 f();
             }
