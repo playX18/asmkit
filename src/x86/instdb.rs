@@ -3945,7 +3945,7 @@ pub enum InstId {
     _Count,
 }
 
-/// Instruction aliases (AsmJit `Inst::kIdX = kIdY`).
+/// Instruction aliases.
 impl InstId {
     pub const CMOVNAE: InstId = InstId::Cmovb;
     pub const CMOVC: InstId = InstId::Cmovb;

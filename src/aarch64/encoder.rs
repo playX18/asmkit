@@ -1062,8 +1062,6 @@ pub(crate) const fn element_type_to_size_op(
     let map = &SIZE_OP_MAP[vec_op_type as usize];
     let table = &SIZE_OP_TABLE[map.table_id as usize];
 
-    // Mirrors AsmJit's `min(diff(reg_type, kVec8), diff(kVec128, kVec8) + 1)`:
-    // out-of-range register types clamp to the invalid tail of the table.
     let a = (reg_type as usize).wrapping_sub(RegType::Vec8 as usize);
     let b = RegType::Vec128 as usize - RegType::Vec8 as usize;
 

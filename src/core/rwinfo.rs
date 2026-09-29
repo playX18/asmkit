@@ -203,7 +203,7 @@ impl OpRwInfo {
     }
 
     /// Resets this operand info to `op_flags`, `register_size`, and possibly `phys_id`,
-    /// computing full byte masks from the flags (mirrors AsmJit's `OpRWInfo::reset`).
+    /// computing full byte masks from the flags.
     pub fn reset(&mut self, op_flags: OpRwFlags, register_size: u32, phys_id: u8) {
         self.op_flags = op_flags;
         self.phys_id = phys_id;

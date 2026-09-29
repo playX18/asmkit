@@ -88,7 +88,7 @@ impl Opcode {
     pub const MOD_RM_MASK: u32 = 0x7 << Self::MOD_RM_SHIFT;
 
     // Two meanings: "PP" field in AVX/XOP/AVX-512 instructions, or a mandatory prefix in
-    // legacy encodings. AsmJit extends storage by 1 bit used to emit the 9B FPU prefix.
+    // legacy encodings.
     pub const PP_SHIFT: u32 = 21;
     /// PP field mask used by VEX/EVEX.
     pub const PP_VEX_MASK: u32 = 0x03 << Self::PP_SHIFT;

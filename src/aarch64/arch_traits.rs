@@ -128,7 +128,6 @@ pub const AARCH64_ARCH_TRAITS: ArchTraits = ArchTraits {
     ip_reg_id: 0xff,
     hw_stack_alignment: 16,
     // Byte addressing is the worst case, vec.q addressing the best
-    // (mirrors asmjit's a64_arch_traits).
     min_stack_offset: 4095,
     max_stack_offset: 65520,
     regs_signature: SIGNATURES,

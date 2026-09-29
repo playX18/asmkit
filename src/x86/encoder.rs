@@ -811,9 +811,6 @@ pub fn emit_mod_sib(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X
             }
 
             // ==========|> [DISP16].
-            //
-            // NOTE: `op_reg | 0x06` mirrors AsmJit verbatim (the reg field is not
-            // shifted into bits 3-5 there: suspect but kept 1:1).
             buf.put1((st.op_reg | 0x06) as u8);
             buf.put2(rel_offset as u16);
         }

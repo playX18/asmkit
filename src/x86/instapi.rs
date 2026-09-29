@@ -101,7 +101,6 @@ const fn reg_group_byte_mask(group: RegGroup) -> u64 {
         RegGroup::X86St => 0x03FF,
         RegGroup::X86Bnd => 0xFFFF,
         RegGroup::X86Rip => 0xFF,
-        // AsmJit's table predates TMM registers; they never carry a ZExt flag.
         RegGroup::X86Tmm => 0,
     }
 }
@@ -237,8 +236,7 @@ fn query_rw_info_internal(
     let rw_flags = &RW_FLAGS_INFO_TABLE[additional_info.rw_flags_index as usize];
 
     // There are two data tables, one for `op_count == 2` and the second for
-    // `op_count != 2` (AsmJit: two tables are needed so the index fits into 8 bits and
-    // because 2-operand forms can have different RW semantics than 3+-operand forms).
+    // `op_count != 2`.
     let inst_id = inst.id as usize;
     let inst_rw_info = if op_count == 2 {
         &RW_INFO_A_TABLE[RW_INFO_INDEX_A_TABLE[inst_id] as usize]

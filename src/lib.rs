@@ -5,30 +5,24 @@
 //! model. It is a small, efficient, `no_std` library for encoding machine code without being
 //! tied to a specific platform. Key features include:
 //!
-//! - **Multi-Architecture Support**: x86/x64, RISC-V, and AArch64. Each backend follows the
-//!   same uniform model: a dense `InstId` enum backed by generated instdb tables,
-//!   and a single checked raw emit entry point.
+//! - **Multi-Architecture Support**: x86/x64, RISC-V, and AArch64. 
 //! - **Generated emitter traits**: per-mnemonic traits (e.g. `MovEmitter`) with impls for
 //!   the sized register wrappers, so register constants and integer immediates are passed
-//!   directly (`asm.mov(RAX, 42)`: no dereferencing).
+//!   directly (`asm.mov(RAX, 42)`).
 //! - **Read/write effects**: `query_rw_info(&Inst) -> InstRwInfo` per architecture, over the
 //!   architecture-tagged [`Inst`].
-//! - **Deferred emission**: [`Builder`] records instructions and label binds
-//!   and replays them into any [`InstSink`] (implemented by every architecture's `Assembler`).
+//! - **Deferred emission**: [`Builder`] allows to emit instructions lazily.
 //! - **Minimal Dependencies**:
 //! - - `libc`, `intrusive-collections`, `errno` - For JIT support.
 //! - - `paste`, `bitflags`, `cfgenius`, `num-traits` - Utility crates that simplify repetitive
 //!     arch-specific declarations.
 //! - - `smallvec` - Avoids frequent heap allocation during code generation.
 //! - **Code Relocations**: Provides a CodeBuffer interface to handle relocations, allowing
-//!   the insertion of symbols into the API seamlessly.
+//!   the use of external symbols.
 //! - **Portability**: Built to run on any platform, with the architecture-specific parts of
 //!   the library being independent of the platform on which asmkit is built.
 //!
 //! ### From assembly to execution
-//!
-//! The API story mirrors AsmJit's (`CodeHolder` → `JitAllocator`), with
-//! [`CodeBuffer`] playing the `CodeHolder` role:
 //!
 //! 1. Emit into a [`CodeBuffer`] through a backend `Assembler`.
 //! 2. Finalize with [`CodeBuffer::finish`], optionally combining several modules —
@@ -42,12 +36,8 @@
 //!    [`symbol_by_name`](LoadedCode::symbol_by_name).
 //!
 //! External names are either string [`ExternalName::Symbol`]s or Cranelift-style
-//! [`ExternalName::User`] namespace+index keys (`extern_user` / `bind_symbol`), so
-//! hosts that do not use string symbols can still link and resolve.
+//! [`ExternalName::User`] namespace+index keys (`extern_user` / `bind_symbol`).
 //!
-//! Void mnemonic methods retain the first emission error in the [`CodeBuffer`].
-//! [`CodeBuffer::finish`] returns it, alongside finalization, linking, loading,
-//! and patching errors, as [`AsmError`].
 //!
 //! ### Usage
 //!

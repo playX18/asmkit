@@ -2,11 +2,6 @@
 //!
 //! This module provides functionality for encoding x86 instructions.
 //!
-//! Main entrypoint is the [`Assembler`] struct. Instructions are emitted either by id
-//! through [`Assembler::emit_n`] or through the generated per-mnemonic emitter traits
-//! (e.g. `MovEmitter::mov`), both backed by the asmjit-style InstInfo
-//! pipeline in the internal emitter implementation.
-//!
 #[doc(hidden)]
 pub(crate) mod arch_traits;
 #[cfg(feature = "x86")]
