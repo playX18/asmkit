@@ -374,20 +374,20 @@ pub(crate) fn check_gp_id3(o0: &Operand, o1: &Operand, o2: &Operand, hi_id: u32)
 
 pub(crate) fn check_vec_id(o0: &Operand) -> bool {
     let id = o0.id();
-    id < 31
+    id < 32
 }
 
 pub(crate) fn check_vec_id2(o0: &Operand, o1: &Operand) -> bool {
     let id0 = o0.id();
     let id1 = o1.id();
-    id0 < 31 && id1 < 31
+    id0 < 32 && id1 < 32
 }
 
 pub(crate) fn check_vec_id3(o0: &Operand, o1: &Operand, o2: &Operand) -> bool {
     let id0 = o0.id();
     let id1 = o1.id();
     let id2 = o2.id();
-    id0 < 31 && id1 < 31 && id2 < 31
+    id0 < 32 && id1 < 32 && id2 < 32
 }
 
 pub(crate) fn bit_test(value: u32, n: u32) -> bool {
@@ -554,7 +554,7 @@ pub const fn encode_logical_imm(mut imm: u64, mut width: u32) -> Option<LogicalI
     })
     .wrapping_sub(o_index);
 
-    let must_be_zero = o_imm ^ !lsb_mask::<u64>((o_index + o_count) & 63);
+    let must_be_zero = o_imm ^ !lsb_mask::<u64>(o_index + o_count);
     if must_be_zero != 0 || (z_index > 0 && width.wrapping_sub(o_index + o_count) != 0) {
         return None;
     }

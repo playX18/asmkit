@@ -580,6 +580,9 @@ fn translate_op(
         OperandType::Label => {
             op_flags = OpFlags::REL8.bits() | OpFlags::REL32.bits();
         }
+        OperandType::Sym => {
+            op_flags = OpFlags::REL32.bits();
+        }
         _ => return Err(invalid("invalid operand type")),
     }
 
@@ -4681,6 +4684,7 @@ pub fn emit_n(
         .into());
     }
 
+    let lock_at = buf.cur_offset();
     if options.contains(InstOptions::X86_LOCK) {
         buf.put1(0xF0);
     }
@@ -4747,5 +4751,26 @@ pub fn emit_n(
         Handler::VexEvexM => emit_vex_evex_m(buf, &mut st),
         Handler::JmpCall => emit_jmp_call(buf, &mut st),
     }
-    .map_err(Into::into)
+    .map_err(Into::<AsmError>::into)?;
+
+    if options.contains(InstOptions::X86_LOCK) {
+        sink_lock_prefix(buf, lock_at);
+    }
+    Ok(())
+}
+
+fn sink_lock_prefix(buf: &mut CodeBuffer, at: crate::core::buffer::CodeOffset) {
+    let end = buf.cur_offset();
+    let mut i = at;
+    while i + 1 < end
+        && matches!(
+            buf.byte_at(i + 1),
+            0x26 | 0x2E | 0x36 | 0x3E | 0x64 | 0x65 | 0x66 | 0x67 | 0xF2 | 0xF3
+        )
+    {
+        let next = buf.byte_at(i + 1);
+        buf.set_byte_at(i, next);
+        buf.set_byte_at(i + 1, 0xF0);
+        i += 1;
+    }
 }

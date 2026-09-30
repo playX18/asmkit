@@ -18,6 +18,7 @@ use crate::{
     core::{
         arch_traits::Arch,
         buffer::{CodeBufferFinalized, CodeOffset, LabelUse},
+        relax::OffsetMap,
     },
 };
 
@@ -168,24 +169,24 @@ pub trait PatchMark: Copy + sealed::Sealed {
     type Location: Copy;
 
     #[doc(hidden)]
-    fn locate(self, base: CodeOffset) -> Self::Location;
+    fn locate(self, place: impl Fn(CodeOffset) -> CodeOffset) -> Self::Location;
 }
 
-/// Moves a buffer offset to its section, keeping the out-of-bounds offset of
-/// an invalid mark out of bounds.
-fn place(base: CodeOffset, offset: CodeOffset) -> CodeOffset {
+/// Moves a buffer offset through branch relaxation and to its section,
+/// keeping the out-of-bounds offset of an invalid mark out of bounds.
+fn place(base: CodeOffset, layout: &OffsetMap, offset: CodeOffset) -> CodeOffset {
     if offset == u32::MAX {
         return offset;
     }
-    base.saturating_add(offset)
+    base.saturating_add(layout.map(offset))
 }
 
 impl PatchMark for PatchableJump {
     type Location = CodeLocationJump;
 
-    fn locate(self, base: CodeOffset) -> CodeLocationJump {
+    fn locate(self, place: impl Fn(CodeOffset) -> CodeOffset) -> CodeLocationJump {
         CodeLocationJump {
-            offset: place(base, self.offset),
+            offset: place(self.offset),
             kind: self.kind,
         }
     }
@@ -194,9 +195,9 @@ impl PatchMark for PatchableJump {
 impl PatchMark for DataLabel {
     type Location = CodeLocationData;
 
-    fn locate(self, base: CodeOffset) -> CodeLocationData {
+    fn locate(self, place: impl Fn(CodeOffset) -> CodeOffset) -> CodeLocationData {
         CodeLocationData {
-            offset: place(base, self.offset),
+            offset: place(self.offset),
             size: self.size,
             encoding: self.encoding,
         }
@@ -206,9 +207,9 @@ impl PatchMark for DataLabel {
 impl PatchMark for PatchableRegion {
     type Location = CodeLocationRegion;
 
-    fn locate(self, base: CodeOffset) -> CodeLocationRegion {
+    fn locate(self, place: impl Fn(CodeOffset) -> CodeOffset) -> CodeLocationRegion {
         CodeLocationRegion {
-            offset: place(base, self.offset),
+            offset: place(self.offset),
             size: self.size,
             arch: self.arch,
         }
@@ -223,14 +224,16 @@ impl CodeBufferFinalized {
     /// [`Self::location_in`].
     pub fn location_of<M: PatchMark>(&self, mark: M) -> M::Location {
         debug_assert_eq!(self.section_bases.len(), 1, "linked images need `location_in`");
-        mark.locate(self.section_bases[0])
+        mark.locate(|offset| place(self.section_bases[0], &self.layout_maps[0], offset))
     }
 
     /// Returns where `mark`, from the buffer added as `section` to a
     /// [`Linker`](crate::Linker), is in this image. Returns `None` when there
     /// is no such section.
     pub fn location_in<M: PatchMark>(&self, section: usize, mark: M) -> Option<M::Location> {
-        Some(mark.locate(*self.section_bases.get(section)?))
+        let base = *self.section_bases.get(section)?;
+        let layout = self.layout_maps.get(section)?;
+        Some(mark.locate(|offset| place(base, layout, offset)))
     }
 }
 

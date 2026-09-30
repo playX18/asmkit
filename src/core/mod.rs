@@ -19,6 +19,7 @@ pub mod linker;
 pub mod operand;
 
 pub mod patch;
+pub(crate) mod relax;
 pub mod rwinfo;
 pub mod section;
 #[allow(dead_code)]

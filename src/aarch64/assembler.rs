@@ -170,6 +170,10 @@ impl LoadConstantEmitter<Gp, Sym> for Assembler<'_> {
 }
 
 impl<'a> Assembler<'a> {
+    pub fn buffer_mut(&mut self) -> &mut CodeBuffer {
+        self.buffer
+    }
+
     pub fn new(buffer: &'a mut CodeBuffer) -> Self {
         if buffer.env().arch() != Arch::AArch64 {
             return Self::poisoned(buffer, AsmError::InvalidArch);

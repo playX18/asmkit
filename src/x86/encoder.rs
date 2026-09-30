@@ -9,6 +9,7 @@ use crate::X86Error;
 use crate::core::buffer::{CodeBuffer, LabelUse, Reloc, RelocDistance, RelocTarget};
 use crate::core::globals::{INVALID_ID, InstOptions};
 use crate::core::operand::{Label, Operand, OperandCast, RegType, Sym};
+use crate::core::relax::RelaxableJump;
 
 use super::encoder_tables::{
     CDISP8_SHL_TABLE, LL_BY_REG_TYPE_TABLE, LL_BY_SIZE_DIV_16_TABLE, MEM_INFO_67H_X64,
@@ -197,12 +198,20 @@ pub fn emit_address_override(buf: &mut CodeBuffer, condition: bool) {
 /// Emits optimized multi-byte NOPs to align the current offset to `alignment`.
 pub fn emit_code_align(buf: &mut CodeBuffer, alignment: u32) {
     debug_assert!(alignment.is_power_of_two());
-    let mut i = (buf.cur_offset().wrapping_neg()) & (alignment - 1);
+    let len = (buf.cur_offset().wrapping_neg()) & (alignment - 1);
+    let mut pad = smallvec::SmallVec::<[u8; 16]>::new();
+    push_nops(&mut pad, len);
+    for b in pad {
+        buf.put1(b);
+    }
+}
+
+/// Appends `len` bytes of NOPs, longest first.
+pub(crate) fn push_nops<A: smallvec::Array<Item = u8>>(out: &mut smallvec::SmallVec<A>, len: u32) {
+    let mut i = len;
     while i > 0 {
         let n = i.min(9) as usize;
-        for b in &super::encoder_tables::NOP_TABLE[n - 1][..n] {
-            buf.put1(*b);
-        }
+        out.extend_from_slice(&super::encoder_tables::NOP_TABLE[n - 1][..n]);
         i -= n as u32;
     }
 }
@@ -728,9 +737,9 @@ pub fn emit_mod_sib(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X
                 let rel = rel_offset.wrapping_sub(4 + st.imm_size as i32);
 
                 if buf.is_bound(label) {
-                    let rel = rel.wrapping_add(
-                        buf.label_offset(label).wrapping_sub(buf.cur_offset()) as i32,
-                    );
+                    let at = buf.cur_offset();
+                    buf.record_label_ref(at, label, LabelUse::X86JmpRel32, rel.wrapping_add(4));
+                    let rel = rel.wrapping_add(buf.label_offset(label).wrapping_sub(at) as i32);
                     buf.put4(rel as u32);
                 } else {
                     // Non-bound label.
@@ -1273,9 +1282,9 @@ pub fn emit_vex_evex_m(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<()
 ///
 /// asmkit deviations from AsmJit, forced by the lack of a base address:
 ///
-/// - Unbound labels use the long (rel32) form. Requesting `SHORT_FORM` for an
-///   unbound label, or targeting an unbound label from a rel8-only instruction
-///   (jecxz/loop), is an `InvalidDisplacement` error.
+/// - Unbound labels use the long (rel32) form unless `SHORT_FORM` was requested
+///   or the instruction is rel8-only (jecxz/loop); then the rel8 form is
+///   emitted and the label must bind within 127 bytes.
 /// - Bound labels use the short form when possible unless `LONG_FORM` was requested.
 /// - A plain immediate target is emitted as a raw displacement (old-encoder
 ///   semantics); use a Sym operand for targets resolved at load time.
@@ -1310,30 +1319,70 @@ pub fn emit_jmp_call(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), 
             });
         }
         let label = Label::from_id(label_id);
+        let relaxable = relaxable_cc(st, opcode8);
 
         if buf.is_bound(label) {
             // Label bound to the current section.
             let rel32 = (buf.label_offset(label) as u64)
                 .wrapping_sub(ip)
                 .wrapping_sub(inst32_size as u64) as u32;
-            return emit_jmp_call_rel(buf, st, rel32, opcode8);
+            let start = buf.cur_offset();
+            emit_jmp_call_rel(buf, st, rel32, opcode8)?;
+            let end = buf.cur_offset();
+            if let Some(cc) = relaxable {
+                buf.record_relaxable_jump(RelaxableJump {
+                    start,
+                    len: (end - start) as u8,
+                    label,
+                    cc,
+                });
+            } else if st.options.contains(InstOptions::SHORT_FORM) {
+                buf.record_label_ref(end - 1, label, LabelUse::X86BranchRel8, 0);
+            } else {
+                buf.record_label_ref(end - 4, label, LabelUse::X86JmpRel32, 0);
+            }
+            return Ok(());
         }
 
-        // Non-bound label: the rel32 form, patched by a fixup.
+        // Non-bound label with `SHORT_FORM` (or a rel8-only instruction): the
+        // rel8 form, patched by a fixup. The label must bind within reach.
         if st.opcode.get() == 0 || st.options.contains(InstOptions::SHORT_FORM) {
-            return Err(X86Error::InvalidDisplacement {
-                value: 0,
-                size: 1,
-                reason: "unbound label requires the rel32 form (rel8 fixups are not supported)",
-            });
+            if opcode8 == 0 {
+                return Err(X86Error::InvalidDisplacement {
+                    value: 0,
+                    size: 1,
+                    reason: "instruction has no rel8 form",
+                });
+            }
+            buf.put1(opcode8 as u8); // Emit opcode.
+            let offset = buf.cur_offset();
+            buf.put1(0); // Emit DISP8 (patched by the fixup).
+            buf.use_label_at_offset(offset, label, LabelUse::X86BranchRel8);
+            buf.record_label_ref(offset, label, LabelUse::X86BranchRel8, 0);
+            return Ok(());
         }
 
+        let start = buf.cur_offset();
         if st.opcode.get() & Opcode::MM_MASK != 0 {
             buf.put1(0x0F); // Emit 0F prefix.
         }
         buf.put1(st.opcode.get() as u8); // Emit opcode.
         if st.op_reg != 0 {
             buf.put1(encode_mod(3, st.op_reg, 0) as u8); // Emit MOD.
+        }
+
+        if let Some(cc) = relaxable {
+            // `finish` shrinks it to rel8 when the label ends up in reach.
+            let offset = buf.cur_offset();
+            buf.put4(0);
+            buf.use_label_at_offset(offset, label, LabelUse::X86JmpRel32);
+            buf.record_relaxable_jump(RelaxableJump {
+                start,
+                len: (offset + 4 - start) as u8,
+                label,
+                cc,
+            });
+            return Ok(());
         }
 
         // Record DISP32 (non-bound label).
@@ -1384,6 +1433,32 @@ pub fn emit_jmp_call(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), 
             });
         }
         let sym = Sym::from_id(st.rm_rel.id());
+        let distance = buf.symbol_distance(sym).ok_or(X86Error::InvalidOperand {
+            operand_index: 0,
+            reason: "symbol is not declared in this buffer",
+        })?;
+
+        if distance == RelocDistance::Far {
+            // A far symbol is reached through its GOT slot, so the branch is
+            // the indirect `FF /2` (call) or `FF /4` (jmp) form over
+            // `[rip + slot]`. A rel32 to the slot would jump into data.
+            let modrm = if st.inst_id == InstId::Call as u32 {
+                encode_mod(0, 2, 5)
+            } else if st.inst_id == InstId::Jmp as u32 {
+                encode_mod(0, 4, 5)
+            } else {
+                return Err(invalid_instruction(
+                    st,
+                    "a far symbol is only a call or jmp target",
+                ));
+            };
+            buf.put1(0xFF);
+            buf.put1(modrm as u8);
+            let disp_offset = buf.cur_offset();
+            buf.put4(0); // Emit DISP32 (patched by the relocation).
+            buf.add_reloc_at_offset(disp_offset, Reloc::X86GOTPCRel4, RelocTarget::Sym(sym), -4);
+            return Ok(());
+        }
 
         if st.opcode.get() & Opcode::MM_MASK != 0 {
             buf.put1(0x0F); // Emit 0F prefix.
@@ -1395,13 +1470,7 @@ pub fn emit_jmp_call(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), 
 
         let disp_offset = buf.cur_offset();
         buf.put4(0); // Emit DISP32 (patched by the relocation).
-        let distance = buf.symbol_distance(sym).ok_or(X86Error::InvalidOperand {
-            operand_index: 0,
-            reason: "symbol is not declared in this buffer",
-        })?;
-        let kind = if distance == RelocDistance::Far {
-            Reloc::X86GOTPCRel4
-        } else if st.inst_id == InstId::Call as u32 {
+        let kind = if st.inst_id == InstId::Call as u32 {
             Reloc::X86CallPCRel4
         } else {
             Reloc::X86PCRel4
@@ -1415,6 +1484,24 @@ pub fn emit_jmp_call(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), 
         st,
         "jmp/call target must be a label, immediate, or symbol",
     ))
+}
+
+fn relaxable_cc(st: &X86EmitState, opcode8: u32) -> Option<Option<u8>> {
+    if st.op_reg != 0
+        || st
+            .options
+            .intersects(InstOptions::LONG_FORM | InstOptions::SHORT_FORM)
+    {
+        return None;
+    }
+    let opcode = st.opcode.get();
+    let is_0f = opcode & Opcode::MM_MASK == Opcode::MM_0F;
+    let cc = opcode8 as u8 & 0x0F;
+    match opcode8 {
+        0xEB if !is_0f && opcode as u8 == 0xE9 => Some(None),
+        0x70..=0x7F if is_0f && opcode as u8 == 0x80 | cc => Some(Some(cc)),
+        _ => None,
+    }
 }
 
 /// `EmitJmpCallRel`: jmp/jcc/call with the relative displacement known at assembly
@@ -1478,8 +1565,11 @@ pub fn emit_rel(buf: &mut CodeBuffer, st: &mut X86EmitState) -> Result<(), X86Er
 
     // Chain with the label.
     let offset = buf.cur_offset();
-    buf.put4(st.rel_offset.wrapping_add(4));
-    buf.use_label_at_offset(offset, Label::from_id(st.label_id), LabelUse::X86JmpRel32);
+    let label = Label::from_id(st.label_id);
+    let addend = st.rel_offset.wrapping_add(4);
+    buf.put4(addend);
+    buf.use_label_at_offset(offset, label, LabelUse::X86JmpRel32);
+    buf.record_label_ref(offset, label, LabelUse::X86JmpRel32, addend as i32);
 
     // The displacement placeholder is patched once the label offset becomes known.
     emit_immediate(buf, st.imm_value as u64, st.imm_size);

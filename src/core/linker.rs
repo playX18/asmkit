@@ -327,10 +327,12 @@ impl Linker {
         // 6. Record where each input section starts, so marks from its buffer
         // can still be located.
         let mut section_bases: SmallVec<[CodeOffset; 1]> = SmallVec::new();
+        let mut layout_maps = SmallVec::new();
         for (section, &base) in self.sections.iter().zip(&bases) {
             for &inner in &section.code.section_bases {
                 section_bases.push(base.checked_add(inner).ok_or(AsmError::TooLarge)?);
             }
+            layout_maps.extend(section.code.layout_maps.iter().cloned());
         }
 
         Ok(CodeBufferFinalized {
@@ -345,6 +347,7 @@ impl Linker {
             alignment,
             arch,
             section_bases,
+            layout_maps,
         })
     }
 }

@@ -1874,9 +1874,9 @@ INST(Stlr, BaseRMNoImm, (0b1000100010011111111111, kWX, kZR, 30), RWI_RW, 0, 17)
 INST(Stlrb, BaseRMNoImm, (0b0000100010011111111111, kW , kZR, 0 ), RWI_RW, 0, 18), // #327
 INST(Stlrh, BaseRMNoImm, (0b0100100010011111111111, kW , kZR, 0 ), RWI_RW, 0, 19), // #328
 INST(Stlxp, BaseStxp, (0b1000100000100000100000, kWX, 30), RWI_WRRX, 0, 0), // #329
-INST(Stlxr, BaseAtomicOp, (0b1000100000000000111111, kWX, 30, 1), RWI_WRX, 0, 108), // #330
-INST(Stlxrb, BaseAtomicOp, (0b0000100000000000111111, kW , 0 , 1), RWI_WRX, 0, 109), // #331
-INST(Stlxrh, BaseAtomicOp, (0b0100100000000000111111, kW , 0 , 1), RWI_WRX, 0, 110), // #332
+INST(Stlxr, BaseStx, (0b1000100000000000111111, kWX, 30), RWI_WRX, 0, 3), // #330
+INST(Stlxrb, BaseStx, (0b0000100000000000111111, kW , 0 ), RWI_WRX, 0, 4), // #331
+INST(Stlxrh, BaseStx, (0b0100100000000000111111, kW , 0 ), RWI_WRX, 0, 5), // #332
 INST(Stnp, BaseLdpStp, (0b0010100000, 0           , kWX, 31, 2), RWI_RRW, 0, 4), // #333
 INST(Stp, BaseLdpStp, (0b0010100100, 0b0010100010, kWX, 31, 2), RWI_RRW, 0, 5), // #334
 INST(Str, BaseLdSt, (0b1011100100, 0b10111000000, 0b10111000001, 0         , kWX, 30, 2, InstId::Stur), RWI_RW, 0, 6), // #335
@@ -2917,10 +2917,15 @@ pub const BASE_SHIFT: [BaseShift; 8] = table_new!(BaseShift, {
     { 0b0001101011000000001011, 0b0000000000000000000000, 1 }  // rorv
 });
 
-pub const BASE_STX: [BaseStx; 3] = table_new!(BaseStx, {
+pub const BASE_STX: [BaseStx; 6] = table_new!(BaseStx, {
     { 0b1000100000000000011111, kWX, 30 }, // stxr
     { 0b0000100000000000011111, kW, 0 }, // stxrb
-    { 0b0100100000000000011111, kW, 0 }  // stxrh
+    { 0b0100100000000000011111, kW, 0 }, // stxrh
+    // The release forms share `stxr`'s operands: a 32-bit status, then the
+    // stored register, whose width picks the encoding.
+    { 0b1000100000000000111111, kWX, 30 }, // stlxr
+    { 0b0000100000000000111111, kW, 0 }, // stlxrb
+    { 0b0100100000000000111111, kW, 0 }  // stlxrh
 });
 
 pub const BASE_STXP: [BaseStxp; 2] = table_new!(BaseStxp, {

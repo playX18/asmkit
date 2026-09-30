@@ -49,6 +49,10 @@ fn validate_raw_operand(op: &Operand) -> bool {
 }
 
 impl<'a> Assembler<'a> {
+    pub fn buffer_mut(&mut self) -> &mut CodeBuffer {
+        self.buffer
+    }
+
     pub fn new(buffer: &'a mut CodeBuffer) -> Self {
         if !matches!(buffer.env().arch(), Arch::RISCV32 | Arch::RISCV64) {
             return Self::poisoned(buffer, AsmError::InvalidArch);

@@ -2191,32 +2191,19 @@ impl<'a> Assembler<'a> {
                         }
 
                         if offset32 >= -256 && offset32 < 256 {
-                            // Pre/post-indexed forms share the base opcode
-                            // with bit 24 clear and carry the mode in bits
-                            // [11:10] (`11` pre, `01` post); the plain
-                            // path below keeps its historical encoding.
-                            let indexed = match m.offset_mode() {
-                                OffsetMode::PreIndex => Some(0b11),
-                                OffsetMode::PostIndex => Some(0b01),
-                                _ => None,
+                            let mode = match m.offset_mode() {
+                                OffsetMode::PreIndex => 0b11,
+                                OffsetMode::PostIndex => 0b01,
+                                _ => 0b00,
                             };
-                            if let Some(mode) = indexed {
-                                st.opcode
-                                    .reset(((op_data.u_offset_op as u32) << 22) & !(1 << 24));
-                                st.opcode.xor_imm(x, op_data.x_offset as u32);
-                                st.opcode.add_imm((offset32 as u32) & 0x1FF, 12);
-                                st.opcode.add_imm(mode, 10);
-                                st.opcode.add_reg(op0.id(), 0);
-                                st.opcode.add_reg(m.base_id(), 5);
-                                emit_op!();
-                            } else {
-                                st.opcode.reset((op_data.u_offset_op as u32) << 22);
-                                st.opcode.xor_imm(x, op_data.x_offset as u32);
-                                st.opcode.add_imm((offset32 as u32) & 0x1FF, 12);
-                                st.opcode.add_reg(op0.id(), 0);
-                                st.opcode.add_reg(m.base_id(), 5);
-                                emit_op!();
-                            }
+                            st.opcode
+                                .reset(((op_data.u_offset_op as u32) << 22) & !(1 << 24));
+                            st.opcode.xor_imm(x, op_data.x_offset as u32);
+                            st.opcode.add_imm((offset32 as u32) & 0x1FF, 12);
+                            st.opcode.add_imm(mode, 10);
+                            st.opcode.add_reg(op0.id(), 0);
+                            st.opcode.add_reg(m.base_id(), 5);
+                            emit_op!();
                         }
 
                         self.last_error = Some(AsmError::InvalidOperand);

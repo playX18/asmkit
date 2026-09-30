@@ -6,6 +6,7 @@ use smallvec::SmallVec;
 use crate::AsmError;
 use crate::core::arch_traits::Arch;
 use crate::core::patch::{PatchableRegion, fill_with_nops, minimum_patch_alignment};
+use crate::core::relax::{LabelRef, LayoutEvent, OffsetMap, RelaxableJump};
 #[cfg(feature = "riscv")]
 use crate::riscv;
 
@@ -38,6 +39,11 @@ pub struct CodeBuffer {
     used_constants: SmallVec<[(Constant, CodeOffset); 4]>,
     constants: SmallVec<[(ConstantData, AsmConstant); 4]>,
     fixup_records: BinaryHeap<AsmFixup>,
+    /// x86-64 only: jumps and padding whose size `finish` may change.
+    layout_events: SmallVec<[LayoutEvent; 16]>,
+    /// x86-64 only: every other label-relative field, re-encoded when
+    /// relaxation moves code.
+    label_refs: SmallVec<[LabelRef; 16]>,
     error: Option<AsmError>,
 }
 
@@ -60,6 +66,8 @@ pub(crate) struct EmissionCheckpoint {
     pending_constants_size: CodeOffset,
     used_constants_len: usize,
     constants_len: usize,
+    layout_events_len: usize,
+    label_refs_len: usize,
 }
 
 /// An external name in a user-defined symbol table.
@@ -206,6 +214,7 @@ pub struct CodeBufferFinalized {
     /// Where each input buffer starts: `[0]` for a finished buffer, one entry
     /// per linked section for a linked image.
     pub(crate) section_bases: SmallVec<[CodeOffset; 1]>,
+    pub(crate) layout_maps: SmallVec<[OffsetMap; 1]>,
 }
 
 /// Executable memory holding a relocated image, returned by
@@ -216,7 +225,11 @@ pub struct CodeBufferFinalized {
 pub struct LoadedCode {
     span: Span,
     code_size: usize,
+    got_offset: usize,
     symbols: Vec<(ExternalName, CodeOffset)>,
+    /// The external symbol each GOT slot holds, in slot order (`None` for a
+    /// slot holding a label of the image).
+    got: Vec<Option<ExternalName>>,
 }
 
 #[cfg(feature = "jit")]
@@ -238,6 +251,51 @@ impl LoadedCode {
     /// Size of the code, excluding the GOT that follows it.
     pub const fn code_size(&self) -> usize {
         self.code_size
+    }
+
+    /// Address of the GOT slot holding external symbol `name`, or `None` when
+    /// no far reference to `name` gave it a slot.
+    pub fn got_slot(&self, name: &ExternalName) -> Option<*const u8> {
+        const SLOT: usize = core::mem::size_of::<usize>();
+        let index = self.got.iter().position(|n| n.as_ref() == Some(name))?;
+        Some(self.rx().wrapping_add(self.got_offset + index * SLOT))
+    }
+
+    /// Points every far reference to `name` at `address`, by rewriting its
+    /// GOT slots. Near references were resolved into the instructions at load
+    /// time and keep their target.
+    ///
+    /// # Errors
+    ///
+    /// Returns [`AsmError::InvalidArgument`] if `address` is null or `name`
+    /// has no GOT slot in this image, or an error from
+    /// [`JitAllocator::write`].
+    ///
+    /// # Safety
+    ///
+    /// `jit_allocator` must be the allocator that loaded this image. Code
+    /// running concurrently may observe either the old or the new address.
+    pub unsafe fn rebind(
+        &mut self,
+        jit_allocator: &mut JitAllocator,
+        name: &ExternalName,
+        address: *const u8,
+    ) -> Result<(), AsmError> {
+        const SLOT: usize = core::mem::size_of::<usize>();
+        if address.is_null() || !self.got.iter().any(|n| n.as_ref() == Some(name)) {
+            return Err(AsmError::InvalidArgument);
+        }
+        let (got_offset, got) = (self.got_offset, &self.got);
+        // SAFETY: every slot is inside the span `load` allocated (the GOT
+        // follows the code), and the caller guarantees the allocator.
+        unsafe {
+            jit_allocator.write(&mut self.span, |span| {
+                for (index, _) in got.iter().enumerate().filter(|(_, n)| n.as_ref() == Some(name)) {
+                    let slot = span.rw().add(got_offset + index * SLOT).cast::<usize>();
+                    slot.write_unaligned(address.addr());
+                }
+            })
+        }
     }
 
     /// Runtime address of a symbol exported with [`CodeBuffer::bind_symbol`].
@@ -262,7 +320,6 @@ pub fn reloc_uses_got(kind: Reloc) -> bool {
         kind,
         Reloc::X86GOTPCRel4
             | Reloc::RiscvGotHi20
-            | Reloc::RiscvPCRelLo12I
             | Reloc::Aarch64AdrGotPage21
             | Reloc::Aarch64Ld64GotLo12Nc
     )
@@ -354,9 +411,20 @@ impl CodeBufferFinalized {
 
     /// Size in bytes of the loaded image: the code followed by one
     /// pointer-sized GOT slot per distinct target of a GOT-relative
-    /// relocation.
+    /// relocation, starting at [`Self::got_offset`].
     pub fn loaded_size(&self) -> usize {
-        self.data.len() + self.got_targets().len() * core::mem::size_of::<usize>()
+        let slots = self.got_targets().len();
+        if slots == 0 {
+            return self.data.len();
+        }
+        self.got_offset() + slots * core::mem::size_of::<usize>()
+    }
+
+    /// Offset of the GOT in the loaded image: the end of the code, rounded up
+    /// to pointer alignment
+    pub fn got_offset(&self) -> usize {
+        const SLOT: usize = core::mem::size_of::<usize>();
+        self.data.len().next_multiple_of(SLOT)
     }
 
     fn got_targets(&self) -> Vec<RelocTarget> {
@@ -373,8 +441,9 @@ impl CodeBufferFinalized {
     /// mapped at `base`, the counterpart of AsmJit's
     /// `CodeHolder::relocateToBase`.
     ///
-    /// `dst` must hold at least [`Self::loaded_size`] bytes; the GOT is placed
-    /// right after the code. Labels and symbols defined in the image are
+    /// `dst` must hold at least [`Self::loaded_size`] bytes. The GOT is placed
+    /// at [`Self::got_offset`], right after the code, so `base` must be
+    /// pointer-aligned. Labels and symbols defined in the image are
     /// resolved internally. Every other symbol (declared with
     /// [`CodeBuffer::extern_sym`] or [`CodeBuffer::extern_user`], or left
     /// undefined by a [`Linker`](crate::core::linker::Linker) link) is passed to
@@ -392,12 +461,15 @@ impl CodeBufferFinalized {
 
         let code_size = self.data.len();
         let got_targets = self.got_targets();
-        if dst.len() < code_size + got_targets.len() * SLOT {
+        let got_offset = self.got_offset();
+        if dst.len() < self.loaded_size() || base % SLOT != 0 {
             return Err(AsmError::InvalidArgument);
         }
         let base = core::ptr::without_provenance::<u8>(base);
-        let (code, got) = dst.split_at_mut(code_size);
+        let (code, rest) = dst.split_at_mut(code_size);
         code.copy_from_slice(&self.data);
+        let (padding, got) = rest.split_at_mut((got_offset - code_size).min(rest.len()));
+        padding.fill(0);
 
         let address = |target: &RelocTarget| -> Result<*const u8, AsmError> {
             match target {
@@ -427,7 +499,7 @@ impl CodeBufferFinalized {
             slot.copy_from_slice(&address(target)?.addr().to_ne_bytes());
         }
 
-        let got_base = base.wrapping_add(code_size);
+        let got_base = base.wrapping_add(got_offset);
         let got_entry = |target: &RelocTarget| {
             let index = got_slot_index(&got_targets, target).ok_or(AsmError::InvalidState)?;
             Ok(got_base.wrapping_add(index * SLOT))
@@ -481,10 +553,20 @@ impl CodeBufferFinalized {
             return Err(err);
         }
 
+        let got = self
+            .got_targets()
+            .iter()
+            .map(|target| match target {
+                RelocTarget::Sym(sym) => self.symbol_name(*sym).cloned(),
+                RelocTarget::Label(_) => None,
+            })
+            .collect();
         Ok(LoadedCode {
             span,
             code_size: self.data.len(),
+            got_offset: self.got_offset(),
             symbols: self.defined_symbols.to_vec(),
+            got,
         })
     }
 }
@@ -506,6 +588,8 @@ impl CodeBuffer {
             used_constants: SmallVec::new(),
             constants: SmallVec::new(),
             fixup_records: BinaryHeap::new(),
+            layout_events: SmallVec::new(),
+            label_refs: SmallVec::new(),
             error: None,
         }
     }
@@ -528,6 +612,8 @@ impl CodeBuffer {
         self.pending_fixup_deadline = 0;
         self.pending_constants_size = 0;
         self.pending_constants.clear();
+        self.layout_events.clear();
+        self.label_refs.clear();
         self.error = None;
     }
 
@@ -556,6 +642,8 @@ impl CodeBuffer {
             pending_constants_size: self.pending_constants_size,
             used_constants_len: self.used_constants.len(),
             constants_len: self.constants.len(),
+            layout_events_len: self.layout_events.len(),
+            label_refs_len: self.label_refs.len(),
         }
     }
 
@@ -575,6 +663,8 @@ impl CodeBuffer {
         self.pending_constants_size = checkpoint.pending_constants_size;
         self.used_constants.truncate(checkpoint.used_constants_len);
         self.constants.truncate(checkpoint.constants_len);
+        self.layout_events.truncate(checkpoint.layout_events_len);
+        self.label_refs.truncate(checkpoint.label_refs_len);
     }
     pub fn env(&self) -> &Environment {
         &self.env
@@ -852,7 +942,17 @@ impl CodeBuffer {
             // patch region), so pad with multi-byte NOPs rather than `00 00`
             // (`add [rax], al`).
             #[cfg(feature = "x86")]
-            Arch::X86 | Arch::X64 => crate::x86::encoder::emit_code_align(self, align_to),
+            Arch::X86 | Arch::X64 => {
+                let start = self.cur_offset();
+                crate::x86::encoder::emit_code_align(self, align_to);
+                if self.tracks_layout() {
+                    self.layout_events.push(LayoutEvent::Align {
+                        start,
+                        len: self.cur_offset() - start,
+                        align: align_to,
+                    });
+                }
+            }
             _ => {
                 while self.cur_offset() & (align_to - 1) != 0 {
                     self.write_u8(0);
@@ -901,6 +1001,141 @@ impl CodeBuffer {
             .get(label.id() as usize)
             .copied()
             .unwrap_or(u32::MAX)
+    }
+
+    /// Whether this buffer records layout for branch relaxation (x86-64).
+    pub(crate) fn tracks_layout(&self) -> bool {
+        cfg!(feature = "x86") && self.env.arch() == Arch::X64
+    }
+
+    /// Records a label-relative field at `offset` so relaxation can
+    /// re-encode it. No-op unless [`Self::tracks_layout`].
+    pub(crate) fn record_label_ref(
+        &mut self,
+        offset: CodeOffset,
+        label: Label,
+        kind: LabelUse,
+        addend: i32,
+    ) {
+        if self.tracks_layout() {
+            self.label_refs.push(LabelRef {
+                offset,
+                label,
+                kind,
+                addend,
+            });
+        }
+    }
+
+    /// Records a `jmp`/`jcc` that [`Self::finish`] may resize. No-op unless
+    /// [`Self::tracks_layout`].
+    pub(crate) fn record_relaxable_jump(&mut self, jump: RelaxableJump) {
+        if self.tracks_layout() {
+            self.layout_events.push(LayoutEvent::Jump(jump));
+        }
+    }
+
+    /// Sizes every relaxable jump, rewrites the code in the new layout, and
+    /// moves all offsets into it. Every label must be bound.
+    ///
+    /// Label-relative fields are re-encoded from `label_refs`, so the
+    /// fixups still pending are dropped.
+    fn relax_jumps(&mut self) -> Result<OffsetMap, AsmError> {
+        let events = core::mem::take(&mut self.layout_events);
+        let refs = core::mem::take(&mut self.label_refs);
+        if !events.iter().any(|e| matches!(e, LayoutEvent::Jump(_))) {
+            return Ok(OffsetMap::default());
+        }
+
+        // Every jump starts rel8; each round lengthens at least one, so
+        // this ends within `jumps + 1` rounds.
+        let mut long = alloc::vec![false; events.len()];
+        let map = loop {
+            let map = OffsetMap::layout(&events, &long);
+            let mut grew = false;
+            for (i, (event, seg)) in events.iter().zip(map.segments()).enumerate() {
+                let LayoutEvent::Jump(jump) = event else {
+                    continue;
+                };
+                if long[i] {
+                    continue;
+                }
+                let target = map.map(self.label_offset(jump.label));
+                let delta = i64::from(target) - i64::from(seg.new_end);
+                if i8::try_from(delta).is_err() {
+                    long[i] = true;
+                    grew = true;
+                }
+            }
+            if !grew {
+                break map;
+            }
+        };
+
+        let old = core::mem::take(&mut self.data);
+        let mut data = SmallVec::with_capacity(old.len());
+        let mut cursor = 0;
+        let mut jump_refs = SmallVec::<[LabelRef; 16]>::new();
+        for ((event, seg), &long) in events.iter().zip(map.segments()).zip(&long) {
+            data.extend_from_slice(&old[cursor as usize..seg.old_start as usize]);
+            match event {
+                LayoutEvent::Jump(jump) => {
+                    let (opcode, kind): (&[u8], _) = if long {
+                        (jump.long_opcode(), LabelUse::X86JmpRel32)
+                    } else {
+                        (&jump.short_opcode(), LabelUse::X86BranchRel8)
+                    };
+                    data.extend_from_slice(opcode);
+                    jump_refs.push(LabelRef {
+                        offset: data.len() as CodeOffset,
+                        label: jump.label,
+                        kind,
+                        addend: 0,
+                    });
+                    data.resize(data.len() + kind.patch_size(), 0);
+                }
+                LayoutEvent::Align { .. } => {
+                    #[cfg(feature = "x86")]
+                    crate::x86::encoder::push_nops(&mut data, seg.new_end - seg.new_start);
+                }
+            }
+            debug_assert_eq!(data.len() as CodeOffset, seg.new_end);
+            cursor = seg.old_end;
+        }
+        data.extend_from_slice(&old[cursor as usize..]);
+        self.data = data;
+
+        for offset in &mut self.label_offsets {
+            *offset = map.map(*offset);
+        }
+        for reloc in &mut self.relocs {
+            reloc.offset = map.map(reloc.offset);
+        }
+        for (_, offset) in &mut self.used_constants {
+            *offset = map.map(*offset);
+        }
+        let moved = refs.iter().map(|r| LabelRef {
+            offset: map.map(r.offset),
+            ..*r
+        });
+        for r in moved.chain(jump_refs) {
+            let label_offset = self.label_offset(r.label);
+            let target = i64::from(label_offset) + i64::from(r.addend);
+            if !r.kind.can_reach_delta(target - i64::from(r.offset)) {
+                return Err(AsmError::TooLarge);
+            }
+            let field = r.offset as usize..r.offset as usize + r.kind.patch_size();
+            r.kind.patch_with_addend(
+                &mut self.data[field],
+                r.offset,
+                label_offset,
+                i64::from(r.addend),
+            );
+        }
+        self.pending_fixup_records.clear();
+        self.fixup_records.clear();
+        self.pending_fixup_deadline = u32::MAX;
+        Ok(map)
     }
 
     pub fn add_reloc(&mut self, kind: Reloc, target: RelocTarget, addend: i64) {
@@ -1263,6 +1498,7 @@ impl CodeBuffer {
         if self.has_unbound_labels() {
             return Err(AsmError::UnboundLabel);
         }
+        let layout_map = self.relax_jumps()?;
         self.preflight_finalization()?;
         self.finish_emission_maybe_forcing_veneers()?;
         let alignment = self.finish_constants();
@@ -1275,6 +1511,7 @@ impl CodeBuffer {
             alignment,
             arch: self.env.arch(),
             section_bases: smallvec::smallvec![0],
+            layout_maps: smallvec::smallvec![layout_map],
         })
     }
 
@@ -1467,6 +1704,12 @@ pub enum Reloc {
     /// This is the `R_RISCV_GOT_HI20` relocation from the RISC-V ELF psABI document.
     /// <https://github.com/riscv-non-isa/riscv-elf-psabi-doc/blob/master/riscv-elf.adoc#pc-relative-symbol-addresses>
     RiscvGotHi20,
+
+    /// High 20 bits of a 32-bit PC-relative offset (U-Type `auipc`).
+    ///
+    /// This is the `R_RISCV_PCREL_HI20` relocation from the RISC-V ELF psABI document.
+    /// <https://github.com/riscv-non-isa/riscv-elf-psabi-doc/blob/master/riscv-elf.adoc#pc-relative-symbol-addresses>
+    RiscvPCRelHi20,
 }
 
 impl Reloc {
@@ -1500,7 +1743,8 @@ impl Reloc {
             | Self::RiscvCallPlt
             | Self::RiscvTlsGdHi20
             | Self::RiscvPCRelLo12I
-            | Self::RiscvGotHi20 => {
+            | Self::RiscvGotHi20
+            | Self::RiscvPCRelHi20 => {
                 cfg!(feature = "riscv") && matches!(arch, Arch::RISCV32 | Arch::RISCV64)
             }
         }
@@ -2049,7 +2293,9 @@ pub(crate) fn relocation_patch_size(kind: Reloc) -> Result<usize, AsmError> {
         | Reloc::X86CallPLTRel4
         | Reloc::X86GOTPCRel4
         | Reloc::RiscvGotHi20
+        | Reloc::RiscvPCRelHi20
         | Reloc::RiscvPCRelLo12I
+        | Reloc::Arm64Call
         | Reloc::Aarch64AdrPrelPgHi21
         | Reloc::Aarch64AddAbsLo12Nc
         | Reloc::Aarch64AdrGotPage21
@@ -2179,8 +2425,12 @@ pub unsafe fn perform_relocations(
                 unsafe { write_unaligned(at as *mut i32, pcrel) };
             }
 
-            Reloc::RiscvGotHi20 => {
-                let what = resolve(&get_got_entry)?;
+            Reloc::RiscvGotHi20 | Reloc::RiscvPCRelHi20 => {
+                let what = if kind == Reloc::RiscvGotHi20 {
+                    resolve(&get_got_entry)?
+                } else {
+                    resolve(&get_address)?
+                };
                 let pc_rel =
                     i32::try_from(checked_pcrel(what, atrx)?).map_err(|_| AsmError::TooLarge)?;
                 // SAFETY: a RISC-V HI20 patch covers one 4-byte instruction, so
@@ -2195,18 +2445,58 @@ pub unsafe fn perform_relocations(
             }
 
             Reloc::RiscvPCRelLo12I => {
-                let what = resolve(&get_got_entry)?;
-                let pc_rel = checked_pcrel(what, atrx)?;
-                let pc_rel = i32::try_from(pc_rel).map_err(|_| AsmError::TooLarge)?;
+                // As in the psABI, the target is the `auipc` this instruction
+                // pairs with, not the symbol: the low 12 bits complete that
+                // `auipc`'s PC-relative offset, wherever the pair sits.
+                let auipc = resolve(&get_address)?;
+                let auipc_offset = auipc
+                    .checked_sub(code_rx.addr())
+                    .ok_or(AsmError::InvalidArgument)?;
+                let hi = relocs
+                    .iter()
+                    .find(|r| {
+                        r.offset as usize == auipc_offset
+                            && matches!(r.kind, Reloc::RiscvGotHi20 | Reloc::RiscvPCRelHi20)
+                    })
+                    .ok_or(AsmError::InvalidArgument)?;
+                let hi_base = if hi.kind == Reloc::RiscvGotHi20 {
+                    get_got_entry(&hi.target)?
+                } else {
+                    get_address(&hi.target)?
+                };
+                if hi_base.is_null() {
+                    return Err(AsmError::InvalidArgument);
+                }
+                let what = checked_address(hi_base.addr(), hi.addend)?;
+                let pc_rel =
+                    i32::try_from(checked_pcrel(what, auipc)?).map_err(|_| AsmError::TooLarge)?;
+                let hi20 = (pc_rel as u32).wrapping_add(0x800) & 0xFFFF_F000;
+                let lo12 = (pc_rel as u32).wrapping_sub(hi20) & 0xfff;
 
                 // SAFETY: a RISC-V LO12 patch covers one 4-byte instruction, so
                 // the slice from `at` is in bounds of the checked patch span.
                 unsafe {
                     let buffer = core::slice::from_raw_parts_mut(at, 4);
                     let insn = u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]);
-                    let lo12 = ((pc_rel as i64 + 4) as u32) & 0xfff;
                     let insn = (insn & 0xFFFFF) | (lo12 << 20);
                     buffer.copy_from_slice(&insn.to_le_bytes());
+                }
+            }
+
+            Reloc::Arm64Call => {
+                // `b`/`bl`: a signed 26-bit word offset (+/-128 MiB).
+                let what = resolve(&get_address)?;
+                let pc_rel = checked_pcrel(what, atrx)?;
+                if pc_rel & 3 != 0 || !(-(1i64 << 27)..(1i64 << 27)).contains(&pc_rel) {
+                    return Err(AsmError::TooLarge);
+                }
+                let iptr = at as *mut u32;
+                let imm26 = ((pc_rel >> 2) as u32) & 0x03ff_ffff;
+                // SAFETY: a 4-byte instruction inside the checked patch span;
+                // the imm26 field is replaced, the opcode kept.
+                unsafe {
+                    let insn = iptr.read_unaligned();
+                    write_unaligned(iptr, (insn & 0xfc00_0000) | imm26);
                 }
             }
 

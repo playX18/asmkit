@@ -33,8 +33,10 @@ const LONG: u64 = 0x100000000;
 
 /// Bit 37: LOCK prefix (bits 23/24 are the rounding-mode RC bits, bits 20/21
 /// REP/REPNE, bit 26 SAE/ER enable, bits 29..=31 segment, bit 32 long-form,
-/// bits 33..=35 mask id, bit 36 zeroing mask).
+/// bits 33..=35 mask id, bit 36 zeroing mask, bit 38 short-form).
 const OPC_LOCK: u64 = 0x2000000000;
+/// Bit 38: short (rel8) branch form, also for labels not yet bound.
+const SHORT: u64 = 0x4000000000;
 /// Bit 36: AVX-512 zeroing mask `{z}` (bits 33..=35 carry the mask register id).
 const OPC_Z: u64 = 0x1000000000;
 
@@ -98,6 +100,9 @@ impl<'a> Assembler<'a> {
         }
         if flags & LONG != 0 {
             prefixes.options |= InstOptions::LONG_FORM;
+        }
+        if flags & SHORT != 0 {
+            prefixes.options |= InstOptions::SHORT_FORM;
         }
         if flags & OPC_Z != 0 {
             prefixes.options |= InstOptions::X86_ZMASK;
@@ -322,6 +327,11 @@ impl<'a> Assembler<'a> {
 
     pub fn long(&mut self) -> &mut Self {
         self.flags |= LONG;
+        self
+    }
+
+    pub fn short(&mut self) -> &mut Self {
+        self.flags |= SHORT;
         self
     }
 
