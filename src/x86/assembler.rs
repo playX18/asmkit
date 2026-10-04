@@ -472,6 +472,44 @@ impl<'a> Assembler<'a> {
         let offset = self.buffer.cur_offset() - CodeOffset::from(size);
         DataLabel::new(offset, size, DataEncoding::Raw)
     }
+
+    fn emit_string_movs(&mut self, size: u32) {
+        let (dst, src) = if self.is_32bit() {
+            (ptr(EDI, 0, size), ptr(ESI, 0, size))
+        } else {
+            (ptr(RDI, 0, size), ptr(RSI, 0, size))
+        };
+        self.emit_n(InstId::Movs as u32, &[dst.as_operand(), src.as_operand()]);
+    }
+}
+
+pub trait StringMovsEmitter {
+    /// Move byte string.
+    fn movsb(&mut self);
+    /// Move word string.
+    fn movsw(&mut self);
+    /// Move dword string.
+    fn movsd_str(&mut self);
+    /// Move qword string.
+    fn movsq(&mut self);
+}
+
+impl StringMovsEmitter for Assembler<'_> {
+    fn movsb(&mut self) {
+        self.emit_string_movs(1);
+    }
+
+    fn movsw(&mut self) {
+        self.emit_string_movs(2);
+    }
+
+    fn movsd_str(&mut self) {
+        self.emit_string_movs(4);
+    }
+
+    fn movsq(&mut self) {
+        self.emit_string_movs(8);
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
