@@ -139,7 +139,9 @@ impl Assembler<'_> {
                 label_offset = st.rm_rel.as_::<Mem>().offset();
             }
 
-            if self.buffer.is_bound(Label::from_id(label_id)) {
+            // defer adrp encoding to linker, it can handle Adrp21 encoding
+            let defer = st.offset_format.typ() == OffsetType::Adrp;
+            if !defer && self.buffer.is_bound(Label::from_id(label_id)) {
                 st.offset_value = self.buffer.label_offset(Label::from_id(label_id)) as i64
                     + label_offset
                     - self.buffer.cur_offset() as i64;
