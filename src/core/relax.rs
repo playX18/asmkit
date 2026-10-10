@@ -1,6 +1,5 @@
 //! x86-64 branch relaxation.
 
-
 use alloc::vec::Vec;
 
 use super::buffer::{CodeOffset, LabelUse};
@@ -23,11 +22,7 @@ impl RelaxableJump {
 
     /// Length of the rel32 form: `E9 rel32` or `0F 8x rel32`.
     pub const fn long_len(&self) -> u32 {
-        if self.cc.is_some() {
-            6
-        } else {
-            5
-        }
+        if self.cc.is_some() { 6 } else { 5 }
     }
 
     /// Opcode bytes of the rel8 form.

@@ -170,9 +170,9 @@ impl<'a, const B: u32> BitVectorRangeIterator<'a, B> {
                 self.bit_word = self.slice[0] ^ Self::XOR_MASK;
 
                 if self.bit_word != u32::MAX {
-                    let j = self.bit_word.trailing_zeros();
+                    let j = (!self.bit_word).trailing_zeros();
                     end = (self.idx as u32 + j).min(self.end as _);
-                    self.bit_word = !(self.bit_word ^ !(u32::MAX << j));
+                    self.bit_word &= u32::MAX << j;
                     break;
                 }
 
@@ -1504,7 +1504,6 @@ unsafe fn fill_pattern(mem: *mut u8, pattern: u32, size_in_bytes: usize) {
         }
     }
 }
-
 
 /// A region of executable memory returned by [`JitAllocator::alloc`].
 ///

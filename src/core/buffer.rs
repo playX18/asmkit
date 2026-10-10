@@ -290,7 +290,11 @@ impl LoadedCode {
         // follows the code), and the caller guarantees the allocator.
         unsafe {
             jit_allocator.write(&mut self.span, |span| {
-                for (index, _) in got.iter().enumerate().filter(|(_, n)| n.as_ref() == Some(name)) {
+                for (index, _) in got
+                    .iter()
+                    .enumerate()
+                    .filter(|(_, n)| n.as_ref() == Some(name))
+                {
                     let slot = span.rw().add(got_offset + index * SLOT).cast::<usize>();
                     slot.write_unaligned(address.addr());
                 }
@@ -1863,8 +1867,7 @@ impl LabelUse {
         match self {
             // Page-relative: reachable exactly when the label's page is.
             Self::A64Adrp21 | Self::A64AddAbsLo12 => {
-                let page_delta =
-                    i64::from(label_offset & !0xfff) - i64::from(use_offset & !0xfff);
+                let page_delta = i64::from(label_offset & !0xfff) - i64::from(use_offset & !0xfff);
                 (-(1 << 32)..=((1 << 32) - 4096)).contains(&page_delta)
             }
             _ => self.can_reach_delta(i64::from(label_offset) - i64::from(use_offset)),
@@ -1998,9 +2001,9 @@ impl LabelUse {
         label_offset: CodeOffset,
     ) {
         let addend = match self {
-            Self::X86JmpRel32 => i64::from(u32::from_le_bytes([
-                buffer[0], buffer[1], buffer[2], buffer[3],
-            ]) as i32),
+            Self::X86JmpRel32 => {
+                i64::from(u32::from_le_bytes([buffer[0], buffer[1], buffer[2], buffer[3]]) as i32)
+            }
             _ => 0,
         };
 

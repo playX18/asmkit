@@ -223,7 +223,11 @@ impl CodeBufferFinalized {
     /// image made by [`Linker::link`](crate::Linker::link), use
     /// [`Self::location_in`].
     pub fn location_of<M: PatchMark>(&self, mark: M) -> M::Location {
-        debug_assert_eq!(self.section_bases.len(), 1, "linked images need `location_in`");
+        debug_assert_eq!(
+            self.section_bases.len(),
+            1,
+            "linked images need `location_in`"
+        );
         mark.locate(|offset| place(self.section_bases[0], &self.layout_maps[0], offset))
     }
 
@@ -280,7 +284,8 @@ pub unsafe fn repatch_jump_span(
 ) -> Result<(), AsmError> {
     let range = field(span.size(), jump.offset, jump.kind.patch_size())?;
     let at = span.rx().addr() + range.start;
-    let delta = i64::try_from(target.addr() as i128 - at as i128).map_err(|_| AsmError::TooLarge)?;
+    let delta =
+        i64::try_from(target.addr() as i128 - at as i128).map_err(|_| AsmError::TooLarge)?;
     if !jump.kind.can_reach_delta(delta) {
         return Err(AsmError::TooLarge);
     }
@@ -346,6 +351,65 @@ fn decode_value(bytes: &[u8], data: CodeLocationData) -> u64 {
             value | (imm16 << (16 * hw))
         }),
     }
+}
+
+/// Points `jump` in loaded code at the absolute address `target` while other
+/// threads may execute it: one aligned 4-byte store plus a targeted icache
+/// flush (based on `NativeCall::set_destination_mt_safe` in HotSpot). Only 4-byte
+/// displacement fields are supported.
+///
+/// Fails with [`AsmError::TooLarge`] when `target` is out of range and with
+/// [`AsmError::UnalignedPatch`] when the field is not 4 byte aligned.
+///
+/// # Safety
+///
+/// `span` must hold the image `jump` was located in. Patching must be
+/// serialized by the caller (no two threads patch at once), executing
+/// threads run free and observe either the old or the new target, never a
+/// invalid displacement.
+#[cfg(feature = "jit")]
+pub unsafe fn repatch_jump_span_mt_safe(
+    span: &Span,
+    jump: CodeLocationJump,
+    target: *const u8,
+) -> Result<(), AsmError> {
+    use core::sync::atomic::{AtomicU32, Ordering};
+
+    use crate::util::virtual_memory::{flush_instruction_cache, with_jit_write_access};
+
+    if jump.kind.patch_size() != 4 {
+        return Err(AsmError::InvalidArgument);
+    }
+    let range = field(span.size(), jump.offset, 4)?;
+    let at = span.rx().addr() + range.start;
+    if at % 4 != 0 {
+        return Err(AsmError::UnalignedPatch);
+    }
+    let delta =
+        i64::try_from(target.addr() as i128 - at as i128).map_err(|_| AsmError::TooLarge)?;
+    if !jump.kind.can_reach_delta(delta) {
+        return Err(AsmError::TooLarge);
+    }
+    // Seed a scratch word with the current bytes (fixed-opcode targets like
+    // AArch64 branches preserve their opcode bits across the immediate),
+    // encode into it exactly as the image patcher would, then commit it
+    // with one atomic store.
+    // SAFETY: `range` is inside the live span. The
+    // read races safely with executors (they never write), the caller
+    // serializes patching threads.
+    let mut word = [0u8; 4];
+    unsafe { word.copy_from_slice(core::slice::from_raw_parts(span.rx().add(range.start), 4)) };
+    jump.kind.patch_with_addend(&mut word, 0, 0, delta);
+    let disp = u32::from_le_bytes(word);
+    // SAFETY: as above
+    unsafe {
+        with_jit_write_access(|| {
+            AtomicU32::from_ptr(span.rw().add(range.start) as *mut u32)
+                .store(disp, Ordering::Release);
+        });
+        flush_instruction_cache(span.rx().add(range.start), 4)?;
+    }
+    Ok(())
 }
 
 /// Writes `value` into the immediate at `data`. Fails with [`AsmError::TooLarge`] when
