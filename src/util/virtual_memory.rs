@@ -981,7 +981,6 @@ pub fn info() -> Info {
     }
 }
 
-
 /// Flushes instruction cache in the given region.
 ///
 /// Only useful on non-x86 architectures, however, it's a good practice to call it on any platform to make your
@@ -1296,7 +1295,11 @@ mod windows_support {
     /// # Safety
     ///
     /// `p` and `size` must describe a live mapping returned by this module.
-    pub unsafe fn protect(p: *mut u8, size: usize, memory_flags: MemoryFlags) -> Result<(), AsmError> {
+    pub unsafe fn protect(
+        p: *mut u8,
+        size: usize,
+        memory_flags: MemoryFlags,
+    ) -> Result<(), AsmError> {
         let protect_flags = protect_flags_from_memory_flags(memory_flags);
         let mut old_flags = PAGE_PROTECTION_FLAGS(0);
 

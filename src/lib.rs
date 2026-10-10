@@ -5,7 +5,7 @@
 //! model. It is a small, efficient, `no_std` library for encoding machine code without being
 //! tied to a specific platform. Key features include:
 //!
-//! - **Multi-Architecture Support**: x86/x64, RISC-V, and AArch64. 
+//! - **Multi-Architecture Support**: x86/x64, RISC-V, and AArch64.
 //! - **Generated emitter traits**: per-mnemonic traits (e.g. `MovEmitter`) with impls for
 //!   the sized register wrappers, so register constants and integer immediates are passed
 //!   directly (`asm.mov(RAX, 42)`).
@@ -99,7 +99,10 @@ pub use core::buffer::LoadedCode;
 #[cfg(feature = "jit")]
 pub use core::jit_allocator::{JitAllocator, JitAllocatorOptions, ResetPolicy, Span};
 #[cfg(feature = "jit")]
-pub use core::patch::{read_value_span, repatch_jump_span, repatch_value_span, rewrite_region_span};
+pub use core::patch::{
+    read_value_span, repatch_jump_span, repatch_jump_span_mt_safe, repatch_value_span,
+    rewrite_region_span,
+};
 #[cfg(feature = "aarch64")]
 pub use core::target::AArch64Feature;
 #[cfg(feature = "riscv")]
@@ -154,11 +157,13 @@ pub enum AsmError {
     /// No code was generated (AsmJit's `kErrorNoCodeGenerated`), e.g. linking
     /// with no sections.
     NoCodeGenerated,
-    /// A relocation or defined symbol references a label that was never bound
-    /// (AsmJit's unbound-label diagnostics).
+    /// A relocation or defined symbol references a label that was never bound.
     UnboundLabel,
     FailedToOpenAnonymousMemory,
     TooLarge,
+    /// A live patch field is not 4-aligned, so no single atomic store can
+    /// rewrite it.
+    UnalignedPatch,
     /// An in-memory image link failed; the nested error identifies the
     /// section, symbol, or relocation involved.
     Link(LinkError),
@@ -190,6 +195,7 @@ impl fmt::Display for AsmError {
                 write!(f, "failed to open anonymous memory")
             }
             AsmError::TooLarge => write!(f, "too large"),
+            AsmError::UnalignedPatch => write!(f, "patch field is not 4 byte aligned"),
             AsmError::Link(error) => write!(f, "link error: {error}"),
             AsmError::X86(e) => write!(f, "x86 error: {}", e),
             AsmError::MissingCpuFeature { feature } => {

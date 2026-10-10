@@ -44,7 +44,13 @@ fn print_data(address: u64, chunk: &[u8]) {
     let hex: Vec<String> = chunk.iter().map(|b| format!("0x{b:02x}")).collect();
     let ascii: String = chunk
         .iter()
-        .map(|&b| if b.is_ascii_graphic() || b == b' ' { b as char } else { '.' })
+        .map(|&b| {
+            if b.is_ascii_graphic() || b == b' ' {
+                b as char
+            } else {
+                '.'
+            }
+        })
         .collect();
     println!("0x{address:x}:\t.byte\t{}\t; {ascii}", hex.join(", "));
 }

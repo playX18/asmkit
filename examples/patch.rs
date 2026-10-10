@@ -25,7 +25,9 @@ fn main() {
         let jump = asm.patchable_jmp(slow);
 
         // Nop region for a later rewrite.
-        let custom = asm.reserve_patch_region(4, 1).expect("reserve_patch_region");
+        let custom = asm
+            .reserve_patch_region(4, 1)
+            .expect("reserve_patch_region");
 
         asm.bind_label(slow);
         asm.ret();

@@ -315,6 +315,7 @@ impl<'a> Assembler<'a> {
         }
         let checkpoint = self.buffer.checkpoint();
         let offset = self.buffer.cur_offset();
+        debug_assert_eq!(offset % 4, 0, "patchable branch must be 4 byte aligned");
         emit(self);
         if self.buffer.error().is_some() {
             self.buffer.rollback(checkpoint);

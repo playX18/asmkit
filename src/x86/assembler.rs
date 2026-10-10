@@ -377,27 +377,33 @@ impl<'a> Assembler<'a> {
 
     /// Emits a rel32 jump through `emit`, returning its displacement as a
     /// patchable jump.
-    fn patchable_rel32(&mut self, emit: impl FnOnce(&mut Self)) -> PatchableJump {
-        let start = self.buffer.cur_offset();
+    fn patchable_rel32(&mut self, disp_ofs: u32, emit: impl FnOnce(&mut Self)) -> PatchableJump {
         let previous_error = self.buffer.error().cloned();
+
+        self.buffer.align_to(4);
+        for _ in 0..(4 - disp_ofs) % 4 {
+            self.buffer.put1(0x90);
+        }
+        let start = self.buffer.cur_offset();
         self.long();
         emit(self);
         let end = self.buffer.cur_offset();
         if self.buffer.error().cloned() != previous_error || end < start + 5 {
             return PatchableJump::invalid(LabelUse::X86JmpRel32);
         }
+        debug_assert_eq!((end - 4) % 4, 0, "displacement must be 4-aligned");
         // The displacement ends the instruction.
         PatchableJump::new(end - 4, LabelUse::X86JmpRel32)
     }
 
     /// `jmp` to `label` with a rel32 displacement that can be retargeted.
     pub fn patchable_jmp(&mut self, label: Label) -> PatchableJump {
-        self.patchable_rel32(|asm| asm.jmp(label))
+        self.patchable_rel32(1, |asm| asm.jmp(label))
     }
 
     /// `call` to `label` with a rel32 displacement that can be retargeted.
     pub fn patchable_call(&mut self, label: Label) -> PatchableJump {
-        self.patchable_rel32(|asm| asm.call(label))
+        self.patchable_rel32(1, |asm| asm.call(label))
     }
 
     /// Conditional jump to `label` with a rel32 displacement that can be
@@ -421,7 +427,7 @@ impl<'a> Assembler<'a> {
             InstId::Jle,
             InstId::Jnle,
         ];
-        self.patchable_rel32(|asm| {
+        self.patchable_rel32(2, |asm| {
             asm.emit_n(JCC[cc.code() as usize] as u32, &[label.as_operand()])
         })
     }
