@@ -1744,18 +1744,17 @@ impl fmt::Display for Gp {
         if self.id() < 16 {
             match self.size() {
                 1 => {
-                    // 8-bit registers
-                    if self.id() < 4 {
-                        // Low 8-bit: AL, CL, DL, BL
-                        let names = ["al", "cl", "dl", "bl"];
+                    // 8-bit registers. A high byte register has the id of the
+                    // register it's part of, so `ah` is 0, like `al`.
+                    if self.is_gpb_hi() && self.id() < 4 {
+                        let names = ["ah", "ch", "dh", "bh"];
                         write!(f, "{}", names[self.id() as usize])
                     } else if self.id() < 8 {
-                        // High 8-bit: AH, CH, DH, BH
-                        let names = ["ah", "ch", "dh", "bh"];
-                        write!(f, "{}", names[(self.id() - 4) as usize])
+                        let names = ["al", "cl", "dl", "bl", "spl", "bpl", "sil", "dil"];
+                        write!(f, "{}", names[self.id() as usize])
                     } else {
                         // R8B-R15B
-                        write!(f, "r{}b", self.id() - 8)
+                        write!(f, "r{}b", self.id())
                     }
                 }
                 2 => {
@@ -1764,7 +1763,7 @@ impl fmt::Display for Gp {
                         let names = ["ax", "cx", "dx", "bx", "sp", "bp", "si", "di"];
                         write!(f, "{}", names[self.id() as usize])
                     } else {
-                        write!(f, "r{}w", self.id() - 8)
+                        write!(f, "r{}w", self.id())
                     }
                 }
                 4 => {
@@ -1773,7 +1772,7 @@ impl fmt::Display for Gp {
                         let names = ["eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi"];
                         write!(f, "{}", names[self.id() as usize])
                     } else {
-                        write!(f, "r{}d", self.id() - 8)
+                        write!(f, "r{}d", self.id())
                     }
                 }
                 8 => {
@@ -1782,7 +1781,7 @@ impl fmt::Display for Gp {
                         let names = ["rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi"];
                         write!(f, "{}", names[self.id() as usize])
                     } else {
-                        write!(f, "r{}", self.id() - 8)
+                        write!(f, "r{}", self.id())
                     }
                 }
                 _ => write!(f, "gp{}", self.id()),
@@ -1832,13 +1831,11 @@ impl fmt::Display for GpbLo {
             return write!(f, "gpblo_invalid");
         }
 
-        if self.id() < 4 {
-            let names = ["al", "cl", "dl", "bl"];
+        if self.id() < 8 {
+            let names = ["al", "cl", "dl", "bl", "spl", "bpl", "sil", "dil"];
             write!(f, "{}", names[self.id() as usize])
-        } else if self.id() < 8 {
-            write!(f, "spl")
         } else {
-            write!(f, "r{}b", self.id() - 8)
+            write!(f, "r{}b", self.id())
         }
     }
 }
@@ -1864,7 +1861,7 @@ impl fmt::Display for Gpw {
             let names = ["ax", "cx", "dx", "bx", "sp", "bp", "si", "di"];
             write!(f, "{}", names[self.id() as usize])
         } else {
-            write!(f, "r{}w", self.id() - 8)
+            write!(f, "r{}w", self.id())
         }
     }
 }
@@ -1879,7 +1876,7 @@ impl fmt::Display for Gpd {
             let names = ["eax", "ecx", "edx", "ebx", "esp", "ebp", "esi", "edi"];
             write!(f, "{}", names[self.id() as usize])
         } else {
-            write!(f, "r{}d", self.id() - 8)
+            write!(f, "r{}d", self.id())
         }
     }
 }
@@ -1894,7 +1891,7 @@ impl fmt::Display for Gpq {
             let names = ["rax", "rcx", "rdx", "rbx", "rsp", "rbp", "rsi", "rdi"];
             write!(f, "{}", names[self.id() as usize])
         } else {
-            write!(f, "r{}", self.id() - 8)
+            write!(f, "r{}", self.id())
         }
     }
 }
@@ -2132,6 +2129,30 @@ mod tests {
         assert_eq!(
             format!("{:?}", Gp::from_type_and_id(RegType::Gp64, Gp::BX)),
             "Gp(rbx)"
+        );
+    }
+
+    #[test]
+    fn registers_display_their_names() {
+        assert_eq!(format!("{}", Gpq::from_id(Gp::R8)), "r8");
+        assert_eq!(format!("{}", Gpq::from_id(15)), "r15");
+        assert_eq!(format!("{}", Gpd::from_id(Gp::R8)), "r8d");
+        assert_eq!(format!("{}", Gpw::from_id(Gp::R8)), "r8w");
+        assert_eq!(format!("{}", GpbLo::from_id(Gp::R8)), "r8b");
+        assert_eq!(format!("{}", GpbLo::from_id(Gp::SP)), "spl");
+        assert_eq!(format!("{}", GpbLo::from_id(Gp::DI)), "dil");
+        assert_eq!(format!("{}", GpbHi::from_id(Gp::AX)), "ah");
+        assert_eq!(
+            format!("{}", Gp::from_type_and_id(RegType::Gp64, Gp::R8)),
+            "r8"
+        );
+        assert_eq!(
+            format!("{}", Gp::from_type_and_id(RegType::Gp8Lo, Gp::SI)),
+            "sil"
+        );
+        assert_eq!(
+            format!("{}", Gp::from_type_and_id(RegType::Gp8Hi, Gp::BX)),
+            "bh"
         );
     }
 }
