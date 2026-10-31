@@ -1668,6 +1668,25 @@ pub fn u64_ptr_index_abs(base: u64, index: impl Deref<Target = Gp>, shift: u32, 
 
 use core::fmt;
 
+// A register's `Debug` is its type around its name, such as `Gpq(rax)`, so
+// types that hold registers can derive `Debug`.
+macro_rules! impl_debug_for_reg {
+    ($($reg:ident),* $(,)?) => {
+        $(impl fmt::Debug for $reg {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+                f.debug_tuple(stringify!($reg))
+                    .field(&format_args!("{self}"))
+                    .finish()
+            }
+        })*
+    };
+}
+
+impl_debug_for_reg!(
+    Reg, Gp, Vec, SReg, Gpb, GpbLo, GpbHi, Gpw, Gpd, Gpq, Xmm, Ymm, Zmm, Mm, KReg, CReg, DReg, St,
+    Bnd, Tmm, Rip,
+);
+
 impl fmt::Display for Reg {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if !self.is_valid() {
@@ -2097,5 +2116,22 @@ impl OperandCast for AbsoluteAddress {
 
     fn from_operand(op: &Operand) -> Self {
         Self(op.as_::<Mem>())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use alloc::format;
+
+    #[test]
+    fn register_debug_prints_wrapper_and_name() {
+        assert_eq!(format!("{:?}", Gpq::from_id(Gp::AX)), "Gpq(rax)");
+        assert_eq!(format!("{:?}", Gpd::from_id(Gp::SI)), "Gpd(esi)");
+        assert_eq!(format!("{:?}", Xmm::from_id(6)), "Xmm(xmm6)");
+        assert_eq!(
+            format!("{:?}", Gp::from_type_and_id(RegType::Gp64, Gp::BX)),
+            "Gp(rbx)"
+        );
     }
 }
