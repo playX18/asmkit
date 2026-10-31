@@ -1570,6 +1570,22 @@ macro_rules! impl_from_int_for_imm {
 // (e.g. `a.mov(RAX, 42)`). Matches the widths accepted by `imm()`.
 impl_from_int_for_imm!(i8, i16, i32, i64, u8, u16, u32);
 
+// `u64` and `usize` aren't `Into<i64>`, so the macro can't convert them. They
+// keep their bits instead, so `u64::MAX` is the same immediate as `-1_i64`,
+// which is what `mov r64, imm64` takes. They use `as` because `cast_signed`
+// needs Rust 1.87, and the crate supports 1.85.
+impl From<u64> for Imm {
+    fn from(value: u64) -> Self {
+        Imm::from_value(value as i64, 0)
+    }
+}
+
+impl From<usize> for Imm {
+    fn from(value: usize) -> Self {
+        Imm::from(value as u64)
+    }
+}
+
 use core::fmt;
 
 impl fmt::Display for OperandType {
