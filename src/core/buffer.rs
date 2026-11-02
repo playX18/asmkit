@@ -1678,6 +1678,16 @@ pub enum Reloc {
     Aarch64AdrPrelPgHi21,
     /// Equivalent of `R_AARCH64_ADD_ABS_LO12_NC`.
     Aarch64AddAbsLo12Nc,
+    /// Equivalent of `R_AARCH64_LDST64_ABS_LO12_NC`: sets the unsigned-offset
+    /// immediate of an `ldr`/`str` to bits 11:0 of the target address, scaled
+    /// by the access size encoded in the instruction (`size` in bits 31:30).
+    ///
+    /// Pairs with [`Reloc::Aarch64AdrPrelPgHi21`] to form
+    /// `adrp Xd, target; ldr Xt, [Xd, #:lo12:target]`. Unlike the
+    /// [`LabelUse::A64AddAbsLo12`] fixup, this relocation is applied at load
+    /// time, where the final image base is known, so it is correct even when
+    /// the buffer is linked at a non-page-aligned offset.
+    Aarch64Ld64AbsLo12Nc,
 
     /// RISC-V Absolute address: 64-bit address.
     RiscvAbs8,
@@ -1740,7 +1750,8 @@ impl Reloc {
             | Self::Aarch64AdrGotPage21
             | Self::Aarch64Ld64GotLo12Nc
             | Self::Aarch64AdrPrelPgHi21
-            | Self::Aarch64AddAbsLo12Nc => {
+            | Self::Aarch64AddAbsLo12Nc
+            | Self::Aarch64Ld64AbsLo12Nc => {
                 cfg!(feature = "aarch64") && matches!(arch, Arch::AArch64)
             }
             Self::RiscvAbs8
@@ -2301,6 +2312,7 @@ pub(crate) fn relocation_patch_size(kind: Reloc) -> Result<usize, AsmError> {
         | Reloc::Arm64Call
         | Reloc::Aarch64AdrPrelPgHi21
         | Reloc::Aarch64AddAbsLo12Nc
+        | Reloc::Aarch64Ld64AbsLo12Nc
         | Reloc::Aarch64AdrGotPage21
         | Reloc::Aarch64Ld64GotLo12Nc => Ok(4),
         Reloc::Abs8 | Reloc::RiscvAbs8 | Reloc::RiscvCallPlt => Ok(8),
@@ -2584,6 +2596,21 @@ pub unsafe fn perform_relocations(
                 unsafe {
                     let insn = iptr.read_unaligned();
                     write_unaligned(iptr, insn | imm12);
+                }
+            }
+
+            Reloc::Aarch64Ld64AbsLo12Nc => {
+                let what = resolve(&get_address)?;
+                let iptr = at as *mut u32;
+                // The unsigned-offset form of LDR/STR scales the 12-bit
+                // immediate by the access size, which the instruction carries
+                // in bits 31:30 (0 = byte, 3 = doubleword).
+                // SAFETY: a 4-byte instruction inside the checked patch span.
+                unsafe {
+                    let insn = iptr.read_unaligned();
+                    let scale = (insn >> 30) & 0x3;
+                    let imm12 = ((what as u32 & 0xfff) >> scale) << 10;
+                    write_unaligned(iptr, (insn & !(0xfff << 10)) | imm12);
                 }
             }
 
