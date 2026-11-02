@@ -983,28 +983,19 @@ pub fn info() -> Info {
 
 /// Flushes instruction cache in the given region.
 ///
-/// Only useful on non-x86 architectures, however, it's a good practice to call it on any platform to make your
-/// code more portable.
+/// Windows requires it after writing code, and architectures other than x86 need it because their instruction
+/// caches don't see data writes. On x86 outside Windows it does nothing, but calling it everywhere keeps code
+/// portable.
 ///
 /// # Safety
 ///
 /// `p..p + size` must be a valid mapped memory range.
 pub unsafe fn flush_instruction_cache(p: *const u8, size: usize) -> Result<(), AsmError> {
     cfgenius::cond! {
-        if cfg(any(target_arch="x86", target_arch="x86_64")) {
-            let _ = p;
-            let _ = size;
-        } else if cfg(target_vendor="apple") {
-            unsafe extern "C" {
-                fn sys_icache_invalidate(p: *const u8, size: usize);
-            }
-
-            // SAFETY: `sys_icache_invalidate` requires a valid mapped range, guaranteed by callee following
-            // safety.
-            unsafe {
-                sys_icache_invalidate(p, size);
-            }
-        } else if cfg(windows) {
+        // Windows comes before the x86 no-op, because Microsoft requires
+        // `FlushInstructionCache` after code is written, even on x86, whose
+        // instruction cache does see data writes.
+        if cfg(windows) {
             unsafe extern "C" {
                 fn GetCurrentProcess() -> *mut libc::c_void;
                 fn FlushInstructionCache(
@@ -1020,6 +1011,19 @@ pub unsafe fn flush_instruction_cache(p: *const u8, size: usize) -> Result<(), A
                 if FlushInstructionCache(GetCurrentProcess(), p, size) == 0 {
                     return Err(AsmError::InvalidState);
                 }
+            }
+        } else if cfg(any(target_arch="x86", target_arch="x86_64")) {
+            let _ = p;
+            let _ = size;
+        } else if cfg(target_vendor="apple") {
+            unsafe extern "C" {
+                fn sys_icache_invalidate(p: *const u8, size: usize);
+            }
+
+            // SAFETY: `sys_icache_invalidate` requires a valid mapped range, guaranteed by callee following
+            // safety.
+            unsafe {
+                sys_icache_invalidate(p, size);
             }
         } else if cfg(target_arch="aarch64")
             {

@@ -580,3 +580,26 @@ impl CondCode {
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::core::{arch_traits::Arch, buffer::CodeBuffer, target::Environment};
+
+    fn encode_mov_rax(value: impl Into<Imm>) -> alloc::vec::Vec<u8> {
+        let mut buf = CodeBuffer::new(Environment::new(Arch::X64));
+        let mut asm = Assembler::new(&mut buf);
+        asm.mov(RAX, value);
+        buf.finish().unwrap().data().to_vec()
+    }
+
+    #[test]
+    fn unsigned_immediates_encode_like_their_signed_bits() {
+        assert_eq!(encode_mov_rax(u64::MAX), encode_mov_rax(-1_i64));
+        assert_eq!(encode_mov_rax(usize::MAX), encode_mov_rax(-1_i64));
+        assert_eq!(
+            encode_mov_rax(0x1234_5678_9ABC_DEF0_u64),
+            encode_mov_rax(0x1234_5678_9ABC_DEF0_i64)
+        );
+    }
+}
