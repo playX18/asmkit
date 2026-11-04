@@ -4491,6 +4491,7 @@ pub fn emit_n(
     ops: &[&Operand],
     prefixes: PendingPrefixes,
     is_32bit: bool,
+    validate: bool,
 ) -> Result<(), AsmError> {
     if inst_id == 0 || inst_id as usize >= INST_INFO_TABLE.len() {
         return Err(invalid("unknown instruction id").into());
@@ -4506,7 +4507,9 @@ pub fn emit_n(
     let mut ops_array = [Operand::new(); 6];
     for (i, op) in ops.iter().enumerate() {
         ops_array[i] = **op;
-        validate_raw_operand(buf, op, i, is_32bit)?;
+        if validate {
+            validate_raw_operand(buf, op, i, is_32bit)?;
+        }
     }
 
     let options = prefixes.options;

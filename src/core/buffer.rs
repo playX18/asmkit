@@ -1490,9 +1490,8 @@ impl CodeBuffer {
             .collect()
     }
 
-    /// Finalizes the buffer: lays out pending constants, applies fixups and
-    /// emits the veneers they need.
-    pub fn finish(&mut self) -> Result<CodeBufferFinalized, AsmError> {
+    /// Runs finalization and returns the result alignment and jump layout.
+    fn finalize_for_output(&mut self) -> Result<(u32, OffsetMap), AsmError> {
         if let Some(error) = self.error.clone() {
             return Err(error);
         }
@@ -1506,6 +1505,16 @@ impl CodeBuffer {
         self.preflight_finalization()?;
         self.finish_emission_maybe_forcing_veneers()?;
         let alignment = self.finish_constants();
+        Ok((alignment, layout_map))
+    }
+
+    /// Finalizes the buffer: lays out pending constants, applies fixups and
+    /// emits the veneers they need.
+    ///
+    /// The buffer keeps its recordings (and allocations) so it can be used
+    /// again after [`clear`](Self::clear).
+    pub fn finish(&mut self) -> Result<CodeBufferFinalized, AsmError> {
+        let (alignment, layout_map) = self.finalize_for_output()?;
         Ok(CodeBufferFinalized {
             data: self.data.clone(),
             relocs: self.relocs.clone(),
@@ -1514,6 +1523,28 @@ impl CodeBuffer {
             defined_symbols: self.resolved_defined_symbols(),
             alignment,
             arch: self.env.arch(),
+            section_bases: smallvec::smallvec![0],
+            layout_maps: smallvec::smallvec![layout_map],
+        })
+    }
+
+    /// Like [`finish`](Self::finish), but moves the recording vectors into the
+    /// result instead of cloning them.
+    ///
+    /// The buffer is left empty (without its heap allocations), so this is
+    /// the cheap way to finish when the buffer can be dropped afterwards.
+    pub fn finish_owned(&mut self) -> Result<CodeBufferFinalized, AsmError> {
+        let (alignment, layout_map) = self.finalize_for_output()?;
+        let defined_symbols = self.resolved_defined_symbols();
+        let arch = self.env.arch();
+        Ok(CodeBufferFinalized {
+            data: core::mem::take(&mut self.data),
+            relocs: core::mem::take(&mut self.relocs),
+            symbols: core::mem::take(&mut self.symbols),
+            label_offsets: core::mem::take(&mut self.label_offsets),
+            defined_symbols,
+            alignment,
+            arch,
             section_bases: smallvec::smallvec![0],
             layout_maps: smallvec::smallvec![layout_map],
         })

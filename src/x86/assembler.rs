@@ -72,6 +72,7 @@ impl crate::core::builder::InstSink for Assembler<'_> {
                 segment_id: 0,
                 mask_id,
             },
+            true,
         )
     }
 
@@ -144,20 +145,58 @@ impl<'a> Assembler<'a> {
             return Err(error);
         }
         let prefixes = self.take_pending_prefixes();
-        self.try_emit_n_with_prefixes(id, ops, prefixes)
+        self.try_emit_n_with_prefixes(id.into(), ops, prefixes, true)
+    }
+
+    /// Emits one instruction without validating the raw operands first.
+    ///
+    /// Use this only from a frontend that has already checked the operand
+    /// shapes. This also skips the rollback checkpoint: if an operand turns
+    /// out to be invalid, the error is recorded on the buffer (so `finish`
+    /// still fails) but partial bytes are not removed.
+    pub fn emit_n_unchecked(&mut self, id: impl Into<u32>, ops: &[&Operand]) {
+        if self.buffer.error().is_some() {
+            return;
+        }
+        let prefixes = self.take_pending_prefixes();
+        if let Err(error) = emit::emit_n(
+            self.buffer,
+            id.into(),
+            ops,
+            prefixes,
+            self.is_32bit(),
+            false,
+        ) {
+            self.buffer.record_error(error);
+        }
+    }
+
+    pub fn try_emit_n_unchecked(
+        &mut self,
+        id: impl Into<u32>,
+        ops: &[&Operand],
+    ) -> Result<(), crate::AsmError> {
+        if let Some(error) = self.buffer.error().cloned() {
+            return Err(error);
+        }
+        let prefixes = self.take_pending_prefixes();
+        self.try_emit_n_with_prefixes(id.into(), ops, prefixes, false)
     }
 
     fn try_emit_n_with_prefixes(
         &mut self,
-        id: impl Into<u32>,
+        id: u32,
         ops: &[&Operand],
         prefixes: PendingPrefixes,
+        validate: bool,
     ) -> Result<(), crate::AsmError> {
         if let Some(error) = self.buffer.error().cloned() {
             return Err(error);
         }
         let checkpoint = self.buffer.checkpoint();
-        if let Err(error) = emit::emit_n(self.buffer, id.into(), ops, prefixes, self.is_32bit()) {
+        if let Err(error) =
+            emit::emit_n(self.buffer, id, ops, prefixes, self.is_32bit(), validate)
+        {
             self.buffer.rollback(checkpoint);
             return Err(error);
         }

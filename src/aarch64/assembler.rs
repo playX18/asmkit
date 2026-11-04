@@ -272,7 +272,41 @@ impl<'a> Assembler<'a> {
         if ops.len() > 6 || ops.iter().any(|op| !validate_raw_operand(self.buffer, op)) {
             return Err(AsmError::InvalidOperand);
         }
-        let id = id.into();
+        self.try_emit_n_checked(id.into(), ops)
+    }
+
+    /// Emits one instruction without validating the raw operands first.
+    ///
+    /// Use this only from a frontend that has already checked the operand
+    /// shapes. This also skips the rollback checkpoint: if an operand turns
+    /// out to be invalid, the error is recorded on the buffer (so `finish`
+    /// still fails) but partial bytes are not removed.
+    pub fn emit_n_unchecked(&mut self, id: impl Into<u32>, ops: &[&Operand]) {
+        if self.buffer.error().is_some() {
+            return;
+        }
+        self.last_error = None;
+        self._emit(id.into(), ops);
+        if let Some(error) = self.last_error.take() {
+            self.buffer.record_error(error);
+        }
+    }
+
+    pub fn try_emit_n_unchecked(
+        &mut self,
+        id: impl Into<u32>,
+        ops: &[&Operand],
+    ) -> Result<(), AsmError> {
+        if let Some(error) = self.buffer.error().cloned() {
+            return Err(error);
+        }
+        if ops.len() > 6 {
+            return Err(AsmError::InvalidOperand);
+        }
+        self.try_emit_n_checked(id.into(), ops)
+    }
+
+    fn try_emit_n_checked(&mut self, id: u32, ops: &[&Operand]) -> Result<(), AsmError> {
         let checkpoint = self.buffer.checkpoint();
         self.last_error = None;
         self._emit(id, ops);
