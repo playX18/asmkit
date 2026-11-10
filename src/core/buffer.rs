@@ -253,6 +253,27 @@ impl LoadedCode {
         self.code_size
     }
 
+    /// Offset of the GOT in the loaded image, after the code.
+    pub const fn got_offset(&self) -> usize {
+        self.got_offset
+    }
+
+    /// One entry per GOT slot, in slot order: the external symbol the slot
+    /// holds, or `None` for a slot holding an address inside this image.
+    pub fn got_entries(&self) -> &[Option<ExternalName>] {
+        &self.got
+    }
+
+    /// Size of the loaded image: the code and the GOT slots after it.
+    pub const fn loaded_size(&self) -> usize {
+        const SLOT: usize = core::mem::size_of::<usize>();
+        if self.got.is_empty() {
+            self.code_size
+        } else {
+            self.got_offset + self.got.len() * SLOT
+        }
+    }
+
     /// Address of the GOT slot holding external symbol `name`, or `None` when
     /// no far reference to `name` gave it a slot.
     pub fn got_slot(&self, name: &ExternalName) -> Option<*const u8> {
