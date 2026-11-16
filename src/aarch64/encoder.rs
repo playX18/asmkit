@@ -105,10 +105,19 @@ impl Assembler<'_> {
         }
 
         let disp_imm64 = (st.offset_value as i64) >> st.offset_format.imm_discard_lsb() as i64;
-        let disp_imm32 = (disp_imm64 & ((1 << st.offset_format.imm_bit_count()) - 1)) as u32;
+        // Every format here is a signed field. Masking an out-of-range
+        // displacement would silently encode a different target.
+        let bits = st.offset_format.imm_bit_count();
+        if disp_imm64 < -(1i64 << (bits - 1)) || disp_imm64 >= 1i64 << (bits - 1) {
+            self.last_error = Some(AsmError::InvalidOperand);
+            return;
+        }
+        let disp_imm32 = (disp_imm64 & ((1 << bits) - 1)) as u32;
 
         match st.offset_format.typ() {
-            OffsetType::SignedOffset => {
+            // `ldr (literal)` keeps imm19 at bit 5, like the branches, not the
+            // immlo/immhi split of `adr`/`adrp`.
+            OffsetType::SignedOffset | OffsetType::Ldr => {
                 st.opcode
                     .add_imm(disp_imm32 as _, st.offset_format.imm_bit_shift() as _);
                 self.buffer.write_u32(st.opcode.get());
